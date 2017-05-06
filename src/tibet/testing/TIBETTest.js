@@ -441,15 +441,18 @@ function(options) {
             }, TP.extern.Promise.resolve());
 
     handler = function(reason, unhandledPromise) {
+        var test;
 
-        var currentCase;
+        test = currentSuite.get('currentTestCase');
 
-        currentCase = currentSuite.get('currentTestCase');
+        if (TP.notValid(test)) {
+            test = currentSuite;
+        }
 
         if (reason instanceof Error) {
-            currentCase.error(reason);
+            test.error(reason);
         } else {
-            currentCase.fail(reason);
+            test.fail(reason);
         }
     };
 

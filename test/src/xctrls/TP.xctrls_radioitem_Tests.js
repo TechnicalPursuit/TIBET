@@ -63,7 +63,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 var focusedElem;
@@ -94,7 +94,7 @@ function() {
             mouseDown(radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(radioitem, 'pclass:active');
 
@@ -108,7 +108,7 @@ function() {
             mouseUp(radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
@@ -124,7 +124,7 @@ function() {
             click(radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Don't test the attribute here - it will already have been
@@ -154,7 +154,7 @@ function() {
             keyDown(radioitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(radioitem, 'pclass:active');
 
@@ -168,7 +168,7 @@ function() {
             keyUp(radioitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
@@ -196,7 +196,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:focus');
 
@@ -212,7 +212,7 @@ function() {
             mouseDown(radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
@@ -224,7 +224,7 @@ function() {
             mouseUp(radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
@@ -238,7 +238,7 @@ function() {
             click(radioitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
@@ -255,7 +255,7 @@ function() {
             keyDown(radioitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
@@ -269,7 +269,7 @@ function() {
             keyUp(radioitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
@@ -1093,7 +1093,7 @@ function() {
             click(dataradioitem7).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
@@ -1188,7 +1188,7 @@ function() {
             click(dataradioitem11).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
@@ -1205,7 +1205,7 @@ function() {
             click(dataradioitem12).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),

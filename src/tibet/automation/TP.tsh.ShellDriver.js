@@ -36,8 +36,8 @@ function(test, shellInput, valueTestFunction) {
     /**
     */
 
-    this.get('promiseProvider').thenPromise(
-        function(resolver, rejector) {
+    this.get('promiseProvider').chainPromise(
+        TP.extern.Promise.construct(function(resolver, rejector) {
 
             //  Flip the flag on to ignore eval errors in the TSH. We'll test
             //  for undefined values here.
@@ -114,7 +114,7 @@ function(test, shellInput, valueTestFunction) {
                         //  Set the faultText to that content as well.
                         test.set('faultText', errMsg || '');
                     }));
-        });
+        }));
 
     return;
 });
@@ -229,11 +229,11 @@ function(test, inputVal, correctResults) {
                 });
         });
 
-    this.get('promiseProvider').then(
+    this.get('promiseProvider').chain(
         null,
         function(reason) {
             test.fail(reason);
-        }).catch(
+        }).chainCatch(
         function(err) {
             TP.ifError() ?
                 TP.error('Error executing shell driver assertion: ' +

@@ -1270,7 +1270,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var now,
 
@@ -1311,8 +1311,8 @@ function() {
         //  to reload from the underlying source.
         url.isLoaded(false);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET. Also, pouchdb://
@@ -1369,7 +1369,7 @@ function() {
                     });
 
                 url.getResource(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -1385,8 +1385,8 @@ function() {
         //  to reload from the underlying source.
         url.isLoaded(false);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET, which means we need to
@@ -1431,7 +1431,7 @@ function() {
                     });
 
                 url.getResource(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -1448,8 +1448,8 @@ function() {
         //  to reload from the underlying source.
         url.isLoaded(false);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET, which means we need to
@@ -1499,7 +1499,7 @@ function() {
                     });
 
                 url.getResource(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -1508,7 +1508,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var pouchPromise,
                         promise;
@@ -1687,8 +1687,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var putParams,
                     putRequest;
 
@@ -1720,7 +1720,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(putRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -1754,8 +1754,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postRequest;
 
                 postRequest = url.constructRequest(params);
@@ -1785,7 +1785,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -1819,8 +1819,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -1852,7 +1852,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -1887,8 +1887,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -1921,7 +1921,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -1960,8 +1960,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -1994,7 +1994,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -2024,8 +2024,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var deleteRequest;
 
                 deleteRequest = url.constructRequest(params);
@@ -2054,7 +2054,7 @@ function() {
                     });
 
                 url.delete(deleteRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -2079,7 +2079,7 @@ function() {
             destroySucceeded = false;
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var now,
 
@@ -2118,8 +2118,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_PUT,
@@ -2155,7 +2155,7 @@ function() {
                     });
 
                 url.save(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -2170,8 +2170,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_POST,
@@ -2207,7 +2207,7 @@ function() {
                     });
 
                 url.save(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -2221,8 +2221,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -2258,7 +2258,7 @@ function() {
                     });
 
                 url.delete(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -2273,8 +2273,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -2314,7 +2314,7 @@ function() {
                     });
 
                 url.delete(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -2323,7 +2323,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var pouchPromise,
                         promise;

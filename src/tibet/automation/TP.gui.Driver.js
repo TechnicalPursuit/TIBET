@@ -296,7 +296,7 @@ function(aURI, resultType) {
     //  'Then' a Function onto our internal Promise that will itself return a
     //  Promise when called upon. That Promise will await the 'RequestSucceeded'
     //  signal and resolve the Promise with the result.
-    return this.get('promiseProvider').then(
+    return this.get('promiseProvider').chain(
         function() {
             var promise;
 
@@ -326,7 +326,7 @@ function(aURI, resultType) {
                         });
 
             return promise;
-        }).catch(
+        }).chainCatch(
         function(err) {
             TP.ifError() ?
                 TP.error('Error creating fetchResource Promise: ' +
@@ -393,7 +393,7 @@ function(aURI, aWindow) {
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    this.fetchResource(aURI, TP.DOM).then(
+    this.fetchResource(aURI, TP.DOM).chain(
         function(result) {
             var tpWin,
                 tpDoc,
@@ -441,7 +441,7 @@ function(aURI, aWindow) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  Set the Window's location to the supplied URI. 'then()' a Function onto
+    //  Set the Window's location to the supplied URI. 'chain' a Function onto
     //  our internal Promise that will itself return a Promise when called upon.
     //  That Promise will await the 'onload' to fire from setting the location,
     //  wait 100ms (to give the GUI a chance to draw) and then resolve the
@@ -453,7 +453,7 @@ function(aURI, aWindow) {
         tpWin = this.get('windowContext');
     }
 
-    return this.get('promiseProvider').then(
+    return this.get('promiseProvider').chain(
         function() {
             var promise;
 
@@ -470,7 +470,7 @@ function(aURI, aWindow) {
                             });
 
             return promise;
-        }).catch(
+        }).chainCatch(
         function(err) {
             TP.ifError() ?
                 TP.error('Error creating setLocation Promise: ' +
@@ -1365,7 +1365,7 @@ function() {
     //  Promise when called upon. That Promise will execute set up a 'work'
     //  callback function that executes each entry in the sequence and then
     //  resolves the Promise after executing the last entry.
-    provider.then(
+    provider.chain(
         function() {
             var promise;
 
@@ -1456,7 +1456,7 @@ function() {
                 });
 
             return promise;
-        }).catch(
+        }).chainCatch(
         function(err) {
             TP.ifError() ?
                 TP.error('Error creating GUI automation \'run\' Promise: ' +

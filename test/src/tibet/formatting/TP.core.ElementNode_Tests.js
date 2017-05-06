@@ -151,7 +151,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -315,7 +315,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -384,7 +384,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -431,7 +431,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -617,7 +617,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var textField,
                     textArea,
@@ -645,7 +645,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), textField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textField.get('value'),
@@ -664,7 +664,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), textArea).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),
@@ -680,7 +680,7 @@ function() {
                     click(optionToSelect).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             selectSingle.get('value'),
@@ -696,7 +696,7 @@ function() {
                     click(optionToSelect).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             selectMultiple.get('value'),
@@ -715,7 +715,7 @@ function() {
                     click(inputRadio2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputRadio2.getValue(),
@@ -731,7 +731,7 @@ function() {
                     click(inputRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputRadio3.getValue(),
@@ -751,7 +751,7 @@ function() {
                     click(inputCheckbox2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputCheckbox2.getValue(),
@@ -767,7 +767,7 @@ function() {
                     click(inputCheckbox3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputCheckbox3.getValue(),
@@ -790,7 +790,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var textField,
                     textArea;
@@ -807,7 +807,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), textField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textField.get('value'),
@@ -826,7 +826,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), textArea).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),
@@ -847,7 +847,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var textField,
                     textArea;
@@ -864,7 +864,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), textField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textField.get('value'),
@@ -883,7 +883,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), textArea).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),

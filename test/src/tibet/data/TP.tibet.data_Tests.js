@@ -90,7 +90,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -108,7 +108,7 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
-                test.then(function() {
+                test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
             },
@@ -126,7 +126,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -144,7 +144,7 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
-                test.then(function() {
+                test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
             },
@@ -162,7 +162,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -181,7 +181,7 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
-                test.then(function() {
+                test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
             },
@@ -199,7 +199,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -218,7 +218,7 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
-                test.then(function() {
+                test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
             },
@@ -236,7 +236,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -289,10 +289,10 @@ function() {
 
                 //  ---
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  NB: By chain()ing this, it gets invoked *after* this test's
                 //  afterEach() method, which unloads the URI and which should
                 //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
+                test.chain(
                     function() {
                         test.assert.didSignal(dataTPElem,
                                                 'TP.sig.UIDataDestruct');
@@ -312,7 +312,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -365,10 +365,10 @@ function() {
 
                 //  ---
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  NB: By chain()ing this, it gets invoked *after* this test's
                 //  afterEach() method, which unloads the URI and which should
                 //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
+                test.chain(
                     function() {
                         test.assert.didSignal(dataTPElem,
                                                 'TP.sig.UIDataDestruct');

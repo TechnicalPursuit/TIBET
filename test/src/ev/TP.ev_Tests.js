@@ -62,7 +62,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext;
@@ -75,7 +75,7 @@ function() {
                         click(TP.byId('fooButton', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -89,7 +89,7 @@ function() {
                         click(TP.byId('barButton', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -120,7 +120,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(
                     TP.byId('testResults', windowContext, false),
@@ -133,7 +133,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -143,7 +143,7 @@ function() {
                         click(TP.byId('updateElement', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -173,7 +173,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -181,7 +181,7 @@ function() {
                         sendKeys('[Shift]A[Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -194,7 +194,7 @@ function() {
                         sendKeys('\u0062').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -207,7 +207,7 @@ function() {
                         sendKeys('[F2]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -236,7 +236,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -244,7 +244,7 @@ function() {
                         click(TP.byId('fooDiv'), windowContext, false).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -265,7 +265,7 @@ function() {
                         doubleClick(TP.byId('fooDiv', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -295,7 +295,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -303,7 +303,7 @@ function() {
                         click(TP.byId('fooDiv', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -317,7 +317,7 @@ function() {
                         doubleClick(TP.byId('bazDiv', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -348,7 +348,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -357,7 +357,7 @@ function() {
                                     TP.byId('fooField', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  Default was being prevented - the field shouldn't
                         //  have any content.
@@ -374,7 +374,7 @@ function() {
                                     TP.byId('barField', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
@@ -413,7 +413,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -421,7 +421,7 @@ function() {
                         sendKeys('[Shift]X[Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         var testVal;
@@ -444,7 +444,7 @@ function() {
                         sendKeys('[Shift]Y[Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         var testVal;
@@ -468,7 +468,7 @@ function() {
                         sendKeys('[Shift]Z[Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         var testVal;
@@ -507,7 +507,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
 
                 //  This sequence of focusing the window and then 'typing' a Tab
@@ -523,7 +523,7 @@ function() {
                         sendKeys('[Shift]S[Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         test.assert.hasAttribute(
@@ -548,7 +548,7 @@ function() {
                         sendKeys('[Shift]S[Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         test.assert.hasAttribute(
@@ -580,7 +580,7 @@ function() {
 
         windowContext = driver.get('windowContext');
 
-        test.then(
+        test.chain(
             function() {
                 TP.sys.uiwin(true).focus();
 
@@ -588,7 +588,7 @@ function() {
                         click(TP.byId('setSalaryButton', windowContext, false)).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         var testVal;

@@ -48,7 +48,7 @@ function() {
             driver = this.getDriver();
             driver.setLocation(loadURI);
 
-            this.then(
+            this.chain(
                 function() {
                     this.startTrackingSignals();
                 }.bind(this),
@@ -96,7 +96,7 @@ function() {
                 click(elem).
                 run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.didSignal(elem, 'TP.sig.DOMClick');
                 test.assert.didSignal(elem, 'ClickTestSignal');
@@ -121,7 +121,7 @@ function() {
                 click(elem).
                 run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.didSignal(elem, 'TP.sig.DOMClick');
                 test.assert.didSignal(elem, 'ClickTestSignal');
@@ -146,7 +146,7 @@ function() {
                 click(elem).
                 run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.didSignal(elem, 'TP.sig.DOMClick');
                 test.assert.didSignal(elem, 'ClickTestSignal');
@@ -180,7 +180,7 @@ function() {
             driver = this.getDriver();
             driver.setLocation(loadURI);
 
-            this.then(
+            this.chain(
                 function() {
                     this.startTrackingSignals();
                 }.bind(this),
@@ -230,7 +230,7 @@ function() {
                 click(triggerElem).
                 run();
 
-        test.then(
+        test.chain(
             function() {
                 var args,
                     len,
@@ -278,7 +278,7 @@ function() {
                 click(triggerElem).
                 run();
 
-        test.then(
+        test.chain(
             function() {
                 var args,
                     len,
@@ -326,7 +326,7 @@ function() {
                 click(triggerElem).
                 run();
 
-        test.then(
+        test.chain(
             function() {
                 var args,
                     len,
@@ -381,7 +381,7 @@ function() {
             driver = this.getDriver();
             driver.setLocation(loadURI);
 
-            this.then(
+            this.chain(
                 function() {
                     this.startTrackingSignals();
                 }.bind(this),
@@ -427,7 +427,7 @@ function() {
 
         TP.wrap(elem).dispatch('TP.sig.FooSignal');
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.didSignal(elem, 'TP.sig.FooSignal');
                 test.assert.didSignal(elem, 'TP.sig.BarSignal');
@@ -450,7 +450,7 @@ function() {
 
         TP.wrap(elem).dispatch('FooSignal');
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.didSignal(elem, 'FooSignal');
                 test.assert.didSignal(elem, 'TP.sig.BarSignal');
@@ -484,7 +484,7 @@ function() {
             driver = this.getDriver();
             driver.setLocation(loadURI);
 
-            this.then(
+            this.chain(
                 function() {
                     this.startTrackingSignals();
                 }.bind(this),
@@ -532,7 +532,7 @@ function() {
 
         TP.wrap(triggerElem).dispatch('TP.sig.FooSignal');
 
-        test.then(
+        test.chain(
             function() {
                 var args,
                     len,
@@ -578,7 +578,7 @@ function() {
 
         TP.wrap(triggerElem).dispatch('FooSignal');
 
-        test.then(
+        test.chain(
             function() {
                 var args,
                     len,

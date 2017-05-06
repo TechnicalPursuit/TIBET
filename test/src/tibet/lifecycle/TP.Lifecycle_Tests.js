@@ -55,7 +55,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Window throws DocumentLoaded when document loads
@@ -73,13 +73,13 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Now that we're loaded, unload the document
                 driver.setLocation(unloadURI);
 
-                test.then(
+                test.chain(
                     function() {
                         //  Window throws DocumentUnloaded when document unloads
                         test.assert.didSignal(TP.gid(winContext),
@@ -97,7 +97,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Document throws DOMContentLoaded when document loads
@@ -116,7 +116,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var gid;
 
@@ -128,7 +128,7 @@ function() {
                 //  Now that we're loaded, unload the document
                 driver.setLocation(unloadURI);
 
-                test.then(
+                test.chain(
                     function() {
                         //  Document throws DOMContentUnloaded when document
                         //  unloads
@@ -147,14 +147,14 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 TP.elementSetContent(
                     TP.byId('testSpan', winContext, false),
                     '<span>This is inner content</span>');
             });
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Element throws DOMContentLoaded when its content is added
@@ -172,14 +172,14 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 TP.elementSetContent(
                     TP.byId('testSpan', winContext, false),
                     '<span>This is inner content</span>');
             });
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Element throws AttachComplete when its content is done
@@ -221,7 +221,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var submitButton;
@@ -230,7 +230,7 @@ function() {
 
                 driver.constructSequence().click(submitButton).run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  Note here how we re-obtain the submit button so that
                         //  we can test its presence again. The submit event

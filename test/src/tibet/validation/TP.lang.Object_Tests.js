@@ -1118,7 +1118,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1153,7 +1153,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1169,7 +1169,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  'age' change - age URI
@@ -1187,7 +1187,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1205,7 +1205,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  'age' change - age URI
@@ -1240,7 +1240,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1302,7 +1302,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1316,7 +1316,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  'relevant' change - SSN
@@ -1351,7 +1351,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1435,7 +1435,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1449,7 +1449,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  'relevant' change - source URI
                         test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1457,7 +1457,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1475,7 +1475,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  SSN
@@ -1517,7 +1517,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1662,7 +1662,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1680,7 +1680,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  State
@@ -1718,7 +1718,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1732,7 +1732,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  'relevant' change - source URI
                         test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1740,7 +1740,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1758,7 +1758,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  SSN
@@ -1805,7 +1805,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1848,7 +1848,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1864,7 +1864,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -1908,7 +1908,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1951,7 +1951,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -1967,7 +1967,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -2011,7 +2011,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -2054,7 +2054,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -2070,7 +2070,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -2114,7 +2114,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -2157,7 +2157,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
                         test.getSuite().resetSignalTracking();
@@ -2170,7 +2170,7 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number

@@ -51,7 +51,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -97,7 +97,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -137,7 +137,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -198,7 +198,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -268,7 +268,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -323,7 +323,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -353,7 +353,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -389,7 +389,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -425,7 +425,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -490,7 +490,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -558,7 +558,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var parentTPElem,
                     tpElem;
@@ -569,9 +569,9 @@ function() {
 
                 //  Give it a 50ms wait - otherwise, Promises starve the event
                 //  loop and the MO machinery will never be triggered.
-                test.thenWait(50);
+                test.andWait(50);
 
-                test.then(
+                test.chain(
                     function() {
                         tpElem = TP.byId('moo', windowContext);
                         test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');

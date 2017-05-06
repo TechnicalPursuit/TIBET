@@ -40,7 +40,7 @@ function() {
         uri = TP.uc('~lib_test/src/tibet/driver/testmarkup.xml');
         test.getDriver().setBodyContent(uri);
 
-        test.then(
+        test.chain(
             function() {
                 driver = TP.gui.Driver.getTestFixture(
                                         TP.hc('testCase', test));
@@ -50,7 +50,7 @@ function() {
                                         TP.cpc('#testField'));
                 seq.run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             TP.byId('testField',

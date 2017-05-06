@@ -63,7 +63,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), button).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 var focusedElem;
@@ -94,7 +94,7 @@ function() {
             mouseDown(button).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(button, 'pclass:active');
 
@@ -108,7 +108,7 @@ function() {
             mouseUp(button).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
@@ -124,7 +124,7 @@ function() {
             click(button).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Don't test the attribute here - it will already have been
@@ -154,7 +154,7 @@ function() {
             keyDown(button, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(button, 'pclass:active');
 
@@ -168,7 +168,7 @@ function() {
             keyUp(button, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
@@ -196,7 +196,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), button).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:focus');
 
@@ -212,7 +212,7 @@ function() {
             mouseDown(button).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
@@ -224,7 +224,7 @@ function() {
             mouseUp(button).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidDeactivate');
@@ -238,7 +238,7 @@ function() {
             click(button).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIActivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidActivate');
@@ -255,7 +255,7 @@ function() {
             keyDown(button, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
@@ -269,7 +269,7 @@ function() {
             keyUp(button, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidDeactivate');

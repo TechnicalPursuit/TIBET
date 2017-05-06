@@ -255,7 +255,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -296,7 +296,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField2.get('value'),
@@ -325,7 +325,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -354,7 +354,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -383,7 +383,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField4).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -412,7 +412,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField5).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -445,7 +445,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -485,7 +485,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField2.get('value'),
@@ -514,7 +514,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -543,7 +543,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -572,7 +572,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField4).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -601,7 +601,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField5).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -634,7 +634,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -674,7 +674,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField2.get('value'),
@@ -703,7 +703,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -732,7 +732,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -761,7 +761,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField4).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -790,7 +790,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), firstNameField5).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             firstNameField1.get('value'),
@@ -868,7 +868,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -902,7 +902,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -930,7 +930,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1004,7 +1004,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1028,7 +1028,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -1046,7 +1046,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -1063,7 +1063,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -1080,7 +1080,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -1105,7 +1105,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1179,7 +1179,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1203,7 +1203,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -1221,7 +1221,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -1238,7 +1238,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -1255,7 +1255,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -1280,7 +1280,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1354,7 +1354,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1378,7 +1378,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -1396,7 +1396,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -1413,7 +1413,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -1430,7 +1430,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -1455,7 +1455,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1529,7 +1529,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1553,7 +1553,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -1571,7 +1571,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -1588,7 +1588,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -1605,7 +1605,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -1630,7 +1630,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1664,7 +1664,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1692,7 +1692,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1766,7 +1766,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1790,7 +1790,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -1808,7 +1808,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -1825,7 +1825,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -1842,7 +1842,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -1867,7 +1867,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -1941,7 +1941,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -1965,7 +1965,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -1983,7 +1983,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -2000,7 +2000,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -2017,7 +2017,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -2042,7 +2042,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -2116,7 +2116,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -2140,7 +2140,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -2158,7 +2158,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -2175,7 +2175,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -2192,7 +2192,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -2217,7 +2217,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -2291,7 +2291,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -2315,7 +2315,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -2333,7 +2333,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -2350,7 +2350,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -2367,7 +2367,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -2392,7 +2392,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -2426,7 +2426,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -2454,7 +2454,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -2528,7 +2528,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -2552,7 +2552,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -2570,7 +2570,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -2587,7 +2587,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -2604,7 +2604,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -2629,7 +2629,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -2703,7 +2703,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -2727,7 +2727,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -2745,7 +2745,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -2762,7 +2762,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -2779,7 +2779,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -2804,7 +2804,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -2878,7 +2878,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -2902,7 +2902,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -2920,7 +2920,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -2937,7 +2937,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -2954,7 +2954,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -2979,7 +2979,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
                     modelObj,
@@ -3053,7 +3053,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField.get('value'),
@@ -3077,7 +3077,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             descriptionField.get('value'),
@@ -3095,7 +3095,7 @@ function() {
                     click(genderFieldOption1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             genderField.get('value'),
@@ -3112,7 +3112,7 @@ function() {
                     click(petRadio3).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             petRadio3.get('value'),
@@ -3129,7 +3129,7 @@ function() {
                     click(colorCheckbox1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorCheckbox1.get('value'),
@@ -3199,7 +3199,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3243,7 +3243,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3264,7 +3264,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3292,7 +3292,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3336,7 +3336,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3357,7 +3357,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3385,7 +3385,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3429,7 +3429,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3450,7 +3450,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3478,7 +3478,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3522,7 +3522,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3543,7 +3543,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3571,7 +3571,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3615,7 +3615,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3636,7 +3636,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3664,7 +3664,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3708,7 +3708,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3729,7 +3729,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3802,7 +3802,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -3856,7 +3856,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -3875,7 +3875,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -3903,7 +3903,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4002,7 +4002,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -4021,7 +4021,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField2.get('value'),
@@ -4040,7 +4040,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), addressStreetField11).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             addressStreetField11.get('value'),
@@ -4059,7 +4059,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), addressCityField22).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             addressCityField22.get('value'),
@@ -4091,7 +4091,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4147,7 +4147,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField0.get('value'),
@@ -4166,7 +4166,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -4194,7 +4194,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4293,7 +4293,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField0.get('value'),
@@ -4312,7 +4312,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -4331,7 +4331,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             addressStreetField00.get('value'),
@@ -4350,7 +4350,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             addressCityField11.get('value'),
@@ -4378,7 +4378,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4434,7 +4434,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField0.get('value'),
@@ -4453,7 +4453,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -4481,7 +4481,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4580,7 +4580,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField0.get('value'),
@@ -4599,7 +4599,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             lastNameField1.get('value'),
@@ -4618,7 +4618,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             addressStreetField00.get('value'),
@@ -4637,7 +4637,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             addressCityField11.get('value'),
@@ -4665,7 +4665,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4730,7 +4730,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -4761,7 +4761,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -4796,7 +4796,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -4923,7 +4923,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -4963,7 +4963,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5022,7 +5022,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -5087,7 +5087,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5118,7 +5118,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5155,7 +5155,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -5282,7 +5282,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5322,7 +5322,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5381,7 +5381,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -5446,7 +5446,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5477,7 +5477,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5514,7 +5514,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -5641,7 +5641,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5681,7 +5681,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
@@ -5777,7 +5777,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -5840,7 +5840,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -5902,7 +5902,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -6001,7 +6001,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6030,7 +6030,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6055,7 +6055,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6085,7 +6085,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6110,7 +6110,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6140,7 +6140,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6165,7 +6165,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6195,7 +6195,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6220,7 +6220,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6260,7 +6260,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6291,7 +6291,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6332,7 +6332,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6363,7 +6363,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6403,7 +6403,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6434,7 +6434,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6474,7 +6474,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6505,7 +6505,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6535,7 +6535,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6560,7 +6560,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6590,7 +6590,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6615,7 +6615,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6645,7 +6645,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6670,7 +6670,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6700,7 +6700,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6725,7 +6725,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6765,7 +6765,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6796,7 +6796,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6837,7 +6837,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6868,7 +6868,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6908,7 +6908,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -6939,7 +6939,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -6979,7 +6979,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7010,7 +7010,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7040,7 +7040,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7065,7 +7065,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7095,7 +7095,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7120,7 +7120,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7150,7 +7150,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7175,7 +7175,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7205,7 +7205,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7230,7 +7230,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7270,7 +7270,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7301,7 +7301,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7342,7 +7342,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7373,7 +7373,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7413,7 +7413,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7444,7 +7444,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7484,7 +7484,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), colorField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             colorField.get('value'),
@@ -7553,7 +7553,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7606,7 +7606,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7659,7 +7659,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7712,7 +7712,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7765,7 +7765,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7859,7 +7859,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -7953,7 +7953,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -8047,7 +8047,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -8141,7 +8141,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -8210,7 +8210,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -8278,7 +8278,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -8383,7 +8383,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var fields;
@@ -8420,7 +8420,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var fields;
@@ -8457,7 +8457,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var fields;
@@ -8539,7 +8539,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -8574,7 +8574,7 @@ function() {
                     click(insertBeforeBeginButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8592,7 +8592,7 @@ function() {
                     click(insertAfterBeginButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8610,7 +8610,7 @@ function() {
                     click(insertBeforeEndButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8628,7 +8628,7 @@ function() {
                     click(insertAfterEndButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8654,7 +8654,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -8689,7 +8689,7 @@ function() {
                     click(insertBeforeBeginButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8707,7 +8707,7 @@ function() {
                     click(insertAfterBeginButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8725,7 +8725,7 @@ function() {
                     click(insertBeforeEndButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8743,7 +8743,7 @@ function() {
                     click(insertAfterEndButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8769,7 +8769,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -8804,7 +8804,7 @@ function() {
                     click(insertBeforeBeginButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8822,7 +8822,7 @@ function() {
                     click(insertAfterBeginButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8840,7 +8840,7 @@ function() {
                     click(insertBeforeEndButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8858,7 +8858,7 @@ function() {
                     click(insertAfterEndButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8928,7 +8928,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -8955,7 +8955,7 @@ function() {
                     click(deleteFirstRowButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -8974,7 +8974,7 @@ function() {
                     click(deleteLastRowButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  There should only be 2 text fields left under the
                         //  repeater.
@@ -9002,7 +9002,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -9029,7 +9029,7 @@ function() {
                     click(deleteFirstRowButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -9048,7 +9048,7 @@ function() {
                     click(deleteLastRowButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  There should only be 2 text fields left under the
                         //  repeater.
@@ -9076,7 +9076,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var windowContext,
 
@@ -9103,7 +9103,7 @@ function() {
                     click(deleteFirstRowButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         var fields;
 
@@ -9122,7 +9122,7 @@ function() {
                     click(deleteLastRowButton).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  There should only be 2 text fields left under the
                         //  repeater.
@@ -9188,7 +9188,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -9211,7 +9211,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), sourceField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             destinationWholeField.get('value'),
@@ -9236,7 +9236,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -9259,7 +9259,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), sourceField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             destinationWholeField.get('value'),
@@ -9284,7 +9284,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -9307,7 +9307,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), sourceField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             destinationWholeField.get('value'),
@@ -9332,7 +9332,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext,
@@ -9355,7 +9355,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), sourceField).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             destinationWholeField.get('value'),

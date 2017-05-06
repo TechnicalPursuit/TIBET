@@ -119,7 +119,7 @@ function() {
                         pageTextField,
                         'Stack last element not identical to page text field');
 
-        test.then(
+        test.chain(
             function() {
 
                 var templateURI,
@@ -141,9 +141,9 @@ function() {
                 return promise;
             });
 
-        test.thenWait(2000);
+        test.andWait(2000);
 
-        test.then(
+        test.chain(
             function() {
 
                 var uiRootWin,
@@ -193,9 +193,9 @@ function() {
                 dialogTPElem.setAttribute('hidden', true);
             });
 
-        test.thenWait(3000);
+        test.andWait(3000);
 
-        test.then(
+        test.chain(
             function() {
 
                 focusedElem = driver.getFocusedElement();

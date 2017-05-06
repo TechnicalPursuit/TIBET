@@ -379,6 +379,46 @@ function(setup) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('errorJob',
+function(aFaultString, aFaultCode, aFaultInfo) {
+
+    /**
+     * @method errorJob
+     * @summary Internal method for handling errors thrown by test functions.
+     * @param {String} aFaultString A string description of the fault.
+     * @param {Object} aFaultCode A code providing additional information on the
+     *     reason for the failure.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
+     * @returns {TP.test.Case} The receiver.
+     */
+
+    var msg,
+
+        info;
+
+    this.set('msend', Date.now());
+
+    msg = ('not ok - SUITE ' + this.getSuiteName() + ' error' +
+            (aFaultString ? ': ' + aFaultString : '')).trim();
+
+    if (msg.charAt(msg.getSize() - 1) !== '.') {
+        msg += '.';
+    }
+
+    TP.sys.logTest(msg);
+
+    info = TP.hc(aFaultInfo);
+
+    if (TP.isError(info.at('error'))) {
+        TP.sys.logTest(info.at('error'));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('executeAfter',
 function(result, options) {
 
@@ -401,11 +441,9 @@ function(result, options) {
 
     this.set('msend', Date.now());
 
-    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-    //  'thenWait()' API to our drivers.
     //  We need to reset this after executing all of the test cases, since they
     //  set this to themselves while they're running.
-    this.setPromiseAPIProvider(this);
+    this.setChainingProvider(this);
 
     //  And the current UI canvas is the GUI driver's window context. Again, we
     //  reset this in case one of test cases set it to something else.
@@ -568,9 +606,7 @@ function(result, options) {
 
     this.set('msstart', Date.now());
 
-    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-    //  'thenWait()' API to our drivers.
-    this.setPromiseAPIProvider(this);
+    this.setChainingProvider(this);
 
     //  And the current UI canvas is the GUI driver's window context.
     this.setGUIDriverWindowContext(TP.sys.getUICanvas());
@@ -642,6 +678,45 @@ function(currentcase, result, options) {
                 });
 
     return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('failJob',
+function(aFaultString, aFaultCode, aFaultInfo) {
+
+    /**
+     * @method failJob
+     * @summary Internal method for handling notifications of test failures.
+     * @param {String} aFaultString A string description of the fault.
+     * @param {Object} aFaultCode A code providing additional information on the
+     *     reason for the failure.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
+     * @returns {TP.test.Case} The receiver.
+     */
+
+    var msg,
+        info;
+
+    this.set('msend', Date.now());
+
+    msg = 'not ok - SUITE ' + this.getSuiteName() +
+        (aFaultString ? ': ' + aFaultString : '').trim();
+
+    if (msg.charAt(msg.getSize() - 1) !== '.') {
+        msg += '.';
+    }
+
+    TP.sys.logTest(msg);
+
+    info = TP.hc(aFaultInfo);
+
+    if (TP.isError(info.at('error'))) {
+        TP.sys.logTest(info.at('error'));
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1404,7 +1479,7 @@ function(options) {
                 /* eslint-disable no-unsafe-finally */
                 //  Output summary
 
-                //  The 'after' method scheduled a Promise. Put a 'then()' on it
+                //  The 'after' method scheduled a Promise. Put a 'then' on it
                 //  that will generate the report *after* it runs and return
                 //  that.
                 if (TP.isValid(finalPromise = suite.$get('$internalPromise'))) {
@@ -1448,11 +1523,11 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('setPromiseAPIProvider',
+TP.test.Suite.Inst.defineMethod('setChainingProvider',
 function(provider) {
 
     /**
-     * @method setPromiseAPIProvider
+     * @method setChainingProvider
      * @summary Sets the 'promise provider' for the drivers that have been set
      *     up for this suite, such as GUI or TSH drivers.
      * @param {Object} provider The object that will provide Promise objects for
@@ -1461,9 +1536,6 @@ function(provider) {
      */
 
     var drivers;
-
-    //  The provider object provides a 'then()', 'thenAllowGUIRefresh()',
-    //  'thenPromise()' and 'thenWait()' API to our drivers.
 
     drivers = this.$get('drivers');
     drivers.getKeys().perform(

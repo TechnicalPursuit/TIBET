@@ -185,7 +185,7 @@ function() {
             TP.sys.logTest('You should see this - #1', TP.DEBUG);
 
             //  Then anything added to the internal promise
-            this.then(
+            this.chain(
                 function() {
                     TP.sys.logTest('You should see this - #2', TP.DEBUG);
                 });
@@ -203,7 +203,7 @@ function() {
             TP.sys.logTest('You should see this - #4', TP.DEBUG);
 
             //  Then anything added to the internal promise
-            this.then(
+            this.chain(
                 function() {
                     TP.sys.logTest('You should see this - #5', TP.DEBUG);
                 });
@@ -223,7 +223,7 @@ function() {
         TP.sys.logTest('You should see this - #7', TP.DEBUG);
 
         //  Then anything added to the internal promise
-        this.then(
+        this.chain(
             function() {
                 TP.sys.logTest('You should see this - #8', TP.DEBUG);
             });
@@ -241,7 +241,7 @@ function() {
             TP.sys.logTest('You should see this - #10', TP.DEBUG);
 
             //  Then anything added to the internal promise
-            this.then(
+            this.chain(
                 function() {
                     TP.sys.logTest('You should see this - #11', TP.DEBUG);
                 });
@@ -259,7 +259,7 @@ function() {
             TP.sys.logTest('You should see this - #13', TP.DEBUG);
 
             //  Then anything added to the internal promise
-            this.then(
+            this.chain(
                 function() {
                     TP.sys.logTest('You should see this - #14', TP.DEBUG);
                 });

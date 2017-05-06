@@ -58,7 +58,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -103,7 +103,7 @@ function() {
                         run();
 
                 //  Prove that.
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -117,7 +117,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -131,7 +131,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -145,7 +145,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -159,7 +159,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -173,7 +173,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -187,7 +187,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -210,7 +210,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -255,7 +255,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -269,7 +269,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -283,7 +283,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -297,7 +297,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -311,7 +311,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -325,7 +325,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -339,7 +339,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -362,7 +362,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -401,7 +401,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -415,7 +415,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -429,7 +429,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -443,7 +443,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -462,7 +462,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -481,7 +481,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -500,7 +500,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -514,7 +514,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -528,7 +528,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -542,7 +542,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -559,7 +559,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -576,7 +576,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -599,7 +599,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -642,7 +642,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -656,7 +656,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -671,7 +671,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -686,7 +686,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -705,7 +705,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -719,7 +719,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -738,7 +738,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -752,7 +752,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -767,7 +767,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -782,7 +782,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -799,7 +799,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -816,7 +816,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -839,7 +839,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -885,7 +885,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -901,7 +901,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -915,7 +915,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -930,7 +930,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -945,7 +945,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -965,7 +965,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -979,7 +979,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -999,7 +999,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1014,7 +1014,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1029,7 +1029,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1046,7 +1046,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1063,7 +1063,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1086,7 +1086,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -1139,7 +1139,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1151,7 +1151,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1163,7 +1163,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1175,7 +1175,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1187,7 +1187,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1199,7 +1199,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1211,7 +1211,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1228,7 +1228,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1243,7 +1243,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1258,7 +1258,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1272,7 +1272,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1287,7 +1287,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1306,7 +1306,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1325,7 +1325,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1339,7 +1339,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1356,7 +1356,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1373,7 +1373,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1388,7 +1388,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1404,7 +1404,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1427,7 +1427,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -1477,7 +1477,7 @@ function() {
                         run();
 
                 //  Prove that.
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1491,7 +1491,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1503,7 +1503,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1515,7 +1515,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1527,7 +1527,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1539,7 +1539,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1551,7 +1551,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1563,7 +1563,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1575,7 +1575,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1587,7 +1587,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1604,7 +1604,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1619,7 +1619,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1634,7 +1634,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1648,7 +1648,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1662,7 +1662,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1676,7 +1676,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1696,7 +1696,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1710,7 +1710,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1727,7 +1727,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1744,7 +1744,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1761,7 +1761,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1784,7 +1784,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -1834,7 +1834,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1846,7 +1846,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1858,7 +1858,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1870,7 +1870,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1882,7 +1882,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1894,7 +1894,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1906,7 +1906,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1918,7 +1918,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1930,7 +1930,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1942,7 +1942,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1954,7 +1954,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1971,7 +1971,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1986,7 +1986,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -2002,7 +2002,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -2016,7 +2016,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -2031,7 +2031,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -2045,7 +2045,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -2067,7 +2067,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -2086,7 +2086,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -2104,7 +2104,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -2121,7 +2121,7 @@ function() {
                         run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -2144,7 +2144,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -2342,7 +2342,7 @@ function() {
         function() {
             //  A short pause for when we're running these in a large group of
             //  tests gives the GUI a chance to update.
-            this.thenWait(500);
+            this.andWait(500);
         });
 
     this.afterEach(
@@ -2407,9 +2407,9 @@ function() {
 
         //  A short pause for when we're running these in a large group of tests
         //  gives the GUI a chance to update.
-        test.thenWait(100);
+        test.andWait(100);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -2451,7 +2451,7 @@ function() {
 
                 //  Give the browser (ok, IE) a chance to settle a bit before
                 //  continuing.
-                test.thenWait(100);
+                test.andWait(100);
 
                 //  ---
 
@@ -2459,7 +2459,7 @@ function() {
                         sendKeys('[Tab]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2508,7 +2508,7 @@ function() {
                         sendKeys('[Tab]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2569,7 +2569,7 @@ function() {
                         sendKeys('[Tab]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2635,7 +2635,7 @@ function() {
                         sendKeys('[Tab]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  We're currently on elem3, but because of the focus
                         //  stack when we leave elem3, elem4 will be briefly
@@ -2703,7 +2703,7 @@ function() {
                         sendKeys('[Shift][Tab][Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem4
@@ -2739,7 +2739,7 @@ function() {
                         sendKeys('[Shift][Tab][Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2805,7 +2805,7 @@ function() {
                         sendKeys('[Shift][Tab][Shift-Up]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  We're currently on elem3, but because of the focus
@@ -2874,7 +2874,7 @@ function() {
                         sendKeys('[Tab]').
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem1
@@ -2911,7 +2911,7 @@ function() {
                         click(elem2).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem2
@@ -2982,7 +2982,7 @@ function() {
                         click(elem3).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem3
@@ -3063,7 +3063,7 @@ function() {
                         click(elem4).
                         run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  We're currently on elem3, but because of the focus
                         //  stack when we leave elem3, elem4 will be briefly

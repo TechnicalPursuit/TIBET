@@ -1586,7 +1586,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1627,7 +1627,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1678,7 +1678,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1728,7 +1728,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1786,7 +1786,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1853,7 +1853,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1920,7 +1920,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -1965,7 +1965,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2018,7 +2018,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2071,7 +2071,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2137,7 +2137,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2212,7 +2212,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2287,7 +2287,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2333,7 +2333,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2387,7 +2387,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2441,7 +2441,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2507,7 +2507,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2582,7 +2582,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2657,7 +2657,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2702,7 +2702,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2756,7 +2756,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2809,7 +2809,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2875,7 +2875,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,
@@ -2950,7 +2950,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var modelObj,

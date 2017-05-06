@@ -76,7 +76,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     resultElem,
@@ -135,7 +135,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -178,7 +178,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -246,7 +246,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -289,7 +289,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     resultElem,
@@ -348,7 +348,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -391,7 +391,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     resultElem,
@@ -450,7 +450,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -493,7 +493,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -561,7 +561,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -604,7 +604,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -672,7 +672,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -719,7 +719,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     testBody,
@@ -781,7 +781,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -828,7 +828,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -892,7 +892,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -935,7 +935,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -1003,7 +1003,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -1046,7 +1046,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
 
@@ -1105,7 +1105,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -1154,7 +1154,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
 
@@ -1207,7 +1207,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -1255,7 +1255,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
 
@@ -1308,7 +1308,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server

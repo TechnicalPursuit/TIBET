@@ -27,9 +27,9 @@ function() {
             this.getDriver().setLocation(loadURI);
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
-            this.thenWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWaitFor(tableID, 'TP.sig.DidRender');
 
-            this.then(
+            this.chain(
                 function() {
                     this.startTrackingSignals();
                 }.bind(this));
@@ -85,7 +85,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), table).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 test.assert.hasAttribute(firsttableItem, 'pclass:focus');
@@ -114,7 +114,7 @@ function() {
             mouseDown(firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(firsttableItem, 'pclass:active');
 
@@ -128,7 +128,7 @@ function() {
             mouseUp(firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
@@ -144,7 +144,7 @@ function() {
             click(firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Don't test the attribute here - it will already have been
@@ -177,7 +177,7 @@ function() {
             keyDown(firsttableItem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(firsttableItem, 'pclass:active');
 
@@ -191,7 +191,7 @@ function() {
             keyUp(firsttableItem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
@@ -226,7 +226,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:focus');
 
@@ -242,7 +242,7 @@ function() {
             mouseDown(firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
@@ -254,7 +254,7 @@ function() {
             mouseUp(firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
@@ -268,7 +268,7 @@ function() {
             click(firsttableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
@@ -285,7 +285,7 @@ function() {
             keyDown(firsttableItem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
@@ -299,7 +299,7 @@ function() {
             keyUp(firsttableItem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
@@ -339,7 +339,7 @@ function() {
             this.getDriver().setLocation(loadURI);
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
-            this.thenWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -770,7 +770,7 @@ function() {
             this.getDriver().setLocation(loadURI);
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
-            this.thenWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -991,7 +991,7 @@ function() {
             driver.setLocation(loadURI);
 
             tableID = TP.computeOriginID(windowContext, loc, 'table8');
-            this.thenWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -1048,7 +1048,7 @@ function() {
             click(tableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
@@ -1092,7 +1092,7 @@ function() {
             driver.setLocation(loadURI);
 
             tableID = TP.computeOriginID(windowContext, loc, 'table9');
-            this.thenWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -1154,7 +1154,7 @@ function() {
             click(secondtableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
@@ -1178,7 +1178,7 @@ function() {
             click(thirdtableItem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),

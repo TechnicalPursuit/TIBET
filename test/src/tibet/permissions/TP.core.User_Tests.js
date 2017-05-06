@@ -26,7 +26,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var loadPromise;
 

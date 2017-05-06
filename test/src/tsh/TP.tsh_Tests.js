@@ -5682,7 +5682,7 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
 
         //  'this' refers to the suite here.
-        suite.then(
+        suite.chain(
             function() {
                 var now,
 
@@ -5870,7 +5870,7 @@ function() {
                     TP.sc('Expected a result with an \'ok\' property'));
             });
 
-        test.then(
+        test.chain(
             function() {
                 shellDriver.execShellTest(
                     test,
@@ -5945,7 +5945,7 @@ function() {
                 saveID = obj.at('id');
             });
 
-        test.then(
+        test.chain(
             function() {
                 shellDriver.execShellTest(
                     test,
@@ -6053,7 +6053,7 @@ function() {
     this.after(function(suite, options) {
 
         //  'this' refers to the suite here.
-        suite.then(
+        suite.chain(
             function() {
                 var pouchPromise,
                     promise;

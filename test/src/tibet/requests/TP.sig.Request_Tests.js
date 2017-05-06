@@ -48,7 +48,7 @@ function() {
                     testResult = 'The message is: ' + aResult;
                 });
 
-        test.then(
+        test.chain(
                 function(result) {
                     test.assert.isEqualTo(
                             testResult,

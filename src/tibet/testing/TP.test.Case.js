@@ -855,9 +855,8 @@ function(options) {
                     logAppender.$set('currentTestCase', testcase);
                 }
 
-                //  The test case provide a 'then()', 'thenAllowGUIRefresh()',
-                //  'thenPromise()' and 'thenWait()' API to the suite's drivers.
-                testcase.getSuite().setPromiseAPIProvider(testcase);
+                //  configure the chain api provider.
+                testcase.getSuite().setChainingProvider(testcase);
 
                 //  We set this each time a test case is executed in case a
                 //  prior test case set it to something else.
@@ -977,7 +976,7 @@ function(options) {
                         //  There was an internal Promise.
 
                         //  Now, if the test method itself returned a Promise,
-                        //  then we should return that in a 'then()' on our
+                        //  then we should return that in a 'then' on our
                         //  internal promise.
                         //  Based on the evaluation of that, the testcase will
                         //  have been considered to have passed or failed.
@@ -1032,7 +1031,7 @@ function(options) {
 
                         } else {
                             //  The test method didn't return a Promise - just
-                            //  'then()' onto our internal promise to either
+                            //  'then' onto our internal promise to either
                             //  pass or fail the testcase.
                             internalPromise.then(
                                 function(obj) {

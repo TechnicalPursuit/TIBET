@@ -63,7 +63,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 var focusedElem;
@@ -94,7 +94,7 @@ function() {
             mouseDown(textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(textitem, 'pclass:active');
 
@@ -108,7 +108,7 @@ function() {
             mouseUp(textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(textitem, 'pclass:active');
 
@@ -124,7 +124,7 @@ function() {
             click(textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Don't test the attribute here - it will already have been
@@ -154,7 +154,7 @@ function() {
             keyDown(textitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(textitem, 'pclass:active');
 
@@ -168,7 +168,7 @@ function() {
             keyUp(textitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(textitem, 'pclass:active');
 
@@ -196,7 +196,7 @@ function() {
             sendEvent(TP.hc('type', 'focus'), textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(textitem, 'pclass:focus');
 
@@ -212,7 +212,7 @@ function() {
             mouseDown(textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(textitem, 'pclass:active');
 
@@ -224,7 +224,7 @@ function() {
             mouseUp(textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(textitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(textitem, 'TP.sig.UIDidDeactivate');
@@ -238,7 +238,7 @@ function() {
             click(textitem).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(textitem, 'TP.sig.UIActivate');
                 test.refute.didSignal(textitem, 'TP.sig.UIDidActivate');
@@ -255,7 +255,7 @@ function() {
             keyDown(textitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(textitem, 'pclass:active');
 
@@ -269,7 +269,7 @@ function() {
             keyUp(textitem, 'Enter').
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(textitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(textitem, 'TP.sig.UIDidDeactivate');
@@ -1092,7 +1092,7 @@ function() {
             click(datatextitem7).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
@@ -1187,7 +1187,7 @@ function() {
             click(datatextitem11).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
@@ -1204,7 +1204,7 @@ function() {
             click(datatextitem12).
             run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
