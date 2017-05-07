@@ -4665,7 +4665,7 @@ function(aSignal, handlerFlags) {
                     //  TODO: handler exception
                     //  TODO: Add a callback check at the handler/owner level?
                     TP.error('HandlerException: ' + e.message + ' in: ' +
-                        TP.name(handler));
+                        TP.id(TP.owner(handler)) + ':' + TP.name(handler));
                 } finally {
                     //  set up so we won't tell it again unless it resets
                     aSignal.trackHandler(handler, controller);
@@ -6505,7 +6505,7 @@ function(originSet, aSignal, aPayload, aType) {
             //  TODO: handler exception
             //  TODO: Add a callback check at the handler/owner level?
             TP.error('HandlerException: ' + e.message + ' in: ' +
-                TP.name(handler));
+                TP.id(TP.owner(handler)) + ':' + TP.name(handler));
         }
     }
 
