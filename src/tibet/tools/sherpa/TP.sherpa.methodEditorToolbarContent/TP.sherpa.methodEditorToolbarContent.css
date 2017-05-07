@@ -23,8 +23,6 @@ sherpa|methodEditorToolbarContent > button {
 }
 
 sherpa|methodEditorToolbarContent > button[action="revert"] {
-
-    margin-right: auto;
 }
 
 sherpa|methodEditorToolbarContent > .detach_mark {

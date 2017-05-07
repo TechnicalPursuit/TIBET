@@ -24,8 +24,6 @@ sherpa|uriEditorToolbarContent > button {
 }
 
 sherpa|uriEditorToolbarContent > button[action="revert"] {
-
-    margin-right: auto;
 }
 
 sherpa|uriEditorToolbarContent > .detach_mark {
