@@ -1277,7 +1277,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[0])) {
+                    if (TP.regex.SPACING.test(data[0])) {
                         return '';
                     }
 
