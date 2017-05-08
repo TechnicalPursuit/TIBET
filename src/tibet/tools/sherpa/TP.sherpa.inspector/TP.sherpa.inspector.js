@@ -2250,6 +2250,36 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineHandler('UIDeselect',
+function(aSignal) {
+
+    /**
+     * @method handleUIDeselect
+     * @summary Handles notifications of when the user has cleared a selection.
+     * @param {TP.sig.UIDeselect} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var domTarget,
+        targetBay;
+
+    //  Grab the 'value' from the current DOM target.
+    domTarget = aSignal.getTarget();
+
+    targetBay = TP.nodeGetFirstAncestorByTagName(
+                            domTarget, 'sherpa:inspectoritem');
+
+    targetBay = TP.wrap(targetBay);
+
+    //  Remove any bays after (i.e. to the right of) the target bay.
+    this.removeBaysAfter(targetBay);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('UISelect',
 function(aSignal) {
 
