@@ -2069,6 +2069,38 @@ TP.definePrimitive('name', TP.objectName);
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectOwner',
+function(anObject) {
+
+    if (TP.isValid(anObject)) {
+        return anObject[TP.OWNER];
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('owner', TP.objectOwner);
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectTrack',
+function(anObject) {
+
+    if (TP.isValid(anObject)) {
+        return anObject[TP.TRACK];
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('track', TP.objectTrack);
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elemGenID',
 function(anElement, assignIfAbsent) {
 
