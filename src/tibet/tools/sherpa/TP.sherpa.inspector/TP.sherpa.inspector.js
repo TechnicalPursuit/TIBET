@@ -2883,23 +2883,11 @@ function() {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var rootSources,
-
-        isSetup;
+    var rootSources;
 
     //  ---
     //  Set up static roots
     //  ---
-
-    /*
-    this.addEntry(
-        TP.ac('TIBET'),
-        TP.sherpa.TIBETRootInspectorSource.construct());
-
-    this.addEntry(
-        TP.ac('Remote Data Sources'),
-        TP.sherpa.TIBETRemoteDataSourcesInspectorSource.construct());
-    */
 
     rootSources = TP.sys.getcfg('sherpa.inspector_root_sources');
     if (TP.isArray(rootSources)) {
@@ -2930,16 +2918,11 @@ function() {
     //  Dynamic root entries
     this.set('dynamicContentEntries', TP.ac());
 
-    //  Initialize other inspector instance variables.
-
+    //  Selected items
     this.set('selectedItems', TP.ac());
 
-    isSetup = false;
-
-    if (!isSetup) {
-        this.focusUsingInfo(TP.hc('targetObject', this));
-        isSetup = true;
-    }
+    //  Go ahead and 'focus' the inspector, which will show the roots.
+    this.focusUsingInfo(TP.hc('targetObject', this));
 
     //  Listen for when our document resizes. Note that we actually filter out
     //  other resize events coming from elements under the document. See the
