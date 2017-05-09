@@ -232,8 +232,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.notifier.TP.sherpa.notifier.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.consoleoutput.TP.sherpa.consoleoutput.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.consoleoutput.TP.sherpa.consoleoutput.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.contextmenu.TP.sherpa.contextmenu.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.contextmenu.TP.sherpa.contextmenu.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.halocontextmenu.TP.sherpa.halocontextmenu.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.halocontextmenu.TP.sherpa.halocontextmenu.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.respondershud.TP.sherpa.respondershud.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.respondershud.TP.sherpa.respondershud.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.inspector.TP.sherpa.inspector.xhtml.js"/>
