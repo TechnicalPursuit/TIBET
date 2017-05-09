@@ -259,51 +259,29 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.popup.Inst.defineMethod('positionRelativeTo',
-function(aTPElement, aCorner) {
+TP.xctrls.popup.Inst.defineMethod('positionUsing',
+function(aPopupPoint) {
 
     /**
-     * @method positionRelativeTo
-     * @summary Positions the popup relative to the supplied
-     *     TP.core.UIElementNode.
-     * @param {TP.core.UIElement} aTPElement The element to position the popup
-     *     relative to.
-     * @param {Number} aCorner A Number matching the compass corner constant to
-     *     position the popup relative to:
-     *
-     *     TP.NORTH
-     *     TP.NORTHEAST
-     *     TP.EAST
-     *     TP.SOUTHEAST
-     *     TP.SOUTH
-     *     TP.SOUTHWEST
-     *     TP.WEST
-     *     TP.NORTHWEST
-     *
+     * @method positionUsing
+     * @summary Positions the popup using the supplied point.
+     * @param {TP.core.Point} aPopupPoint The point to use to position the
+     *     popup. NOTE: This point should be in *global* coordinates.
      * @returns {TP.xctrls.popup} The receiver.
      */
 
-    var triggerRect,
-
-        popupPoint,
+    var popupPoint,
         popupRect,
 
         bodyRect;
-
-    //  Grab the global rect from the supplied element.
-    triggerRect = aTPElement.getGlobalRect();
-
-    //  The point that the popup should appear at is the 'edge point' for that
-    //  compass edge of the trigger rectangle
-    popupPoint = triggerRect.getEdgePoint(aCorner);
 
     //  Compute a popup rectangle, supplying it the popup point and the popup's
     //  width and height. This is important to do the calculation below where we
     //  try to 'fit' the rectangle within the body (so that it doesn't clip
     //  against a window boundary or something).
     popupRect = TP.rtc(
-                    popupPoint.getX(),
-                    popupPoint.getY(),
+                    aPopupPoint.getX(),
+                    aPopupPoint.getY(),
                     this.getWidth(),
                     this.getHeight());
 
@@ -428,7 +406,10 @@ function(triggerTPElem, openSignal, popupContent) {
 
         firstContentChildTPElem,
 
-        popupCorner;
+        popupCorner,
+
+        triggerRect,
+        popupPoint;
 
     lastTriggerID = this.get('$lastTriggerID');
 
@@ -448,16 +429,32 @@ function(triggerTPElem, openSignal, popupContent) {
             //  data has changed, the content will re-render.
             firstContentChildTPElem.refresh();
 
-            //  Compute the corner if its not supplied in the trigger signal.
-            popupCorner = openSignal.at('corner');
-            if (TP.isEmpty(popupCorner)) {
-                popupCorner = TP.SOUTHEAST;
+            //  First, see if the open signal provided a popup point.
+            popupPoint = openSignal.at('triggerPoint');
+
+            //  If no popup point was given, compute one from the triggering
+            //  element.
+            if (TP.notValid(popupPoint)) {
+
+                //  Grab the global rect from the supplied element.
+                triggerRect = triggerTPElem.getGlobalRect();
+
+                //  Compute the corner if its not supplied in the trigger
+                //  signal.
+                popupCorner = openSignal.at('corner');
+                if (TP.isEmpty(popupCorner)) {
+                    popupCorner = TP.SOUTHEAST;
+                }
+
+                //  The point that the popup should appear at is the 'edge
+                //  point' for that compass edge of the trigger rectangle.
+                popupPoint = triggerRect.getEdgePoint(popupCorner);
             }
 
-            //  Position the popup relative to the trigger element and the corner.
-            this.positionRelativeTo(triggerTPElem, popupCorner);
+            //  Position the popup relative to the popup point and the corner.
+            this.positionUsing(popupPoint);
 
-            //  Show the popup and set up signal handlers
+            //  Show the popup and set up signal handlers.
             this.setAttribute('hidden', false);
 
             return this;
@@ -585,16 +582,30 @@ function(triggerTPElem, openSignal, popupContent) {
     //  into our 'content' div.
     this.setContent(content);
 
-    //  Compute the corner if its not supplied in the trigger signal.
-    popupCorner = openSignal.at('corner');
-    if (TP.isEmpty(popupCorner)) {
-        popupCorner = TP.SOUTHEAST;
+    //  First, see if the open signal provided a popup point.
+    popupPoint = openSignal.at('triggerPoint');
+
+    //  If no popup point was given, compute one from the triggering element.
+    if (TP.notValid(popupPoint)) {
+
+        //  Compute the corner if its not supplied in the trigger signal.
+        popupCorner = openSignal.at('corner');
+        if (TP.isEmpty(popupCorner)) {
+            popupCorner = TP.SOUTHEAST;
+        }
+
+        //  Grab the global rect from the supplied element.
+        triggerRect = triggerTPElem.getGlobalRect();
+
+        //  The point that the popup should appear at is the 'edge point' for
+        //  that compass edge of the trigger rectangle.
+        popupPoint = triggerRect.getEdgePoint(popupCorner);
     }
 
-    //  Position the popup relative to the trigger element and the corner.
-    this.positionRelativeTo(triggerTPElem, popupCorner);
+    //  Position the popup relative to the popup point and the corner.
+    this.positionUsing(popupPoint);
 
-    //  Show the popup and set up signal handlers
+    //  Show the popup and set up signal handlers.
     this.setAttribute('hidden', false);
 
     return this;
