@@ -531,7 +531,9 @@ function(triggerTPElem, openSignal, popupContent) {
         //  Normalize whitespace
         TP.nodeNormalize(contentElem);
 
-        if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
+        if (TP.isTrue(openSignal.at('useTopLevelContentElem'))) {
+            content = contentElem;
+        } else if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
             //  Grab all of the content element's child nodes as a
             //  DocumentFragment.
             content = TP.nodeListAsFragment(contentElem.childNodes);
