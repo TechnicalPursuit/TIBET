@@ -663,7 +663,8 @@ function(openSignal, popupContent) {
 
     //  That will be the real element generated from the content that got placed
     //  into our 'content' div.
-    this.setContent(content);
+    tpContent = this.setContent(content);
+    tpContent.removeAttribute('id');
 
     //  First, see if the open signal provided a popup point.
     popupPoint = openSignal.at('triggerPoint');
@@ -692,6 +693,9 @@ function(openSignal, popupContent) {
 
     //  Position the popup relative to the popup point and the corner.
     this.positionUsing(popupPoint);
+
+    //  Show the popup content
+    tpContent.setAttribute('hidden', false);
 
     //  Show the popup and set up signal handlers.
     this.setAttribute('hidden', false);
