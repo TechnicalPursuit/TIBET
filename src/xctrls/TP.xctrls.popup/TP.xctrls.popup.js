@@ -18,6 +18,12 @@
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:popup');
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.xctrls.popup.Type.defineConstant('POPUP_OFFSET', 8);
+
+//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -280,23 +286,31 @@ function(aPopupPoint) {
      * @returns {TP.xctrls.popup} The receiver.
      */
 
-    var popupPoint,
+    var offset,
+
+        popupPoint,
         popupRect,
 
         bodyRect;
+
+    offset = this.getType().POPUP_OFFSET;
 
     //  Compute a popup rectangle, supplying it the popup point and the popup's
     //  width and height. This is important to do the calculation below where we
     //  try to 'fit' the rectangle within the body (so that it doesn't clip
     //  against a window boundary or something).
+
+    //  Note here that we have to double the margin to account for the original
+    //  margin as defined in the initial CSS.
     popupRect = TP.rtc(
-                    aPopupPoint.getX(),
-                    aPopupPoint.getY(),
-                    this.getWidth(),
-                    this.getHeight());
+                    aPopupPoint.getX().max(offset),
+                    aPopupPoint.getY().max(offset),
+                    this.getWidth() + offset,
+                    this.getHeight() + offset);
 
     //  Grab the body's rectangle and constrain the popup rectangle against it.
     bodyRect = this.getDocument().getBody().getGlobalRect();
+
     bodyRect.constrainRect(popupRect);
 
     //  Now, get the 'northwest' coordinate of the popup rectangle. This will
