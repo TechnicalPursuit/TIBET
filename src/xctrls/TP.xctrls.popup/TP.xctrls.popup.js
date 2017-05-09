@@ -126,7 +126,16 @@ function(aSignal) {
     //  Grab the trigger signal from the OpenPopup signal. This will be the GUI
     //  signal that triggered the OpenPopup.
     triggerSignal = aSignal.at('trigger');
-    tpDoc = triggerSignal.getDocument();
+
+    tpDoc = aSignal.at('triggerDocument');
+    if (TP.notValid(tpDoc)) {
+        tpDoc = triggerSignal.getDocument();
+    }
+
+    if (TP.notValid(tpDoc)) {
+        //  TODO: Raise an exception
+        return this;
+    }
 
     //  Grab the popup with the popupID. This will default to 'systemPopup'.
     popupID = aSignal.at('popupID');
