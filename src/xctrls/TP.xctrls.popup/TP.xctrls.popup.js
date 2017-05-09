@@ -156,7 +156,6 @@ function(aSignal) {
     //  See if the OpenPopup signal contains a class that we should put on the
     //  popup element itself.
     popupCSSClass = aSignal.at('popupCSSClass');
-
     if (TP.notEmpty(popupCSSClass)) {
         popupTPElem.addClass(popupCSSClass);
     }
@@ -166,17 +165,24 @@ function(aSignal) {
     triggerID = aSignal.at('triggerID');
     if (TP.notEmpty(triggerID)) {
         triggerTPElem = TP.byId(triggerID, tpDoc);
+        popupTPElem.set('$currentTriggerID', triggerID);
     } else if (TP.isValid(triggerSignal.at('target'))) {
         //  if there's a target on the trigger signal, use that
         triggerTPElem = TP.wrap(triggerSignal.at('target'));
+        popupTPElem.set('$currentTriggerID', triggerTPElem.getID());
     } else {
         //  let it default to the trigger signal's origin
         triggerTPElem = TP.bySystemId(triggerSignal.getOrigin());
+        popupTPElem.set('$currentTriggerID', triggerTPElem.getID());
     }
 
-    if (TP.notValid(triggerTPElem)) {
+    //  NB: At this point, there might not be a triggerTPElem. That's ok, but in
+    //  that case, we need to make sure that a trigger point has been supplied.
+    if (TP.notValid(triggerTPElem) && TP.isEmpty(aSignal.at('triggerPoint'))) {
         //  TODO: Raise an exception
         return this;
+    } else {
+        popupTPElem.set('$triggerTPElement', triggerTPElem);
     }
 
     //  If there's a signal name for when to hide the popup, set up a handler
@@ -204,7 +210,7 @@ function(aSignal) {
     }
 
     //  Set the content of the popup and activate it.
-    popupTPElem.setContentAndActivate(triggerTPElem, aSignal);
+    popupTPElem.setContentAndActivate(aSignal);
 
     return this;
 }, {
@@ -218,10 +224,15 @@ function(aSignal) {
 //  The ID of the last trigger that triggered the popup
 TP.xctrls.popup.Type.defineAttribute('$lastTriggerID');
 
+//  The ID of the current trigger that is trying to trigger the popup
+TP.xctrls.popup.Inst.defineAttribute('$currentTriggerID');
+
+//  The last TP.core.Element that triggered the popup
+TP.xctrls.popup.Inst.defineAttribute('$triggerTPElement');
+
 TP.xctrls.popup.Inst.defineAttribute('$$closeOnSignalName');
 
 TP.xctrls.popup.Inst.defineAttribute('$$lastOpenSignal');
-TP.xctrls.popup.Inst.defineAttribute('$$triggerTPElement');
 
 TP.xctrls.popup.Inst.defineAttribute('popupContent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
@@ -260,14 +271,20 @@ function(aSignal) {
 
     targetElem = aSignal.getTarget();
 
-    triggerTPElem = this.get('$$triggerTPElement');
+    triggerTPElem = this.get('$triggerTPElement');
 
-    //  If the user clicked outside of the popup - deactivate it.
-    if (!this.contains(targetElem) &&
-        TP.unwrap(triggerTPElem) !== targetElem &&
-        !triggerTPElem.contains(targetElem)) {
+    if (TP.notValid(triggerTPElem)) {
+        if (!this.contains(targetElem)) {
+            this.setAttribute('hidden', true);
+        }
+    } else {
+        //  If the user clicked outside of the popup - deactivate it.
+        if (!this.contains(targetElem) &&
+            TP.unwrap(triggerTPElem) !== targetElem &&
+            !triggerTPElem.contains(targetElem)) {
 
-        this.setAttribute('hidden', true);
+            this.setAttribute('hidden', true);
+        }
     }
 
     return;
@@ -341,6 +358,7 @@ function(beHidden) {
         handlerName;
 
     if (beHidden) {
+
         //  Blur any focused element that is enclosed within us.
         this.blurFocusedDescendantElement();
 
@@ -400,7 +418,7 @@ function(aContentObject, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.popup.Inst.defineMethod('setContentAndActivate',
-function(triggerTPElem, openSignal, popupContent) {
+function(openSignal, popupContent) {
 
     /**
      * @method setContentAndActivate
@@ -409,8 +427,6 @@ function(triggerTPElem, openSignal, popupContent) {
      *     not supplied, then the supplied trigger signal will be queried for
      *     contentID (the ID of an inlined content element) or contentURI (a URI
      *     pointing to some content).
-     * @param {TP.core.UIElementNode} triggerTPElem The element that the user
-     *     interacted with to cause the triggering of this popup.
      * @param {TP.sig.OpenPopup} openSignal The signal that was thrown to cause
      *     this popup to show.
      * @param {String|Element|DocumentFragment} [popupContent] The optional
@@ -420,6 +436,9 @@ function(triggerTPElem, openSignal, popupContent) {
      */
 
     var lastTriggerID,
+        currentTriggerID,
+
+        extractElementFromResult,
 
         contentURI,
         contentID,
@@ -427,21 +446,30 @@ function(triggerTPElem, openSignal, popupContent) {
         contentElem,
 
         content,
+        finalContent,
+
+        triggerID,
 
         firstContentChildTPElem,
 
         popupCorner,
 
         triggerRect,
-        popupPoint;
+        popupPoint,
+        triggerTPElem,
 
-    lastTriggerID = this.get('$lastTriggerID');
+        tpContent;
+
+    lastTriggerID = this.getType().get('$lastTriggerID');
+    currentTriggerID = this.get('$currentTriggerID');
+
+    triggerTPElem = this.get('$triggerTPElement');
 
     //  If there is a real last content local ID and it equals the local ID of
     //  the content we're trying to set, then we don't need to set the content
     //  at all - just refresh it, position ourself (again, in case the trigger
     //  moved since the last time we showed it) and show ourself..
-    if (TP.notEmpty(lastTriggerID) && triggerTPElem.getID() === lastTriggerID) {
+    if (currentTriggerID === lastTriggerID) {
 
         //  We can only refresh it if it has real child content.
         firstContentChildTPElem =
@@ -459,6 +487,11 @@ function(triggerTPElem, openSignal, popupContent) {
             //  If no popup point was given, compute one from the triggering
             //  element.
             if (TP.notValid(popupPoint)) {
+
+                if (TP.notValid(triggerTPElem)) {
+                    //  TODO: Raise an exception
+                    return this;
+                }
 
                 //  Grab the global rect from the supplied element.
                 triggerRect = triggerTPElem.getGlobalRect();
@@ -485,14 +518,12 @@ function(triggerTPElem, openSignal, popupContent) {
         }
     }
 
-    //  Capture the trigger element and the last open signal here.
-    this.set('$$triggerTPElement', triggerTPElem);
-    this.set('$$lastOpenSignal', openSignal);
-
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will use the trigger and
     //  last open signal cached above to call this method again.
     if (!this.isReadyToRender()) {
+
+        this.set('$$lastOpenSignal', openSignal);
         return this;
     }
 
@@ -512,33 +543,47 @@ function(triggerTPElem, openSignal, popupContent) {
 
         contentURI = TP.uc(contentURI);
 
+        extractElementFromResult = function(result) {
+
+            var elem;
+
+            //  If the URI pointed to a type and that type is a subtype
+            //  of TP.core.ElementNode, then create an Element using the
+            //  canonical name
+            if (TP.isType(result) &&
+                TP.isSubtypeOf(result, TP.core.ElementNode)) {
+                elem = TP.elem('<' + result.getCanonicalName() + '/>');
+            } else {
+                elem = TP.elem(result.get('data'));
+            }
+
+            return elem;
+        };
+
         //  If we could create a real URI from the supplied URI, then fetch the
         //  content and recursively call this method with that content.
         if (TP.notEmpty(contentURI) && TP.isURI(contentURI)) {
-            contentURI.getResource().then(
-                function(result) {
 
-                    var elem;
+            if (contentURI.get('mode') === TP.core.SyncAsync.ASYNCHRONOUS) {
+                contentURI.getResource().then(
+                    function(result) {
 
-                    //  If the URI pointed to a type and that type is a subtype
-                    //  of TP.core.ElementNode, then create an Element using the
-                    //  canonical name
-                    if (TP.isType(result) &&
-                        TP.isSubtypeOf(result, TP.core.ElementNode)) {
-                        elem = TP.elem('<' + result.getCanonicalName() + '/>');
-                    } else {
-                        elem = TP.elem(result.get('data'));
-                    }
+                        var elem;
 
-                    //  Note the recursive call to this method, but this time
-                    //  with String content.
-                    this.setContentAndActivate(
-                            triggerTPElem, openSignal, elem);
+                        elem = extractElementFromResult(result);
 
-                }.bind(this));
+                        //  Note the recursive call to this method, but this time
+                        //  with content.
+                        this.setContentAndActivate(openSignal, elem);
 
-            //  Return here - we have the recursive call above.
-            return this;
+                    }.bind(this));
+
+                //  Return here - we have the recursive call above.
+                return this;
+            } else {
+                finalContent = extractElementFromResult(
+                                contentURI.getResource().get('result'));
+            }
         }
     } else if (TP.isString(contentID)) {
 
@@ -571,36 +616,50 @@ function(triggerTPElem, openSignal, popupContent) {
 
         //  Note the recursive call to this method, but this time with
         //  DocumentFragment content.
-        this.setContentAndActivate(triggerTPElem, openSignal, content);
+        this.setContentAndActivate(openSignal, content);
 
         //  Return here - we have the recursive call above.
         return this;
     }
 
-    if (TP.notValid(popupContent)) {
-        //  TODO: Raise an exception
-        return this;
+    if (TP.notValid(finalContent)) {
+        if (TP.notValid(popupContent)) {
+            //  TODO: Raise an exception
+            return this;
+        }
+
+        finalContent = popupContent;
     }
 
-    if (TP.isString(popupContent)) {
-        content = TP.elem(popupContent.unquoted());
-    } else if (TP.isElement(popupContent)) {
-        content = TP.nodeCloneNode(popupContent);
+    if (TP.isString(finalContent)) {
+        content = TP.elem(finalContent.unquoted());
+    } else if (TP.isElement(finalContent)) {
+        content = TP.nodeCloneNode(finalContent);
         TP.elementRemoveAttribute(content, 'tibet:noawaken', true);
-        TP.elementRemoveAttribute(content, 'pclass:hidden', true);
-    } else if (TP.isFragment(popupContent)) {
+    } else if (TP.isFragment(finalContent)) {
         content = TP.documentConstructElement(
                     this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
-        TP.nodeAppendChild(content, popupContent, false);
+        TP.nodeAppendChild(content, finalContent, false);
     } else {
         //  TODO: Raise an exception
         return this;
     }
 
-    //  Capture the trigger's ID in case that same trigger uses this popup
-    //  before another trigger uses it - then we just refresh. See the logic
-    //  above.
-    this.set('$lastTriggerID', triggerTPElem.getID());
+    //  Grab the triggerID - it might have been supplied in the signal or it
+    //  might need to be computed from the trigger element.
+    triggerID = openSignal.at('triggerID');
+    if (TP.isEmpty(triggerID)) {
+        if (TP.isValid(triggerTPElem)) {
+            triggerID = triggerTPElem.getID();
+        } else {
+            //  TODO: Raise an exception
+            return this;
+        }
+    }
+
+    //  Capture the trigger ID in case that same trigger uses this popup before
+    //  another trigger uses it - then we just refresh. See the logic above.
+    this.getType().set('$lastTriggerID', triggerID);
 
     //  That will be the real element generated from the content that got placed
     //  into our 'content' div.
@@ -616,6 +675,11 @@ function(triggerTPElem, openSignal, popupContent) {
         popupCorner = openSignal.at('corner');
         if (TP.isEmpty(popupCorner)) {
             popupCorner = TP.SOUTHEAST;
+        }
+
+        if (TP.notValid(triggerTPElem)) {
+            //  TODO: Raise an exception
+            return this;
         }
 
         //  Grab the global rect from the supplied element.
@@ -662,8 +726,9 @@ function(aStyleTPElem) {
     }
 
     //  Set the content of the popup and activate it.
-    this.setContentAndActivate(
-        this.get('$$triggerTPElement'), this.get('$$lastOpenSignal'));
+    this.setContentAndActivate(this.get('$$lastOpenSignal'));
+
+    this.set('$$lastOpenSignal', null);
 
     return this;
 });
