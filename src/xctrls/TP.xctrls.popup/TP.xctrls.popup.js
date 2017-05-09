@@ -118,6 +118,8 @@ function(aSignal) {
 
         popupTPElem,
 
+        popupCSSClass,
+
         triggerID,
         triggerTPElem,
 
@@ -144,6 +146,14 @@ function(aSignal) {
     }
 
     popupTPElem = this.getPopupWithID(tpDoc, popupID);
+
+    //  See if the OpenPopup signal contains a class that we should put on the
+    //  popup element itself.
+    popupCSSClass = aSignal.at('popupCSSClass');
+
+    if (TP.notEmpty(popupCSSClass)) {
+        popupTPElem.addClass(popupCSSClass);
+    }
 
     //  If there's a 'triggerID' in the signal data, then we use that as the
     //  trigger.
