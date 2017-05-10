@@ -1075,7 +1075,8 @@ function(aspectPathParts) {
     //  Fire the signal for the Inspector to pick up to shift its focus.
     this.signal('InspectObject',
                     TP.hc('targetObject', newTargetTPElem,
-                            'targetPath', pathParts.join(TP.PATH_SEP)));
+                            'targetPath', pathParts.join(TP.PATH_SEP),
+                            'showBusy', true));
 
     return TP.TSH_NO_VALUE;
 });
