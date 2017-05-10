@@ -3895,8 +3895,10 @@ function(shouldRender) {
 
         willRender;
 
-    //  If this isn't a bound element, then just return
+    //  If this isn't a bound element, then just call render() and return
     if (!this.isBoundElement()) {
+        this.render();
+
         return this;
     }
 
