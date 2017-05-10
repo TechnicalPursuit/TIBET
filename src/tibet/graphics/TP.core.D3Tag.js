@@ -468,9 +468,7 @@ function() {
     //  Commonly, subtypes of this type will be bound objects, so change
     //  notification will be on by default.
 
-    this.set('containerSelection',
-                TP.extern.d3.select(this.get('selectionContainer')),
-                false);
+    this.set('containerSelection', this.makeContainerSelection(), false);
 
     return this;
 });
@@ -699,6 +697,20 @@ function() {
     this.set('$hasTemplate', hasTemplate, false);
 
     return hasTemplate;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('makeContainerSelection',
+function() {
+
+    /**
+     * @method makeContainerSelection
+     * @summary Manufactures a d3.js selection around our container.
+     * @returns {TP.extern.d3.selection} The d3.js selection that was created.
+     */
+
+    return TP.extern.d3.select(this.get('selectionContainer'));
 });
 
 //  ------------------------------------------------------------------------
