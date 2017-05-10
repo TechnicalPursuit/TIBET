@@ -9,7 +9,7 @@ sherpa|sync {
     width: 24px;
 
     background-size: 24px;
-    background-position: center;
+    background-position: center 3px;
     background-repeat: no-repeat;
     background-image: url("~ide_root/media/ic_sync_black_24px.svg");
 

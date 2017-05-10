@@ -1,6 +1,7 @@
 @namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 sherpa|changes {
 
@@ -71,35 +72,23 @@ sherpa|changes > .content {
     background-color: #eee;
 
     border-top: 1px solid #aaa;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-sherpa|changes > .content > div {
-    font-size: 500%;
-    opacity: 0.1;
+sherpa|changes > .content > span {
+    line-height: 2em;
+    margin: 0;
+    padding: 0;
 }
 
-sherpa|changes > .content > .app {
-
+sherpa|changes > .content > xctrls|list {
     position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 50%;
-}
-
-sherpa|changes > .content > .lib {
-
-    position: absolute;
-
-    top: 50%;
-    left: 0;
+    top: 2em;
     right: 0;
     bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    margin: 0 40px 4px 40px;
 }
 
 sherpa|changes > .header > .trigger.button {
