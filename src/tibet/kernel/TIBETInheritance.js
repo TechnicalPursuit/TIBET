@@ -1839,6 +1839,9 @@ function(aSignal, flags) {
 
         expression += '(' + signalNames.join('|') + ')';
     } else {
+
+        signalNames = TP.contractSignalName(signalNames);
+
         expression += '(' + signalNames + ')';
     }
 
