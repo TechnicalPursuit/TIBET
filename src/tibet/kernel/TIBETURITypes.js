@@ -3633,7 +3633,10 @@ function(aResource, aRequest, shouldFlagDirty) {
     newResource = TP.wrap(aResource);
 
     oldResource = this.$get('resource');
-    if (oldResource === newResource) {
+
+    //  NB: We use TP.equal here since we need a 'deep equality' check on the
+    //  resource.
+    if (TP.equal(oldResource, newResource)) {
         return;
     }
 
@@ -5734,7 +5737,10 @@ function(aRequest) {
 
     //  In cases of refresh we'll often be called with the data we already have
     //  as the result.
-    if (resource === result) {
+
+    //  NB: We use TP.equal here since we need a 'deep equality' check on the
+    //  resource.
+    if (TP.equal(resource, result)) {
         return this.$getFilteredResult(resource, aRequest.at('resultType'));
     }
 
