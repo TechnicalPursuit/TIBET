@@ -1827,7 +1827,7 @@ function(aSignal, flags) {
         }
     }
 
-    if (Array.isArray(signalNames)) {
+    if (TP.isArray(signalNames)) {
         signalNames = signalNames.map(
                         function(name) {
                             return TP.contractSignalName(name);
@@ -1839,6 +1839,9 @@ function(aSignal, flags) {
 
         expression += '(' + signalNames.join('|') + ')';
     } else {
+
+        signalNames = TP.contractSignalName(signalNames);
+
         expression += '(' + signalNames + ')';
     }
 

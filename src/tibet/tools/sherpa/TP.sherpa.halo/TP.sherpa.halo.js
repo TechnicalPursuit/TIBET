@@ -705,9 +705,7 @@ function(aSignal) {
      */
 
     var signalGlobalPoint,
-        haloGlobalRect,
-
-        contextMenuTPElem;
+        haloGlobalRect;
 
     //  If the Shift key is down, then change our focus based on a variety of
     //  key combinations and mouse button states.
@@ -739,12 +737,17 @@ function(aSignal) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
-            contextMenuTPElem = TP.byId('SherpaContextMenu',
-                                        TP.win('UIROOT'));
-
-            contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
-
-            contextMenuTPElem.activate();
+            this.signal(
+                'OpenPopup',
+                TP.hc('popupID', 'SherpaContextMenuPopup',
+                        'popupCSSClass', 'sherpahalocontextmenu',
+                        'contentID', 'SherpaHaloContextMenu',
+                        'closeOn', 'SelectMenuItem',
+                        'useTopLevelContentElem', true,
+                        'trigger', aSignal,
+                        'triggerID', 'SherpaContextMenuTrigger',
+                        'triggerDocument', TP.tpdoc(TP.win('UIROOT')),
+                        'triggerPoint', aSignal.getGlobalPoint()));
         }
     }
 
@@ -1072,7 +1075,8 @@ function(aspectPathParts) {
     //  Fire the signal for the Inspector to pick up to shift its focus.
     this.signal('InspectObject',
                     TP.hc('targetObject', newTargetTPElem,
-                            'targetPath', pathParts.join(TP.PATH_SEP)));
+                            'targetPath', pathParts.join(TP.PATH_SEP),
+                            'showBusy', true));
 
     return TP.TSH_NO_VALUE;
 });

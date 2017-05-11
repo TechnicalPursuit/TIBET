@@ -2,11 +2,11 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-sherpa|contextmenu {
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+sherpa|halocontextmenu {
 
     display: block;
-
-    position: absolute;
 
     width: 128px;
     height: 256px;
@@ -17,12 +17,15 @@ sherpa|contextmenu {
     border-radius: 5px;
 
     box-shadow: 3px 3px 3px #aaa;
+}
+
+xctrls|popup[class~="sherpahalocontextmenu"] {
 
     /* This should match the CONTEXT_MENU_TIER constant */
     z-index: 28750;
 }
 
-sherpa|contextmenu > .header {
+sherpa|halocontextmenu > .header {
 
     position: absolute;
 
@@ -44,9 +47,11 @@ sherpa|contextmenu > .header {
     border: 1px solid #666;
 
     overflow: hidden;
+
+    text-align: center;
 }
 
-sherpa|contextmenu > .header > .title {
+sherpa|halocontextmenu > .header > .title {
 
     font-weight: bold;
     font-size: 108%;
@@ -54,7 +59,7 @@ sherpa|contextmenu > .header > .title {
     line-height: 30px;
 }
 
-sherpa|contextmenu > .content {
+sherpa|halocontextmenu > .content {
 
     position: absolute;
 
@@ -74,5 +79,7 @@ sherpa|contextmenu > .content {
     background-color: #fff;
 
     overflow: hidden;
+
+    text-align: center;
 }
 

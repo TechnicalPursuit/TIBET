@@ -1443,15 +1443,25 @@ function() {
      * @returns {TP.core.sherpa} The receiver.
      */
 
-    var menuTPElem;
+    var viewDoc,
+        menuTPElem;
 
-    menuTPElem = TP.sherpa.contextmenu.getResourceElement('template',
+    viewDoc = this.get('vWin').document;
+
+    //  Add the stylesheet for the TP.xctrls.popup, if it's not there already.
+    //  All context menus will use this and we might as well pre-populate it.
+    TP.xctrls.popup.addStylesheetTo(viewDoc);
+
+    //  TODO: Make a loop here that will add the other context menus
+
+    TP.sherpa.halocontextmenu.addStylesheetTo(viewDoc);
+
+    menuTPElem = TP.sherpa.halocontextmenu.getResourceElement('template',
                             TP.ietf.Mime.XHTML);
 
     menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
 
-    TP.byId('center', this.get('vWin')).addContent(menuTPElem);
+    TP.byId('center', this.get('vWin')).addRawContent(menuTPElem);
 
     return this;
 });

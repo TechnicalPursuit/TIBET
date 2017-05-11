@@ -198,7 +198,8 @@ function(aSignal) {
     //  Not an element so focus inspector, not halo.
     this.signal('InspectObject',
             TP.hc('targetObject', target,
-                'targetAspect', TP.id(target)));
+                    'targetAspect', TP.id(target),
+                    'showBusy', true));
 
     return this;
 });

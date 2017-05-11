@@ -57,7 +57,7 @@
     <script src="./TP.sherpa.readout/TP.sherpa.readout.js"/>
     <script src="./TP.sherpa.notifier/TP.sherpa.notifier.js"/>
     <script src="./TP.sherpa.consoleoutput/TP.sherpa.consoleoutput.js"/>
-    <script src="./TP.sherpa.contextmenu/TP.sherpa.contextmenu.js"/>
+    <script src="./TP.sherpa.halocontextmenu/TP.sherpa.halocontextmenu.js"/>
     <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>

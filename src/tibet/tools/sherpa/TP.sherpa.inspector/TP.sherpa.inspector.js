@@ -4019,7 +4019,7 @@ TP.sherpa.InspectorSource.defineSubtype(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETTypeListInspectorSource.Inst.defineMethod(
+TP.sherpa.TIBETTypeListInspectorSource.Inst.defineHandler(
 'SherpaInspectorAddType',
 function(aSignal) {
 
