@@ -876,10 +876,14 @@ function() {
                             resultURI = TP.uc('urn:tibet:Service8_Result');
 
                             aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.TEXT)).get('result');
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
-                            //  PUT operations always return the empty result
-                            test.assert.isEmpty(aResult);
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
+
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
