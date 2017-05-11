@@ -1991,11 +1991,10 @@ function(anObject) {
     /**
      * @method objectName
      * @alias name
-     * @summary Returns the name of the receiver, most often associated with
-     *     types, functions, or node "tag names". When dealing with tag names
-     *     this method returns the canonical name of the tag. When all else
-     *     fails this method will return the local ID of the object. NOTE that
-     *     the TP.name() function is aliased to this function as a 'shorthand'.
+     * @summary Returns the name of anObject, most often associated with types,
+     *     functions, or node "tag names". When dealing with tag names this
+     *     method returns the canonical name of the tag. When all else fails
+     *     this method will return the local ID of the object.
      * @param {Object} anObject The object to interrogate.
      * @returns {String} A string "name".
      */
@@ -2072,6 +2071,17 @@ TP.definePrimitive('name', TP.objectName);
 TP.definePrimitive('objectOwner',
 function(anObject) {
 
+    /**
+     * @method objectOwner
+     * @alias owner
+     * @summary Returns the owner of anObject, which should be a Function. The
+     *     owner is the type, either TIBET or native type, which 'owns' the
+     *     Function (i.e. its 'owns' the property in a 'hasOwnProperty' sort of
+     *     way).
+     * @param {Object} anObject The object to interrogate.
+     * @returns {Object} The owner object.
+     */
+
     if (TP.isValid(anObject)) {
         return anObject[TP.OWNER];
     }
@@ -2087,6 +2097,27 @@ TP.definePrimitive('owner', TP.objectOwner);
 
 TP.definePrimitive('objectTrack',
 function(anObject) {
+
+    /**
+     * @method objectTrack
+     * @alias track
+     * @summary Returns the track of anObject, which should be a Function. The
+     *     track is the 'track' that the object can be found when looking up an
+     *     inheritance hierarchy. The value returned can be one of the
+     *     following:
+     *
+     *      TP.GLOBAL_TRACK
+     *      TP.PRIMITIVE_TRACK
+     *      TP.META_INST_TRACK
+     *      TP.META_TYPE_TRACK
+     *      TP.INST_TRACK
+     *      TP.LOCAL_TRACK
+     *      TP.TYPE_TRACK
+     *      TP.TYPE_LOCAL_TRACK
+     *
+     * @param {Object} anObject The object to interrogate.
+     * @returns {String} A string "track".
+     */
 
     if (TP.isValid(anObject)) {
         return anObject[TP.TRACK];

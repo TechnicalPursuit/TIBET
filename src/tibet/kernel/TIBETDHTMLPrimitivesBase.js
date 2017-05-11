@@ -1305,7 +1305,7 @@ function(anElement) {
     /**
      * @method elementGetOwnContent
      * @summary Gets the markup which represents only the element
-     * itself...effectively outer content minus inner content.
+     *     itself... effectively the outer content minus the inner content.
      * @param {HTMLElement} anElement The element to get the 'own content' of.
      * @exception TP.sig.InvalidElement
      * @returns {String} The 'owned content' of the Element.

@@ -7798,8 +7798,9 @@ function(aNode, aNamespaceURI) {
      * @method nodeGetAncestorsInNS
      * @summary Returns an array of ancestors of the current element which are
      *     in the namespace provided. Note that this method only checks the
-     *     elements themselves, not the attributes. If you want to also check
-     *     the attributes use nodeGetAncestorsWithNS.
+     *     elements themselves, not the attributes. If you want to also return
+     *     elements that have attributes are in that namespace, use
+     *     nodeGetAncestorsWithNS.
      * @param {Node} aNode The node to start traversal from.
      * @param {String} aNamespaceURI The URI for the namespace to check.
      * @return {Array.<Element>} An array of ancestors.
@@ -7837,7 +7838,8 @@ function(aNode, aNamespaceURI) {
     /**
      * @method nodeGetAncestorsWithNS
      * @summary Returns an array of elements with either a namespaceURI or
-     *     one or more attributes which are part of the namespace provided.
+     *     that has one or more attributes which are part of the namespace
+     *     provided.
      * @param {Node} aNode The node to start traversal from.
      * @param {String} aNamespaceURI The URI for the namespace to check.
      * @return {Array.<Element>} An array of ancestors.
@@ -7863,7 +7865,7 @@ function(aNode, aNamespaceURI) {
             arr.push(ancestor);
         } else {
             attrs = TP.elementGetAttributeNodesInNS(
-                ancestor, null, aNamespaceURI);
+                            ancestor, null, aNamespaceURI);
             if (TP.notEmpty(attrs)) {
                 arr.push(ancestor);
             }
