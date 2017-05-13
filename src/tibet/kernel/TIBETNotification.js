@@ -1803,60 +1803,6 @@ function(aHandler, aContext) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('trackHandler',
-function(aHandler, aContext) {
-
-    /**
-     * @method trackHandler
-     * @summary Tells the signal instance to track a specific handler ID. This
-     *     can be called on the signal instance at any time, but is typically
-     *     called by the signaling system to avoid duplicate notifications
-     *     during DOM traversals.
-     * @param {String|Object} aHandler The handler or handler ID to skip for a
-     *     particular signaling sequence.
-     * @param {Object} aContext The object context that the handler is currently
-     *     executing in. Note that this and the handler can be the same object
-     *     in some circumstances
-     */
-
-    var handlerKey,
-        skips,
-
-        skipCount;
-
-    if (TP.notValid(aHandler)) {
-        return;
-    }
-
-    //  The handlerKey is made up of the context ID, the handler's ID and the
-    //  current signal name. This allows proper skip/renew behavior when
-    //  dispatching through an inheritance hierarchy of signals.
-    handlerKey = aContext.getID() +
-                    '_' +
-                    aHandler.getID() +
-                    '_' +
-                    this.getID();
-
-    if (TP.notValid(skips = this.$get('notifiedHandlers'))) {
-        skips = TP.hc();
-        this.$set('notifiedHandlers', skips, false);
-    }
-
-    //  Increment the count (or set it to 1). This works in conjunction with
-    //  the renewHandler method (which increments or sets to -1) to allow a
-    //  'count' to be kept for accurate nested behavior.
-    skipCount = skips.at(handlerKey);
-    if (TP.notValid(skipCount)) {
-        skipCount = 1;
-    } else {
-        skipCount += 1;
-    }
-
-    return skips.atPut(handlerKey, skipCount);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Inst.defineMethod('isBubbling',
 function() {
 
@@ -2453,6 +2399,60 @@ function(aFlag) {
     flag = TP.ifInvalid(aFlag, true);
 
     return this.shouldStop(flag);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('trackHandler',
+function(aHandler, aContext) {
+
+    /**
+     * @method trackHandler
+     * @summary Tells the signal instance to track a specific handler ID. This
+     *     can be called on the signal instance at any time, but is typically
+     *     called by the signaling system to avoid duplicate notifications
+     *     during DOM traversals.
+     * @param {String|Object} aHandler The handler or handler ID to skip for a
+     *     particular signaling sequence.
+     * @param {Object} aContext The object context that the handler is currently
+     *     executing in. Note that this and the handler can be the same object
+     *     in some circumstances
+     */
+
+    var handlerKey,
+        skips,
+
+        skipCount;
+
+    if (TP.notValid(aHandler)) {
+        return;
+    }
+
+    //  The handlerKey is made up of the context ID, the handler's ID and the
+    //  current signal name. This allows proper skip/renew behavior when
+    //  dispatching through an inheritance hierarchy of signals.
+    handlerKey = aContext.getID() +
+                    '_' +
+                    aHandler.getID() +
+                    '_' +
+                    this.getID();
+
+    if (TP.notValid(skips = this.$get('notifiedHandlers'))) {
+        skips = TP.hc();
+        this.$set('notifiedHandlers', skips, false);
+    }
+
+    //  Increment the count (or set it to 1). This works in conjunction with
+    //  the renewHandler method (which increments or sets to -1) to allow a
+    //  'count' to be kept for accurate nested behavior.
+    skipCount = skips.at(handlerKey);
+    if (TP.notValid(skipCount)) {
+        skipCount = 1;
+    } else {
+        skipCount += 1;
+    }
+
+    return skips.atPut(handlerKey, skipCount);
 });
 
 //  ------------------------------------------------------------------------
