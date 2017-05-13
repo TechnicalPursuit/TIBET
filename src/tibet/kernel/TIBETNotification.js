@@ -1760,7 +1760,7 @@ function(aHandler, aContext) {
     /**
      * @method hasNotified
      * @summary Returns true if the signal should skip over notification of the
-     *     handler ID provided. This method works along with the trackHandler()
+     *     handler ID provided. This method works along with the trackHandler
      *     method to let the signaling system support turning off multiple
      *     notifications to a handler of a particular signal instance.
      * @param {String|Object} aHandler A handler whose ID will be checked
@@ -4655,6 +4655,7 @@ function(aSignal, handlerFlags) {
         //  Find/fire best handler for each controller.
         controller = controllers.at(i);
         handler = controller.getBestHandler(aSignal, handlerFlags);
+
         if (TP.isCallable(handler)) {
             if (!aSignal.hasNotified(handler, controller)) {
                 try {
@@ -4991,6 +4992,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             }
 
             if (TP.sys.shouldThrowHandlers()) {
+
                 //  check for multiple notification bypass, or even a
                 //  signal-configured ignore hook prior to firing
                 if (!aSignal.hasNotified(handler, handler)) {
