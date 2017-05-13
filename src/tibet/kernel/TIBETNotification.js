@@ -4741,6 +4741,7 @@ function(anOrigin, aSignalName, aSignal, options) {
         item,
         phase,
         oldHandler,
+        handlerResult,
         handler,
         originalOrigin,
         hFunc,
@@ -5011,7 +5012,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         aSignal.$set('currentHandler', handler, false);
 
                         if (signame === TP.ANY) {
-                            handler.handle(
+                            handlerResult = handler.handle(
                                 aSignal,
                                 {
                                     startSignal: TP.ANY,
@@ -5020,7 +5021,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                                     phase: phase
                                 });
                         } else {
-                            handler.handle(
+                            handlerResult = handler.handle(
                                 aSignal,
                                 {
                                     startSignal: signame,
@@ -5029,7 +5030,9 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         }
                     } finally {
                         //  set up so we won't tell it again unless it resets
-                        aSignal.trackHandler(handler, handler);
+                        if (handlerResult !== TP.NOT_FOUND) {
+                            aSignal.trackHandler(handler, handler);
+                        }
                         aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }
@@ -5056,7 +5059,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         aSignal.$set('currentHandler', handler, false);
 
                         if (signame === TP.ANY) {
-                            handler.handle(
+                            handlerResult = handler.handle(
                                 aSignal,
                                 {
                                     startSignal: TP.ANY,
@@ -5065,7 +5068,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                                     phase: phase
                                 });
                         } else {
-                            handler.handle(
+                            handlerResult = handler.handle(
                                 aSignal,
                                 {
                                     startSignal: signame,
@@ -5131,7 +5134,9 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         }
                     } finally {
                         //  set up so we won't tell it again unless it resets
-                        aSignal.trackHandler(handler, handler);
+                        if (handlerResult !== TP.NOT_FOUND) {
+                            aSignal.trackHandler(handler, handler);
+                        }
                         aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }
