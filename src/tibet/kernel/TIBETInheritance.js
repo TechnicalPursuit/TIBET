@@ -2121,15 +2121,20 @@ function(aSignal, flags) {
 
     handlerFunc = this.getBestHandler(aSignal, flags);
 
-    if (TP.isCallable(handlerFunc) && !aSignal.hasNotified(handlerFunc, this)) {
-        try {
-            oldHandler = aSignal.$get('currentHandler');
-            aSignal.$set('currentHandler', handlerFunc, false);
-            retVal = handlerFunc.call(this, aSignal);
-        } finally {
-            aSignal.trackHandler(handlerFunc, this);
-            aSignal.$set('currentHandler', oldHandler, false);
+    if (TP.isCallable(handlerFunc)) {
+
+        if (!aSignal.hasNotified(handlerFunc, this)) {
+            try {
+                oldHandler = aSignal.$get('currentHandler');
+                aSignal.$set('currentHandler', handlerFunc, false);
+                retVal = handlerFunc.call(this, aSignal);
+            } finally {
+                aSignal.trackHandler(handlerFunc, this);
+                aSignal.$set('currentHandler', oldHandler, false);
+            }
         }
+    } else {
+        retVal = TP.NOT_FOUND;
     }
 
     return retVal;
