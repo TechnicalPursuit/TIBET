@@ -6280,8 +6280,8 @@ function() {
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function(result) {
-        var manifestLoc,
-            appSrcLoc;
+        var changedLoc,
+            appCfgLoc;
 
         if (TP.isError(result)) {
             TP.error(result);
@@ -6292,17 +6292,26 @@ function() {
         //  indicate new code has been added to the project. These files don't
         //  get observed since they never trigger a mutation observer.
 
-        manifestLoc = thisref.getLocation();
-        appSrcLoc = TP.uriExpandPath('~app_cfg');
+        changedLoc = thisref.getLocation();
+        appCfgLoc = TP.uriExpandPath('~app_cfg');
 
-        if (manifestLoc.startsWith(appSrcLoc)) {
+        //  If the changed location starts with the app 'cfg' location, then a
+        //  manifest changed. We special case this.
+        if (changedLoc.startsWith(appCfgLoc)) {
 
             //  Force refresh of any package data, particularly related to the
             //  URI we're referencing.
-            TP.boot.$refreshPackages(manifestLoc);
+            TP.boot.$refreshPackages(changedLoc);
 
             //  Import any new scripts that would have booted with the system.
             TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
+        } else if (TP.boot.$isLoadableScript(changedLoc)) {
+
+            //  If the refreshed URI didn't represent a manifest file but it was
+            //  a script file (i.e. '.js' file), then the 'importSourceLoc' call
+            //  below *won't* signal a 'TP.sig.ValueChange' when it changes. We
+            //  need to do that manually here.
+            thisref.$changed();
         }
     };
 
