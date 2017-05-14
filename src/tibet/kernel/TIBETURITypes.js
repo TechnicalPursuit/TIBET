@@ -5698,17 +5698,22 @@ function(aRequest) {
 
     var contentType,
 
-        result,
+        resource,
+        newResult,
+        currentResult,
+
         dat,
         dom,
         tname,
         map,
 
-        resource,
         handler,
         type,
 
-        mime;
+        mime,
+
+        resourceIsContent,
+        resultIsContent;
 
     //  TODO:   verify the receiver should cache anything...it should be
     //  either a "caching" URI (whatever that means) or a primary URI.
@@ -5744,15 +5749,18 @@ function(aRequest) {
     //  without replacing the container when possible.
     resource = this.$get('resource');
 
-    result = aRequest.getResult();
+    newResult = aRequest.getResult();
 
     //  In cases of refresh we'll often be called with the data we already have
     //  as the result.
 
+    currentResult = this.$getFilteredResult(
+                            resource, aRequest.at('resultType'));
+
     //  NB: We use TP.equal here since we need a 'deep equality' check on the
     //  resource.
-    if (TP.equal(resource, result)) {
-        return this.$getFilteredResult(resource, aRequest.at('resultType'));
+    if (TP.equal(currentResult, newResult)) {
+        return currentResult;
     }
 
     //  ---
@@ -5761,19 +5769,19 @@ function(aRequest) {
 
     //  capture the raw result data from the request. This is typically
     //  a string, node, or pair based on the original request parameters.
-    if (TP.isArray(result) && result.getSize() === 2) {
-        dat = result.first();
-        dom = result.last();
+    if (TP.isArray(newResult) && newResult.getSize() === 2) {
+        dat = newResult.first();
+        dom = newResult.last();
 
         //  TODO: what if it's an array that doesn't contain a string and a
         //  node?
-    } else if (TP.isNode(result)) {
-        dom = result;
-    } else if (TP.isXHR(result)) {
-        dat = result.responseText;
+    } else if (TP.isNode(newResult)) {
+        dom = newResult;
+    } else if (TP.isXHR(newResult)) {
+        dat = newResult.responseText;
 
         try {
-            dom = result.responseXML;
+            dom = newResult.responseXML;
 
             //  IE has the nasty habit of making an empty '#document' node
             //  here that passes TP.isNode(...) tests, but has no content
@@ -5783,10 +5791,10 @@ function(aRequest) {
                 dom = null;
             }
         } catch (e) {
-            dom = TP.node(result.responseText);
+            dom = TP.node(newResult.responseText);
         }
     } else {
-        dat = result;
+        dat = newResult;
     }
 
     //  ---
@@ -5824,8 +5832,8 @@ function(aRequest) {
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconstitute" the data as needed
-            result = type.constructContentObject(dom || dat, this);
-            if (TP.notValid(result)) {
+            newResult = type.constructContentObject(dom || dat, this);
+            if (TP.notValid(newResult)) {
                 return this.raise('',
                     'Content handler failed to produce output.');
             }
@@ -5835,7 +5843,7 @@ function(aRequest) {
         }
     } else if (TP.isNode(dom)) {
         //  wait for wrapping during post-processing below.
-        result = dom;
+        newResult = dom;
     } else if (TP.isString(dat)) {
         //  when looking for a content object (a text-specific object)
         //  we work from MIME type as a starting point. Proper XML won't
@@ -5849,50 +5857,64 @@ function(aRequest) {
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconsitute" the data as needed
-            result = type.constructContentObject(dat, this);
+            newResult = type.constructContentObject(dat, this);
         } else {
             //  No concrete handler type for the MIME type? Use the string.
-            result = dat;
+            newResult = dat;
         }
     } else if (TP.isHash(dat)) {
         tname = dat.at('type');
         if (TP.isString(tname) &&
             TP.isType(type = TP.sys.getTypeByName(tname)) &&
             TP.canInvoke(type, 'constructContentObject')) {
-            result = type.constructContentObject(dat, this);
+            newResult = type.constructContentObject(dat, this);
         }
     } else {
         //  some other form of non-standard result object.
-        result = TP.ifInvalid(dom, dat);
+        newResult = TP.ifInvalid(dom, dat);
     }
 
     //  ---
     //  post-process to maintain internal containers.
     //  ---
 
-    if (TP.canInvoke(result, 'getNativeNode')) {
+    //  NB: First, set ourself to be loaded. Otherwise, comparison getters etc.
+    //  in the methods below could cause endless recursion
+    this.isLoaded(true);
+
+    //  Now, set the resource or result based on data types of what we already
+    //  have and what we are going to be setting.
+
+    //  NOTE: THIS IS ORDER DEPENDENT - DO *NOT* CHANGE the testing order here
+    //  without testing extensively.
+
+    resourceIsContent = TP.isKindOf(resource, TP.core.Content);
+    resultIsContent = TP.isKindOf(newResult, TP.core.Content);
+
+    if (TP.canInvoke(newResult, 'getNativeNode') && !resourceIsContent) {
         //  result _is_ a wrapper object of some form.
-        this.$setPrimaryResource(result, aRequest);
-    } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
+        this.$setPrimaryResource(newResult, aRequest);
+    } else if (resourceIsContent && !resultIsContent) {
+        resource.set('data', newResult);
+    } else if (TP.canInvoke(resource, 'setNativeNode') &&
+                TP.isNode(newResult)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
                         TP.DEBUG) : 0;
 
-        resource.setNativeNode(result);
-    } else if (TP.isNode(result)) {
+        resource.setNativeNode(newResult);
+    } else if (TP.isNode(newResult)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Creating new node container.',
                         TP.DEBUG) : 0;
 
         //  note that we pass ourselves along to establish "ownership"
-        result = TP.core.Node.construct(result);
-        result.set('uri', this);
+        newResult = TP.core.Node.construct(newResult);
+        newResult.set('uri', this);
 
-        this.$setPrimaryResource(result, aRequest);
-    } else if (TP.isKindOf(resource, TP.core.Content)) {
-        resource.set('data', result);
+        this.$setPrimaryResource(newResult, aRequest);
     } else {
-        this.$setPrimaryResource(result, aRequest);
+        this.$setPrimaryResource(newResult, aRequest);
     }
 
     //  NOTE that callers are responsible for defining the context of
@@ -5902,7 +5924,7 @@ function(aRequest) {
     this.expire(false);
 
     return this.$getFilteredResult(
-        this.$get('resource'), aRequest.at('resultType'));
+                this.$get('resource'), aRequest.at('resultType'));
 });
 
 //  ------------------------------------------------------------------------
