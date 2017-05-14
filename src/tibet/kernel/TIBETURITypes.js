@@ -6266,10 +6266,6 @@ function() {
             return;
         }
 
-        //  Notify observers of the URI (elements, etc.) that the resource has
-        //  been refreshed with potentially new content.
-        thisref.$changed();
-
         //  Watch specifically for changes to application manifest which might
         //  indicate new code has been added to the project. These files don't
         //  get observed since they never trigger a mutation observer.
