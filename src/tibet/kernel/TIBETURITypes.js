@@ -2905,9 +2905,6 @@ function(aSignal) {
                     aSignal.getType());
     }
 
-    //  Mark the URI as dirty - it's resource changed.
-    this.isDirty(true);
-
     return this;
 });
 
