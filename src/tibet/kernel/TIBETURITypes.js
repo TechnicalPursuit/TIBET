@@ -6134,10 +6134,6 @@ function(aRequest) {
     //  rewritten URI instance is
     url = this.rewrite(request);
 
-    //  clear our current resource data...we don't keep it in case this call
-    //  fails we don't want the old data to be mistaken for the new stuff.
-    this.$set('resource', null, false);
-
     //  map the load operation so we get the right handler based on any
     //  rewriting and routing logic in place for the original URI
     request.atPut('operation', 'load');
