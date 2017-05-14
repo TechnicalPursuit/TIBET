@@ -3637,7 +3637,7 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  NB: We use TP.equal here since we need a 'deep equality' check on the
     //  resource.
     if (TP.equal(oldResource, newResource)) {
-        return;
+        return this;
     }
 
     //  on the off chance we got a native node with a default type we want
