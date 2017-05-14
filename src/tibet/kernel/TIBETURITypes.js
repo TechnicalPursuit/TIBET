@@ -3606,7 +3606,7 @@ function(aResource, aRequest, shouldFlagDirty) {
      * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
      *     resource as 'dirty'. This defaults to true.
      * @listens {TP.sig.Change} Observes the primary resource for Change.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.core.URI|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
