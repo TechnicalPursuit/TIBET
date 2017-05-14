@@ -1112,6 +1112,9 @@ TP.core.URI.Inst.defineAttribute('expired', false);
 //  often. NOTE that we start out null so we don't imply a true/false
 TP.core.URI.Inst.defineAttribute('found', null);
 
+//  has the receiver ever been initialized with a value?
+TP.core.URI.Inst.defineAttribute('$hadInitialValue', false);
+
 //  has the receiver ever cleared their caches?
 TP.core.URI.Inst.defineAttribute('$cleared', false);
 
@@ -3676,7 +3679,12 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  ourselves to be 'clean' until a subsequent change.
     if (this.isLoaded()) {
         if (oldResource !== newResource) {
-            if (TP.notFalse(shouldFlagDirty)) {
+
+            //  If the caller didn't explicitly specify that they didn't want
+            //  the receiver to be flagged as dirty *and the receiver has had an
+            //  initial value set* (i.e. not just the null value that comes with
+            //  all new URIs), then flag the receiver as dirty.
+            if (TP.notFalse(shouldFlagDirty) && this.$get('$hadInitialValue')) {
                 this.isDirty(true);
             }
         }
@@ -3684,6 +3692,9 @@ function(aResource, aRequest, shouldFlagDirty) {
         this.isLoaded(true);
         this.isDirty(false);
     }
+
+    //  Flag the receiver as having had at least one real value.
+    this.$set('$hadInitialValue', true, false);
 
     //  clear any expiration computations
     this.expire(false);
@@ -4817,6 +4828,9 @@ function(aResource, aRequest) {
     //  If the receiver is the primary resource we can update our cached value
     //  for future use.
     this.$set('resource', aResource);
+
+    //  Flag the receiver as having had at least one real value.
+    this.$set('$hadInitialValue', true, false);
 
     //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
     //  to determine if we should signal change.
@@ -6021,6 +6035,9 @@ function(aRequest) {
 
                     //  the return result should become the new resource
                     thisref.set('resource', returnResult);
+
+                    //  Flag the receiver as having had at least one real value.
+                    thisref.$set('$hadInitialValue', true, false);
                 }
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
