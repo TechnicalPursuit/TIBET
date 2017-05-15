@@ -569,8 +569,10 @@ function(aSignal) {
      */
 
     if (this.get('isActive')) {
+        this.set('isActive', false);
         this.signal('TP.sig.EndOutlineMode');
     } else {
+        this.set('isActive', true);
         this.signal('TP.sig.BeginOutlineMode');
     }
 
