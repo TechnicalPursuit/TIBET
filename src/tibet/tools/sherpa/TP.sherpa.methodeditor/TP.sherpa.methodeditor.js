@@ -75,13 +75,13 @@ function() {
     this.$set('sourceObject', newSourceObj);
 
     this.set('localSourceContent', newSourceText);
-    this.isDirty(false);
 
-    //  We need to signal that the source object is now dirty
-    this.changed('sourceDirty',
-                    TP.UPDATE,
-                    TP.hc(TP.OLDVAL, false,
-                            TP.NEWVAL, true));
+    //  Mark our source URI as dirty, since we just set new content into it.
+    this.get('sourceURI').isDirty(true);
+
+    //  Now that we've marked things dirty that need to be, mark ourself as
+    //  *not* dirty. This will cause other controls watching us to update.
+    this.isDirty(false);
 
     this.set('$changingURIs', false);
 
@@ -96,10 +96,6 @@ function(aSignal) {
     var refreshFunc;
 
     if (this.get('$changingURIs')) {
-        return this;
-    }
-
-    if (aSignal.at('aspect') === 'dirty') {
         return this;
     }
 
@@ -125,26 +121,12 @@ function(aSignal) {
                     //  and our editor to whatever is in the URI and set the
                     //  URI's 'dirty' flag to false.
                     this.render();
-
-                    //  We need to signal that the source object is no longer
-                    //  dirty
-                    this.changed('sourceDirty',
-                                    TP.UPDATE,
-                                    TP.hc(TP.OLDVAL, true,
-                                            TP.NEWVAL, false));
-
                 }
             }.bind(this));
     } else {
         refreshFunc(this.get('sourceObject'));
 
         this.render();
-
-        //  We need to signal that the source object is no longer dirty
-        this.changed('sourceDirty',
-                        TP.UPDATE,
-                        TP.hc(TP.OLDVAL, true,
-                                TP.NEWVAL, false));
     }
 
     return this;
@@ -186,6 +168,19 @@ function() {
             function(successfulPatch) {
                 if (successfulPatch) {
                     this.set('serverSourceObject', sourceObject);
+
+                    //  Mark our source URI as *not* dirty, since we just pushed
+                    //  it's new content to the server.
+                    this.get('sourceURI').isDirty(false);
+
+                    //  We need to signal that we are not dirty - we're not
+                    //  really dirty anyway, since the applyResource() above set
+                    //  us to not be dirty, but there are controls that rely on
+                    //  us signaling when either us or our sourceURI's 'dirty'
+                    //  state changes.
+                    this.changed('dirty',
+                                    TP.UPDATE,
+                                    TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
                 }
             }.bind(this));
     }
@@ -298,12 +293,6 @@ function() {
     //  NB: We use '$set()' here to avoid calling our setter and blowing other
     //  references away.
     this.$set('sourceObject', sourceObj);
-
-    //  We need to signal that the source object is no longer dirty
-    this.changed('sourceDirty',
-                    TP.UPDATE,
-                    TP.hc(TP.OLDVAL, true,
-                            TP.NEWVAL, false));
 
     /* eslint-disable no-extra-parens */
     (function() {

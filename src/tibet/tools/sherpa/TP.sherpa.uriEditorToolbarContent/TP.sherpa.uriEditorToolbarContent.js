@@ -77,7 +77,6 @@ function(aRequest) {
 
     tpElem.observe(editorTPElem, 'DirtyChange');
     tpElem.observe(editorTPElem, 'SourceURIChange');
-    tpElem.observe(editorTPElem, 'SourceDirtyChange');
 
     tpElem.refreshControls();
 
@@ -109,7 +108,6 @@ function(aRequest) {
 
     tpElem.ignore(tpElem.$get('$editor'), 'DirtyChange');
     tpElem.ignore(tpElem.$get('$editor'), 'SourceURIChange');
-    tpElem.ignore(tpElem.$get('$editor'), 'SourceDirtyChange');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -125,25 +123,8 @@ function(aRequest) {
 TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('DirtyChange',
 function(aSignal) {
 
-    var isDirty;
-
-    isDirty = aSignal.at(TP.NEWVAL);
-
-    if (isDirty) {
-        this.get('pushButton').removeAttribute('disabled');
-    } else {
-        this.get('pushButton').setAttribute('disabled', true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('DirtyChange',
-function(aSignal) {
-
-    var isDirty;
+    var isDirty,
+        sourceURI;
 
     isDirty = aSignal.at(TP.NEWVAL);
 
@@ -155,23 +136,9 @@ function(aSignal) {
         this.get('revertButton').setAttribute('disabled', true);
     }
 
-    aSignal.stopPropagation();
+    sourceURI = aSignal.getSource().get('sourceURI');
 
-    return this;
-}, {
-    origin: 'inspectorEditor'
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('SourceDirtyChange',
-function(aSignal) {
-
-    var isDirty;
-
-    isDirty = aSignal.at(TP.NEWVAL);
-
-    if (isDirty) {
+    if (sourceURI.isDirty()) {
         this.get('pushButton').removeAttribute('disabled');
     } else {
         this.get('pushButton').setAttribute('disabled', true);

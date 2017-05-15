@@ -218,26 +218,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.urieditor.Inst.defineHandler('DirtyChange',
-function(aSignal) {
-
-    var payload;
-
-    //  This handler is invoked when the underlying source URI that the receiver
-    //  is editing is dirty
-
-    payload = aSignal.getPayload();
-
-    this.changed('sourceDirty',
-                    TP.UPDATE,
-                    TP.hc(TP.OLDVAL, payload.at(TP.OLDVAL),
-                            TP.NEWVAL, payload.at(TP.NEWVAL)));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.urieditor.Inst.defineHandler('ResourceApply',
 function(aSignal) {
 
@@ -330,8 +310,14 @@ function() {
 
     putRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
-            //  empty
-        });
+            //  We need to signal that we are not dirty - we're not really dirty
+            //  anyway, since the applyResource() above set us to not be dirty,
+            //  but there are controls that rely on us signaling when either us
+            //  or our sourceURI's 'dirty' state changes.
+            this.changed('dirty',
+                            TP.UPDATE,
+                            TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
+        }.bind(this));
 
     putRequest.defineHandler('RequestFailed',
         function(aResponse) {
@@ -538,7 +524,7 @@ function(anObj) {
     var sourceURI;
 
     if (TP.isURI(sourceURI = this.get('sourceURI'))) {
-        this.ignore(sourceURI, TP.ac('TP.sig.DirtyChange', 'TP.sig.ValueChange'));
+        this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
     sourceURI = anObj;
@@ -549,7 +535,7 @@ function(anObj) {
         return this;
     }
 
-    this.observe(sourceURI, TP.ac('TP.sig.DirtyChange', 'TP.sig.ValueChange'));
+    this.observe(sourceURI, 'TP.sig.ValueChange');
 
     this.$set('sourceURI', sourceURI);
 
