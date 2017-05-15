@@ -75,7 +75,7 @@ function() {
     currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
     (function(aSignal) {
-        TP.signal(TP.ANY, 'TP.sig.BeginOutlineMode');
+        this.signal('TP.sig.BeginOutlineMode');
     }).observe(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up');
 
     keyboardSM = consoleService.get('keyboardStateMachine');
@@ -324,7 +324,7 @@ function(aSignal) {
     this.set('$wasActive', isActive);
 
     if (!isActive) {
-        TP.signal(TP.ANY, 'TP.sig.BeginOutlineMode');
+        this.signal('TP.sig.BeginOutlineMode');
     }
 
     return this;
@@ -401,7 +401,7 @@ function(aSignal) {
     wasActive = this.get('$wasActive');
 
     if (!wasActive) {
-        TP.signal(TP.ANY, 'TP.sig.EndOutlineMode');
+        this.signal('TP.sig.EndOutlineMode');
     }
 
     this.processDNDTermination(aSignal);
@@ -569,9 +569,9 @@ function(aSignal) {
      */
 
     if (this.get('isActive')) {
-        TP.signal(null, 'TP.sig.EndOutlineMode');
+        this.signal('TP.sig.EndOutlineMode');
     } else {
-        TP.signal(null, 'TP.sig.BeginOutlineMode');
+        this.signal('TP.sig.BeginOutlineMode');
     }
 
     return this;
