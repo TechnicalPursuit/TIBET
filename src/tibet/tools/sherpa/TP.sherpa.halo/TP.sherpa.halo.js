@@ -1131,6 +1131,21 @@ function(aspectPathParts) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineMethod('isFocused',
+function() {
+
+    /**
+     * @method isFocused
+     * @summary Returns whether or not the halo is currently focused on a
+     *     target.
+     * @returns {Boolean} Whether or not the halo is focused.
+     */
+
+    return TP.isValid(this.get('currentTargetTPElem'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineMethod('moveAndSizeToTarget',
 function(newTargetTPElem) {
 
