@@ -6294,7 +6294,11 @@ function(aRoute) {
                     TP.sys.getUICanvas().getDocument().getBody();
             }
 
-            targetTPElem.setContent(content);
+            //  Set the content of the target element. Note here how we supply
+            //  the route name as the 'contentKey'. This can be used by
+            //  intelligent elements to decide how to handle content that they
+            //  might see more than once.
+            targetTPElem.setContent(content, TP.request('contentKey', route));
         }
     }
 
