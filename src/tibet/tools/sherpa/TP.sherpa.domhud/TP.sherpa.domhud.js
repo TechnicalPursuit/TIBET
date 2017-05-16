@@ -27,8 +27,88 @@ TP.sherpa.domhud.Inst.defineAttribute('listitems',
     TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description Because tibet:data tag content drives binds and we need to
+     *     notify even without a full page load, we notify from here once the
+     *     attachment is complete (instead of during tagAttachData).
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.setup();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('resetToRoot',
+function() {
+
+    /**
+     * @method setup
+     * @summary
+     */
+
+    var root,
+        arr;
+
+    root = TP.sys.getUICanvas().getDocument().getRoot();
+    if (TP.notValid(root)) {
+        return;
+    }
+
+    root = root.getNativeNode();
+
+    arr = TP.ac(
+            TP.lid(root, true),
+            TP.elementGetFullName(root));
+
+    //  List expects an array of arrays containing IDs and full names.
+    this.setValue(TP.ac(arr));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary
+     */
+
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+                            'ClosedChange');
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
@@ -191,6 +271,35 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var hud,
+        hudIsHidden;
+
+    //  Grab the HUD and see if it's currently open or closed.
+    hud = TP.byId('SherpaHUD', this.getNativeWindow());
+    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+
+    if (!hudIsHidden) {
+        this.resetToRoot();
+    }
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineHandler('FocusHalo',
 function(aSignal) {
 
@@ -216,6 +325,8 @@ function(aSignal) {
 
     halo.blur();
     halo.focusOn(haloTarget);
+
+    halo.setAttribute('hidden', false);
 
     return this;
 });
@@ -308,22 +419,7 @@ function(aSignal) {
      *     this method.
      */
 
-    var root,
-        arr;
-
-    root = TP.sys.getUICanvas().getDocument().getRoot();
-    if (TP.notValid(root)) {
-        return;
-    }
-
-    root = root.getNativeNode();
-
-    arr = TP.ac(
-        TP.lid(root, true),
-        TP.elementGetFullName(root));
-
-    //  List expects an array of arrays containing IDs and full names.
-    this.setValue(TP.ac(arr));
+    this.resetToRoot();
 
     return this;
 });
