@@ -6234,6 +6234,10 @@ function(aRoute) {
         return this;
     }
 
+    //  Grab the current UI canvas - we'll use this below to either obtain a
+    //  target element or to set its location.
+    canvas = TP.sys.getUICanvas();
+
     //  The target should be a 'path' (CSS selector, XPath, etc.) that can be
     //  used to obtain a target element.
     routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
