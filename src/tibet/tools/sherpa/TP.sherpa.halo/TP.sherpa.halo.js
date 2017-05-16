@@ -23,6 +23,8 @@ TP.sherpa.Element.defineSubtype('halo');
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
 TP.sherpa.halo.Inst.defineAttribute('$dontSignalBlurFocus');
 
+TP.sherpa.halo.Inst.defineAttribute('$lastTargetTPElem');
+
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
 TP.sherpa.halo.Inst.defineAttribute('haloRect');
 
@@ -510,6 +512,8 @@ function(aSignal) {
             if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
                 this.focusOn(newTargetTPElem);
             } else {
+
+                //  This will 'hide' the halo.
                 this.setAttribute('hidden', true);
             }
 
@@ -534,6 +538,8 @@ function(aSignal) {
     //  completely gone and we can't determine if it reappeared, so we just
     //  blur, hide ourself and exit.
     this.blur();
+
+    //  This will 'hide' the halo.
     this.setAttribute('hidden', true);
 
     return this;
@@ -649,6 +655,7 @@ function(aSignal) {
         wasHidden = TP.bc(this.getAttribute('hidden'));
         this.set('$wasShowing', !wasHidden);
 
+        //  This will 'hide' the halo.
         this.setAttribute('hidden', true);
     } else {
         this.setAttribute('hidden', !this.get('$wasShowing'));
@@ -998,7 +1005,48 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    this.setAttribute('hidden', !this.getAttribute('hidden'));
+    var targetTPElem;
+
+    targetTPElem = this.get('currentTargetTPElem');
+
+    //  If we current having a valid target, then capture it and hide & blur the
+    //  halo
+    if (TP.isValid(targetTPElem)) {
+
+        this.set('$lastTargetTPElem', targetTPElem);
+
+        //  This will 'hide' the halo.
+        this.setAttribute('hidden', true);
+        this.blur();
+    } else {
+
+        //  See if there is a previously captured target.
+        targetTPElem = this.get('$lastTargetTPElem');
+
+        //  If there is no previously captured target, then use the body.
+        if (TP.notValid(targetTPElem)) {
+            targetTPElem =
+                TP.sys.getUICanvas().getDocument().getBody();
+        }
+
+        //  If there is no body, then use the document element.
+        if (TP.notValid(targetTPElem)) {
+            targetTPElem =
+                TP.sys.getUICanvas().getDocument().getDocumentElement();
+        }
+
+        //  If we actually got a target of some sort, then focus on it and
+        //  unhide the halo
+        if (TP.isValid(targetTPElem)) {
+            this.focusOn(targetTPElem);
+
+            //  This will 'unhide' the halo.
+            this.setAttribute('hidden', false);
+        }
+
+        //  Null out any previously captured target.
+        this.set('$lastTargetTPElem', null);
+    }
 
     return this;
 });
