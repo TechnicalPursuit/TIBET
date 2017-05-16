@@ -1751,10 +1751,6 @@ function() {
     TP.byCSSPath('#west sherpa|opener', viewWin).at(0).signal('Toggle');
     TP.byCSSPath('#east sherpa|opener', viewWin).at(0).signal('Toggle');
 
-    //  Focus the halo onto the body of the document loaded into the UI canvas.
-    TP.byId('SherpaHalo', viewWin).focusOn(
-            TP.sys.getUICanvas().getDocument().getBody());
-
     return this;
 });
 
