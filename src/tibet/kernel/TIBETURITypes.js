@@ -10755,6 +10755,7 @@ function(aRoute) {
      *     parameters). Changes to this section of the URI result in a Route
      *     signal being fired so application logic can respond to route changes.
      * @param {String} aRoute The route information.
+     * @returns {String} The route as set into TIBET's history object.
      */
 
     var route,
@@ -10780,11 +10781,14 @@ function(aRoute) {
 
     //  If we're routing home but not showing the home page we need to update.
     if (route === '/' || TP.isEmpty(route)) {
+
         //  Compare against home page to see if this is a match.
         home = TP.uriExpandPath(TP.sys.getHomeURL());
+
         if (TP.uriHead(TP.uriExpandHome(loc)) !== TP.uriHead(home)) {
             TP.sys.getHistory().pushLocation(home);
-            return;
+
+            return home;
         }
     }
 
@@ -10794,7 +10798,8 @@ function(aRoute) {
         if (TP.sys.cfg('log.routes')) {
             TP.trace('setRoute ignoring duplicate route setting of: ' + route);
         }
-        return;
+
+        return route;
     }
 
     //  Rebuild a version of the current URI with the new route portion.
@@ -10804,7 +10809,7 @@ function(aRoute) {
 
     TP.sys.getHistory().pushLocation(route);
 
-    return;
+    return route;
 });
 
 //  ========================================================================
