@@ -49,34 +49,40 @@ TP.xctrls.panelbox.Inst.defineAttribute('selectedValue',
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.panelbox.Inst.defineMethod('setValueOrAddContent',
-function(aValue, aContentObject) {
+TP.xctrls.panelbox.Inst.defineMethod('setContent',
+function(aContentObject, aRequest) {
 
     /**
-     * @method setValueOrAddContent
+     * @method setContent
      * @summary Sets the value of the receiver or adds the supplied content as
      *     another panel if the panel matching the value cannot be found.
-     * @param {String} aValue The value to switch the receiver to.
      * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
      * @returns {TP.xctrls.panel} The xctrls:panel matching the value or the
      *     newly added panel.
      */
 
-    var panelTPElem;
+    var request,
 
-    if (TP.notValid(aValue)) {
-        //  TODO: Log a warning.
-        return null;
+        contentKey,
+        panelTPElem;
+
+    request = TP.request(aRequest);
+
+    contentKey = request.at('contentKey');
+
+    //  If there is a valid content key, then try to find an existing panel
+    //  whose 'value' matches that key.
+    if (TP.isValid(contentKey)) {
+        panelTPElem = this.get('itemWithValue', contentKey);
     }
-
-    panelTPElem = this.get('itemWithValue', aValue);
 
     //  Build a panel with an 'xctrls:value' containing the unique key. That
     //  will allow us to find it later.
     if (TP.isEmpty(panelTPElem)) {
         panelTPElem = this.addRawContent(
                         '<xctrls:panel><xctrls:value>' +
-                        aValue +
+                        contentKey +
                         '</xctrls:value></xctrls:panel>');
 
         //  Note 'addContent' here to avoid blowing away the 'xctrls:value' tag
@@ -84,7 +90,7 @@ function(aValue, aContentObject) {
         panelTPElem = panelTPElem.addContent(aContentObject);
     }
 
-    this.setValue(aValue);
+    this.setValue(contentKey);
 
     return panelTPElem;
 });
