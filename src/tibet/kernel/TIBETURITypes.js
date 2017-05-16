@@ -10102,8 +10102,25 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('getRouteController',
-function(aURI) {
+TP.core.URIRouter.Type.defineMethod('getRouteControllerType',
+function() {
+
+    /**
+     * @method getRouteControllerType
+     * @summary Returns the route controller type that will be used for whatever
+     *     the receiver considers to be the current route.
+     * @description The controller type is computed thusly:
+     *     1. If the current route doesn't have a route map entry, the
+     *     TP.core.RouteController type will be returned.
+     *     2. If the route map entry has a '.controller' entry, then that will
+     *     be used as the type name.
+     *     3. If the route map entry has no '.controller', then a type name will
+     *     be computed by using 'APP.' + the project name + '.' + the route in
+     *     title case + 'Controller'.
+     *     4. If no type object can be found by using the type name from the
+     *     above steps, TP.core.RouteController will be returned.
+     * @returns {TP.meta.*|TP.meta.core.Controller} A computed controller type.
+     */
 
     var route,
         routeKey,

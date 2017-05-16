@@ -6434,7 +6434,7 @@ function() {
     }
 
     //  Once we've started we also include any current route controller.
-    controller = this.getRouter().getRouteController();
+    controller = this.getRouter().getRouteControllerType();
     if (TP.isValid(controller)) {
         if (TP.isType(controller)) {
             controller = controller.construct();
