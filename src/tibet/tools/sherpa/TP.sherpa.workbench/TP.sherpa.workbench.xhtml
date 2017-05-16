@@ -31,8 +31,16 @@
             <xctrls:button class="test" on:click="TSHTest" title=":test"/>
             <xctrls:button class="deploy" on:click="TSHDeploy" title=":deploy"/>
             <button class="spacer" title="spacer"/>
-            <xctrls:button class="halo" on:click="ToggleHalo" title="Toggle Halo"/>
-            <xctrls:button class="outline" on:click="ToggleOutlines" title="Toggle Outlines"/>
+            <xctrls:itemgroup id="workbenchToggleButtons" multiple="true">
+                <xctrls:buttonitem id="haloToggleButton" class="halo" on:click="ToggleHalo" title="Toggle Halo">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>halo</xctrls:value>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="outlineToggleButton" class="outline" on:click="ToggleOutlines" title="Toggle Outlines">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>outline</xctrls:value>
+                </xctrls:buttonitem>
+            </xctrls:itemgroup>
             <sherpa:dispenser/>
         </div>
         <sherpa:toolbar/>

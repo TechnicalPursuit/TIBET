@@ -17,53 +17,52 @@
 TP.sherpa.TemplatedTag.defineSubtype('workbench');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
+TP.sherpa.workbench.Inst.defineMethod('setup',
+function() {
 
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
+    var win,
 
-    var elem,
-        tpElem,
         sherpaInspectorTPElem,
-        arrows;
+        arrows,
 
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
+        sherpaHaloTPElem,
 
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
+        sherpaOutliner;
 
-    tpElem = TP.wrap(elem);
+    win = this.getNativeWindow();
 
-    sherpaInspectorTPElem = TP.byId('SherpaInspector', tpElem.getNativeWindow());
+    sherpaInspectorTPElem = TP.byId('SherpaInspector', win);
 
-    arrows = TP.byCSSPath('sherpa|scrollbutton', elem, false, true);
+    arrows = TP.byCSSPath('sherpa|scrollbutton', win, false, true);
 
     arrows.forEach(
             function(anArrow) {
                 anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
             });
 
-    tpElem.setupBreadcrumb();
+    this.setupBreadcrumb();
 
-    tpElem.updateNavigationButtons();
+    this.updateNavigationButtons();
+    this.updateToolbarButtons();
 
-    tpElem.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
+    this.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
 
-    return;
+    //  Halo
+    sherpaHaloTPElem = TP.byId('SherpaHalo', win);
+    this.observe(sherpaHaloTPElem,
+                    TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
+
+    //  Outliner
+    sherpaOutliner = TP.bySystemId('SherpaOutliner');
+    this.observe(sherpaOutliner,
+                    TP.ac('TP.sig.BeginOutlineMode', 'TP.sig.EndOutlineMode'));
+
+    return this;
 });
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineMethod('setupBreadcrumb',
@@ -111,6 +110,40 @@ function() {
     } else {
         TP.elementAddClass(forwardButton, 'more');
         TP.elementRemoveAttribute(forwardButton, 'disabled', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('updateToolbarButtons',
+function() {
+
+    var workbenchToggleButtons,
+
+        sherpaHaloTPElem,
+        isFocused,
+
+        sherpaOutliner;
+
+    workbenchToggleButtons = TP.byId('workbenchToggleButtons',
+                                        this.getNativeWindow());
+
+    sherpaHaloTPElem = TP.byId('SherpaHalo', this.getNativeWindow());
+    isFocused = sherpaHaloTPElem.isFocused();
+
+    if (isFocused) {
+        workbenchToggleButtons.addSelection('halo', 'value');
+    } else {
+        workbenchToggleButtons.removeSelection('halo', 'value');
+    }
+
+    sherpaOutliner = TP.bySystemId('SherpaOutliner');
+    if (!sherpaOutliner.get('isActive')) {
+        workbenchToggleButtons.removeSelection('outline', 'value');
+    } else {
+        workbenchToggleButtons.addSelection('outline', 'value');
     }
 
     return this;
@@ -168,6 +201,54 @@ function(aSignal) {
     breadcrumbTPElem.setValue(inspectorSelectedItemLabels);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    this.updateToolbarButtons();
+
+    return this;
+}, {
+    origin: 'SherpaHalo'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    this.updateToolbarButtons();
+
+    return this;
+}, {
+    origin: 'SherpaHalo'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('BeginOutlineMode',
+function(aSignal) {
+
+    this.updateToolbarButtons();
+
+    return this;
+}, {
+    origin: 'SherpaOutliner'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('EndOutlineMode',
+function(aSignal) {
+
+    this.updateToolbarButtons();
+
+    return this;
+}, {
+    origin: 'SherpaOutliner'
 });
 
 //  ------------------------------------------------------------------------

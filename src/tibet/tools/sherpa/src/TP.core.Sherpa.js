@@ -462,11 +462,16 @@ function() {
     //  Set up the context menu
     this.setupContextMenu();
 
+    //  Set up the halo
+    this.setupHalo();
+
+    //  NB: We set these up *after* the halo is set up.
+
     //  Set up the outliner
     this.setupOutliner();
 
-    //  Set up the halo
-    this.setupHalo();
+    //  Set up the workbench
+    this.setupWorkbench();
 
     //  Set up the inspector
     this.setupInspector();
@@ -1586,6 +1591,26 @@ function() {
     /*
     TP.byId('SherpaThumbnail', this.get('vWin')).setup();
     */
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupWorkbench',
+function() {
+
+    /**
+     * @method setupWorkbench
+     * @summary Sets up the Sherpa's 'workbench' component. The workbench is the
+     *     component that contains the inspector and its attendant toolbars.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var workbenchTPElem;
+
+    workbenchTPElem = TP.byId('SherpaWorkbench', this.get('vWin'));
+    workbenchTPElem.setup();
 
     return this;
 });
