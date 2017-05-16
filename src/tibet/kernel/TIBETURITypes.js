@@ -10126,11 +10126,16 @@ function(aURI) {
         return TP.core.RouteController;
     }
 
+    //  If we got real config data, then turn it into real JSON if it isn't
+    //  already.
     if (TP.isString(config)) {
+
         configInfo = TP.json2js(TP.reformatJSToJSON(config));
+
         if (TP.isEmpty(configInfo)) {
             this.raise('InvalidObject',
-                'Unable to build config data from entry: ' + config);
+                        'Unable to build config data from entry: ' + config);
+
             return TP.core.RouteController;
         }
     } else {
@@ -10144,7 +10149,7 @@ function(aURI) {
     }
 
     //  If there was no controller type name entry, default one by concatenating
-    //  'APP' with the project and route name and the word 'Controller.
+    //  'APP' with the project and route name and the word 'Controller'.
     if (TP.isEmpty(controllerName)) {
         controllerName = 'APP.' +
                             TP.sys.cfg('project.name') +
@@ -10331,7 +10336,7 @@ function(aURIOrPushState, aDirection) {
      *     response to popstate events and whenever TIBET is asked to push or
      *     replace state on the native history object.
      * @param {String|Object} aURIOrPushState The full URI which should be
-     *     processed for routing or a push state object containing that uri.
+     *     processed for routing or a push state object containing that URI.
      *     Keys of interest in the push state are 'url' and 'pushed'.
      * @param {String} [aDirection] An optional direction hint provided by some
      *     invocation pathways. It is always used when available.
@@ -10380,11 +10385,11 @@ function(aURIOrPushState, aDirection) {
     switch (direction) {
         case 'back':
             last = TP.ifEmpty(history.get('lastURI'),
-                history.getNextLocation());
+                                history.getNextLocation());
             break;
         case 'forward':
             last = TP.ifEmpty(history.get('lastURI'),
-                history.getLastLocation());
+                                history.getLastLocation());
             break;
         case 'replace':
             last = history.get('lastURI');
