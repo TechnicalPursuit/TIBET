@@ -6174,8 +6174,10 @@ function(aRoute) {
      */
 
     var route,
+
         routeKey,
         config,
+
         configInfo,
         content,
         routeTarget,
@@ -6185,6 +6187,8 @@ function(aRoute) {
         url;
 
     route = aRoute;
+
+    //  If the route is empty, then set it to the current application route.
     if (TP.isEmpty(route)) {
         route = TP.sys.getRouter().getRoute();
     }
@@ -6206,6 +6210,7 @@ function(aRoute) {
     //  Convert any value we find into JSON so we can access values.
     if (TP.isString(config)) {
         configInfo = TP.json2js(TP.reformatJSToJSON(config));
+
         if (TP.isEmpty(configInfo)) {
             this.raise('InvalidObject',
                 'Unable to build config data from entry: ' + config);
@@ -6216,18 +6221,20 @@ function(aRoute) {
     }
 
     //  ---
-    //  Route-to-Content mapping
+    //  Route-to-Content/Target mapping
     //  ---
 
-    //  The content can be a tag type name, a URI or a String and if found
-    //  we will use that content to update either a specific target or
-    //  the UICANVAS region.
+    //  The content can be a tag type name, a URI or a String and if found we
+    //  will use that content to update either a specific target or the body of
+    //  the current UI canvas.
     content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
-        configInfo.at('content'));
+                            configInfo.at('content'));
     if (TP.isEmpty(content)) {
         return;
     }
 
+    //  The target should be a 'path' (CSS selector, XPath, etc.) that can be
+    //  used to obtain a target element.
     routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
                                 configInfo.at('target'));
     if (TP.notEmpty(routeTarget)) {
