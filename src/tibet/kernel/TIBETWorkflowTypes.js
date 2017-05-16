@@ -6154,7 +6154,7 @@ function(aSignal) {
      * @returns {TP.core.RouteController} The receiver.
      */
 
-    return this.setContentForRoute();
+    return this.setContentForRoute(aSignal.at('route'));
 });
 
 //  ------------------------------------------------------------------------
