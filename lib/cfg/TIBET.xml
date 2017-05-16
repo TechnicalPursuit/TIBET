@@ -115,6 +115,8 @@
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.buttonitem.TP.xctrls.buttonitem.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.buttonitem.TP.xctrls.buttonitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.xhtml.js"/>
@@ -153,6 +155,8 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls_grid.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls_common_all.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.buttonitem_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.dialog_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.button_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.radioitem_all.css.js"/>
@@ -165,6 +169,8 @@
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_variables_tpi.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_common_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.buttonitem_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.dialog_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.button_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.checkitem_tpi.css.js"/>
