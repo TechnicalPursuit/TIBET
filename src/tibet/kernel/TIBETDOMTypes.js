@@ -9524,28 +9524,35 @@ function(anObject, aRequest) {
      * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
-     *     'attrInfo' TP.core.Hash|Function The Hash or Function to use to
-     *     compute attributes for the main element. 'format' String How items
-     *     should be formatted when this routine loops. 'autowrap' Boolean
+     *     'attrInfo'   TP.core.Hash|Function
+     *     The Hash or Function to use to compute attributes for the main
+     *     element.
+     *
+     *     'format'     String
+     *     How items should be formatted when this routine loops.
+     *
+     *     'autowrap'   Boolean
      *     Whether or not this routine iterates over an item list, generating
      *     markup for individual items, or just generates 'start & end' tags and
      *     hands the Object to the 'format' specified (or to this tag's 'item
-     *     tag name') to iterate. 'infos' Array The Array containing information
-     *     about each 'level' of the formatting recursion. If attrInfo is
-     *     supplied, and its a Function, that Function should be defined like
-     *     so:
+     *     tag name') to iterate.
      *
-     *     function(item) {
+     *     'infos'      Array
+     *     The Array containing information about each 'level' of the formatting
+     *     recursion. If attrInfo is supplied, and its a Function, that Function
+     *     should be defined like so:
      *
-     *     return 'foo="bar"'; };
+     *         function(item) {
+     *             return 'foo="bar"';
+     *         };
      *
      *     where the item is the Array itself. It should return a String as
      *     demonstrated. If itemAttrInfo is supplied, and its a Function, that
      *     Function should be defined like so:
      *
-     *     function(item) {
-     *
-     *     return 'foo="bar"'; };
+     *         function(item) {
+     *             return 'foo="bar"';
+     *         };
      *
      *     where the item is the item itself at that position in the Array. It
      *     should return a String as demonstrated.
