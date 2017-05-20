@@ -116,7 +116,14 @@
             //  'this' references to be correct.
             send = TDS.Promise.promisify(transporter.sendMail.bind(transporter));
 
-            return send(mailOpts);
+            //  Supply a catch here in case the sendmail task has some sort of
+            //  error, like it can't compute the correct username or password or
+            //  connect for some other reason.
+            return send(mailOpts).catch(
+                function(err) {
+                    return TDS.Promise.reject(
+                            new Error('sendmail task failed: ' + err));
+                });
         };
     };
 
