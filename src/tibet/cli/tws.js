@@ -1053,7 +1053,7 @@ Cmd.prototype.executeSubmit = function() {
     try {
         doc = JSON.parse(dat);
     } catch (e) {
-        this.error('Error parsing definition: ' + e.message);
+        this.error('Error parsing ' + fullpath + ': ' + e.message);
         return;
     }
 

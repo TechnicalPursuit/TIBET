@@ -285,7 +285,7 @@ Cmd.prototype.pushFile = function(file, options) {
     try {
         doc = JSON.parse(dat);
     } catch (e) {
-        this.error('Error parsing definition: ' + e.message);
+        this.error('Error parsing ' + fullpath + ': ' + e.message);
         return;
     }
 
