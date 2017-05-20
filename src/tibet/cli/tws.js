@@ -95,8 +95,7 @@ Cmd.VIEWS = {
     },
     jobs_failed: {
         map: function(doc) {
-            if (doc.type === 'job' &&
-                    (doc.state === '$$error' || doc.state === '$$timeout')) {
+            if (doc.type === 'job' && doc.state === '$$failed') {
                 emit(doc.state, doc);
             }
         }.toString()
