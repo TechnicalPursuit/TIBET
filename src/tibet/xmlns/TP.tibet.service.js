@@ -352,7 +352,10 @@ function() {
                 //  Set the resource to the new resource (causing any observers
                 //  of the URI to get notified of a change) and signal
                 //  'TP.sig.UIDataConstruct'.
-                resultURI.setResource(newResource);
+                resultURI.setResource(
+                    newResource,
+                    TP.hc('observeResource', true, 'signalChange', true));
+
                 thisref.signal('TP.sig.UIDataConstruct');
 
                 //  Dispatch 'TP.sig.DOMReady' for consistency with other
