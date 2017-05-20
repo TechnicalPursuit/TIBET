@@ -118,8 +118,21 @@ function(aValue) {
      * @returns {TP.xctrls.switchable} The receiver.
      */
 
-    this.toggleSelectedItem(this.get('selectedItem'),
-                            this.get('itemWithValue', aValue));
+    var oldItem,
+        newItem;
+
+    //  these could be an Array - if it's empty, set it to null
+    oldItem = this.get('selectedItem');
+    if (TP.isArray(oldItem) && TP.isEmpty(oldItem)) {
+        oldItem = null;
+    }
+
+    newItem = this.get('itemWithValue', aValue);
+    if (TP.isArray(newItem) && TP.isEmpty(newItem)) {
+        newItem = null;
+    }
+
+    this.toggleSelectedItem(oldItem, newItem);
 
     return this;
 });
