@@ -5539,8 +5539,6 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
      * @example:
             hash.populate(TP.hc('uri', TP.ac('uri', 'Enter Service URI'),
      *                          'password', 'Enter password');
-     *
-     *
      * @fires Change
      */
 

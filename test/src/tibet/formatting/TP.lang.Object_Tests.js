@@ -614,8 +614,11 @@ function() {
 
         dateVal = TP.dc();
         testRep = TP.hc(
-                'Emp Number', 1, 'First Name', 'Bill', 'Last Name', 'Edney',
-                'Hire Date', dateVal.toISOString(), 'Emp Level', TP.ac(1, 2, 3)).as(
+                'Emp Number', 1,
+                'First Name', 'Bill',
+                'Last Name', 'Edney',
+                'Hire Date', dateVal.toISOString(),
+                'Emp Level', TP.ac(1, 2, 3)).as(
                         'html:form', TP.hc('repeat', true));
 
         correctRep =
