@@ -347,6 +347,8 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
     if (doc._id) {
         //  Have to fetch to get the proper _rev to update...
         db.get(doc._id, function(err, response) {
+            var rev;
+
             if (err) {
                 if (err.message !== 'missing') {
                     //  most common error will be 'missing' document due to
@@ -365,13 +367,15 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             } else {
                 //  Set revs to match so we can compare actual 'value' other
                 //  than the rev. If they're the same we can skip the insert.
-                doc._rev = response._rev;
+                rev = response._rev;
+                delete response._rev;
 
                 if (CLI.isSameJSON(doc, response)) {
                     thisref.log('skipping: ' + fullpath);
                     return;
                 }
 
+                doc._rev = rev;
                 thisref.log('updating: ' + fullpath);
             }
 
