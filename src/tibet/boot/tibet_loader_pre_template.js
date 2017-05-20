@@ -1728,7 +1728,6 @@ if (Object.defineProperty) {
 // Cache values set on the launch URL which represent user overrides.
 TP.sys.overrides = {};
 
-
 //  ----------------------------------------------------------------------------
 
 TP.sys.getcfg = function(aKey, aDefault) {
