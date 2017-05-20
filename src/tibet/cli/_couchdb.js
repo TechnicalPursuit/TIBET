@@ -98,7 +98,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: Cmd.NAME + '.tasks'
+        cfg_root: 'tds.tasks'
     });
 
     db_url = dbParams.db_url;
@@ -136,7 +136,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: Cmd.NAME + '.tasks'
+        cfg_root: 'tds.tasks'
     });
 
     db_url = dbParams.db_url;
@@ -174,7 +174,7 @@ Cmd.prototype.dbView = function(viewname, options, params) {
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: Cmd.NAME + '.tasks'
+        cfg_root: 'tds.tasks'
     });
 
     db_url = dbParams.db_url;
@@ -241,7 +241,7 @@ Cmd.prototype.pushDir = function(dir, options) {
         opts = CLI.blend(opts, couch.getCouchParameters({
             requestor: CLI,
             confirm: ask,
-            cfg_root: Cmd.NAME + '.tasks'
+            cfg_root: 'tds.tasks'
         }));
     }
 
@@ -327,7 +327,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         params = couch.getCouchParameters({
             requestor: CLI,
             confirm: ask,
-            cfg_root: Cmd.NAME + '.tasks'
+            cfg_root: 'tds.tasks'
         });
     } else {
         params = opts;
@@ -348,28 +348,37 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         //  Have to fetch to get the proper _rev to update...
         db.get(doc._id, function(err, response) {
             if (err) {
-                //  most common error will be 'missing' document due to
-                //  deletion, purge, etc.
-                thisref.error(fullpath + ' =>');
-                CLI.handleError(err, Cmd.NAME, 'push', false);
-                return;
+                if (err.message !== 'missing') {
+                    //  most common error will be 'missing' document due to
+                    //  deletion, purge, etc.
+                    thisref.error(fullpath + ' =>');
+                    CLI.handleError(err, Cmd.NAME, 'pushOne', false);
+                    return;
+                }
+
+                //  missing...don't worry about rev check...
+
+                delete doc._rev;    //  clear any _rev to avoid update conflict
+
+                thisref.log('inserting: ' + fullpath);
+
+            } else {
+                //  Set revs to match so we can compare actual 'value' other
+                //  than the rev. If they're the same we can skip the insert.
+                doc._rev = response._rev;
+
+                if (CLI.isSameJSON(doc, response)) {
+                    thisref.log('skipping: ' + fullpath);
+                    return;
+                }
+
+                thisref.log('updating: ' + fullpath);
             }
-
-            //  Set revs to match so we can compare actual 'value' other than
-            //  the rev. If they're the same we can skip the actual insert.
-            doc._rev = response._rev;
-
-            if (CLI.isSameJSON(doc, response)) {
-                thisref.log('skipping: ' + fullpath);
-                return;
-            }
-
-            thisref.log('updating: ' + fullpath);
 
             db.insert(doc, function(err2, response2) {
                 if (err2) {
                     thisref.error(fullpath + ' =>');
-                    CLI.handleError(err2, Cmd.NAME, 'push', false);
+                    CLI.handleError(err2, Cmd.NAME, 'pushOne', false);
                     return;
                 }
 
@@ -377,7 +386,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
 
                 //  Set the document ID to the response ID so we know it.
                 doc._id = response2.id;
-                doc._rev = response2.rev;
+                delete doc._rev;
                 CLI.beautify(doc).to(fullpath);
             });
 
@@ -390,7 +399,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         db.insert(doc, function(err, response) {
             if (err) {
                 thisref.error(fullpath + ' =>');
-                CLI.handleError(err, Cmd.NAME, 'push', false);
+                CLI.handleError(err, Cmd.NAME, 'pushOne', false);
                 return;
             }
 
@@ -398,7 +407,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
 
             //  Set the document ID to the response ID so we know it.
             doc._id = response.id;
-            doc._rev = response.rev;
+            delete doc._rev;
             CLI.beautify(doc).to(fullpath);
         });
     }
