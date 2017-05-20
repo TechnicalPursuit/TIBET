@@ -401,8 +401,8 @@
             }
 
             //  No job-level error tasks. We're truly done. Need to update final
-            //  state to $$complete to stop processing for this job. The exit
-            //  slot is used to signify success/failure and specific reason.
+            //  state to stop processing for this job. The exit slot is used to
+            //  signify final success/failure code.
             switch (state || job.steps[job.steps.length - 1].state) {
                 case '$$timeout':
                     code = 1;
@@ -411,11 +411,11 @@
                     code = 2;
                     break;
                 default:
-                    code = -1;
+                    code = 3;
                     break;
             }
 
-            job.state = '$$complete';
+            job.state = '$$failed';
             job.exit = code;
             job.end = Date.now();
 
@@ -1094,7 +1094,8 @@
                     logger.info(job, 'paused');
                     break;
                 case '$$failed':
-                    //  Failed means missing task or error handler. No retry.
+                    //  Failed means missing task or error handler, or a
+                    //  timeout/error for that last task. Either way no retry.
                     logger.error(job, 'failed');
                     break;
                 case '$$complete':
