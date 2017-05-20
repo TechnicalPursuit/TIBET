@@ -335,6 +335,25 @@ CLI.isSameJSON = function(objOne, objTwo) {
         fkeys,
         skeys;
 
+    //  Two keys pointing to 'null' have the same "string" values.
+    if (objOne === null) {
+        return objTwo === null;
+    }
+
+    if (objTwo === null) {
+        return objOne === null;
+    }
+
+    //  If they're not the same type they can't be equal.
+    if (typeof objOne !== typeof objTwo) {
+        return false;
+    }
+
+    //  If values are identical up we're good.
+    if (objOne === objTwo) {
+        return true;
+    }
+
     //  Normalize the objects in JSON terms by serializing/parsing. This has the
     //  effect of taking things like NaN and converting them to null, taking
     //  Date objects and turning them into numbers, etc.
@@ -343,25 +362,6 @@ CLI.isSameJSON = function(objOne, objTwo) {
         second = JSON.parse(JSON.stringify(objTwo));
     } catch (e) {
         //  Can't compare. Assume false.
-        return false;
-    }
-
-    //  Two keys pointing to 'null' have the same "string" values.
-    if (first === null) {
-        return second === null;
-    }
-
-    if (second === null) {
-        return first === null;
-    }
-
-    //  If values are identical up we're good.
-    if (first === second) {
-        return true;
-    }
-
-    //  If they're not the same type they can't be equal.
-    if (typeof first !== typeof second) {
         return false;
     }
 
@@ -395,7 +395,7 @@ CLI.isSameJSON = function(objOne, objTwo) {
     //  Recursively check values at the next level. Any mismatches will fail the
     //  test and trigger a false return.
     return !fkeys.some(function(key) {
-        return CLI.isSameJSON(first[key], second[key]);
+        return !CLI.isSameJSON(first[key], second[key]);
     });
 };
 
