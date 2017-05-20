@@ -411,7 +411,7 @@
                     code = 2;
                     break;
                 default:
-                    code = 3;
+                    code = -1;
                     break;
             }
 
