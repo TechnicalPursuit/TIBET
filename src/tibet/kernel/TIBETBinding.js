@@ -4029,6 +4029,66 @@ function(shouldRender) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refresh',
+function(shouldRender) {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver and all of the descendants of the receiver that are
+     *     bound.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var retVal;
+
+    retVal = this.$refresh();
+
+    this.refreshBoundDescendants();
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refreshBoundDescendants',
+function(shouldRender) {
+
+    /**
+     * @method refreshBoundDescendants
+     * @summary Updates bound descendants content by refreshing all bound
+     *     aspects in each one.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var boundDescendants;
+
+    boundDescendants = TP.byCSSPath(
+                                '*[bind|io], *[bind|in], *[bind|repeat]',
+                                this.getNativeNode());
+
+    boundDescendants.forEach(
+        function(aDescendant) {
+
+            //  NB: We call the primitive '$refresh' call here - otherwise,
+            //  we'll end up.
+            aDescendant.$refresh(shouldRender);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.core.UIElementNode
 //  ------------------------------------------------------------------------
 
