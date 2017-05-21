@@ -3872,11 +3872,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refresh',
+TP.core.ElementNode.Inst.defineMethod('$refresh',
 function(shouldRender) {
 
     /**
-     * @method refresh
+     * @method $refresh
      * @summary Updates the receiver's content by refreshing all bound aspects
      *     in the receiver.
      * @param {Boolean} [shouldRender] Whether or not to force (or not force)
