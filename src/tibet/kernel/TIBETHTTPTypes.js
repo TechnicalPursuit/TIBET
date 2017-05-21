@@ -164,18 +164,18 @@ function(aResult) {
         data,
         result;
 
-    if (TP.isXHR(httpObj = this.at('commObj'))) {
-        //  update what we consider to be our "final uri", the qualified URI
-        //  based on parameter data etc.
-        url = this.at('finaluri');
-        if (TP.isURIString(url)) {
-            uri = TP.uc(url);
-            if (TP.isURI(uri)) {
-                uri.updateHeaders(httpObj);
+    httpObj = this.at('commObj');
 
-                //  NOTE that this takes care of loaded/dirty state.
-                data = uri.updateResourceCache(this);
-            }
+    //  update what we consider to be our "final uri", the qualified URI
+    //  based on parameter data etc.
+    url = this.at('finaluri');
+    if (TP.isURIString(url)) {
+        uri = TP.uc(url);
+        if (TP.isURI(uri)) {
+            uri.updateHeaders(httpObj);
+
+            //  NOTE that this takes care of loaded/dirty state.
+            data = uri.updateResourceCache(this);
         }
     }
 
@@ -199,15 +199,16 @@ function(aResult) {
             }
             break;
         default:    //  TP.WRAP
-            if (TP.isEmpty(data)) {
-                result = TP.ifInvalid(aResult, data);
-            } else {
-                result = data;
-            }
             break;
     }
 
     this.set('result', result);
+
+    //  TODO: Scott - figure out if/why we need to do this here.
+    if (TP.isValid(uri)) {
+        //  NOTE that this takes care of loaded/dirty state.
+        uri.updateResourceCache(this);
+    }
 
     return this.callNextMethod(result);
 });
