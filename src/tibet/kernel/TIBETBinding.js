@@ -3862,6 +3862,7 @@ function(aSignal) {
      * @summary Refreshes the receiver's bound data.
      * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
      *     this handler.
+     * @returns {TP.core.ElementNode} The receiver.
      */
 
     this.refresh();
