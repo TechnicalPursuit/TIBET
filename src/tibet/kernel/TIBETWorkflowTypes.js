@@ -6668,7 +6668,7 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    // Do any final steps to ensure the UI is ready for operation.
+    //  Do any final steps to ensure the UI is ready for operation.
     this.finalizeGUI();
 
     (function(signal) {
