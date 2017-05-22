@@ -9810,6 +9810,9 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
+    var cfg,
+        thisref;
+
     this.$set('processors', TP.ac());
 
     //  Always need a route to match "anything" as our backstop. If no routes
@@ -9819,11 +9822,31 @@ function() {
     //  Define the root pattern route for "empty paths".
     this.definePath(/^\/$/, this.get('root'));
 
+    thisref = this;
+
     //  TODO:   process config-based token definitions
+    cfg = TP.sys.cfg('route.tokens');
+    if (TP.notEmpty(cfg)) {
+        keys = TP.keys(cfg);
+        keys.forEach(function(key) {
+            var val;
+
+            val = cfg.at(key);
+            thisref.defineToken(key.replace('route.tokens.', ''), val);
+        });
+    }
 
     //  TODO:   process config-based path-to-routename definitions
+    cfg = TP.sys.cfg('route.paths');
+    if (TP.notEmpty(cfg)) {
+        keys = TP.keys(cfg);
+        keys.forEach(function(key) {
+            var val;
 
-    //  TODO:   process config-based route-to-controller/target/content
+            val = cfg.at(key);
+            thisref.definePath(key.replace('route.paths.', ''), val);
+        });
+    }
 
     return;
 });
@@ -10026,15 +10049,21 @@ function(token, pattern) {
      * @returns {TP.core.URIRouter} The receiver.
      */
 
+    var regex;
+
     if (!TP.isString(token)) {
         this.raise('InvalidToken', token);
     }
 
-    if (!TP.isRegExp(pattern)) {
-        this.raise('InvalidPattern', pattern);
+    regex = pattern;
+    if (!TP.isRegExp(regex)) {
+        regex = TP.rc(pattern);
+        if (!TP.isRegExp(regex)) {
+            this.raise('InvalidPattern', pattern);
+        }
     }
 
-    TP.sys.setcfg('route.tokens.' + token, TP.str(pattern));
+    TP.sys.setcfg('route.tokens.' + token, TP.str(regex));
 
     return this;
 });
@@ -10140,7 +10169,11 @@ function() {
     config = TP.sys.cfg(routeKey);
 
     if (TP.isEmpty(config)) {
-        return TP.core.RouteController;
+        routeKey = 'route';
+        config = TP.sys.cfg(routeKey);
+        if (TP.isEmpty(config)) {
+            return TP.core.RouteController;
+        }
     }
 
     //  If we got real config data, then turn it into real JSON if it isn't
