@@ -9811,7 +9811,8 @@ function() {
      */
 
     var cfg,
-        thisref;
+        thisref,
+        keys;
 
     this.$set('processors', TP.ac());
 
