@@ -6209,8 +6209,7 @@ function(aRoute) {
         //  Don't warn for the Home route - many times, the app won't have a
         //  defined Home route.
         if (route !== 'Home') {
-            this.raise('InvalidRoute',
-                        'Unable to find route cfg info for: ' + route);
+            TP.warn('Unable to find route cfg info for: ' + route);
         }
 
         return this;
