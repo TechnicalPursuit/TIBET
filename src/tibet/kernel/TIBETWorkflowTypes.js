@@ -6740,6 +6740,8 @@ function(aSignal) {
      */
 
     TP.core.Application.get('singleton').start(aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
