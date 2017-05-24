@@ -10071,6 +10071,32 @@ function(token, pattern) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URIRouter.Type.defineMethod('getLastRoute',
+function() {
+
+    /**
+     * @method getLastRoute
+     * @summary Returns the last route the application was set to. If the
+     *     application hasn't yet been set to a specific route this method
+     *     returns 'Home' as the default value.
+     * @returns {String} The route, or 'Home' if no last route exists.
+     */
+
+    var hist,
+        loc;
+
+    hist = TP.sys.getHistory();
+    loc = hist.getLastLocation();
+
+    if (TP.notValid(loc)) {
+        return 'Home';
+    }
+
+    return this.getRoute(loc);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URIRouter.Type.defineMethod('getRoute',
 function(aURI) {
 
@@ -10410,6 +10436,7 @@ function(aURIOrPushState, aDirection) {
         payload,
         type,
         signal,
+        spoof,
         home,
         routeKey,
         config,
@@ -10785,6 +10812,16 @@ function(aURIOrPushState, aDirection) {
 
     payload.atPut('route', route);
 
+    signame = signal.getSignalName();
+
+    spoof = TP.sig.RouteChange.construct(payload);
+    spoof.setSignalName(this.getLastRoute() + 'RouteExit');
+    spoof.fire();
+
+    spoof.setSignalName(route + 'RouteEnter');
+    spoof.fire();
+
+    signal.setSignalName(signame);
     signal.fire();
 
     return;
