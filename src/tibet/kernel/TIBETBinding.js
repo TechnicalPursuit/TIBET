@@ -3475,10 +3475,12 @@ function() {
 
         elemWithID = elemsWithIDs.at(j);
 
-        TP.ifWarn() ?
-            TP.warn('Stripping ID from Element in repeat template: ' +
-                    TP.str(elemWithID) + '. ' +
-                    'IDs are supposed to be unique in markup.') : 0;
+        if (!TP.elementHasGeneratedID(elemWithID)) {
+            TP.ifWarn() ?
+                TP.warn('Stripping ID from Element in repeat template: ' +
+                        TP.str(elemWithID) + '. ' +
+                        'IDs are supposed to be unique in markup.') : 0;
+        }
 
         TP.elementRemoveAttribute(elemWithID, 'id', true);
     }
