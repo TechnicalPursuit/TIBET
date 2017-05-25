@@ -202,12 +202,18 @@ function(aResult) {
             break;
     }
 
+    //  Set the result to the new data (or to the old data if the new data was
+    //  invalid, per our switch statement above).
     this.set('result', result);
 
-    //  TODO: Scott - figure out if/why we need to do this here.
+    //  Now, if we have a valid URI, update the resource cache again, which will
+    //  use the result we just set and will update it to the new (or maybe old)
+    //  data. NOTE: we capture the result and return it as the result from the
+    //  HTTP call. This is important so that we get the last, most up-to-date
+    //  data representation.
     if (TP.isValid(uri)) {
         //  NOTE that this takes care of loaded/dirty state.
-        uri.updateResourceCache(this);
+        result = uri.updateResourceCache(this);
     }
 
     return this.callNextMethod(result);
