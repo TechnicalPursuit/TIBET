@@ -768,7 +768,7 @@ function() {
                                 TP.hc('resultType', TP.TEXT)).get('result');
 
                             test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
+                            test.assert.isEqualTo(aResult, testBody);
 
                             return this;
                         };
@@ -1099,8 +1099,8 @@ function() {
 
                             aResult = resultURI.getResource().get('result');
 
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
+                            test.assert.isKindOf(aResult, TP.core.Hash);
+                            test.assert.isEqualTo(aResult, testBody.get('data'));
 
                             return this;
                         };
@@ -1200,8 +1200,9 @@ function() {
 
                             aResult = resultURI.getResource().get('result');
 
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
+                            test.assert.isKindOf(aResult, Array);
+                            test.assert.isEqualTo(aResult.at(0), 'body');
+                            test.assert.isEqualTo(aResult.at(1), 'body');
 
                             return this;
                         };
@@ -1300,8 +1301,9 @@ function() {
 
                             aResult = resultURI.getResource().get('result');
 
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
+                            test.assert.isKindOf(aResult, Array);
+                            test.assert.isEqualTo(aResult.at(0), 'body');
+                            test.assert.isEqualTo(aResult.at(1), 'body');
 
                             return this;
                         };
