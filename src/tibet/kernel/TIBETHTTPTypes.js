@@ -162,7 +162,9 @@ function(aResult) {
         url,
         uri,
         data,
-        result;
+        result,
+
+        wasRefreshingContent;
 
     httpObj = this.at('commObj');
 
@@ -212,8 +214,17 @@ function(aResult) {
     //  HTTP call. This is important so that we get the last, most up-to-date
     //  data representation.
     if (TP.isValid(uri)) {
+
+        //  Note how we force the 'refreshContent' setting to true here - this
+        //  will make sure that the resource cache is updated with the content
+        //  from this request and that the proper result is returned.
+        wasRefreshingContent = this.at('refreshContent');
+        this.atPut('refreshContent', true);
+
         //  NOTE that this takes care of loaded/dirty state.
         result = uri.updateResourceCache(this);
+
+        this.atPut('refreshContent', wasRefreshingContent);
     }
 
     return this.callNextMethod(result);
