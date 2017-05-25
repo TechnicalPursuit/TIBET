@@ -730,7 +730,7 @@ function() {
                     promise;
 
                 locStr = '/TIBET_endpoints/HTTP_REST_POST_TEST';
-                testBody = 'POST test content';
+                testBody = 'OK from POST';
 
                 //  ---
 
@@ -1097,10 +1097,11 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service10_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                    TP.hc('resultType', TP.TEXT)).get('result');
 
-                            test.assert.isKindOf(aResult, TP.core.Hash);
-                            test.assert.isEqualTo(aResult, testBody.get('data'));
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, 'OK from POST');
 
                             return this;
                         };
@@ -1200,9 +1201,11 @@ function() {
 
                             aResult = resultURI.getResource().get('result');
 
-                            test.assert.isKindOf(aResult, Array);
-                            test.assert.isEqualTo(aResult.at(0), 'body');
-                            test.assert.isEqualTo(aResult.at(1), 'body');
+                            aResult = resultURI.getResource(
+                                    TP.hc('resultType', TP.TEXT)).get('result');
+
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, 'OK from POST');
 
                             return this;
                         };
@@ -1299,11 +1302,11 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service12_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                    TP.hc('resultType', TP.TEXT)).get('result');
 
-                            test.assert.isKindOf(aResult, Array);
-                            test.assert.isEqualTo(aResult.at(0), 'body');
-                            test.assert.isEqualTo(aResult.at(1), 'body');
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, 'OK from POST');
 
                             return this;
                         };
