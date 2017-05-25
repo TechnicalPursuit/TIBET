@@ -11,15 +11,14 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
-
 (function() {
 
     module.exports = {
 
         extend: function(Cmd, CLI) {
 
-            Cmd.prototype.addXMLEntry = function(node, prefix, content, suffix) {
+            Cmd.prototype.addXMLEntry = function(
+                                        node, prefix, content, suffix) {
                 var doc,
                     parser,
                     newElem;
@@ -30,8 +29,10 @@
                 node.appendChild(doc.createTextNode(prefix));
 
                 doc = parser.parseFromString(content, 'text/xml');
-                if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-                    this.error('Error parsing ' + content + '. Not well-formed?');
+                if (!doc ||
+                    CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+                    this.error(
+                        'Error parsing ' + content + '. Not well-formed?');
                     throw new Error();
                 }
 
@@ -79,7 +80,8 @@
 
             //  ---
 
-            Cmd.prototype.hasXMLEntry = function(node, tagName, attrName, attrValue) {
+            Cmd.prototype.hasXMLEntry = function(
+                                        node, tagName, attrName, attrValue) {
                 var children;
 
                 children = Array.prototype.slice.call(node.childNodes, 0);
@@ -116,8 +118,8 @@
 
             //  ---
 
-            Cmd.prototype.readConfigNode = function(pkgfile, cfgname,
-                    buildIfAbsent) {
+            Cmd.prototype.readConfigNode = function(
+                                            pkgfile, cfgname, buildIfAbsent) {
                 var pkgtext,
                     parser,
                     doc,
@@ -133,7 +135,8 @@
                 parser = this.getXMLParser();
 
                 doc = parser.parseFromString(pkgtext);
-                if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+                if (!doc ||
+                    CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
                     this.error('Error parsing package. Not well-formed?');
                     throw new Error();
                 }
@@ -213,8 +216,8 @@
 
                 file = CLI.expandPath(pkgfile);
 
-                //  'to' is a shelljs extension to String - we're assuming that shelljs is
-                //  loaded here.
+                //  'to' is a shelljs extension to String - we're assuming that
+                //  shelljs is loaded here.
                 cfgdata.to(file);
 
                 return text;

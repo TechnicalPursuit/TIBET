@@ -1754,7 +1754,7 @@ function(wantsShallowScope) {
      * @param {Boolean} wantsShallowScope Whether or not to produce bound
      *     elements that are 'under' a nested scope (i.e. either a bind:scope or
      *     bind:repeat) under the receiver.
-     * @returns {Array} An Array of bound elements.
+     * @returns {Element[]} An Array of bound elements.
      */
 
     var elem,
