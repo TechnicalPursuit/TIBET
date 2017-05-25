@@ -4083,9 +4083,7 @@ function(shouldRender) {
 
     var boundDescendants;
 
-    boundDescendants = TP.byCSSPath(
-                                '*[bind|io], *[bind|in], *[bind|repeat]',
-                                this.getNativeNode());
+    boundDescendants = TP.wrap(this.$getBoundElements(true));
 
     boundDescendants.forEach(
         function(aDescendant) {
