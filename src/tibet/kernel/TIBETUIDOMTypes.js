@@ -4160,11 +4160,14 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         funcName = 'setAttr' + attrName;
         if (TP.canInvoke(this, funcName)) {
             this[funcName](facetValue);
+        } else {
+
+            //  NB: This will signal the standard TP.sig.ValueChange (where
+            //  'value' is the facet that changed).
+            this.set(aspectName, facetValue, shouldSignal);
         }
 
-        //  NB: This will signal the standard TP.sig.ValueChange (where 'value'
-        //  is the facet that changed).
-        return this.set(aspectName, facetValue, shouldSignal);
+        return this;
     }
 
     //  This will signal with the facet name as the facet that changed.
