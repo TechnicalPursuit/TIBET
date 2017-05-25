@@ -2272,6 +2272,12 @@ function(indexes) {
         return this;
     }
 
+    //  If the repeat content's child element list has a size of 1, then we
+    //  reach under there and use that element as the repeat content
+    if (TP.nodeGetChildElements(repeatContent).getSize() === 1) {
+        repeatContent = repeatContent.firstElementChild;
+    }
+
     //  Whichever element has a 'tibet:nomutationtracking' attribute on it is
     //  acting as a common wrapper for the 'rows' making up the repeat. This may
     //  be a <tbody> element if we're repeating rows in a <table>, but it
