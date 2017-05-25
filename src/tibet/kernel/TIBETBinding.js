@@ -1790,6 +1790,10 @@ function(wantsShallowScope) {
 
                     var k;
 
+                    if (!elem.contains(aSubscope)) {
+                        return false;
+                    }
+
                     for (k = 0; k < allScopes.length; k++) {
                         if (allScopes[k] !== aSubscope &&
                             allScopes[k].contains(aSubscope)) {
