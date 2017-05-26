@@ -2501,6 +2501,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 var k;
 
+                if (!elem.contains(aSubscope)) {
+                    return false;
+                }
+
                 for (k = 0; k < subscopes.length; k++) {
                     if (subscopes[k] !== aSubscope &&
                         subscopes[k].contains(aSubscope)) {
