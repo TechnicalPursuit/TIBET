@@ -87,7 +87,7 @@ function(aContentObject, aRequest) {
 
         //  Note 'addContent' here to avoid blowing away the 'xctrls:value' tag
         //  holding our key.
-        panelTPElem = panelTPElem.addContent(aContentObject);
+        panelTPElem.addContent(aContentObject);
     }
 
     this.setValue(contentKey);
