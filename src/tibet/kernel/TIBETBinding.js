@@ -4089,13 +4089,21 @@ function(shouldRender) {
 
     var boundDescendants;
 
-    boundDescendants = TP.wrap(this.$getBoundElements(true));
+    //  Get the bound descendant elements of the receiver. Note how we pass
+    //  'false' here to *not* just get elements that are 'shallow'. Because we
+    //  are querying from this element 'down', we're already getting only the
+    //  descendants of it - but we want them all *deeply* within it.
+    boundDescendants = TP.wrap(this.$getBoundElements(false));
 
     boundDescendants.forEach(
         function(aDescendant) {
 
             //  NB: We call the primitive '$refresh' call here - otherwise,
-            //  we'll end up.
+            //  we'll end up recursing. Note that, even though boundDescendants
+            //  will contain 'bind:scope' and 'bind:repeat' elements at this
+            //  point, they will be filtered out by this method. Their
+            //  descendants, the real bind:[in|io|out] elements, will be
+            //  refreshed.
             aDescendant.$refresh(shouldRender);
         });
 
