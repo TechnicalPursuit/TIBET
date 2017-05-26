@@ -134,9 +134,6 @@ function(aValue) {
 
     this.toggleSelectedItem(oldItem, newItem);
 
-    //  Make sure to refresh the newItem in case it has bound descendants.
-    newItem.refresh();
-
     return this;
 });
 
