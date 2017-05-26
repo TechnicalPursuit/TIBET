@@ -65,7 +65,9 @@ function(aContentObject, aRequest) {
     var request,
 
         contentKey,
-        panelTPElem;
+        panelTPElem,
+
+        handler;
 
     request = TP.request(aRequest);
 
@@ -84,6 +86,23 @@ function(aContentObject, aRequest) {
                         '<xctrls:panel><xctrls:value>' +
                         contentKey +
                         '</xctrls:value></xctrls:panel>');
+
+        //  NB: We don't need the result here - just ensuring that that new
+        //  panel has an ID (hence the 'true' supplied here).
+        panelTPElem.getLocalName(true);
+
+        //  Observe the new panel when it gets attached to the DOM. When it
+        //  does, refresh its bound data.
+        handler = function() {
+
+            //  Make sure to ignore here - otherwise, we'll fill up the signal
+            //  map.
+            handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
+
+            panelTPElem.refresh();
+        };
+
+        handler.observe(panelTPElem, 'TP.sig.AttachComplete');
 
         //  Note 'addContent' here to avoid blowing away the 'xctrls:value' tag
         //  holding our key.
