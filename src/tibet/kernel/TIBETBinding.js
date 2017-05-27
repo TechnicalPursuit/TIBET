@@ -2436,8 +2436,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         i,
         j,
 
-        // ownerWrappers,
-
         theVal,
 
         primaryLocMatcher,
@@ -2562,8 +2560,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         }
     }
 
-    // ownerWrappers = TP.hc();
-
     //  TIMING: var endQuery = Date.now();
     //  TIMING: TP.totalBranchQueryTime += (endQuery - startQuery);
 
@@ -2656,20 +2652,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                 primarySource, aSignal, elems, branchVal,
                                 pathType, null, null, true);
             } else {
-
-                //  There are different types of wrappers depending on full tag
-                //  name of element (ns:tagname)
-
-                /*
-                if (TP.notValid(
-                        ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
-                    ownerTPElem = TP.core.ElementNode.construct(ownerElem);
-                    ownerWrappers.atPut(ownerElem.tagName, ownerTPElem);
-                }
-
-                //  NB: Primitive and fast way to set native node
-                ownerTPElem.$set('node', ownerElem, false);
-                */
 
                 //  If we're not scoped (i.e. running top-level expressions) and
                 //  those expressions don't contain ACP variables and the
@@ -2936,17 +2918,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     }
 
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
-
-                    /*
-                    if (TP.notValid(
-                        ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
-                        ownerTPElem = TP.core.ElementNode.construct(ownerElem);
-                        ownerWrappers.atPut(ownerElem.tagName, ownerTPElem);
-                    }
-
-                    //  NB: Primitive and fast way to set native node
-                    ownerTPElem.$set('node', ownerElem, false);
-                    */
 
                     ownerTPElem.refreshLeaf(
                         primarySource, aSignal, theVal, boundAttr, aPathType);
