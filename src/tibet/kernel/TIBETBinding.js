@@ -3885,27 +3885,47 @@ function(shouldRender) {
      *     receiver already had and, therefore, truly changed.
      */
 
-    var attrVal,
+    var elem,
+
+        attrVal,
 
         scopeVals,
+
+        repeatFullExpr,
+        repeatWholeURI,
+        repeatResult,
+
         bindingInfo,
 
         valChanged,
 
         willRender;
 
-    //  If this isn't a bound element, then just call render() and return
-    if (!this.isBoundElement()) {
-        this.render();
+    elem = this.getNativeNode();
 
-        return this;
-    }
-
-    //  First, check the value of 'bind:io'
-    attrVal = this.getAttribute('bind:io');
-    if (TP.isEmpty(attrVal)) {
-        //  If empty, check the value of 'bind:in'
+    //  NB: This check is done in order of precedence of these attributes
+    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrVal = this.getAttribute('bind:io');
+    } else if (TP.elementHasAttribute(elem, 'bind:in', true)) {
         attrVal = this.getAttribute('bind:in');
+    } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
+        return this.refreshBoundDescendants();
+    } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        scopeVals = this.getBindingScopeValues();
+
+        repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
+        repeatWholeURI = TP.uc(repeatFullExpr);
+        repeatResult = repeatWholeURI.getResource().get('result');
+
+        this.$regenerateRepeat(repeatResult, TP.ac());
+
+        return this.refreshBoundDescendants();
+    } else {
+        //  If this isn't an element around one of those three attributes, then
+        //  just call render() and return
+        this.render();
+        return this;
     }
 
     //  If there is no attribute value, then just return
@@ -4072,10 +4092,10 @@ function(shouldRender) {
     var boundDescendants;
 
     //  Get the bound descendant elements of the receiver. Note how we pass
-    //  'false' here to *not* just get elements that are 'shallow'. Because we
-    //  are querying from this element 'down', we're already getting only the
-    //  descendants of it - but we want them all *deeply* within it.
-    boundDescendants = TP.wrap(this.$getBoundElements(false));
+    //  'true' here to *just* get elements that are 'shallow'. If we pick up
+    //  'scope' or 'repeat' elements, those will recursively call this method
+    //  for any 'in' or 'io' elements under them.
+    boundDescendants = TP.wrap(this.$getBoundElements(true));
 
     boundDescendants.forEach(
         function(aDescendant) {
