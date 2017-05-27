@@ -9152,6 +9152,15 @@ TP.boot.$$importComplete = function() {
                         win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
                     }
 
+                    //  If we're using a login page, then focus (the first)
+                    //  element that has an 'autofocus' attribute. Sometimes,
+                    //  based on what's happeing on boot, this field will have
+                    //  lost focus.
+                    if (TP.sys.cfg('boot.use_login')) {
+                        TP.elementFocusAutofocusedElement(
+                            win.document.documentElement);
+                    }
+
                     if (win) {
                         if (win.$$phase_two === true ||
                             window.$$phase_two === true) {
