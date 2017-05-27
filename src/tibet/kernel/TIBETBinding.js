@@ -1790,6 +1790,11 @@ function(wantsShallowScope) {
 
                     var k;
 
+                    //  We don't want ourself in the list
+                    if (aSubscope === elem) {
+                        return false;
+                    }
+
                     if (!elem.contains(aSubscope)) {
                         return false;
                     }
@@ -2501,6 +2506,11 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 var k;
 
+                //  We don't want ourself in the list
+                if (aSubscope === elem) {
+                    return false;
+                }
+
                 if (!elem.contains(aSubscope)) {
                     return false;
                 }
@@ -2520,6 +2530,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 var k;
 
+                //  We don't want ourself in the list
                 if (anElem === elem) {
                     return false;
                 }
