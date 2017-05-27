@@ -3254,8 +3254,8 @@ function(aCollection, elems) {
      *     for the repeating content. Note that this method merely generates the
      *     blank repeating rows - it is up to other methods to refresh the data
      *     bindings within them.
-     * @param {Array.<Element>} elems The list of elements that the bind engine
-     *     is currently processing, of which is this element. We will splice any
+     * @param {Element[]} elems The list of elements that the bind engine is
+     *     currently processing, of which is this element. We will splice any
      *     new content that this method generates into this collection so that
      *     the engine will recursively process into this new content.
      * @returns {TP.core.ElementNode} The receiver.
