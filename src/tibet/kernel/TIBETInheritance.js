@@ -1531,7 +1531,10 @@ function(anObject, transformParams) {
 
     var obj,
         str,
-        transform;
+        transform,
+
+        num,
+        date;
 
     str = this.toString();
     if (/#{/.test(str)) {
@@ -1546,6 +1549,26 @@ function(anObject, transformParams) {
         return str.substitute(anObject, transform);
     } else if (TP.regex.FORMAT_SUBSTITUTION.test(str)) {
         return str.substitute(anObject);
+    } else {
+
+        //  Otherwise, we special case to see if we can create a Number from the
+        //  supplied object.
+        num = parseFloat(anObject);
+
+        //  If so, see if we can create a Data
+        if (TP.isNumber(num)) {
+
+            date = TP.dc(num);
+            if (TP.isDate(date)) {
+
+                //  Got a real Date - run our transformation on it.
+                return this.transform(date);
+            }
+
+            //  Didn't get a Date, but have a real Number - run our
+            //  transformation on it.
+            return this.transform(num);
+        }
     }
 
     //  return bad format string, not data, for debugging
