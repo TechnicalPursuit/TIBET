@@ -1068,18 +1068,22 @@ function(aDataSource, transformParams) {
         }
     } else {
 
+        //  See if the format is a URI string. If so, see if there's a real URL
+        //  that we can use to do the formatting.
+
+        //  Note that this code is structured to purposely avoid creating a URI
+        //  via TP.uc for testing purposes. This avoids filling up the URI map
+        //  with URIs that don't really have resources.
+
         urn = TP.uriExpandPath(str);
-        if (TP.isURIString(urn)) {
-            url = TP.uc(urn);
-        } else {
-            urnBuilt = true;
+        if (!TP.isURIString(urn)) {
             urn = TP.TIBET_URN_PREFIX + urn;
-            if (TP.isURIString(urn)) {
-                url = TP.uc(urn);
-            }
         }
 
-        if (TP.isURI(url)) {
+        //  If we have a URI string and there's already a registered instance of
+        //  a URI matching that, then go ahead and use it.
+        if (TP.isURIString(urn) && TP.core.URI.hasInstance(urn)) {
+            url = TP.core.URI.getInstanceById(urn);
             //  NB: We assume 'async' of false here.
             if (TP.isValid(template = url.getResource().get('result'))) {
                 return template.transform(aDataSource, transformParams);
