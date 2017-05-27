@@ -10417,7 +10417,9 @@ function(aURIOrPushState, aDirection) {
      *     Keys of interest in the push state are 'url' and 'pushed'.
      * @param {String} [aDirection] An optional direction hint provided by some
      *     invocation pathways. It is always used when available.
-     * @fires {RouteChange} If the URI has changed the fragment path (route).
+     * @fires {RouteEnter} If the URI has changed the fragment path (route).
+     * @fires {RouteExit} If the URI has changed the fragment path (route).
+     * @fires {RouteFinalize} If the URI has changed the fragment path (route).
      * @exception {TP.sig.InvalidOperation} When an operation cannot be computed
      *     by comparing the old route parameters from the new route parameters.
      */
@@ -10790,9 +10792,9 @@ function(aURIOrPushState, aDirection) {
     } else {
 
         //  Couldn't find a valid signal type above, so we just use
-        //  TP.sig.RouteChange as the type and set a 'spoofed' signal name using
-        //  the same algorithm as above.
-        signal = TP.sig.RouteChange.construct(payload);
+        //  TP.sig.RouteFinalize as the type and set a 'spoofed' signal name
+        //  using the same algorithm as above.
+        signal = TP.sig.RouteFinalize.construct(payload);
         signame = TP.ifInvalid(
                     configInfo.at(routeKey + '.signal'),
                     route + 'Route');
@@ -10812,16 +10814,26 @@ function(aURIOrPushState, aDirection) {
 
     payload.atPut('route', route);
 
-    signame = signal.getSignalName();
+    //  Now, we first a series of 3 signals matching the routing sequence:
 
-    spoof = TP.sig.RouteChange.construct(payload);
+    //  Fire a RouteExit signal, using the last route that was set (this method
+    //  is being executed *after* the route has been set - the browsers provide
+    //  no mechanism for trapping *before* a route has been navigated to). Note
+    //  here how we append 'RouteExit' onto that for consistency with routing
+    //  signal naming.
+    spoof = TP.sig.RouteExit.construct(payload);
     spoof.setSignalName(this.getLastRoute() + 'RouteExit');
     spoof.fire();
 
+    //  Fire a RouteEnter signal, using the current route that is being set.
+    //  Note here how we append 'RouteEnter' onto that for consistency with
+    //  routing signal naming.
+    spoof = TP.sig.RouteEnter.construct(payload);
     spoof.setSignalName(route + 'RouteEnter');
     spoof.fire();
 
-    signal.setSignalName(signame);
+    //  Fire the signal that we computed above, which should be an instance of
+    //  either RouteFinalize or a subtype of RouteFinalize.
     signal.fire();
 
     return;

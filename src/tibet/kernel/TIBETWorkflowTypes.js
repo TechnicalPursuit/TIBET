@@ -6144,13 +6144,14 @@ TP.core.RouteController.Type.shouldUseSingleton(true);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RouteController.Inst.defineHandler('RouteChange',
+TP.core.RouteController.Inst.defineHandler('RouteFinalize',
 function(aSignal) {
 
     /**
-     * @method handleRouteChange
-     * @summary A handler for any changes to the current application route.
-     * @param {TP.sig.RouteChange} aSignal The startup signal.
+     * @method handleRouteFinalize
+     * @summary A handler for any finalizations to the current application
+     *     route.
+     * @param {TP.sig.RouteFinalize} aSignal The startup signal.
      * @returns {TP.core.RouteController} The receiver.
      */
 
@@ -6745,16 +6746,16 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineHandler('RouteChange',
+TP.core.Application.Inst.defineHandler('RouteFinalize',
 function(aSignal) {
 
     /**
-     * @method handleRouteChange
-     * @summary A handler for any changes to the current application route.
-     *     The default integrates route change notifications with any current
-     *     application state machine to let the application state reflect the
-     *     current route.
-     * @param {TP.sig.RouteChange} aSignal The startup signal.
+     * @method handleRouteFinalize
+     * @summary A handler for any finalizations to the current application
+     *     route. The default integrates route change notifications with any
+     *     current application state machine to let the application state
+     *     reflect the current route.
+     * @param {TP.sig.RouteFinalize} aSignal The startup signal.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -6763,7 +6764,7 @@ function(aSignal) {
         route,
         targets;
 
-    TP.info('Application RouteChange: ' + aSignal.at('route'));
+    TP.info('Application RouteFinalize: ' + aSignal.at('route'));
 
     machine = this.getStateMachine();
     if (TP.isValid(machine) && machine.isActive()) {

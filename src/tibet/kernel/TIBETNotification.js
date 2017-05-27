@@ -3211,6 +3211,21 @@ TP.sig.RouteChange.Type.isControllerSignal(true);
 //  NOTE this is a LOCAL assignment so subtypes don't inherit it.
 TP.sig.RouteChange.isSignalingRoot(true);
 
+//  The sequence that the router will fire these is:
+
+//      Exit
+//      Enter
+//      Finalize
+
+//  The signal type for entering a route
+TP.sig.RouteChange.defineSubtype('RouteEnter');
+
+//  The signal type for exiting a route
+TP.sig.RouteChange.defineSubtype('RouteExit');
+
+//  The signal type for finalizing a route
+TP.sig.RouteChange.defineSubtype('RouteFinalize');
+
 //  ------------------------------------------------------------------------
 //  TP.sig.SignalMap
 //  ------------------------------------------------------------------------
