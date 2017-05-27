@@ -9107,7 +9107,9 @@ TP.boot.$$importComplete = function() {
      */
 
     var stage,
-        win;
+        win,
+
+        autofocusedElem;
 
     //  if we've been 'importing' and the list is now empty then we're
     //  done with whatever phase we've been processing
@@ -9154,11 +9156,29 @@ TP.boot.$$importComplete = function() {
 
                     //  If we're using a login page, then focus (the first)
                     //  element that has an 'autofocus' attribute. Sometimes,
-                    //  based on what's happeing on boot, this field will have
-                    //  lost focus.
+                    //  based on what's happening on boot, this field will have
+                    //  lost focus. NB: We do this in a fairly primitive fashion
+                    //  rather than using the prebuilt TIBET functionality to
+                    //  focus the autofocused element because we don't want to
+                    //  invoke other TIBET machinery this early in the boot
+                    //  process. In particular, we don't want an 'Application'
+                    //  singleton object to be created prematurely before the
+                    //  phase two, which very well may include an Application
+                    //  subtype. It is this subtype that we actually want the
+                    //  singleton to be created from.
                     if (TP.sys.cfg('boot.use_login')) {
-                        TP.elementFocusAutofocusedElement(
-                            win.document.documentElement);
+                        //  Grab the first element under supplied element that
+                        //  has an 'autofocus' attribute on it (the value of
+                        //  that attribute is irrelevant).
+                        autofocusedElem = TP.byCSSPath(
+                                            '*[autofocus]',
+                                            win.document.documentElement,
+                                            true,
+                                            false);
+
+                        if (TP.isElement(autofocusedElem)) {
+                            autofocusedElem.focus();
+                        }
                     }
 
                     if (win) {
