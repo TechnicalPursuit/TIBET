@@ -4,7 +4,7 @@
     <sherpa:consoleoutputitem id="{{id}}" name="consoleItem" tibet:nodragtrapping="true" tibet:noawaken="true">
         <div class="flex-item">
             <!-- The template used for the 'input' part of a piece of console output -->
-            <div class="header {{inputclass}}">
+            <div class="header select {{inputclass}}">
                 <span class="hid"><a href="#" onclick="TP.bySystemId('SherpaConsoleService').sendConsoleRequest('{{hid}}'); return false;">{{hid}}</a></span>
                 <span class="content">{{cmdText}}</span>
                 <span class="typeinfo {{empty}}">{{resultType}}</span>
@@ -19,7 +19,7 @@
         <sherpa:scrollbutton orientation="up" on:click="ScrollUp">
             <span class="icon"/>
         </sherpa:scrollbutton>
-        <span class="result {{resultclass}}">{{output}}</span>
+        <span class="result select {{resultclass}}">{{output}}</span>
         <sherpa:scrollbutton orientation="down" on:click="ScrollDown">
             <span class="icon"/>
         </sherpa:scrollbutton>
