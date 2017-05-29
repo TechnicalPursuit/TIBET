@@ -189,16 +189,7 @@ Cmd.prototype.dbView = function(viewname, options, params) {
     server = couch.server(db_url);
     db = server.use(db_name);
 
-    return db.viewAsync(db_app, viewname, options).then(function(result) {
-        var body,
-            values;
-
-        body = result[0];
-        values = body.rows.map(function(row) {
-            return row.value;
-        });
-        return values;
-    });
+    return db.viewAsyncRows(db_app, viewname, options);
 };
 
 
