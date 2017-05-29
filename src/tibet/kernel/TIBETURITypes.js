@@ -1296,7 +1296,20 @@ function(schemeSpecificString) {
 
         if (TP.notEmpty(fragment = schemeSpecificString.slice(
                                     schemeSpecificString.indexOf('#') + 1))) {
-            this.$set('fragment', fragment, false);
+
+            //  Make sure that the fragment conforms to one of the kinds of
+            //  fragments we support (barenames, #document fragments or any kind
+            //  of XPointer). Note here how we prepend a '#' to the fragment for
+            //  testing for '#document' and for barenames, as those RegExps
+            //  require a leading '#'.
+            if (TP.regex.DOCUMENT_ID.test('#' + fragment) ||
+                TP.regex.BARENAME.test('#' + fragment) ||
+                TP.regex.ANY_POINTER.test(fragment)) {
+
+                this.$set('fragment', fragment, false);
+            } else {
+                this.raise('TP.sig.InvalidFragment');
+            }
         }
     } else {
         this.$set('primaryLocation',
