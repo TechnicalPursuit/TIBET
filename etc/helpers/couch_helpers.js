@@ -473,6 +473,22 @@ helpers.server = function(url) {
         Promise.promisifyAll(db.multipart);
         Promise.promisifyAll(db.attachment);
 
+        db.viewAsyncRows = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body,
+                        values;
+
+                    body = result[0];
+                    values = body.rows.map(function(row) {
+                        return row.value;
+                    });
+
+                    return values;
+                });
+        };
+
         return db;
     };
 
