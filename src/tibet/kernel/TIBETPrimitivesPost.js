@@ -3506,7 +3506,8 @@ function(anObject, anAspect, autoCollapse) {
     if (TP.isURIString(anAspect) &&
         TP.regex.HAS_SCHEME.test(TP.str(anAspect))) {
         //  NB: We assume 'async' of false here.
-        val = TP.val(TP.uc(anAspect).getResource().get('result'));
+        val = TP.val(TP.uc(anAspect).getResource(
+                                        TP.hc('async', false)).get('result'));
     }
 
     //  some native objects may not have been TIBET-enabled, so for those
