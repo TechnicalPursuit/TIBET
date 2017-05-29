@@ -3315,7 +3315,7 @@ TP.regex.BARENAME = new RegExp(
                     '(@(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*)*' +
                     ')$');
 
-TP.regex.DOCUMENT_ID = /#document$/;
+TP.regex.DOCUMENT_ID = /^#document$/;
 TP.regex.ELEMENT_ID = /(.*)#(.*)/;
 TP.regex.BOOLEAN_ID = /^true$|^false$/;
 
