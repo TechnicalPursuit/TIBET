@@ -1828,6 +1828,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getContent',
+function() {
+
+    /**
+     * @method getContent
+     * @summary Returns the immediate value of the URI, bypassing any attempts
+     *     to load the URI if it hasn't yet been loaded.
+     * @returns {Object} The immediate value of the receiver's resource result.
+     */
+
+    return this.getResource(TP.hc('async', false)).get('result');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$getDefaultHandler',
 function(aRequest) {
 
