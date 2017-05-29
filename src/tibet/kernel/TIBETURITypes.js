@@ -2732,8 +2732,10 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the immediate value of the URI, bypassing any attempts
-     *     to load the URI if it hasn't yet been loaded.
+     * @summary Returns the value of the URI, which may include loading the URI
+     *     if it hasn't yet been loaded. Therefore, the return value here might
+     *     very well be a 'thenable' if the URI manages its resource in an
+     *     asynchronous way.
      * @returns {Object} The value of the receiver's resource.
      */
 
