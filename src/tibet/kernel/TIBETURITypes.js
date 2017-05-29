@@ -786,13 +786,15 @@ function(aURI) {
 
     //  Scan for any uri map patterns of any kind.
     if (TP.canInvoke(config, 'getKeys')) {
-        patterns = config.getKeys().filter(function(key) {
-            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-        });
+        patterns = config.getKeys().filter(
+                        function(key) {
+                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                        });
     } else {
-        patterns = TP.keys(config).filter(function(key) {
-            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-        });
+        patterns = TP.keys(config).filter(
+                        function(key) {
+                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                        });
     }
 
     //  No patterns means no mappings.
@@ -804,37 +806,38 @@ function(aURI) {
     //  can sort it in the next step to determine the best match. NOTE we use
     //  some() here to allow for quick return when we find an exact mapping.
     matches = TP.ac();
-    patterns.some(function(key) {
-        var pattern,
-            regex,
-            match;
+    patterns.some(
+        function(key) {
+            var pattern,
+                regex,
+                match;
 
-        pattern = TP.sys.cfg(key);
-        mapname = key.slice(0, key.lastIndexOf('.'));
+            pattern = TP.sys.cfg(key);
+            mapname = key.slice(0, key.lastIndexOf('.'));
 
-        if (TP.isString(pattern)) {
-            //  special case here. if the string is a virtual path we expand it
-            //  and match the value for the URI. if it's identical we call that
-            //  an exact match and communicate that.
-            if (TP.uriExpandPath(pattern) === str) {
-                exact = key;
-                return true;
+            if (TP.isString(pattern)) {
+                //  A special case here. If the string is a virtual path we
+                //  expand it and match the value for the URI. If it's identical
+                //  we call that an exact match and communicate that.
+                if (TP.uriExpandPath(pattern) === str) {
+                    exact = key;
+                    return true;
+                }
+
+                regex = TP.rc(pattern, null, true);
+            } else {
+                regex = pattern;
             }
 
-            regex = TP.rc(pattern, null, true);
-        } else {
-            regex = pattern;
-        }
-
-        if (regex) {
-            match = regex.match(str);
-            if (TP.notEmpty(match)) {
-                matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
+            if (TP.isRegExp(regex)) {
+                match = regex.match(str);
+                if (TP.notEmpty(match)) {
+                    matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
+                }
             }
-        }
 
-        return false;
-    });
+            return false;
+        });
 
     //  If the search found a pattern value that expanded to an exact file match
     //  that one "wins" and we need to return that configuration block.
