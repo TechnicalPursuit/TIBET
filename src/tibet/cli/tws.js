@@ -848,7 +848,7 @@ Cmd.prototype.executePush = function() {
         id,
         fullpath;
 
-    flags = ['design', 'flows', 'map', 'tasks'];
+    flags = ['design', 'flows', 'map', 'tasks', 'views'];
 
     this.reparse({
         boolean: flags.slice(0) // slice to copy since parse will modify.
@@ -955,10 +955,17 @@ Cmd.prototype.executePushTasks = function() {
 
 
 /**
+ */
+Cmd.prototype.executePushViews = function() {
+    return this.executePushDesign();
+};
+
+
+/**
  * Displays usage information for the 'tibet tws push' command.
  */
 Cmd.prototype.executePushUsage = function() {
-    this.usage('tibet tws push [<path>|--design|--flows|--map|--tasks]');
+    this.usage('tibet tws push [<path>|--design|--flows|--map|--tasks|--views]');
 };
 
 
