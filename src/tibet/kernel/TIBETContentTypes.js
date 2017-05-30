@@ -298,6 +298,8 @@ function(data, aURI) {
     this.set('sourceURI', aURI, false);
     this.set('data', data, false);
 
+    //  Execute the data getter once just to get private data structures
+    //  initialized.
     if (TP.isValid(data)) {
         this.get('data');
     }
@@ -430,6 +432,35 @@ function(anAspect, anAction, aDescription) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('copy',
+function() {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver.
+     * @returns {TP.core.Content} A copy of the receiver.
+     */
+
+    var dataCopy,
+        newinst;
+
+    dataCopy = TP.copy(this.$get('data'));
+
+    newinst = this.getType().construct(dataCopy, this.get('sourceURI'));
+
+    //  NB: We do *not* copy '$publicURI' here
+
+    newinst.$set('transactional', this.$get('transactional'), false);
+    newinst.$set('currentIndex', this.$get('currentIndex'), false);
+    newinst.$set('snaps', TP.copy(this.$get('snaps')), false);
+    newinst.$set('points', TP.copy(this.$get('points')), false);
+
+    return newinst;
 });
 
 //  ------------------------------------------------------------------------
