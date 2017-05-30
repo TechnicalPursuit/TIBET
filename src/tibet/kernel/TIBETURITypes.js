@@ -786,13 +786,15 @@ function(aURI) {
 
     //  Scan for any uri map patterns of any kind.
     if (TP.canInvoke(config, 'getKeys')) {
-        patterns = config.getKeys().filter(function(key) {
-            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-        });
+        patterns = config.getKeys().filter(
+                        function(key) {
+                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                        });
     } else {
-        patterns = TP.keys(config).filter(function(key) {
-            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-        });
+        patterns = TP.keys(config).filter(
+                        function(key) {
+                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                        });
     }
 
     //  No patterns means no mappings.
@@ -804,37 +806,38 @@ function(aURI) {
     //  can sort it in the next step to determine the best match. NOTE we use
     //  some() here to allow for quick return when we find an exact mapping.
     matches = TP.ac();
-    patterns.some(function(key) {
-        var pattern,
-            regex,
-            match;
+    patterns.some(
+        function(key) {
+            var pattern,
+                regex,
+                match;
 
-        pattern = TP.sys.cfg(key);
-        mapname = key.slice(0, key.lastIndexOf('.'));
+            pattern = TP.sys.cfg(key);
+            mapname = key.slice(0, key.lastIndexOf('.'));
 
-        if (TP.isString(pattern)) {
-            //  special case here. if the string is a virtual path we expand it
-            //  and match the value for the URI. if it's identical we call that
-            //  an exact match and communicate that.
-            if (TP.uriExpandPath(pattern) === str) {
-                exact = key;
-                return true;
+            if (TP.isString(pattern)) {
+                //  A special case here. If the string is a virtual path we
+                //  expand it and match the value for the URI. If it's identical
+                //  we call that an exact match and communicate that.
+                if (TP.uriExpandPath(pattern) === str) {
+                    exact = key;
+                    return true;
+                }
+
+                regex = TP.rc(pattern, null, true);
+            } else {
+                regex = pattern;
             }
 
-            regex = TP.rc(pattern, null, true);
-        } else {
-            regex = pattern;
-        }
-
-        if (regex) {
-            match = regex.match(str);
-            if (TP.notEmpty(match)) {
-                matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
+            if (TP.isRegExp(regex)) {
+                match = regex.match(str);
+                if (TP.notEmpty(match)) {
+                    matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
+                }
             }
-        }
 
-        return false;
-    });
+            return false;
+        });
 
     //  If the search found a pattern value that expanded to an exact file match
     //  that one "wins" and we need to return that configuration block.
@@ -1293,7 +1296,20 @@ function(schemeSpecificString) {
 
         if (TP.notEmpty(fragment = schemeSpecificString.slice(
                                     schemeSpecificString.indexOf('#') + 1))) {
-            this.$set('fragment', fragment, false);
+
+            //  Make sure that the fragment conforms to one of the kinds of
+            //  fragments we support (barenames, #document fragments or any kind
+            //  of XPointer). Note here how we prepend a '#' to the fragment for
+            //  testing for '#document' and for barenames, as those RegExps
+            //  require a leading '#'.
+            if (TP.regex.DOCUMENT_ID.test('#' + fragment) ||
+                TP.regex.BARENAME.test('#' + fragment) ||
+                TP.regex.ANY_POINTER.test(fragment)) {
+
+                this.$set('fragment', fragment, false);
+            } else {
+                this.raise('TP.sig.InvalidFragment');
+            }
         }
     } else {
         this.$set('primaryLocation',
@@ -1808,6 +1824,21 @@ function() {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getContent',
+function() {
+
+    /**
+     * @method getContent
+     * @summary Returns the immediate value of the URI, bypassing any attempts
+     *     to load the URI if it hasn't yet been loaded.
+     * @returns {Object} The immediate value of the receiver's resource result.
+     */
+
+    return this.getResource(TP.hc('async', false)).get('result');
 });
 
 //  ------------------------------------------------------------------------
@@ -2716,8 +2747,10 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the immediate value of the URI, bypassing any attempts
-     *     to load the URI if it hasn't yet been loaded.
+     * @summary Returns the value of the URI, which may include loading the URI
+     *     if it hasn't yet been loaded. Therefore, the return value here might
+     *     very well be a 'thenable' if the URI manages its resource in an
+     *     asynchronous way.
      * @returns {Object} The value of the receiver's resource.
      */
 
