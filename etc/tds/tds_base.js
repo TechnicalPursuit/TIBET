@@ -119,6 +119,12 @@
     TDS._prologs = [];
 
     /**
+     * A handle to the couch module for use by couch-related consumers.
+     * @type {Object};
+     */
+    TDS.couch = couch;
+
+    /**
      * A handle to the crypto module for use in encryption/decryption.
      * @type {Object}
      */
@@ -518,6 +524,50 @@
 
     //  Alias for same syntax found in TIBET client.
     TDS.cfg = TDS.getcfg;
+
+    /**
+     *
+     */
+    TDS.getCouchConnection = function(options) {
+        var opts,
+            params,
+            db_url,
+            server;
+
+        opts = options || {};
+        opts.requestor = TDS;
+
+        params = TDS.getCouchParameters(opts);
+        db_url = params.db_url;
+
+        server = couch.server(db_url);
+
+        return server;
+    };
+
+    /**
+     *
+     */
+    TDS.getCouchDatabase = function(options) {
+        var opts,
+            params,
+            db_url,
+            db_name,
+            server,
+            db;
+
+        opts = options || {};
+        opts.requestor = TDS;
+
+        params = TDS.getCouchParameters(opts);
+        db_url = params.db_url;
+        db_name = params.db_name;
+
+        server = couch.server(db_url);
+        db = server.use(db_name);
+
+        return db;
+    };
 
     /**
      * Computes the common parameters needed by nano and/or other interfaces to
