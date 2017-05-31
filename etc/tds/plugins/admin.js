@@ -22,7 +22,7 @@
             logger,
             ip,
             meta,
-            root,
+            rootPath,
             router,
             sanityCheck;
 
@@ -114,12 +114,12 @@
         //  export
         //  ---
 
-        root = TDS.cfg('tds.admin.root') || '/_tds';
-        if (root.charAt(0) !== '/') {
-            root = '/' + root;
+        rootPath = TDS.cfg('tds.admin.root') || '/_tds';
+        if (rootPath.charAt(0) !== '/') {
+            rootPath = '/' + rootPath;
         }
 
-        app.use(root, sanityCheck, options.parsers.json, router);
+        app.use(rootPath, sanityCheck, options.parsers.json, router);
     };
 
 }(this));
