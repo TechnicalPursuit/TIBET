@@ -86,6 +86,8 @@
         //  set is defined in tds.json in most cases.
         setcfg('tds.plugins.tds', null);
 
+        //  Path admin routes are rooted from.
+        setcfg('tds.admin.root', '_tds');
 
         setcfg('tds.auth.strategy', 'tds');
 
@@ -132,6 +134,7 @@
 
         //  NOTE these are off here. We want to force them to be turned on via
         //  the tds.json file which will enforce an environment-based setting.
+        setcfg('tds.use_admin', false);
         setcfg('tds.use_mocks', false);
         setcfg('tds.use_proxy', false);
         setcfg('tds.use_tasks', false);

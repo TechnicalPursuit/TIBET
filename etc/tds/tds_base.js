@@ -607,7 +607,8 @@
 
     /**
      * Loads a specified list of plugins by scanning the plugin directory at the
-     * root location provided.
+     * root location provided. NOTE that this routine is not used to load
+     * internal TDS plugins, that's done via each project's tds.js plugin.
      * @param {String} rootpath The root path containing the plugins.
      * @param {Array} plugins The list of plugins to load, in order.
      * @param {Object} options An object containing optional parameters to

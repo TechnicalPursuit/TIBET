@@ -90,6 +90,12 @@
             name: 'tasks'
         };
 
+        //  Even when loaded we need explicit configuration to activate the TWS.
+        if (!TDS.cfg('tds.use_tasks')) {
+            logger.warn('tds tasks plugin disabled', meta);
+            return;
+        }
+
         logger = logger.getContextualLogger(meta);
 
         //  Specialize the logger methods we provide so they can process jobs as
@@ -135,11 +141,6 @@
             };
         });
 
-        //  Even when loaded we need explicit configuration to activate the TWS.
-        if (!TDS.cfg('tds.use_tasks')) {
-            return;
-        }
-
         //  For TWS we need to ensure TDS.encrypt/decrypt will operate.
         try {
             TDS.encrypt('RUSH.is.a.band');
@@ -149,7 +150,6 @@
             logger.error(e.message);
             return;
         }
-
 
         //  ---
         //  Requires
