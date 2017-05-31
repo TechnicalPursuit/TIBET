@@ -106,20 +106,11 @@
             curl -XGET http://127.0.0.1:1407/_tds/ident
          */
         router.get('/ident', function(req, res) {
-            res.json({ok: true});
+            res.json({
+                ok: true,
+                version: TDS.cfg('tibet.version')
+            });
         });
-
-        /*
-         test via curl using variations (adjust port etc) of:
-
-            curl -XPOST http://127.0.0.1:1407/_tds/forminput \
-                --header "Content-Type: application/json" \
-                --data "@../mocks/mockjson_post.json"
-
-            curl -XPOST -k https://127.0.0.1:1443/{{filename}}/forminput \
-                --header "Content-Type: application/json" \
-                --data "@../mocks/mockjson_post.json"
-         */
 
         //  ---
         //  export
