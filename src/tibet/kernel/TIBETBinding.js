@@ -3961,7 +3961,9 @@ function(shouldRender) {
 
                 oldVal,
 
-                result;
+                result,
+
+                transformFunc;
 
             aspectName = bindEntry.first();
 
@@ -4022,6 +4024,11 @@ function(shouldRender) {
                     //  Grab the result from the URI. Then use that value to set
                     //  our value in the receiver for that particular aspect.
                     result = wholeURI.getResource().get('result');
+                }
+
+                if (TP.isCallable(
+                            transformFunc = bindVal.at('transformFunc'))) {
+                    result = transformFunc(null, result, this);
                 }
 
                 if (!TP.equal(result, oldVal)) {
