@@ -47,8 +47,6 @@
         ip = require('ip');
         router = require('express').Router();
 
-        logger.info('activating tds admin routes', meta);
-
         //  ---
         //  Helpers
         //  ---
