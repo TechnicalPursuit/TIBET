@@ -24,7 +24,6 @@
             TDS,
             useMocks,
             dirs,
-            meta,
             style,
             parsers,
             path,
@@ -43,11 +42,6 @@
         } else {
             useMocks = TDS.cfg('tds.use_mocks') || false;
         }
-
-        meta = {
-            type: 'plugin',
-            name: 'routes'
-        };
 
         dirs = ['routes'];
         if (useMocks) {
@@ -81,7 +75,6 @@
         dirs.forEach(function(dir) {
 
             style = dir === 'mocks' ? 'mock' : 'route';
-            meta.type = style;
 
             //  Find all files in the directory, filtering out hidden files.
             list = sh.find(path.join(TDS.expandPath('~'), dir)).filter(
@@ -98,6 +91,7 @@
                 var base,
                     ext,
                     route,
+                    meta,
                     middleware,
                     parts,
                     part,
@@ -134,7 +128,10 @@
                     }
                 }
 
-                meta.name = name;
+                meta = {
+                    type: style,
+                    name: name
+                };
 
                 name = '/' + name;
                 verb = verb || 'post';
