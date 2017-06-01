@@ -160,7 +160,9 @@ helpers.getCouchConnection = function(options) {
 
 
 /**
- *
+ * Returns a database object capable of accessing a specific CouchDB database
+ *     via both synchronous and asynchronous (Promisified) methods. The async
+ *     versions all end in 'Async'. See nano documentation for the API.
  * @param {Object} options A parameter block suitable for the getCouchParameters
  *     call which defines any couch and TIBET parameters necessary.
  * @return {Object} A database object implementing promisified versions of all
@@ -540,6 +542,50 @@ helpers.server = function(url) {
         Promise.promisifyAll(db.attachment);
 
         db.viewAsyncRows = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body;
+
+                    body = result[0];
+
+                    return body.rows;
+                });
+        };
+
+        db.viewAsyncDocs = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body,
+                        docs;
+
+                    body = result[0];
+                    docs = body.rows.map(function(row) {
+                        return row.doc;
+                    });
+
+                    return docs;
+                });
+        };
+
+        db.viewAsyncKeys = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body,
+                        keys;
+
+                    body = result[0];
+                    keys = body.rows.map(function(row) {
+                        return row.key;
+                    });
+
+                    return keys;
+                });
+        };
+
+        db.viewAsyncValues = function(appname, viewname, viewParams) {
 
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
