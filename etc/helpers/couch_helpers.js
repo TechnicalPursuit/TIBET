@@ -129,6 +129,72 @@ helpers.gatherDesignDocObjects = function(target, root) {
 
 
 /**
+ * Returns a CouchDB connection reference, equivalent to the result object
+ * returned by the 'server' method on this object. See @server for more info.
+ * @param {Object} options A parameter block suitable for the getCouchParameters
+ *     call which defines any couch and TIBET parameters necessary.
+ * @return {Object} An object implementing the 'use' command for DB access.
+ */
+helpers.getCouchConnection = function(options) {
+    var opts,
+        requestor,
+        params,
+        db_url,
+        server;
+
+    opts = options || {};
+
+    requestor = opts.requestor;
+    if (!requestor) {
+        requestor = require('../../src/tibet/cli/_cli');
+        opts.confirm = false;
+    }
+
+    params = helpers.getCouchParameters(opts);
+    db_url = params.db_url;
+
+    server = helpers.server(db_url);
+
+    return server;
+};
+
+
+/**
+ *
+ * @param {Object} options A parameter block suitable for the getCouchParameters
+ *     call which defines any couch and TIBET parameters necessary.
+ * @return {Object} A database object implementing promisified versions of all
+ *     nano database object methods.
+ */
+helpers.getCouchDatabase = function(options) {
+    var opts,
+        requestor,
+        params,
+        db_url,
+        db_name,
+        server,
+        db;
+
+    opts = options || {};
+
+    requestor = opts.requestor;
+    if (!requestor) {
+        requestor = require('../../src/tibet/cli/_cli');
+        opts.confirm = false;
+    }
+
+    params = helpers.getCouchParameters(opts);
+    db_url = params.db_url;
+    db_name = params.db_name;
+
+    server = helpers.server(db_url);
+    db = server.use(db_name);
+
+    return db;
+};
+
+
+/**
  * Computes the common parameters needed by other interfaces to CouchDB. This
  * includes the CouchDB URL, the target database name, and the target design doc
  * application name.
