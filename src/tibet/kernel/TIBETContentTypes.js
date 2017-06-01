@@ -787,7 +787,7 @@ function(aSignal) {
 
     //  Insert a row into that collection, using the cloning index, insertion
     //  index and position given in the signal.
-    this.insertRowIntoAt(scopeURI,
+    this.cloneRowAndInsertAt(scopeURI,
                             TP.nc(aSignal.at('cloneIndex')).asNumber(),
                             TP.nc(aSignal.at('index')).asNumber(),
                             aSignal.at('position'));
@@ -1764,6 +1764,126 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineMethod('cloneRowAndInsertAt',
+function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+
+    /**
+     * @method cloneRowAndInsertAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     *     add the row to.
+     * @param {Number} aCloneIndex The index of the item to clone when creating
+     *     the new item.
+     * @param {Number} anInsertIndex The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after.
+     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
+     *     determines the position of the insertion. If no position is supplied,
+     *     TP.AFTER is assumed.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetCollection,
+
+        cloneIndex,
+        itemToClone,
+        newItem,
+
+        insertIndex,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
+
+    //  Make sure that we have an Array as our collection. If we end up with a
+    //  non-Array, we wrap it into one.
+
+    //  NB: We assume 'async' of false here.
+    if (!TP.isArray(
+        targetCollection =
+            aCollectionURI.getResource(TP.hc('async', false)).get('result'))) {
+        targetCollection = TP.ac(targetCollection);
+    }
+
+    //  Clone the first row if no clone index was supplied
+    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
+        cloneIndex = 0;
+    }
+
+    //  Get the item to clone and clone it.
+    itemToClone = targetCollection.get(cloneIndex);
+    newItem = TP.copy(itemToClone);
+
+    //  Clear out all of the 'text content' - that is, all of the scalar values
+    //  in the newly cloned item. This will descend through the new item's data
+    //  structure and cleanse it all of previous values.
+    newItem.clearTextContent();
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+        insertIndex++;
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        insertIndex = targetCollection.getSize();
+    }
+
+    //  TP.BEFORE was specified - subtract a position back off.
+    if (aPosition === TP.BEFORE) {
+        insertIndex--;
+    }
+
+    //  Splice it into the collection.
+    targetCollection.splice(insertIndex, 0, newItem);
+
+    //  The index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the index that
+    //  changed.
+    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+
+    //  For these paths, the changed addresses are just an Array of the changed
+    //  aspect.
+    changedAddresses = TP.ac(changedAspect);
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('defineTypes',
 function() {
 
@@ -1888,125 +2008,6 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('insertRowIntoAt',
-function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
-
-    /**
-     * @method insertRowIntoAt
-     * @summary Inserts a row of data into the collection as defined by the
-     *     supplied collection URI. This collection should be either the whole
-     *     collection representing the data of the receiver or a subcollection
-     *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
-     *     add the row to.
-     * @param {Number} aCloneIndex The index of the item to clone when creating
-     *     the new item.
-     * @param {Number} anInsertIndex The index to insert the item at in the
-     *     collection. Note that this works with the supplied position to
-     *     determine whether the insertion should happen before or after.
-     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
-     *     determines the position of the insertion. If no position is supplied,
-     *     TP.AFTER is assumed.
-     * @returns {TP.core.Content} The receiver.
-     */
-
-    var targetCollection,
-
-        cloneIndex,
-        itemToClone,
-        newItem,
-
-        insertIndex,
-
-        changedAddresses,
-        changedIndex,
-        changedAspect,
-        changedPaths,
-
-        batchID;
-
-    //  Make sure that we have an Array as our collection. If we end up with a
-    //  non-Array, we wrap it into one.
-
-    //  NB: We assume 'async' of false here.
-    if (!TP.isArray(targetCollection =
-                    aCollectionURI.getResource().get('result'))) {
-        targetCollection = TP.ac(targetCollection);
-    }
-
-    //  Clone the first row if no clone index was supplied
-    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
-        cloneIndex = 0;
-    }
-
-    //  Get the item to clone and clone it.
-    itemToClone = targetCollection.get(cloneIndex);
-    newItem = TP.copy(itemToClone);
-
-    //  Clear out all of the 'text content' - that is, all of the scalar values
-    //  in the newly cloned item. This will descend through the new item's data
-    //  structure and cleanse it all of previous values.
-    newItem.clearTextContent();
-
-    //  NB: The insertion index is computed to represent the row that will come
-    //  *after* the new row after the insertion operation is complete (per
-    //  'insertBefore()' semantics).
-
-    if (TP.isNumber(insertIndex = anInsertIndex)) {
-        insertIndex++;
-    } else {
-
-        //  No index specified - we will be manipulating the end of the
-        //  collection.
-        insertIndex = targetCollection.getSize();
-    }
-
-    //  TP.BEFORE was specified - subtract a position back off.
-    if (aPosition === TP.BEFORE) {
-        insertIndex--;
-    }
-
-    //  Splice it into the collection.
-    targetCollection.splice(insertIndex, 0, newItem);
-
-    //  The index that changed.
-    changedIndex = insertIndex;
-
-    //  The aspect that changed is just the collection along with the index that
-    //  changed.
-    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
-
-    //  For these paths, the changed addresses are just an Array of the changed
-    //  aspect.
-    changedAddresses = TP.ac(changedAspect);
-
-    //  Construct a 'changed paths' data structure that observers will expect to
-    //  see.
-    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
-
-    //  We need this purely so that any machinery that relies on signal batching
-    //  (i.e. the markup-based data binding) knows that this signal represents
-    //  an entire batch.
-    batchID = TP.genID('SIGNAL_BATCH');
-
-    TP.signal(this.getID(),
-                'TP.sig.StructureInsert',
-                TP.hc('action', TP.INSERT,
-                        'addresses', changedAddresses,
-                        'aspect', changedAspect,
-                        'facet', 'value',
-                        TP.CHANGE_PATHS, changedPaths,
-                        'target', this,
-                        'indexes', TP.ac(changedIndex),
-                        TP.CHANGE_URIS, null,
-                        TP.START_SIGNAL_BATCH, batchID,
-                        TP.END_SIGNAL_BATCH, batchID));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.JSONContent.Inst.defineMethod('removeRowFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
@@ -2041,8 +2042,9 @@ function(aCollectionURI, aDeleteIndex) {
     //  row.
 
     //  NB: We assume 'async' of false here.
-    if (TP.isArray(targetCollection =
-                    aCollectionURI.getResource().get('result'))) {
+    if (TP.isArray(
+        targetCollection =
+            aCollectionURI.getResource(TP.hc('async', false)).get('result'))) {
 
         //  If a deletion index was supplied or we have numbers in our selection
         //  indexes, then use those as the deletion indexes.
@@ -2308,6 +2310,150 @@ function(data, aURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLContent.Inst.defineMethod('cloneRowAndInsertAt',
+function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+
+    /**
+     * @method cloneRowAndInsertAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     *     add the row to.
+     * @param {Number} aCloneIndex The index of the item to clone when creating
+     *     the new item.
+     * @param {Number} anInsertIndex The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after.
+     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
+     *     determines the position of the insertion. If no position is supplied,
+     *     TP.AFTER is assumed.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetCollection,
+
+        cloneIndex,
+        itemToClone,
+        newItem,
+
+        itemParent,
+
+        insertIndex,
+
+        insertionPath,
+
+        newTPNode,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
+
+    //  Make sure that we have a TP.core.CollectionNode
+
+    //  NB: We assume 'async' of false here.
+    targetCollection = aCollectionURI.getResource(
+                    TP.hc('resultType', TP.WRAP, 'async', false)).get('result');
+
+    if (!TP.isArray(targetCollection)) {
+        targetCollection = TP.ac(targetCollection);
+    }
+
+    //  Clone the first row if no clone index was supplied
+    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
+        //  XPath starts indexing at 1
+        cloneIndex = 1;
+    }
+
+    //  Get the item to clone and clone it.
+    itemToClone = targetCollection.at(cloneIndex);
+    newItem = itemToClone.clone(true);
+
+    itemParent = itemToClone.getParentNode();
+
+    //  Clear out all of the 'text content' - that is, all of the scalar values
+    //  in the newly cloned item. This will descend through the new item's data
+    //  structure and cleanse it all of previous values.
+    newItem.clearTextContent();
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+
+        if (aPosition !== TP.BEFORE) {
+            insertIndex++;
+        }
+
+        insertionPath = './*[' + insertIndex + ']';
+
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        if (aPosition === TP.BEFORE) {
+            insertionPath = './*[last()]';
+            insertIndex = targetCollection.getSize();
+        } else {
+            //  Add one because the collection size isn't taking our new size
+            //  into account.
+            insertIndex = targetCollection.getSize() + 1;
+        }
+    }
+
+    //  If the insertion path is not empty, that means that we're not just
+    //  appending to the end.
+    if (TP.notEmpty(insertionPath)) {
+        newTPNode = itemParent.insertRawContent(
+                            newItem, insertionPath, null, false);
+    } else {
+        //  We're just appending to the end.
+        newTPNode = itemParent.addRawContent(newItem, null, false);
+    }
+
+    //  Grab the address of the node that changed.
+    changedAddresses = TP.ac(newTPNode.getDocumentPosition());
+
+    //  And the index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the
+    //  index that changed.
+    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLContent.Inst.defineMethod('getData',
 function() {
 
@@ -2407,150 +2553,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
-function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
-
-    /**
-     * @method insertRowIntoAt
-     * @summary Inserts a row of data into the collection as defined by the
-     *     supplied collection URI. This collection should be either the whole
-     *     collection representing the data of the receiver or a subcollection
-     *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
-     *     add the row to.
-     * @param {Number} aCloneIndex The index of the item to clone when creating
-     *     the new item.
-     * @param {Number} anInsertIndex The index to insert the item at in the
-     *     collection. Note that this works with the supplied position to
-     *     determine whether the insertion should happen before or after.
-     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
-     *     determines the position of the insertion. If no position is supplied,
-     *     TP.AFTER is assumed.
-     * @exception TP.sig.InvalidNode
-     * @returns {TP.core.Content} The receiver.
-     */
-
-    var targetCollection,
-
-        cloneIndex,
-        itemToClone,
-        newItem,
-
-        itemParent,
-
-        insertIndex,
-
-        insertionPath,
-
-        newTPNode,
-
-        changedAddresses,
-        changedIndex,
-        changedAspect,
-        changedPaths,
-
-        batchID;
-
-    //  Make sure that we have a TP.core.CollectionNode
-
-    //  NB: We assume 'async' of false here.
-    targetCollection = aCollectionURI.getResource(
-                        TP.hc('resultType', TP.WRAP)).get('result');
-
-    if (!TP.isArray(targetCollection)) {
-        targetCollection = TP.ac(targetCollection);
-    }
-
-    //  Clone the first row if no clone index was supplied
-    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
-        //  XPath starts indexing at 1
-        cloneIndex = 1;
-    }
-
-    //  Get the item to clone and clone it.
-    itemToClone = targetCollection.at(cloneIndex);
-    newItem = itemToClone.clone(true);
-
-    itemParent = itemToClone.getParentNode();
-
-    //  Clear out all of the 'text content' - that is, all of the scalar values
-    //  in the newly cloned item. This will descend through the new item's data
-    //  structure and cleanse it all of previous values.
-    newItem.clearTextContent();
-
-    //  NB: The insertion index is computed to represent the row that will come
-    //  *after* the new row after the insertion operation is complete (per
-    //  'insertBefore()' semantics).
-
-    if (TP.isNumber(insertIndex = anInsertIndex)) {
-
-        if (aPosition !== TP.BEFORE) {
-            insertIndex++;
-        }
-
-        insertionPath = './*[' + insertIndex + ']';
-
-    } else {
-
-        //  No index specified - we will be manipulating the end of the
-        //  collection.
-        if (aPosition === TP.BEFORE) {
-            insertionPath = './*[last()]';
-            insertIndex = targetCollection.getSize();
-        } else {
-            //  Add one because the collection size isn't taking our new size
-            //  into account.
-            insertIndex = targetCollection.getSize() + 1;
-        }
-    }
-
-    //  If the insertion path is not empty, that means that we're not just
-    //  appending to the end.
-    if (TP.notEmpty(insertionPath)) {
-        newTPNode = itemParent.insertRawContent(
-                            newItem, insertionPath, null, false);
-    } else {
-        //  We're just appending to the end.
-        newTPNode = itemParent.addRawContent(newItem, null, false);
-    }
-
-    //  Grab the address of the node that changed.
-    changedAddresses = TP.ac(newTPNode.getDocumentPosition());
-
-    //  And the index that changed.
-    changedIndex = insertIndex;
-
-    //  The aspect that changed is just the collection along with the
-    //  index that changed.
-    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
-
-    //  Construct a 'changed paths' data structure that observers will expect to
-    //  see.
-    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
-
-    //  We need this purely so that any machinery that relies on signal batching
-    //  (i.e. the markup-based data binding) knows that this signal represents
-    //  an entire batch.
-    batchID = TP.genID('SIGNAL_BATCH');
-
-    TP.signal(this.getID(),
-                'TP.sig.StructureInsert',
-                TP.hc('action', TP.INSERT,
-                        'addresses', changedAddresses,
-                        'aspect', changedAspect,
-                        'facet', 'value',
-                        TP.CHANGE_PATHS, changedPaths,
-                        'target', this,
-                        'indexes', TP.ac(changedIndex),
-                        TP.CHANGE_URIS, null,
-                        TP.START_SIGNAL_BATCH, batchID,
-                        TP.END_SIGNAL_BATCH, batchID));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.XMLContent.Inst.defineMethod('removeRowFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
@@ -2590,7 +2592,7 @@ function(aCollectionURI, aDeleteIndex) {
 
     //  NB: We assume 'async' of false here.
     targetCollection = aCollectionURI.getResource(
-                        TP.hc('resultType', TP.WRAP)).get('result');
+                    TP.hc('resultType', TP.WRAP, 'async', false)).get('result');
 
     if (!TP.isArray(targetCollection)) {
         targetCollection = TP.ac(targetCollection);
@@ -5411,12 +5413,12 @@ function(targetObj, varargs) {
 
         //  ---
 
-        //  Define a local version of 'insertRowIntoAt' to adjust for the fact
-        //  that the indexes, etc. will be supplied using the 0-based indexes of
-        //  JSON, but it is the underlying XML data representation that needs to
-        //  be changed and, therefore, we need to adjust those indexes and use
-        //  XPaths against that representation.
-        target.defineMethod('insertRowIntoAt',
+        //  Define a local version of 'cloneRowAndInsertAt' to adjust for the
+        //  fact that the indexes, etc. will be supplied using the 0-based
+        //  indexes of JSON, but it is the underlying XML data representation
+        //  that needs to be changed and, therefore, we need to adjust those
+        //  indexes and use XPaths against that representation.
+        target.defineMethod('cloneRowAndInsertAt',
         function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
             var xpath,
