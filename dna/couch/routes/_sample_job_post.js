@@ -1,31 +1,17 @@
 /**
- * @overview Sample route which accepts input, performs some form of validation
- *     and pre-submission checks on that input, and then optionally submits a
- *     job to the TIBET Workflow System (TWS).
+ * @overview Sample route which accepts input, performs data validation and
+ *     pre-submission checks on that input, and then submits a job to the TWS.
  */
 
 (function(root) {
 
     'use strict';
 
-    var nano,
-        Promise,
-        router;
-
-    nano = require('nano');
-    Promise = require('bluebird');
-    router = require('express').Router();
-
     module.exports = function(options) {
         var app,
-            connection,
             logger,
             TDS,
-            dbParams,
             db,
-            dbInsert,
-            db_url,
-            db_name,
             validate;
 
         app = options.app;
@@ -35,22 +21,13 @@
         logger.system(
             TDS.colorize('loading route ', 'dim') +
             //  TODO: adjust 'jobrequest' to match desired route name.
-            TDS.colorize('POST /{{filename}}/jobrequest', 'route'));
+            TDS.colorize('POST /jobrequest', 'route'));
 
-        //  ---
-        //  CouchDB support for the route.
-        //  ---
-
-        dbParams = TDS.getCouchParameters({
+        //  Point to the configured TWS database for this project.
+        db = TDS.getCouchDatabase({
             db_name: TDS.cfg('tds.tasks.db_name')
         });
-        db_url = dbParams.db_url;
-        db_name = dbParams.db_name;
 
-        connection = nano(db_url);
-        db = connection.use(db_name);
-
-        dbInsert = Promise.promisify(db.insert);
 
         //  ---
         //  Helpers
@@ -69,8 +46,8 @@
         //  Route(s)
         //  ---
 
-        //  TODO: rename 'jobrequest' to match desired route name.
-        router.post('/jobrequest', function(req, res) {
+        //  TODO: Rename the route here to match your requirements.
+        app.post('/jobrequest', options.parsers.json, function(req, res) {
             var job,
                 valid,
                 flow,
@@ -107,8 +84,11 @@
             //  Submit
             //  ---
 
-            //  TODO: assemble the required data for flow, owner, and params.
-
+            //  TODO: assemble the required data for flow, owner, and params
+            //  from data in the request body.
+            flow = 'test';
+            owner = 'test';
+            params = {};
 
             job = {
                 type: 'job',
@@ -119,20 +99,21 @@
 
             logger.debug('submitting job data: ' + TDS.beautify(job));
 
-            dbInsert(job).catch(
-                function(err) {
-                    logger.error(err);
-                    res.status(500);    // Server Error
-                    res.send({
-                        ok: false,
-                        message: 'Server error.'
-                    });
+            db.insertAsync(job).then(
+            function(result) {
+                //  Second block of result data includes the status code from
+                //  Couch so use that for status and send back id/rev block.
+                res.status(result[1].statusCode).send(result[0]);
+            }).catch(
+            function(err) {
+                logger.error(err);
+                res.status(500);    // Server Error
+                res.send({
+                    ok: false,
+                    message: 'Server error.'
                 });
+            });
         });
-
-        //  Return the router instance. The server will see this and
-        //  automatically app.use({{filename}}, router) on startup.
-        return router;
     };
 
 }(this));
