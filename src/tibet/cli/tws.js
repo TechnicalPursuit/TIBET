@@ -1145,7 +1145,7 @@ Cmd.prototype.executeView = function() {
         if (err.message === 'missing_named_view') {
             thisref.error('View not found: ' + viewname);
         } else {
-            CLI.handleError(err, 'tws', 'list');
+            CLI.handleError(err, 'tws', 'view');
         }
     });
 };
