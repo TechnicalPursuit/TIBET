@@ -3546,6 +3546,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('getLastChangedPathsInfo',
 function(targetObj, filterOutSignalSupertypes) {
 
@@ -5942,6 +5956,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'jpath';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONPath.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
@@ -6818,6 +6846,20 @@ function() {
      */
 
     return TP.TIBET_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SimpleTIBETPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'tibet';
 });
 
 //  ------------------------------------------------------------------------
@@ -9291,6 +9333,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    //  Note here that we return null, allowing the low-level primitive call to
+    //  determine the path type. Subtypes of this type can override this to
+    //  specify the path type.
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLPath.Inst.defineMethod('$updateOpsBecomeDeleteInsertOps',
 function(aNode, prevNode) {
 
@@ -9534,6 +9593,20 @@ function() {
     return TP.getAccessPathParts(this.get('srcPath'), 'css');
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.CSSPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'css';
+});
+
 //  ========================================================================
 //  TP.core.BarenamePath
 //  ========================================================================
@@ -9599,6 +9672,20 @@ function() {
      */
 
     return TP.BARENAME_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.BarenamePath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return '';
 });
 
 //  ========================================================================
@@ -10589,6 +10676,20 @@ function() {
      */
 
     return TP.XPATH_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XPathPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'xpath1';
 });
 
 //  ------------------------------------------------------------------------
