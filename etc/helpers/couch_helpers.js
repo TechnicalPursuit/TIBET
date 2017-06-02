@@ -129,6 +129,74 @@ helpers.gatherDesignDocObjects = function(target, root) {
 
 
 /**
+ * Returns a CouchDB connection reference, equivalent to the result object
+ * returned by the 'server' method on this object. See @server for more info.
+ * @param {Object} options A parameter block suitable for the getCouchParameters
+ *     call which defines any couch and TIBET parameters necessary.
+ * @return {Object} An object implementing the 'use' command for DB access.
+ */
+helpers.getCouchConnection = function(options) {
+    var opts,
+        requestor,
+        params,
+        db_url,
+        server;
+
+    opts = options || {};
+
+    requestor = opts.requestor;
+    if (!requestor) {
+        requestor = require('../../src/tibet/cli/_cli');
+        opts.confirm = false;
+    }
+
+    params = helpers.getCouchParameters(opts);
+    db_url = params.db_url;
+
+    server = helpers.server(db_url);
+
+    return server;
+};
+
+
+/**
+ * Returns a database object capable of accessing a specific CouchDB database
+ *     via both synchronous and asynchronous (Promisified) methods. The async
+ *     versions all end in 'Async'. See nano documentation for the API.
+ * @param {Object} options A parameter block suitable for the getCouchParameters
+ *     call which defines any couch and TIBET parameters necessary.
+ * @return {Object} A database object implementing promisified versions of all
+ *     nano database object methods.
+ */
+helpers.getCouchDatabase = function(options) {
+    var opts,
+        requestor,
+        params,
+        db_url,
+        db_name,
+        server,
+        db;
+
+    opts = options || {};
+
+    requestor = opts.requestor;
+    if (!requestor) {
+        requestor = require('../../src/tibet/cli/_cli');
+        opts.confirm = false;
+    }
+
+    params = helpers.getCouchParameters(opts);
+    db_url = params.db_url;
+    db_name = params.db_name;
+
+    server = helpers.server(db_url);
+    db = server.use(db_name);
+
+    return db;
+};
+
+
+/**
  * Computes the common parameters needed by other interfaces to CouchDB. This
  * includes the CouchDB URL, the target database name, and the target design doc
  * application name.
@@ -474,6 +542,50 @@ helpers.server = function(url) {
         Promise.promisifyAll(db.attachment);
 
         db.viewAsyncRows = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body;
+
+                    body = result[0];
+
+                    return body.rows;
+                });
+        };
+
+        db.viewAsyncDocs = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body,
+                        docs;
+
+                    body = result[0];
+                    docs = body.rows.map(function(row) {
+                        return row.doc;
+                    });
+
+                    return docs;
+                });
+        };
+
+        db.viewAsyncKeys = function(appname, viewname, viewParams) {
+
+            return db.viewAsync(appname, viewname, viewParams).then(
+                function(result) {
+                    var body,
+                        keys;
+
+                    body = result[0];
+                    keys = body.rows.map(function(row) {
+                        return row.key;
+                    });
+
+                    return keys;
+                });
+        };
+
+        db.viewAsyncValues = function(appname, viewname, viewParams) {
 
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {

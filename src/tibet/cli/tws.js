@@ -1114,44 +1114,6 @@ Cmd.prototype.executeValidate = function() {
 
 
 //  ---
-//  View
-//  ---
-
-/**
- * Executes a specific TWS database view and outputs the results.
- */
-Cmd.prototype.executeView = function() {
-    var viewname,
-        thisref;
-
-    thisref = this;
-
-    viewname = this.getArgument(2);
-
-    if (!viewname) {
-        this.usage('tibet tws view <viewname>');
-        return;
-    }
-
-    this.dbView(viewname).then(function(result) {
-        //  TODO: in future could use a --list option to trigger calls
-        //  to list function which refines the view results.
-
-        //  NOTE we're basically always in '--verbose' mode here since we don't
-        //  know the type of document in the result and don't want to ass_ume
-        //  any particular schema per se.
-        thisref.log(CLI.beautify(result));
-    }).catch(function(err) {
-        if (err.message === 'missing_named_view') {
-            thisref.error('View not found: ' + viewname);
-        } else {
-            CLI.handleError(err, 'tws', 'view');
-        }
-    });
-};
-
-
-//  ---
 //  Utilities
 //  ---
 

@@ -733,6 +733,93 @@ Cmd.prototype.executeRemovedb = function() {
 };
 
 
+/**
+ * Executes a specific TWS database view and outputs the results.
+ */
+Cmd.prototype.executeView = function() {
+    var appname,
+        viewname,
+        dbParams,
+        viewParams,
+        method,
+        thisref,
+        db;
+
+    thisref = this;
+
+    this.reparse({
+        boolean: ['docs', 'keys', 'values', 'rows'],
+        default: {
+            docs: true,
+            rows: false,
+            keys: false,
+            values: false
+        }
+    });
+
+    dbParams = {
+        requestor: this,
+        confirm: this.options.confirm
+    };
+
+    viewname = this.getArgument(2);
+    if (/\./.test(viewname)) {
+        appname = viewname.slice(0, viewname.indexOf('.'));
+        viewname = viewname.slice(viewname.indexOf('.') + 1);
+        dbParams.db_app = appname;
+        dbParams = couch.getCouchParameters(dbParams);
+    } else {
+        dbParams = couch.getCouchParameters(dbParams);
+        appname = dbParams.db_app;
+    }
+
+    if (!viewname) {
+        this.usage('tibet couch view <[appname.]viewname> [viewParamJSON]');
+        return;
+    }
+
+    //  View parameters can be provided as a JSON block.
+    viewParams = this.getArgument(3);
+    if (CLI.notValid(viewParams)) {
+        viewParams = {};
+    } else {
+        try {
+            viewParams = JSON.parse(viewParams);
+        } catch (e) {
+            this.error('Invalid view param JSON: ' + e.message);
+            return;
+        }
+    }
+
+    viewParams.include_docs = true;
+
+    db = couch.getCouchDatabase(dbParams);
+
+    if (this.options.keys) {
+        method = 'viewAsyncKeys';
+    } else if (this.options.values) {
+        method = 'viewAsyncValues';
+    } else if (this.options.rows) {
+        method = 'viewAsyncRows';
+    } else {
+        method = 'viewAsyncDocs';
+    }
+
+    db[method](appname, viewname, viewParams).then(function(rows) {
+        //  NOTE we're basically always in '--verbose' mode here since we don't
+        //  know the type of document in the result and don't want to ass_ume
+        //  any particular schema per se.
+        thisref.log(CLI.beautify(rows));
+    }).catch(function(err) {
+        if (err.message === 'missing_named_view') {
+            thisref.error('View not found: ' + viewname);
+        } else {
+            CLI.handleError(err, 'couch', 'view');
+        }
+    });
+};
+
+
 module.exports = Cmd;
 
 }());

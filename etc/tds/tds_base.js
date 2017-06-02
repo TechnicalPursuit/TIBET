@@ -526,47 +526,39 @@
     TDS.cfg = TDS.getcfg;
 
     /**
-     *
+     * Returns a CouchDB connection reference, equivalent to the result object
+     * returned by the 'server' method on this object. See @server for more info.
+     * @param {Object} options A parameter block suitable for the
+     *     getCouchParameters call which defines any couch and TIBET parameters
+     *     necessary.
+     * @return {Object} An object implementing the 'use' command for DB access.
      */
     TDS.getCouchConnection = function(options) {
-        var opts,
-            params,
-            db_url,
-            server;
+        var opts;
 
         opts = options || {};
         opts.requestor = TDS;
 
-        params = TDS.getCouchParameters(opts);
-        db_url = params.db_url;
-
-        server = couch.server(db_url);
-
-        return server;
+        return couch.getCouchConnection(opts);
     };
 
     /**
-     *
+     * Returns a database object capable of accessing a specific CouchDB
+     *     database via both synchronous and asynchronous (Promisified) methods.
+     *     The async versions all end in 'Async'. See nano documentation.
+     * @param {Object} options A parameter block suitable for the
+     *     getCouchParameters call which defines any couch and TIBET parameters
+     *     necessary.
+     * @return {Object} A database object implementing promisified versions of
+     *     all nano database object methods.
      */
     TDS.getCouchDatabase = function(options) {
-        var opts,
-            params,
-            db_url,
-            db_name,
-            server,
-            db;
+        var opts;
 
         opts = options || {};
         opts.requestor = TDS;
 
-        params = TDS.getCouchParameters(opts);
-        db_url = params.db_url;
-        db_name = params.db_name;
-
-        server = couch.server(db_url);
-        db = server.use(db_name);
-
-        return db;
+        return couch.getCouchDatabase(opts);
     };
 
     /**
