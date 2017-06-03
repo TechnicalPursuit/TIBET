@@ -1406,7 +1406,6 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
         parts,
         len,
         i,
-        desc,
         name;
 
     if (/\./.test(propName)) {

@@ -50,10 +50,41 @@
         TP = {};
         TP.sys = {};
         TP.sys.setcfg = function(property, value) {
-            var name;
+            var name,
+                parts,
+                i,
+                val,
+                segment;
 
-            name = property; // property.replace(/\./g, '_');
-            my.cfg[name] = value;
+            //  If property is an object we treat it as a set of keys and values
+            //  and essentially flatten it into the config data structure.
+            if (typeof property !== 'string') {
+                if (value !== undefined && value !== null) {
+                    this.error('Invalid property/value combination.');
+                    return;
+                }
+                this.overlayProperties(property);
+            } else {
+                name = property; // property.replace(/\./g, '_');
+                my.cfg[name] = value;
+
+                //  Tricky part here is that we need to clear any values along
+                //  that path which are inconsistent with having child
+                //  properties (like pre-set values of null).
+                parts = name.split('.');
+                segment = '';
+                for (i = 0; i < parts.length - 1; i++) {
+                    segment = segment + parts[i];
+
+                    val = my.cfg[segment];
+                    if (val !== undefined &&
+                            (val === null || typeof val !== 'object')) {
+                        delete my.cfg[segment];
+                    }
+
+                    segment += '.';
+                }
+            }
         };
         this.setcfg = TP.sys.setcfg;
 
