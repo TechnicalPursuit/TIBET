@@ -92,17 +92,24 @@ function(aSignal) {
      * @param {TP.sig.Signal} aSignal The signal.
      */
 
-    var originTPElem,
+    var origin,
 
+        originTPElem,
         originElem,
 
         sigName,
         sigData;
 
-    //  Grab the real TP.core.Element that matches the signal origin (which will
-    //  be a full GID).
-    originTPElem = TP.bySystemId(aSignal.getOrigin());
-    originElem = TP.unwrap(originTPElem);
+    origin = aSignal.getOrigin();
+
+    if (TP.isString(origin)) {
+        //  Grab the real TP.core.Element that matches the signal origin (which
+        //  will be a full GID).
+        originTPElem = TP.bySystemId(origin);
+        originElem = TP.unwrap(originTPElem);
+    } else {
+        originElem = origin;
+    }
 
     sigName = aSignal.getSignalName();
 
@@ -123,7 +130,7 @@ function(aSignal) {
     if (TP.notEmpty(sigData)) {
         TP.queueSignalFromData(
                     sigData,
-                    originTPElem.getNativeNode(),
+                    originElem,
                     aSignal,
                     TP.sig.ResponderSignal);
     }

@@ -13763,7 +13763,7 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
     //  do the actual dispatch work here using TIBET's standard
     //  TP.dispatch() call (this can handle keyboard events etc)
-    return TP.dispatch(null,        //  'V' will be computed from targetElem
+    return TP.dispatch(targetElem,
                         aSignal,
                         targetElem,
                         argsOrEvent,
