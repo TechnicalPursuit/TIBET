@@ -16,7 +16,7 @@
                 "couch": {
                     "route": "/couch/*",
                     "replace": "http://127.0.0.1:5984/",
-                    "public": true
+                    "public": false
                 }
             }
         },
@@ -86,7 +86,7 @@
             name = key.replace(/\.route$/, '');
 
             pub = map[name + '.public'];
-            if (TDS.notValid(pub)) {
+            if (TDS.notValid(pub) || pub !== true) {
                 pub = false;
             }
 
