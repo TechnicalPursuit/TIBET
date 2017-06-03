@@ -229,21 +229,25 @@
          *
          */
         dbView = function(appname, view, params) {
-            var promise;
+            var promise,
+                opts;
+
+            opts = params || {};
+            opts.include_docs = true;
 
             promise = new Promise(function(resolve, reject) {
 
-                db.view(appname, view, params, function(err, body) {
-                    var values;
+                db.view(appname, view, opts, function(err, body) {
+                    var docs;
 
                     if (err) {
                         return reject(err);
                     }
 
-                    values = body.rows.map(function(row) {
-                        return row.value;
+                    docs = body.rows.map(function(row) {
+                        return row.doc;
                     });
-                    return resolve(values);
+                    return resolve(docs);
                 });
 
             });
@@ -930,7 +934,7 @@
 
             return dbView(db_app, 'flows', {keys: [flow + '::' + owner]}).then(
             function(result) {
-                //  Result should be the rows object from the db.view call.
+                //  Result should be the docs from the db.view call.
                 //  There should be only one so pass first one along.
                 return result[0];
             }).catch(function(err) {
@@ -947,8 +951,8 @@
             return dbView(db_app, 'tasks',
                 {keys: [task + '::' + owner, task + '::DEFAULT']}).then(
             function(result) {
-                //  Result should be the rows object from the db.view call.
-                //  If there are two rows then there is a specifically owned
+                //  Result should be the docs from the db.view call.
+                //  If there are two docs then there is a specifically owned
                 //  version as well as a DEFAULT version.
                 switch (result.length) {
                     case 0:

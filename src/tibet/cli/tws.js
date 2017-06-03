@@ -67,14 +67,14 @@ Cmd.VIEWS = {
     flows: {
         map: function(doc) {
             if (doc.type === 'flow') {
-                emit(doc.name + '::' + doc.owner, doc);
+                emit(doc.name + '::' + doc.owner);
             }
         }.toString()
     },
     jobs: {
         map: function(doc) {
             if (doc.type === 'job') {
-                emit(doc.flow + '::' + doc.owner, doc);
+                emit(doc.flow + '::' + doc.owner);
             }
         }.toString()
     },
@@ -82,35 +82,35 @@ Cmd.VIEWS = {
         map: function(doc) {
             if (doc.type === 'job' &&
                     (doc.state === '$$active' || doc.state === '$$ready')) {
-                emit(doc.state, doc);
+                emit(doc.state);
             }
         }.toString()
     },
     jobs_cancelled: {
         map: function(doc) {
             if (doc.type === 'job' && doc.state === '$$cancelled') {
-                emit(doc.state, doc);
+                emit(doc.state);
             }
         }.toString()
     },
     jobs_failed: {
         map: function(doc) {
             if (doc.type === 'job' && doc.state === '$$failed') {
-                emit(doc.state, doc);
+                emit(doc.state);
             }
         }.toString()
     },
     jobs_complete: {
         map: function(doc) {
             if (doc.type === 'job' && doc.state === '$$complete') {
-                emit(doc.state, doc);
+                emit(doc.state);
             }
         }.toString()
     },
     tasks: {
         map: function(doc) {
             if (doc.type === 'task') {
-                emit(doc.name + '::' + doc.owner, doc);
+                emit(doc.name + '::' + doc.owner);
             }
         }.toString()
     }
