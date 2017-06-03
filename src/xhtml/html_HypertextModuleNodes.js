@@ -95,7 +95,7 @@ function(aRequest) {
     this.callNextMethod();
 
     //  If the target is a local reference (a path or _self) it means we're
-    //  targeting a TIBET-controlled surface. If not then we dont' want to
+    //  targeting a TIBET-controlled surface. If not then we don't want to
     //  interfere with normal processing so we don't rewrite.
     if (TP.notEmpty(target = TP.elementGetAttribute(elem, 'target', true))) {
         if (!TP.regex.NON_SIMPLE_PATH.test(target) && target !== '_self') {
