@@ -1403,11 +1403,10 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
      */
 
     var obj,
-
         parts,
         len,
         i,
-
+        desc,
         name;
 
     if (/\./.test(propName)) {
@@ -1419,7 +1418,10 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
         for (i = 0; i < len - 1; i++) {
             name = parts[i];
 
-            if (!obj[name]) {
+            if (TP.boot.$notValid(obj[name])) {
+                //  Remove any partial path descriptor that might be in the way
+                //  of altering the value.
+                delete obj[name];
                 obj[name] = {};
             }
 
@@ -1440,6 +1442,8 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
         obj,
         name,
         {
+            //  Make sure this can be altered/removed/updated as needed.
+            configurable: true,
             get: function() {
                 return getter(propName);
             }
