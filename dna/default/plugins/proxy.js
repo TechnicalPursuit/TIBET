@@ -15,7 +15,8 @@
             "map": {
                 "couch": {
                     "route": "/couch/*",
-                    "replace": "http://127.0.0.1:5984/"
+                    "replace": "http://127.0.0.1:5984/",
+                    "public": true
                 }
             }
         },
@@ -72,7 +73,9 @@
 
         keys.forEach(function(key) {
             var name,
-                route;
+                route,
+                handler,
+                pub;
 
             //  Inbound key is the route key so fetch that first (what the route
             //  value should be for our app.all() call).
@@ -82,9 +85,14 @@
             //  We need to remove that and get the list of keys for route name.
             name = key.replace(/\.route$/, '');
 
+            pub = map[name + '.public'];
+            if (TDS.notValid(pub)) {
+                pub = false;
+            }
+
             logger.system('enabling proxy for ' + route);
 
-            app.all(route, function(req, res) {
+            handler = function(req, res) {
                 var regex,
                     replace,
                     path,
@@ -116,7 +124,14 @@
                         logger.error(err);
                     }
                 })).pipe(res);
-            });
+            };
+
+            if (pub) {
+                app.all(route, handler);
+            } else {
+                app.all(route, options.loggedInOrLocalDev, handler);
+            }
+
         });
     };
 
