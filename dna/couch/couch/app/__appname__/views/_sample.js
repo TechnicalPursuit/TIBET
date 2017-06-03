@@ -5,12 +5,10 @@
     module.exports = {
         map: function(doc) {
             if (doc.type) {
-                emit(doc.type, 1);
+                emit(doc.type);
             }
         },
-        reduce: function(keys, values, rereduce) {
-            return sum(values);
-        }
+        reduce: '_count'
     };
 
 }());
