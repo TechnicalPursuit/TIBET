@@ -157,7 +157,11 @@
         TP = {};
         TP.sys = {};
         TP.sys.setcfg = function(property, value) {
-            var name;
+            var name,
+                parts,
+                i,
+                val,
+                segment;
 
             //  If property is an object we treat it as a set of keys and values
             //  and essentially flatten it into the config data structure.
@@ -170,6 +174,23 @@
             } else {
                 name = property; // property.replace(/\./g, '_');
                 pkg.cfg[name] = value;
+
+                //  Tricky part here is that we need to clear any values along
+                //  that path which are inconsistent with having child
+                //  properties (like pre-set values of null).
+                parts = name.split('.');
+                segment = '';
+                for (i = 0; i < parts.length - 1; i++) {
+                    segment = segment + parts[i];
+
+                    val = pkg.cfg[segment];
+                    if (val !== undefined &&
+                            (val === null || typeof val !== 'object')) {
+                        delete pkg.cfg[segment];
+                    }
+
+                    segment += '.';
+                }
             }
         };
         this.setcfg = TP.sys.setcfg;
