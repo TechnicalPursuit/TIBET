@@ -964,9 +964,13 @@ function(anOrigin, aSignal, anElement, anEventOrHash, aPolicy, isCancelable,
         globalID = anOrigin;
     }
 
-    //  for tibet purposes we always want to use fullname origins to ensure
-    //  proper lookups that can cross frame references
-    origin = globalID;
+    if (TP.isElement(anOrigin)) {
+        origin = anOrigin;
+    } else {
+        //  for tibet purposes we always want to use fullname origins to ensure
+        //  proper lookups that can cross frame references
+        origin = globalID;
+    }
 
     //  the signal can be provided as a String or as a TP.sig.Signal or can
     //  be null, in which case we default to the UI signal name which maps

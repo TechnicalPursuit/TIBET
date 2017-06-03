@@ -204,9 +204,12 @@ function(aString) {
                     context = context[val];
                 } else {
                     //  If useGlobalContext is true and the value is a property
-                    //  on the global, then the context to it.
-                    if (useGlobalContext && self[val]) {
-                        context = self[val];
+                    //  *in the approved list of globals* (i.e. in
+                    //  TP.sys.$globals), then set the context to the value of
+                    //  that property on TP.global (which is the window/global
+                    //  object).
+                    if (useGlobalContext && TP.sys.$globals.hasKey(val)) {
+                        context = TP.global[val];
                     } else {
                         //  There was no context or value that resolved to a
                         //  context, so we trim the value and then unquote the

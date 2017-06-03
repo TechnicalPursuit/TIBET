@@ -23,11 +23,18 @@ TP.sherpa.TemplatedTag.defineSubtype('drawer');
 TP.sherpa.drawer.Inst.defineHandler('Toggle',
 function(aSignal) {
 
-    var sigOriginTPElem,
+    var origin,
+        sigOriginTPElem,
 
         isClosed;
 
-    sigOriginTPElem = TP.bySystemId(aSignal.getOrigin());
+    origin = aSignal.getOrigin();
+
+    if (TP.isString(origin)) {
+        sigOriginTPElem = TP.bySystemId(origin);
+    } else {
+        sigOriginTPElem = TP.wrap(origin);
+    }
 
     isClosed = TP.bc(sigOriginTPElem.getAttribute('closed'));
 

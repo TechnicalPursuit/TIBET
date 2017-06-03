@@ -22,7 +22,7 @@ TP.tibet.style.Type.set('uriAttrs', TP.ac('href'));
 TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
-//  Type Methods
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 /**
@@ -31,6 +31,8 @@ TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));
  */
 TP.tibet.style.Type.defineAttribute('lessGlobalVars');
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.style.Type.defineMethod('initialize',

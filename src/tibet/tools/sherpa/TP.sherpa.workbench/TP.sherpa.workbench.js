@@ -187,13 +187,23 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('InspectorDidFocus',
 function(aSignal) {
 
-    var inspectorSelectedItemLabels,
+    var origin,
+        sigOriginTPElem,
+
+        inspectorSelectedItemLabels,
         breadcrumbTPElem;
 
     this.updateNavigationButtons();
 
-    inspectorSelectedItemLabels = TP.bySystemId(aSignal.getSignalOrigin()).get(
-                                                    'selectedItems');
+    origin = aSignal.getOrigin();
+
+    if (TP.isString(origin)) {
+        sigOriginTPElem = TP.bySystemId(origin);
+    } else {
+        sigOriginTPElem = TP.wrap(origin);
+    }
+
+    inspectorSelectedItemLabels = sigOriginTPElem.get('selectedItems');
 
     //  Set up the breadcrumb bar
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());

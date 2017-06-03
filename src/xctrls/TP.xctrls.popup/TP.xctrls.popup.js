@@ -128,6 +128,7 @@ function(aSignal) {
 
         triggerID,
         triggerTPElem,
+        origin,
 
         closeOn;
 
@@ -172,7 +173,12 @@ function(aSignal) {
         popupTPElem.set('$currentTriggerID', triggerTPElem.getID());
     } else {
         //  let it default to the trigger signal's origin
-        triggerTPElem = TP.bySystemId(triggerSignal.getOrigin());
+        origin = triggerSignal.getOrigin();
+        if (TP.isString(origin)) {
+            triggerTPElem = TP.bySystemId(origin);
+        } else {
+            triggerTPElem = TP.wrap(origin);
+        }
         popupTPElem.set('$currentTriggerID', triggerTPElem.getID());
     }
 

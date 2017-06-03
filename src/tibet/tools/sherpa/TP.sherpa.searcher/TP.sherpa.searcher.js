@@ -1186,7 +1186,10 @@ function(aSignal) {
      * @method handleDOMKeyUp
      */
 
-    var val,
+    var origin,
+        sigOriginTPElem,
+
+        val,
 
         matches,
         groupings,
@@ -1202,10 +1205,18 @@ function(aSignal) {
         return this;
     }
 
+    origin = aSignal.getOrigin();
+
+    if (TP.isString(origin)) {
+        sigOriginTPElem = TP.bySystemId(origin);
+    } else {
+        sigOriginTPElem = TP.wrap(origin);
+    }
+
     //  NB: val might be empty, but that's ok - if the user has Backspaced all
     //  of the way and wiped out the entries, we need to clear all of the
     //  results.
-    val = TP.bySystemId(aSignal.getSignalOrigin()).getDisplayValue();
+    val = sigOriginTPElem.getDisplayValue();
 
     matches = this.computeMatches(val);
 
