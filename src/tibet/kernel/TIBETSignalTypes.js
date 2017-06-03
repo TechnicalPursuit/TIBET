@@ -1257,18 +1257,25 @@ function() {
      * @returns {TP.core.UIElementNode} The DOM target of the receiver.
      */
 
-    var evt,
+    var trigger,
+        evt,
+
         domSignal;
 
     //  Responder signals are *not* DOM signals, but if they've been triggered
     //  because of a DOM signal, they should have the low-level event in their
     //  payload.
-    if (TP.isEvent(evt = this.at('trigger').getEvent())) {
+    trigger = this.at('trigger');
 
-        //  Wrap the event into a TIBET DOM signal of some type.
-        domSignal = TP.wrap(evt);
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
 
-        return domSignal.getTarget();
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getTarget();
+        }
     }
 
     return null;
