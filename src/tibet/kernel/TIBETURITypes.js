@@ -3885,6 +3885,8 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
     var fragment,
         result,
 
+        fragmentAccessor,
+
         oldResource,
 
         pathInfo,
@@ -3911,16 +3913,16 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
 
         if (TP.regex.DOCUMENT_ID.test(fragment) ||
                 TP.regex.BARENAME.test(fragment)) {
-            //  empty
+            fragmentAccessor = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
-            fragment = TP.apc(fragment, TP.hc('shouldCollapse', true));
-            fragment.set('shouldMakeStructures',
-                this.get('shouldCreateContent'));
+            fragmentAccessor = TP.apc(fragment, TP.hc('shouldCollapse', true));
+            fragmentAccessor.set('shouldMakeStructures',
+                                    this.get('shouldCreateContent'));
         }
 
         if (TP.canInvoke(result, 'set')) {
-            oldResource = result.get(fragment);
-            result.set(fragment, aResource, shouldSignalChange);
+            oldResource = result.get(fragmentAccessor);
+            result.set(fragmentAccessor, aResource, shouldSignalChange);
         } else {
             this.raise('TP.sig.InvalidResource',
                 'Unable to modify target resource.');
@@ -3936,7 +3938,7 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         //  used by the notification method to send changed notifications from
         //  other URIs that contain paths (as their fragments) that are
         //  'dependent' on that new data that was set.
-        pathInfo = fragment.getLastChangedPathsInfo(result);
+        pathInfo = fragmentAccessor.getLastChangedPathsInfo(result);
 
         //  Send notification from the other URIs that are dependent on the new
         //  data.
