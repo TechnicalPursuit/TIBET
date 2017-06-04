@@ -3816,6 +3816,47 @@ function(aResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('setResourceToResultOf',
+function(aURI, aRequest, shouldCopy) {
+
+    /**
+     * @method setResourceToResultOf
+     * @summary Sets the receiver's resource object to the result of the
+     *     resource pointed to by aURI. If the shouldCopy flag is true, then a
+     *     copy of the result is made before setting it as the resource of the
+     *     receiver.
+     * @param {TP.core.URI} aURI The URI of the resource object to use as the
+     *     resource source.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
+     *     optional parameters.
+     * @param {Boolean} [shouldCopy=false] Whether or not to make a copy of the
+     *     result before using it as the receiver's resource.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the newly set
+     *     content set as its result.
+     */
+
+    var result,
+        newResult;
+
+    result = aURI.getResource(TP.hc('async', false)).get('result');
+    if (TP.isValid(result)) {
+
+        if (TP.isTrue(shouldCopy)) {
+            newResult = TP.copy(result);
+        } else {
+            newResult = result;
+        }
+
+        this.set('shouldCreateContent', true);
+
+        return this.setResource(newResult, aRequest);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$setResultContent',
 function(aRequest, aResult, aResource) {
 
