@@ -3931,7 +3931,7 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         this.raise('TP.sig.InvalidFragment');
     }
 
-    if (shouldSignalChange) {
+    if (fragmentAccessor.isAccessPath()) {
 
         //  Grab the set of 'path info records' that contain data about the
         //  paths that changed when the 'set' was executed above. This will be
@@ -3940,15 +3940,17 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         //  'dependent' on that new data that was set.
         pathInfo = fragmentAccessor.getLastChangedPathsInfo(result);
 
-        //  Send notification from the other URIs that are dependent on the new
-        //  data.
-        this.$sendDependentURINotifications(
-            oldResource, aResource, pathInfo);
-    } else {
-        //  NOTE the 'true' here signifies 'primary only' so we'll always at
-        //  least tell our primary we changed something.
-        this.$sendDependentURINotifications(
-            oldResource, aResource, pathInfo, true);
+        if (shouldSignalChange) {
+
+            //  Send notification from the other URIs that are dependent on the
+            //  new data.
+            this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
+        } else {
+            //  NOTE the 'true' here signifies 'primary only' so we'll always at
+            //  least tell our primary we changed something.
+            this.$sendDependentURINotifications(
+                oldResource, aResource, pathInfo, true);
+        }
     }
 
     //  If there was already a value then we consider new values to dirty the
