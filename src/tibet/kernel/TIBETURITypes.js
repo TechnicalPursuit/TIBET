@@ -1645,6 +1645,42 @@ function(anAspect, anAction, aDescription) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('$constructPrimaryResourceStub',
+function(aPathType) {
+
+    /**
+     * @method $constructPrimaryResource
+     * @summary Constructs a primary resource 'stub' when the primary resource
+     *     is missing for a secondary URI that is trying to access it.
+     * @param {String} aPathType The 'path type' of the path created from the
+     *     secondary URI's fragment.
+     * @returns {Object|null} The object to use as the primary resource stub.
+     */
+
+    var result;
+
+    switch (aPathType) {
+        case TP.TIBET_PATH_TYPE:
+        case TP.JSON_PATH_TYPE:
+            result = TP.hc();
+            break;
+        case TP.CSS_PATH_TYPE:
+        case TP.XPATH_PATH_TYPE:
+        case TP.BARENAME_PATH_TYPE:
+        case TP.XPOINTER_PATH_TYPE:
+        case TP.ELEMENT_PATH_TYPE:
+        case TP.XTENSION_POINTER_PATH_TYPE:
+            result = TP.constructDocument();
+            break;
+        default:
+            break;
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('clearCaches',
 function() {
 
@@ -3902,6 +3938,12 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         shouldSignalChange = this.hasCleared() || this.isLoaded();
     }
 
+    //  aResult here will be the resource for the primary URI. Therefore, if we
+    //  are the primary URI, it will be our whole data object. If we are a
+    //  'secondary URI' pointing to a fragment, then we try to access the slice
+    //  of the overall resource and set it using the optionally provided object
+    //  in aResource.
+
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
         fragment = fragment.indexOf('#') === 0 ? fragment : '#' + fragment;
@@ -3916,8 +3958,26 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
             fragmentAccessor = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             fragmentAccessor = TP.apc(fragment, TP.hc('shouldCollapse', true));
-            fragmentAccessor.set('shouldMakeStructures',
-                                    this.get('shouldCreateContent'));
+
+            //  If we're configured to create content, then flip the fragment
+            //  accessor's flag to make structures.
+            if (TP.isTrue(this.get('shouldCreateContent'))) {
+
+                fragmentAccessor.set('shouldMakeStructures', true);
+
+                //  If result was not valid, then our primary URI doesn't have
+                //  valid object for us to use as a starting point - try to
+                //  create one based on our path type.
+                if (TP.notValid(result)) {
+
+                    result = this.$constructPrimaryResourceStub(
+                                    fragmentAccessor.getPathType());
+
+                    if (TP.isValid(result)) {
+                        this.getPrimaryURI().setResource(result);
+                    }
+                }
+            }
         }
 
         if (TP.canInvoke(result, 'set')) {
