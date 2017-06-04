@@ -543,10 +543,6 @@ helpers.server = function(url) {
 
         db.viewAsyncRows = function(appname, viewname, viewParams) {
 
-            //  Our standard views don't emit the doc - we need to specify
-            //  'include_docs: true'
-            viewParams.include_docs = true;
-
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
                     var body;
@@ -558,10 +554,6 @@ helpers.server = function(url) {
         };
 
         db.viewAsyncDocs = function(appname, viewname, viewParams) {
-
-            //  Our standard views don't emit the doc - we need to specify
-            //  'include_docs: true'
-            viewParams.include_docs = true;
 
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
@@ -579,9 +571,6 @@ helpers.server = function(url) {
 
         db.viewAsyncKeys = function(appname, viewname, viewParams) {
 
-            //  We're only after the keys here - we don't need to
-            //  'include_docs: true'
-
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
                     var body,
@@ -598,10 +587,6 @@ helpers.server = function(url) {
 
         db.viewAsyncValues = function(appname, viewname, viewParams) {
 
-            //  Our standard views don't emit the doc - we need to specify
-            //  'include_docs: true'
-            viewParams.include_docs = true;
-
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
                     var body,
@@ -609,7 +594,7 @@ helpers.server = function(url) {
 
                     body = result[0];
                     values = body.rows.map(function(row) {
-                        return row.doc;
+                        return row.value;
                     });
 
                     return values;
