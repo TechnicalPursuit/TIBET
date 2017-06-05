@@ -3028,7 +3028,6 @@ function(normalizedEvent) {
         targetElem,
         targetDelay,
 
-        thisref,
         theEvent;
 
     if (TP.isNumber(TP.core.Mouse.$$clickTimer)) {
@@ -3080,13 +3079,12 @@ function(normalizedEvent) {
     //  use a timer that can be cancelled by dblclick events so we don't
     //  cause event-level confusion. the semantics should be maintained by
     //  the application however that dblclick is "more click"
-    thisref = this;
     theEvent = normalizedEvent;
 
     TP.core.Mouse.$$clickTimer = setTimeout(
         function() {
 
-            thisref.invokeObservers('click', theEvent);
+            TP.core.Mouse.invokeObservers('click', theEvent);
 
             TP.core.Mouse.$$clickTimer = undefined;
         }, clickDelay);
