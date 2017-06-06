@@ -80,8 +80,12 @@ function(aRequest) {
      */
 
     var elem,
+
+        href,
+
         target,
-        href;
+
+        onClickVal;
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -104,8 +108,10 @@ function(aRequest) {
     }
 
     //  If there's already a click handler the developer "wins", even if that
-    //  means they don't get the benefit of TIBET here.
-    if (TP.notEmpty(TP.elementGetAttribute(elem, 'onclick', true))) {
+    //  means they don't get the benefit of TIBET here. Note the check for
+    //  "TP.go2('#')" here - we may rewrite that.
+    onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
+    if (TP.notEmpty(onClickVal) && !onClickVal.startsWith('TP.go2(\'#\'')) {
         return;
     }
 
