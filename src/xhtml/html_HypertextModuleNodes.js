@@ -145,10 +145,13 @@ function(aRequest) {
     //  First, just set the 'href' to '#' to limit traversal and link display.
     TP.elementSetAttribute(elem, 'href', '#', true);
 
-    //  Then add an 'onclick' that will trigger TIBET's go2 call to process the
-    //  link at runtime. Note the '; return false' to help ensure no traversal.
+    //  Then add an 'onclick' that will service any TIBET click handling
+    //  machinery and then trigger TIBET's go2 call to process the link at
+    //  runtime. Note the '; return false' to help ensure no traversal.
     TP.elementSetAttribute(elem, 'onclick',
-        'TP.go2(\'' + href + '\', window); return false;',
+        'TP.core.Mouse.invokeObservers(\'click\', event);' +
+        'TP.go2(\'' + href + '\', window);' +
+        ' return false;',
         true);
 
     return;
