@@ -3955,6 +3955,8 @@ function(shouldRender) {
                 dataExpr,
 
                 allVals,
+
+                fullURI,
                 fullExpr,
 
                 wholeURI,
@@ -3975,7 +3977,22 @@ function(shouldRender) {
             for (i = 0; i < dataExprs.getSize(); i++) {
                 dataExpr = dataExprs.at(i);
 
-                if (TP.notEmpty(scopeVals)) {
+                //  If the data expression is a 'whole URI' (without a
+                //  fragment), then it's not scoped no matter whether we have
+                //  scoping values or not.
+                if (TP.isURIString(dataExpr) &&
+                    !TP.regex.URI_FRAGMENT.test(dataExpr)) {
+
+                    dataExpr = TP.trim(dataExpr);
+
+                    //  Grab the primary URI from a URI computed from the value
+                    //  expression and append a '#tibet(.)' on it (which will
+                    //  retrieve the whole value).
+                    fullURI = TP.uc(dataExpr);
+                    fullExpr = fullURI.getPrimaryLocation() + '#tibet(.)';
+
+                    wholeURI = TP.uc(fullExpr);
+                } else if (TP.notEmpty(scopeVals)) {
                     //  Concatenate the binding value onto the scope values
                     //  array (thereby creating a new Array) and use it to
                     //  join all of the values together.
