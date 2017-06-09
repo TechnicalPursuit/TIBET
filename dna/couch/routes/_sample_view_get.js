@@ -12,7 +12,6 @@
         var app,
             logger,
             TDS,
-            params,
             db;
 
         app = options.app;
@@ -43,8 +42,7 @@
         */
 
         app.get('/view', options.parsers.json, function(req, res) {
-            var valid,
-                query,
+            var query,
                 params,
                 format,
                 appname,
