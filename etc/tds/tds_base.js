@@ -381,7 +381,7 @@
             }
         } else {
             // Target not valid, source should overlay.
-            return source;
+            return JSON.parse(JSON.stringify(source));
         }
 
         Object.keys(source).forEach(function(key) {
