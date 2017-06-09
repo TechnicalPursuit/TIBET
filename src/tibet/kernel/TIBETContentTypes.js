@@ -4505,15 +4505,25 @@ function(aPath, config) {
      * @returns {TP.core.CompositePath} The receiver.
      */
 
-    var pathStrs,
+    var path,
+
+        pathStrs,
         i,
 
         paths;
 
     this.callNextMethod('value', config);
 
+    path = aPath;
+
+    //  If the path has a '#tibet(...)' scheme wrapping it, slice that off. It
+    //  will cause the split below to be off.
+    if (TP.regex.TIBET_POINTER.test(path)) {
+        path = path.slice(7, -1);
+    }
+
     //  Split along '.(' or ').'
-    pathStrs = aPath.split(/(\.\(|\)\.)/);
+    pathStrs = path.split(/(\.\(|\)\.)/);
 
     //  Strip any leading parenthesis from the first item and any trailing
     //  parenthesis from the last item.
