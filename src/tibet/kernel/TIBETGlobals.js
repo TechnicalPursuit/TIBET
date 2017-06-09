@@ -3244,8 +3244,6 @@ TP.CHANGE_URIS = 'uris';
 //  One or more access paths separated by '.(' and ').'
 TP.regex.COMPOSITE_PATH = /(^|\.)\((.+?)\)(\.|$)/;
 
-TP.regex.ANY_POINTER = /(\w+)\((.*)\)$/;
-
 //  one or more of any characters with optional preceding or following
 //  whitespace
 TP.regex.PATH_EXPR = /(^|\s+)(.+?)($|\s+)/g; // needs reset
@@ -3293,8 +3291,6 @@ TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
 //  TIBET extensions that can be used in *node* paths
 TP.regex.XTENSION_POINTER = /css\((.*)\)/;
 
-TP.regex.CSS_POINTER = /css\((.*)\)/;
-
 //  Detect @[anything] as whole
 TP.regex.ATTRIBUTE = /^@\w+$/;
 
@@ -3306,6 +3302,12 @@ TP.regex.ATTRIBUTE_ALL = /^@\*/;
 
 //  Detect text() at end
 TP.regex.TEXT_NODE_ENDS = /\/text\(\)$/;
+
+//  XPointer matchers
+
+TP.regex.ANY_POINTER = /(\w+)\((.*)\)$/;
+
+TP.regex.CSS_POINTER = /css\((.*)\)/;
 
 //  Detect starts with #, followed by word characters. Also, TIBET's extension
 //  to barenames (a trailing '@expr') allows access to Attributes.
