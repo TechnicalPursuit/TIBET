@@ -109,9 +109,10 @@ function(aRequest) {
 
     //  If there's already a click handler the developer "wins", even if that
     //  means they don't get the benefit of TIBET here. Note the check for
-    //  "TP.go2('#')" here - we may rewrite that.
+    //  "TP.go2('#')" here - it's a possibility that we might rewrite those
+    //  exact expressions.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.startsWith('TP.go2(\'#\'')) {
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#\'')) {
         return;
     }
 
@@ -193,9 +194,11 @@ function(value) {
     }
 
     //  If there's already a click handler the developer "wins", even if that
-    //  means they don't get the benefit of TIBET here.
+    //  means they don't get the benefit of TIBET here. Note the check for
+    //  "TP.go2('#')" here - it's a possibility that we might rewrite those
+    //  exact expressions.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.startsWith('TP.go2(\'#\'')) {
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#\'')) {
         return;
     }
 
