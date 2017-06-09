@@ -2486,7 +2486,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
         needsRefresh,
 
-        isRepeatScope,
+        insideRepeatScope,
         insertParts,
 
         indexes,
@@ -2819,15 +2819,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     needsRefresh = true;
 
-                    isRepeatScope =
+                    insideRepeatScope =
                         TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
                         TP.elementHasClass(ownerElem, 'item');
 
-                    if ((attrName === 'repeat' || isRepeatScope) &&
+                    if ((attrName === 'repeat' || insideRepeatScope) &&
                         TP.isEmpty(remainderParts) &&
                         attrVal === searchPath) {
 
-                        if (isRepeatScope) {
+                        if (insideRepeatScope) {
                             ownerElem = TP.nodeDetectAncestor(
                                 ownerElem,
                                 function(aNode) {
@@ -2862,7 +2862,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                         TP.wrap(newRowElem).$getBoundElements(
                                                                         false);
 
-                                    if (isRepeatScope) {
+                                    if (insideRepeatScope) {
                                         insertParts = pathParts.slice(0, -1);
                                     } else {
                                         insertParts = pathParts;
