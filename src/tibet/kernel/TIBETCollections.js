@@ -1010,16 +1010,11 @@ function() {
      * @summary Returns the "simplest" form of the receiver possible, meaning
      *     that when the receiver has only one item that item is returned,
      *     otherwise the receiver is returned.
-     * @returns {Array|Object|null} The receiver or its single item or null if
-     *     empty.
+     * @returns {Array|Object} The receiver or its single item.
      */
 
     if (this.getSize() === 1) {
         return this.at(0);
-    }
-
-    if (TP.isEmpty(this)) {
-        return null;
     }
 
     return this;
