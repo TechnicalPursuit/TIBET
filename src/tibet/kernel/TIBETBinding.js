@@ -2881,22 +2881,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                                 1);
                                     }
 
-                                    newSubElems =
-                                        TP.wrap(newRowElem).$getBoundElements(
-                                                                        false);
+                                    TP.wrap(newRowElem).
+                                        refreshBoundDescendants();
 
-                                    if (insideRepeatScope) {
-                                        insertParts = pathParts.slice(0, -1);
-                                    } else {
-                                        insertParts = pathParts;
-                                    }
-
-                                    ownerTPElem.refreshBranches(
-                                        primarySource, aSignal, newSubElems,
-                                        theVal, pathType, insertParts,
-                                        pathAction, true);
-
-                                    needsRefresh = false;
                                 } else {
 
                                     ownerTPElem.empty();
@@ -2907,7 +2894,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                     ownerTPElem.$regenerateRepeat(
                                                     branchVal, elems);
                                     ownerTPElem.$showHideRepeatRows(branchVal);
+
+                                    TP.wrap(ownerTPElem).
+                                            refreshBoundDescendants();
                                 }
+
+                                needsRefresh = false;
 
                                 break;
 
@@ -2963,13 +2955,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 if (TP.notEmpty(indexes)) {
                     newRowElem = this.$insertRepeatRowAt(indexes);
-                    newSubElems = TP.wrap(newRowElem).$getBoundElements(false);
+                    if (TP.owns(
+                        this, 'generatedItemCount')) {
+                        this.set(
+                        'generatedItemCount',
+                        this.get('generatedItemCount') +
+                                1);
+                    }
 
-                    this.refreshBranches(
-                        primarySource, aSignal, newSubElems,
-                        theVal, pathType, TP.ac(),
-                        pathAction, true);
-
+                    TP.wrap(newRowElem).refreshBoundDescendants();
                 } else {
 
                     ownerTPElem.empty();
@@ -2978,6 +2972,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     //  newly generated elements. They will be refreshed below.
                     ownerTPElem.$regenerateRepeat(branchVal, elems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
+
+                    TP.wrap(ownerTPElem).refreshBoundDescendants();
                 }
             }
 
