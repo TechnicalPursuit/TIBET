@@ -2215,6 +2215,13 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     //  Splice it into the collection.
     targetCollection.splice(insertIndex, 0, dataRow);
 
+    //  NB: We *must* reset the targetURI's resource here since we've modified
+    //  it 'outside' of the normal set()/get() behavior and observers that are
+    //  observing this object for changes will be depending on having a
+    //  queryable structure when they receive their notification. Note also how
+    //  we do *not* signal change when we set this value. We don't want those
+    //  observers to trigger early, but instead use the richer notification
+    //  they'll receive from the code below.
     targetURI.setResource(targetCollection, TP.request('signalChange', false));
 
     //  The index that changed.
