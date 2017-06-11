@@ -2497,6 +2497,11 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
     //  TIMING: var startQuery = Date.now();
 
+    //  Grab all of the elements that contain 'scope' or 'repeat' attributes.
+    //  Note that we can't filter for the 'bind:' (TP.w3.Xmlns.BIND) namespace
+    //  on those attributes here because the 'querySelectorAll' call has no
+    //  namespace support :-(. It is, however, very fast. We'll filter for that
+    //  later.
     subscopes = TP.ac(elem.querySelectorAll('*[*|scope], *[*|repeat]'));
 
     subscopes = subscopes.filter(
@@ -2523,6 +2528,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 return true;
             });
 
+    //  Get the set of elements that are contained within the receiver, but in a
+    //  'shallow' fashion - that is, 'under' the receiver but not under any
+    //  nested scopes (i.e. 'bind:scope' or 'bind:repeat') that are also under
+    //  the receiver.
     nextElems = elems.filter(
             function(anElem) {
 
@@ -2547,13 +2556,16 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
     nextElems = nextElems.concat(subscopes);
 
+    //  Iterate over all of those elements containing binding attributes and
+    //  grab the attribute nodes that are in the TP.w3.Xmlns.BIND namespace.
     boundAttrNodes = TP.ac();
     for (i = 0; i < nextElems.length; i++) {
         attrs = nextElems[i].attributes;
 
         for (j = 0; j < attrs.length; j++) {
 
-            //  Make sure the attribute is in the binding namespace
+            //  Make sure the attribute is in the binding namespace. This also
+            //  accounts for the deficency of the querySelectorAll() call above.
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
                 boundAttrNodes.push(attrs[j]);
             }
@@ -2574,8 +2586,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         primaryLocMatcher =
             TP.rc(TP.regExpEscape(aSignal.getOrigin().getPrimaryLocation()));
 
+        //  Loop over all of the found binding attributes.
         len = boundAttrNodes.getSize();
         for (i = 0; i < len; i++) {
+
             boundAttr = boundAttrNodes.at(i);
 
             attrName = boundAttr.localName;
@@ -2584,8 +2598,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             ownerElem = boundAttr.ownerElement;
             ownerTPElem = TP.wrap(ownerElem);
 
-            //  Nested scope?
-            isScopingElement = attrName === 'scope' || attrName === 'repeat';
+            //  Are we processing a nested scope?
+
+            /* eslint-disable no-extra-parens */
+            isScopingElement = (attrName === 'scope' || attrName === 'repeat');
+            /* eslint-enable no-extra-parens */
+
             if (isScopingElement) {
 
                 if (TP.isURIString(attrVal) &&
@@ -2653,17 +2671,19 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                 pathType, null, null, true);
             } else {
 
-                //  If we're not scoped (i.e. running top-level expressions) and
-                //  those expressions don't contain ACP variables and the
-                //  primary location matcher doesn't match the binding
-                //  expression, then it's a top-level expression pointing at
-                //  another data location - don't process them.
+                //  If we're not scoped (i.e. we're running top-level
+                //  expressions) and the expression that we're processing
+                //  doesn't contain ACP variables and the primary location
+                //  matcher doesn't match the expression, then it's a top-level
+                //  expression pointing at another data location - don't process
+                //  them.
                 if (!isScoped &&
                     !TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal) &&
                     !primaryLocMatcher.test(attrVal)) {
                     continue;
                 }
 
+                //  Otherwise, go ahead and process this as a leaf.
                 ownerTPElem.refreshLeaf(
                     primarySource, aSignal, theVal, boundAttr, aPathType);
             }
@@ -2751,6 +2771,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 if (isScopingElement && branchMatcher.test(attrVal)) {
 
+                    //  If the scoping element has a '.', then it wants to scope
+                    //  to the data (probably a collection) that was supplied to
+                    //  this method and is currently in theVal.
                     if (attrVal === '.') {
                         return ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, theVal,
