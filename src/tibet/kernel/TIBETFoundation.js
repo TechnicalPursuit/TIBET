@@ -1797,8 +1797,12 @@ function(anObject, aType) {
     //  NB: This is a very heavily used routine, so we use very primitive
     //  checking in it.
 
-    //  NB: We have to treat NaN specially - sigh.
-    if (isNaN(anObject)) {
+    //  NB: We have to treat NaN specially - sigh. Note here that we compare
+    //  directly with NaN since isNaN will return true for things like the
+    //  'undefined' value.
+    /* eslint-disable use-isnan */
+    if (anObject === NaN) {
+    /* eslint-enable use-isnan */
         //  empty
     } else if (
         //  This seems very pendantic, but these are single compare statements
@@ -1912,8 +1916,12 @@ function(anObject, aType) {
         return true;
     }
 
-    //  NB: We have to treat NaN specially - sigh.
-    if (isNaN(anObject)) {
+    //  NB: We have to treat NaN specially - sigh. Note here that we compare
+    //  directly with NaN since isNaN will return true for things like the
+    //  'undefined' value.
+    /* eslint-disable use-isnan */
+    if (anObject === NaN) {
+    /* eslint-enable use-isnan */
         //  empty
     } else if (
         //  This seems very pendantic, but these are single compare statements
