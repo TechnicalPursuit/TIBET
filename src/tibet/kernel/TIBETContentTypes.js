@@ -7374,6 +7374,9 @@ function(targetObj) {
         queryParts,
 
         val,
+
+        tailPath,
+
         retVal;
 
     path = this.get('$transformedPath');
@@ -7537,7 +7540,10 @@ function(targetObj) {
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
         thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.tpc(tail));
+        tailPath = TP.tpc(tail);
+        tailPath.set('shouldCollapse', this.get('shouldCollapse'));
+
+        retVal = val.get(tailPath);
 
         thisType.endObservedAddress();
 
@@ -7585,6 +7591,9 @@ function(targetObj) {
         queryParts,
 
         val,
+
+        tailPath,
+
         retVal;
 
     path = this.get('$transformedPath');
@@ -7678,7 +7687,10 @@ function(targetObj) {
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
         thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.tpc(tail));
+        tailPath = TP.tpc(tail);
+        tailPath.set('shouldCollapse', this.get('shouldCollapse'));
+
+        retVal = val.get(tailPath);
 
         thisType.endObservedAddress();
 
@@ -7938,10 +7950,12 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        indexVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
-                                                                shouldMake)),
-                                attributeValue,
-                                false);
+                        indexVal.set(
+                            TP.tpc(
+                                tail,
+                                TP.hc('shouldMakeStructures', shouldMake)),
+                            attributeValue,
+                            false);
 
                         thisType.endChangedAddress();
                     }.bind(this));
@@ -8047,10 +8061,12 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        itemVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
-                                                                shouldMake)),
-                                attributeValue,
-                                false);
+                        itemVal.set(
+                            TP.tpc(
+                                tail,
+                                TP.hc('shouldMakeStructures', shouldMake)),
+                            attributeValue,
+                            false);
 
                         thisType.endChangedAddress();
                     }.bind(this), queryParts);

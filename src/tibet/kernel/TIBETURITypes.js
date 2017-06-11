@@ -2562,9 +2562,12 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var resultType,
-        fragment,
-        result;
+    var fragment,
+        result,
+
+        shouldCollapse,
+
+        resultType;
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -2590,13 +2593,28 @@ function(aRequest, aResult, aResource) {
                     TP.tpnode(result) :
                     result;
 
-        //  Note here how we collapse just to make sure to have consistent
-        //  results across 'get' calls... what ultimately gets returned from
-        //  this method is determined by the $getFilteredResult() call below.
+        //  Make sure that we obtain the 'shouldCollapse' value from the request
+        //  (if it has one - defaulted to true) and if the fragment is an access
+        //  path, configure it with the same setting.
+
+        //  Note here that if we do collapse, we do so to just to make sure to
+        //  have consistent results across 'get' calls... what ultimately gets
+        //  returned from this method is determined by the $getFilteredResult()
+        //  call below.
+
+        shouldCollapse = TP.ifKeyInvalid(aRequest, 'shouldCollapse', true);
+
+        if (fragment.isAccessPath()) {
+            fragment.set('shouldCollapse', shouldCollapse);
+        }
 
         result = TP.canInvoke(result, 'get') ? result.get(fragment) : undefined;
 
-        result = TP.isCollection(result) ? TP.collapse(result) : result;
+        //  If collapsing wasn't specifically set to false, then collapse the
+        //  result.
+        if (TP.notFalse(shouldCollapse)) {
+            result = TP.isCollection(result) ? TP.collapse(result) : result;
+        }
     } else {
         result = aResult;
     }
