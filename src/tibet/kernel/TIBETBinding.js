@@ -2945,10 +2945,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
             //  If we didn't process at least once, and the last part of the
             //  path is a simple numeric path, and there is a value at the end
-            //  of that patch, then we may have an insertion.
+            //  of that path, then we may have an insertion.
             if (!didProcess &&
-                TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
-                TP.isDefined(branchVal = TP.wrap(theVal).get(attrVal)) &&
+                TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart) &&
+                TP.isDefined(branchVal = TP.wrap(theVal).get(lastPart)) &&
                 (pathAction === TP.CREATE || pathAction === TP.INSERT)) {
 
                 indexes = aSignal.at('indexes');
