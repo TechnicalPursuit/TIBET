@@ -6310,6 +6310,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('clearTextContent',
+function() {
+
+    /**
+     * @method clearTextContent
+     * @summary Clears out any text content of mutable items in the receiver,
+     *     thereby clearing all of the non-mutable (primitive) items and leaving
+     *     just the data structure.
+     * @description At this type level, this method does nothing.
+     * @returns {Object} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('getProperty',
 function(attributeName) {
 
