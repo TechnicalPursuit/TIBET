@@ -184,6 +184,13 @@ function() {
                 //  default user.
                 TP.core.User.getRealUser();
             }
+
+            //  Set up common URIs for the user object and the raw user vCard
+            //  data.
+            TP.uc('urn:tibet:user').setResource(
+                                        TP.sys.getEffectiveUser());
+            TP.uc('urn:tibet:userinfo').setResource(
+                                        TP.sys.getEffectiveUser().get('vcard'));
         }).then(
         function() {
             var i;
