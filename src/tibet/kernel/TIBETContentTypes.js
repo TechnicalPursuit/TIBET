@@ -812,6 +812,71 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineHandler('InsertItem',
+function(aSignal) {
+
+    /**
+     * @method handleInsertItem
+     * @summary Handles when an item is to be inserted into the receiver's data.
+     * @param {TP.sig.InsertItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI,
+
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  This could be undefined, but if it's real we want to make URI out of it.
+    source = aSignal.at('source');
+    if (TP.notEmpty(source)) {
+        source = source.unquoted();
+
+        if (TP.isURIString(source)) {
+            source = TP.uc(source);
+        } else if (source.charAt(0) === '#') {
+
+            //  If it's not an XPointer, then make a 'direct to GUI' URI out of
+            //  it.
+            if (!TP.regex.ANY_POINTER.test(source)) {
+                source = 'tibet://uicanvas#tibet(' + source + ')';
+            }
+
+            source = TP.uc(source);
+        } else {
+
+            //  Otherwise, try to create an access path from it.
+            source = TP.apc(source);
+        }
+    }
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+        scopeURI,
+        source,
+        TP.nc(aSignal.at('index')).asNumber(),
+        aSignal.at('position'),
+        aSignal.at('copy'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineHandler('SetContent',
 function(aSignal) {
 
@@ -1923,6 +1988,273 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineHandler('CloneItem',
+function(aSignal) {
+
+    /**
+     * @method handleCloneItem
+     * @summary Handles when an item is to be cloned and inserted into the
+     *     receiver's data.
+     * @param {TP.sig.CloneItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI,
+
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+        scopeURI,
+        source,
+        TP.nc(aSignal.at('index')).asNumber(),
+        aSignal.at('position'),
+        true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('insertRowIntoAt',
+function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
+         shouldClone) {
+
+    /**
+     * @method insertRowIntoAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI|TP.core.AccessPath} aCollectionURIOrPath The URI
+     *     pointing to the collection to add the row to or a path that, in
+     *     combination with the receiver's 'public facing' URI, can be used to
+     *     obtain a collection to add the row to.
+     * @param {Array|TP.core.URI|TP.core.AccessPath} aDataRowOrURIOrPath The URI
+     *     or path that points to data or the object itself to insert into the
+     *     collection.
+     * @param {Number} [anInsertIndex] The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after. If not
+     *     specified, the item will be inserted at the end of the collection.
+     * @param {Constant} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     *     null. This determines the position of the insertion. If no position
+     *     is supplied, TP.AFTER is assumed.
+     * @param {Boolean} [shouldClone=false] Whether or not to clone the data
+     *     before inserting it. The default is false.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetURIOrPath,
+
+        targetURI,
+        publicURI,
+
+        targetCollection,
+
+        dataRow,
+
+        keys,
+
+        fragmentExpr,
+
+        queryURI,
+
+        insertIndex,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
+
+    //  Obtain a URI that will be pointing at a collection.
+
+    targetURIOrPath = aCollectionURIOrPath;
+    publicURI = this.get('$publicURI');
+
+    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  path...), then set targetURI to publicURI (if its real).
+    if (!TP.isURI(targetURIOrPath)) {
+
+        //  publicURI isn't real - nothing to do here.
+        if (!TP.isURI(publicURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        targetURI = publicURI;
+        if (targetURIOrPath.isAccessPath()) {
+            //  NB: We assume 'async' of false here.
+            targetCollection =
+                targetURI.getResource(
+                    TP.hc('async', false)).get('result').get(targetURIOrPath);
+
+            //  Now, make sure that we're dealing with an Array
+            if (!TP.isArray(targetCollection)) {
+                targetCollection = TP.ac(targetCollection);
+            }
+
+            fragmentExpr = targetURIOrPath.asString();
+
+        } else {
+            //  Not a real path either.
+            //  TODO: Raise exception
+            return this;
+        }
+
+    } else {
+
+        //  A URI was supplied to begin with.
+        targetURI = targetURIOrPath;
+
+        //  We should make sure that at least the primary URIs of the supplied
+        //  URI and our source content URI are the same.
+        if (targetURI.getPrimaryURI() !== publicURI.getPrimaryURI()) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        //  NB: We assume 'async' of false here.
+        targetCollection = targetURI.getResource(
+                            TP.hc('async', false,
+                                    'shouldCollapse', false)).get('result');
+
+        //  Now, make sure that we're dealing with an Array
+        if (!TP.isArray(targetCollection)) {
+            targetCollection = TP.ac(targetCollection);
+        }
+
+        fragmentExpr = targetURI.getFragmentExpr();
+    }
+
+    if (TP.isURI(aDataRowOrURIOrPath)) {
+        //  NB: We assume 'async' of false here.
+        dataRow = aDataRowOrURIOrPath.getResource(
+                                TP.hc('async', false)).get('result');
+
+    } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+        queryURI = aCollectionURIOrPath;
+
+        if (!TP.isURI(queryURI)) {
+
+            queryURI = publicURI;
+
+            //  Neither aCollectionURIOrPath or publicURI isn't real - nothing
+            //  to do here.
+            if (!TP.isURI(queryURI)) {
+                //  TODO: Raise exception
+                return this;
+            }
+        }
+
+        //  NB: We assume 'async' of false here.
+        dataRow =
+            queryURI.getResource(
+                TP.hc('async', false)).get('result').get(aDataRowOrURIOrPath);
+
+    } else {
+        dataRow = aDataRowOrURIOrPath;
+    }
+
+    if (TP.isTrue(shouldClone)) {
+
+        dataRow = TP.copy(dataRow);
+
+        if (TP.canInvoke(dataRow, 'clearTextContent')) {
+            //  Clear out all of the 'text content' - that is, all of the scalar
+            //  values in the newly cloned item. This will descend through the
+            //  new item's data structure and cleanse it all of previous values.
+            dataRow.clearTextContent();
+        } else {
+            keys = TP.keys(dataRow);
+            keys.forEach(
+                function(aKey) {
+                    dataRow[aKey] = '';
+                });
+        }
+    }
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+        insertIndex++;
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        insertIndex = targetCollection.getSize();
+    }
+
+    //  TP.BEFORE was specified - subtract a position back off.
+    if (aPosition === TP.BEFORE) {
+        insertIndex--;
+    }
+
+    //  Splice it into the collection.
+    targetCollection.splice(insertIndex, 0, dataRow);
+
+    targetURI.setResource(targetCollection, TP.request('signalChange', false));
+
+    //  The index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the index that
+    //  changed.
+    changedAspect = fragmentExpr + '[' + changedIndex + ']';
+
+    //  For these paths, the changed addresses are just an Array of the changed
+    //  aspect.
+    changedAddresses = TP.ac(changedAspect);
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('removeRowFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
@@ -2219,6 +2551,293 @@ function(data, aURI) {
     }
 
     this.callNextMethod(contentData, aURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineHandler('CloneItem',
+function(aSignal) {
+
+    /**
+     * @method handleCloneItem
+     * @summary Handles when an item is to be cloned and inserted into the
+     *     receiver's data.
+     * @param {TP.sig.CloneItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI,
+
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    source = aSignal.at('source');
+    if (TP.notEmpty(source)) {
+        source = TP.str(source.unquoted());
+        source = TP.xpc(source);
+    } else {
+        source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+    }
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+        scopeURI,
+        source,
+        TP.nc(aSignal.at('index')).asNumber(),
+        aSignal.at('position'),
+        true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
+function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
+         shouldClone) {
+
+    /**
+     * @method insertRowIntoAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI|TP.core.AccessPath} aCollectionURIOrPath The URI
+     *     pointing to the collection to add the row to or a path that, in
+     *     combination with the receiver's 'public facing' URI, can be used to
+     *     obtain a collection to add the row to.
+     * @param {Array|TP.core.URI|TP.core.AccessPath} aDataRowOrURIOrPath The URI
+     *     or path that points to data or the object itself to insert into the
+     *     collection.
+     * @param {Number} [anInsertIndex] The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after. If not
+     *     specified, the item will be inserted at the end of the collection.
+     * @param {Constant} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     *     null. This determines the position of the insertion. If no position
+     *     is supplied, TP.AFTER is assumed.
+     * @param {Boolean} [shouldClone=false] Whether or not to clone the data
+     *     before inserting it. The default is false.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetURIOrPath,
+
+        targetURI,
+        publicURI,
+
+        targetCollection,
+
+        dataRow,
+
+        fragmentExpr,
+
+        queryURI,
+
+        insertIndex,
+
+        insertionNode,
+
+        insertionPath,
+
+        newTPNode,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
+
+    //  Obtain a URI that will be pointing at a collection.
+
+    targetURIOrPath = aCollectionURIOrPath;
+    publicURI = this.get('$publicURI');
+
+    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  path...), then set targetURI to publicURI (if its real).
+    if (!TP.isURI(targetURIOrPath)) {
+
+        //  publicURI isn't real - nothing to do here.
+        if (!TP.isURI(publicURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        targetURI = publicURI;
+        if (targetURIOrPath.isAccessPath()) {
+            //  NB: We assume 'async' of false here.
+            targetCollection =
+                targetURI.getResource(
+                    TP.hc('async', false)).get('result').get(targetURIOrPath);
+
+            //  Now, make sure that we're dealing with an Array
+            if (!TP.isArray(targetCollection)) {
+                targetCollection = TP.ac(targetCollection);
+            }
+
+            fragmentExpr = targetURIOrPath.asString();
+
+        } else {
+            //  Not a real path either.
+            //  TODO: Raise exception
+            return this;
+        }
+
+    } else {
+
+        //  A URI was supplied to begin with.
+        targetURI = targetURIOrPath;
+
+        //  We should make sure that at least the primary URIs of the supplied
+        //  URI and our source content URI are the same.
+        if (targetURI.getPrimaryURI() !== publicURI.getPrimaryURI()) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        //  Make sure that we have a TP.core.CollectionNode
+
+        //  NB: We assume 'async' of false here.
+        targetCollection = targetURI.getResource(
+                            TP.hc('resultType', TP.WRAP,
+                                    'async', false,
+                                    'shouldCollapse', false)).get('result');
+
+        if (!TP.isArray(targetCollection)) {
+            targetCollection = TP.ac(targetCollection);
+        }
+
+        fragmentExpr = targetURI.getFragmentExpr();
+    }
+
+    if (TP.isURI(aDataRowOrURIOrPath)) {
+        //  NB: We assume 'async' of false here.
+        dataRow = aDataRowOrURIOrPath.getResource(
+                                TP.hc('async', false)).get('result');
+
+    } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+        queryURI = aCollectionURIOrPath;
+
+        if (!TP.isURI(queryURI)) {
+
+            queryURI = publicURI;
+
+            //  Neither aCollectionURIOrPath or publicURI isn't real - nothing
+            //  to do here.
+            if (!TP.isURI(queryURI)) {
+                //  TODO: Raise exception
+                return this;
+            }
+        }
+
+        //  NB: We assume 'async' of false here.
+        dataRow =
+            queryURI.getResource(
+                TP.hc('async', false)).get('result').get(aDataRowOrURIOrPath);
+
+    } else {
+        dataRow = aDataRowOrURIOrPath;
+    }
+
+    if (TP.isTrue(shouldClone)) {
+
+        //  Get the item to clone and clone it.
+        dataRow = dataRow.clone(true);
+
+        //  Clear out all of the 'text content' - that is, all of the scalar
+        //  values in the newly cloned item. This will descend through the new
+        //  item's data structure and cleanse it all of previous values.
+        dataRow.clearTextContent();
+    }
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+
+        if (aPosition !== TP.BEFORE) {
+            insertIndex++;
+        }
+
+        insertionPath = './*[' + insertIndex + ']';
+
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        if (aPosition === TP.BEFORE) {
+            insertionPath = './*[last()]';
+            insertIndex = targetCollection.getSize();
+        } else {
+            //  Add one because the collection size isn't taking our new size
+            //  into account.
+            insertIndex = targetCollection.getSize() + 1;
+        }
+    }
+
+    insertionNode = targetCollection.first().getParentNode();
+
+    //  If the insertion path is not empty, that means that we're not just
+    //  appending to the end.
+    if (TP.notEmpty(insertionPath)) {
+        newTPNode = insertionNode.insertRawContent(
+                            dataRow, insertionPath, null, false);
+    } else {
+        //  We're just appending to the end.
+        newTPNode = insertionNode.addRawContent(
+                            dataRow, null, false);
+    }
+
+    //  Grab the address of the node that changed.
+    changedAddresses = TP.ac(newTPNode.getDocumentPosition());
+
+    //  And the index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the
+    //  index that changed.
+    changedAspect = fragmentExpr + '[' + changedIndex + ']';
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
 
     return this;
 });
@@ -5191,6 +5810,258 @@ function(targetObj, varargs) {
             }, {
                 patchCallee: true
             });
+
+        //  ---
+
+        target.defineMethod('CloneItem',
+        function(aSignal) {
+
+            var scope,
+                scopeURI,
+
+                source;
+
+            //  The 'scope' should be a URI location to find the overall
+            //  collection to insert the item into. It should be either the whole
+            //  collection representing the data of the receiver or a
+            //  subcollection of that data.
+            if (TP.isEmpty(scope = aSignal.at('scope'))) {
+                return this.raise('TP.sig.InvalidParameter');
+            }
+
+            //  Make sure we can create a real URI from it.
+            if (!TP.isURI(scopeURI = TP.uc(scope))) {
+                return this.raise('TP.sig.InvalidURI');
+            }
+
+            source = aSignal.at('source');
+            if (TP.notEmpty(source)) {
+                source = TP.str(source.unquoted());
+                source = TP.xpc(source);
+            } else {
+                source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+            }
+
+            //  Go ahead and insert the cloned data.
+            this.insertRowIntoAt(
+                scopeURI,
+                source,
+                TP.nc(aSignal.at('index')).asNumber(),
+                aSignal.at('position'),
+                true);
+
+            return;
+        });
+
+        //  ---
+
+        //  Define a local version of 'insertRowIntoAt' to adjust for the fact
+        //  that the indexes, etc. will be supplied using the 0-based indexes of
+        //  JSON, but it is the underlying XML data representation that needs to
+        //  be changed and, therefore, we need to adjust those indexes and use
+        //  XPaths against that representation.
+        target.defineMethod('insertRowIntoAt',
+        function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex,
+                 aPosition, shouldClone) {
+
+            var targetURIOrPath,
+
+                targetURI,
+                publicURI,
+
+                targetCollection,
+
+                dataRow,
+
+                fragmentExpr,
+
+                xpath,
+
+                queryURI,
+
+                nodeName,
+
+                insertIndex,
+
+                insertionPath,
+
+                newTPNode,
+
+                changedAddresses,
+                changedIndex,
+                changedAspect,
+                changedPaths,
+
+                batchID;
+
+            //  Obtain a URI that will be pointing at a collection.
+
+            targetURIOrPath = aCollectionURIOrPath;
+            publicURI = this.get('$publicURI');
+
+            //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+            //  path...), then set targetURI to publicURI (if its real).
+            if (!TP.isURI(targetURIOrPath)) {
+
+                //  publicURI isn't real - nothing to do here.
+                if (!TP.isURI(publicURI)) {
+                    //  TODO: Raise exception
+                    return this;
+                }
+
+                targetURI = publicURI;
+                if (targetURIOrPath.isAccessPath()) {
+
+                    fragmentExpr = targetURIOrPath.asString();
+
+                } else {
+                    //  Not a real path either.
+                    //  TODO: Raise exception
+                    return this;
+                }
+
+            } else {
+
+                //  A URI was supplied to begin with.
+                targetURI = targetURIOrPath;
+
+                fragmentExpr = targetURI.getFragmentExpr();
+            }
+
+            //  Grab the XPath version of the JSONPath that should be the
+            //  fragment expression of the supplied URI.
+            xpath = TP.core.JSONPath.asXPath(fragmentExpr);
+
+            //  Grab the underlying XML data structure that we will manipulate.
+            //  Note how we do this with a primitive call, so that we avoid
+            //  registering XPath paths for the target object, which we
+            //  definitely don't want.
+            targetCollection = TP.wrap(TP.nodeEvaluateXPath(
+                                        this.$get('data').getNativeNode(),
+                                        xpath));
+
+            if (TP.isURI(aDataRowOrURIOrPath)) {
+                //  NB: We assume 'async' of false here.
+                dataRow = aDataRowOrURIOrPath.getResource(
+                                        TP.hc('async', false)).get('result');
+
+            } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+                queryURI = aCollectionURIOrPath;
+
+                if (!TP.isURI(queryURI)) {
+
+                    queryURI = publicURI;
+
+                    //  Neither aCollectionURIOrPath or publicURI isn't real -
+                    //  nothing to do here.
+                    if (!TP.isURI(queryURI)) {
+                        //  TODO: Raise exception
+                        return this;
+                    }
+                }
+
+                //  NB: We assume 'async' of false here.
+                dataRow =
+                    queryURI.getResource(
+                        TP.hc('async', false)).get('result').get(
+                                                    aDataRowOrURIOrPath);
+
+            } else {
+                dataRow = aDataRowOrURIOrPath;
+            }
+
+            nodeName = targetCollection.first().getLocalName();
+            dataRow = TP.$jsonObj2xml(dataRow, nodeName);
+
+            dataRow = TP.wrap(dataRow.documentElement);
+
+            if (TP.isTrue(shouldClone)) {
+
+                //  Get the item to clone and clone it.
+                dataRow = dataRow.clone(true);
+
+                //  Clear out all of the 'text content' - that is, all of the
+                //  scalar values in the newly cloned item. This will descend
+                //  through the new item's data structure and cleanse it all of
+                //  previous values.
+                dataRow.clearTextContent();
+            }
+
+            //  NB: The insertion index is computed to represent the row that
+            //  will come *after* the new row after the insertion operation is
+            //  complete (per 'insertBefore()' semantics).
+
+            if (TP.isNumber(insertIndex = anInsertIndex)) {
+
+                if (aPosition !== TP.BEFORE) {
+                    insertIndex++;
+                }
+
+                //  We add 1 to account for indexing differences between
+                //  JSONPath and XPath
+                insertionPath = './*[' + (insertIndex + 1) + ']';
+
+            } else {
+
+                //  No index specified - we will be manipulating the end of the
+                //  collection.
+                if (aPosition === TP.BEFORE) {
+                    insertionPath = './*[last()]';
+                    insertIndex = targetCollection.getSize() - 1;
+                } else {
+                    //  Add one because the collection size isn't taking our new
+                    //  size into account.
+                    insertIndex = targetCollection.getSize();
+                }
+            }
+
+            //  If the insertion path is not empty, that means that we're not
+            //  just appending to the end.
+            if (TP.notEmpty(insertionPath)) {
+                newTPNode = targetCollection.insertRawContent(
+                                    dataRow, insertionPath, null, false);
+            } else {
+                //  We're just appending to the end.
+                newTPNode = targetCollection.addRawContent(
+                                    dataRow, null, false);
+            }
+
+            //  Grab the address of the node that changed.
+            changedAddresses = TP.ac(newTPNode.getDocumentPosition());
+
+            //  And the index that changed.
+            changedIndex = insertIndex;
+
+            //  The aspect that changed is just the collection along with the
+            //  index that changed.
+            changedAspect = fragmentExpr + '[' + changedIndex + ']';
+
+            //  Construct a 'changed paths' data structure that observers will
+            //  expect to see.
+            changedPaths =
+                TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+            //  We need this purely so that any machinery that relies on signal
+            //  batching (i.e. the markup-based data binding) knows that this
+            //  signal represents an entire batch.
+            batchID = TP.genID('SIGNAL_BATCH');
+
+            TP.signal(this.getID(),
+                        'TP.sig.StructureInsert',
+                        TP.hc('action', TP.INSERT,
+                                'addresses', changedAddresses,
+                                'aspect', changedAspect,
+                                'facet', 'value',
+                                TP.CHANGE_PATHS, changedPaths,
+                                'target', this,
+                                'indexes', TP.ac(changedIndex),
+                                TP.CHANGE_URIS, null,
+                                TP.START_SIGNAL_BATCH, batchID,
+                                TP.END_SIGNAL_BATCH, batchID));
+
+            return this;
+        });
 
         //  ---
 
