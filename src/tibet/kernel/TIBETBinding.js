@@ -2899,6 +2899,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                     needsRefresh = false;
                                 } else {
 
+                                    ownerTPElem.empty();
+
                                     //  NB: This modifies the supplied 'elems'
                                     //  Array to add the newly generated
                                     //  elements. They will be refreshed below.
@@ -2969,6 +2971,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         pathAction, true);
 
                 } else {
+
+                    ownerTPElem.empty();
 
                     //  NB: This modifies the supplied 'elems' Array to add the
                     //  newly generated elements. They will be refreshed below.
