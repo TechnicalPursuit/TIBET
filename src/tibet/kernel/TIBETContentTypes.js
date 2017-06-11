@@ -5775,6 +5775,12 @@ function(targetObj, varargs) {
 
                                 return result;
                             });
+
+            //  Because the conversion process will always yield an Array, make
+            //  sure to collapse it so that, if there's only one item in the
+            //  Array, that item is used as the return value.
+            retVal = TP.collapse(retVal);
+
         } else if (TP.isNode(retVal)) {
 
             retVal = TP.$xml2jsonObj(retVal);
