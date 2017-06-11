@@ -2668,7 +2668,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, branchVal,
-                                pathType, null, null, true);
+                                pathType, null, pathAction, true);
             } else {
 
                 //  If we're not scoped (i.e. we're running top-level
