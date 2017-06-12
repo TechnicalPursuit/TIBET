@@ -41,7 +41,11 @@
             var fullpath,
                 xml;
 
-            fullpath = path.join(__dirname, '..', 'dat', req.user.id + '_vcard.xml');
+            res.set('Content-Type', 'application/vcard+xml');
+
+            fullpath = path.join(TDS.expandPath(TDS.getcfg('path.app_dat')),
+                                    req.user.id + '_vcard.xml');
+
             if (!sh.test('-e', fullpath)) {
                 xml = ['<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"' +
                     ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
@@ -53,7 +57,7 @@
                         '<text>' + TP.sys.cfg('user.default_org') + '</text>' +
                     '</vcard-ext:x-orgunit>',
                     '</vcard>'].join('\n');
-                res.set('Content-Type', 'text/vcard');
+
                 res.send(xml);
             } else {
                 res.sendFile(fullpath);
