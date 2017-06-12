@@ -28,6 +28,7 @@
     "serve-static": "*",
     "sessionstore": "TechnicalPursuit/sessionstore",
     "shelljs": "TechnicalPursuit/shelljs",
+    "stylelint": "^7.10.1",
     "stylelint-config-standard": "^15.0.1",
     "tibet": "*",
     "winston": "TechnicalPursuit/winston"
