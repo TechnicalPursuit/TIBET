@@ -28,6 +28,8 @@ function() {
                                 TP.sys.cfg('user.default_name'));
         test.assert.isEqualTo(defaultCard.get('shortname'),
                                 TP.sys.cfg('user.default_name'));
+        test.assert.isEqualTo(defaultCard.get('nickname'),
+                                TP.sys.cfg('user.default_name'));
         test.assert.isEqualTo(defaultCard.get('role'),
                                 TP.sys.cfg('user.default_role'));
         test.assert.isEqualTo(defaultCard.get('orgname'),
@@ -85,6 +87,8 @@ function() {
                                 'Bill Test');
         test.assert.isEqualTo(testCard.get('shortname'),
                                 'Bill');
+        test.assert.isEqualTo(testCard.get('nickname'),
+                                'bedney');
         test.assert.isEqualTo(testCard.get('jid'),
                                 'bill@test.com');
         test.assert.isEqualTo(testCard.get('role'),

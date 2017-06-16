@@ -103,6 +103,7 @@ function(userInfo) {
     params = TP.hc(userInfo);
     params.atPutIfAbsent('fn', TP.sys.cfg('user.default_name'));
     params.atPutIfAbsent('n', params.at('fn'));
+    params.atPutIfAbsent('nickname', params.at('fn'));
     params.atPutIfAbsent('role', TP.sys.cfg('user.default_role'));
     params.atPutIfAbsent('org', TP.sys.cfg('user.default_org'));
     params.atPutIfAbsent('orgunit', params.at('org'));
@@ -112,6 +113,7 @@ function(userInfo) {
                 ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
             '<fn><text>', params.at('fn'), '</text></fn>',
             '<n><text>', params.at('n'), '</text></n>',
+            '<nickname><text>', params.at('nickname'), '</text></nickname>',
             '<role><text>', params.at('role'), '</text></role>',
             '<org><text>', params.at('org'), '</text></org>',
             '<vcard-ext:x-orgunit>',

@@ -50,7 +50,7 @@
                 xml = ['<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"' +
                     ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
                     '<fn><text>' + req.user.id + '</text></fn>',
-                    '<n><text>' + req.user.id + '</text></n>',
+                    '<nickname><text>' + req.user.id + '</text></nickname>',
                     '<role><text>' + TP.sys.cfg('user.default_role') + '</text></role>',
                     '<org><text>' + TP.sys.cfg('user.default_org') + '</text></org>',
                     '<vcard-ext:x-orgunit>' +
