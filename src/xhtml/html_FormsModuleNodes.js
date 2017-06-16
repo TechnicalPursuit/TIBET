@@ -3109,6 +3109,12 @@ function(aValue) {
     //  deselected and it definitely helps when reading the value back out.
     if (deselectCount === i) {
         this.getNativeNode().selectedIndex = -1;
+
+        //  Also, empty the selection model to keep it in sync
+        this.$getSelectionModel().empty();
+    } else {
+        //  Keep the selection model in sync with the selected values.
+        this.$getSelectionModel().atPut('value', dict.getKeys());
     }
 
     if (dirty) {

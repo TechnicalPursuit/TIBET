@@ -6355,6 +6355,7 @@ function(aValue) {
         i,
 
         dirty,
+        deselectCount,
 
         item;
 
@@ -6412,6 +6413,7 @@ function(aValue) {
     dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
+    deselectCount = 0;
 
     len = valueTPElems.getSize();
     for (i = 0; i < len; i++) {
@@ -6428,7 +6430,17 @@ function(aValue) {
                 dirty = true;
             }
             item.$setVisualToggle(false);
+            deselectCount++;
         }
+    }
+
+    //  If we 'deselected' all of the items
+    if (deselectCount === i) {
+        //  Empty the selection model to keep it in sync
+        this.$getSelectionModel().empty();
+    } else {
+        //  Keep the selection model in sync with the selected values.
+        this.$getSelectionModel().atPut('value', dict.getKeys());
     }
 
     if (dirty) {
