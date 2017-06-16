@@ -285,6 +285,18 @@ TP.vcard.vcard.Inst.defineAttribute('shortname',
     TP.xpc('./$def:n/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
+TP.vcard.vcard.Inst.defineAttribute('surname',
+    TP.xpc('./$def:n/$def:surname',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('givenname',
+    TP.xpc('./$def:n/$def:given',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('prefix',
+    TP.xpc('./$def:n/$def:prefix',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
 TP.vcard.vcard.Inst.defineAttribute('nickname',
     TP.xpc('./$def:nickname/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
