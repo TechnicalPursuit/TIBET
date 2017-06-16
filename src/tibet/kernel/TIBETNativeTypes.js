@@ -4357,6 +4357,38 @@ String.Inst.defineMethod('asLowerCase', TP.StringProto.toLowerCase);
 
 //  ------------------------------------------------------------------------
 
+String.Inst.defineMethod('asMD5',
+function(aHashFormat) {
+
+    /**
+     * @method asMD5
+     * @summary Returns the receiver as hashed by the MD5 hash.
+     * @param {Number} aHashFormat TP.HASH_HEX, TP.HASH_B64, or TP.HASH_LATIN1.
+     *     The default is TP.HASH_HEX.
+     * @returns {String} The receiver as an MD5 hash.
+     */
+
+    return TP.hash(this.asString(), TP.HASH_MD5, aHashFormat);
+});
+
+//  ------------------------------------------------------------------------
+
+String.Inst.defineMethod('asSHA1',
+function(aHashFormat) {
+
+    /**
+     * @method asSHA1
+     * @summary Returns the receiver as hashed by the SHA-1 hash.
+     * @param {Number} aHashFormat TP.HASH_HEX, TP.HASH_B64, or TP.HASH_LATIN1.
+     *     The default is TP.HASH_HEX.
+     * @returns {String} The receiver as an SHA-1 hash.
+     */
+
+    return TP.hash(this.asString(), TP.HASH_SHA1, aHashFormat);
+});
+
+//  ------------------------------------------------------------------------
+
 String.Inst.defineMethod('asQueryString',
 function() {
 
