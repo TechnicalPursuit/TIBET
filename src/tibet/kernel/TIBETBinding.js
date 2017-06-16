@@ -2660,6 +2660,11 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         TP.apc(repeatFragExpr).executeGet(primarySource);
                     }
 
+                    //  Make sure that branchVal is an Array
+                    if (!TP.isArray(branchVal)) {
+                        branchVal = TP.ac(branchVal);
+                    }
+
                     //  NB: This modifies the supplied 'elems' Array to add the
                     //  newly generated elements. They will be refreshed below.
                     ownerTPElem.$regenerateRepeat(branchVal, elems);
