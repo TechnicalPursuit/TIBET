@@ -1044,7 +1044,7 @@
                     if (!silent) {
                         throw new Error('Virtual path not found: ' + virtual);
                     } else {
-                        return null;
+                        return undefined;
                     }
                 }
             }
@@ -1455,7 +1455,9 @@
         keys = Object.keys(this.cfg);
         keys.forEach(function(aKey) {
             //  Test both underscore and dotted formats (just in case)
-            if (aKey.indexOf(property) === 0 || aKey.indexOf(name) === 0) {
+            if (aKey === property || aKey === name ||
+                    aKey.indexOf(property + '.') === 0 ||
+                    aKey.indexOf(name + '_') === 0) {
                 cfg[aKey] = pkg.cfg[aKey];
             }
         });
@@ -1467,7 +1469,7 @@
                 //  No matches.
                 return;
             case 1:
-                //  Exact match or a solo prefix match.
+                //  Exact match or potential prefix match.
                 key = keys[0];
                 if (key === name) {
                     return pkg.cfg[key];

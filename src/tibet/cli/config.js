@@ -129,7 +129,8 @@ Cmd.prototype.execute = function() {
         cfg = CLI.getcfg(option);
     }
 
-    if (cfg === undefined) {
+    //  getcfg can return empty object when no matching values are found.
+    if (cfg === undefined || Object.keys(cfg).length === 0) {
         this.info('Config value not found: ' + option);
         return 0;
     }
