@@ -4638,7 +4638,7 @@ function() {
 
     vcard = this.get('vcard');
     if (TP.isValid(vcard)) {
-        return vcard.get('shortname');
+        return vcard.get('nickname');
     } else {
         return TP.sys.cfg('user.default_name');
     }

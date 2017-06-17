@@ -5,6 +5,7 @@
     <vcard>
         <fn><text>Bill Test</text></fn>
         <n><text>Bill</text></n>
+        <nickname><text>bedney</text></nickname>
         <impp><uri>bill@test.com</uri></impp>
         <role><text>Developer</text></role>
         <org><text>Testers Inc.</text></org>

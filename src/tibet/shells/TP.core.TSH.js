@@ -1903,7 +1903,8 @@ function(aRequest) {
     args = this.getArgument(aRequest, 'ARGV');
 
     //  If a name was supplied, then use it. Otherwise, the current effective
-    //  user's shortname or the 'username' property from a cookie will be used.
+    //  user's vCard 'nickname' or the 'username' property from a cookie will be
+    //  used.
     if (TP.notEmpty(name = args.first())) {
         aRequest.atPut('username', name);
     }

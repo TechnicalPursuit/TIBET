@@ -103,6 +103,7 @@ function(userInfo) {
     params = TP.hc(userInfo);
     params.atPutIfAbsent('fn', TP.sys.cfg('user.default_name'));
     params.atPutIfAbsent('n', params.at('fn'));
+    params.atPutIfAbsent('nickname', params.at('fn'));
     params.atPutIfAbsent('role', TP.sys.cfg('user.default_role'));
     params.atPutIfAbsent('org', TP.sys.cfg('user.default_org'));
     params.atPutIfAbsent('orgunit', params.at('org'));
@@ -112,6 +113,7 @@ function(userInfo) {
                 ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
             '<fn><text>', params.at('fn'), '</text></fn>',
             '<n><text>', params.at('n'), '</text></n>',
+            '<nickname><text>', params.at('nickname'), '</text></nickname>',
             '<role><text>', params.at('role'), '</text></role>',
             '<org><text>', params.at('org'), '</text></org>',
             '<vcard-ext:x-orgunit>',
@@ -276,56 +278,88 @@ function(aVCard) {
 //  elements in default namespaces.
 
 TP.vcard.vcard.Inst.defineAttribute('fullname',
-    TP.xpc('./$def:fn/$def:text', TP.hc('shouldCollapse', true,
-        'extractWith', 'value')));
+    TP.xpc('./$def:fn/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('shortname',
-    TP.xpc('./$def:n/$def:text', TP.hc('shouldCollapse', true, 'extractWith',
-            'value')));
+    TP.xpc('./$def:n/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('surname',
+    TP.xpc('./$def:n/$def:surname',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('givenname',
+    TP.xpc('./$def:n/$def:given',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('prefix',
+    TP.xpc('./$def:n/$def:prefix',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('nickname',
+    TP.xpc('./$def:nickname/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('jid',
-    TP.xpc('./$def:impp/$def:uri', TP.hc('shouldCollapse', true, 'extractWith',
-            'value')));
+    TP.xpc('./$def:impp/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('url',
-    TP.xpc('./$def:url/$def:uri', TP.hc('shouldCollapse', true, 'extractWith',
-            'value')));
+    TP.xpc('./$def:url/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('email',
+    TP.xpc('./$def:email/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('tel',
+    TP.xpc('./$def:tel/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('url',
+    TP.xpc('./$def:url/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('timezone',
+    TP.xpc('./$def:tz/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('role',
-    TP.xpc('./$def:role/$def:text', TP.hc('shouldCollapse', true,
-            'extractWith', 'value')));
+    TP.xpc('./$def:role/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('orgname',
-    TP.xpc('./$def:org/$def:text', TP.hc('shouldCollapse', true, 'extractWith',
-            'value')));
+    TP.xpc('./$def:org/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('orgunit',
-    TP.xpc('./vcard-ext:x-orgunit/$def:text', TP.hc('shouldCollapse', true,
-        'extractWith', 'value')));
+    TP.xpc('./vcard-ext:x-orgunit/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('key',
-    TP.xpc('./$def:key/$def:text', TP.hc('shouldCollapse', true, 'extractWith',
-            'value')));
+    TP.xpc('./$def:key/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('secretkey',
-    TP.xpc('./vcard-ext:x-secret-key', TP.hc('shouldCollapse', true,
-            'extractWith', 'value')));
+    TP.xpc('./vcard-ext:x-secret-key',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('username',
-    TP.xpc('./vcard-ext:x-username', TP.hc('shouldCollapse', true,
-            'extractWith', 'value')));
+    TP.xpc('./vcard-ext:x-username',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('password',
-    TP.xpc('./vcard-ext:x-password', TP.hc('shouldCollapse', true,
-            'extractWith', 'value')));
+    TP.xpc('./vcard-ext:x-password',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('auth',
-    TP.xpc('./vcard-ext:x-auth', TP.hc('shouldCollapse', true,
-            'extractWith', 'value')));
+    TP.xpc('./vcard-ext:x-auth',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.vcard.vcard.Inst.defineAttribute('iswebdav',
-    TP.xpc('./vcard-ext:x-is-webdav', TP.hc('shouldCollapse', true,
-            'extractWith', 'value')));
+    TP.xpc('./vcard-ext:x-is-webdav',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
