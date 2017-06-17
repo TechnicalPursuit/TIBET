@@ -3001,6 +3001,119 @@ function(aValue, optionProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.select.Inst.defineMethod('setData',
+function(aDataObject, shouldSignal) {
+
+    /**
+     * @method setData
+     * @summary Sets the receiver's data object to the supplied object.
+     * @param {Object} aDataObject The object to set the receiver's internal
+     *     data to.
+     * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
+     * @returns {TP.html.select} The receiver.
+     */
+
+    var data,
+
+        elem,
+        doc,
+
+        leni,
+        i,
+
+        obj,
+
+        optElem,
+        optGrpElem,
+
+        optGrpKeys,
+
+        optGrpKey,
+        optGrpData,
+
+        lenj,
+        j,
+
+        lenk,
+        k;
+
+    if (!TP.isArray(aDataObject)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    data = aDataObject;
+
+    //  Empty out whatever content we currently have
+    this.empty();
+
+    elem = this.getNativeNode();
+    doc = this.getNativeDocument();
+
+    //  Loop over the outer Array and get either nested Arrays (which are
+    //  value/label pairs) or Objects (which are groups)
+
+    leni = data.getSize();
+    for (i = 0; i < leni; i++) {
+
+        obj = data.at(i);
+        if (TP.isArray(obj)) {
+
+            //  Construct an XHTML 'option' element and append it to ourself.
+            optElem = TP.documentConstructElement(
+                            doc, 'option', TP.w3.Xmlns.XHTML);
+            elem.appendChild(optElem);
+
+            //  Set the option's value and text to the appropriate parts of the
+            //  pair.
+            optElem.value = obj.first();
+            optElem.text = obj.last();
+
+        } else if (TP.isHash(obj)) {
+
+            optGrpKeys = obj.getKeys();
+
+            //  Iterate over all of the keys. They should each have an Array of
+            //  option pairs as their value .
+            lenj = optGrpKeys.getSize();
+            for (j = 0; j < lenj; j++) {
+
+                //  Construct an XHTML 'optgroup' element and append it to
+                //  ourself.
+                optGrpElem = TP.documentConstructElement(
+                                doc, 'optgroup', TP.w3.Xmlns.XHTML);
+                elem.appendChild(optGrpElem);
+
+                optGrpKey = optGrpKeys.at(j);
+                optGrpData = obj.at(optGrpKey);
+
+                //  Set the option group's label to the key
+                optGrpElem.label = optGrpKey;
+
+                //  Iterate over the Array of option pairs found at that key.
+                lenk = optGrpData.getSize();
+                for (k = 0; k < lenk; k++) {
+
+                    //  Construct an XHTML 'option' element and append it to
+                    //  ourself.
+                    optElem = TP.documentConstructElement(
+                                    doc, 'option', TP.w3.Xmlns.XHTML);
+                    optGrpElem.appendChild(optElem);
+
+                    //  Set the option's value and text to the appropriate parts
+                    //  of the pair.
+                    optElem.value = optGrpData.at(k).first();
+                    optElem.text = optGrpData.at(k).last();
+                }
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.select.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
