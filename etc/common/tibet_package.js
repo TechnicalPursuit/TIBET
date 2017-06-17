@@ -1040,12 +1040,14 @@
             } else {
                 // Keys are of the form: path.app_root etc. so adjust.
                 nvpath = this.getcfg('path.' + virtual.slice(1));
-                if (!nvpath) {
+                if (nvpath === undefined) {
                     if (!silent) {
                         throw new Error('Virtual path not found: ' + virtual);
                     } else {
                         return undefined;
                     }
+                } else if (nvpath === null) {
+                    return null;
                 }
             }
 
