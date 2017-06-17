@@ -655,9 +655,10 @@
     //  of keyrings would be `~app_dat/keyrings.xml` to mirror the library path.
     TP.sys.setcfg('path.app_keyrings', null);
 
-    //  What path should be used to load application vcards? NOTE this is used
-    //  as a directory rather than a file reference.
-    TP.sys.setcfg('path.app_vcards', '~app_dat');
+    //  What path should be used to load application vcards? NOTE that this is
+    //  the path to a 'summary file' the client will attempt to load, not to a
+    //  specific user file or to the directory used for that purpose.
+    TP.sys.setcfg('path.app_vcards', null);
 
     //  What path should be used to load library keyrings? The default is
     //  provided as a simple stub. no default keyrings are required.

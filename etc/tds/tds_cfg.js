@@ -74,6 +74,8 @@
 
         setcfg('tds.stop_onerror', true);
 
+        setcfg('tds.vcard_root', '~app_dat');
+
         //  ---
         //  plugins
         //  ---

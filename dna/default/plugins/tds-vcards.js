@@ -44,7 +44,7 @@
             res.set('Content-Type', 'application/vcard+xml');
 
             fullpath = path.join(TDS.expandPath(
-                TDS.getcfg('path.app_vcards', '~app_dat')), req.user.id + '_vcard.xml');
+                TDS.getcfg('tds.vcard_root', '~app_dat')), req.user.id + '_vcard.xml');
 
             if (!sh.test('-e', fullpath)) {
                 xml = ['<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"' +

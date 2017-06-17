@@ -149,7 +149,7 @@ Cmd.prototype.execute = function() {
 
         //  Check on vcard info
         fullpath = path.join(CLI.expandPath(
-            CLI.getcfg('path.app_vcards', '~app_dat')), user + '_vcard.xml');
+            CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
 
         if (CLI.sh.test('-e', fullpath)) {
             this.info('User vcard found in ' + fullpath);
@@ -172,7 +172,7 @@ Cmd.prototype.execute = function() {
 
         //  Check on vcard info
         fullpath = path.join(CLI.expandPath(
-            CLI.getcfg('path.app_vcards', '~app_dat')), user + '_vcard.xml');
+            CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
 
         if (CLI.sh.test('-e', fullpath)) {
             this.info('User vcard found in ' + fullpath);
