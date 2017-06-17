@@ -1,0 +1,35 @@
+<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0" xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">
+    <fn><text>{{username}}</text></fn
+    <n>
+      <surname></surname>
+      <given></given>
+      <prefix></prefix>
+    </n>
+    <nickname><text>{{username}}</text></nickname>
+    <role><text>{{role}}</text></role>
+    <org><text>{{org}}</text></org>
+    <tel>
+      <parameters>
+        <type>
+          <text>work</text>
+          <text>voice</text>
+        </type>
+      </parameters>
+      <uri></uri>
+    </tel>
+    <email>
+      <text></text>
+    </email>
+    <url>
+      <parameters>
+        <type>
+          <text>work</text>
+        </type>
+      </parameters>
+      <uri></uri>
+    </url>
+    <tz><text></text></tz>
+    <vcard-ext:x-orgunit>
+        <text>{{unit}}</text>
+    </vcard-ext:x-orgunit>
+</vcard>
