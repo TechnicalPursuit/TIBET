@@ -639,8 +639,19 @@ function(aURI) {
      *     application.
      */
 
-    var url,
+    var sig,
+
+        url,
         str;
+
+    //  Send a TP.sig.AppWillShutdown signal. This can be canceled (i.e.
+    //  'prevent default'ed), in which case we just return.
+    sig = TP.signal(TP.sys, 'TP.sig.AppWillShutdown');
+
+    //  If the signal has been 'prevent default'ed, then return.
+    if (sig.shouldPrevent()) {
+        return;
+    }
 
     if (TP.isValid(aURI)) {
         url = TP.uc(aURI);

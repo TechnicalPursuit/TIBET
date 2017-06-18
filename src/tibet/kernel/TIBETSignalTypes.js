@@ -1492,6 +1492,9 @@ TP.sig.ApplicationSignal.defineSubtype('AppDidStart');
 
 TP.sig.ApplicationSignal.defineSubtype('AppStop');
 
+TP.sig.ApplicationSignal.defineSubtype('AppWillShutdown');
+TP.sig.AppWillShutdown.Type.defineAttribute('cancelable', true);
+
 TP.sig.ApplicationSignal.defineSubtype('AppShutdown');
 
 TP.sig.ApplicationSignal.defineSubtype('TargetIn');
