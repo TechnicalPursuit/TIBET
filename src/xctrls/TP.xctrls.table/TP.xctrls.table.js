@@ -39,15 +39,15 @@ TP.xctrls.table.Inst.defineAttribute('columns');
 
 TP.xctrls.table.Inst.defineAttribute(
     'tablecontent',
-    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .scroller xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.table.Inst.defineAttribute(
     'rowitems',
-        TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false)));
+        TP.cpc('> .scroller xctrls|content > .row', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.table.Inst.defineAttribute(
     'focusedItem',
-        TP.cpc('> .scroller .content > .row[pclass|focus]',
+        TP.cpc('> .scroller xctrls|content > .row[pclass|focus]',
                 TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
@@ -813,17 +813,17 @@ function(enterSelection) {
 
     //  The enter selection has been computed by 'select()'ing the return value
     //  of the 'getSelectionContainer' method.
-    newRows = enterSelection.append('div').
+    newRows = enterSelection.append('xhtml:div').
                     classed('row', true).
                     attr(attrSelectionInfo.first(), attrSelectionInfo.last()).
                     attr('tibet:tag', 'TP.xctrls.item');
 
-    newCells = newRows.selectAll('div').
+    newCells = newRows.selectAll('xhtml:div').
                     data(function(row) {
                         return row;
                     }).
                     enter().
-                    append('div').
+                    append('xhtml:div').
                     classed('cell', true);
 
     newContent = newCells.append(defaultTagName);

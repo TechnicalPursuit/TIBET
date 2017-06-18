@@ -27,6 +27,13 @@ xctrls|value {
     display: none;
 }
 
+/* xctrls|content */
+
+xctrls|content {
+
+    display: block;
+}
+
 /*  Define some common z-ordering constants. Note that when used from code,
     these *must* match the 'z-index' tiers defined in TIBETGlobals.js */
 

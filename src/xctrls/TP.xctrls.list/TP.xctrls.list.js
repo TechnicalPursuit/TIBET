@@ -43,15 +43,15 @@ TP.xctrls.list.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.list.Inst.defineAttribute(
     'listcontent',
-    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .scroller xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.list.Inst.defineAttribute(
     'listitems',
-    TP.cpc('> .scroller .content > xctrls|*', TP.hc('shouldCollapse', false)));
+    TP.cpc('> .scroller xctrls|content > xctrls|*', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.list.Inst.defineAttribute(
     'focusedItem',
-    TP.cpc('> .scroller .content > xctrls|*[pclass|focus]',
+    TP.cpc('> .scroller xctrls|content > xctrls|*[pclass|focus]',
             TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------

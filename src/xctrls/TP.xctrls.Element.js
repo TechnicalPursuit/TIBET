@@ -277,6 +277,27 @@ TP.xctrls.Element.defineSubtype('xctrls:value');
 TP.xctrls.value.defineAttribute('styleURI', TP.NO_RESULT);
 TP.xctrls.value.defineAttribute('themeURI', TP.NO_RESULT);
 
+//  ========================================================================
+//  TP.xctrls.content
+//  ========================================================================
+
+/**
+ * @type {TP.xctrls.content}
+ * @summary A tag that can hold arbitrary content. The xctrls common CSS
+ *     has rules that cause this tag to have block-level display. It is defined
+ *     so that development when the Sherpa is loaded does not cause an
+ *     'autodefinition' of a missing tag.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Element.defineSubtype('xctrls:content');
+
+//  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
+//  design.
+TP.xctrls.content.defineAttribute('styleURI', TP.NO_RESULT);
+TP.xctrls.content.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

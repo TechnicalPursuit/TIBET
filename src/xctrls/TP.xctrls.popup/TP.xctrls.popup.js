@@ -241,7 +241,7 @@ TP.xctrls.popup.Inst.defineAttribute('$$closeOnSignalName');
 TP.xctrls.popup.Inst.defineAttribute('$$lastOpenSignal');
 
 TP.xctrls.popup.Inst.defineAttribute('popupContent',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
+    TP.cpc('> xctrls|content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
