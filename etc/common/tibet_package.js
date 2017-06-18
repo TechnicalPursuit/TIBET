@@ -1040,12 +1040,14 @@
             } else {
                 // Keys are of the form: path.app_root etc. so adjust.
                 nvpath = this.getcfg('path.' + virtual.slice(1));
-                if (!nvpath) {
+                if (nvpath === undefined) {
                     if (!silent) {
                         throw new Error('Virtual path not found: ' + virtual);
                     } else {
-                        return null;
+                        return undefined;
                     }
+                } else if (nvpath === null) {
+                    return null;
                 }
             }
 
@@ -1455,7 +1457,9 @@
         keys = Object.keys(this.cfg);
         keys.forEach(function(aKey) {
             //  Test both underscore and dotted formats (just in case)
-            if (aKey.indexOf(property) === 0 || aKey.indexOf(name) === 0) {
+            if (aKey === property || aKey === name ||
+                    aKey.indexOf(property + '.') === 0 ||
+                    aKey.indexOf(name + '_') === 0) {
                 cfg[aKey] = pkg.cfg[aKey];
             }
         });
@@ -1467,7 +1471,7 @@
                 //  No matches.
                 return;
             case 1:
-                //  Exact match or a solo prefix match.
+                //  Exact match or potential prefix match.
                 key = keys[0];
                 if (key === name) {
                     return pkg.cfg[key];

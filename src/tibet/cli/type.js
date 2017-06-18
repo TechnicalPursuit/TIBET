@@ -47,10 +47,11 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 /**
  * Where are the dna templates we should clone from? This value will be joined
- * with the current file's load path to create the absolute root path.
+ * with the current file's load path to create the absolute root path. NOTE here
+ * the dna is below a command-specific subdirectory of dna/type.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = '../dna/';
+Cmd.prototype.DNA_ROOT = '../dna/type/';
 
 /**
  * The command name for this type.
