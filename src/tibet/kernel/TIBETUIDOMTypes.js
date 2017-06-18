@@ -2455,22 +2455,21 @@ function(aSignalName, aTriggerSignal) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var sigData,
-        originElem;
+    var originElem,
+
+        sigName,
+        sigData;
 
     originElem = this.getNativeNode();
 
     //  First, try the full signal name.
-    if (TP.elementHasAttribute(originElem, 'on:' + aSignalName, true)) {
-        sigData = TP.elementGetAttribute(
-                    originElem, 'on:' + aSignalName, true);
+    sigName = 'on:' + TP.expandSignalName(aSignalName);
+    if (TP.elementHasAttribute(originElem, sigName, true)) {
+        sigData = TP.elementGetAttribute(originElem, sigName, true);
     } else {
-
         //  Next, try the shortened version of that name.
-        sigData = TP.elementGetAttribute(
-                    originElem,
-                    'on:' + TP.contractSignalName(aSignalName),
-                    true);
+        sigName = 'on:' + TP.contractSignalName(aSignalName);
+        sigData = TP.elementGetAttribute(originElem, sigName, true);
     }
 
     //  If we were able to successfully extract signal data, then queue up a
