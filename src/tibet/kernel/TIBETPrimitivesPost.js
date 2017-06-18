@@ -5508,7 +5508,9 @@ function(signalData, originElem, triggerSignal, signalType) {
      *     data is a spoofed signal name.
      */
 
-    var sigData,
+    var doc,
+
+        sigData,
         sigParams,
 
         orgid,
@@ -5517,6 +5519,8 @@ function(signalData, originElem, triggerSignal, signalType) {
 
         sigName,
         sigPayload;
+
+    doc = TP.nodeGetDocument(originElem);
 
     sigData = TP.trim(signalData);
 
@@ -5537,7 +5541,7 @@ function(signalData, originElem, triggerSignal, signalType) {
 
             //  Note how we pass false to avoid getting a wrapped origin, which
             //  we don't want here.
-            target = TP.byId(orgid, TP.nodeGetDocument(originElem), false);
+            target = TP.byId(orgid, doc, false);
         }
 
         //  If a signal was supplied, use it as the signal name instead of the
@@ -5567,6 +5571,11 @@ function(signalData, originElem, triggerSignal, signalType) {
     //  key 'trigger'. This will be useful for things like stopping propagation,
     //  etc.
     sigPayload.atPut('trigger', triggerSignal);
+
+    //  Some objects in the system, in lieu of the trigger, will still use the
+    //  TP.core.Document where the triggering originated. We try to provide that
+    //  here, which is especially important if the trigger is undefined.
+    sigPayload.atPut('triggerTPDocument', TP.tpdoc(doc));
 
     //  Note that it's important to put the current target on the signal here in
     //  case that the new signal is a RESPONDER_FIRING signal (very likely) as
