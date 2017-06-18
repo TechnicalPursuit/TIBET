@@ -136,7 +136,7 @@ function(aSignal) {
     //  signal that triggered the OpenPopup.
     triggerSignal = aSignal.at('trigger');
 
-    tpDoc = aSignal.at('triggerDocument');
+    tpDoc = aSignal.at('triggerTPDocument');
     if (TP.notValid(tpDoc)) {
         tpDoc = triggerSignal.getDocument();
     }

@@ -753,7 +753,7 @@ function(aSignal) {
                         'useTopLevelContentElem', true,
                         'trigger', aSignal,
                         'triggerID', 'SherpaContextMenuTrigger',
-                        'triggerDocument', TP.tpdoc(TP.win('UIROOT')),
+                        'triggerTPDocument', TP.tpdoc(TP.win('UIROOT')),
                         'triggerPoint', aSignal.getGlobalPoint()));
         }
     }
