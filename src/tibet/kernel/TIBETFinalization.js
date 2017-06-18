@@ -612,16 +612,9 @@ function() {
 
     /**
      * @method finalizeShutdown
-     * @summary Finalizes the shut down of the application by removing the
-     *     protective onbeforeunload hooks that TIBET installs and sending the
+     * @summary Finalizes the shut down of the application by sending the
      *     'TP.sig.AppShutdown' signal.
      */
-
-    if (TP.isElement(TP.documentGetBody(window.document))) {
-        TP.elementSetAttribute(TP.documentGetBody(window.document),
-                                'allowUnload',
-                                'true');
-    }
 
     TP.signal(TP.sys, 'TP.sig.AppShutdown');
 
@@ -666,6 +659,18 @@ function(aURI) {
 
     //  close open/registered windows. won't always work, but we can try :)
     TP.core.Window.closeRegisteredWindows();
+
+    //  By setting this on the code (i.e. top-level) window's document's body
+    //  element, we tell the onbeforeunload handler to just return and don't
+    //  supply text to the browser. This allows a 'clean' unload.
+
+    //  Note that the 'finalizeShutdown' method will be called from the 'unload'
+    //  handler as the code unloads.
+    if (TP.isElement(TP.documentGetBody(window.document))) {
+        TP.elementSetAttribute(TP.documentGetBody(window.document),
+                                'allowUnload',
+                                'true');
+    }
 
     //  put up the blank page at top, which blows away the app
 
