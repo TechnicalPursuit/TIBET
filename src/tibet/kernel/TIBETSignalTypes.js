@@ -1490,6 +1490,8 @@ TP.sig.ApplicationSignal.defineSubtype('AppWillStart');
 TP.sig.ApplicationSignal.defineSubtype('AppStart');
 TP.sig.ApplicationSignal.defineSubtype('AppDidStart');
 
+TP.sig.ApplicationSignal.defineSubtype('AppStop');
+
 TP.sig.ApplicationSignal.defineSubtype('AppShutdown');
 
 TP.sig.ApplicationSignal.defineSubtype('TargetIn');

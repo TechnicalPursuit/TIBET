@@ -6743,11 +6743,29 @@ function(aSignal) {
      * @method handleAppStart
      * @summary A handler that is called when the system has loaded everything
      *     and is ready to activate your TIBET application.
-     * @param {TP.sig.AppStart} aSignal The startup signal.
+     * @param {TP.sig.AppStart} aSignal The start signal.
      * @returns {TP.core.Application} The receiver.
      */
 
     TP.core.Application.get('singleton').start(aSignal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('AppStop',
+function(aSignal) {
+
+    /**
+     * @method handleAppStop
+     * @summary A handler that is called when the user is ready to terminate
+     *     your TIBET application.
+     * @param {TP.sig.AppStop} aSignal The stop signal.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    TP.sys.terminate();
 
     return this;
 });
