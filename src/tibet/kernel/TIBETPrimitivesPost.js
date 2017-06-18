@@ -5500,9 +5500,9 @@ function(signalData, originElem, triggerSignal, signalType) {
      * @param {Element} originElem The originating element that will be used as
      *     a target if an alternate target isn't provided as an ID to another
      *     element in the signal data.
-     * @param {TP.sig.Signal} The signal that triggered this signal queueing to
-     *     happen. This will be placed in the firing signal's payload under the
-     *     'trigger' key.
+     * @param {TP.sig.Signal} [triggerSignal] The signal that triggered this
+     *     signal queueing to happen. This will be placed in the firing signal's
+     *     payload under the 'trigger' key.
      * @param {TP.meta.sig.Signal} A signal type that will be used as the 'real'
      *     signal type if the signal name supplied (in some form) in the signal
      *     data is a spoofed signal name.
