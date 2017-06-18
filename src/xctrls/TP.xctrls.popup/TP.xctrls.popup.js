@@ -742,7 +742,7 @@ function(aStyleTPElem) {
      *     themed environment.
      * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
      *     ready.
-     * @returns {TP.xctrls.list} The receiver.
+     * @returns {TP.xctrls.popup} The receiver.
      */
 
     //  If we're not awakening this tag, then exit - we want none of the
