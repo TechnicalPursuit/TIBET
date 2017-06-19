@@ -1848,8 +1848,7 @@ function(anElement, aProperty, aPropertyValue) {
      * @exception TP.sig.InvalidParameter
      */
 
-    var style,
-        styleHash;
+    var styleObj;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -1859,19 +1858,17 @@ function(anElement, aProperty, aPropertyValue) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    style = TP.elementGetStyleObj(anElement).cssText.toLowerCase();
-    styleHash = TP.styleStringAsHash(style);
-
-    //  If the property value is empty (i.e. it's either not valid or is the
-    //  empty string), then we remove it's key from the styleHash. When the
-    //  CSS text string is formed, it will simply be missing.
-    if (TP.isEmpty(aPropertyValue)) {
-        styleHash.removeKey(aProperty.asDOMName());
-    } else {
-        styleHash.atPut(aProperty.asDOMName(), aPropertyValue);
+    if (TP.notValid(styleObj = TP.elementGetStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
-    TP.elementSetStyleString(anElement, styleHash);
+    //  If the property is a CSS custom property, then use the setProperty()
+    //  API.
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(aProperty)) {
+        styleObj.setProperty(aProperty, aPropertyValue);
+    } else {
+        styleObj[aProperty.asDOMName()] = aPropertyValue;
+    }
 
     return;
 });
