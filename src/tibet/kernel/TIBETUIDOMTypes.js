@@ -3272,6 +3272,25 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getScrollOffsetPoint',
+function() {
+
+    /**
+     * @method getScrollOffsetPoint
+     * @summary Returns the receiver's scroll offset position (i.e. scrollLeft &
+     *     scrollTop) as a TP.core.Point.
+     * @returns {TP.core.Point} The receiver's scroll offset position.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    return TP.pc(elem.scrollLeft, elem.scrollTop);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getSubmitName',
 function() {
 
