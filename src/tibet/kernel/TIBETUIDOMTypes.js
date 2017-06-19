@@ -4567,6 +4567,26 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('setStyleProperty',
+function(aProperty, aPropertyValue) {
+
+    /**
+     * @method setStyleProperty
+     * @summary Sets the receiver's style property named by the supplied
+     *     property name.
+     * @param {String} aProperty The name of the style property to set.
+     * @param {String|Number} aPropertyValue The value to set the style property
+     *     to.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.elementSetStyleProperty(this.getNativeNode(), aProperty, aPropertyValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('setTransform',
 function(aTransformStr) {
 
