@@ -126,7 +126,13 @@ function(aRequest) {
     //  Links with an empty anchor will try to reset at the top of page. Don't
     //  let that happen either, just "dampen them" via onclick.
     if (href === '#') {
-        TP.elementSetAttribute(elem, 'onclick', 'return false;');
+        TP.elementSetAttribute(
+            elem,
+            'onclick',
+            'TP.core.Mouse.invokeObservers(\'click\', event);' +
+            ' return false;',
+            true);
+
         return;
     }
 
@@ -149,7 +155,9 @@ function(aRequest) {
     //  Then add an 'onclick' that will service any TIBET click handling
     //  machinery and then trigger TIBET's go2 call to process the link at
     //  runtime. Note the '; return false' to help ensure no traversal.
-    TP.elementSetAttribute(elem, 'onclick',
+    TP.elementSetAttribute(
+        elem,
+        'onclick',
         'TP.core.Mouse.invokeObservers(\'click\', event);' +
         ' TP.go2(\'' + href + '\', window);' +
         ' return false;',
@@ -212,7 +220,13 @@ function(value) {
     //  Links with an empty anchor will try to reset at the top of page. Don't
     //  let that happen either, just "dampen them" via onclick.
     if (value === '#') {
-        TP.elementSetAttribute(elem, 'onclick', 'return false;');
+        TP.elementSetAttribute(
+            elem,
+            'onclick',
+            'TP.core.Mouse.invokeObservers(\'click\', event);' +
+            ' return false;',
+            true);
+
         return;
     }
 
@@ -229,7 +243,9 @@ function(value) {
     //  Then add an 'onclick' that will service any TIBET click handling
     //  machinery and then trigger TIBET's go2 call to process the link at
     //  runtime. Note the '; return false' to help ensure no traversal.
-    TP.elementSetAttribute(elem, 'onclick',
+    TP.elementSetAttribute(
+        elem,
+        'onclick',
         'TP.core.Mouse.invokeObservers(\'click\', event);' +
         ' TP.go2(\'' + value + '\', window);' +
         ' return false;',
