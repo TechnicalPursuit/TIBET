@@ -151,7 +151,7 @@ function(aRequest) {
     //  runtime. Note the '; return false' to help ensure no traversal.
     TP.elementSetAttribute(elem, 'onclick',
         'TP.core.Mouse.invokeObservers(\'click\', event);' +
-        'TP.go2(\'' + href + '\', window);' +
+        ' TP.go2(\'' + href + '\', window);' +
         ' return false;',
         true);
 
@@ -231,7 +231,7 @@ function(value) {
     //  runtime. Note the '; return false' to help ensure no traversal.
     TP.elementSetAttribute(elem, 'onclick',
         'TP.core.Mouse.invokeObservers(\'click\', event);' +
-        'TP.go2(\'' + value + '\', window);' +
+        ' TP.go2(\'' + value + '\', window);' +
         ' return false;',
         true);
 
