@@ -2594,9 +2594,9 @@ function(aProperty, inPixels) {
      * @summary Returns the receiver's *computed* style property named by the
      *     supplied property name.
      * @param {String} aProperty The name of the style property to retrieve.
-     * @param {Boolean} inPixels Whether or not we want this value back as a
-     *     Number of pixels. Obviously this will only work with values of
-     *     properties that contain some sort of size.
+     * @param {Boolean} [inPixels=false] Whether or not we want this value back
+     *     as a Number of pixels. Obviously this will only work with values of
+     *     properties that contain some sort of size. The default is false.
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
      */
