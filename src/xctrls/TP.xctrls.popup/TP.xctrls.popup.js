@@ -321,7 +321,10 @@ function(aPopupPoint) {
         popupPoint,
         popupRect,
 
-        bodyRect;
+        bodyTPElem,
+        bodyRect,
+
+        bodyScrollOffsets;
 
     offset = this.getType().POPUP_OFFSET;
 
@@ -339,9 +342,16 @@ function(aPopupPoint) {
                     this.getHeight() + offset);
 
     //  Grab the body's rectangle and constrain the popup rectangle against it.
-    bodyRect = this.getDocument().getBody().getGlobalRect();
+
+    bodyTPElem = this.getDocument().getBody();
+
+    bodyRect = bodyTPElem.getGlobalRect();
 
     bodyRect.constrainRect(popupRect);
+
+    bodyScrollOffsets = bodyTPElem.getScrollOffsetPoint();
+    popupRect.addToX(bodyScrollOffsets.getX());
+    popupRect.addToY(bodyScrollOffsets.getY());
 
     //  Now, get the 'northwest' coordinate of the popup rectangle. This will
     //  give us our true 'popup point'.
