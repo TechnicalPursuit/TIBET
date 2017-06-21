@@ -1,5 +1,5 @@
 <vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0" xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">
-    <fn><text>{{username}}</text></fn
+    <fn><text>{{username}}</text></fn>
     <n>
       <surname></surname>
       <given></given>

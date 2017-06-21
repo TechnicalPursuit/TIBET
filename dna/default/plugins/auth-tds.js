@@ -25,6 +25,7 @@
         var app,
             authenticate,
             crypto,
+            logger,
             LocalStrategy,
             salt,
             Promise,
@@ -33,6 +34,7 @@
 
         app = options.app;
         TDS = app.TDS;
+        logger = options.logger;
 
         crypto = require('crypto');
         LocalStrategy = require('passport-local');
@@ -40,7 +42,9 @@
 
         salt = process.env.TDS_CRYPTO_SALT || TDS.cfg('tds.crypto.salt');
         if (!salt) {
-            throw new Error('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            logger.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            logger.warn('Defaulting to encryption salt default value');
+            salt = 'salty';
         }
 
         //  ---
