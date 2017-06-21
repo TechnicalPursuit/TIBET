@@ -5518,7 +5518,9 @@ function(signalData, originElem, triggerSignal, signalType) {
         target,
 
         sigName,
-        sigPayload;
+        sigPayload,
+
+        delay;
 
     doc = TP.nodeGetDocument(originElem);
 
@@ -5587,7 +5589,20 @@ function(signalData, originElem, triggerSignal, signalType) {
     //  bubbling phase of this signal (for this target) in deference to
     //  signaling the new signal. Note here how we supply a signal type as the
     //  default type to use if the mapped signal type isn't a real type.
-    TP.queue(target, sigName, sigPayload, null, signalType);
+
+    //  If a delay was defined and it can be converted into a Number, then set
+    //  up a timeout to queue the signal after that delay. Otherwise, queue the
+    //  signal immediately.
+    delay = sigPayload.at('delay');
+
+    if (TP.notEmpty(delay) && TP.isNumber(delay = delay.asNumber())) {
+        setTimeout(
+            function() {
+                TP.queue(target, sigName, sigPayload, null, signalType);
+            }, delay);
+    } else {
+        TP.queue(target, sigName, sigPayload, null, signalType);
+    }
 
     return;
 });
