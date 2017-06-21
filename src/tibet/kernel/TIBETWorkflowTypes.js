@@ -6765,7 +6765,19 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    TP.sys.terminate();
+    var exitToURI;
+
+    //  If the signal defines an 'exitTo' property in its payload, then try to
+    //  create a URI from that.
+    exitToURI = aSignal.at('exitTo');
+
+    if (TP.notEmpty(exitToURI)) {
+        exitToURI = exitToURI.unquoted();
+        exitToURI = TP.uc(exitToURI);
+    }
+
+    //  Call terminate and, if it was defined, navigate to the URI given.
+    TP.sys.terminate(exitToURI);
 
     return this;
 });

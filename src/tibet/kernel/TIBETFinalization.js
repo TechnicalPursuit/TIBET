@@ -660,6 +660,8 @@ function(aURI) {
     }
 
     str = url.getLocation();
+
+    //  Can't use a 'tibet://' URL here.
     if (str.match(/tibet:/)) {
         TP.ifWarn() ?
             TP.warn('Invalid termination URI provided: ' + aURI) : 0;
