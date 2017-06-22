@@ -21,8 +21,7 @@ sherpa|notifier {
     border-radius: 5px;
     background-color: rgba(255, 215, 0, 0.5);
 
-    /* This is situated between CONTEXT_MENU_TIER and DRAG_DROP_TIER, and
-       *above* both edges */
+    /* This should match TIBET's NOTIFIER_TIER constant */
     z-index: 29000;
 
     opacity: 0;
