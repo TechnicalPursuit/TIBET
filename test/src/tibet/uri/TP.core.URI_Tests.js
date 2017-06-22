@@ -3768,5 +3768,84 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.StorageURL.Inst.describe('local storage',
+function() {
+
+    var localURI,
+        sessionURI;
+
+    this.before(function() {
+        localStorage.removeItem('foo');
+        sessionStorage.removeItem('foo');
+    });
+
+    this.after(function() {
+        localStorage.removeItem('foo');
+        sessionStorage.removeItem('foo');
+    });
+
+    //  ---
+
+    this.beforeEach(function() {
+        localURI = TP.uc('storage://local/foo');
+        sessionURI = TP.uc('storage://session/foo');
+    });
+
+    this.afterEach(function() {
+        TP.core.URI.removeInstance(localURI);
+        TP.core.URI.removeInstance(sessionURI);
+    });
+
+    //  ---
+
+    this.it('constructs valid uri instances', function(test, options) {
+        this.assert.isURI(localURI);
+        this.assert.isURI(sessionURI);
+    });
+
+    this.it('sets content persistently', function(test, options) {
+        localURI.setContent('fluffy');
+        this.assert.isEqualTo(localStorage.getItem('foo'),
+            TP.js2json('fluffy'));
+    });
+
+    this.it('sets resources persistently', function(test, options) {
+        localURI.setResource('zippy');
+        this.assert.isEqualTo(localStorage.getItem('foo'),
+            TP.js2json('zippy'));
+    });
+
+    this.it('sets values persistently', function(test, options) {
+        localURI.setValue('blahblah');
+        this.assert.isEqualTo(localStorage.getItem('foo'),
+            TP.js2json('blahblah'));
+    });
+
+    this.it('gets content persistently', function(test, options) {
+        var content;
+
+        localURI.setContent('fluffy');
+        content = localURI.getContent();
+
+        this.assert.isEqualTo(content.getValue(), 'fluffy');
+    });
+
+    this.it('sets resources persistently', function(test, options) {
+        var response;
+
+        localURI.setResource('zippy');
+        response = localURI.getResource();
+        this.assert.isEqualTo(response.get('result'), 'zippy');
+    });
+
+    this.it('sets values persistently', function(test, options) {
+        localURI.setValue('blahblah');
+        this.assert.isEqualTo(localURI.getValue(), 'blahblah');
+    });
+
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

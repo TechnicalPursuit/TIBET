@@ -173,7 +173,7 @@ function() {
                                         'string(//$def:fn/$def:text/text())'));
                             } else {
                                 TP.ifWarn() ?
-                                    TP.warn('Unable to locate user vcard.') : 0;
+                                    TP.warn('Invalid or missing user vcard.') : 0;
                                 TP.core.User.getRealUser();
                             }
                         });

@@ -64,6 +64,7 @@
     <script src="./storage/TP.core.DeviceStorage.js"/>
     <script src="./storage/TP.core.LocalStorage.js"/>
     <script src="./storage/TP.core.SessionStorage.js"/>
+    <script src="./storage/TP.core.StorageURL.js"/>
 </config>
 
 <config id="pouchdb_storage">

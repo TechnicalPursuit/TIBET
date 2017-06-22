@@ -2801,10 +2801,7 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the value of the URI, which may include loading the URI
-     *     if it hasn't yet been loaded. Therefore, the return value here might
-     *     very well be a 'thenable' if the URI manages its resource in an
-     *     asynchronous way.
+     * @summary Returns the value of the URI, essentially the 'resource'.
      * @returns {Object} The value of the receiver's resource.
      */
 
@@ -4087,6 +4084,24 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
     }
 
     return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('setValue',
+function(aValue) {
+
+    /**
+     * @method setValue
+     * @summary Sets the 'value' of the receiver. This method provides
+     *     polymorphic behavior by allowing objects to serve as ValueHolders.
+     *     The search for variable slots follows value, _value, and $value. This
+     *     method calls changed if the value changes.
+     * @param {Object} aValue The value to set the value of the receiver to.
+     * @returns {Object} The receiver.
+     */
+
+    return this.setContent(aValue);
 });
 
 //  ------------------------------------------------------------------------
