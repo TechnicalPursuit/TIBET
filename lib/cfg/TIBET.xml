@@ -142,6 +142,9 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_confirm.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_prompt.xhtml.js"/>
 
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.notifier.TP.xctrls.notifier.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.notifier.TP.xctrls.notifier.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.popup.TP.xctrls.popup.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.popup.TP.xctrls.popup.css.js"/>
 
@@ -164,6 +167,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.tabbar_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.textitem_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.list_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.notifier_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.table_all.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_variables_tpi.css.js"/>
@@ -178,6 +182,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.tabbar_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.textitem_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.list_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.notifier_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.table_tpi.css.js"/>
 </config>
 

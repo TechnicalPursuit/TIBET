@@ -121,6 +121,12 @@ xctrls|content {
     z-index: 29000;
 }
 
+.NOTIFIER_TIER,
+*[class~="NOTIFIER_TIER"] {
+
+    z-index: 29000;
+}
+
 .DRAG_DROP_TIER,
 *[class~="DRAG_DROP_TIER"] {
 

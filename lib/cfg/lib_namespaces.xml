@@ -262,6 +262,10 @@
     <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
     <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>
 
+    <script src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.js"/>
+    <property name="path.TP.xctrls.notifier.style" value="~TP.xctrls.notifier/TP.xctrls.notifier.less"/>
+    <property name="path.TP.xctrls.notifier.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.notifier_tpi.less"/>
+
     <script src="xctrls/TP.xctrls.popup/TP.xctrls.popup.js"/>
     <property name="path.TP.xctrls.popup.style" value="~TP.xctrls.popup/TP.xctrls.popup.less"/>
     <script src="xctrls/TP.xctrls.popup/TP.xctrls.popup.keybindings.js"/>
