@@ -11,7 +11,7 @@
 /**
  * @type {TP.core.StorageURL}
  * @summary A subtype of TP.core.URL specific to the storage: scheme, a custom
- * TIBET scheme specific to working with local and session storage data.
+ *     TIBET scheme specific to working with local and session storage data.
  */
 
 //  ------------------------------------------------------------------------
@@ -456,7 +456,7 @@ function(schemeSpecificString) {
     this.callNextMethod();
 
     parts = this.getType().STORAGE_URL_REGEX.exec(
-        'storage:' + schemeSpecificString);
+                    'storage:' + schemeSpecificString);
 
     if (TP.notValid(parts)) {
         return;

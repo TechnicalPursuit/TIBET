@@ -4094,9 +4094,7 @@ function(aValue) {
     /**
      * @method setValue
      * @summary Sets the 'value' of the receiver. This method provides
-     *     polymorphic behavior by allowing objects to serve as ValueHolders.
-     *     The search for variable slots follows value, _value, and $value. This
-     *     method calls changed if the value changes.
+     *     polymorphic behavior by calling the receiver's 'setContent' method.
      * @param {Object} aValue The value to set the value of the receiver to.
      * @returns {Object} The receiver.
      */
