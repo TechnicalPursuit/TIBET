@@ -216,6 +216,8 @@
 
     <script src="xctrls/TP.xctrls.lattice.js"/>
 
+    <script src="xctrls/TP.xctrls.SharedOverlay.js"/>
+
     <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
     <script src="xctrls/TP.xctrls.panel/TP.xctrls.panel.js"/>
 
