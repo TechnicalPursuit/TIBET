@@ -378,7 +378,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getValue',
+TP.core.StorageURL.Inst.defineMethod('getValue',
 function() {
 
     /**
