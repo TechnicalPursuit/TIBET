@@ -80,7 +80,7 @@
 
     A popup that defaults all parameters and uses data-bound &lt;xctrls:list&gt; as the content:
 
-    <button id="trigger2" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger2Popup, closeOn: UISelect}}">Trigger #2</button>
+    <button id="trigger2" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger2Popup, hideOn: UISelect}}">Trigger #2</button>
 
     <span id="trigger2Popup" class="popup_content"><xctrls:list id="inlineTestContent" bind:in="{data: urn:tibet:popup_content_list#tibet(names)}" tibet:noawaken="true"/></span>
 
