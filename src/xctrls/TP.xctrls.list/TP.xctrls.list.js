@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.defineSubtype('xctrls:list');
+TP.xctrls.Lattice.defineSubtype('xctrls:list');
 
 /**
  * The tag name of the tag to use for each item if there is no template.

@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.defineSubtype('xctrls:table');
+TP.xctrls.Lattice.defineSubtype('xctrls:table');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

@@ -214,7 +214,7 @@
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
     <script src="xctrls/TP.xctrls.GenericElement.js"/>
 
-    <script src="xctrls/TP.xctrls.lattice.js"/>
+    <script src="xctrls/TP.xctrls.Lattice.js"/>
 
     <script src="xctrls/TP.xctrls.SharedOverlay.js"/>
 

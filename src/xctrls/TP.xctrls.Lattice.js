@@ -9,29 +9,29 @@
 //  ========================================================================
 
 /**
- * @type {TP.xctrls.lattice}
+ * @type {TP.xctrls.Lattice}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.TemplatedTag.defineSubtype('xctrls:lattice');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:Lattice');
 
 //  This type is intended to be used as a supertype of concrete types, so we
 //  don't allow instance creation
-TP.xctrls.lattice.isAbstract(true);
+TP.xctrls.Lattice.isAbstract(true);
 
-TP.xctrls.lattice.addTraits(TP.core.SelectingUIElementNode);
-TP.xctrls.lattice.addTraits(TP.core.D3VirtualList);
+TP.xctrls.Lattice.addTraits(TP.core.SelectingUIElementNode);
+TP.xctrls.Lattice.addTraits(TP.core.D3VirtualList);
 
-TP.xctrls.lattice.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
-TP.xctrls.lattice.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
-TP.xctrls.lattice.Inst.resolveTrait('render', TP.core.D3VirtualList);
+TP.xctrls.Lattice.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
+TP.xctrls.Lattice.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
+TP.xctrls.Lattice.Inst.resolveTrait('render', TP.core.D3VirtualList);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Type.defineAttribute('opaqueCapturingSignalNames',
+TP.xctrls.Lattice.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
             'TP.sig.DOMClick',
             'TP.sig.DOMDblClick',
@@ -55,7 +55,7 @@ TP.xctrls.lattice.Type.defineAttribute('opaqueCapturingSignalNames',
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Type.defineMethod('tagAttachComplete',
+TP.xctrls.Lattice.Type.defineMethod('tagAttachComplete',
 function(aRequest) {
 
     /**
@@ -102,7 +102,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Type.defineMethod('tagAttachDOM',
+TP.xctrls.Lattice.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -137,7 +137,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Type.defineMethod('tagDetachDOM',
+TP.xctrls.Lattice.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -172,23 +172,23 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineAttribute('$numSpacingRows');
+TP.xctrls.Lattice.Inst.defineAttribute('$numSpacingRows');
 
 //  The data as massaged into what this control needs. This is reset whenever
 //  the control's whole data set is reset.
-TP.xctrls.lattice.Inst.defineAttribute('$convertedData');
+TP.xctrls.Lattice.Inst.defineAttribute('$convertedData');
 
-TP.xctrls.lattice.Inst.defineAttribute(
+TP.xctrls.Lattice.Inst.defineAttribute(
     'scroller', TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.lattice.Inst.defineAttribute(
+TP.xctrls.Lattice.Inst.defineAttribute(
     'group', TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('focus',
+TP.xctrls.Lattice.Inst.defineMethod('focus',
 function(moveAction) {
 
     /**
@@ -206,7 +206,7 @@ function(moveAction) {
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
      *          TP.PRECEDING
-     * @returns {TP.xctrls.lattice} The receiver.
+     * @returns {TP.xctrls.Lattice} The receiver.
      */
 
     //  We're not a valid focus target, but our group is.
@@ -215,7 +215,7 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('getValue',
+TP.xctrls.Lattice.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -260,14 +260,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineHandler('DOMResize',
+TP.xctrls.Lattice.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
     /**
      * @method handleDOMResize
      * @param {TP.sig.DOMResize} aSignal The signal that caused this handler to
      *     trip.
-     * @returns {TP.xctrls.lattice} The receiver.
+     * @returns {TP.xctrls.Lattice} The receiver.
      */
 
     var currentRowCount,
@@ -287,7 +287,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('refresh',
+TP.xctrls.Lattice.Inst.defineMethod('refresh',
 function(shouldRender) {
 
     /**
@@ -320,7 +320,7 @@ function(shouldRender) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('scrollTopToRow',
+TP.xctrls.Lattice.Inst.defineMethod('scrollTopToRow',
 function(rowNum) {
 
     /**
@@ -328,7 +328,7 @@ function(rowNum) {
      * @summary Scroll the 'top' of the receiver to the row provided.
      * @param {Number} rowNum The number of the row to scroll to.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.xctrls.lattice} The receiver.
+     * @returns {TP.xctrls.Lattice} The receiver.
      */
 
     var elem,
@@ -375,7 +375,7 @@ function(rowNum) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('setAttrDisabled',
+TP.xctrls.Lattice.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
     /**
@@ -393,7 +393,7 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('setAttrId',
+TP.xctrls.Lattice.Inst.defineMethod('setAttrId',
 function(anID) {
 
     /**
@@ -431,7 +431,7 @@ function(anID) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('setValue',
+TP.xctrls.Lattice.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -445,7 +445,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.xctrls.lattice} The receiver.
+     * @returns {TP.xctrls.Lattice} The receiver.
      */
 
     var oldValue,
@@ -486,7 +486,7 @@ function(aValue, shouldSignal) {
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('getRowHeight',
+TP.xctrls.Lattice.Inst.defineMethod('getRowHeight',
 function() {
 
     /**
@@ -503,7 +503,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('getRowBorderHeight',
+TP.xctrls.Lattice.Inst.defineMethod('getRowBorderHeight',
 function() {
 
     /**
@@ -518,7 +518,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('getScrollingContainer',
+TP.xctrls.Lattice.Inst.defineMethod('getScrollingContainer',
 function() {
 
     /**
@@ -536,7 +536,7 @@ function() {
 //  TP.core.SelectingUIElement Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.lattice.Inst.defineMethod('allowsMultiples',
+TP.xctrls.Lattice.Inst.defineMethod('allowsMultiples',
 function() {
 
     /**
