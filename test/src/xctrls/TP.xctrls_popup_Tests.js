@@ -25,13 +25,6 @@ TP.w3.Xmlns.registerNSInfo('urn:app:popuptest',
 
 TP.core.CompiledTag.defineSubtype('popuptest.PopupTestContent');
 
-//  Note how this property is TYPE_LOCAL, by design.
-TP.xctrls.popup.defineAttribute('themeURI', TP.NO_RESULT);
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.popuptest.PopupTestContent.defineAttribute('styleURI', TP.NO_RESULT);
