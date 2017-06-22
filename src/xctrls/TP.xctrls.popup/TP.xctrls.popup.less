@@ -14,21 +14,21 @@ xctrls|popup {
 
     top: 0;
     left: 0;
-}
 
-xctrls|popup[pclass|hidden] {
+    &[pclass|hidden] {
 
-    display: block;
-    visibility: hidden;
-}
+        display: block;
+        visibility: hidden;
+    }
 
-xctrls|popup > xctrls|content {
-}
+    & > xctrls|content {
+    }
 
-/* NB: Any direct children of our content should be set to 'block' to fit our
-content element */
-xctrls|popup > xctrls|content > * {
+    /* NB: Any direct children of our content should be set to 'block' to fit our
+    content element */
+    & > xctrls|content > * {
 
-    display: block;
+        display: block;
+    }
 }
 
