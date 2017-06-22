@@ -541,6 +541,12 @@ function(openSignal, overlayContent) {
             //  Grab all of the content element's child nodes as a
             //  DocumentFragment.
             content = TP.nodeListAsFragment(contentElem.childNodes);
+        } else if (TP.isValid(contentElem.content)) {
+            //  If the content element has a '.content' slot on it, then it
+            //  might be an HTML5 <template> element. In this case, obtain its
+            //  content (a DocumentFragment) by using the '.content' slot, but
+            //  make sure to clone the content so that we don't remove it.
+            content = TP.nodeCloneNode(contentElem.content);
         } else {
             content = TP.nodeGetFirstChildElement(contentElem);
         }
