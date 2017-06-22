@@ -2436,8 +2436,8 @@ function(aRequest) {
     }
 
     //  default when not set is to map it to the TIBET code frame.
-    if (TP.isWindow(self.$$TIBET)) {
-        win = self.$$TIBET;
+    if (TP.isWindow(TP.global.$$TIBET)) {
+        win = TP.global.$$TIBET;
     }
 
     //  "shouldn't happen" ;), but just in case...

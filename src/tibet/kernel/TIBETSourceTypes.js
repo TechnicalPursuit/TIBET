@@ -793,7 +793,7 @@ function() {
     /**
      */
 
-    return TP.isValid(self.EventSource);
+    return TP.isValid(TP.global.EventSource);
 });
 
 //  ------------------------------------------------------------------------
@@ -806,7 +806,7 @@ function() {
     /**
      */
 
-    return self.EventSource;
+    return TP.global.EventSource;
 });
 
 //  ------------------------------------------------------------------------
@@ -1065,7 +1065,7 @@ function() {
     /**
      */
 
-    return TP.isValid(self.WebSocket);
+    return TP.isValid(TP.global.WebSocket);
 });
 
 //  ------------------------------------------------------------------------
@@ -1140,7 +1140,7 @@ function() {
     /**
      */
 
-    return self.WebSocket;
+    return TP.global.WebSocket;
 });
 
 //  ------------------------------------------------------------------------
@@ -1764,7 +1764,7 @@ function(aDocument) {
         styleChangesHandler;
 
     //  PhantomJS (at least at the time of this writing, doesn't support these).
-    if (TP.notValid(self.MutationObserver)) {
+    if (TP.notValid(TP.global.MutationObserver)) {
         return this;
     }
 
@@ -3159,6 +3159,8 @@ function(name, body, async) {
 
     //  Get the source of the method body handed in and prepend
     //  'self.<methodName>' onto the front.
+    //  NOTE: We do *not* use TP.global here since this code will be running
+    //  in the worker thread and that's not defined there!!
     methodSrc = 'self.' + name + ' = ' + body.toString();
 
     isAsync = TP.ifInvalid(async, false);

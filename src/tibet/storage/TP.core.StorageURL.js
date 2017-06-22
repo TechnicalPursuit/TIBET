@@ -100,7 +100,7 @@ function(targetURI, aRequest) {
     request = targetURI.constructRequest(aRequest);
     response = request.getResponse();
 
-    store = self[targetURI.get('store') + 'Storage'];
+    store = TP.global[targetURI.get('store') + 'Storage'];
     if (TP.notValid(store)) {
         this.raise('InvalidStore', targetURI.get('store'));
     }
@@ -154,7 +154,7 @@ function(targetURI, aRequest) {
     request = targetURI.constructRequest(aRequest);
     response = request.getResponse();
 
-    store = self[targetURI.get('store') + 'Storage'];
+    store = TP.global[targetURI.get('store') + 'Storage'];
     if (TP.notValid(store)) {
         this.raise('InvalidStore', targetURI.get('store'));
     }
@@ -203,7 +203,7 @@ function(targetURI, aRequest) {
     request = targetURI.constructRequest(aRequest);
     response = request.getResponse();
 
-    store = self[targetURI.get('store') + 'Storage'];
+    store = TP.global[targetURI.get('store') + 'Storage'];
     if (TP.notValid(store)) {
         this.raise('InvalidStore', targetURI.get('store'));
     }

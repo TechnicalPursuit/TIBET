@@ -320,10 +320,10 @@ function() {
         model.attachSTDIO(this);
     }
 
-    if (TP.isWindow(self.$$TIBET) &&
-        this.get('$consoleGUI').getNativeWindow() !== self.$$TIBET) {
+    if (TP.isWindow(TP.global.$$TIBET) &&
+        this.get('$consoleGUI').getNativeWindow() !== TP.global.$$TIBET) {
 
-        TP.tpwin(self.$$TIBET).attachSTDIO(this);
+        TP.tpwin(TP.global.$$TIBET).attachSTDIO(this);
     }
 
     return this;

@@ -199,7 +199,7 @@ TP.defineNamespace = function(namespaceName) {
     names = namespaceName.split('.');
     root = names.shift();
 
-    currentObj = self[root];
+    currentObj = TP.global[root];
     if (!currentObj) {
         TP.boot.$stderr('Invalid namespace root.', TP.FATAL);
         return;
@@ -268,12 +268,12 @@ TP.defineNamespace = function(namespaceName) {
 //  pre-populate with the 'special namespaces' that didn't get added via
 //  TP.defineNamespace.
 TP.$$bootstrap_namespaces = [
-    self.TP,
-    self.APP,
-    self.TP.sys,
-    self.TP.boot,
-    self.TP.core,
-    self.TP.extern];
+    TP.global.TP,
+    TP.global.APP,
+    TP.global.TP.sys,
+    TP.global.TP.boot,
+    TP.global.TP.core,
+    TP.global.TP.extern];
 
 //  Manual setup
 TP.defineNamespace[TP.NAME] = 'defineNamespace';
