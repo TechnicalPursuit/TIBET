@@ -137,8 +137,10 @@ function(aSignal) {
     triggerSignal = aSignal.at('trigger');
 
     tpDoc = aSignal.at('triggerTPDocument');
-    if (TP.notValid(tpDoc)) {
+    if (TP.notValid(tpDoc) && TP.isValid(triggerSignal)) {
         tpDoc = triggerSignal.getDocument();
+    } else {
+        tpDoc = TP.sys.getUICanvas().getDocument();
     }
 
     if (TP.notValid(tpDoc)) {
@@ -166,12 +168,12 @@ function(aSignal) {
     triggerID = aSignal.at('triggerID');
     if (TP.notEmpty(triggerID)) {
         triggerTPElem = TP.byId(triggerID, tpDoc);
-        popupTPElem.set('$currentTriggerID', triggerID);
-    } else if (TP.isValid(triggerSignal.at('target'))) {
+    } else if (TP.isValid(triggerSignal) &&
+                TP.isValid(triggerSignal.at('target'))) {
         //  if there's a target on the trigger signal, use that
         triggerTPElem = TP.wrap(triggerSignal.at('target'));
-        popupTPElem.set('$currentTriggerID', triggerTPElem.getID());
-    } else {
+        triggerID = triggerTPElem.getID();
+    } else if (TP.isValid(triggerSignal)) {
         //  let it default to the trigger signal's origin
         origin = triggerSignal.getOrigin();
         if (TP.isString(origin)) {
@@ -179,8 +181,13 @@ function(aSignal) {
         } else {
             triggerTPElem = TP.wrap(origin);
         }
-        popupTPElem.set('$currentTriggerID', triggerTPElem.getID());
+        triggerID = triggerTPElem.getID();
+    } else {
+        triggerTPElem = tpDoc.getBody();
+        triggerID = triggerTPElem.getID();
     }
+
+    popupTPElem.set('$currentTriggerID', triggerID);
 
     //  NB: At this point, there might not be a triggerTPElem. That's ok, but in
     //  that case, we need to make sure that a trigger point has been supplied.
@@ -314,7 +321,10 @@ function(aPopupPoint) {
         popupPoint,
         popupRect,
 
-        bodyRect;
+        bodyTPElem,
+        bodyRect,
+
+        bodyScrollOffsets;
 
     offset = this.getType().POPUP_OFFSET;
 
@@ -332,9 +342,16 @@ function(aPopupPoint) {
                     this.getHeight() + offset);
 
     //  Grab the body's rectangle and constrain the popup rectangle against it.
-    bodyRect = this.getDocument().getBody().getGlobalRect();
+
+    bodyTPElem = this.getDocument().getBody();
+
+    bodyRect = bodyTPElem.getGlobalRect();
 
     bodyRect.constrainRect(popupRect);
+
+    bodyScrollOffsets = bodyTPElem.getScrollOffsetPoint();
+    popupRect.addToX(bodyScrollOffsets.getX());
+    popupRect.addToY(bodyScrollOffsets.getY());
 
     //  Now, get the 'northwest' coordinate of the popup rectangle. This will
     //  give us our true 'popup point'.
