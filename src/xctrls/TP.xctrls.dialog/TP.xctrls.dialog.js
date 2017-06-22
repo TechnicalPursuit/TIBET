@@ -21,6 +21,7 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:dialog');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  This type captures no signals - it lets all signals pass through.
 TP.xctrls.dialog.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  ------------------------------------------------------------------------

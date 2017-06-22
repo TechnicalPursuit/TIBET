@@ -23,6 +23,7 @@ TP.xctrls.panel.addTraits(TP.xctrls.Element);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  This type captures no signals - it lets all signals pass through.
 TP.xctrls.panel.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by

@@ -298,6 +298,7 @@ TP.xctrls.Element.defineSubtype('xctrls:content');
 TP.xctrls.content.defineAttribute('styleURI', TP.NO_RESULT);
 TP.xctrls.content.defineAttribute('themeURI', TP.NO_RESULT);
 
+//  This type captures no signals - it lets all signals pass through.
 TP.xctrls.content.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  ------------------------------------------------------------------------

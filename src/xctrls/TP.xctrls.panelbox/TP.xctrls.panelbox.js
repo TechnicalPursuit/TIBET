@@ -23,6 +23,7 @@ TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  This type captures no signals - it lets all signals pass through.
 TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  Note how this property is TYPE_LOCAL, by design.
