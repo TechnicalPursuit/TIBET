@@ -80,7 +80,7 @@
 
     A notifier that defaults all parameters and uses data-bound &lt;xctrls:list&gt; as the content:
 
-    <button id="trigger2" on:UIDeactivate="{signal: OpenNotifier, payload: {contentID: trigger2Notifier, closeOn: UISelect, delay: 100}}">Trigger #2</button>
+    <button id="trigger2" on:UIDeactivate="{signal: OpenNotifier, payload: {contentID: trigger2Notifier, hideOn: UISelect, delay: 100}}">Trigger #2</button>
 
     <span id="trigger2Notifier" class="notifier_content"><xctrls:list id="inlineTestContent" bind:in="{data: urn:tibet:notifier_content_list#tibet(names)}" tibet:noawaken="true"/></span>
 
