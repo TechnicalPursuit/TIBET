@@ -1,5 +1,5 @@
 //  ========================================================================
-//  TP.test.notifiertest
+//  TP.notifiertest
 //  ========================================================================
 
 /**
@@ -13,12 +13,12 @@ TP.w3.Xmlns.registerNSInfo('urn:app:notifiertest',
     TP.hc('prefix', 'notifiertest'));
 
 //  ========================================================================
-//  TP.test.NotifierTestContent
+//  TP.notifiertest.NotifierTestContent
 //  ========================================================================
 
 /**
- * @type {TP.test.NotifierTestContent}
- * @summary TP.test.NotifierTestContent
+ * @type {TP.notifiertest.NotifierTestContent}
+ * @summary TP.notifiertest.NotifierTestContent
  */
 
 //  ------------------------------------------------------------------------

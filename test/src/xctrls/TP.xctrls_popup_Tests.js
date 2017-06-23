@@ -1,5 +1,5 @@
 //  ========================================================================
-//  TP.test.popuptest
+//  TP.popuptest
 //  ========================================================================
 
 /**
@@ -13,12 +13,12 @@ TP.w3.Xmlns.registerNSInfo('urn:app:popuptest',
     TP.hc('prefix', 'popuptest'));
 
 //  ========================================================================
-//  TP.test.PopupTestContent
+//  TP.popuptest.PopupTestContent
 //  ========================================================================
 
 /**
- * @type {TP.test.PopupTestContent}
- * @summary TP.test.PopupTestContent
+ * @type {TP.popuptest.PopupTestContent}
+ * @summary TP.popuptest.PopupTestContent
  */
 
 //  ------------------------------------------------------------------------
