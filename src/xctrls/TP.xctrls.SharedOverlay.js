@@ -591,21 +591,11 @@ function(openSignal, overlayContent) {
         return this;
     }
 
-    //  Grab the triggerID - it might have been supplied in the signal or it
-    //  might need to be computed from the trigger element.
-    triggerID = openSignal.at('triggerID');
-    if (TP.isEmpty(triggerID)) {
-        if (TP.isValid(triggerTPElem)) {
-            triggerID = triggerTPElem.getID();
-        } else {
-            //  TODO: Raise an exception
-            return this;
-        }
-    }
-
     //  Capture the trigger ID in case that same trigger uses this overlay
-    //  before another trigger uses it - then we just refresh. See the logic
-    //  above.
+    //  before another trigger uses it - we can use this for comparison purposes
+    //  for content refresh, etc.
+
+    triggerID = this.get('$currentTriggerID');
     this.getType().set('$lastTriggerID', triggerID);
 
     //  That will be the real element generated from the content that got placed
