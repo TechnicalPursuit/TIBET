@@ -1833,10 +1833,6 @@
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 
-    //  A list of remote sources that we might know about (for purposes of
-    //  Sherpa browsing, etc).
-    TP.sys.setcfg('uri.remote_sources', []);
-
     //  should we watch remote resources configured to be 'watched'?
     TP.sys.setcfg('uri.remote_watch', false);
 
