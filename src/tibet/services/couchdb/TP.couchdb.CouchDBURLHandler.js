@@ -143,29 +143,17 @@ function(aSignal) {
 
     var payload,
         data,
-
         doc,
         attachments,
         rawRev,
         rev,
-
         entry,
-
         signalSourceURL,
-
         path,
         changesPathIndex,
-
         origin,
-
         urlLoc,
         url;
-
-    //  Make sure that the system is currently configured to process remote
-    //  changes.
-    if (TP.notTrue(TP.sys.cfg('uri.process_remote_changes'))) {
-        return;
-    }
 
     //  Make sure that we have a payload
     if (TP.notValid(payload = aSignal.getPayload())) {
@@ -245,7 +233,6 @@ function(aSignal) {
     //  If we can successfully create a URL from the data, then process the
     //  change.
     if (TP.isURI(url = TP.uc(urlLoc))) {
-
         TP.core.URI.processRemoteResourceChange(url);
     }
 
