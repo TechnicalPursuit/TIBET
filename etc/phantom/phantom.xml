@@ -5,7 +5,7 @@
 
 <config id="properties" if="boot.phase_one">
     <property name="sherpa.enabled" value="false"/>
-    <property name="uri.remote_watch" value="false"/>
+    <property name="uri.watch_remote_changes" value="false"/>
 </config>
 
 <config id="phantom">

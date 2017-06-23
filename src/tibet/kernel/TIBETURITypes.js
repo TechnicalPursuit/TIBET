@@ -983,15 +983,22 @@ function(aURI) {
      * @returns {Promise} A promise which resolves based on success.
      */
 
-    var resourceHash,
+    var shouldProcess,
+        resourceHash,
         loc,
         packages,
         count;
 
+    shouldProcess = TP.sys.cfg('uri.process_remote_changes');
+
     resourceHash = TP.core.URI.get('changedResources');
     loc = aURI.getLocation();
 
-    if (aURI.get('autoRefresh')) {
+    //  If we're supposed to process AND the uri is configured for autoRefresh
+    //  we attempt to process it. Otherwise we'll drop into 'else' and just
+    //  track it and count unprocessed changes.
+    if (shouldProcess && aURI.get('autoRefresh')) {
+
         //  Confirm the URI in question should be loaded (either it already has
         //  loaded or it's in the list of "should have loaded" based on config.)
         if (TP.boot.$isLoadableScript(loc)) {
@@ -11755,9 +11762,10 @@ function(targetURI, aRequest) {
 
 /**
  * @type {TP.core.RemoteURLWatchHandler}
- * @summary Supports operations for remote resources that support notifying the
- *     URL of changes made to those resources from the server side. This type is
- *     normally used as a trait to the main handler type.
+ * @summary Mixin supporting response processing for remote resources that
+ *     can notify of server side changes. This type is normally used as a trait
+ *     to the main handler type. TDS and Couch URL handlers are the primary
+ *     consumers of this mixin.
  */
 
 //  ------------------------------------------------------------------------
@@ -11773,14 +11781,16 @@ TP.core.RemoteURLWatchHandler.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 //  A dictionary of URL root watchers managed by this handler, keyed by the
-//  root URL string. Note how this is a TYPE_LOCAL attribute.
+//  root URL string. Note how this is a TYPE_LOCAL attribute meaning its only on
+//  the RemoteURLWatchHandler itself. The methods which access this slot are
+//  also TYPE_LOCAL methods, not available on subtypes/mixins.
 TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
+//  TypeLocal Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('activateWatchers',
+TP.core.RemoteURLWatchHandler.defineMethod('activateWatchers',
 function(aFilterFunction) {
 
     /**
@@ -11793,6 +11803,8 @@ function(aFilterFunction) {
      */
 
     var watchers;
+
+    TP.sys.setcfg('uri.watch_remote_changes', true);
 
     if (TP.isEmpty(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
         return this;
@@ -11827,14 +11839,12 @@ function(aFilterFunction) {
                 }
             });
 
-    TP.sys.setcfg('uri.process_remote_changes', true);
-
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('deactivateWatchers',
+TP.core.RemoteURLWatchHandler.defineMethod('deactivateWatchers',
 function(aFilterFunction) {
 
     /**
@@ -11847,6 +11857,8 @@ function(aFilterFunction) {
      */
 
     var watchers;
+
+    TP.sys.setcfg('uri.watch_remote_changes', false);
 
     if (TP.isEmpty(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
         return this;
@@ -11881,9 +11893,91 @@ function(aFilterFunction) {
                 }
             });
 
-    TP.sys.setcfg('uri.process_remote_changes', false);
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.defineHandler('AppShutdown',
+function(aSignal) {
+
+    /**
+     * @method handleAppShutdown
+     * @summary Handles when the app is about to be shut down. This is used to
+     *     try to shut down any remote signal sources which are notifying us of
+     *     changes to URLs that they manage.
+     * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
+     *     application is to be shut down.
+     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     */
+
+    this.deactivateWatchers();
+
+    //  Make sure to remove our observation of AppShutdown.
+    this.ignore(TP.sys, 'TP.sig.AppShutdown');
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
+function(aURI) {
+
+    /**
+     * @method getWatcherSignalType
+     * @summary Returns the TIBET type of the watcher signal. This will be the
+     *     signal that the signal source sends when it wants to notify URIs of
+     *     changes.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.sig.RemoteURLChange} The type that will be
+     *     instantiated to construct new signals that notify observers that the
+     *     *remote* version of the supplied URI's resource has changed. At this
+     *     level, this returns the common supertype of all such signals.
+     */
+
+    return TP.sig.RemoteURLChange;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceType',
+function(aURI) {
+
+    /**
+     * @method getWatcherSourceType
+     * @summary Returns the TIBET type of the watcher signal source. Typically,
+     *     this is one of the prebuilt TIBET watcher types, like
+     *     TP.sig.SSEConnection for Server-Sent Event sources.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.meta.lang.RootObject} The type that will be instantiated to
+     *     make a watcher for the supplied URI.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherURI',
+function(aURI) {
+
+    /**
+     * @method getWatcherURI
+     * @summary Returns the URI to the resource that acts as a watcher to watch
+     *     for changes to the resource of the supplied URI. This method must be
+     *     overridden in subtypes and a real implementation supplied.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.core.URI} A URI pointing to the resource that will notify
+     *     TIBET when the supplied URI's resource changes.
+     */
+
+    return TP.override();
 });
 
 //  ------------------------------------------------------------------------
@@ -11927,20 +12021,23 @@ function(targetURI, aRequest) {
 
         signalType;
 
-    //  First, make sure that we're configured to watch remote resources and
-    //  that we have remote resources to watch.
-    watchSources = TP.sys.cfg('uri.remote_watch_sources');
-    if (TP.isEmpty(watchSources) ||
-            !TP.sys.cfg('uri.remote_watch') ||
-            TP.sys.cfg('boot.context') === 'phantomjs' ||
+    //  Make sure we're configured to watch remote sources.
+    if (TP.notTrue(TP.sys.cfg('uri.watch_remote_changes'))) {
+        return;
+    }
+
+    //  Don't watch if running in phantomjs or karma (both are test environments
+    //  that will cause issues).
+    if (TP.sys.cfg('boot.context') === 'phantomjs' ||
             TP.sys.hasFeature('karma')) {
         return;
     }
 
-    request = targetURI.constructRequest(aRequest);
-    response = request.getResponse();
-
-    //  Make sure that we match one of our watched sources
+    //  If nothing to watch we can exit early.
+    watchSources = TP.sys.cfg('uri.remote_watch_sources');
+    if (TP.isEmpty(watchSources)) {
+        return;
+    }
 
     //  We match based on root
     targetRoot = targetURI.getRoot();
@@ -11964,20 +12061,22 @@ function(targetURI, aRequest) {
         return;
     }
 
+    /*
     //  The data structure for watchers looks like this:
+    watchers =
+    {
+        <watcherLocation> : {
+            'signalSource' : <sourceObj>,
+            'signalType' : <typeObj>,
+            'watchersURLs' : [
+                <url0>,<url1>,...
+            ]
+        }
+    }
+    */
 
-    //  watchers =
-    //      {
-    //          <watcherLocation> :
-    //              {
-    //                  'signalSource' : <sourceObj>
-    //                  'signalType' : <typeObj>
-    //                  'watchersURLs' :
-    //                      [
-    //                          <url0>,<url1>,...
-    //                      ]
-    //              }
-    //      }
+    request = targetURI.constructRequest(aRequest);
+    response = request.getResponse();
 
     activateImmediately = false;
 
@@ -12078,113 +12177,6 @@ function(targetURI, aRequest) {
     }
 
     return response;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSignalType
-     * @summary Returns the TIBET type of the watcher signal. This will be the
-     *     signal that the signal source sends when it wants to notify URIs of
-     *     changes.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.sig.RemoteURLChange} The type that will be
-     *     instantiated to construct new signals that notify observers that the
-     *     *remote* version of the supplied URI's resource has changed. At this
-     *     level, this returns the common supertype of all such signals.
-     */
-
-    return TP.sig.RemoteURLChange;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSourceType
-     * @summary Returns the TIBET type of the watcher signal source. Typically,
-     *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.sig.SSEConnection for Server-Sent Event sources.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.meta.lang.RootObject} The type that will be instantiated to
-     *     make a watcher for the supplied URI.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherURI',
-function(aURI) {
-
-    /**
-     * @method getWatcherURI
-     * @summary Returns the URI to the resource that acts as a watcher to watch
-     *     for changes to the resource of the supplied URI. This method must be
-     *     overridden in subtypes and a real implementation supplied.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.core.URI} A URI pointing to the resource that will notify
-     *     TIBET when the supplied URI's resource changes.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineHandler('AppShutdown',
-function(aSignal) {
-
-    /**
-     * @method handleAppShutdown
-     * @summary Handles when the app is about to be shut down. This is used to
-     *     try to shut down any remote signal sources which are notifying us of
-     *     changes to URLs that they manage.
-     * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
-     *     application is to be shut down.
-     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
-     */
-
-    var watchers;
-
-    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
-
-    //  Iterate over all of the watchers and ignore them.
-    watchers.perform(
-            function(kvPair) {
-                var watcherEntry,
-
-                    signalSource,
-                    signalTarget,
-                    signalType;
-
-                watcherEntry = kvPair.last();
-
-                signalSource = watcherEntry.at('signalSource');
-
-                if (TP.isValid(signalSource)) {
-
-                    signalTarget = watcherEntry.at('signalTarget');
-                    signalType = watcherEntry.at('signalType');
-
-                    //  Ignore the source for the signal type.
-                    signalTarget.ignore(signalSource, signalType);
-                }
-            });
-
-    //  Make sure to remove our observation of AppShutdown.
-    this.ignore(TP.sys, 'TP.sig.AppShutdown');
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------

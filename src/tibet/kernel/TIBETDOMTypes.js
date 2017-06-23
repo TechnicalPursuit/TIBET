@@ -11147,22 +11147,18 @@ function(aRequest) {
 
     var elem,
         tpElem,
-
         reloadableAttrs,
         len,
         i,
-
         attrName,
         val,
-
         uri,
-
         obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
     //  this type for any 'reloadable URI attributes' and observe any URI
     //  values that we find there.
-    if (TP.sys.cfg('uri.remote_watch')) {
+    if (TP.sys.cfg('uri.watch_remote_changes')) {
 
         //  Make sure that we have a node to work from.
         if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -11358,23 +11354,19 @@ function(aRequest) {
 
     var elem,
         tpElem,
-
         reloadableAttrs,
         len,
         i,
-
         attrName,
         val,
-
         uri,
-
         obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
     //  this type for any 'reloadable URI attributes' and ignore any URI
     //  values that we find there (we will have already observed them in the
     //  'tagAttachDOM' call above).
-    if (TP.sys.cfg('uri.remote_watch')) {
+    if (TP.sys.cfg('uri.watch_remote_changes')) {
 
         //  Make sure that we have a node to work from.
         if (!TP.isElement(elem = aRequest.at('node'))) {
