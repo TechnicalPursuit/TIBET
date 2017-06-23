@@ -77,7 +77,9 @@ function(aRequest) {
         namedHref,
         namedURI,
 
-        resource;
+        resource,
+
+        tpElem;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -111,8 +113,14 @@ function(aRequest) {
 
         namedURI.unregister();
 
+        tpElem = TP.wrap(elem);
+
         //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
-        TP.wrap(elem).signal('TP.sig.UIDataDestruct');
+        tpElem.signal('TP.sig.UIDataDestruct');
+
+        //  Check and dispatch a signal from our attributes if one exists for
+        //  this signal.
+        tpElem.dispatchResponderSignalFromAttr('UIDataDestruct', null);
     }
 
     return;
@@ -371,6 +379,10 @@ function(aContentObject, aRequest) {
     //  NB: We assume 'async' of false here.
     if (TP.notEmpty(namedURI.getResource().get('result'))) {
         this.signal('TP.sig.UIDataDestruct');
+
+        //  Check and dispatch a signal from our attributes if one exists for
+        //  this signal.
+        this.dispatchResponderSignalFromAttr('UIDataDestruct', null);
     }
 
     //  Set the resource to the new resource (causing any observers of the URI
@@ -380,6 +392,10 @@ function(aContentObject, aRequest) {
         TP.hc('observeResource', true, 'signalChange', true));
 
     this.signal('TP.sig.UIDataConstruct');
+
+    //  Check and dispatch a signal from our attributes if one exists for this
+    //  signal.
+    this.dispatchResponderSignalFromAttr('UIDataConstruct', null);
 
     //  Dispatch 'TP.sig.DOMReady' for consistency with other elements that
     //  dispatch this when their 'dynamic content' is resolved. Note that we use
