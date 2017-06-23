@@ -3589,37 +3589,6 @@ function(options) {
      *     a bay.
      */
 
-    /*
-    remoteSources = TP.sys.cfg('uri.remote_sources', TP.ac());
-
-    remoteSources.forEach(
-        function(aSource) {
-
-            var sourceURI,
-                sourceURIMap,
-                inspectorHandlerTypeName,
-                inspectorHandlerType,
-                newHandler;
-
-            sourceURI = TP.uc(aSource);
-
-            sourceURIMap = TP.core.URI.$getURIMap(sourceURI);
-
-            inspectorHandlerTypeName =
-                    sourceURIMap.at('sherpa_inspector_handler');
-            inspectorHandlerType =
-                    TP.sys.getTypeByName(inspectorHandlerTypeName);
-
-            if (TP.isType(inspectorHandlerType)) {
-
-                newHandler = inspectorHandlerType.construct();
-                newHandler.set('serverAddress', sourceURI.getRoot());
-
-                this.addEntry(newHandler.getInspectorPath(), newHandler);
-            }
-        }.bind(this));
-    */
-
     return TP.ac(
             TP.ac('Foo', 'Foo')
     );

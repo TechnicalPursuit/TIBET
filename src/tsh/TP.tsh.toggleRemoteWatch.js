@@ -36,9 +36,7 @@ function(aRequest) {
      */
 
     var shell,
-
-        currentlyProcessing,
-
+        currentlyWatching,
         watchSources,
         args;
 
@@ -54,7 +52,7 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    currentlyProcessing = TP.sys.cfg('uri.process_remote_changes');
+    currentlyWatching = TP.sys.cfg('uri.watch_remote_changes');
     watchSources = TP.sys.cfg('uri.remote_watch_sources');
     watchSources.convert(
                 function(aLocation) {
@@ -90,7 +88,7 @@ function(aRequest) {
     } else if (TP.notEmpty(watchSources)) {
         //  If we have watch sources, but the flag is already true, then we
         //  deactivate any active watchers.
-        if (TP.isTrue(currentlyProcessing)) {
+        if (TP.isTrue(currentlyWatching)) {
             TP.core.RemoteURLWatchHandler.deactivateWatchers();
         } else {
             TP.core.RemoteURLWatchHandler.activateWatchers();
@@ -102,16 +100,19 @@ function(aRequest) {
 
     //  Note here how we go after the stored value - we might have changed it
     //  above.
-    if (TP.isTrue(TP.sys.cfg('uri.process_remote_changes'))) {
-        aRequest.stdout('Remote resource change monitoring active for: ');
+    if (TP.isTrue(TP.sys.cfg('uri.watch_remote_changes'))) {
+        aRequest.stdout('Remote resource change monitoring activated for: ');
 
         //  Set cmdAsIs to false to get fancy JSON formatting.
         aRequest.stdout(TP.jsoncc(watchSources), TP.hc('cmdAsIs', false));
     } else {
-        aRequest.stdout('Remote resource change monitoring inactive');
+        aRequest.stdout('Remote resource change monitoring deactivated');
     }
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.stdout('Remote resource change processing is ' +
+        (TP.sys.cfg('uri.process_remote_changes') === true ? 'on' : 'off'));
+
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });

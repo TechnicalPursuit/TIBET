@@ -53,42 +53,38 @@ function() {
 
     var watchSources,
         query,
-
         scripts,
         req,
-
         len,
         i;
 
-    //  If we're not watching remote sources, then just exit.
-    if (!TP.sys.cfg('uri.remote_watch')) {
-        return;
-    }
+    if (TP.sys.cfg('uri.watch_remote_changes')) {
 
-    //  Build a CSS query of the watched source paths that can be tested against
-    //  all of the 'script' elements in the top-level window's document. This is
-    //  where all TIBET code resides. We only want to set up observations on
-    //  scripts that are under those paths.
-    watchSources = TP.sys.cfg('uri.remote_watch_sources');
-    query = 'script[src^="' + TP.uriExpandPath(watchSources.at(0)) + '"]';
+        //  Build a CSS query of the watched source paths that can be tested
+        //  against all of the 'script' elements in the top-level window's
+        //  document. This is where all TIBET code resides. We only want to set
+        //  up observations on scripts that are under those paths.
+        watchSources = TP.sys.cfg('uri.remote_watch_sources');
+        query = 'script[src^="' + TP.uriExpandPath(watchSources.at(0)) + '"]';
 
-    for (i = 1; i < watchSources.getSize(); i++) {
-        query += ', script[src^="' +
-                    TP.uriExpandPath(watchSources.at(i)) +
-                    '"]';
-    }
+        for (i = 1; i < watchSources.getSize(); i++) {
+            query += ', script[src^="' +
+                        TP.uriExpandPath(watchSources.at(i)) +
+                        '"]';
+        }
 
-    //  Query for them.
-    scripts = TP.byCSSPath(query, TP.sys.getLaunchDocument(), false, false);
+        //  Query for them.
+        scripts = TP.byCSSPath(query, TP.sys.getLaunchDocument(), false, false);
 
-    req = TP.request();
+        req = TP.request();
 
-    //  Loop over each script element found and manually call 'tagAttachDOM'
-    //  with a manually constructed request.
-    len = scripts.getSize();
-    for (i = 0; i < len; i++) {
-        req.atPut('node', scripts.at(i));
-        TP.html.script.tagAttachDOM(req);
+        //  Loop over each script element found and manually call 'tagAttachDOM'
+        //  with a manually constructed request.
+        len = scripts.getSize();
+        for (i = 0; i < len; i++) {
+            req.atPut('node', scripts.at(i));
+            TP.html.script.tagAttachDOM(req);
+        }
     }
 
     return;

@@ -293,19 +293,10 @@ function(aSignal) {
 
     var payload,
         data,
-
         path,
         root,
-
         fileName,
-
         url;
-
-    //  Make sure that the system is currently configured to process remote
-    //  changes.
-    if (TP.notTrue(TP.sys.cfg('uri.process_remote_changes'))) {
-        return;
-    }
 
     //  Make sure that we have a payload
     if (TP.notValid(payload = aSignal.getPayload())) {
@@ -351,7 +342,8 @@ function(aSignal) {
 TP.sig.RemoteURLChange.defineSubtype('TDSFileChange');
 
 //  We configure our REMOTE_NAME to the same SSE-level event that the TDS is
-//  configured to send.
+//  configured to send. When the SSE channel signals that event it will be
+//  transformed into a TDSFileChange signal we handle to do the processing.
 TP.sig.TDSFileChange.Type.defineConstant('REMOTE_NAME',
     TP.sys.cfg('tds.watch.event'));
 
