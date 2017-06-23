@@ -11147,12 +11147,16 @@ function(aRequest) {
 
     var elem,
         tpElem,
+
         reloadableAttrs,
         len,
         i,
+
         attrName,
         val,
+
         uri,
+
         obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
@@ -11354,12 +11358,16 @@ function(aRequest) {
 
     var elem,
         tpElem,
+
         reloadableAttrs,
         len,
         i,
+
         attrName,
         val,
+
         uri,
+
         obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
