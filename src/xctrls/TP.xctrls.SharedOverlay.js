@@ -104,7 +104,7 @@ function(aSignal, triggerTPDocument) {
      * @summary Returns the TP.core.ElementNode that is acting as the
      *     'triggering' element for the overlay. This can be one of three
      *     values:
-     *     - The element matching a 'triggerID' supplied in aSignal
+     *     - The element matching a 'triggerPath' supplied in aSignal
      *     - The target element of the trigger signal supplied in aSignal
      *     - The body element of the triggerTPDocument which should be the
      *         TP.core.Document that the triggering element is contained in.
@@ -117,7 +117,7 @@ function(aSignal, triggerTPDocument) {
      */
 
     var triggerSignal,
-        triggerID,
+        triggerPath,
         triggerTPElem,
         origin;
 
@@ -125,11 +125,11 @@ function(aSignal, triggerTPDocument) {
     //  it will be found inside of aSignal's payload under 'trigger'.
     triggerSignal = aSignal.at('trigger');
 
-    //  If there's a 'triggerID' in the signal data, then we use that as the
+    //  If there's a 'triggerPath' in the signal data, then we use that as the
     //  trigger.
-    triggerID = aSignal.at('triggerID');
-    if (TP.notEmpty(triggerID)) {
-        triggerTPElem = TP.byId(triggerID, triggerTPDocument);
+    triggerPath = aSignal.at('triggerPath');
+    if (TP.notEmpty(triggerPath)) {
+        triggerTPElem = TP.byPath(triggerPath, triggerTPDocument).first();
     } else if (TP.isValid(triggerSignal) &&
                 TP.isValid(triggerSignal.at('target'))) {
         //  If there's a target on the trigger signal, use that
@@ -142,9 +142,11 @@ function(aSignal, triggerTPDocument) {
         } else {
             triggerTPElem = TP.wrap(origin);
         }
-    } else {
+    }
 
-        //  Otherwise, there was no valid trigger signal, so we just use the
+    if (TP.notValid(triggerTPElem)) {
+
+        //  Otherwise, there was no valid trigger element, so we just use the
         //  triggering TP.core.Document's body.
         triggerTPElem = triggerTPDocument.getBody();
     }
@@ -165,7 +167,7 @@ function(aSignal) {
      */
 
     var triggerSignal,
-        tpDoc,
+        triggerDoc,
 
         overlayID,
 
@@ -182,16 +184,16 @@ function(aSignal) {
     //  GUI signal that triggered the OpenOverlay.
     triggerSignal = aSignal.at('trigger');
 
-    tpDoc = aSignal.at('triggerTPDocument');
-    if (TP.notValid(tpDoc)) {
+    triggerDoc = aSignal.at('triggerTPDocument');
+    if (TP.notValid(triggerDoc)) {
         if (TP.isValid(triggerSignal)) {
-            tpDoc = triggerSignal.getDocument();
+            triggerDoc = triggerSignal.getDocument();
         } else {
-            tpDoc = TP.sys.getUICanvas().getDocument();
+            triggerDoc = TP.sys.getUICanvas().getDocument();
         }
     }
 
-    if (TP.notValid(tpDoc)) {
+    if (TP.notValid(triggerDoc)) {
         //  TODO: Raise an exception
         return this;
     }
@@ -203,7 +205,7 @@ function(aSignal) {
         overlayID = overlayID.unquoted();
     }
 
-    overlayTPElem = this.getOverlayWithID(tpDoc, overlayID);
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
 
     //  See if the OpenOverlay signal contains a class that we should put on
     //  the overlay element itself.
@@ -212,8 +214,8 @@ function(aSignal) {
         overlayTPElem.addClass(overlayCSSClass);
     }
 
-    triggerTPElem = this.getTriggerElement(aSignal, tpDoc);
-    triggerID = triggerTPElem.getID();
+    triggerTPElem = this.getTriggerElement(aSignal, triggerDoc);
+    triggerID = triggerTPElem.getLocalID(true);
 
     overlayTPElem.set('$currentTriggerID', triggerID);
 
