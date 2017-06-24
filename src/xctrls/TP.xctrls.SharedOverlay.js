@@ -281,31 +281,18 @@ TP.xctrls.SharedOverlay.Inst.defineAttribute('overlayContent',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.SharedOverlay.Inst.defineMethod('getOverlayOffset',
-function() {
-
-    /**
-     * @method getOverlayOffset
-     * @summary Returns a numeric offset from the edge of the overlay's
-     *     container that the overlay should use to offset it's position from
-     *     the corner it will be positioned at.
-     * @returns {Number} The offset.
-     */
-
-    return 0;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.SharedOverlay.Inst.defineMethod('positionUsing',
+TP.xctrls.SharedOverlay.Inst.defineMethod('getPositioningPoint',
 function(anOverlayPoint) {
 
     /**
-     * @method positionUsing
-     * @summary Positions the overlay using the supplied point.
-     * @param {TP.core.Point} anOverlayPoint The point to use to position the
-     *     overlay. NOTE: This point should be in *global* coordinates.
-     * @returns {TP.xctrls.SharedOverlay} The receiver.
+     * @method getPositioningPoint
+     * @summary Computes and returns the point used to position the overlay
+     *     using the supplied point (which should be the initial point).
+     * @param {TP.core.Point} anOverlayPoint The initial point to use to
+     *     position the overlay. NOTE: This point should be in *global*
+     *     coordinates.
+     * @returns {TP.core.Point} The point (in global coordinates) to position
+     *     the overlay at.
      */
 
     var offset,
@@ -349,6 +336,42 @@ function(anOverlayPoint) {
     //  Now, get the 'northwest' coordinate of the overlay rectangle. This will
     //  give us our true 'overlay point'.
     overlayPoint = overlayRect.getEdgePoint(TP.NORTHWEST);
+
+    return overlayPoint;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('getOverlayOffset',
+function() {
+
+    /**
+     * @method getOverlayOffset
+     * @summary Returns a numeric offset from the edge of the overlay's
+     *     container that the overlay should use to offset it's position from
+     *     the corner it will be positioned at.
+     * @returns {Number} The offset.
+     */
+
+    return 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('positionUsing',
+function(anOverlayPoint) {
+
+    /**
+     * @method positionUsing
+     * @summary Positions the overlay using the supplied point.
+     * @param {TP.core.Point} anOverlayPoint The point to use to position the
+     *     overlay. NOTE: This point should be in *global* coordinates.
+     * @returns {TP.xctrls.SharedOverlay} The receiver.
+     */
+
+    var overlayPoint;
+
+    overlayPoint = this.getPositioningPoint(anOverlayPoint);
 
     //  Set our global position to be that point
     this.setGlobalPosition(overlayPoint);
