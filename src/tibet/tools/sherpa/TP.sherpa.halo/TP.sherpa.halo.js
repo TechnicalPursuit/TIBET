@@ -712,7 +712,9 @@ function(aSignal) {
      */
 
     var signalGlobalPoint,
-        haloGlobalRect;
+        haloGlobalRect,
+
+        triggerTPDoc;
 
     //  If the Shift key is down, then change our focus based on a variety of
     //  key combinations and mouse button states.
@@ -744,17 +746,20 @@ function(aSignal) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
+            triggerTPDoc = TP.tpdoc(TP.win('UIROOT'));
+
             this.signal(
                 'OpenPopup',
-                TP.hc('popupID', 'SherpaContextMenuPopup',
-                        'popupCSSClass', 'sherpahalocontextmenu',
-                        'contentID', 'SherpaHaloContextMenu',
-                        'closeOn', 'SelectMenuItem',
-                        'useTopLevelContentElem', true,
-                        'trigger', aSignal,
-                        'triggerID', 'SherpaContextMenuTrigger',
-                        'triggerTPDocument', TP.tpdoc(TP.win('UIROOT')),
-                        'triggerPoint', aSignal.getGlobalPoint()));
+                TP.hc(
+                    'overlayID', 'SherpaContextMenuPopup',
+                    'overlayCSSClass', 'sherpahalocontextmenu',
+                    'contentID', 'SherpaHaloContextMenu',
+                    'hideOn', 'SelectMenuItem',
+                    'useTopLevelContentElem', true,
+                    'trigger', aSignal,
+                    'triggerPath', '#' + triggerTPDoc.getBody().getLocalID(),
+                    'triggerTPDocument', triggerTPDoc,
+                    'triggerPoint', aSignal.getGlobalPoint()));
         }
     }
 

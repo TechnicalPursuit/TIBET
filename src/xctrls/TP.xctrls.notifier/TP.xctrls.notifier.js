@@ -61,7 +61,7 @@ function(aSignal, triggerTPDocument) {
      * @summary Returns the TP.core.ElementNode that is acting as the
      *     'triggering' element for the overlay. This can be one of three
      *     values:
-     *     - The element matching a 'triggerID' supplied in aSignal
+     *     - The element matching a 'triggerPath' supplied in aSignal
      *     - The target element of the trigger signal supplied in aSignal
      *     - The body element of the triggerTPDocument which should be the
      *         TP.core.Document that the triggering element is contained in.
@@ -73,6 +73,7 @@ function(aSignal, triggerTPDocument) {
      *     overlay to trigger.
      */
 
+    //  xctrls:notifier elements are always 'triggered' by the body
     return triggerTPDocument.getBody();
 });
 
