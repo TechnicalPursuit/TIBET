@@ -8086,6 +8086,11 @@ TP.boot.$setLibRoot = function(aPath) {
 
     path = TP.boot.$uriExpandPath(aPath);
     path = decodeURI(path);
+
+    if (path.charAt(path.length - 1) === '/') {
+        path = path.slice(0, -1);
+    }
+
     TP.boot.$$libroot = path;
 
     TP.sys.setcfg('path.lib_root', path);
@@ -10239,6 +10244,21 @@ TP.boot.$getFullPath = function(anElement, aPath) {
     }
 
     return '';
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$getLoadedPackages = function() {
+
+    /**
+     * @method $getLoadedPackages
+     * @summary Returns an array of unique package file names which were loaded.
+     * @returns {Array} The array of unique package names.
+     */
+
+    return Object.keys(TP.boot.$$paths).map(function(path) {
+        return TP.boot.$uriInTIBETFormat(path);
+    });
 };
 
 //  ----------------------------------------------------------------------------

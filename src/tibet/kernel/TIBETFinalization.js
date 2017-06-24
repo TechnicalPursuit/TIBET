@@ -349,6 +349,30 @@ function() {
             TP.signal('TP.sys', 'AppDidInitialize');
 
             if (TP.sys.hasFeature('sherpa')) {
+
+                //  Set up handler for tibet.json changes... NOTE that because
+                //  we're referencing via TIBETURL we want to get the concrete
+                //  URI to actually apply the handler to. The TIBETURL will
+                //  delegate to that during processing.
+                TP.uc('~app/tibet.json').getConcreteURI().defineMethod(
+                        'processRefreshedContent',
+                function() {
+                    var obj,
+                        str;
+
+                    TP.info('Refreshing tibet.json configuration values.');
+
+                    str = TP.str(this.getContent());
+                    try {
+                        obj = JSON.parse(str);
+                    } catch (e) {
+                        TP.error('Failed to parse: ' + this.getLocation(), e);
+                        return;
+                    }
+
+                    TP.boot.$configureOptions(obj);
+                });
+
                 TP.boot.$getStageInfo('starting').head =
                     'Launching TIBET Sherpa&#8482; IDE...';
             }
