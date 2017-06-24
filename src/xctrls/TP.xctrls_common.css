@@ -20,9 +20,9 @@ xctrls|* {
 xctrls|label {
 }
 
-/* xctrls|value */
+/* xctrls|value, xctrls|hint */
 
-xctrls|value {
+xctrls|value, xctrls|hint {
 
     display: none;
 }
