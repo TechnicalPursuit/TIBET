@@ -660,8 +660,6 @@ function(anInstance) {
      */
 
     var dict,
-        id,
-        inst,
         seconds;
 
     if (!TP.isKindOf(anInstance, TP.core.URI)) {
@@ -1056,7 +1054,8 @@ function() {
      * @returns {TP.meta.core.URI} The receiver.
      */
 
-    var resourceHash;
+    var resourceHash,
+        keys;
 
     resourceHash = TP.core.URI.get('changedResources');
     keys = resourceHash.getKeys();
@@ -6456,8 +6455,7 @@ function() {
      * @returns {Promise} A promise which resolves on completion.
      */
 
-    var thisref,
-        callback,
+    var callback,
         loc,
         secondaryURIs;
 
