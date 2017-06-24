@@ -277,6 +277,10 @@
     <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/TP.xctrls.tabbar.less"/>
     <property name="path.TP.xctrls.tabbar.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tabbar_tpi.less"/>
 
+    <script src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.js"/>
+    <property name="path.TP.xctrls.tooltip.style" value="~TP.xctrls.tooltip/TP.xctrls.tooltip.less"/>
+    <property name="path.TP.xctrls.tooltip.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tooltip_tpi.less"/>
+
     <!-- common xctrls LESS files -->
     <resource href="xctrls/TP.xctrls_variables.less"/>
     <resource href="xctrls/TP.xctrls_mixins.less"/>
