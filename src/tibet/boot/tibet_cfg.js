@@ -630,9 +630,15 @@
     TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
     TP.sys.setcfg('tds.user.uri', '/whoami');
     TP.sys.setcfg('tds.vcard.uri', '/vcard');
+
+    //  what url does client use to connect to the TDS watch SSE endpoint?
     TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
-    TP.sys.setcfg('tds.watch.root', '~app');
+
+    //  what event will the TDS watch SSE endpoint send when a file changes?
+    //  NOTE that this is also used in the client to map SSE event to a TIBET
+    //  signal picked up by the TDSURLHandler.
     TP.sys.setcfg('tds.watch.event', 'fileChange');
+
     TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
 
     //  ---

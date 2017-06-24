@@ -294,7 +294,6 @@ function(aSignal) {
     var payload,
         data,
         path,
-        root,
         fileName,
         url;
 
@@ -315,16 +314,10 @@ function(aSignal) {
         return;
     }
 
-    //  Get the root of our watch activity since all paths are provided relative
-    //  to the watch root.
-    root = TP.sys.cfg('tds.watch.root');
-    root = TP.uriExpandPath(root);
-
     //  Strip any enclosing quotes from the path.
     path = path.asString().stripEnclosingQuotes();
 
-    //  Join the two together to form the full URL path
-    fileName = TP.uriJoinPaths(root, path);
+    fileName = TP.uriExpandPath(path);
 
     //  If we can successfully create a URL from the data, then process the
     //  change.

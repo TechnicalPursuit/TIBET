@@ -144,6 +144,12 @@
         setcfg('tds.watch.heartbeat', 10000);
         setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
 
+        //  top-level dir used in the TDS watch plugin to determine where to set
+        //  up the cwd for the watcher. This should almost always be left as
+        //  ~app to ensure the watcher's set up to cover all app resources. Note
+        //  that separate config vars determine what to include and exclude.
+        setcfg('tds.watch.root', '~app');
+
         setcfg('tds.webdav.mount', '/');
         setcfg('tds.webdav.root', '~app');
     };

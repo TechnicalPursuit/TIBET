@@ -188,7 +188,7 @@
             //  TODO: let URI parameters override the watch root.
             //  Expand out the path we'll be watching.
             watchRoot = path.resolve(TDS.expandPath(
-                TDS.getcfg('tds.watch.root')));
+                TDS.getcfg('tds.watch.root', '~app')));
 
             logger.debug('TDS FileWatch interface observing: ' + watchRoot);
 
@@ -209,7 +209,9 @@
 
         watcher.on('change', function(file) {
             var ignoreChangedFiles,
-                ignoreIndex;
+                ignoreIndex,
+                fullpath,
+                tibetpath;
 
             ignoreChangedFiles = TDS.getcfg('tds.watch.ignore_changed_files');
 
@@ -223,9 +225,12 @@
                 }
             }
 
+            fullpath = path.join(watchRoot, file);
+            tibetpath = TDS.getVirtualPath(fullpath);
+
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {
-                    path: file,
+                    path: tibetpath,
                     event: eventName,
                     details: {}
                 });

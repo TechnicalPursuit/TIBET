@@ -620,6 +620,17 @@
     };
 
     /**
+     * Returns virtual paths based on configuration data loaded from TIBET.
+     * @param {String} aPath The explicit path to virtualize.
+     * @returns {String} The virtualized path.
+     */
+    TDS.getVirtualPath = function(aPath) {
+        this.initPackage();
+
+        return TDS._package.getVirtualPath(aPath);
+    };
+
+    /**
      * Initalizes the TDS package, providing it with any initialization options
      * needed such as app_root or lib_root. If the package has already been
      * configured this method simply returns.
