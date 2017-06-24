@@ -214,7 +214,8 @@ function(aURI, aResource) {
         flag,
         inst,
         type,
-        err;
+        err,
+        built;
 
     //  Most common case is a string hoping to become a URI when it grows up. We
     //  want to check all variations of the incoming string before falling
@@ -226,9 +227,11 @@ function(aURI, aResource) {
             return;
         }
 
-        //  Look for the key as provided first. Authors tend to be consistent
-        //  with usage of particular virtual paths.
-        inst = TP.core.URI.getInstanceById(aURI);
+        //  Look for most common cases first (urn and virtual path)
+        inst = TP.core.URI.getInstanceById(TP.uriExpandPath(aURI));
+        if (TP.notValid(inst)) {
+            inst = TP.core.URI.getInstanceById(TP.uriInTIBETFormat(aURI));
+        }
 
         if (TP.notValid(inst)) {
 
@@ -303,6 +306,7 @@ function(aURI, aResource) {
                 //  NOTE we skip this method and go directly to alloc/init
                 //  version.
                 inst = type.$construct(url);
+                built = true;
             } else {
                 //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
                 return this.raise(
@@ -320,9 +324,9 @@ function(aURI, aResource) {
     }
 
     if (TP.isValid(inst)) {
-
-        TP.core.URI.registerInstance(inst, aURI);
-        TP.core.URI.registerInstance(inst, url);
+        if (built) {
+            inst.register();
+        }
 
         if (TP.isValid(aResource)) {
             inst.setResource(aResource, TP.hc('signalChange', false));
@@ -617,7 +621,8 @@ function(anInstance, aKey) {
      */
 
     var dict,
-        key;
+        key,
+        current;
 
     //  update our instance registry with the instance, keying it under the
     //  URI ID.
@@ -625,7 +630,12 @@ function(anInstance, aKey) {
 
     key = aKey;
     if (TP.notValid(key)) {
-        key = anInstance.get('uri');
+        return this.raise('InvalidKey');
+    }
+
+    current = dict.at(key);
+    if (TP.isValid(current) && current !== anInstance) {
+        TP.warn('Replacing URI instance for registration key: ' + key);
     }
 
     //  Note here how we use the value of the 'uri' attribute - we want the
@@ -642,34 +652,26 @@ function(anInstance) {
 
     /**
      * @method removeInstance
-     * @summary Removes an instance under that instance's URI string.
+     * @summary Removes an instance under all keys that instance is registered
+     *     under.
      * @param {TP.core.URI} anInstance The instance to remove.
      * @exception {TP.sig.InvalidURI}
      * @returns {TP.core.URI} The receiver.
      */
 
     var dict,
-        id,
-        inst,
         seconds;
 
-    if (!TP.canInvoke(anInstance, 'getID')) {
-        return this.raise('TP.sig.InvalidURI');
+    if (!TP.isKindOf(anInstance, TP.core.URI)) {
+        return this.raise('InvalidURI');
     }
-
-    id = anInstance.getID();
 
     //  update our instance registry by removing the instance, finding its key
     //  under the fully-expanded URI ID.
     dict = this.$get('instances');
 
-    inst = dict.at(id);
-    if (!inst) {
-        return this;
-    }
-
     //  If the URI has sub URIs we need to remove them as well.
-    if (TP.notEmpty(seconds = inst.getSecondaryURIs())) {
+    if (TP.notEmpty(seconds = anInstance.getSecondaryURIs())) {
         seconds.forEach(
                     function(secondary) {
                         TP.core.URI.removeInstance(secondary);
@@ -678,7 +680,7 @@ function(anInstance) {
     }
 
     //  remove all references to this URI, regardless of the particular key.
-    dict.removeValue(inst, TP.IDENTITY);
+    dict.removeValue(anInstance, TP.IDENTITY);
 
     return this;
 });
@@ -1052,16 +1054,26 @@ function() {
      * @returns {TP.meta.core.URI} The receiver.
      */
 
-    var resourceHash;
+    var resourceHash,
+        keys;
 
     resourceHash = TP.core.URI.get('changedResources');
+    keys = resourceHash.getKeys();
 
-    resourceHash.perform(
-        function(kvPair) {
-            kvPair.last().at('targetURI').refreshFromRemoteResource();
-        });
+    //  NOTE we iterate in this fashion so we don't remove a referenced URI
+    //  unless we're sure processing it doesn't throw an error.
+    keys.perform(function(key) {
+        var hash;
 
-    resourceHash.empty();
+        hash = resourceHash.at(key);
+        try {
+            hash.at('targetURI').refreshFromRemoteResource();
+            resourceHash.removeKey(key);
+        } catch (e) {
+            TP.error('Error processing URI refresh for ' +
+                hash.at('targetURI'), e);
+        }
+    });
 
     return this;
 });
@@ -3163,6 +3175,21 @@ function() {
      */
 
     return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('register',
+function() {
+
+    /**
+     * @method register
+     * @summary Registers the instance under a common key.
+     */
+
+    TP.core.URI.registerInstance(this, TP.uriExpandPath(this.getLocation()));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6428,8 +6455,7 @@ function() {
      * @returns {Promise} A promise which resolves on completion.
      */
 
-    var thisref,
-        callback,
+    var callback,
         loc,
         secondaryURIs;
 
@@ -6449,46 +6475,20 @@ function() {
 
     loc = this.getLocation();
 
-    //  Snapshot reference for closure usage.
-    thisref = this;
-
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function(result) {
-        var changedLoc,
-            appCfgLoc;
+        var url;
 
         if (TP.isError(result)) {
             TP.error(result);
             return;
         }
 
-        //  Watch specifically for changes to application manifest which might
-        //  indicate new code has been added to the project. These files don't
-        //  get observed since they never trigger a mutation observer.
-
-        changedLoc = thisref.getLocation();
-        appCfgLoc = TP.uriExpandPath('~app_cfg');
-
-        //  If the changed location starts with the app 'cfg' location, then a
-        //  manifest changed. We special case this.
-        if (changedLoc.startsWith(appCfgLoc)) {
-
-            //  Force refresh of any package data, particularly related to the
-            //  URI we're referencing.
-            TP.boot.$refreshPackages(changedLoc);
-
-            //  Import any new scripts that would have booted with the system.
-            TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
-        } else if (TP.boot.$isLoadableScript(changedLoc)) {
-
-            //  If the refreshed URI didn't represent a manifest file but it was
-            //  a script file (i.e. '.js' file), then the 'importSourceLoc' call
-            //  below *won't* signal a 'TP.sig.ValueChange' when it changes. We
-            //  need to do that manually here.
-            thisref.$changed();
-        }
+        //  Refetch via constructor and location to get uniqued instance.
+        url = TP.uc(loc);
+        url.processRefreshedContent();
     };
 
     //  If the receiver refers to a file that was loaded (meaning it's mentioned
@@ -6500,6 +6500,50 @@ function() {
     } else {
         return this.getResource().then(callback, callback);
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('processRefreshedContent',
+function() {
+
+    /**
+     * @methoe processRefreshedContent
+     * @summary Invoked when remote resource changes have been loaded to provide
+     *     the receiver with the chance to post-process those changes.
+     * @returns {TP.core.URL} The receiver.
+     */
+
+    var changedLoc,
+        normalizedLoc;
+
+    //  Watch specifically for changes to application manifest which might
+    //  indicate new code has been added to the project. These files don't
+    //  get observed since they never trigger a mutation observer.
+    changedLoc = this.getLocation();
+    normalizedLoc = TP.uriInTIBETFormat(changedLoc);
+
+    //  Is the changed location one of our loaded package files? If so we
+    //  need to process it as a package, not a random file or script.
+    if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
+
+        //  Force refresh of any package data, particularly related to the
+        //  URI we're referencing.
+        TP.boot.$refreshPackages(changedLoc);
+
+        //  Import any new scripts that would have booted with the system.
+        TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
+
+    } else if (TP.boot.$isLoadableScript(changedLoc)) {
+
+        //  If the refreshed URI didn't represent a manifest file but it was
+        //  a script file (i.e. '.js' file), then the 'importSourceLoc' call
+        //  below *won't* signal a 'TP.sig.ValueChange' when it changes. We
+        //  need to do that manually here.
+        this.$changed();
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -9317,6 +9361,44 @@ function() {
     //  fragment, otherwise the version of this URI sans fragment is the
     //  primary.
     return !this.hasFragment();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('processRefreshedContent',
+function() {
+
+    /**
+     * @methoe processRefreshedContent
+     * @summary Invoked when remote resource changes have been loaded to provide
+     *     the receiver with the chance to post-process those changes.
+     * @returns {TP.core.URL} The receiver.
+     */
+
+    var concreteURI;
+
+    concreteURI = this.getConcreteURI();
+
+    if (TP.isValid(concreteURI) && concreteURI !== this) {
+        return concreteURI.processRefreshedContent();
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('register',
+function() {
+
+    /**
+     * @method register
+     * @summary Registers the instance under a common key.
+     */
+
+    TP.core.URI.registerInstance(this, TP.uriInTIBETFormat(this.getLocation()));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
