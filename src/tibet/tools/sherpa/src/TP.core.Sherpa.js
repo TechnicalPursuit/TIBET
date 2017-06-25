@@ -856,17 +856,40 @@ function(aSignal) {
      */
 
     var notifier,
-        message;
+        notifierContent,
 
-    notifier = TP.byId('SherpaNotifier', this.get('vWin'));
-    if (TP.notValid(notifier)) {
+        message,
+
+        triggerTPDoc;
+
+    notifier = TP.byId('SherpaNotifier', TP.win('UIROOT'));
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-duration',
+                TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-delay',
+                TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000) + 'ms');
+
+    notifierContent = TP.byId('SherpaNotifierContent', this.get('vWin'));
+    if (TP.notValid(notifierContent)) {
         return;
     }
 
     message = aSignal.at('message');
     if (TP.notEmpty(message)) {
-        notifier.setContent(message);
+        notifierContent.setContent(
+                        TP.xhtmlnode('<div>' + message + '</div>'));
     }
+
+    triggerTPDoc = TP.tpdoc(this.get('vWin'));
+
+    this.signal(
+        'OpenNotifier',
+        TP.hc(
+            'overlayID', 'SherpaNotifier',
+            'contentID', 'SherpaNotifierContent',
+            'noPosition', true,
+            'triggerTPDocument', triggerTPDoc));
 
     return this;
 });
