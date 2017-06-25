@@ -1434,10 +1434,11 @@ function(aRect) {
     data = this.$get('data');
     rectData = aRect.$get('data');
 
-    //  Make sure that our own rectangle is at least one pixel bigger than the
-    //  supplied rectangle in both directions. Otherwise, just return without
-    //  modifying the supplied rectangle.
-    if (data.x <= rectData.x || data.y <= rectData.y) {
+    //  Make sure that our own rectangle isn't smaller in either width or height
+    //  than the supplied rectangle. Otherwise, just return without modifying
+    //  the supplied rectangle.
+    if (this.getWidth() < aRect.getWidth() ||
+        this.getHeight() < aRect.getHeight()) {
         return this;
     }
 
