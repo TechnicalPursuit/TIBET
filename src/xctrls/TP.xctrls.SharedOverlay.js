@@ -672,8 +672,11 @@ function(openSignal, overlayContent) {
     //  Show the overlay and set up signal handlers.
     this.setAttribute('hidden', false);
 
-    //  Position the overlay relative to the overlay point and the corner.
-    this.positionUsing(overlayPoint);
+    //  If the signal doesn't have a flag to not position the overlay, then
+    //  position the overlay relative to the overlay point and the corner.
+    if (TP.notTrue(openSignal.at('noPosition'))) {
+        this.positionUsing(overlayPoint);
+    }
 
     return this;
 });
