@@ -698,16 +698,22 @@ function(aStyleTPElem) {
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
+    var lastOpenSignal;
+
     //  If we're not awakening this tag, then exit - we want none of the
     //  machinery here to execute.
     if (this.hasAttribute('tibet:noawaken')) {
         return this;
     }
 
-    //  Set the content of the overlay and activate it.
-    this.setContentAndActivate(this.get('$$lastOpenSignal'));
+    lastOpenSignal = this.get('$$lastOpenSignal');
 
-    this.set('$$lastOpenSignal', null);
+    if (TP.isValid(lastOpenSignal)) {
+        //  Set the content of the overlay and activate it.
+        this.setContentAndActivate(lastOpenSignal);
+
+        this.set('$$lastOpenSignal', null);
+    }
 
     return this;
 });
