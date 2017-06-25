@@ -1834,7 +1834,6 @@ TP.sig.ResponderSignal.defineSubtype('SherpaOutlinerToggle');
 
 //  Notifier Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaNotify');
-TP.sig.ResponderSignal.defineSubtype('DismissNotifier');
 
 //  ----------------------------------------------------------------------------
 //  end
