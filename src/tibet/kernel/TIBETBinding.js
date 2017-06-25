@@ -2487,11 +2487,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         needsRefresh,
 
         insideRepeatScope,
-        insertParts,
 
         indexes,
-        newRowElem,
-        newSubElems;
+        newRowElem;
 
     elem = this.getNativeNode();
 

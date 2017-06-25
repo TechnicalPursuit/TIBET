@@ -22,7 +22,8 @@ xctrls|label {
 
 /* xctrls|value, xctrls|hint */
 
-xctrls|value, xctrls|hint {
+xctrls|value,
+xctrls|hint {
 
     display: none;
 }
