@@ -142,6 +142,9 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_confirm.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_prompt.xhtml.js"/>
 
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.hint.TP.xctrls.hint.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.hint.TP.xctrls.hint.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.notifier.TP.xctrls.notifier.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.notifier.TP.xctrls.notifier.css.js"/>
 

@@ -251,6 +251,9 @@
     <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/TP.xctrls.textitem.less"/>
     <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.textitem_tpi.less"/>
 
+    <script src="xctrls/TP.xctrls.hint/TP.xctrls.hint.js"/>
+    <property name="path.TP.xctrls.hint.style" value="~TP.xctrls.hint/TP.xctrls.hint.less"/>
+
     <script src="xctrls/TP.xctrls.list/TP.xctrls.list.js"/>
     <property name="path.TP.xctrls.list.style" value="~TP.xctrls.list/TP.xctrls.list.less"/>
     <property name="path.TP.xctrls.list.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.list_tpi.less"/>
