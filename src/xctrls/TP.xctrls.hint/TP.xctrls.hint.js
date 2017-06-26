@@ -50,10 +50,13 @@ function(anEvent) {
 
         textContent;
 
-    //  Wrap the Event into a Signal and the event's target into a
-    //  TP.core.ElementNode wrapper.
+    //  Wrap the Event into a Signal and the event's *resolved* target into a
+    //  TP.core.ElementNode wrapper. Note that we use the resolved target here
+    //  because the mouse over might have happened on something like an
+    //  'xctrls:label' and we want the core control element, which will be the
+    //  parent in that case.
     sig = TP.wrap(anEvent);
-    tpElem = TP.wrap(sig.getTarget());
+    tpElem = TP.wrap(sig.getResolvedTarget());
 
     //  Grab the xctrls:hint element under the signal target
     hintElem = TP.byCSSPath('xctrls|hint', tpElem, true);
