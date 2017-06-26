@@ -46,13 +46,17 @@
         </div>
 
         <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge overlay middle west" pclass:closed="true" pclass:hidden="true">
-            <sherpa:opener class="west" title="DOM"/>
+            <sherpa:opener class="west">
+                <xctrls:hint>DOM</xctrls:hint>
+            </sherpa:opener>
             <sherpa:splitbox>
                 <sherpa:domhud/>
                 <sherpa:splitbar/>
                 <sherpa:styleshud/>
             </sherpa:splitbox>
-            <sherpa:opener class="west" title="styles"/>
+            <sherpa:opener class="west">
+                <xctrls:hint>Styles</xctrls:hint>
+            </sherpa:opener>
         </div>
 
         <div id="center" class="middle center overlay fullscreen">
@@ -63,13 +67,17 @@
         </div>
 
         <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle overlay east" pclass:closed="true" pclass:hidden="true">
-            <sherpa:opener class="east" title="responders"/>
+            <sherpa:opener class="east">
+                <xctrls:hint>Responders</xctrls:hint>
+            </sherpa:opener>
             <sherpa:splitbox>
                 <sherpa:respondershud/>
                 <sherpa:splitbar/>
                 <sherpa:bindshud/>
             </sherpa:splitbox>
-            <sherpa:opener class="east" title="binds"/>
+            <sherpa:opener class="east">
+                <xctrls:hint>Binds</xctrls:hint>
+            </sherpa:opener>
         </div>
 
         <div id="southwest" tibet:tag="sherpa:drawer" class="framing corner overlay south west" pclass:closed="true" pclass:hidden="true">
@@ -82,7 +90,9 @@
             <sherpa:opener class="south east"/>
             <div name="outputmode" class="indicator" onclick="TP.byId('SherpaConsole', TP.win('UIROOT')).increaseOutputDisplayMode()">&#160;</div>
             <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput')"></div>
-            <button id="addsnippet" on:click="AddSnippet" tibet:ctrl="SherpaConsole" title="Add Snippet"/>
+            <button id="addsnippet" on:click="AddSnippet" tibet:ctrl="SherpaConsole">
+                <xctrls:hint>Add Snippet</xctrls:hint>
+            </button>
         </div>
 
         <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner overlay south east" pclass:closed="true" pclass:hidden="true">

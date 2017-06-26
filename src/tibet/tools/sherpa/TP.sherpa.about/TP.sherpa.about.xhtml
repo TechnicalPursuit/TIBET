@@ -7,15 +7,26 @@
         <div class="version">{{TP.env.libVersion}}</div>
         <div class="tagline">The sum of the parts, not some of the parts.&#x2122;</div>
         <div class="actions">
-            <button on:click="Feedback" title="Feedback">Feedback</button>
-            <button on:click="Help" title="Support">Support</button>
-            <button on:click="Issue" title="Issue">Issue</button>
+            <button on:click="Feedback">
+                Feedback
+                <xctrls:hint>Click here to send feedback</xctrls:hint>
+            </button>
+            <button on:click="Help">
+                Support
+                <xctrls:hint>Click here to send a support request</xctrls:hint>
+            </button>
+            <button on:click="Issue">
+                Issue
+                <xctrls:hint>Click here to file an issue</xctrls:hint>
+            </button>
         </div>
         <div class="copyright">Copyright &#xa9; 1999-2016 Technical Pursuit Inc, All Rights Reserved.</div>
     </div>
     <div class="footer">
         <div class="appinfo">{{TP.cfg.project.name}} v{{TP.cfg.project.version}}</div>
-        <div on:click="Toggle" class="trigger button" alt="TIBET Logo" title="About"></div>
+        <div on:click="Toggle" class="trigger button" alt="TIBET Logo">
+            <xctrls:hint>About</xctrls:hint>
+        </div>
     </div>
 </sherpa:about>
 
