@@ -237,6 +237,7 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.styleshud.TP.sherpa.styleshud.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bindshud.TP.sherpa.bindshud.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bindshud.TP.sherpa.bindshud.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.scrollbutton.TP.sherpa.scrollbutton.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.splitbox.TP.sherpa.splitbox.xhtml.js"/>
