@@ -99,19 +99,19 @@
         setcfg('tds.couch.port', '5984');
         setcfg('tds.couch.scheme', 'http');
 
-        setcfg('tds.couch.watch.couch2fs', true);
         setcfg('tds.couch.watch.empty', '\n');
         setcfg('tds.couch.watch.feed', 'continuous');
         setcfg('tds.couch.watch.filter', '*');
-        setcfg('tds.couch.watch.fs2couch', true);
         setcfg('tds.couch.watch.heartbeat', 500);
-        setcfg('tds.couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
         setcfg('tds.couch.watch.inactivity_ms', null);
         setcfg('tds.couch.watch.initial_retry_delay', 1000);
         setcfg('tds.couch.watch.max_retry_seconds', 360);
         setcfg('tds.couch.watch.response_grace_time', 5000);
         setcfg('tds.couch.watch.root', '~app');
         setcfg('tds.couch.watch.since', 'now');
+
+        setcfg('tds.couch.watch.couch2fs', true);
+        setcfg('tds.couch.watch.fs2couch', true);
 
         setcfg('tds.patch.root', '~');
 
@@ -141,14 +141,15 @@
         setcfg('tds.use_proxy', false);
         setcfg('tds.use_tasks', false);
 
-        setcfg('tds.watch.heartbeat', 10000);
-        setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
-
         //  top-level dir used in the TDS watch plugin to determine where to set
         //  up the cwd for the watcher. This should almost always be left as
-        //  ~app to ensure the watcher's set up to cover all app resources. Note
-        //  that separate config vars determine what to include and exclude.
+        //  ~app to ensure the watcher's set up to cover all app resources. Use
+        //  tds.watch.include and tds.watch.exclude to include and exclude any
+        //  specific subdirectories or files below the overall root. NOTE that
+        //  those parameters are shared client/server so they're in tibet_cfg.
         setcfg('tds.watch.root', '~app');
+
+        setcfg('tds.watch.heartbeat', 10000);
 
         setcfg('tds.webdav.mount', '/');
         setcfg('tds.webdav.root', '~app');

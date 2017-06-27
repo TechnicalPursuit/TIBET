@@ -176,8 +176,10 @@ function(aResult) {
         if (TP.isURI(uri)) {
             uri.updateHeaders(httpObj);
 
-            //  NOTE that this takes care of loaded/dirty state.
-            data = uri.updateResourceCache(this);
+            //  Get the filtered resource result as our request response. This
+            //  does not change the uri's internally held resource (although it
+            //  may change the internal data of a content object resource).
+            data = uri.getResultResource(this);
         }
     }
 
@@ -221,8 +223,10 @@ function(aResult) {
         wasRefreshingContent = this.at('refreshContent');
         this.atPut('refreshContent', true);
 
-        //  NOTE that this takes care of loaded/dirty state.
-        result = uri.updateResourceCache(this);
+        //  Get the filtered resource result as our request response. This does
+        //  not change the uri's internally held resource (although it may
+        //  change the internal data of a content object resource).
+        result = uri.getResultResource(this);
 
         this.atPut('refreshContent', wasRefreshingContent);
     }

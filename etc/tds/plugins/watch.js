@@ -30,7 +30,8 @@
             chokidar,
             escaper,
             eventName,
-            ignore,
+            include,
+            exclude,
             localDev,
             logger,
             path,
@@ -142,7 +143,7 @@
         //  Watcher
         //  ---
 
-        //  Configure a watcher for our root, including any ignore patterns etc.
+        //  Configure a watcher for our root, including any include/exclude etc.
         if (options.watcher) {
             watcher = options.watcher;
             watcher.consumers += 1;
@@ -154,26 +155,52 @@
 
             logger.debug('TDS FileWatch interface creating file watcher.');
 
+            //  Expand out the path we'll be watching. This should almost always
+            //  be the application root.
+            watchRoot = path.resolve(TDS.expandPath(
+                TDS.getcfg('tds.watch.root', '~app')));
+
+            logger.debug('TDS FileWatch interface rooted at: ' + watchRoot);
+
             //  Helper function for escaping regex metacharacters. NOTE
             //  that we need to take "ignore format" things like path/*
-            //  and make it path/.* or the regex will fail.
+            //  and make it path/.* or the regex will fail. Also note we special
+            //  case ~ to allow virtual path matches.
             escaper = function(str) {
                 return str.replace(
                     /\*/g, '.*').replace(
                     /\./g, '\\.').replace(
+                    /\~/g, '\\~').replace(
                     /\//g, '\\/');
             };
 
+            include = TDS.getcfg('tds.watch.include');
+            if (TDS.notEmpty(include)) {
+                //  Build list of 'files', 'directories', etc. But keep in mind
+                //  this is a file-based system so don't retain virtual paths.
+                include = include.map(function(item) {
+                    //  item will often be a virtual path or file ref. we want
+                    //  to use the full path, or whatever value is given.
+                    return path.resolve(TDS.expandPath(item));
+                });
+            } else {
+                //  Watch everything under the watch root
+                include = watchRoot;
+            }
+
             //  Build a pattern we can use to test against ignore files.
-            ignore = TDS.getcfg('tds.watch.ignore');
-            if (ignore) {
-                pattern = ignore.reduce(function(str, item) {
+            exclude = TDS.getcfg('tds.watch.exclude');
+            if (exclude) {
+                pattern = exclude.reduce(function(str, item) {
+                    var fullpath;
+
+                    fullpath = TDS.expandPath(item);
                     return str ?
-                        str + '|' + escaper(item) :
-                        escaper(item);
+                        str + '|' + escaper(fullpath) :
+                        escaper(fullpath);
                 }, '');
 
-                pattern += '|\\.git|\\.svn';
+                pattern += '|\\.git|\\.svn|node_modules';
 
                 try {
                     pattern = new RegExp(pattern);
@@ -182,17 +209,10 @@
                         e.message);
                 }
             } else {
-                pattern = /\.git|\.svn/;
+                pattern = /\.git|\.svn|node_modules/;
             }
 
-            //  TODO: let URI parameters override the watch root.
-            //  Expand out the path we'll be watching.
-            watchRoot = path.resolve(TDS.expandPath(
-                TDS.getcfg('tds.watch.root', '~app')));
-
-            logger.debug('TDS FileWatch interface observing: ' + watchRoot);
-
-            watcher = chokidar.watch(watchRoot, {
+            watcher = chokidar.watch(include, {
                 ignored: pattern,
                 cwd: watchRoot,
                 ignoreInitial: true,
@@ -204,7 +224,6 @@
             options.watcher = watcher;
         }
 
-        //  TODO: let URI parameters override the event name to send.
         eventName = TDS.getcfg('tds.watch.event');
 
         watcher.on('change', function(file) {

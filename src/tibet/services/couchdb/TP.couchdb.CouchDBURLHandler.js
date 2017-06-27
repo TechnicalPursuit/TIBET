@@ -10,10 +10,11 @@
 
 /**
  * @type {TP.couchdb.CouchDBURLHandler}
- * @summary A subtype of HTTPURLHandler that manages URLs coming from the TDS.
- *     The TDS can provide change notifications about the URLs it manages and
- *     this type can then dispatch those changes into the TIBET change
- *     notification system.
+ * @summary A URL handler that manages URLs coming from CouchDB. Changes from
+ *     CouchDB come in the form of the CouchDB changes feed, which this handler
+ *     can be configured to observe. NOTE that CouchDB observations are done
+ *     independently of the 'tds.watch' configuration. This independence lets
+ *     you interact with both the TDS and CouchDB as needed.
  */
 
 //  ------------------------------------------------------------------------
@@ -23,19 +24,188 @@ TP.core.HTTPURLHandler.defineSubtype('couchdb.CouchDBURLHandler');
 TP.couchdb.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  Configuration names for the include/exclude configuration setting for the
+//  remote url watcher types which mix this in.
+TP.couchdb.CouchDBURLHandler.set('includeConfigName',
+    'tds.couch.watch.include');
+TP.couchdb.CouchDBURLHandler.set('excludeConfigName',
+    'tds.couch.watch.exclude');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('activateRemoteWatch',
+function() {
+
+    var sourceType,
+        signalType,
+        thisref;
+
+    if (TP.notTrue(TP.sys.cfg('uri.watch_couchdb_changes'))) {
+        return;
+    }
+
+    sourceType = this.getWatcherSourceType();
+    signalType = this.getWatcherSignalType();
+
+    thisref = this;
+
+    //  For Couch we set up multiple observations against different URIs.
+    this.getWatcherSourceURIs().perform(function(sourceURI) {
+        var signalSource;
+
+        signalSource = sourceType.construct(sourceURI.getLocation(),
+            {withCredentials: true});
+        if (TP.notValid(signalSource)) {
+            return thisref.raise('InvalidURLWatchSource');
+        }
+
+        thisref.observe(signalSource, signalType);
+    });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('deactivateRemoteWatch',
+function() {
+
+    var sourceType,
+        signalType,
+        thisref;
+
+    sourceType = this.getWatcherSourceType();
+    signalType = this.getWatcherSignalType();
+
+    thisref = this;
+
+    //  For Couch we set up multiple observations against different URIs so we
+    //  need to loop over the same list to deactivate.
+    this.getWatcherSourceURIs().perform(function(sourceURI) {
+        var signalSource;
+
+        signalSource = sourceType.construct(sourceURI.getLocation(),
+            {withCredentials: true});
+        if (TP.notValid(signalSource)) {
+            return thisref.raise('InvalidURLWatchSource');
+        }
+
+        thisref.observe(signalSource, signalType);
+    });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.getCouchURL = function(options) {
+
+    /**
+     * @method getCouchURL
+     * @summary Computes the proper CouchDB URL for use as a base URL.
+     * @param {Object} [options] A parameter block with possible user/pass data
+     *     if using basic authentication to access CouchDB.
+     * @return {String} The database url.
+     */
+
+    var opts,
+        cfg_root,
+        db_scheme,
+        db_host,
+        db_port,
+        db_user,
+        db_pass,
+        db_url;
+
+    opts = options || {};
+
+    cfg_root = opts.cfg_root || 'tds.couch';
+
+    db_url = TP.ifInvalid(opts.db_url, TP.sys.cfg('tds.couch.db_url'));
+    if (!db_url) {
+        //  Build up from config or defaults as needed.
+        db_scheme = opts.db_scheme ||
+            TP.sys.getcfg(cfg_root + '.scheme') || 'http';
+        db_host = opts.db_host ||
+            TP.sys.getcfg(cfg_root + '.host') || '127.0.0.1';
+        db_port = opts.db_port ||
+            TP.sys.getcfg(cfg_root + '.port') === undefined ? '5984' :
+                TP.sys.getcfg(cfg_root + '.port');
+
+        //  NOTE these are ENV variables on the server. In the client we allow
+        //  them to be set temporarily via config but that is NOT SECURE.
+        db_user = TP.ifInvalid(opts.db_user, TP.sys.cfg('tds.couch.db_user'));
+        db_pass = TP.ifInvalid(opts.db_pass, TP.sys.cfg('tds.couch.db_pass'));
+
+        //  Watch out for special chars, esp in the password.
+        if (db_user) {
+            db_user = encodeURIComponent(db_user);
+        }
+
+        if (db_pass) {
+            db_pass = encodeURIComponent(db_pass);
+        }
+
+        db_url = db_scheme + '://';
+        if (db_user && db_pass) {
+            db_url += db_user + ':' + db_pass + '@' + db_host;
+        } else {
+            db_url += db_host;
+        }
+
+        if (db_port) {
+            db_url += ':' + db_port;
+        }
+    }
+
+    return db_url;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.maskCouchAuth = function(url) {
+
+    /**
+     * @method maskCouchAuth
+     * @summary Returns a version of the url provided with any user/pass
+     *     information masked out. This is used for prompts and logging where
+     *     basic auth data could potentially be exposed to view.
+     * @param {String} url The URL to mask.
+     * @returns {String} The masked URL.
+     */
+
+    var regex,
+        match,
+        newurl;
+
+    //  scheme://(user):(pass)@hostetc...
+    regex = /(.*)\/\/(.*):(.*)@(.*)/;
+
+    if (!regex.test(url)) {
+        return url;
+    }
+
+    match = regex.exec(url);
+    newurl = match[1] + '//' + match[4];
+
+    return newurl;
+};
+
+//  ------------------------------------------------------------------------
+
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalType',
-function(aURI) {
+function() {
 
     /**
      * @method getWatcherSignalType
      * @summary Returns the TIBET type of the watcher signal. This will be the
      *     signal that the signal source sends when it wants to notify URIs of
      *     changes.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
      * @returns {TP.sig.RemoteURLChange} The type that will be
      *     instantiated to construct new signals that notify observers that the
      *     *remote* version of the supplied URI's resource has changed. At this
@@ -47,85 +217,35 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSourceType',
-function(aURI) {
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSourceURIs',
+function() {
 
     /**
-     * @method getWatcherSourceType
-     * @summary Returns the TIBET type of the watcher signal source. Typically,
-     *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.core.SSE for Server-Sent Event sources.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.core.SSE} The type that will be instantiated to
-     *     make a watcher for the supplied URI.
-     */
-
-    return TP.core.SSE;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherURI',
-function(aURI) {
-
-    /**
-     * @method getWatcherURI
-     * @summary Returns the URI to the resource that acts as a watcher to watch
-     *     for changes to the resource of the supplied URI.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
+     * @method getWatcherSourceURIs
+     * @summary Returns an array of URIs which are needed to observe CouchDBs
+     *     various change feeds.
      * @returns {TP.core.URI} A URI pointing to the resource that will notify
      *     TIBET when the supplied URI's resource changes.
      */
 
-    var pathParts,
+    var list,
+        db_url,
+        targets;
 
-        changesFeedLoc,
+    db_url = this.getCouchURL();
+    list = TP.ac();
 
-        watcherLoc,
-        watcherURI;
+    targets = TP.sys.cfg('uri.watch_couchdb_uris');
+    targets.forEach(function(target) {
+        var url;
 
-    //  We grab the URI's path parts
-    pathParts = aURI.getPathParts();
-
-    //  If there are no path parts, or the first part is '_all_dbs', then the
-    //  supplied URI is referencing the server itself. Therefore, set up a
-    //  watcher on the '_db_updates' feed.
-    if (TP.isEmpty(pathParts) || pathParts.first() === '_all_dbs') {
-        watcherLoc = TP.ac(aURI.getRoot(),
-                            '_db_updates?feed=eventsource').join('/');
-    } else {
-        //  Otherwise, we are observing database-level changes, so we set up a
-        //  watcher on that database's '_changes' feed.
-
-        //  If we're observing changes on a design document, then we want the
-        //  changes feed to include docs
-        if (pathParts.at(1) === '_design') {
-            changesFeedLoc = '_changes?feed=eventsource&include_docs=true';
-        } else {
-            //  Otherwise, we don't want docs
-            changesFeedLoc = '_changes?feed=eventsource';
+        url = TP.uriJoinPaths(db_url, target);
+        if (TP.isURIString(url)) {
+            list.push(url);
         }
+    });
 
-        //  Join together the URI's root, the first path part (which, for
-        //  CouchDB) is the database name, and the standard 'changes feed'
-        //  portion.
-        watcherLoc = TP.ac(aURI.getRoot(),
-                            pathParts.first(),
-                            changesFeedLoc).join('/');
-    }
-
-    if (!TP.isURIString(watcherLoc)) {
-        return null;
-    }
-
-    watcherURI = TP.uc(watcherLoc);
-
-    //  Make sure to switch *off* refreshing for the watcher URI itself
-    watcherURI.set('shouldRefresh', false);
-
-    return watcherURI;
+    return list;
 });
 
 //  ------------------------------------------------------------------------
@@ -239,102 +359,13 @@ function(aSignal) {
     return this;
 });
 
-//  ------------------------------------------------------------------------
+//  =======================================================================
+//  Registration
+//  ========================================================================
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('watch',
-function(targetURI, aRequest) {
-
-    /**
-     * @method watch
-     * @summary Watches for changes to the URLs remote resource, if the server
-     *     that is supplying the remote resource notifies us when the URL has
-     *     changed.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
-     */
-
-    var pathParts,
-
-        watchedLoc,
-        watchedURI;
-
-    //  We grab the URI's path parts
-    pathParts = targetURI.getPathParts();
-
-    //  If the URI has more than 1 'path parts', then it's a database or a
-    //  URL under the database. We join the root and the first path part to
-    //  point to the database (which is where we'll observe changes) to form the
-    //  'watched URI'
-    if (pathParts.getSize() > 1) {
-        watchedLoc = TP.ac(targetURI.getRoot(), pathParts.first()).join('/');
-        watchedURI = TP.uc(watchedLoc);
-
-        //  Set our watched URI's 'autoRefresh' setting to that of the target
-        //  URI.
-        watchedURI.set('autoRefresh', targetURI.get('autoRefresh'));
-    } else if (pathParts.first() === '_all_dbs') {
-        //  Otherwise, if the first path part is '_all_dbs', then we'll be
-        //  using the '_db_updates' feed, so we just use the root URI as the
-        //  'watched URI'
-        watchedURI = TP.uc(targetURI.getRoot());
-
-        //  Set our watched URI's 'autoRefresh' setting to that of the target
-        //  URI.
-        watchedURI.set('autoRefresh', targetURI.get('autoRefresh'));
-    } else {
-
-        //  Otherwise, just use the target URI as the 'watched URI'
-        watchedURI = targetURI;
-    }
-
-    return this.callNextMethod(watchedURI, aRequest);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('unwatch',
-function(targetURI, aRequest) {
-
-    /**
-     * @method unwatch
-     * @summary Removes any watches for changes to the URLs remote resource. See
-     *     this type's 'watch' method for more information.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
-     */
-
-    var pathParts,
-
-        unwatchedLoc,
-        unwatchedURI;
-
-    //  We grab the URI's path parts
-    pathParts = targetURI.getPathParts();
-
-    //  If the URI has more than 1 'path parts', then it's a database or a
-    //  URL under the database. We join the root and the first path part to
-    //  point to the database (which is where we'll observe changes) to form the
-    //  'unwatched URI'
-    if (pathParts.getSize() > 1) {
-        unwatchedLoc = TP.ac(targetURI.getRoot(), pathParts.first()).join('/');
-        unwatchedURI = TP.uc(unwatchedLoc);
-    } else if (pathParts.first() === '_all_dbs') {
-        //  Otherwise, if the first path part is '_all_dbs', then we'll be
-        //  using the '_db_updates' feed, so we just use the root URI as the
-        //  'unwatched URI'
-        unwatchedURI = TP.uc(targetURI.getRoot());
-    } else {
-
-        //  Otherwise, just use the target URI as the 'unwatched URI'
-        unwatchedURI = targetURI;
-    }
-
-    return this.callNextMethod(unwatchedURI, aRequest);
-});
+//  Make sure the remote url watcher knows about this handler type, but wait to
+//  do this after the type has been fully configured to avoid api check error.
+TP.core.RemoteURLWatchHandler.registerWatcher(TP.couchdb.CouchDBURLHandler);
 
 //  =======================================================================
 //  TP.sig.CouchDBChange

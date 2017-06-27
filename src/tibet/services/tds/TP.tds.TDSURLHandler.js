@@ -23,71 +23,29 @@ TP.core.HTTPURLHandler.defineSubtype('tds.TDSURLHandler');
 TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.tds.TDSURLHandler.set('uriConfigName', 'tds.watch.uri');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalType',
-function(aURI) {
+function() {
 
     /**
      * @method getWatcherSignalType
      * @summary Returns the TIBET type of the watcher signal. This will be the
      *     signal that the signal source sends when it wants to notify URIs of
      *     changes.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
      * @returns {TP.sig.TDSFileChange} The type that will be instantiated
      *     to construct new signals that notify observers that the *remote*
      *     version of the supplied URI's resource has changed.
      */
 
     return TP.sig.TDSFileChange;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSourceType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSourceType
-     * @summary Returns the TIBET type of the watcher signal source. Typically,
-     *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.core.SSE for Server-Sent Event sources.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.core.SSE} The type that will be instantiated to
-     *     make a watcher for the supplied URI.
-     */
-
-    return TP.core.SSE;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherURI',
-function(aURI) {
-
-    /**
-     * @method getWatcherURI
-     * @summary Returns the URI to the resource that acts as a watcher to watch
-     *     for changes to the resource of the supplied URI.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.core.URI} A URI pointing to the resource that will notify
-     *     TIBET when the supplied URI's resource changes.
-     */
-
-    var watcherURI;
-
-    watcherURI = TP.uc(TP.uriJoinPaths(
-                        TP.sys.cfg('path.app_root'),
-                        TP.sys.cfg('tds.watch.uri')));
-
-    //  Make sure to switch *off* refreshing for the watcher URI itself
-    watcherURI.set('shouldRefresh', false);
-
-    return watcherURI;
 });
 
 //  ------------------------------------------------------------------------
@@ -327,6 +285,14 @@ function(aSignal) {
 
     return this;
 });
+
+//  =======================================================================
+//  Registration
+//  ========================================================================
+
+//  Make sure the remote url watcher knows about this handler type, but wait to
+//  do this after the type has been fully configured to avoid api check error.
+TP.core.RemoteURLWatchHandler.registerWatcher(TP.tds.TDSURLHandler);
 
 //  =======================================================================
 //  TP.sig.TDSFileChange
