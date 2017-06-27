@@ -6102,7 +6102,7 @@ function(aRequest) {
             TP.sys.logIO('Refreshing current node container.',
                         TP.DEBUG) : 0;
 
-        resource.setNativeNode(newResult);
+        resource.setNativeNode(newResult, false);
     } else if (TP.isNode(newResult)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Creating new node container.',
@@ -8976,7 +8976,8 @@ function(request, result, async, filter) {
             resource = this.$getFilteredResult(resource, resultType, false);
         }
 
-        this.$setPrimaryResource(resource, request);
+        //  NOTE we dont' signal change when performing a getter.
+        this.$setPrimaryResource(resource, request, false);
     }
 
     response = request.getResponse(resource);
