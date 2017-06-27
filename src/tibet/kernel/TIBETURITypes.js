@@ -10890,6 +10890,16 @@ function(aURIOrPushState, aDirection) {
         configInfo = TP.hc();
     }
 
+    //  Deal with deep link issues. Not all routes can be linked directly so if
+    //  this is the first route (no last route in history) it has to be one that
+    //  is flagged as a deeproot.
+    if (TP.notValid(last)) {
+        if (configInfo.at(routeKey + '.deeproot') !== true) {
+            TP.go2('/');
+            return;
+        }
+    }
+
     //  If the route changed be sure to refresh the controller list.
     TP.sys.getApplication().refreshControllers();
 
