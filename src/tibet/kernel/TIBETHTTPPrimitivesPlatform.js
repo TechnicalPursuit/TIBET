@@ -327,6 +327,11 @@ TP.hc(
             return;
         }
 
+        if (TP.isValid(request.at('withCredentials')) &&
+            'withCredentials' in httpObj) {
+            httpObj.withCredentials = request.at('withCredentials');
+        }
+
         //  configure headers based on URI and header collection
         try {
             TP.httpSetHeaders(url, request, httpObj);
@@ -589,6 +594,11 @@ TP.hc(
             return;
         }
 
+        if (TP.isValid(request.at('withCredentials')) &&
+            'withCredentials' in httpObj) {
+            httpObj.withCredentials = request.at('withCredentials');
+        }
+
         //  configure headers based on URI and header collection
         try {
             TP.httpSetHeaders(url, request, httpObj);
@@ -820,6 +830,11 @@ TP.hc(
 
             TP.httpError(targetUrl, 'HTTPException', request);
             return;
+        }
+
+        if (TP.isValid(request.at('withCredentials')) &&
+            'withCredentials' in httpObj) {
+            httpObj.withCredentials = request.at('withCredentials');
         }
 
         //  configure headers based on URI and header collection
