@@ -5878,11 +5878,11 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getResultResource',
+TP.core.URL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
     /**
-     * @method getResultResource
+     * @method getRequestedResource
      * @summary Returns the resource object appropriate for the request. This
      *     typically becomes the request's result object and can be used to
      *     set the URI resource directly.
@@ -9495,11 +9495,11 @@ function(headerData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getResultResource',
+TP.core.TIBETURL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
     /**
-     * @method getResultResource
+     * @method getRequestedResource
      * @summary TIBET URLs containing valid resource URIs respond to this
      *     method by updating the content cache for that URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -9513,7 +9513,7 @@ function(aRequest) {
     //  if we're just an alias for a concrete URL then we continue to look like
     //  a proxy for that reference in string form
     if ((url = this.getPrimaryURI()) !== this) {
-        return url.getResultResource(aRequest);
+        return url.getRequestedResource(aRequest);
     }
 
     if (TP.isValid(aRequest)) {

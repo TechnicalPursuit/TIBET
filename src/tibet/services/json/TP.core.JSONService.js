@@ -210,7 +210,10 @@ function(aRequest) {
 
                     request.set('result', resultData);
 
-                    dat = url.getResultResource(request);
+                    dat = url.getRequestedResource(request);
+                    /*
+                    url.$setPrimaryResource(dat, request);
+                    */
                     url.isLoaded(true);
                     url.isDirty(false);
 

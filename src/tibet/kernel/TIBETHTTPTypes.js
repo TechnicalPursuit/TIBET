@@ -179,7 +179,7 @@ function(aResult) {
             //  Get the filtered resource result as our request response. This
             //  does not change the uri's internally held resource (although it
             //  may change the internal data of a content object resource).
-            data = uri.getResultResource(this);
+            data = uri.getRequestedResource(this);
         }
     }
 
@@ -226,7 +226,7 @@ function(aResult) {
         //  Get the filtered resource result as our request response. This does
         //  not change the uri's internally held resource (although it may
         //  change the internal data of a content object resource).
-        result = uri.getResultResource(this);
+        result = uri.getRequestedResource(this);
 
         this.atPut('refreshContent', wasRefreshingContent);
     }

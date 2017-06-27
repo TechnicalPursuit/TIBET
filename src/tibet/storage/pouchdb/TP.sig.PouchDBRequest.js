@@ -198,12 +198,12 @@ function(aResult) {
     if (TP.isURIString(url)) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
-            data = uri.getResultResource(this);
+            data = uri.getRequestedResource(this);
             /*
-            uri.$setPrimaryResource(data);
+            uri.$setPrimaryResource(data, this);
+            */
             uri.isLoaded(true);
             uri.isDirty(false);
-            */
         }
     }
 
