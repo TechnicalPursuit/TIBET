@@ -6636,6 +6636,10 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIAlert', aSignal.at('trigger'));
 
+    //  Make sure to stop the signal propagation here - we've already handled
+    //  the alert signal.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -7166,6 +7170,10 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIHelp', aSignal.at('trigger'));
 
+    //  Make sure to stop the signal propagation here - we've already handled
+    //  the help signal.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -7216,6 +7224,10 @@ function(aSignal) {
     //  'on:UIHint'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIHint', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've already handled
+    //  the hint signal.
+    aSignal.stopPropagation();
 
     return;
 });

@@ -1,5 +1,5 @@
 //  ========================================================================
-//  TP.notifiertest
+//  TP.tooltiptest
 //  ========================================================================
 
 /**
@@ -7,34 +7,34 @@
  * @summary Defines namespace-level objects and functionality for the project.
  */
 
-TP.defineNamespace('TP.notifiertest');
+TP.defineNamespace('TP.tooltiptest');
 
-TP.w3.Xmlns.registerNSInfo('urn:app:notifiertest',
-    TP.hc('prefix', 'notifiertest'));
+TP.w3.Xmlns.registerNSInfo('urn:app:tooltiptest',
+    TP.hc('prefix', 'tooltiptest'));
 
 //  ========================================================================
-//  TP.notifiertest.NotifierTestContent
+//  TP.tooltiptest.TooltipTestContent
 //  ========================================================================
 
 /**
- * @type {TP.notifiertest.NotifierTestContent}
- * @summary TP.notifiertest.NotifierTestContent
+ * @type {TP.tooltiptest.TooltipTestContent}
+ * @summary TP.tooltiptest.TooltipTestContent
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('notifiertest.NotifierTestContent');
+TP.core.CompiledTag.defineSubtype('tooltiptest.TooltipTestContent');
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
-TP.notifiertest.NotifierTestContent.defineAttribute('styleURI', TP.NO_RESULT);
-TP.notifiertest.NotifierTestContent.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tooltiptest.TooltipTestContent.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tooltiptest.TooltipTestContent.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.notifiertest.NotifierTestContent.Type.defineMethod('tagCompile',
+TP.tooltiptest.TooltipTestContent.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -55,21 +55,22 @@ function(aRequest) {
     }
 
     newElem = TP.xhtmlnode(
-    '<div tibet:tag="notifiertest:NotifierTestContent"' +
+    '<div tibet:tag="tooltiptest:TooltipTestContent"' +
             ' class="type_test_content">' +
-        '<ul>' +
-            '<li>' + 'Item #1' + '</li>' +
-            '<li>' + 'Item #2' + '</li>' +
-            '<li>' + 'Item #3' + '</li>' +
-            '<li>' + 'Item #4' + '</li>' +
-            '<li>' + 'Item #5' + '</li>' +
-        '</ul>' +
+        '<h3>' +
+            'A tooltip from tooltiptest:TooltipTestContent' +
+        '</h3>' +
     '</div>');
 
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
     return TP.elementReplaceWith(elem, newElem);
 });
+
+//  ------------------------------------------------------------------------
+
+TP.uc('urn:tibet:test_tooltip_content').setResource(
+    TP.elem('<div xmlns="http://www.w3.org/1999/xhtml"><span>Some test content for a tooltip</span></div>'));
 
 //  ------------------------------------------------------------------------
 //  end

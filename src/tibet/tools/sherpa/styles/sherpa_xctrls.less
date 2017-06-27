@@ -7,7 +7,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 
-/* The list */
+/* Inspector lists */
 
 sherpa|inspector#SherpaInspector xctrls|list {
 
@@ -40,5 +40,71 @@ sherpa|inspector#SherpaInspector xctrls|list {
 }
 
 sherpa|inspectoritem[contenttype="xctrls:list"] {
+}
+
+/* The notifier */
+
+xctrls|notifier#SherpaNotifier {
+
+    top: 48px;
+    right: 68px;
+    left: 68px;
+
+    height: 2em;
+
+    margin-bottom: 4px;
+
+    line-height: 2;
+
+    background-color: rgba(255, 215, 0, 0.5);
+
+    transition:
+        opacity
+        var(--sherpa-notifier-fadeout-duration)
+        ease
+        var(--sherpa-notifier-fadeout-delay);
+
+    & > xctrls|content {
+
+        margin-left: 2px;
+        margin-right: 2px;
+
+        border-radius: 4px;
+
+        font-size: 12px;
+        font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    }
+}
+
+#background.edge-north-open xctrls|notifier#SherpaNotifier {
+
+    /* Note here how we have to use the LESS 'escape' mechanism. The LESS parser
+     isn't smart enough to handle CSS custom properties within function
+     expressions */
+    top: ~"calc(var(--sherpa-drawer-north-open-height) + 5px + 16px)";
+}
+
+/* When the west drawer is open */
+#background.edge-west-open xctrls|notifier#SherpaNotifier {
+
+    margin-left: var(--sherpa-edge-west-open-margin);
+}
+
+/* When the west drawer is closed */
+#background:not(.edge-west-open) xctrls|notifier#SherpaNotifier {
+
+    margin-left: 0;
+}
+
+/* When the east drawer is open */
+#background.edge-east-open xctrls|notifier#SherpaNotifier {
+
+    margin-right: var(--sherpa-edge-east-open-margin);
+}
+
+/* When the east drawer is closed */
+#background:not(.edge-east-open) xctrls|notifier#SherpaNotifier {
+
+    margin-right: 0;
 }
 

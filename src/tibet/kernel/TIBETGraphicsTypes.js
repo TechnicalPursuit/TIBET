@@ -1434,6 +1434,14 @@ function(aRect) {
     data = this.$get('data');
     rectData = aRect.$get('data');
 
+    //  Make sure that our own rectangle isn't smaller in either width or height
+    //  than the supplied rectangle. Otherwise, just return without modifying
+    //  the supplied rectangle.
+    if (this.getWidth() < aRect.getWidth() ||
+        this.getHeight() < aRect.getHeight()) {
+        return this;
+    }
+
     /* eslint-disable no-extra-parens */
     diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
     diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);

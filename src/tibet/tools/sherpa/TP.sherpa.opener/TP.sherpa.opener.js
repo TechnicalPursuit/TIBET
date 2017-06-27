@@ -14,33 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('opener');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.opener.Type.defineMethod('tagCompile',
-function(aRequest) {
-
-    var elem,
-        newElem;
-
-    //  Get the initiating element.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    TP.elementSetAttribute(elem, 'on:click', 'Toggle', true);
-
-    newElem = TP.xhtmlnode('<span class="icon" title="' +
-                            TP.elementGetAttribute(elem, 'title', true) +
-                            '"/>');
-
-    TP.nodeAppendChild(elem, newElem, false);
-
-    return elem;
-});
+TP.sherpa.TemplatedTag.defineSubtype('opener');
 
 //  ------------------------------------------------------------------------
 //  end

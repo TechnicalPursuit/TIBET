@@ -142,6 +142,9 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_confirm.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_prompt.xhtml.js"/>
 
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.hint.TP.xctrls.hint.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.hint.TP.xctrls.hint.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.notifier.TP.xctrls.notifier.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.notifier.TP.xctrls.notifier.css.js"/>
 
@@ -150,6 +153,9 @@
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tabbar.TP.xctrls.tabbar.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tabbar.TP.xctrls.tabbar.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.tooltip.TP.xctrls.tooltip.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.tooltip.TP.xctrls.tooltip.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
 
@@ -169,6 +175,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.list_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.notifier_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.table_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.tooltip_all.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_variables_tpi.css.js"/>
 
@@ -184,6 +191,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.list_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.notifier_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.table_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.tooltip_tpi.css.js"/>
 </config>
 
 <config id="sherpa-inlined" if="boot.phase_one boot.inlined">
@@ -229,6 +237,7 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.styleshud.TP.sherpa.styleshud.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bindshud.TP.sherpa.bindshud.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bindshud.TP.sherpa.bindshud.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.scrollbutton.TP.sherpa.scrollbutton.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.splitbox.TP.sherpa.splitbox.xhtml.js"/>
@@ -239,8 +248,6 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.dispenser.TP.sherpa.dispenser.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.readout.TP.sherpa.readout.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.readout.TP.sherpa.readout.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.notifier.TP.sherpa.notifier.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.notifier.TP.sherpa.notifier.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.consoleoutput.TP.sherpa.consoleoutput.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.consoleoutput.TP.sherpa.consoleoutput.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.halocontextmenu.TP.sherpa.halocontextmenu.xhtml.js"/>

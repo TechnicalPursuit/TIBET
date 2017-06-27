@@ -10117,7 +10117,8 @@ function(anObject, formatArgs) {
     /**
      * @method getItemTagName
      * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
+     *     fromArray()/fromObject() methods. Note that this should return the
+     *     receiver's *canonical* name.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.core.Hash} formatArgs The 'formatting arguments' used by this
      *     machinery to generate item markup.
@@ -11147,12 +11148,16 @@ function(aRequest) {
 
     var elem,
         tpElem,
+
         reloadableAttrs,
         len,
         i,
+
         attrName,
         val,
+
         uri,
+
         obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
@@ -11354,12 +11359,16 @@ function(aRequest) {
 
     var elem,
         tpElem,
+
         reloadableAttrs,
         len,
         i,
+
         attrName,
         val,
+
         uri,
+
         obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query

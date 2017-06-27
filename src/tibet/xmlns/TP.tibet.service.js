@@ -86,7 +86,9 @@ function(aRequest) {
         resultHref,
         resultURI,
 
-        resource;
+        resource,
+
+        tpElem;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -116,8 +118,14 @@ function(aRequest) {
 
     resultURI.unregister();
 
+    tpElem = TP.wrap(elem);
+
     //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
-    TP.wrap(elem).signal('TP.sig.UIDataDestruct');
+    tpElem.signal('TP.sig.UIDataDestruct');
+
+    //  Check and dispatch a signal from our attributes if one exists for this
+    //  signal.
+    tpElem.dispatchResponderSignalFromAttr('UIDataDestruct', null);
 
     return;
 });
@@ -290,6 +298,10 @@ function() {
             //  Signal the fact that we've done the work.
             thisref.signal('TP.sig.UIDataReceived');
 
+            //  Check and dispatch a signal from our attributes if one exists
+            //  for this signal.
+            thisref.dispatchResponderSignalFromAttr('UIDataReceived', null);
+
             //  We only do this if the result URI is real - some services might
             //  be 'send only' and not define a result URI.
             if (TP.isURI(resultURI)) {
@@ -346,7 +358,13 @@ function() {
 
                 //  NB: We assume 'async' of false here.
                 if (TP.notEmpty(resultURI.getResource().get('result'))) {
+
                     thisref.signal('TP.sig.UIDataDestruct');
+
+                    //  Check and dispatch a signal from our attributes if one
+                    //  exists for this signal.
+                    thisref.dispatchResponderSignalFromAttr(
+                                                'UIDataDestruct', null);
                 }
 
                 //  Set the resource to the new resource (causing any observers
@@ -357,6 +375,11 @@ function() {
                     TP.hc('observeResource', true, 'signalChange', true));
 
                 thisref.signal('TP.sig.UIDataConstruct');
+
+                //  Check and dispatch a signal from our attributes if one
+                //  exists for this signal.
+                thisref.dispatchResponderSignalFromAttr(
+                                                'UIDataConstruct', null);
 
                 //  Dispatch 'TP.sig.DOMReady' for consistency with other
                 //  elements that dispatch this when their 'dynamic content' is
@@ -388,6 +411,10 @@ function() {
             }
 
             thisref.signal('TP.sig.UIDataFailed', errorRecord);
+
+            //  Check and dispatch a signal from our attributes if one exists
+            //  for this signal.
+            thisref.dispatchResponderSignalFromAttr('UIDataFailed', null);
         });
 
     request.defineHandler('RequestCompleted',
@@ -413,6 +440,10 @@ function() {
         //  TODO: Log a warning?
         return this;
     }
+
+    //  Check and dispatch a signal from our attributes if one exists for this
+    //  signal.
+    this.dispatchResponderSignalFromAttr('UIDataWillSend', null);
 
     //  Do the work.
 
@@ -501,11 +532,19 @@ function() {
             break;
         default:
             this.signal('TP.sig.UIDataFailed');
+
+            //  Check and dispatch a signal from our attributes if one exists
+            //  for this signal.
+            this.dispatchResponderSignalFromAttr('UIDataFailed', null);
             break;
     }
 
     //  Signal the fact that we're doing the work.
     this.signal('TP.sig.UIDataSent');
+
+    //  Check and dispatch a signal from our attributes if one exists
+    //  for this signal.
+    this.dispatchResponderSignalFromAttr('UIDataSent', null);
 
     return this;
 });

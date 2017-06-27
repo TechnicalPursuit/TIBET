@@ -1479,7 +1479,37 @@ function(anObject, aRequest) {
      *     values for messageType, cmdAsIs, etc.
      */
 
-    TP.byId('SherpaNotifier', TP.win('UIROOT')).setContent(anObject, aRequest);
+    var notifier,
+        notifierContent,
+
+        triggerTPDoc;
+
+    notifier = TP.byId('SherpaNotifier', TP.win('UIROOT'));
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-duration',
+                TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-delay',
+                TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000) + 'ms');
+
+    notifierContent = TP.byId('SherpaNotifierContent', TP.win('UIROOT'));
+    if (TP.notValid(notifierContent)) {
+        return;
+    }
+
+    notifierContent.setContent(
+        TP.xhtmlnode('<div>' + TP.str(anObject) + '</div>'),
+        aRequest);
+
+    triggerTPDoc = TP.tpdoc(TP.win('UIROOT'));
+
+    this.signal(
+        'OpenNotifier',
+        TP.hc(
+            'overlayID', 'SherpaNotifier',
+            'contentID', 'SherpaNotifierContent',
+            'noPosition', true,
+            'triggerTPDocument', triggerTPDoc));
 
     return;
 });

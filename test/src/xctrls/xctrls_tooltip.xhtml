@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+ 	@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+    .tooltip_content {
+
+        display: none;
+    }
+
+    .type_test_content {
+
+        width: 30em;
+    }
+
+    .type_test_content h3 {
+
+        display: inline;
+    }
+
+    #inlineTestContent {
+
+        width: 30em;
+        height: 10em;
+    }
+
+    ]]>
+    </style>
+
+    <tibet:data name="urn:tibet:tooltip_content_list">
+        <![CDATA[
+            {
+            "names": [
+                "Smith",
+                "Johnson",
+                "Williams",
+                "Jones",
+                "Brown",
+                "Davis",
+                "Miller",
+                "Wilson",
+                "Moore",
+                "Taylor"]
+            }
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+    <br/>
+    tooltip #1:
+    <br/>
+
+    <br/>
+    <br/>
+
+    A tooltip that uses a custom tag to draw the content.
+
+    <br/>
+    <br/>
+
+    <button id="trigger1">
+        Trigger #1
+        <xctrls:hint>
+            <!-- NB: This markup transforms into markup that will have an class of
+                 'type_test_content' -->
+            <tooltiptest:TooltipTestContent/>
+        </xctrls:hint>
+    </button>
+
+    <br/>
+    <br/>
+
+    A tooltip that uses a data-bound &lt;xctrls:list&gt; to draw the content.
+
+    <br/>
+    <br/>
+
+    <button id="trigger2">
+        Trigger #2
+        <xctrls:hint>
+            <xctrls:list id="inlineTestContent" bind:in="{data: urn:tibet:tooltip_content_list#tibet(names)}" tibet:noawaken="true"/>
+        </xctrls:hint>
+    </button>
+
+    <br/>
+    <br/>
+
+    A tooltip that uses content from a URI as the content.
+
+    <br/>
+    <br/>
+
+    <button id="trigger3">
+        Trigger #3
+        <xctrls:hint>
+            <xi:include href="urn:tibet:test_tooltip_content"/>
+        </xctrls:hint>
+    </button>
+
+</body>
+</html>
