@@ -6258,7 +6258,8 @@ function(aRequest) {
                     subrequest.set('result', result);
 
                     //  the return result should become the new resource
-                    thisref.set('resource', returnResult);
+                    thisref.set('resource', returnResult,
+                        TP.request('signalChange', false));
 
                     //  Flag the receiver as having had at least one real value.
                     thisref.$set('$hadInitialValue', true, false);
