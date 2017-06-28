@@ -4713,13 +4713,6 @@ function(aRequest, filterResult) {
         if (TP.notValid(result) || refresh) {
             result = this.$resolveName(this.getName());
         }
-
-        /*
-         * (ss) don't do this...let complete() run without changing state first
-        if (TP.isValid(result)) {
-            this.isLoaded(true);
-        }
-        */
     }
 
     //  filter any remaining data
@@ -5871,9 +5864,34 @@ function(aRequest, filterResult) {
         return response;
     }
 
-    //  if we're not running async then the subrequest will be complete and
-    //  we can return whatever result was produced.
+    //  If the routine was invoked synchronously then the data will have
+    //  been placed in the subrequest.
     return subrequest.getResponse();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('$normalizeRequestedResource',
+function(aResource, Request) {
+
+    var obj;
+
+    obj = TP.wrap(aResource);
+
+    if (TP.canInvokeInterface(
+            obj, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
+        //  place our URI value into the node wrapper and node content
+        obj.$set('uri', this, false);
+
+        //  make sure the node knows where it loaded from.
+        obj.addTIBETSrc(this);
+
+        //  then, an 'xml:base' attribute. this helps ensure that xml:base
+        //  computations will work more consistently during tag processing
+        obj.addXMLBase();
+    }
+
+    return obj;
 });
 
 //  ------------------------------------------------------------------------
@@ -6079,7 +6097,10 @@ function(aRequest) {
 
     //  NB: First, set ourself to be loaded. Otherwise, comparison getters etc.
     //  in the methods below could cause endless recursion
-    this.isLoaded(true);
+
+    /* (ss) don't do this...we aren't changing the data in this method...
+     * this.isLoaded(true);
+     */
 
     //  Now, set the resource or result based on data types of what we already
     //  have and what we are going to be setting.
@@ -6093,7 +6114,7 @@ function(aRequest) {
     if (TP.canInvoke(newResult, 'getNativeNode') && !resourceIsContent) {
         //  result _is_ a wrapper object of some form.
         // this.$setPrimaryResource(newResult, aRequest);
-        resource = newResult;
+        resource = this.$normalizeRequestedResource(newResult);
     } else if (resourceIsContent && !resultIsContent) {
         resource.set('data', newResult, false);
     } else if (TP.canInvoke(resource, 'setNativeNode') &&
@@ -6113,10 +6134,10 @@ function(aRequest) {
         newResult.set('uri', this);
 
         // this.$setPrimaryResource(newResult, aRequest);
-        resource = newResult;
+        resource = this.$normalizeRequestedResource(newResult);
     } else {
         // this.$setPrimaryResource(newResult, aRequest);
-        resource = newResult;
+        resource = this.$normalizeRequestedResource(newResult);
     }
 
     //  NOTE that callers are responsible for defining the context of
@@ -6126,7 +6147,6 @@ function(aRequest) {
     this.expire(false);
 
     return this.$getFilteredResult(resource, aRequest.at('resultType'));
-                // this.$get('resource'), aRequest.at('resultType'));
 });
 
 //  ------------------------------------------------------------------------
