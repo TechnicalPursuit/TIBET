@@ -592,7 +592,7 @@ function() {
      * @returns {Object} The value of the receiver - in this case, it's 'data'.
      */
 
-    return this.$get('data');
+    return this.get('data');
 });
 
 //  ------------------------------------------------------------------------
