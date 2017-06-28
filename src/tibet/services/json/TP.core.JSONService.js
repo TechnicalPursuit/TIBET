@@ -181,7 +181,7 @@ function(aRequest) {
 
                     request.set('result', null);
 
-                    url.updateResourceCache(request);
+                    url.$setPrimaryResource(undefined, request);
                     url.isLoaded(false);
                     url.isDirty(true);
 
@@ -210,7 +210,10 @@ function(aRequest) {
 
                     request.set('result', resultData);
 
-                    dat = url.updateResourceCache(request);
+                    dat = url.getRequestedResource(request);
+                    /*
+                    url.$setPrimaryResource(dat, request);
+                    */
                     url.isLoaded(true);
                     url.isDirty(false);
 

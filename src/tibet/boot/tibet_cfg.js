@@ -630,9 +630,36 @@
     TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
     TP.sys.setcfg('tds.user.uri', '/whoami');
     TP.sys.setcfg('tds.vcard.uri', '/vcard');
+
+    //  remote resources that we should try to watch. NOTE that these should be
+    //  provided as virtual paths or wildcard expressions to match effectively
+    //  since they're shared between client and server.
+    TP.sys.setcfg('tds.watch.include',
+        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
+
+    //  remote resources that we should try to watch. NOTE that these should
+    //  be provided as virtual paths or wildcard expressions to match since
+    //  they're shared between client and server.
+    TP.sys.setcfg('tds.watch.exclude', ['~app/TIBET-INF/tibet']);
+
+    //  what url does client use to connect to the TDS watch SSE endpoint (and
+    //  where does the TDS watch plugin configure its route to listen).
     TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
-    TP.sys.setcfg('tds.watch.root', '~app');
+
+    //  what event will the TDS watch SSE endpoint send when a file changes?
+    //  NOTE that this is also used in the client to map SSE event to a TIBET
+    //  signal picked up by the TDSURLHandler.
     TP.sys.setcfg('tds.watch.event', 'fileChange');
+
+    //  Includes/excludes for couchdb observations. NOTE that none of these are
+    //  leveraged if uri.watch_couchdb_changes is false.
+    TP.sys.setcfg('tds.couch.watch.include',
+        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
+    TP.sys.setcfg('tds.couch.watch.exclude', ['~app/TIBET-INF/tibet']);
+
+
+    //  What URI does the client use for generic WebDAV calls? NOTE this is also
+    //  where the TDS webdav plugin will register.
     TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
 
     //  ---
@@ -1839,9 +1866,16 @@
     //  should we take action when notified of a remote uri change?
     TP.sys.setcfg('uri.process_remote_changes', false);
 
-    //  remote resources that we should try to watch.
-    TP.sys.setcfg('uri.remote_watch_sources',
-                    ['~app_src', '~app_styles', '~app_cfg']);
+    //  should we watch changes from couchdb? Currently awaiting updates to SSE
+    //  to support authentication.
+    TP.sys.setcfg('uri.watch_couchdb_changes', false);
+
+    //  which CouchDB change feed URLs do we want to observe?
+    TP.sys.setcfg('uri.watch_couchdb_uris', [
+        '_db_updates?feed=eventsource',                     //  server changes
+        // '_changes?feed=eventsource',                     //  no docs
+        '_changes?feed=eventsource&include_docs=true'       //  with docs
+    ]);
 
     //  ---
     //  xpath/xslt

@@ -1356,6 +1356,10 @@ function() {
      * @returns {Object} The receiver as a plain JavaScript object.
      */
 
+    if (TP.isPrototype(this)) {
+        return;
+    }
+
     return TP.xml2js(this.getNativeNode());
 });
 

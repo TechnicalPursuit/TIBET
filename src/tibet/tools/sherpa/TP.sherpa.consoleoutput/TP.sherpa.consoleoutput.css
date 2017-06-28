@@ -304,8 +304,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 .flex-item > .content > sherpa|scrollbutton .icon {
 
     bottom: 2px;
-    left: 1px;
-
     font-size: 18px;
 }
 
