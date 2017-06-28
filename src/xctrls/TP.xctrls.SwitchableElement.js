@@ -174,6 +174,11 @@ function(aValue, shouldSignal) {
 
     //  If the item that matches the new value is disabled, then bail out.
     newItem = this.get('itemWithValue', newValue);
+
+    if (TP.notValid(newItem) || TP.isEmpty(newItem)) {
+        return this;
+    }
+
     if (newItem.isDisabled()) {
         return this;
     }
