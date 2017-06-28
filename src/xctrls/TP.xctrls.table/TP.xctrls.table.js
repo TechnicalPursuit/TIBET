@@ -609,19 +609,23 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.table} The receiver.
      */
 
-    var keys;
+    var dataObj,
+        keys;
 
-    if (!TP.isArray(aDataObject)) {
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    if (!TP.isArray(dataObj)) {
         //  TODO: Raise an exception
         return this;
     }
 
-    this.$set('data', aDataObject, false);
+    this.$set('data', dataObj, false);
 
     //  Make sure to clear our converted data.
     this.set('$convertedData', null);
 
-    keys = aDataObject.getIndices().collect(
+    keys = dataObj.getIndices().collect(
             function(item) {
                 //  Note that we want a String here.
                 return item.toString();

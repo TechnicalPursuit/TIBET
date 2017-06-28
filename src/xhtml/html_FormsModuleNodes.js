@@ -3015,7 +3015,7 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var data,
+    var dataObj,
 
         elem,
         doc,
@@ -3039,12 +3039,13 @@ function(aDataObject, shouldSignal) {
         lenk,
         k;
 
-    if (!TP.isArray(aDataObject)) {
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    if (!TP.isArray(dataObj)) {
         //  TODO: Raise an exception
         return this;
     }
-
-    data = aDataObject;
 
     //  Empty out whatever content we currently have
     this.empty();
@@ -3055,10 +3056,10 @@ function(aDataObject, shouldSignal) {
     //  Loop over the outer Array and get either nested Arrays (which are
     //  value/label pairs) or Objects (which are groups)
 
-    leni = data.getSize();
+    leni = dataObj.getSize();
     for (i = 0; i < leni; i++) {
 
-        obj = data.at(i);
+        obj = dataObj.at(i);
         if (TP.isArray(obj)) {
 
             //  Construct an XHTML 'option' element and append it to ourself.

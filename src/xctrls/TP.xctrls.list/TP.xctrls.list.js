@@ -484,9 +484,13 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    var keys;
+    var dataObj,
+        keys;
 
-    this.$set('data', aDataObject, false);
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    this.$set('data', dataObj, false);
 
     //  Make sure to clear our converted data.
     this.set('$convertedData', null);
@@ -501,19 +505,19 @@ function(aDataObject, shouldSignal) {
     //  If we have a hash as our data, this will convert it into an Array of
     //  ordered pairs (i.e. an Array of Arrays) where the first item in each
     //  Array is the key and the second item is the value.
-    if (TP.isHash(aDataObject)) {
-        keys = aDataObject.getKeys();
-    } else if (TP.isPlainObject(aDataObject)) {
+    if (TP.isHash(dataObj)) {
+        keys = dataObj.getKeys();
+    } else if (TP.isPlainObject(dataObj)) {
         //  Make sure to convert a POJO into a TP.core.Hash
-        keys = TP.hc(aDataObject).getKeys();
-    } else if (TP.isPair(aDataObject.first())) {
-        keys = aDataObject.collect(
+        keys = TP.hc(dataObj).getKeys();
+    } else if (TP.isPair(dataObj.first())) {
+        keys = dataObj.collect(
                 function(item) {
                     //  Note that we want a String here.
                     return item.first().toString();
                 });
-    } else if (TP.isArray(aDataObject)) {
-        keys = aDataObject.getIndices().collect(
+    } else if (TP.isArray(dataObj)) {
+        keys = dataObj.getIndices().collect(
                 function(item) {
                     //  Note that we want a String here.
                     return item.toString();
