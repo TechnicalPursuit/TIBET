@@ -420,23 +420,34 @@ function(aSignal) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var isClosed;
+    var isClosed,
+
+        southDrawer,
+        drawerIsOpenFunc;
 
     isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
     if (!isClosed) {
-        TP.elementGetStyleObj(TP.unwrap(aSignal.getOrigin())).height = '';
-        TP.elementGetStyleObj(TP.unwrap(this)).height = '';
 
-        //  Refresh the editor after 200ms to make the line number gutter resize
-        //  it's height properly.
-        (function() {
+        southDrawer = aSignal.getOrigin();
+
+        drawerIsOpenFunc = function(transitionSignal) {
+
             var consoleInput;
+
+            //  Turn off any future notifications.
+            drawerIsOpenFunc.ignore(southDrawer, 'TP.sig.DOMTransitionEnd');
 
             if (TP.isValid(consoleInput = this.get('consoleInput'))) {
                 consoleInput.refreshEditor();
             }
-        }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+
+        }.bind(this);
+
+        drawerIsOpenFunc.observe(southDrawer, 'TP.sig.DOMTransitionEnd');
+
+        TP.elementGetStyleObj(TP.unwrap(southDrawer)).height = '';
+        TP.elementGetStyleObj(TP.unwrap(this)).height = '';
 
     } else {
         //  Adjust the input size and animate the drawer if it's configured to
