@@ -25,6 +25,23 @@
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
+    <tibet:data name="urn:tibet:sherpa_tabs">
+        <![CDATA[
+            [
+                ["TSH","TSH"],
+                ["New","New"]
+            ]
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:current_tab_selection">
+        <![CDATA[
+            {
+            "selection": "TSH"
+            }
+        ]]>
+    </tibet:data>
+
 </head>
 <body xmlns:pclass="urn:tibet:pseudoclass" data-theme="tpi">
 
@@ -86,6 +103,17 @@
 
         <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
             <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--sherpa-drawer-south-open-height"/>
+            <xctrls:tabbar id="SherpaConsoleTabbar" bind:io="{data: urn:tibet:sherpa_tabs, value: urn:tibet:current_tab_selection#tibet(selection)}"/>
+            <xctrls:panelbox id="SherpaConsolePanelbox" bind:in="urn:tibet:current_tab_selection#tibet(selection)">
+                <xctrls:panel>
+                    <xctrls:value>TSH</xctrls:value>
+                </xctrls:panel>
+                <xctrls:panel>
+                    <xctrls:value>New</xctrls:value>
+                    <div>New panel content</div>
+                </xctrls:panel>
+            </xctrls:panelbox>
+
             <sherpa:opener class="south west"/>
             <sherpa:opener class="south east"/>
             <div name="outputmode" class="indicator" onclick="TP.byId('SherpaConsole', TP.win('UIROOT')).increaseOutputDisplayMode()">&#160;</div>
@@ -107,6 +135,7 @@
         <div id="commonTileLayer"/>
 
         <sherpa:toggle/>
+
     </sherpa:hud>
 
 </div>

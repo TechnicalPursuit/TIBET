@@ -1076,7 +1076,9 @@ function(shouldAnimate) {
 
         styleVals,
 
-        drawerElement;
+        drawerElement,
+
+        panelboxElem;
 
     consoleDrawer = TP.byId('south', TP.win('UIROOT'));
 
@@ -1089,14 +1091,9 @@ function(shouldAnimate) {
 
     styleVals = TP.elementGetComputedStyleValuesInPixels(
                     this.getNativeNode(),
-                    TP.ac('borderTopWidth', 'borderBottomWidth',
-                            'marginTop', 'marginBottom',
-                            'paddingTop', 'paddingBottom',
-                            'top', 'bottom'));
+                    TP.ac('paddingTop', 'paddingBottom'));
 
-    this.setHeight(editorHeight -
-                    (styleVals.at('borderBottomWidth') +
-                     styleVals.at('borderTopWidth')));
+    this.setHeight(editorHeight);
 
     drawerElement = TP.byId('south', this.getNativeWindow(), false);
 
@@ -1108,16 +1105,30 @@ function(shouldAnimate) {
         TP.elementSetStyleString(drawerElement, 'transition: none');
     }
 
-    TP.elementSetHeight(drawerElement,
-                        editorHeight +
-                        styleVals.at('borderTopWidth') +
-                        styleVals.at('borderBottomWidth') +
-                        styleVals.at('marginTop') +
-                        styleVals.at('marginBottom') +
-                        styleVals.at('paddingTop') +
-                        styleVals.at('paddingBottom') +
-                        styleVals.at('top') +
-                        styleVals.at('bottom'));
+    //  Add in the padding offsets from ourself.
+    editorHeight += styleVals.at('paddingTop') + styleVals.at('paddingBottom');
+
+    //  Grab the xctrls:panelbox element that we're contained in
+    panelboxElem = TP.byCSSPath('xctrls|panelbox', consoleDrawer, true, false);
+
+    //  Add in the top, bottom, borderTop, borderBottom offsets from ourself.
+
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
+                    panelboxElem,
+                    TP.ac('borderTopWidth', 'borderBottomWidth',
+                            'top', 'bottom'));
+
+    editorHeight += styleVals.at('top') +
+                    styleVals.at('bottom') +
+                    styleVals.at('borderBottomWidth') +
+                    styleVals.at('borderTopWidth');
+
+    //  Add a 1-pixel fudge factor here. This is probably compensating for the
+    //  fact that the xctrls:codeeditor has a 1 pixel margin on top and bottom
+    //  or that the CodeMirror code imposes some sort of overlap.
+    editorHeight += 1;
+
+    TP.elementSetHeight(drawerElement, editorHeight);
 
     if (TP.isFalse(shouldAnimate)) {
         (function() {

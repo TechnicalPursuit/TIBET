@@ -10,10 +10,10 @@ sherpa|console {
     display: block;
     position: absolute;
 
-    top: 30px;
-    right: 28px;
-    left: 28px;
-    bottom: 4px;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -23,7 +23,6 @@ sherpa|console {
     /* This should match TIBET's CONSOLE_INPUT_TIER constant */
     z-index: 20000;
 
-    border: 1px solid black;
     border-radius: 3px;
 
     padding: 2px;

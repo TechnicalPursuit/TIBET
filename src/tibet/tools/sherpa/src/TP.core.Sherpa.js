@@ -1388,9 +1388,10 @@ function() {
     var viewDoc,
 
         consoleOutputTPElem,
+        consoleInputTPElem,
 
         sherpaSouthDrawer,
-        consoleInputTPElem,
+        tshPanel,
 
         testAppender;
 
@@ -1424,10 +1425,14 @@ function() {
     //  Grab the south drawer
     sherpaSouthDrawer = TP.byCSSPath('#south > .drawer', viewDoc, true);
 
-    //  Insert the console input before the 2nd-child.
-    consoleInputTPElem = sherpaSouthDrawer.insertContent(
-                                                consoleInputTPElem,
-                                                '> sherpa|opener:nth-child(2)');
+    //  Grab the panel that the TSH is supposed to go into
+    tshPanel = TP.byPath(
+        './xctrls:panelbox/xctrls:panel[./xctrls:value/. = "TSH"]',
+        sherpaSouthDrawer,
+        true);
+
+    //  Insert our input element into that panel.
+    consoleInputTPElem = tshPanel.insertContent(consoleInputTPElem);
 
     //  Do further set up for the console input. Note that this will also do
     //  further set up for the console output that we attached above.
