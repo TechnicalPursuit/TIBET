@@ -32,6 +32,8 @@ sherpa|consoleoutput {
     z-index: 27500;
 
     transition: margin 0.25s;
+
+    opacity: 0.85;
 }
 
 sherpa|consoleoutput[pclass|hidden] {
