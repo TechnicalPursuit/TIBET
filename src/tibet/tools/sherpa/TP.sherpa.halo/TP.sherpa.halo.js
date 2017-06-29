@@ -366,9 +366,18 @@ function(newTargetTPElem) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
+    var currentTargetTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
     //  If we got a valid TP.core.ElementNode, then we need to go through the
     //  focusing process.
     if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
+
+        //  If it's the same element, then just return
+        if (currentTargetTPElem === newTargetTPElem) {
+            return this;
+        }
 
         //  If we're visible, then move and size the halo to the target
         if (!this.getAttribute('hidden')) {
@@ -395,13 +404,12 @@ function(newTargetTPElem) {
             this.set('$dontSignalBlurFocus', false);
         }
 
-    } else if (TP.isValid(this.get('currentTargetTPElem'))) {
+    } else if (TP.isValid(currentTargetTPElem)) {
 
         //  Otherwise, just blur the existing target.
         this.blur();
     } else {
-        //  No existing target
-        void 0;
+        //  Empty. No existing target
     }
 
     return this;
