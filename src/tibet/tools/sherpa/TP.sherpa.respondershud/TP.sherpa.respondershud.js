@@ -28,6 +28,69 @@ TP.sherpa.respondershud.Inst.defineAttribute('listitems',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineMethod('focusOnTarget',
+function(aTPElement) {
+
+    /**
+     * @method focusOnTarget
+     * @summary Focuses the receiver onto the supplied target.
+     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     *     receiver on.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var node,
+        attr,
+        info,
+        last;
+
+    info = TP.ac();
+
+    node = aTPElement.getNativeNode();
+    while (TP.isNode(node)) {
+        if (!TP.nodeIsResponder(node)) {
+            node = node.parentNode;
+            continue;
+        }
+
+        //  Tricky part here is that if we're looking at a tag that
+        //  also has a controller we want to push both into list.
+        attr = node.getAttribute('tibet:ctrl');
+        if (TP.notEmpty(attr)) {
+            info.push(TP.ac(attr, attr));
+        }
+
+        attr = node.getAttribute('tibet:tag');
+        if (TP.notEmpty(attr)) {
+            info.push(TP.ac(attr, attr));
+        } else {
+            info.push(TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node))));
+        }
+
+        node = node.parentNode;
+    }
+
+    //  Add controller stack so we see those as well.
+    TP.sys.getApplication().getControllers().perform(
+        function(item) {
+            info.push(TP.ac(TP.lid(item, true), TP.tname(item)));
+        });
+
+    //  The list is from 'most specific to least specific' but we want to
+    //  display 'top down' in the sidebar.
+    info.reverse();
+
+    this.setValue(info);
+
+    //  Halo target is always last in the list, and always considered selected.
+    last = this.get('listitems').last();
+    if (TP.isValid(last)) {
+        last.setAttribute('pclass:selected', 'true');
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
@@ -181,13 +244,27 @@ function(updateSelection) {
 
 TP.sherpa.respondershud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
+
+    /**
+     * @method handleInspectTarget
+     * @summary Handles notifications of when the receiver wants to inspect the
+     *     current target and shift the Sherpa's inspector to focus it on that
+     *     target.
+     * @param {TP.sig.InspectTarget} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
     var targetElem,
         peerID,
         target;
 
+    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
 
+    //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
         return this;
     }
@@ -214,58 +291,18 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
      */
 
-    var node,
-        attr,
-        haloTarget,
-        info,
-        last;
+    var haloTarget;
 
-    info = TP.ac();
     haloTarget = aSignal.at('haloTarget');
 
-    node = haloTarget.getNativeNode();
-    while (TP.isNode(node)) {
-        if (!TP.nodeIsResponder(node)) {
-            node = node.parentNode;
-            continue;
-        }
+    this.focusOnTarget(haloTarget);
 
-        //  Tricky part here is that if we're looking at a tag that
-        //  also has a controller we want to push both into list.
-        attr = node.getAttribute('tibet:ctrl');
-        if (TP.notEmpty(attr)) {
-            info.push(TP.ac(attr, attr));
-        }
-
-        attr = node.getAttribute('tibet:tag');
-        if (TP.notEmpty(attr)) {
-            info.push(TP.ac(attr, attr));
-        } else {
-            info.push(TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node))));
-        }
-
-        node = node.parentNode;
-    }
-
-    //  Add controller stack so we see those as well.
-    TP.sys.getApplication().getControllers().perform(
-        function(item) {
-            info.push(TP.ac(TP.lid(item, true), TP.tname(item)));
-        });
-
-    //  The list is from 'most specific to least specific' but we want to
-    //  display 'top down' in the sidebar.
-    info.reverse();
-
-    this.setValue(info);
-
-    //  Halo target is always last in the list, and always considered selected.
-    last = this.get('listitems').last();
-    if (TP.isValid(last)) {
-        last.setAttribute('pclass:selected', 'true');
-    }
+    this.observe(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
 
     return this;
 });
@@ -280,9 +317,64 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
      */
 
     this.setValue(null);
+
+    this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('MutationAttach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationAttach
+     * @summary Handles notifications of node attachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
 
     return this;
 });

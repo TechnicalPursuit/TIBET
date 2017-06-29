@@ -28,6 +28,48 @@ TP.sherpa.styleshud.Inst.defineAttribute('listitems',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineMethod('focusOnTarget',
+function(aTPElement) {
+
+    /**
+     * @method focusOnTarget
+     * @summary Focuses the receiver onto the supplied target.
+     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     *     receiver on.
+     * @return {TP.sherpa.styleshud} The receiver.
+     */
+
+    var info,
+        node,
+        rules;
+
+    node = TP.canInvoke(aTPElement, 'getNativeNode') ?
+                            aTPElement.getNativeNode() :
+                            aTPElement;
+
+    info = TP.ac();
+
+    if (TP.isElement(node)) {
+        rules = TP.elementGetAppliedNativeStyleRules(node);
+
+        rules.perform(
+            function(aRule) {
+                info.push(
+                    TP.ac(
+                        TP.uriInTIBETFormat(
+                            TP.styleSheetGetLocation(aRule.parentStyleSheet)),
+                        aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
+                        aRule.cssText));
+            });
+    }
+
+    info.reverse();
+
+    this.setValue(info);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
@@ -188,13 +230,26 @@ function(updateSelection) {
 TP.sherpa.styleshud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
 
+    /**
+     * @method handleInspectTarget
+     * @summary Handles notifications of when the receiver wants to inspect the
+     *     current target and shift the Sherpa's inspector to focus it on that
+     *     target.
+     * @param {TP.sig.InspectTarget} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
+     */
+
     var targetElem,
         peerID,
         target;
 
+    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
 
+    //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
         return this;
     }
@@ -204,9 +259,9 @@ function(aSignal) {
 
     //  Not an element so focus inspector, not halo.
     this.signal('InspectObject',
-            TP.hc('targetObject', target,
-                    'targetAspect', TP.id(target),
-                    'showBusy', true));
+                TP.hc('targetObject', target,
+                        'targetAspect', TP.id(target),
+                        'showBusy', true));
 
     return this;
 });
@@ -221,37 +276,18 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
      */
 
-    var haloTarget,
-        info,
-        node,
-        rules;
+    var haloTarget;
 
     haloTarget = aSignal.at('haloTarget');
 
-    node = TP.canInvoke(haloTarget, 'getNativeNode') ?
-        haloTarget.getNativeNode() : haloTarget;
+    this.focusOnTarget(haloTarget);
 
-    info = TP.ac();
-
-    if (TP.isElement(node)) {
-        rules = TP.elementGetAppliedNativeStyleRules(node);
-
-        rules.perform(
-        function(aRule) {
-            info.push(
-                TP.ac(
-                    TP.uriInTIBETFormat(
-                        TP.styleSheetGetLocation(aRule.parentStyleSheet)),
-                    aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
-                    aRule.cssText));
-        });
-    }
-
-    info.reverse();
-
-    this.setValue(info);
+    this.observe(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
 
     return this;
 });
@@ -266,9 +302,64 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
      */
 
     this.setValue(null);
+
+    this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('MutationAttach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationAttach
+     * @summary Handles notifications of node attachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
 
     return this;
 });

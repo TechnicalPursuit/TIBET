@@ -66,12 +66,77 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineMethod('resetToRoot',
+TP.sherpa.domhud.Inst.defineMethod('focusOnTarget',
+function(aTPElement) {
+
+    /**
+     * @method focusOnTarget
+     * @summary Focuses the receiver onto the supplied target.
+     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     *     receiver on.
+     * @return {TP.sherpa.domhud} The receiver.
+     */
+
+    var info,
+        nodes;
+
+    info = TP.ac();
+
+    //  Get the supplied element's ancestor chain and build a list from that.
+
+    nodes = aTPElement.getAncestors();
+
+    //  Unshift the supplied element onto the front.
+    nodes.unshift(aTPElement);
+
+    //  Reverse the list so that the top-most anscestor is first and the
+    //  supplied element is last.
+    nodes.reverse();
+
+    //  Concatenate all of the child elements onto the list.
+    nodes = nodes.concat(aTPElement.getChildElements());
+
+    nodes.perform(
+        function(aNode) {
+            var node,
+                arr;
+
+            node = TP.canInvoke(aNode, 'getNativeNode') ?
+                                    aNode.getNativeNode() :
+                                    aNode;
+
+            if (!TP.isElement(node)) {
+                return;
+            }
+
+            arr = TP.ac(
+                    TP.lid(node, true),
+                    TP.elementGetFullName(node));
+            if (aNode === aTPElement) {
+                arr.push('target');
+            } else if (aNode.getParentNode().getNativeNode() ===
+                        aTPElement.getNativeNode()) {
+                arr.push('child');
+            }
+            info.push(arr);
+        });
+
+    //  List expects an array of arrays containing IDs and full names.
+    this.setValue(info);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('focusOnUICanvasRoot',
 function() {
 
     /**
-     * @method setup
-     * @summary
+     * @method focusOnUICanvasRoot
+     * @summary Focuses the receiver on the UI canvas's 'root' (i.e. document)
+     *     element.
+     * @return {TP.sherpa.domhud} The receiver.
      */
 
     var root,
@@ -101,10 +166,11 @@ function() {
 
     /**
      * @method setup
-     * @summary
+     * @summary Perform the initial setup for the receiver.
+     * @return {TP.sherpa.domhud} The receiver.
      */
 
-    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+    this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
                             'ClosedChange');
 
     return this;
@@ -277,20 +343,20 @@ function(aSignal) {
     /**
      * @method handleClosedChange
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.halo} The receiver.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.domhud} The receiver.
      */
 
     var hud,
         hudIsHidden;
 
     //  Grab the HUD and see if it's currently open or closed.
-    hud = TP.byId('SherpaHUD', this.getNativeWindow());
+    hud = TP.byId('SherpaHUD', this.getNativeDocument());
     hudIsHidden = TP.bc(hud.getAttribute('closed'));
 
     if (!hudIsHidden) {
-        this.resetToRoot();
+        this.focusOnUICanvasRoot();
     }
 
     return this;
@@ -303,6 +369,15 @@ function(aSignal) {
 TP.sherpa.domhud.Inst.defineHandler('FocusHalo',
 function(aSignal) {
 
+    /**
+     * @method handleFocusHalo
+     * @summary Handles notifications of when the receiver wants to focus the
+     *     halo.
+     * @param {TP.sig.FocusHalo} aSignal The TIBET signal which triggered this
+     *     method.
+     * @return {TP.sherpa.domhud} The receiver.
+     */
+
     var targetElem,
         peerID,
 
@@ -310,21 +385,27 @@ function(aSignal) {
 
         halo;
 
+    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
 
+    //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
         return this;
     }
 
-    //  NB: We want to query the current canvas here - no node context
+    //  NB: We want to query the current UI canvas here - no node context
     //  necessary.
     haloTarget = TP.byId(peerID);
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
-    halo.blur();
-    halo.focusOn(haloTarget);
+    if (haloTarget !== halo.get('currentTargetTPElem')) {
+        //  Blur and refocus the halo on the haloTarget.
+        halo.blur();
+        halo.focusOn(haloTarget);
+    }
 
     halo.setAttribute('hidden', false);
 
@@ -336,16 +417,50 @@ function(aSignal) {
 TP.sherpa.domhud.Inst.defineHandler('FocusAndInspectHalo',
 function(aSignal) {
 
-    var targetElem,
-        peerID;
+    /**
+     * @method handleFocusAndInspectHalo
+     * @summary Handles notifications of when the receiver wants to focus the
+     *     halo and shift the Sherpa's inspector to focus it on the halo's
+     *     target.
+     * @param {TP.sig.FocusAndInspectHalo} aSignal The TIBET signal which
+     *     triggered this method.
+     * @return {TP.sherpa.domhud} The receiver.
+     */
 
+    var targetElem,
+        peerID,
+
+        haloTarget,
+
+        halo;
+
+    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
 
+    //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
         return this;
     }
 
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
+    haloTarget = TP.byId(peerID);
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+    if (haloTarget !== halo.get('currentTargetTPElem')) {
+        //  Blur and refocus the halo on the haloTarget.
+        halo.blur();
+        halo.focusOn(haloTarget);
+    }
+
+    halo.setAttribute('hidden', false);
+
+    //  Fire a 'ConsoleCommand' signal that will be picked up and processed by
+    //  the Sherpa console. Send command text asking it to inspect the current
+    //  target of the halo.
     TP.signal(null,
                 'ConsoleCommand',
                 TP.hc('cmdText', ':inspect $HALO'));
@@ -363,46 +478,18 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.domhud} The receiver.
      */
 
-    var haloTarget,
-        info,
-        nodes;
+    var haloTarget;
 
     haloTarget = aSignal.at('haloTarget');
 
-    info = TP.ac();
+    this.focusOnTarget(haloTarget);
 
-    nodes = haloTarget.getAncestors();
-    nodes.unshift(haloTarget);
-    nodes.reverse();
-    nodes = nodes.concat(haloTarget.getChildElements());
-
-    nodes.perform(
-        function(aNode) {
-            var node,
-                arr;
-
-            node = TP.canInvoke(aNode, 'getNativeNode') ?
-                aNode.getNativeNode() : aNode;
-
-            if (!TP.isElement(node)) {
-                return;
-            }
-
-            arr = TP.ac(
-                TP.lid(node, true),
-                TP.elementGetFullName(node));
-            if (aNode === haloTarget) {
-                arr.push('target');
-            } else if (aNode.getParentNode().getNativeNode() ===
-                    haloTarget.getNativeNode()) {
-                arr.push('child');
-            }
-            info.push(arr);
-        });
-
-    this.setValue(info);
+    this.observe(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
 
     return this;
 });
@@ -417,9 +504,64 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.domhud} The receiver.
      */
 
-    this.resetToRoot();
+    this.focusOnUICanvasRoot();
+
+    this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('MutationAttach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationAttach
+     * @summary Handles notifications of node attachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.domhud} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.domhud} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
 
     return this;
 });
