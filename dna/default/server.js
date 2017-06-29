@@ -12,7 +12,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint-disable no-console */
+/* eslint-disable no-console, no-process-exit */
 
 (function() {
 
@@ -38,6 +38,8 @@
         port,               // Port to listen on.
         protocol,           // HTTP or HTTPS.
         TDS,                // TIBET Data Server baseline.
+        shutdown,           // Exit hook function.
+        called,             // Trap in shutdown to avoid running twice.
         useHttps;           // Should this be an HTTPS server.
 
     //  ---
@@ -170,12 +172,12 @@
                 ' is busy.');
         } else if (app.get('env') === 'development') {
             stack = err.stack || '';
-            logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
+            TDS.logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
         } else {
-            logger.error('Uncaught: \n' + err.message, meta);
+            TDS.logger.error('Uncaught: \n' + err.message, meta);
         }
 
-        logger.flush(true);
+        TDS.logger.flush(true);
 
         if (TDS.cfg('tds.stop_onerror')) {
             /* eslint-disable no-process-exit */
@@ -183,6 +185,63 @@
             /* eslint-enable no-process-exit */
         }
     });
+
+    //  ---
+    //  Graceful Shutdown Hook
+    //  ---
+
+    called = false;
+    shutdown = function() {
+
+        if (called) {
+            return;
+        }
+        called = true;
+
+        TDS.logger.system();    //  blank to get past ctrl char etc.
+        TDS.logger.system('processing shutdown request', meta);
+
+        if (TDS.httpsServer) {
+
+            TDS.logger.system('shutting down HTTPS server', meta);
+
+            TDS.httpsServer.close(function(err) {
+                if (err) {
+                    TDS.logger.error('HTTPS server: ' + err.message, meta);
+                }
+                //  NOTE we don't exit process from here...we rely on the
+                //  httpServer to do that so they don't fight over it. We have
+                //  this close() operation just to get server to stop any new
+                //  connections from coming in.
+                return;
+            });
+        }
+
+        TDS.logger.system('shutting down HTTP server', meta);
+
+        TDS.httpServer.close(function(err) {
+            var code;
+
+            if (err) {
+                TDS.logger.error('HTTP server: ' + err.message, meta);
+            }
+
+            //  This will call process.exit();
+            code = TDS.shutdown(err, meta);
+
+            TDS.logger.system('shutdown complete', meta);
+
+            TDS.logger.flush(true);
+
+            process.exit(code);
+        });
+    };
+
+    process.on('SIGINT', shutdown);
+    process.on('SIGHUP', shutdown);
+    process.on('SIGQUIT', shutdown);
+    process.on('SIGTERM', shutdown);
+    process.on('exit', shutdown);
 
     //  ---
     //  Run That Baby!

@@ -87,6 +87,7 @@ Cmd.prototype.execute = function() {
         child,  // The child_process module.
         args,   // Argument list for child process.
         server, // Spawned child process for the server.
+        noop,   // Empty hook function to trigger signal passing to client.
         cmd,    // Closure'd var providing access to the command object.
         inuse,  // Flag to trap EADDRINUSE exceptions.
         msg,    // Shared message content.
@@ -179,13 +180,24 @@ Cmd.prototype.execute = function() {
 
     server.on('close', function(code) {
         if (code !== 0) {
-            cmd.error('Stopped with status: ' + code);
+            cmd.error('stopped with status: ' + code);
             /* eslint-disable no-process-exit */
             // exit with status code so command line sees proper exit code.
             process.exit(code);
             /* eslint-enable no-process-exit */
         }
     });
+
+    //  NOTE that by registering here in the parent we end up with transmission
+    //  to the client process. See server.js for the actual handler logic.
+    noop = function() {
+        return;
+    };
+    process.on('SIGINT', noop);
+    process.on('SIGHUP', noop);
+    process.on('SIGQUIT', noop);
+    process.on('SIGTERM', noop);
+    process.on('exit', noop);
 
     return 0;
 };

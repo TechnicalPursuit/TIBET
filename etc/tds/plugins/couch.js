@@ -53,6 +53,7 @@
             inserting,
             lastSeq,
             logger,
+            meta,
             mime,
             nano,
             params,
@@ -72,6 +73,12 @@
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
+
+        meta = {
+            comp: 'TWS',
+            type: 'plugin',
+            name: 'couch'
+        };
 
         //  ---
         //  Requires
@@ -884,6 +891,18 @@
                 }
             }
         };
+
+        //  ---
+        //  Shutdown
+        //  ---
+
+        TDS.addShutdownHook(function(server) {
+
+            meta.style = 'error';
+            server.logger.system('shutting down CouchDB change feed follower', meta);
+
+            //  TODO
+        });
 
         //  ---
         //  Activation

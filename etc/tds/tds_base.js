@@ -119,6 +119,12 @@
     TDS._prologs = [];
 
     /**
+     * A list of functions to run during TDS.shutdown operation.
+     * @type {Array}
+     */
+    TDS._shutdownHooks = [];
+
+    /**
      * A handle to the couch module for use by couch-related consumers.
      * @type {Object};
      */
@@ -254,6 +260,16 @@
         }
 
         return target;
+    };
+
+    /**
+     * Registers a function to be run during TDS.shutdown processing. Normally
+     * used to close open connections etc.
+     * @param {Function} hook A function taking the TDS instance as its only
+     *     parameter.
+     */
+    TDS.addShutdownHook = function(hook) {
+        TDS._shutdownHooks.push(hook);
     };
 
     /**
@@ -1033,6 +1049,33 @@
         this.initPackage();
 
         return TDS._package.setcfg(property, value);
+    };
+
+    /**
+     * Shuts down the TDS, letting any registered shutdown hooks run to close
+     * connections etc.
+     */
+    TDS.shutdown = function(err, meta) {
+        var hooks,
+            code;
+
+        TDS.logger.system('shutting down TDS middleware', meta);
+
+        code = err ? 1 : 0;
+
+        hooks = TDS._shutdownHooks;
+        hooks.forEach(function(func) {
+            try {
+                func(TDS, meta);
+            } catch (e) {
+                code = 1;
+                TDS.logger.error(e.message, meta);
+            }
+        });
+
+        TDS.logger.system('TDS middleware shut down', meta);
+
+        return code;
     };
 
     /**

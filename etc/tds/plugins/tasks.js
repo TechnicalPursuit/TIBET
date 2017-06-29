@@ -1354,6 +1354,18 @@
             }
         });
 
+        //  ---
+        //  Shutdown
+        //  ---
+
+        TDS.addShutdownHook(function(server) {
+
+            meta.style = 'error';
+            server.logger.system('shutting down TWS change feed follower', meta);
+
+            //  TODO
+        });
+
 
         //  ---
         //  Middleware
