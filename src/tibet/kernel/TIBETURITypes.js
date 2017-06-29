@@ -4712,6 +4712,9 @@ function(aRequest, filterResult) {
 
         if (TP.notValid(result) || refresh) {
             result = this.$resolveName(this.getName());
+
+            //  Store the result as our resource, we just refreshed.
+            this.$set('resource', result, false);
         }
     }
 
@@ -11168,8 +11171,11 @@ function(targetURI, aRequest) {
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
 
-                //  NOTE that this takes care of loaded/dirty state.
-                // result = targetURI.updateResourceCache(subrequest);
+                //  NOTE we call both the getRequestedResource and
+                //  setPrimaryResource methods here. File URLs don't go through
+                //  the low-level HTTP handlers so they need both halves of the
+                //  former updateResourceCache method to be called here.
+                result = targetURI.getRequestedResource(subrequest);
                 targetURI.$setPrimaryResource(result);
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
@@ -11203,13 +11209,9 @@ function(targetURI, aRequest) {
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
 
-                // targetURI.updateResourceCache(subrequest);
+                //  Ensure the URI value is cleared. We don't want it to be
+                //  retained if the process failed.
                 targetURI.$setPrimaryResource(undefined);
-
-                //  updateResourceCache resets these, but when we fail we
-                //  don't want them cleared
-                targetURI.isLoaded(false);
-                targetURI.isDirty(true);
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
