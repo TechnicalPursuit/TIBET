@@ -19,11 +19,13 @@
 
 var CLI,
     Cmd,
-    sh;
+    sh,
+    path;
 
 CLI = require('./_cli');
 
 sh = require('shelljs');
+path = require('path');
 
 //  ---
 //  Type Construction
@@ -85,7 +87,8 @@ Cmd.NAME = 'test';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok', 'karma'],
+        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok',
+            'karma'],
         'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
         'default': {
             tap: true,
@@ -109,12 +112,11 @@ Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suit
  * Execute either Karma or PhantomJS-based testing.
  */
 Cmd.prototype.execute = function() {
-    var karmafile,
-        path;
-
-    path = require('path');
+    var karmafile;
 
     if (this.options.karma) {
+        //  Not really checking as much as calling when available and falling
+        //  through when not so we default back down to phantomjs.
         karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
         if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
             return this.executeViaKarma();
@@ -355,6 +357,28 @@ Cmd.prototype.getScript = function() {
     }
 
     return target;
+};
+
+
+/**
+ * Verify any command prerequisites are in place. In this case phantomjs must be
+ * a binary we can locate.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.prereqs = function() {
+    var karmafile;
+
+    if (this.options.karma) {
+        this.info('Checking project for karma configuration...');
+        karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
+        if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
+            return 0;
+        }
+        this.warn('karma not configured/installed for project.');
+    }
+
+    //  Parent will check phantomjs availability.
+    return Cmd.Parent.prototype.prereqs.call(this);
 };
 
 
