@@ -974,70 +974,57 @@ function(aURI) {
     /**
      * @method processRemoteResourceChange
      * @summary Processes a 'remote resource' change for the supplied URI.
-     * @description Depending on whether the supplied URI 'isWatched' and will
-     *     process changes from its remote resource or not, this method will
-     *     either immediately refresh the URI or it will puts an entry for the
-     *     supplied URI into a queue that manages URIs that have had their
-     *     remote resources changed, but don't refresh. The
-     *     'refreshChangedURIs()' method can then be used to force refresh.
+     *     Invoked automatically by the TDS and Couch URL handlers to notify
+     *     the system that a remote resource has changed value.
+     * @description Depending on whether the supplied URI 'isWatched' and
+     *     therefore will process changes from its remote resource or not, this
+     *     method will either refresh the URI (via refreshFromRemoteResource) or
+     *     it will put an entry for the supplied URI into a hash that tracks
+     *     URIs that have had their remote resources changed without refreshing.
+     *     The 'refreshChangedURIs()' method can then be used to process them.
      * @param {TP.core.URI|String} aURI The URI that had its remote resource
      *     changed.
      * @returns {Promise} A promise which resolves based on success.
      */
 
     var shouldProcess,
+        watched,
         resourceHash,
+        locHash,
         loc,
-        packages,
         count;
 
+    //  Track system-wide process flag.
     shouldProcess = TP.sys.cfg('uri.process_remote_changes');
-
-    resourceHash = TP.core.URI.get('changedResources');
-    loc = aURI.getLocation();
+    watched = aURI.isWatched();
 
     //  If we're supposed to process AND the uri is configured for processing
-    //  we attempt to process it. Otherwise we'll drop into 'else' and just
-    //  track it and count unprocessed changes.
-    if (shouldProcess && aURI.isWatched()) {
-
-        //  Confirm the URI in question should be loaded (either it already has
-        //  loaded or it's in the list of "should have loaded" based on config.)
-        if (TP.boot.$isLoadableScript(loc)) {
-            return aURI.refreshFromRemoteResource();
-        } else {
-            //  Could be a package...
-            packages = TP.keys(TP.boot.$$packages);
-            if (packages.contains(loc)) {
-                return aURI.refreshFromRemoteResource().then(
-                        function() {
-                            //  Once we load a package update we need to tell
-                            //  the system to refresh its package cache for
-                            //  potential file updates.
-                            TP.boot.$refreshPackages(loc);
-                        }).catch(
-                        function(err) {
-                            TP.ifError() ?
-                                TP.error('Error refreshing packages: ' +
-                                            TP.str(err)) : 0;
-                        });
-            } else if (aURI.getMIMEType() !== TP.JS_TEXT_ENCODED) {
-                //  Another resource that is *not* a JS file - we don't want
-                //  random JS files. Note that the getMIMEType() test is more
-                //  robust than just checking the extension.
-                return aURI.refreshFromRemoteResource();
-            }
-        }
-    } else {
-        if (!resourceHash.containsKey(loc)) {
-            resourceHash.atPut(loc, TP.hc('count', 1, 'targetURI', aURI));
-        } else {
-            count = resourceHash.at(loc).at('count');
-            resourceHash.at(loc).atPut('count', count + 1);
-
-            resourceHash.changed();
-        }
+    //  then let it refresh from its remote data source.
+    if (shouldProcess && watched) {
+        return aURI.refreshFromRemoteResource();
     }
+
+    //  Either processing is off or the resource is marked to not process. If
+    //  it's marked not to process then we can just exit. It shouldn't be in the
+    //  resource hash for changed resources if it's not watched.
+    if (!watched) {
+        return;
+    }
+
+    //  All marked but unprocessed locations get tracked for later processing.
+    loc = aURI.getLocation();
+    resourceHash = TP.core.URI.get('changedResources');
+    locHash = resourceHash.at(loc);
+
+    if (TP.notValid(locHash)) {
+        locHash = TP.hc('count', 0, 'targetURI', aURI);
+        resourceHash.atPut(loc, locHash);
+    }
+
+    count = locHash.at('count');
+    locHash.atPut('count', count + 1);
+
+    resourceHash.changed();
 
     return TP.extern.Promise.resolve();
 });
@@ -3168,10 +3155,12 @@ function() {
 
     /**
      * @method refreshFromRemoteResource
-     * @summary Refreshes the receiver from the remote resource its
-     *     representing. Note that subtypes of this type should override this
-     *     method.
-     * @returns {TP.core.URI} The receiver.
+     * @summary Refreshes the receiver's content from the remote resource it
+     *     represents. Upon refreshing the content this method will invoke
+     *     processRefreshedContent to perform any post-processing of the
+     *     content appropriate for the target URI. The default implementation
+     *     must by overridden by subtypes.
+     * @returns {Promise} A promise which resolves on completion.
      */
 
     return TP.override();
@@ -6473,14 +6462,17 @@ function() {
 
     /**
      * @method refreshFromRemoteResource
-     * @summary Refreshes the receiver from the remote resource it's
-     *     representing.
+     * @summary Refreshes the receiver's content from the remote resource it
+     *     represents. Upon refreshing the content this method will invoke
+     *     processRefreshedContent to perform any post-processing of the
+     *     content appropriate for the target URI.
      * @returns {Promise} A promise which resolves on completion.
      */
 
     var callback,
-        loc,
-        secondaryURIs;
+        secondaryURIs,
+        changedLoc,
+        normalizedLoc;
 
     if (this.isWatched()) {
         this.isLoaded(false);
@@ -6496,7 +6488,8 @@ function() {
                 });
     }
 
-    loc = this.getLocation();
+    changedLoc = this.getLocation();
+    normalizedLoc = TP.uriInTIBETFormat(changedLoc);
 
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
@@ -6509,18 +6502,35 @@ function() {
             return;
         }
 
-        //  Refetch via constructor and location to get uniqued instance.
-        url = TP.uc(loc);
+        url = TP.uc(changedLoc);
+
+        //  Is the changed location one of our loaded package files? If so we
+        //  need to process it as a package, not a random file or script.
+        if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
+
+            //  Force refresh of any package data, particularly related to the
+            //  URI we're referencing.
+            TP.boot.$refreshPackages(changedLoc);
+
+            //  Import any new scripts that would have booted with the system.
+            //  NOTE we pass 'true' to the shouldSignal flag here to tell this
+            //  particular import we want scripts to signal Change on load.
+            TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig, true);
+        }
+
+        //  Trigger post-processing for specific URIs.
         url.processRefreshedContent();
     };
+
 
     //  If the receiver refers to a file that was loaded (meaning it's mentioned
     //  in a TIBET package config) we source it back in rather than just
     //  loading via simple XHR.
-    if (TP.boot.$isLoadableScript(loc)) {
-        TP.debug('Sourcing in updates to ' + loc);
-        return TP.sys.importSource(loc).then(callback, callback);
+    if (TP.boot.$isLoadableScript(changedLoc)) {
+        TP.debug('Sourcing in updates to ' + changedLoc);
+        return TP.sys.importSource(changedLoc).then(callback, callback);
     } else {
+        TP.debug('Reading in changes to ' + changedLoc);
         return this.getResource().then(callback, callback);
     }
 });
@@ -6533,40 +6543,13 @@ function() {
     /**
      * @method processRefreshedContent
      * @summary Invoked when remote resource changes have been loaded to provide
-     *     the receiver with the chance to post-process those changes.
+     *     the receiver with the chance to post-process those changes. If you
+     *     override this method you should signal Change (this.$changed) once
+     *     you have completed processing to notify potential observers.
      * @returns {TP.core.URL} The receiver.
      */
 
-    var changedLoc,
-        normalizedLoc;
-
-    //  Watch specifically for changes to application manifest which might
-    //  indicate new code has been added to the project. These files don't
-    //  get observed since they never trigger a mutation observer.
-    changedLoc = this.getLocation();
-    normalizedLoc = TP.uriInTIBETFormat(changedLoc);
-
-    //  Is the changed location one of our loaded package files? If so we
-    //  need to process it as a package, not a random file or script.
-    if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
-
-        //  Force refresh of any package data, particularly related to the
-        //  URI we're referencing.
-        TP.boot.$refreshPackages(changedLoc);
-
-        //  Import any new scripts that would have booted with the system.
-        TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
-
-    } else if (TP.boot.$isLoadableScript(changedLoc)) {
-
-        //  If the refreshed URI didn't represent a manifest file but it was
-        //  a script file (i.e. '.js' file), then the 'importSourceLoc' call
-        //  below *won't* signal a 'TP.sig.ValueChange' when it changes. We
-        //  need to do that manually here.
-        this.$changed();
-    }
-
-    return this;
+    return this.$changed();
 });
 
 //  ------------------------------------------------------------------------

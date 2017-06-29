@@ -9,7 +9,7 @@
 //  ========================================================================
 
 TP.sys.defineMethod('importPackage',
-function(packageName, configName) {
+function(packageName, configName, shouldSignal) {
 
     /**
      * @method importPackage
@@ -19,6 +19,8 @@ function(packageName, configName) {
      * @param {String} packageName The package name to locate and import.
      * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
+     * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
+     *     they've completed their import process?
      * @returns {Promise} A promise which resolved based on success.
      */
 
@@ -69,12 +71,17 @@ function(packageName, configName) {
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
     promises = missingScripts.map(function(path) {
-        return TP.sys.importScript(
-                        path,
-                        TP.request('callback',
-                                    function() {
-                                        loadedScripts.push(path);
-                                    }));
+        return TP.sys.importScript(path,
+            TP.request('callback', function() {
+                var url;
+
+                loadedScripts.push(path);
+
+                if (shouldSignal) {
+                    url = TP.uc(path);
+                    url.$changed();
+                }
+            }));
     });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
