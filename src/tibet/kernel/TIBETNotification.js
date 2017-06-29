@@ -4652,9 +4652,11 @@ function(aSignal, handlerFlags) {
     }
 
     if (ignore) {
+        /*
         TP.debug('notifyControllers ignoring ' + aSignal.getSignalName() +
             ' sig? ' + aSignal.isControllerSignal() + ' root? ' +
             aSignal.isControllerRoot());
+        */
         return;
     }
 

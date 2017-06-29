@@ -6427,7 +6427,7 @@ function() {
         controller,
         sherpa;
 
-    TP.info('refreshing controller stack');
+    TP.info('Refreshing controller stack...');
 
     controllers = TP.ac();
     this.$set('controllers', controllers, false);

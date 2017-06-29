@@ -9551,6 +9551,7 @@ TP.boot.$$importPhase = function() {
 
     var package,
         config,
+        phase,
         nodelist;
 
     //  Get the list of filtered nodes by listing the assets. This action causes
@@ -9558,11 +9559,13 @@ TP.boot.$$importPhase = function() {
 
     package = TP.boot.$$bootfile;
     config = TP.sys.cfg('boot.config');
+    phase = TP.sys.cfg('boot.phase_one') ? 'Phase One' : 'Phase Two';
 
     nodelist = TP.boot.$listPackageAssets(package, config);
 
     //  remaining list is our workload for actual importing
-    TP.boot.$stdout('Importing ' + nodelist.length + ' components.',
+    TP.boot.$stdout('Importing ' + nodelist.length + ' ' +
+        phase + ' components.',
                    TP.SYSTEM);
 
     TP.boot.$$bootnodes = nodelist;
