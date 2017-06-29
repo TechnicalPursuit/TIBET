@@ -5697,6 +5697,7 @@ function(aRequest, filterResult) {
      */
 
     var url,
+        request,
         subrequest,
         loaded,
         refresh,
@@ -5710,11 +5711,14 @@ function(aRequest, filterResult) {
         return url.$getPrimaryResource(aRequest, filterResult);
     }
 
+    request = this.constructRequest(aRequest);
+    request.atPutIfAbsent('signalChange', false);
+
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
-    subrequest = this.constructSubrequest(aRequest);
+    subrequest = this.constructSubrequest(request);
 
     loaded = this.isLoaded();
 
@@ -5750,7 +5754,7 @@ function(aRequest, filterResult) {
                 result = aResult;
 
                 if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
-                    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
+                    resultType = TP.ifKeyInvalid(request, 'resultType', null);
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
@@ -5763,7 +5767,7 @@ function(aRequest, filterResult) {
                     //  triggering a set of change notifications that will alter
                     //  the representation before we have a chance to update it,
                     //  thereby causing much confusion.
-                    thisref.$setPrimaryResource(result, aRequest, false);
+                    thisref.$setPrimaryResource(result, request, false);
 
                     //  If this URI was loaded and not dirty before, then the
                     //  only reason it got 'dirtied' in the call above is that
@@ -5779,7 +5783,7 @@ function(aRequest, filterResult) {
                     //  NOTE that this takes care of loaded/dirty state.
                     */
                     // thisref.updateResourceCache(subrequest);
-                    thisref.$setPrimaryResource(result, aRequest, false);
+                    thisref.$setPrimaryResource(result, request, false);
                 }
 
                 //  rewrite the request result object so we hold on to the
@@ -5788,8 +5792,8 @@ function(aRequest, filterResult) {
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
-                if (TP.canInvoke(aRequest, 'complete')) {
-                    aRequest.complete(result);
+                if (TP.canInvoke(request, 'complete')) {
+                    request.complete(result);
                 }
             });
 
@@ -5810,8 +5814,8 @@ function(aRequest, filterResult) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -5835,7 +5839,7 @@ function(aRequest, filterResult) {
     }
 
     if (async) {
-        aRequest.andJoinChild(subrequest);
+        request.andJoinChild(subrequest);
 
         //  if we have a response we must have done a refresh, otherwise
         //  we're working with whatever data we had cached. In that case we
@@ -5846,8 +5850,8 @@ function(aRequest, filterResult) {
             //  our cache. now we just need to "fake" a response, which we
             //  want to associate with the original request object if there
             //  was one.
-            if (TP.canInvoke(aRequest, 'getResponse')) {
-                response = aRequest.getResponse();
+            if (TP.canInvoke(request, 'getResponse')) {
+                response = request.getResponse();
             } else {
                 response = subrequest.getResponse();
             }
