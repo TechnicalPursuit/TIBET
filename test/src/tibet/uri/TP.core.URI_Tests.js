@@ -11,7 +11,7 @@
 /* eslint-disable no-script-url */
 
 //  ========================================================================
-//  URI
+//  TIBETURL
 //  ========================================================================
 
 TP.core.TIBETURL.Inst.describe('construct',
@@ -1074,7 +1074,9 @@ function() {
         });
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TIBETURN
+//  ========================================================================
 
 TP.core.TIBETURN.Inst.describe('getResource',
 function() {
@@ -1118,408 +1120,6 @@ function() {
             foo,
             TP.sc('urn:tibet:FOO should refer to the FOO object in the code frame.'));
     });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.HTTPURL.Inst.describe('getResource',
-function() {
-
-    var params,
-        locStr,
-        resultElem,
-
-        server;
-
-    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
-    locStr = '/TIBET_endpoints/HTTP_GET_TEST';
-    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
-
-    this.beforeEach(
-        function() {
-            server = TP.test.fakeServer.create();
-        });
-
-    //  ---
-
-    this.afterEach(
-        function() {
-            server.restore();
-        });
-
-    //  ---
-
-    this.it('HTTPURL: Retrieve resource asynchronously', function(test, options) {
-        var url,
-            request;
-
-        server.respondWith(
-            TP.HTTP_GET,
-            locStr,
-            [
-                200,
-                {
-                    'Content-Type': TP.XML_ENCODED
-                },
-                resultElem.asString()
-            ]);
-
-        url = TP.uc(locStr);
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        request = TP.request(params);
-        request.defineMethod('complete',
-            function(aResult) {
-                var result;
-
-                result = aResult;
-                if (TP.notValid(result)) {
-                    result = request.get('result');
-                }
-                test.assert.isEqualTo(
-                        result.get('html|body'),
-                        resultElem.get('html|body'));
-
-                TP.uc(locStr).unregister();
-            });
-
-        url.getResource(request);
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
-        //  empty
-    }).todo();
-
-}).skip(!TP.sys.isHTTPBased());
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONPURL.Inst.describe('getResource',
-function() {
-
-    var params,
-        locStr,
-
-        stub;
-
-    params = TP.request('refresh', true, 'async', true);
-    locStr = 'jsonp://ajax.googleapis.com/ajax/services/search/web?' +
-                'v=1.0&q=football&start=10';
-
-    this.before(
-        function() {
-            stub = TP.jsonpCall.asStub();
-        });
-
-    //  ---
-
-    this.it('JSONPURL: Retrieve resource asynchronously', function(test, options) {
-        var url,
-            request;
-
-        stub.callsArgWith(1, '{"foo":"bar"}');
-
-        url = TP.uc(locStr);
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        request = TP.request(params);
-        request.defineMethod('complete',
-            function(aResult) {
-                var result;
-
-                result = aResult;
-                if (TP.notValid(result)) {
-                    result = request.get('result');
-                }
-                test.assert.isValid(
-                    result,
-                    TP.sc('Expected valid result but got none.'));
-
-                TP.uc(locStr).unregister();
-            });
-
-        url.getResource(request);
-    });
-
-    //  ---
-
-    this.after(
-        function() {
-            stub.restore();
-        });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.PouchDBURL.Inst.describe('getResource',
-function() {
-
-    var testDb;
-
-    this.before(
-        function(suite, options) {
-
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var now,
-
-                        pouchPromise,
-                        promise;
-
-                    now = Date.now();
-
-                    testDb = new TP.extern.PouchDB('pouch_test');
-
-                    pouchPromise = testDb.put(
-                        {
-                            _id: 'author_info',
-                            date_created: now,
-                            date_modified: now,
-                            body: {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
-                        });
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
-                });
-        });
-
-    //  ---
-
-    this.it('PouchDBURL: Retrieve resource', function(test, options) {
-
-        var url;
-
-        //  A GET request here using the ID causes a RETRIEVE
-        url = TP.uc('pouchdb://pouch_test/author_info');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try
-        //  to reload from the underlying source.
-        url.isLoaded(false);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var pouchRequest;
-
-                //  Implied method here is TP.HTTP_GET. Also, pouchdb://
-                //  URLs are asynchronous and configure their request to
-                //  'refresh' automatically.
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'async', true));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data').at('body');
-
-                        test.assert.isTrue(
-                            result.hasKey('firstName'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'firstName\' and it doesn\'t'));
-
-                        test.assert.isEqualTo(
-                                result.at('firstName'),
-                                'Bill',
-                                TP.sc('Expected: ', '"Bill"',
-                                        ' and got instead: ',
-                                        result.at('firstName'), '.'));
-
-                        test.assert.isTrue(
-                            result.hasKey('lastName'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'lastName\' and it doesn\'t'));
-
-                        test.assert.isEqualTo(
-                                result.at('lastName'),
-                                'Edney',
-                                TP.sc('Expected: ', '"Edney"',
-                                        ' and got instead: ',
-                                        result.at('lastName'), '.'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.getResource(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
-
-        var url;
-
-        //  A GET request here using the ID causes a RETRIEVE
-        url = TP.uc('pouchdb://pouch_test/author_info');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try
-        //  to reload from the underlying source.
-        url.isLoaded(false);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var pouchRequest;
-
-                //  Implied method here is TP.HTTP_GET, which means we need to
-                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
-                //  URLs are asynchronous and configure their request to
-                //  'refresh' automatically.
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'method', TP.HTTP_HEAD,
-                                                'async', true));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isTrue(
-                            result.hasKey('date_created'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'date_created\' and it doesn\'t'));
-
-                        test.assert.isTrue(
-                            result.hasKey('date_modified'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'date_modified\' and it doesn\'t'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.getResource(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
-
-        var url;
-
-        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
-        //  of all documents in the DB
-        url = TP.uc('pouchdb://pouch_test/_all_docs');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try
-        //  to reload from the underlying source.
-        url.isLoaded(false);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var pouchRequest;
-
-                //  Implied method here is TP.HTTP_GET, which means we need to
-                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
-                //  URLs are asynchronous and configure their request to
-                //  'refresh' automatically.
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'async', true));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isTrue(
-                            result.hasKey('total_rows'),
-                            TP.sc('Expected that result would have a key of \'total_rows\' and',
-                                    ' it doesn\'t'));
-
-                        test.assert.isEqualTo(
-                                result.at('total_rows'),
-                                1,
-                                TP.sc('Expected: ', '1',
-                                        ' and got instead: ', result.at('total_rows'), '.'));
-
-                        test.assert.isTrue(
-                            result.hasKey('rows'),
-                            TP.sc('Expected that result would have a key of \'rows\' and',
-                                    ' it doesn\'t'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.getResource(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.after(
-        function(suite, options) {
-
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var pouchPromise,
-                        promise;
-
-                    pouchPromise = testDb.destroy();
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
-                });
-        });
 });
 
 //  ------------------------------------------------------------------------
@@ -1596,747 +1196,6 @@ function() {
                 TP.sc('Expected: ', '"', obj.$getOID(), '"',
                         ' and got instead: ', val, '.'));
     });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.HTTPURL.Inst.describe('setResource',
-function() {
-
-    var params,
-        getStatusCode,
-        getResponseText,
-
-        server;
-
-    params = TP.hc('refresh', true, 'async', true);
-
-    getStatusCode = function(aURI) {
-
-        if (TP.canInvoke(aURI, 'getCommObject')) {
-            return aURI.getCommStatusCode();
-        }
-    };
-
-    getResponseText = function(aURI) {
-
-        if (TP.canInvoke(aURI, 'getCommObject')) {
-            return aURI.getCommResponseText();
-        }
-    };
-
-    //  ---
-
-    this.beforeEach(
-        function() {
-            server = TP.test.fakeServer.create();
-        });
-
-    //  ---
-
-    this.afterEach(
-        function() {
-            server.restore();
-        });
-
-    //  ---
-
-    this.it('HTTPURL: Set resource to object with virtual URI', function(test, options) {
-
-        var url,
-            obj;
-
-        url = TP.uc('~app_tsh/xml_test.tsh');
-        url.setResource('foo');
-
-        obj = url.getResource().get('result');
-
-        test.assert.isEqualTo(
-                obj,
-                'foo',
-                TP.sc('Expected: ', '"foo"',
-                        ' and got instead: ', obj, '.'));
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Set resource using PUT', function(test, options) {
-
-        var locStr,
-            testBody,
-
-            url;
-
-        locStr = '/TIBET_endpoints/HTTP_PUT_TEST';
-        testBody = 'PUT test content';
-
-        server.respondWith(
-            TP.HTTP_PUT,
-            locStr,
-            function(req) {
-
-                test.assert.isEqualTo(req.requestBody, testBody);
-
-                req.respond(
-                    200,
-                    {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                    },
-                    'OK from PUT');
-            });
-
-        url = TP.uc(locStr);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var putParams,
-                    putRequest;
-
-                putParams = params.copy().atPut('method', TP.HTTP_PUT);
-                putRequest = url.constructRequest(putParams);
-
-                putRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        test.assert.isEqualTo(
-                                getStatusCode(url), 200);
-                        test.assert.isEqualTo(
-                                getResponseText(url), 'OK from PUT');
-
-                        resolver();
-                    });
-
-                putRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                putRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.setResource(testBody);
-                url.save(putRequest);
-            }));
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Set resource using POST', function(test, options) {
-
-        var locStr,
-            testBody,
-
-            url;
-
-        locStr = '/TIBET_endpoints/HTTP_POST_TEST';
-        testBody = 'POST test content';
-
-        server.respondWith(
-            TP.HTTP_POST,
-            locStr,
-            function(req) {
-
-                test.assert.isEqualTo(req.requestBody, testBody);
-
-                req.respond(
-                    200,
-                    {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                    },
-                    'OK from POST');
-            });
-
-        url = TP.uc(locStr);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var postRequest;
-
-                postRequest = url.constructRequest(params);
-
-                postRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        test.assert.isEqualTo(
-                                getStatusCode(url), 200);
-                        test.assert.isEqualTo(
-                                getResponseText(url), 'OK from POST');
-
-                        resolver();
-                    });
-
-                postRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                postRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.setResource(testBody);
-                url.save(postRequest);
-            }));
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Set resource using FORM POST', function(test, options) {
-
-        var locStr,
-            testBody,
-
-            url;
-
-        locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
-        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
-
-        server.respondWith(
-            TP.HTTP_POST,
-            locStr,
-            function(req) {
-
-                test.assert.isEqualTo(req.requestBody, 'foo=bar&baz=goo');
-
-                req.respond(
-                    200,
-                    {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                    },
-                    'OK from FORM POST');
-            });
-
-        url = TP.uc(locStr);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var postParams,
-                    postRequest;
-
-                postParams = params.copy().atPut('mimetype', TP.URL_ENCODED);
-                postRequest = url.constructRequest(postParams);
-
-                postRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        test.assert.isEqualTo(
-                                getStatusCode(url), 200);
-                        test.assert.isEqualTo(
-                                getResponseText(url), 'OK from FORM POST');
-
-                        resolver();
-                    });
-
-                postRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                postRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.setResource(testBody);
-                url.save(postRequest);
-            }));
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
-
-        var locStr,
-            testBody,
-
-            url;
-
-        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEXT_TEST';
-        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
-
-        server.respondWith(
-            TP.HTTP_POST,
-            locStr,
-            function(req) {
-
-                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
-                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
-
-                req.respond(
-                    200,
-                    {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                    },
-                    'OK from MULTIPART FORM TEXT POST');
-            });
-
-        url = TP.uc(locStr);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var postParams,
-                    postRequest;
-
-                postParams = params.copy().atPut('mimetype',
-                                TP.MP_FORMDATA_ENCODED);
-                postRequest = url.constructRequest(postParams);
-
-                postRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        test.assert.isEqualTo(
-                                getStatusCode(url), 200);
-                        test.assert.isEqualTo(
-                                getResponseText(url), 'OK from MULTIPART FORM TEXT POST');
-
-                        resolver();
-                    });
-
-                postRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                postRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.setResource(testBody);
-                url.save(postRequest);
-            }));
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
-
-        var locStr,
-            testBody,
-
-            url;
-
-        locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_MIXED_TEST';
-        testBody = TP.ac(
-                        TP.hc('body', 'Content chunk 1'),
-                        TP.hc('body', 'Content chunk 2'),
-                        TP.hc('body', TP.elem('<content>Content chunk 3</content>')));
-
-        server.respondWith(
-            TP.HTTP_POST,
-            locStr,
-            function(req) {
-
-                test.assert.matches(req.requestBody, /Content-ID: 0\s+Content chunk 1/);
-                test.assert.matches(req.requestBody, /Content-ID: 1\s+Content chunk 2/);
-                test.assert.matches(req.requestBody, /Content-ID: 2\s+<content>Content chunk 3<\/content>/);
-
-                req.respond(
-                    200,
-                    {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                    },
-                    'OK from MULTIPART RELATED MIXED POST');
-            });
-
-        url = TP.uc(locStr);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var postParams,
-                    postRequest;
-
-                postParams = params.copy().atPut('mimetype',
-                                TP.MP_RELATED_ENCODED);
-                postRequest = url.constructRequest(postParams);
-
-                postRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        test.assert.isEqualTo(
-                                getStatusCode(url), 200);
-                        test.assert.isEqualTo(
-                                getResponseText(url), 'OK from MULTIPART RELATED MIXED POST');
-
-                        resolver();
-                    });
-
-                postRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                postRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.setResource(testBody);
-                url.save(postRequest);
-            }));
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Delete resource using DELETE', function(test, options) {
-
-        var locStr,
-
-            url;
-
-        locStr = '/TIBET_endpoints/HTTP_DELETE_TEST';
-
-        server.respondWith(
-            TP.HTTP_DELETE,
-            locStr,
-            function(req) {
-
-                req.respond(
-                    200,
-                    {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                    },
-                    'OK from DELETE');
-            });
-
-        url = TP.uc(locStr);
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                var deleteRequest;
-
-                deleteRequest = url.constructRequest(params);
-
-                deleteRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        test.assert.isEqualTo(
-                                getStatusCode(url), 200);
-                        test.assert.isEqualTo(
-                                getResponseText(url), 'OK from DELETE');
-
-                        resolver();
-                    });
-
-                deleteRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                deleteRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.delete(deleteRequest);
-            }));
-
-        server.respond();
-    });
-
-}).skip(!TP.sys.isHTTPBased());
-
-//  ------------------------------------------------------------------------
-
-TP.core.PouchDBURL.Inst.describe('setResource',
-function() {
-
-    var testDb,
-        destroySucceeded;
-
-    this.before(
-        function(suite, options) {
-
-            //  We set this to false here, but to true if the test containing
-            //  the database destroy() succeeds, such that we don't try to call
-            //  destroy() twice (once in that test and once in the after()
-            //  code).
-            destroySucceeded = false;
-
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var now,
-
-                        pouchPromise,
-                        promise;
-
-                    now = Date.now();
-
-                    testDb = new TP.extern.PouchDB('pouch_test');
-
-                    pouchPromise = testDb.put(
-                        {
-                            _id: 'author_info',
-                            date_created: now,
-                            date_modified: now,
-                            body: {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
-                        });
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
-                });
-        });
-
-    //  ---
-
-    this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
-
-        var url,
-            pouchRequest;
-
-        //  A PUT request here using the ID causes an UPDATE
-
-        url = TP.uc('pouchdb://pouch_test/author_info');
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                //  pouchdb:// URLs are asynchronous
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'method', TP.HTTP_PUT,
-                                                'async', true));
-
-                url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isValid(
-                            result.at('ok'),
-                            TP.sc('Expected a result with an \'ok\' property'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.save(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
-
-        var url,
-            pouchRequest;
-
-            //  A POST request here without the ID causes a CREATE and an
-            //  auto-generated ID
-
-        url = TP.uc('pouchdb://pouch_test');
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                //  pouchdb:// URLs are asynchronous
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'method', TP.HTTP_POST,
-                                                'async', true));
-
-                url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isValid(
-                            result.at('ok'),
-                            TP.sc('Expected a result with an \'ok\' property'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.save(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
-
-        var url,
-            pouchRequest;
-
-        //  A DELETE request here with the ID causes a DELETE
-
-        url = TP.uc('pouchdb://pouch_test/author_info');
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                //  pouchdb:// URLs are asynchronous
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'method', TP.HTTP_DELETE,
-                                                'async', true));
-
-                url.setResource(null);
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isValid(
-                            result.at('ok'),
-                            TP.sc('Expected a result with an \'ok\' property'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.delete(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
-
-        var url,
-            pouchRequest;
-
-        //  A DELETE request here without the ID causes a DELETE (of the
-        //  whole DB)
-
-        url = TP.uc('pouchdb://pouch_test');
-
-        test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
-                //  pouchdb:// URLs are asynchronous
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'method', TP.HTTP_DELETE,
-                                                'async', true));
-
-                url.setResource(null);
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isValid(
-                            result.at('ok'),
-                            TP.sc('Expected a result with an \'ok\' property'));
-
-                        //  Set this flag to true now that we've successfully
-                        //  destroy()ed the database.
-                        destroySucceeded = true;
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.delete(pouchRequest);
-            }));
-    });
-
-    //  ---
-
-    this.after(
-        function(suite, options) {
-
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var pouchPromise,
-                        promise;
-
-                    if (!destroySucceeded) {
-                        pouchPromise = testDb.destroy();
-                    }
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
-                });
-        });
 });
 
 //  ------------------------------------------------------------------------
@@ -3767,7 +2626,1158 @@ function() {
     });
 });
 
+//  ========================================================================
+//  HTTPURL
+//  ========================================================================
+
+TP.core.HTTPURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+        resultElem,
+
+        server;
+
+    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
+    locStr = '/TIBET_endpoints/HTTP_GET_TEST';
+    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+    this.beforeEach(
+        function() {
+            server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
+        });
+
+    //  ---
+
+    this.it('HTTPURL: Retrieve resource asynchronously', function(test, options) {
+        var url,
+            request;
+
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
+
+        url = TP.uc(locStr);
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        request = TP.request(params);
+        request.defineMethod('complete',
+            function(aResult) {
+                var result;
+
+                result = aResult;
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
+                test.assert.isEqualTo(
+                        result.get('html|body'),
+                        resultElem.get('html|body'));
+
+                TP.uc(locStr).unregister();
+            });
+
+        url.getResource(request);
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
+        //  empty
+    }).todo();
+
+}).skip(!TP.sys.isHTTPBased());
+
 //  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.describe('setResource',
+function() {
+
+    var params,
+        getStatusCode,
+        getResponseText,
+
+        server;
+
+    params = TP.hc('refresh', true, 'async', true);
+
+    getStatusCode = function(aURI) {
+
+        if (TP.canInvoke(aURI, 'getCommObject')) {
+            return aURI.getCommStatusCode();
+        }
+    };
+
+    getResponseText = function(aURI) {
+
+        if (TP.canInvoke(aURI, 'getCommObject')) {
+            return aURI.getCommResponseText();
+        }
+    };
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+            server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
+        });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource to object with virtual URI', function(test, options) {
+
+        var url,
+            obj;
+
+        url = TP.uc('~app_tsh/xml_test.tsh');
+        url.setResource('foo');
+
+        obj = url.getResource().get('result');
+
+        test.assert.isEqualTo(
+                obj,
+                'foo',
+                TP.sc('Expected: ', '"foo"',
+                        ' and got instead: ', obj, '.'));
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using PUT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_PUT_TEST';
+        testBody = 'PUT test content';
+
+        server.respondWith(
+            TP.HTTP_PUT,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from PUT');
+            });
+
+        url = TP.uc(locStr);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var putParams,
+                    putRequest;
+
+                putParams = params.copy().atPut('method', TP.HTTP_PUT);
+                putRequest = url.constructRequest(putParams);
+
+                putRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(url), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(url), 'OK from PUT');
+
+                        resolver();
+                    });
+
+                putRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                putRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.setResource(testBody);
+                url.save(putRequest);
+            }));
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_POST_TEST';
+        testBody = 'POST test content';
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from POST');
+            });
+
+        url = TP.uc(locStr);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var postRequest;
+
+                postRequest = url.constructRequest(params);
+
+                postRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(url), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(url), 'OK from POST');
+
+                        resolver();
+                    });
+
+                postRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            }));
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using FORM POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, 'foo=bar&baz=goo');
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from FORM POST');
+            });
+
+        url = TP.uc(locStr);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype', TP.URL_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(url), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(url), 'OK from FORM POST');
+
+                        resolver();
+                    });
+
+                postRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            }));
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEXT_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from MULTIPART FORM TEXT POST');
+            });
+
+        url = TP.uc(locStr);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_FORMDATA_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(url), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(url), 'OK from MULTIPART FORM TEXT POST');
+
+                        resolver();
+                    });
+
+                postRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            }));
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_MIXED_TEST';
+        testBody = TP.ac(
+                        TP.hc('body', 'Content chunk 1'),
+                        TP.hc('body', 'Content chunk 2'),
+                        TP.hc('body', TP.elem('<content>Content chunk 3</content>')));
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-ID: 0\s+Content chunk 1/);
+                test.assert.matches(req.requestBody, /Content-ID: 1\s+Content chunk 2/);
+                test.assert.matches(req.requestBody, /Content-ID: 2\s+<content>Content chunk 3<\/content>/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from MULTIPART RELATED MIXED POST');
+            });
+
+        url = TP.uc(locStr);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_RELATED_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(url), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(url), 'OK from MULTIPART RELATED MIXED POST');
+
+                        resolver();
+                    });
+
+                postRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            }));
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Delete resource using DELETE', function(test, options) {
+
+        var locStr,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_DELETE_TEST';
+
+        server.respondWith(
+            TP.HTTP_DELETE,
+            locStr,
+            function(req) {
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from DELETE');
+            });
+
+        url = TP.uc(locStr);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var deleteRequest;
+
+                deleteRequest = url.constructRequest(params);
+
+                deleteRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(url), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(url), 'OK from DELETE');
+
+                        resolver();
+                    });
+
+                deleteRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                deleteRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.delete(deleteRequest);
+            }));
+
+        server.respond();
+    });
+
+}).skip(!TP.sys.isHTTPBased());
+
+//  ========================================================================
+//  JSONPURL
+//  ========================================================================
+
+TP.core.JSONPURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+
+        stub;
+
+    params = TP.request('refresh', true, 'async', true);
+    locStr = 'jsonp://ajax.googleapis.com/ajax/services/search/web?' +
+                'v=1.0&q=football&start=10';
+
+    this.before(
+        function() {
+            stub = TP.jsonpCall.asStub();
+        });
+
+    //  ---
+
+    this.it('JSONPURL: Retrieve resource asynchronously', function(test, options) {
+        var url,
+            request;
+
+        stub.callsArgWith(1, '{"foo":"bar"}');
+
+        url = TP.uc(locStr);
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        request = TP.request(params);
+        request.defineMethod('complete',
+            function(aResult) {
+                var result;
+
+                result = aResult;
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
+                test.assert.isValid(
+                    result,
+                    TP.sc('Expected valid result but got none.'));
+
+                TP.uc(locStr).unregister();
+            });
+
+        url.getResource(request);
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            stub.restore();
+        });
+});
+
+//  ========================================================================
+//  PouchDBURL
+//  ========================================================================
+
+TP.core.PouchDBURL.Inst.describe('getResource',
+function() {
+
+    var testDb;
+
+    this.before(
+        function(suite, options) {
+
+            //  'this' refers to the suite here.
+            suite.chain(
+                function() {
+                    var now,
+
+                        pouchPromise,
+                        promise;
+
+                    now = Date.now();
+
+                    testDb = new TP.extern.PouchDB('pouch_test');
+
+                    pouchPromise = testDb.put(
+                        {
+                            _id: 'author_info',
+                            date_created: now,
+                            date_modified: now,
+                            body: {
+                                firstName: 'Bill',
+                                lastName: 'Edney'
+                            }
+                        });
+
+                    promise = TP.extern.Promise.resolve(pouchPromise);
+
+                    return promise;
+                });
+        });
+
+    //  ---
+
+    this.it('PouchDBURL: Retrieve resource', function(test, options) {
+
+        var url;
+
+        //  A GET request here using the ID causes a RETRIEVE
+        url = TP.uc('pouchdb://pouch_test/author_info');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var pouchRequest;
+
+                //  Implied method here is TP.HTTP_GET. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'async', true));
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data').at('body');
+
+                        test.assert.isTrue(
+                            result.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'firstName\' and it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                result.at('firstName'),
+                                'Bill',
+                                TP.sc('Expected: ', '"Bill"',
+                                        ' and got instead: ',
+                                        result.at('firstName'), '.'));
+
+                        test.assert.isTrue(
+                            result.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'lastName\' and it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                result.at('lastName'),
+                                'Edney',
+                                TP.sc('Expected: ', '"Edney"',
+                                        ' and got instead: ',
+                                        result.at('lastName'), '.'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.getResource(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
+
+        var url;
+
+        //  A GET request here using the ID causes a RETRIEVE
+        url = TP.uc('pouchdb://pouch_test/author_info');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var pouchRequest;
+
+                //  Implied method here is TP.HTTP_GET, which means we need to
+                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'method', TP.HTTP_HEAD,
+                                                'async', true));
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isTrue(
+                            result.hasKey('date_created'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'date_created\' and it doesn\'t'));
+
+                        test.assert.isTrue(
+                            result.hasKey('date_modified'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'date_modified\' and it doesn\'t'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.getResource(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
+
+        var url;
+
+        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
+        //  of all documents in the DB
+        url = TP.uc('pouchdb://pouch_test/_all_docs');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var pouchRequest;
+
+                //  Implied method here is TP.HTTP_GET, which means we need to
+                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'async', true));
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isTrue(
+                            result.hasKey('total_rows'),
+                            TP.sc('Expected that result would have a key of \'total_rows\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                result.at('total_rows'),
+                                1,
+                                TP.sc('Expected: ', '1',
+                                        ' and got instead: ', result.at('total_rows'), '.'));
+
+                        test.assert.isTrue(
+                            result.hasKey('rows'),
+                            TP.sc('Expected that result would have a key of \'rows\' and',
+                                    ' it doesn\'t'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.getResource(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  'this' refers to the suite here.
+            suite.chain(
+                function() {
+                    var pouchPromise,
+                        promise;
+
+                    pouchPromise = testDb.destroy();
+
+                    promise = TP.extern.Promise.resolve(pouchPromise);
+
+                    return promise;
+                });
+        });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURL.Inst.describe('setResource',
+function() {
+
+    var testDb,
+        destroySucceeded;
+
+    this.before(
+        function(suite, options) {
+
+            //  We set this to false here, but to true if the test containing
+            //  the database destroy() succeeds, such that we don't try to call
+            //  destroy() twice (once in that test and once in the after()
+            //  code).
+            destroySucceeded = false;
+
+            //  'this' refers to the suite here.
+            suite.chain(
+                function() {
+                    var now,
+
+                        pouchPromise,
+                        promise;
+
+                    now = Date.now();
+
+                    testDb = new TP.extern.PouchDB('pouch_test');
+
+                    pouchPromise = testDb.put(
+                        {
+                            _id: 'author_info',
+                            date_created: now,
+                            date_modified: now,
+                            body: {
+                                firstName: 'Bill',
+                                lastName: 'Edney'
+                            }
+                        });
+
+                    promise = TP.extern.Promise.resolve(pouchPromise);
+
+                    return promise;
+                });
+        });
+
+    //  ---
+
+    this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var url,
+            pouchRequest;
+
+        //  A PUT request here using the ID causes an UPDATE
+
+        url = TP.uc('pouchdb://pouch_test/author_info');
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'method', TP.HTTP_PUT,
+                                                'async', true));
+
+                url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.save(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var url,
+            pouchRequest;
+
+            //  A POST request here without the ID causes a CREATE and an
+            //  auto-generated ID
+
+        url = TP.uc('pouchdb://pouch_test');
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'method', TP.HTTP_POST,
+                                                'async', true));
+
+                url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.save(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+        var url,
+            pouchRequest;
+
+        //  A DELETE request here with the ID causes a DELETE
+
+        url = TP.uc('pouchdb://pouch_test/author_info');
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'method', TP.HTTP_DELETE,
+                                                'async', true));
+
+                url.setResource(null);
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.delete(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+
+        var url,
+            pouchRequest;
+
+        //  A DELETE request here without the ID causes a DELETE (of the
+        //  whole DB)
+
+        url = TP.uc('pouchdb://pouch_test');
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'method', TP.HTTP_DELETE,
+                                                'async', true));
+
+                url.setResource(null);
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
+
+                        //  Set this flag to true now that we've successfully
+                        //  destroy()ed the database.
+                        destroySucceeded = true;
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.delete(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  'this' refers to the suite here.
+            suite.chain(
+                function() {
+                    var pouchPromise,
+                        promise;
+
+                    if (!destroySucceeded) {
+                        pouchPromise = testDb.destroy();
+                    }
+
+                    promise = TP.extern.Promise.resolve(pouchPromise);
+
+                    return promise;
+                });
+        });
+});
+
+//  ========================================================================
+//  StorageURL
+//  ========================================================================
 
 TP.core.StorageURL.Inst.describe('local storage',
 function() {
