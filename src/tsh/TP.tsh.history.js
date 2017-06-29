@@ -150,7 +150,7 @@ function(aRequest) {
         //  content...
         origReq.getResponse().atPut('cmdInput', true);
 
-        return aRequest.complete(TP.TSH_NO_INPUT);
+        return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     //  Construct a new request that can process the history event and

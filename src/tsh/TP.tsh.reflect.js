@@ -535,7 +535,7 @@ function(aRequest) {
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
             return aRequest.complete('');
         }
-        aRequest.complete(TP.TSH_NO_INPUT);
+        aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     return;

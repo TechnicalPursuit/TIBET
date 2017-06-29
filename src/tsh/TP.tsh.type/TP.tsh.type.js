@@ -80,7 +80,7 @@ function(aRequest) {
                         }
                 ));
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
