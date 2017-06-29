@@ -214,6 +214,9 @@ function(aSignal) {
 
             this.focusOn(newTargetTPElem);
 
+            //  This will 'unhide' the halo.
+            this.setAttribute('hidden', false);
+
             handledSignal = true;
         }
     }
@@ -510,7 +513,11 @@ function(aSignal) {
             //  If we got one, then focus on it - otherwise, make sure that
             //  we're hidden.
             if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
+
                 this.focusOn(newTargetTPElem);
+
+                //  This will 'unhide' the halo.
+                this.setAttribute('hidden', false);
             } else {
 
                 //  This will 'hide' the halo.
@@ -879,6 +886,9 @@ function(aSignal) {
 
                 //  This will move the halo to the new element.
                 this.focusOn(newTargetTPElem);
+
+                //  NB: We don't worry about unhiding the halo here, since it
+                //  should've been already visible.
             }
         }
     }
@@ -1113,8 +1123,12 @@ function(aspectPathParts) {
     //  If we acquired a new target, then we blur off of our current target and
     //  focus on it.
     if (TP.isValid(newTargetTPElem)) {
+
         this.blur();
         this.focusOn(newTargetTPElem);
+
+        //  This will 'unhide' the halo.
+        this.setAttribute('hidden', false);
     } else {
         //  Otherwise, we just keep the same target.
         newTargetTPElem = currentTargetTPElem;
