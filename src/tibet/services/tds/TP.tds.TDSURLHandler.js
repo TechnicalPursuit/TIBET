@@ -223,17 +223,24 @@ function(targetURI, aRequest) {
         return response;
     }
 
-    //  If the request didn't specifically define the method to be HTTP_PATCH or
-    //  the URI can't produce a diff patch or we're currently running tests
-    //  in the test harness, then don't try to do a PATCH - just do a regular
-    //  save (i.e. PUT or POST).
-    if (request.at('method') !== TP.HTTP_PATCH ||
-        !targetURI.canDiffPatch() ||
-        TP.sys.isTesting()) {
+    //  If the system is testing, then we never do a PATCH.
+    if (TP.sys.isTesting()) {
         return this.callNextMethod();
     }
 
-    return this.patch(targetURI, aRequest);
+    //  If the request's method is HTTP_PATCH, then we always do a PATCH
+    if (request.at('method') === TP.HTTP_PATCH) {
+        return this.patch(targetURI, request);
+    }
+
+    //  If the URI can produce a diff patch, then we change the method to
+    //  HTTP_PATCH and do a PATCH
+    if (targetURI.canDiffPatch()) {
+        request.atPut('method', TP.HTTP_PATCH);
+        return this.patch(targetURI, request);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
