@@ -91,62 +91,6 @@
 
     <script src="./src/TP.sherpa.CouchTools.js"/>
 
-    <script src="~lib_deps/html2canvas-tpi.min.js"
-        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
-    <script src="~lib_deps/html2canvas-tpi.js"
-        unless="boot.minified" no-lint="no-lint" />
-    <script>
-        <![CDATA[
-        TP.extern.html2canvas = window.html2canvas;
-
-        //  We need to install this managed Mutation Observer filter function to
-        //  filter out mutations caused by taking a snapshot with HTML2Canvas.
-
-		TP.definePrimitive('$$html2CanvasElementPresentObserverFilter',
-        function(aMutationRecord) {
-
-            var targetDoc,
-                html2CanvasIFrame;
-
-            targetDoc = TP.nodeGetDocument(aMutationRecord.target);
-
-            html2CanvasIFrame =
-                targetDoc.querySelector('.html2canvas-container');
-            if (TP.isElement(html2CanvasIFrame)) {
-                return false;
-            }
-
-            return true;
-        });
-
-		TP.definePrimitive('$$html2CanvasElementInsertedOrRemovedObserverFilter',
-        function(aMutationRecord) {
-
-            if (aMutationRecord.type === 'attributes' &&
-                aMutationRecord.attributeName.startsWith(
-                                                    'data-html2canvas')) {
-                return false;
-            }
-
-            if (TP.notEmpty(aMutationRecord.addedNodes) &&
-                TP.isElement(aMutationRecord.addedNodes[0]) &&
-                TP.elementHasClass(aMutationRecord.addedNodes[0],
-                                    'html2canvas-container')) {
-                return false;
-            }
-
-            if (TP.notEmpty(aMutationRecord.removedNodes) &&
-                TP.isElement(aMutationRecord.removedNodes[0]) &&
-                TP.elementHasClass(aMutationRecord.removedNodes[0],
-                                    'html2canvas-container')) {
-                return false;
-            }
-
-            return true;
-        });
-        ]]>
-    </script>
-
 </config>
 
 </package>
