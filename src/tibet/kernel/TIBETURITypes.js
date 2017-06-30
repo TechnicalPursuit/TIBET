@@ -5189,6 +5189,7 @@ function() {
      *          PLAIN TEXT
      *          CSS
      *
+     *      They also need to have an extension.
      * @returns {Boolean} Whether or not the URL contains a resource that is
      *     'diff patchable'.
      */
@@ -5209,7 +5210,7 @@ function() {
         case TP.XML_TEXT_ENCODED:
         case TP.JSON_TEXT_ENCODED:
         case TP.JS_TEXT_ENCODED:
-            return true;
+            return TP.notEmpty(this.getExtension());
 
         default:
             return false;
