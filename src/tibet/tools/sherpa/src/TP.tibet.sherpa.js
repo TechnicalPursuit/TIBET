@@ -63,6 +63,10 @@ function(aRequest) {
 
             TP.sys.registerObject(newSherpa);
 
+            //  Refresh controllers now that we have a registered Sherpa
+            //  instance.
+            TP.sys.getApplication().refreshControllers();
+
             //  Register the new Sherpa instance to observe 'ToggleSherpa'. This
             //  will be thrown by various objects in the system to toggle the
             //  Sherpa in and out.
