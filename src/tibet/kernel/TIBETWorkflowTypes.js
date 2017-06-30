@@ -6112,6 +6112,7 @@ function(aStateMachine) {
      *     their signal processing to filter handlers based on state.
      * @param {TP.core.StateMachine} aStateMachine The new state machine
      *     instance.
+     * @returns {TP.core.Controller} The receiver.
      */
 
     var machines;
@@ -6250,6 +6251,7 @@ function(aRoute) {
     //  used to obtain a target element.
     routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
                                 configInfo.at('target'));
+
     if (TP.notEmpty(routeTarget)) {
 
         //  NB: We want autocollapsed, but wrapped content here.
@@ -6420,6 +6422,11 @@ TP.core.Application.Inst.defineMethod('refreshControllers',
 function() {
 
     /**
+     * @method refreshControllers
+     * @summary Rebuilds the list of controllers that the system uses as TIBET's
+     *     "signal responder chain".
+     * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
+     * @returns {Array} The list of controllers.
      */
 
     var controllers,
@@ -6432,6 +6439,9 @@ function() {
     controllers = TP.ac();
     this.$set('controllers', controllers, false);
 
+    //  If the system has initialized and we're loading the Sherpa, then try to
+    //  make it the last (i.e. topmost) controller if an instance can be found
+    //  under the system ID 'Sherpa'.
     if (TP.sys.hasInitialized() && TP.sys.hasFeature('sherpa')) {
         sherpa = TP.bySystemId('Sherpa');
         if (TP.isValid(sherpa)) {
@@ -6439,7 +6449,7 @@ function() {
         }
     }
 
-    //  application instance is always a member of this list
+    //  The application instance is always a member of this list
     controllers.push(this);
 
     //  We have to be far enough along that type initialization has happened or
@@ -6462,12 +6472,17 @@ function() {
         }
     }
 
+    //  Add in any custom controllers that have been registered with the
+    //  application object.
     customs = this.$get('customControllers');
     if (TP.notEmpty(customs)) {
         controllers = controllers.concat(customs);
         this.$set('controllers', controllers, false);
     }
 
+    //  Since we've been 'push'ing, we need to reverse to make sure things are
+    //  in the proper order (most specific controllers to least specific - like
+    //  Application, Sherpa, etc.).
     controllers.reverse();
 
     this.changed('Controllers', TP.UPDATE, TP.hc(TP.NEWVAL, controllers));
@@ -6481,11 +6496,14 @@ TP.core.Application.Inst.defineMethod('getHistory',
 function() {
 
     /**
-     * Returns the current object responsible for managing history for the
-     * application, which focuses on history for the UICANVAS window.
+     * @method getHistory
+     * @summary Returns the current object responsible for managing history for
+     *     the application, which focuses on history for the UICANVAS window.
      * @returns {TP.core.History} A History object.
      */
 
+    //  NB: All TP.core.History functionality is type-level, which is why we
+    //  return the type itself here.
     return TP.core.History;
 });
 
@@ -6497,7 +6515,7 @@ function() {
     /**
      * @method getRouter
      * @summary Returns the current router instance used by the application.
-     * @returns {TP.core.URIRouter} The active router.
+     * @returns {TP.core.URIRouter|null} The active router.
      */
 
     var type,
@@ -6515,6 +6533,8 @@ function() {
         this.$set('router', type);
         return type;
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -6583,8 +6603,12 @@ function(aController) {
         this.$set('customControllers', controllers, false);
     }
 
-    if (!controllers.contains(aController)) {
+    //  Make sure that the list of custom controllers doesn't already include
+    //  the supplied controller.
+    if (!controllers.contains(aController, TP.IDENTITY)) {
         controllers.push(aController);
+
+        //  Refresh the main list of controllers.
         this.refreshControllers();
     }
 
@@ -6614,6 +6638,8 @@ function(aList) {
     }
 
     this.$set('customControllers', controllers, false);
+
+    //  Refresh the main list of controllers.
     this.refreshControllers();
 
     return this;
@@ -6652,6 +6678,14 @@ function(themeName) {
 
 TP.core.Application.Inst.defineMethod('setRouter',
 function(aRouter) {
+
+    /**
+     * @method setRouter
+     * @summary Sets the supplied router instance as TIBET's active router.
+     * @param {TP.core.URIRouter} aRouter The router to set as the active
+     *     router.
+     * @returns {TP.core.Application} The receiver.
+     */
 
     if (TP.canInvoke(aRouter, 'route')) {
         this.$set('router', aRouter);
@@ -6699,7 +6733,7 @@ function(aSignal) {
             homeURL = window.sessionStorage.getItem(
                 'TIBET.project.home_page');
             if (TP.notEmpty(homeURL)) {
-                //  preserve the value in runtime config to support the
+                //  Preserve the value in runtime config to support the
                 //  TP.sys.getHomeURL call.
                 TP.sys.setcfg('session.home_page', homeURL);
 
@@ -6718,9 +6752,9 @@ function(aSignal) {
         try {
             TP.boot.$setStage('liftoff');
         } finally {
-            //  Set our final stage/state flags so dependent
-            //  pieces of logic can switch to their "started"
-            //  states (ie. no more boot log usage etc.)
+            //  Set our final stage/state flags so dependent pieces of logic can
+            //  switch to their "started" states (ie. no more boot log usage
+            //  etc.)
             TP.sys.hasStarted(true);
         }
 
@@ -6793,7 +6827,7 @@ function(aSignal) {
      *     route. The default integrates route change notifications with any
      *     current application state machine to let the application state
      *     reflect the current route.
-     * @param {TP.sig.RouteFinalize} aSignal The startup signal.
+     * @param {TP.sig.RouteFinalize} aSignal The finalization signal.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -6804,12 +6838,18 @@ function(aSignal) {
 
     TP.info('Application RouteFinalize: ' + aSignal.at('route'));
 
+    //  Grab the current state machine
     machine = this.getStateMachine();
+
+    //  If it's valid and active, and if the signal has a supplied route, then
+    //  compute a state name from the signal's type name, removing the 'Route'
+    //  part of the name.
     if (TP.isValid(machine) && machine.isActive()) {
+
         route = aSignal.at('route');
         if (TP.isEmpty(route)) {
             signame = TP.expandSignalName(aSignal.getSignalName());
-            route = signame.split('.').last().replace(/Route/, '');
+            route = signame.split('.').last().strip(/Route/);
         }
 
         targets = machine.getTargetStates();
@@ -6901,6 +6941,7 @@ function() {
     /**
      * @method back
      * @summary Causes the receiver to go back a page in browser history.
+     * @returns {TP.core.History} The receiver.
      */
 
     this.set('direction', 'back', false);
@@ -6908,7 +6949,7 @@ function() {
 
     this.getNativeWindow().history.back();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7012,6 +7053,7 @@ function() {
     /**
      * @method forward
      * @summary Causes the receiver to go forward a page in browser history.
+     * @returns {TP.core.History} The receiver.
      */
 
     this.set('direction', 'forward', false);
@@ -7019,7 +7061,7 @@ function() {
 
     this.getNativeWindow().history.forward();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7058,7 +7100,7 @@ function() {
     /**
      * @method getLastLocation
      * @summary Returns the previous location in the history list, if any.
-     * @returns {String} The location at the prior history index.
+     * @returns {String|null} The location at the prior history index.
      */
 
     var entry;
@@ -7070,6 +7112,8 @@ function() {
     if (TP.isValid(entry)) {
         return entry.at(2);
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -7148,7 +7192,9 @@ TP.core.History.Type.defineMethod('getNativeState',
 function() {
 
     /**
-     * Returns any state object associated with the browser history location.
+     * @method getNativeState
+     * @summary Returns any state object associated with the browser history
+     *     location.
      * @returns {Object} Any state object associated via pushState or
      *     replaceState for the current browser location.
      */
@@ -7162,7 +7208,8 @@ TP.core.History.Type.defineMethod('getNativeTitle',
 function() {
 
     /**
-     * Returns any title associated with the browser history location.
+     * @method getNativeTitle
+     * @summary Returns any title associated with the browser history location.
      * @returns {String} The title of the native window.
      */
 
@@ -7191,7 +7238,7 @@ function() {
     /**
      * @method getNextLocation
      * @summary Returns the next location in the history list, if any.
-     * @returns {String} The location at the next history index.
+     * @returns {String|null} The location at the next history index.
      */
 
     var entry;
@@ -7201,6 +7248,8 @@ function() {
     if (TP.isValid(entry)) {
         return entry.at(2);
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -7223,7 +7272,9 @@ TP.core.History.Type.defineMethod('getState',
 function() {
 
     /**
-     * Returns any state object associated with the current history location.
+     * @method getState
+     * @summary Returns any state object associated with the current history
+     *     location.
      * @returns {Object} Any state object associated via pushState or
      *     replaceState for the current location.
      */
@@ -7237,7 +7288,9 @@ TP.core.History.Type.defineMethod('getTitle',
 function() {
 
     /**
-     * Returns any title associated with the current local history location.
+     * @method getTitle
+     * @summary Returns any title associated with the current local history
+     *     location.
      * @returns {String} Any title associated via pushState or replaceState
      *     for the current location.
      */
@@ -7256,6 +7309,7 @@ function(anOffset) {
      *     location in window history.
      * @param {Number} anOffset A positive or negative number of pages to go in
      *     the browser history.
+     * @returns {TP.core.History} The receiver.
      */
 
     if (!TP.isNumber(anOffset)) {
@@ -7264,7 +7318,7 @@ function(anOffset) {
 
     //  no-op
     if (anOffset === 0) {
-        return;
+        return this;
     }
 
     this.set('direction', anOffset < 0 ? 'back' : 'forward', false);
@@ -7272,7 +7326,7 @@ function(anOffset) {
 
     this.getNativeWindow().history.go(anOffset);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7404,7 +7458,8 @@ function(aURL, fromDoc) {
 
     url = TP.uriCompose(urlParts);
 
-    //  Dampening happens in pushState so we can just pass value through.
+    //  Dampening happens in pushState so we can just pass value through. Note
+    //  that this method returns undefined.
     return this.pushState({}, '', url, fromDoc);
 });
 
@@ -7415,14 +7470,17 @@ function(stateObj, aTitle, aURL, fromDoc) {
 
     /**
      * @method pushState
-     * @summary Replaces the current location of the browser and sets it to an
-     *     encoded version of the supplied history value.
-     * @param
-     * @param
-     * @param
+     * @summary Changes the current location of the browser and sets it to an
+     *     encoded version of the supplied URL.
+     * @param {Object} stateObj The object to associate with the history entry
+     *     that will be created with this method. This can be useful for storing
+     *     entry-specific state.
+     * @param {String} aTitle The title of the state that is being pushed.
+     * @param {String} aURL The location to use when displaying this history
+     *     entry in the URL bar.
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
-     * @returns {TP.core.History} The receiver.
+     * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
      */
 
     var url,
@@ -7432,7 +7490,6 @@ function(stateObj, aTitle, aURL, fromDoc) {
         index,
         title,
         router,
-        result,
         history,
         loc,
         parts,
@@ -7466,11 +7523,15 @@ function(stateObj, aTitle, aURL, fromDoc) {
     //  list and then set location='url' you can't go forward, the list ends.
     history.length = index + 1;
 
+    //  Configure the supplied state object or a new one. Note here how we have
+    //  to use a POJO, since this gets used below in the native 'pushState'
+    //  call.
     state = stateObj || {};
     state.index = index + 1;
     state.title = title;
     state.url = url;
 
+    //  We also track it in our internal history object.
     entry = TP.ac(state, title, url);
     history.push(entry);
 
@@ -7536,8 +7597,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
 
         //  Update the native window history and URL bar value. This will show
         //  the "routable" value but not the actual canvas URI in some cases.
-        result = this.getNativeWindow().history.pushState(
-                                                state, title, pushable);
+        this.getNativeWindow().history.pushState(state, title, pushable);
 
         //  If we're here due to a direct change via a document being loaded
         //  don't allow further processing.
@@ -7545,7 +7605,11 @@ function(stateObj, aTitle, aURL, fromDoc) {
             return;
         }
 
+        //  If the URI we're pushing contains '#' followed by '/' or '?', then
+        //  grab the router and, if the router can route, then move 'forward'
+        //  with that route.
         if (/#(\/|\?)/.test(pushable)) {
+
             router = TP.sys.getRouter();
             if (TP.canInvoke(router, 'route')) {
                 router.route(url, 'forward');
@@ -7559,7 +7623,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         this.reportLocation();
     }
 
-    return result;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -7572,7 +7636,6 @@ function(aURL) {
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
      * @param
-     * @returns {TP.core.History} The receiver.
      */
 
     return this.replaceState({}, '', aURL);
@@ -7585,12 +7648,15 @@ function(stateObj, aTitle, aURL) {
 
     /**
      * @method replaceState
-     * @summary Replaces the current location of the browser and sets it to an
-     *     encoded version of the supplied history value.
-     * @param
-     * @param
-     * @param
-     * @returns {TP.core.History} The receiver.
+     * @summary Replaced the current location of the browser and sets it to an
+     *     encoded version of the supplied URL.
+     * @param {Object} stateObj The object to associate with the history entry
+     *     that will be created with this method. This can be useful for storing
+     *     entry-specific state.
+     * @param {String} aTitle The title of the state that is being pushed.
+     * @param {String} aURL The location to use when displaying this history
+     *     entry in the URL bar.
+     * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
      */
 
     var url,
@@ -7598,10 +7664,14 @@ function(stateObj, aTitle, aURL) {
         title,
         index,
         current,
-        result,
         entry,
         router,
         history;
+
+    if (!TP.isURIString(aURL)) {
+        TP.raise(this, 'TP.sig.InvalidURI');
+        return;
+    }
 
     url = TP.str(aURL);
     url = decodeURIComponent(url);
@@ -7618,14 +7688,20 @@ function(stateObj, aTitle, aURL) {
     this.set('direction', 'replace', false);
     this.set('lastURI', current, false);
 
+    //  Update our internal history, and track the index in the state object so
+    //  we can update when we get notifications.
     history = this.get('history');
     index = this.get('index');
 
+    //  Configure the supplied state object or a new one. Note here how we have
+    //  to use a POJO, since this gets used below in the native 'pushState'
+    //  call.
     state = stateObj || {};
     state.index = index;
     state.title = title;
     state.url = url;
 
+    //  We also track it in our internal history object.
     entry = TP.ac(state, title, url);
     history.atPut(index, entry);
 
@@ -7639,8 +7715,13 @@ function(stateObj, aTitle, aURL) {
                         ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
-        result = this.getNativeWindow().history.replaceState(state, title, url);
+        //  Update the native window history and URL bar value. This will show
+        //  the "routable" value but not the actual canvas URI in some cases.
+        this.getNativeWindow().history.replaceState(state, title, url);
 
+        //  If the URI we're pushing contains '#' followed by '/' or '?', then
+        //  grab the router and, if the router can route, then 'replace' with
+        //  that route.
         router = TP.sys.getRouter();
         if (TP.canInvoke(router, 'route')) {
             router.route(url, 'replace');
@@ -7653,7 +7734,7 @@ function(stateObj, aTitle, aURL) {
         this.reportLocation();
     }
 
-    return result;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -7665,19 +7746,22 @@ function(anIndex) {
      * @method reportLocation
      * @summary Logs the history location at an index.
      * @param {Number} [anIndex] An index to report, or the current index.
+     * @returns {TP.core.History} The receiver.
      */
 
     var index,
         entry,
-        native,
+        nativeLoc,
         local,
         method;
 
-    native = this.getNativeLocation();
+    nativeLoc = this.getNativeLocation();
     index = anIndex;
+
     if (TP.notValid(index)) {
         index = this.get('index');
     }
+
     entry = this.get('history').at(index);
     local = entry.at(2);
 
@@ -7686,7 +7770,7 @@ function(anIndex) {
         //  alternative pages have been loading in the UICANVAS.
         method = 'debug';
     } else {
-        method = local === native ? 'debug' : 'error';
+        method = local === nativeLoc ? 'debug' : 'error';
     }
 
     if (TP.isValid(entry)) {
@@ -7694,6 +7778,8 @@ function(anIndex) {
     } else {
         TP[method]('history.at(' + index + ') -> ' + 'empty.');
     }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7704,9 +7790,10 @@ function(anIndex) {
     /**
      * @method setIndex
      * @summary Updates the receiver's internal history index to a new offset.
-     * @param
+     * @param {Number} anIndex The index to set the current index to.
      * @exception {TP.sig.InvalidParameter} If index in not a number.
      * @exception {TP.sig.InvalidIndex} If index would be out of range.
+     * @returns {TP.core.History} The receiver.
      */
 
     if (!TP.isNumber(anIndex)) {
@@ -7718,6 +7805,8 @@ function(anIndex) {
     }
 
     this.$set('index', anIndex);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7929,7 +8018,7 @@ function() {
     /**
      * @method getRouter
      * @summary Retrieves the application uri router.
-     * @returns {TP.core.History} The TIBET router.
+     * @returns {TP.core.URIRouter} The TIBET router.
      */
 
     return this.getApplication().getRouter();
@@ -7942,9 +8031,9 @@ function() {
 
     /**
      * @method getState
-     * @summary Returns the current state, which is an
-     *     string representing the current operation or "state" of the
-     *     application (editing, viewing, printing, etc).
+     * @summary Returns the current state, which is a string representing the
+     *     current operation or "state" of the application (editing, viewing,
+     *     printing, etc).
      * @returns {String} The current value for application state.
      */
 
@@ -8025,7 +8114,7 @@ function() {
     /**
      * @method getRouter
      * @summary Retrieves the application uri router.
-     * @returns {TP.core.History} The TIBET router.
+     * @returns {TP.core.URIRouter} The TIBET router.
      */
 
     return TP.sys.getRouter();
