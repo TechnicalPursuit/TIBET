@@ -78,7 +78,9 @@ function(aTPElement) {
      */
 
     var info,
-        nodes;
+        nodes,
+
+        children;
 
     info = TP.ac();
 
@@ -93,9 +95,22 @@ function(aTPElement) {
     //  supplied element is last.
     nodes.reverse();
 
-    //  Concatenate all of the child elements onto the list.
-    nodes = nodes.concat(aTPElement.getChildElements());
+    children = aTPElement.getChildElements();
 
+    //  Filter out children that are generated - TIBET generated them and we
+    //  don't want them 'visible' to app authors.
+    children = children.filter(
+                function(aTPElem) {
+
+                    if (TP.isTrue(TP.unwrap(aTPElem)[TP.GENERATED])) {
+                        return false;
+                    }
+
+                    return true;
+                });
+
+    //  Concatenate the filtered child elements onto the list.
+    nodes = nodes.concat(children);
     nodes.perform(
         function(aNode) {
             var node,
