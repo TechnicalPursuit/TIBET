@@ -10,9 +10,6 @@ sherpa|tile {
     min-height: 400px;
     min-width: 600px;
 
-    margin-top: 2px;
-    margin-bottom: 2px;
-
     background-color: #eee;
     border: solid 1px #666;
 
@@ -84,7 +81,7 @@ sherpa|tile > .header > .header_text {
     display: inline-block;
 
     left: 14px;
-    right: 60px;
+    right: 54px;
 
     pointer-events: none;
 
