@@ -1040,7 +1040,10 @@ function(anID, headerText, tileParent, shouldDock) {
 
         tileID,
 
-        wantsToDock;
+        wantsToDock,
+
+        centerElem,
+        centerElemOffsetRect;
 
     //  Grab the TP.sherpa.tile's template.
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
@@ -1072,9 +1075,12 @@ function(anID, headerText, tileParent, shouldDock) {
     //  Awaken the tile.
     tileTPElem.awaken();
 
-    //  Avoid the north and west drawers
-    //  TODO: This is cheesy - calculate these from drawer positions
-    tileTPElem.setOffsetPosition(TP.pc(65, 215));
+    //  Center this based on where the 'center' div is located.
+    centerElem = TP.byId('center', this.get('vWin'));
+    centerElemOffsetRect = centerElem.getOffsetRect();
+
+    tileTPElem.setOffsetPosition(
+        TP.pc(centerElemOffsetRect.getX(), centerElemOffsetRect.getY()));
 
     return tileTPElem;
 });
