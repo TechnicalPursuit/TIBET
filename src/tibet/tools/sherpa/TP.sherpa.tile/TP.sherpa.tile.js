@@ -83,11 +83,20 @@ function(aSignal) {
 TP.sherpa.tile.Inst.defineHandler('CloseTile',
 function(aSignal) {
 
+    var detachOnClose;
+
     this.setAttribute('hidden', true);
 
-    this.signal('TileWillClose');
+    if (this.hasAttribute('detachOnClose')) {
 
-    this.detach();
+        detachOnClose = TP.bc(this.getAttribute('detachonclose'));
+
+        if (TP.isTrue(detachOnClose)) {
+            this.signal('TileWillDetach');
+
+            this.detach();
+        }
+    }
 
     return this;
 });
