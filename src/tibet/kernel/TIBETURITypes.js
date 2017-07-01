@@ -164,7 +164,7 @@ TP.core.URI.Type.defineConstant('SCHEME');
 //  special aspects for URIs that will broadcast 'Change', but should mostly be
 //  ignored by observers (certainly data-binding observers).
 TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS',
-    TP.ac('cleared', 'dirty', 'expired', 'loaded'));
+    TP.ac('dirty', 'expired', 'loaded'));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -329,6 +329,7 @@ function(aURI, aResource) {
         }
 
         if (TP.isValid(aResource)) {
+            //  NEVER signal change during construction...no request made.
             inst.setResource(aResource, TP.hc('signalChange', false));
         }
     }
@@ -399,6 +400,8 @@ function(anObject) {
     //  NOTE that since our IDs don't follow the pure 0-9 and '.' form for
     //  OID we don't use the urn:oid: NID here.
     urn = TP.core.URI.construct(TP.TIBET_URN_PREFIX + id);
+
+    //  NEVER signal change during construction...no request made.
     urn.setResource(anObject, TP.hc('signalChange', false));
 
     return urn;
@@ -1124,9 +1127,6 @@ TP.core.URI.Inst.defineAttribute('found', null);
 //  has the receiver ever been initialized with a value?
 TP.core.URI.Inst.defineAttribute('$hadInitialValue', false);
 
-//  has the receiver ever cleared their caches?
-TP.core.URI.Inst.defineAttribute('$cleared', false);
-
 //  content change tracking flag
 TP.core.URI.Inst.defineAttribute('$dirty', false);
 
@@ -1737,8 +1737,9 @@ function() {
 
     //  empty the resource cache(s) - note that we *must* use $set() here to
     //  avoid all of the ID comparison and change notification machinery in the
-    //  regular 'setResource' call.
-    this.$set('resource', null);
+    //  regular setResource call. Force no notification, we cleared the cache,
+    //  we didn't change the value.
+    this.$set('resource', null, false);
 
     //  update expiration status as well as any potentially obsolete headers
     this.set('headers', null);
@@ -1747,17 +1748,6 @@ function() {
     //  clear any internal state flags that might cause issues reloading
     this.isLoaded(false);
     this.isDirty(false);
-
-    this.hasCleared(true);
-
-    /*
-     * Probably don't want to actually signal since we're really saying we
-     * cleared a local cache...not that the original value has definitely
-     * changed...it could be rebuilt exactly by a load/refresh operation.
-    if (resource !== null) {
-        this.$sendSecondaryURINotifications(resource, null);
-    }
-    */
 
     return this;
 });
@@ -1875,8 +1865,8 @@ function() {
 
     /**
      * @method getContent
-     * @summary Returns the immediate value of the URI, bypassing any attempts
-     *     to load the URI if it hasn't yet been loaded.
+     * @summary Returns the URI's resource, forcing any fetch to be synchronous.
+     *     If you need async access use getResource.
      * @returns {Object} The immediate value of the receiver's resource result.
      */
 
@@ -3003,24 +2993,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('hasCleared',
-function(aFlag) {
-
-    /**
-     * @method hasCleared
-     * @summary Returns true if the receiver's content has been cleared at least
-     *     once. This flag helps ensure we signal when dirty/loaded are reset
-     *     but we cleared the cache and may be taking on a new value.
-     * @param {Boolean} [aFlag] The new value to optionally set.
-     * @returns {Boolean} Whether or not the content of the receiver has
-     *     cleared.
-     */
-
-    return this.$flag('cleared', aFlag);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URI.Inst.defineMethod('hasFragment',
 function() {
 
@@ -3701,7 +3673,7 @@ function(aDate) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest, shouldFlagDirty) {
+function(aResource, aRequest) {
 
     /**
      * @method $setPrimaryResource
@@ -3710,9 +3682,6 @@ function(aResource, aRequest, shouldFlagDirty) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
-     * @listens {TP.sig.Change} Observes the primary resource for Change.
      * @returns {TP.core.URI|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
@@ -3727,7 +3696,7 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
     if ((url = this.getPrimaryURI()) !== this) {
-        return url.$setPrimaryResource(aResource, aRequest, shouldFlagDirty);
+        return url.$setPrimaryResource(aResource, aRequest);
     }
 
     //  ---
@@ -3997,7 +3966,7 @@ function(aRequest, aResult, aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setResultFragment',
-function(aRequest, aResult, aResource, shouldFlagDirty) {
+function(aRequest, aResult, aResource) {
 
     /**
      * @method $setResultFragment
@@ -4007,8 +3976,6 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} [aResource] Optional data used for set* methods.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
      * @exception {TP.sig.InvalidResource} When the target resource is not
      *     modifiable.
      * @returns {Object} The return value for the content operation using this
@@ -5929,9 +5896,6 @@ function(aRequest) {
         resourceIsContent,
         resultIsContent;
 
-    //  TODO:   verify the receiver should cache anything...it should be
-    //  either a "caching" URI (whatever that means) or a primary URI.
-
     if (TP.notValid(aRequest)) {
         return this.raise('TP.sig.InvalidParameter',
                             'No request object.');
@@ -5971,8 +5935,7 @@ function(aRequest) {
     currentResult = this.$getFilteredResult(
                             resource, aRequest.at('resultType'));
 
-    //  NB: We use TP.equal here since we need a 'deep equality' check on the
-    //  resource.
+    //  Core question of whether we're dirty or not, will value change.
     if (TP.equal(currentResult, newResult)) {
         return currentResult;
     }
@@ -6091,13 +6054,6 @@ function(aRequest) {
     //  ---
     //  post-process to maintain internal containers.
     //  ---
-
-    //  NB: First, set ourself to be loaded. Otherwise, comparison getters etc.
-    //  in the methods below could cause endless recursion
-
-    /* (ss) don't do this...we aren't changing the data in this method...
-     * this.isLoaded(true);
-     */
 
     //  Now, set the resource or result based on data types of what we already
     //  have and what we are going to be setting.
@@ -9443,7 +9399,7 @@ function(shouldBeWatched) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest, shouldFlagDirty) {
+function(aResource, aRequest) {
 
     /**
      * @method $setPrimaryResource
@@ -9452,9 +9408,6 @@ function(aResource, aRequest, shouldFlagDirty) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
-     * @listens {TP.sig.Change} Observes the primary resource for Change.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
@@ -9474,8 +9427,7 @@ function(aResource, aRequest, shouldFlagDirty) {
 
         return this.callNextMethod(
             TP.sys.getWindowById(parts.at(TP.core.TIBETURL.CANVAS_INDEX)),
-            aRequest,
-            shouldFlagDirty);
+            aRequest);
     }
 
     return this.callNextMethod();
