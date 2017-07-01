@@ -1124,9 +1124,6 @@ TP.core.URI.Inst.defineAttribute('expired', false);
 //  often. NOTE that we start out null so we don't imply a true/false
 TP.core.URI.Inst.defineAttribute('found', null);
 
-//  has the receiver ever been initialized with a value?
-TP.core.URI.Inst.defineAttribute('$hadInitialValue', false);
-
 //  content change tracking flag
 TP.core.URI.Inst.defineAttribute('$dirty', false);
 
@@ -3751,9 +3748,6 @@ function(aResource, aRequest) {
     //  value for future use.
     this.$set('resource', newResource);
 
-    //  Flag the receiver as having had at least one real value.
-    this.$set('$hadInitialValue', true, false);
-
     //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
     //  to determine if we should signal change.
     if (TP.equal(oldResource, newResource)) {
@@ -3771,15 +3765,8 @@ function(aResource, aRequest) {
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
     if (this.isLoaded()) {
-        if (oldResource !== newResource) {
-
-            //  If the caller didn't explicitly specify that they didn't want
-            //  the receiver to be flagged as dirty *and the receiver has had an
-            //  initial value set* (i.e. not just the null value that comes with
-            //  all new URIs), then flag the receiver as dirty.
-            if (TP.notFalse(shouldFlagDirty) && this.$get('$hadInitialValue')) {
-                this.isDirty(true);
-            }
+        if (!TP.equal(oldResource, newResource)) {
+            this.isDirty(true);
         }
     } else {
         this.isLoaded(true);
@@ -4082,9 +4069,7 @@ function(aRequest, aResult, aResource) {
     //  ourselves to be 'clean' until a subsequent change.
     if (this.isLoaded()) {
         if (oldResource !== aResource) {
-            if (TP.notFalse(shouldFlagDirty)) {
-                this.isDirty(true);
-            }
+            this.isDirty(true);
         }
     } else {
         this.isLoaded(true);
@@ -4985,9 +4970,6 @@ function(aResource, aRequest) {
     //  If the receiver is the primary resource we can update our cached value
     //  for future use.
     this.$set('resource', aResource);
-
-    //  Flag the receiver as having had at least one real value.
-    this.$set('$hadInitialValue', true, false);
 
     //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
     //  to determine if we should signal change.
@@ -6233,9 +6215,6 @@ function(aRequest) {
                     //  the return result should become the new resource
                     thisref.set('resource', returnResult,
                         TP.request('signalChange', false));
-
-                    //  Flag the receiver as having had at least one real value.
-                    thisref.$set('$hadInitialValue', true, false);
                 }
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
