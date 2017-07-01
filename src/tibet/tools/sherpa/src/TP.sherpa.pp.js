@@ -1089,18 +1089,17 @@ function(anObject, optFormat) {
                         level++;
                         str += text + newlineChar +
                                 indentChar.times(level * tabSpaces);
-                    }
-                    if (text === '}' || text === ']') {
+                    } else if (text === '}' || text === ']') {
                         level--;
                         str += newlineChar +
                                 indentChar.times(level * tabSpaces) + text;
-                    }
-                    if (text === ':') {
+                    } else if (text === ':') {
                         str += indentChar + text + indentChar;
-                    }
-                    if (text === ',') {
+                    } else if (text === ',') {
                         str += text + newlineChar +
                                 indentChar.times(level * tabSpaces);
+                    } else {
+                        str += text;
                     }
                 }
             });
