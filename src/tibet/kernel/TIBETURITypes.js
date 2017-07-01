@@ -1867,7 +1867,16 @@ function() {
      * @returns {Object} The immediate value of the receiver's resource result.
      */
 
-    return this.getResource(TP.hc('async', false)).get('result');
+    var request;
+
+    request = this.constructRequest();
+    request.atPut('async', false);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPut('operation', 'get');
+    request.atPut('loaded', this.isLoaded());
+
+    return this.getResource(request).get('result');
 });
 
 //  ------------------------------------------------------------------------
@@ -2493,15 +2502,23 @@ function(aRequest) {
      *     content set as its result.
      */
 
+    var request;
+
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'get');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $getPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        return this.$getPrimaryResource(aRequest, true);
+        return this.$getPrimaryResource(request, true);
     }
 
-    return this.$requestContent(aRequest,
+    return this.$requestContent(request,
                                 '$getPrimaryResource',
                                 '$getResultFragment');
 });
@@ -3557,6 +3574,12 @@ function(contentData, aRequest) {
 
     var request;
 
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'set');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  Make sure we don't try to load a URI just because we're setting content.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
@@ -3801,6 +3824,11 @@ function(aResource, aRequest) {
 
     var request;
 
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'set');
+    request.atPutIfAbsent('loaded', this.isLoaded());
     //  Make sure we don't try to load a URI just because we're setting data.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
@@ -4067,8 +4095,8 @@ function(aRequest, aResult, aResource) {
     //  If there was already a value then we consider new values to dirty the
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
-    if (this.isLoaded()) {
-        if (oldResource !== aResource) {
+    if (request.at('loaded')) {
+        if (!TP.equal(oldResource, aResource)) {
             this.isDirty(true);
         }
     } else {
@@ -5041,6 +5069,10 @@ function(aRequest) {
 
     request = this.constructRequest(aRequest);
 
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'get');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  When we're primary or we don't have a fragment we can keep it simple and
     //  return primaryResource.
     if (this.isPrimaryURI() ||
@@ -5730,7 +5762,6 @@ function(aRequest, filterResult) {
                     /*
                      * TODO: fix comment etc. here
                     //  unfiltered results should update our resource cache.
-                    //  NOTE that this takes care of loaded/dirty state.
                     */
                     // thisref.updateResourceCache(subrequest);
                     thisref.$setPrimaryResource(result, request, false);
