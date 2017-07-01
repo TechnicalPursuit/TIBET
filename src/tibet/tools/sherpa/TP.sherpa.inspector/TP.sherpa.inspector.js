@@ -810,6 +810,8 @@ TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
 TP.sherpa.inspector.Inst.defineAttribute('pathStack');
 TP.sherpa.inspector.Inst.defineAttribute('pathStackIndex');
 
+TP.sherpa.inspector.Inst.defineAttribute('extraTargetInfo');
+
 TP.sherpa.inspector.Inst.defineAttribute('container',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
@@ -1560,6 +1562,10 @@ function(anInfo) {
     targetAspect = anInfo.at('targetAspect');
     target = anInfo.at('targetObject');
     targetPath = anInfo.at('targetPath');
+
+    //  Pass along any extra targeting information that editors or property
+    //  panels would want by putting that onto one of our slots.
+    this.set('extraTargetInfo', anInfo.at('extraTargetInfo'));
 
     initialSelectedItemValues = this.get('selectedItems');
 
