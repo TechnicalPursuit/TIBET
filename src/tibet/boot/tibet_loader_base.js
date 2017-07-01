@@ -10897,7 +10897,14 @@ TP.boot.$activate = function() {
 
         //  make sure that the application knows to prompt the user before
         //  quitting.
-        TP.windowInstallOnBeforeUnloadHook(window);
+        //  NB: We no longer install this hook here because of a change in the
+        //  way browsers present the onbeforeunload dialog box. They wait for
+        //  one of a set of user gestures (click, key, etc. events) before
+        //  allowing the dialog box to show. Therefore, we now install this
+        //  after the first one of those events has fired. See
+        //  TP.boot.$$documentSetup for more information.
+
+        //  TP.windowInstallOnBeforeUnloadHook(window);
 
         //  make sure that the application knows to send the terminate signals
         //  before quitting.
