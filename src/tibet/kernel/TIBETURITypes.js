@@ -3562,7 +3562,7 @@ function(contentData, aRequest) {
     //  load just to access a possibly undefined resource.
     request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
-    request.atPutIfAbsent('signalChange', this.hasCleared() || this.isLoaded());
+    request.atPutIfAbsent('signalChange', this.isLoaded());
 
     return this.$requestContent(request,
                                 'getResource',
@@ -3755,10 +3755,10 @@ function(aResource, aRequest) {
     } else if (TP.isValid(aRequest)) {
         shouldSignalChange = aRequest.at('signalChange');
         if (TP.notValid(shouldSignalChange)) {
-            shouldSignalChange = this.hasCleared() || this.isLoaded();
+            shouldSignalChange = this.isLoaded();
         }
     } else {
-        shouldSignalChange = this.hasCleared() || this.isLoaded();
+        shouldSignalChange = this.isLoaded();
     }
 
     //  If there was already a value then we consider new values to dirty the
@@ -3806,7 +3806,7 @@ function(aResource, aRequest) {
     //  load just to access a possibly undefined resource.
     request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
-    request.atPutIfAbsent('signalChange', this.hasCleared() || this.isLoaded());
+    request.atPutIfAbsent('signalChange', this.isLoaded());
 
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
@@ -3983,10 +3983,10 @@ function(aRequest, aResult, aResource) {
     if (TP.isValid(aRequest)) {
         shouldSignalChange = aRequest.at('signalChange');
         if (TP.notValid(shouldSignalChange)) {
-            shouldSignalChange = this.hasCleared() || this.isLoaded();
+            shouldSignalChange = this.isLoaded();
         }
     } else {
-        shouldSignalChange = this.hasCleared() || this.isLoaded();
+        shouldSignalChange = this.isLoaded();
     }
 
     //  aResult here will be the resource for the primary URI. Therefore, if we
@@ -4978,10 +4978,10 @@ function(aResource, aRequest) {
     } else if (TP.isValid(aRequest)) {
         shouldSignalChange = aRequest.at('signalChange');
         if (TP.notValid(shouldSignalChange)) {
-            shouldSignalChange = this.hasCleared() || this.isLoaded();
+            shouldSignalChange = this.isLoaded();
         }
     } else {
-        shouldSignalChange = this.hasCleared() || this.isLoaded();
+        shouldSignalChange = this.isLoaded();
     }
 
     //  If there was already a value then we consider new values to dirty the
