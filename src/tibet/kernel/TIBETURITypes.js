@@ -3999,7 +3999,7 @@ function(aRequest, aResult, aResource) {
 
     var fragment,
         result,
-
+        request,
         fragmentAccessor,
 
         oldResource,
@@ -4008,8 +4008,10 @@ function(aRequest, aResult, aResource) {
 
         shouldSignalChange;
 
-    if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.at('signalChange');
+    request = this.constructRequest(aRequest);
+
+    if (TP.isValid(request)) {
+        shouldSignalChange = request.at('signalChange');
         if (TP.notValid(shouldSignalChange)) {
             shouldSignalChange = this.isLoaded();
         }
