@@ -3583,9 +3583,7 @@ function(contentData, aRequest) {
     //  Make sure we don't try to load a URI just because we're setting content.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
-    request.atPutIfAbsent('signalChange', this.isLoaded());
 
     return this.$requestContent(request,
                                 'getResource',
@@ -3829,12 +3827,11 @@ function(aResource, aRequest) {
     //  Track initial state so we can properly process flags/results.
     request.atPutIfAbsent('operation', 'set');
     request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  Make sure we don't try to load a URI just because we're setting data.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
-    request.atPutIfAbsent('signalChange', this.isLoaded());
 
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
@@ -3916,9 +3913,11 @@ function(aRequest, aResult, aResource) {
      */
 
     var result,
-
+        request,
         wasDirty,
         isDirty;
+
+    request = this.constructRequest(aRequest);
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3973,7 +3972,7 @@ function(aRequest, aResult, aResource) {
                             'Unable to modify target resource.');
     }
 
-    this.$setPrimaryResource(result);
+    this.$setPrimaryResource(result, request);
 
     return result;
 });
@@ -5696,7 +5695,6 @@ function(aRequest, filterResult) {
     }
 
     request = this.constructRequest(aRequest);
-    request.atPutIfAbsent('signalChange', false);
 
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
