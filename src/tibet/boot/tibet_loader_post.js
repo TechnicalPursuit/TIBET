@@ -1205,10 +1205,6 @@ TP.boot.$$documentSetup = function(aDocument) {
                             TP.core.Mouse.$$handleMouseEvent);
 
     TP.boot.$$addUIHandler(aDocument,
-                            'keyup',
-                            TP.core.Keyboard.$$handleKeyEvent);
-
-    TP.boot.$$addUIHandler(aDocument,
                             'cut',
                             TP.$$handleCut);
     TP.boot.$$addUIHandler(aDocument,
@@ -1231,6 +1227,10 @@ TP.boot.$$documentSetup = function(aDocument) {
 
     TP.boot.$$addUIHandler(aDocument,
                             'keypress',
+                            TP.core.Keyboard.$$handleKeyEvent);
+
+    TP.boot.$$addUIHandler(aDocument,
+                            'keyup',
                             TP.core.Keyboard.$$handleKeyEvent);
 
     TP.boot.$$addUIHandler(aDocument,
