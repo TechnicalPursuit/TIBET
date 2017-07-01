@@ -755,7 +755,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
         sig,
         id;
 
-    //  make sure we've got at least a basic TP.core.Request to work with
+    //  make sure we've got at least a basic TP.sig.Request to work with
     args = aRequest || TP.request();
 
     //  make sure we tuck away the url if there's no prior value

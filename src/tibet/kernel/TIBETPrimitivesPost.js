@@ -2285,7 +2285,7 @@ function(anObject, aFormat, formatParams) {
      * @param {Object} anObject The object to format.
      * @param {Object} aFormat A String or type used to format the object. If
      *     empty then no formatting is performed.
-     * @param {TP.core.Hash|TP.core.Request} formatParams Optional formatting
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional formatting
      *     data.
      * @returns {Object} Typically a string, but not required.
      */

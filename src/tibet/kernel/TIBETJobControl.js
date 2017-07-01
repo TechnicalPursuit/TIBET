@@ -25,7 +25,7 @@
  *     types which want to use common process/job status functionality.
  * @description The most prevalent consumers of TP.core.JobStatus are
  *     TP.core.Job, TP.core.JobGroup, and TP.core.WorkflowSignal (which provides
- *     the common supertype for TP.core.Requests and TP.core.Responses). By
+ *     the common supertype for TP.sig.Requests and TP.sig.Responses). By
  *     traiting in this type those types are able to work with a common set of
  *     job control operations that help define or query job status.
  */

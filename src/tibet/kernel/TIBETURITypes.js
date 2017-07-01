@@ -164,7 +164,7 @@ TP.core.URI.Type.defineConstant('SCHEME');
 //  special aspects for URIs that will broadcast 'Change', but should mostly be
 //  ignored by observers (certainly data-binding observers).
 TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS',
-    TP.ac('cleared', 'dirty', 'expired', 'loaded'));
+    TP.ac('dirty', 'expired', 'loaded'));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -329,6 +329,7 @@ function(aURI, aResource) {
         }
 
         if (TP.isValid(aResource)) {
+            //  NEVER signal change during construction...no request made.
             inst.setResource(aResource, TP.hc('signalChange', false));
         }
     }
@@ -399,6 +400,8 @@ function(anObject) {
     //  NOTE that since our IDs don't follow the pure 0-9 and '.' form for
     //  OID we don't use the urn:oid: NID here.
     urn = TP.core.URI.construct(TP.TIBET_URN_PREFIX + id);
+
+    //  NEVER signal change during construction...no request made.
     urn.setResource(anObject, TP.hc('signalChange', false));
 
     return urn;
@@ -1121,12 +1124,6 @@ TP.core.URI.Inst.defineAttribute('expired', false);
 //  often. NOTE that we start out null so we don't imply a true/false
 TP.core.URI.Inst.defineAttribute('found', null);
 
-//  has the receiver ever been initialized with a value?
-TP.core.URI.Inst.defineAttribute('$hadInitialValue', false);
-
-//  has the receiver ever cleared their caches?
-TP.core.URI.Inst.defineAttribute('$cleared', false);
-
 //  content change tracking flag
 TP.core.URI.Inst.defineAttribute('$dirty', false);
 
@@ -1737,8 +1734,9 @@ function() {
 
     //  empty the resource cache(s) - note that we *must* use $set() here to
     //  avoid all of the ID comparison and change notification machinery in the
-    //  regular 'setResource' call.
-    this.$set('resource', null);
+    //  regular setResource call. Force no notification, we cleared the cache,
+    //  we didn't change the value.
+    this.$set('resource', null, false);
 
     //  update expiration status as well as any potentially obsolete headers
     this.set('headers', null);
@@ -1747,17 +1745,6 @@ function() {
     //  clear any internal state flags that might cause issues reloading
     this.isLoaded(false);
     this.isDirty(false);
-
-    this.hasCleared(true);
-
-    /*
-     * Probably don't want to actually signal since we're really saying we
-     * cleared a local cache...not that the original value has definitely
-     * changed...it could be rebuilt exactly by a load/refresh operation.
-    if (resource !== null) {
-        this.$sendSecondaryURINotifications(resource, null);
-    }
-    */
 
     return this;
 });
@@ -1875,12 +1862,21 @@ function() {
 
     /**
      * @method getContent
-     * @summary Returns the immediate value of the URI, bypassing any attempts
-     *     to load the URI if it hasn't yet been loaded.
+     * @summary Returns the URI's resource, forcing any fetch to be synchronous.
+     *     If you need async access use getResource.
      * @returns {Object} The immediate value of the receiver's resource result.
      */
 
-    return this.getResource(TP.hc('async', false)).get('result');
+    var request;
+
+    request = this.constructRequest();
+    request.atPut('async', false);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPut('operation', 'get');
+    request.atPut('loaded', this.isLoaded());
+
+    return this.getResource(request).get('result');
 });
 
 //  ------------------------------------------------------------------------
@@ -2506,15 +2502,23 @@ function(aRequest) {
      *     content set as its result.
      */
 
+    var request;
+
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'get');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $getPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        return this.$getPrimaryResource(aRequest, true);
+        return this.$getPrimaryResource(request, true);
     }
 
-    return this.$requestContent(aRequest,
+    return this.$requestContent(request,
                                 '$getPrimaryResource',
                                 '$getResultFragment');
 });
@@ -2999,24 +3003,6 @@ function(aSignal) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('hasCleared',
-function(aFlag) {
-
-    /**
-     * @method hasCleared
-     * @summary Returns true if the receiver's content has been cleared at least
-     *     once. This flag helps ensure we signal when dirty/loaded are reset
-     *     but we cleared the cache and may be taking on a new value.
-     * @param {Boolean} [aFlag] The new value to optionally set.
-     * @returns {Boolean} Whether or not the content of the receiver has
-     *     cleared.
-     */
-
-    return this.$flag('cleared', aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -3588,12 +3574,16 @@ function(contentData, aRequest) {
 
     var request;
 
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'set');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  Make sure we don't try to load a URI just because we're setting content.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
-    request.atPutIfAbsent('signalChange', this.hasCleared() || this.isLoaded());
 
     return this.$requestContent(request,
                                 'getResource',
@@ -3701,7 +3691,7 @@ function(aDate) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest, shouldFlagDirty) {
+function(aResource, aRequest, shouldSignal) {
 
     /**
      * @method $setPrimaryResource
@@ -3710,9 +3700,9 @@ function(aResource, aRequest, shouldFlagDirty) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
-     * @listens {TP.sig.Change} Observes the primary resource for Change.
+     * @param {Boolean} [shouldSignal=true] Should changes to the value be
+     *     signaled? By default true, but occasionally set to false when a
+     *     series of changes is being performed etc.
      * @returns {TP.core.URI|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
@@ -3720,6 +3710,8 @@ function(aResource, aRequest, shouldFlagDirty) {
 
     var url,
         request,
+        dirty,
+        loaded,
         oldResource,
         newResource,
         shouldSignalChange;
@@ -3727,100 +3719,108 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
     if ((url = this.getPrimaryURI()) !== this) {
-        return url.$setPrimaryResource(aResource, aRequest, shouldFlagDirty);
+        return url.$setPrimaryResource(aResource, aRequest);
     }
 
     //  ---
-    //  URI <-> data corellation
+    //  URI <-> data correlation
     //  ---
 
     request = this.constructRequest(aRequest);
 
-    //  Make sure to wrap the resource since we're going to be performing
-    //  TIBETan operations.
-    newResource = TP.wrap(aResource);
+    loaded = request.at('loaded');
 
     oldResource = this.$get('resource');
 
-    //  NB: We use TP.equal here since we need a 'deep equality' check on the
-    //  resource.
+    //  Wrap and augment inbound resource if appropriate (adds XMLBase, etc).
+    newResource = this.$normalizeRequestedResource(aResource);
+
+    //  If we're already loaded we need to know if we're changing the value. We
+    //  compare via a TP.equal to ensure a deep comparison.
     if (TP.equal(oldResource, newResource)) {
-        return this;
-    }
-
-    //  on the off chance we got a native node with a default type we want
-    //  to try to get it in wrapped form.
-    if (TP.canInvokeInterface(
-                newResource, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
-        //  place our URI value into the node wrapper and node content
-        newResource.$set('uri', this, false);
-
-        //  make sure the node knows where it loaded from.
-        newResource.addTIBETSrc(this);
-
-        //  then, an 'xml:base' attribute. this helps ensure that xml:base
-        //  computations will work more consistently during tag processing
-        newResource.addXMLBase();
+        dirty = false;
+    } else {
+        if (TP.sys.hasStarted()) {
+            /*
+            console.log(this.getLocation() +
+                ' dirty:\n\n' +
+                TP.getStackInfo().join('\n') +
+                TP.dump(oldResource) + '\n\n' + TP.dump(newResource));
+            */
+        }
+        dirty = true;
     }
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
-    if (TP.isValid(oldResource)) {
+    if (TP.isValid(oldResource) && TP.isMutable(oldResource)) {
         this.ignore(oldResource, 'Change');
     }
 
     //  If the new resource is valid and the request parameters don't contain a
     //  false value for the flag for observing our resource, then observe it for
     //  all *Change signals.
-    if (TP.isMutable(newResource) &&
-        TP.notFalse(request.at('observeResource'))) {
-
+    if (TP.notFalse(request.at('observeResource')) && TP.isMutable(newResource)) {
         //  Observe the new resource object for changes.
         this.observe(newResource, 'Change');
     }
 
-    //  If the receiver is the primary resource we can update our cached
-    //  value for future use.
-    this.$set('resource', newResource);
-
-    //  Flag the receiver as having had at least one real value.
-    this.$set('$hadInitialValue', true, false);
-
     //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
     //  to determine if we should signal change.
-    if (TP.equal(oldResource, newResource)) {
-        shouldSignalChange = false;
-    } else if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.at('signalChange');
-        if (TP.notValid(shouldSignalChange)) {
-            shouldSignalChange = this.hasCleared() || this.isLoaded();
-        }
+    if (TP.isValid(shouldSignal)) {
+        shouldSignalChange = shouldSignal;
+    } else if (request.hasParameter('signalChange')) {
+        shouldSignalChange = request.at('signalChange');
     } else {
-        shouldSignalChange = this.hasCleared() || this.isLoaded();
+        shouldSignalChange = dirty;
     }
 
-    //  If there was already a value then we consider new values to dirty the
-    //  resource from a state perspective. If we weren't loaded yet we consider
-    //  ourselves to be 'clean' until a subsequent change.
-    if (this.isLoaded()) {
-        if (oldResource !== newResource) {
-
-            //  If the caller didn't explicitly specify that they didn't want
-            //  the receiver to be flagged as dirty *and the receiver has had an
-            //  initial value set* (i.e. not just the null value that comes with
-            //  all new URIs), then flag the receiver as dirty.
-            if (TP.notFalse(shouldFlagDirty) && this.$get('$hadInitialValue')) {
-                this.isDirty(true);
+    //  What we do with value and flags depends on the originating operation.
+    switch (request.at('operation')) {
+        case 'load':
+            //  fallthrough
+        case 'get':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);
+            this.isDirty(false);
+            break;
+        case 'set':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);    //  arguable semantics but important for preloaded URIs
+            if (loaded) {
+                this.isDirty(dirty);
+            } else {
+                this.isDirty(false);
             }
-        }
-    } else {
-        this.isLoaded(true);
-        this.isDirty(false);
+            break;
+        case 'save':
+            //  NOTE we don't save results for save..., it's usually an empty
+            //  response.
+            this.isLoaded(true);
+            this.isDirty(false);
+
+            //  We don't signal since we're only pushing data, not altering it.
+            shouldSignalChange = false;
+            break;
+        case 'delete':
+            //  NOTE we don't save results for delete..., it's usually an empty
+            //  response.
+            this.isLoaded(false);
+            this.isDirty(false);
+
+            //  We always signal since whatever value was there is now undefined.
+            shouldSignalChange = true;
+            break;
+        default:
+            return this.raise('InvalidOperation', request.at('operation'));
     }
 
     //  clear any expiration computations
     this.expire(false);
 
     if (shouldSignalChange) {
+        if (TP.sys.hasStarted()) {
+            // console.log('signaling secondaries via primary for ' + this.getLocation());
+        }
         this.$sendSecondaryURINotifications(oldResource, newResource);
     }
 
@@ -3845,12 +3845,16 @@ function(aResource, aRequest) {
 
     var request;
 
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'set');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  Make sure we don't try to load a URI just because we're setting data.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
-    request.atPutIfAbsent('signalChange', this.hasCleared() || this.isLoaded());
 
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
@@ -3932,9 +3936,11 @@ function(aRequest, aResult, aResource) {
      */
 
     var result,
-
+        request,
         wasDirty,
         isDirty;
+
+    request = this.constructRequest(aRequest);
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3989,7 +3995,7 @@ function(aRequest, aResult, aResource) {
                             'Unable to modify target resource.');
     }
 
-    this.$setPrimaryResource(result);
+    this.$setPrimaryResource(result, request);
 
     return result;
 });
@@ -3997,7 +4003,7 @@ function(aRequest, aResult, aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setResultFragment',
-function(aRequest, aResult, aResource, shouldFlagDirty) {
+function(aRequest, aResult, aResource, shouldSignal) {
 
     /**
      * @method $setResultFragment
@@ -4007,8 +4013,9 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} [aResource] Optional data used for set* methods.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
+     * @param {Boolean} [shouldSignal=true] Should changes to the value be
+     *     signaled? By default true, but occasionally set to false when a
+     *     series of changes is being performed etc.
      * @exception {TP.sig.InvalidResource} When the target resource is not
      *     modifiable.
      * @returns {Object} The return value for the content operation using this
@@ -4017,22 +4024,21 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
 
     var fragment,
         result,
-
+        request,
         fragmentAccessor,
-
         oldResource,
-
         pathInfo,
-
         shouldSignalChange;
 
-    if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.at('signalChange');
-        if (TP.notValid(shouldSignalChange)) {
-            shouldSignalChange = this.hasCleared() || this.isLoaded();
-        }
-    } else {
-        shouldSignalChange = this.hasCleared() || this.isLoaded();
+    request = this.constructRequest(aRequest);
+
+    //  Signal change any time value changes...unless explicitly turned off.
+    if (TP.isValid(shouldSignal)) {
+        shouldSignalChange = shouldSignal;
+    } else if (request.hasParameter('signalChange')) {
+        shouldSignalChange = request.at('signalChange');
+    } else if (!TP.equal(oldResource, aResource)) {
+        shouldSignalChange = true;
     }
 
     //  aResult here will be the resource for the primary URI. Therefore, if we
@@ -4096,7 +4102,6 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         //  other URIs that contain paths (as their fragments) that are
         //  'dependent' on that new data that was set.
         pathInfo = fragmentAccessor.getLastChangedPathsInfo(result);
-
         if (shouldSignalChange) {
 
             //  Send notification from the other URIs that are dependent on the
@@ -4113,11 +4118,9 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
     //  If there was already a value then we consider new values to dirty the
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
-    if (this.isLoaded()) {
-        if (oldResource !== aResource) {
-            if (TP.notFalse(shouldFlagDirty)) {
-                this.isDirty(true);
-            }
+    if (request.at('loaded')) {
+        if (!TP.equal(oldResource, aResource)) {
+            this.isDirty(true);
         }
     } else {
         this.isLoaded(true);
@@ -4943,7 +4946,7 @@ function(aName) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURN.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest) {
+function(aResource, aRequest, shouldSignal) {
 
     /**
      * @method $setPrimaryResource
@@ -4952,6 +4955,9 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
+     * @param {Boolean} [shouldSignal=true] Should changes to the value be
+     *     signaled? By default true, but occasionally set to false when a
+     *     series of changes is being performed etc.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
@@ -4959,8 +4965,11 @@ function(aResource, aRequest) {
 
     var url,
         request,
-        resource,
+        oldResource,
+        newResource,
         hasID,
+        dirty,
+        loaded,
         shouldSignalChange;
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
@@ -4971,27 +4980,39 @@ function(aResource, aRequest) {
 
     request = this.constructRequest(aRequest);
 
+    loaded = request.at('loaded');
+
+    oldResource = this.$get('resource');
+
+    //  NOTE for URN we don't normalize the resource, we leave it as is.
+    newResource = aResource;
+
     //  If the resource doesn't already have a user-set ID (i.e. its ID is the
     //  same as its OID), we're going to set it to our 'name'.
-    if (TP.isValid(aResource)) {
+    if (TP.isValid(newResource)) {
         /* eslint-disable no-extra-parens */
-        hasID = (aResource[TP.ID] !== aResource.$$oid);
+        hasID = (newResource[TP.ID] !== newResource.$$oid);
         /* eslint-enable no-extra-parens */
 
         if (!hasID) {
-            if (TP.canInvoke(aResource, 'setID')) {
-                aResource.setID(this.getName());
+            if (TP.canInvoke(newResource, 'setID')) {
+                newResource.setID(this.getName());
             }
         }
     }
 
-    resource = this.$get('resource');
+    //  Core question of whether we're dirty or not, will value change.
+    if (TP.equal(oldResource, newResource)) {
+        dirty = false;
+    } else {
+        dirty = true;
+    }
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
     //  Unfortunately, even if we're about to get the same resource set we have
     //  to cycle the observations since we can't be sure we observed initially.
-    if (TP.isValid(resource) && TP.isMutable(resource)) {
-        this.ignore(resource, 'Change');
+    if (TP.isValid(oldResource) && TP.isMutable(oldResource)) {
+        this.ignore(oldResource, 'Change');
     }
 
     //  If the request parameters contain the flag for observing our
@@ -5002,56 +5023,66 @@ function(aResource, aRequest) {
     //  a URI created for it (when that observation is made). In that case,
     //  if we enter this logic because, the caller here is be providing the
     //  same resource, it may want to observe this URI for change.
-    if (TP.isTrue(request.at('observeResource'))) {
-        if (TP.isMutable(aResource)) {
-            //  Observe the new resource object for changes.
-            this.observe(aResource, 'Change');
-        }
+    if (TP.notFalse(request.at('observeResource')) && TP.isMutable(newResource)) {
+        //  Observe the new resource object for changes.
+        this.observe(newResource, 'Change');
     }
-
-    //  NOTE: You might be tempted to say if resource === aResource we can
-    //  early exit, but that won't account for cases where the
-    //  observe/ignore doesn't happen. We unfortunately have to cycle
-    //  observation in case it never occurred during initial setting of the
-    //  value.
-
-    //  If the receiver is the primary resource we can update our cached value
-    //  for future use.
-    this.$set('resource', aResource);
-
-    //  Flag the receiver as having had at least one real value.
-    this.$set('$hadInitialValue', true, false);
 
     //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
     //  to determine if we should signal change.
-    if (TP.equal(resource, aResource)) {
-        shouldSignalChange = false;
-    } else if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.at('signalChange');
-        if (TP.notValid(shouldSignalChange)) {
-            shouldSignalChange = this.hasCleared() || this.isLoaded();
-        }
+    if (TP.isDefined(shouldSignal)) {
+        shouldSignalChange = shouldSignal;
+    } else if (request.hasParameter('signalChange')) {
+        shouldSignalChange = request.at('signalChange');
     } else {
-        shouldSignalChange = this.hasCleared() || this.isLoaded();
+        shouldSignalChange = dirty;
     }
 
-    //  If there was already a value then we consider new values to dirty the
-    //  resource from a state perspective. If we weren't loaded yet we consider
-    //  ourselves to be 'clean' until a subsequent change.
-    if (this.isLoaded()) {
-        if (resource !== aResource) {
-            this.isDirty(true);
-        }
-    } else {
-        this.isLoaded(true);
-        this.isDirty(false);
+    //  What we do with value and flags depends on the originating operation.
+    switch (request.at('operation')) {
+        case 'load':
+            //  fallthrough
+        case 'get':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);
+            this.isDirty(false);
+            break;
+        case 'set':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);    //  arguable semantics but important for preloaded URIs
+            if (loaded) {
+                this.isDirty(dirty);
+            } else {
+                this.isDirty(false);
+            }
+            break;
+        case 'save':
+            //  NOTE we don't save results for save..., it's usually an empty
+            //  response.
+            this.isLoaded(true);
+            this.isDirty(false);
+
+            //  We don't signal since we're only pushing data, not altering it.
+            shouldSignalChange = false;
+            break;
+        case 'delete':
+            //  NOTE we don't save results for delete..., it's usually an empty
+            //  response.
+            this.isLoaded(false);
+            this.isDirty(false);
+
+            //  We always signal since whatever value was there is now undefined.
+            shouldSignalChange = true;
+            break;
+        default:
+            return this.raise('InvalidOperation', request.at('operation'));
     }
 
     //  clear any expiration computations
     this.expire(false);
 
     if (shouldSignalChange) {
-        this.$sendSecondaryURINotifications(resource, aResource);
+        this.$sendSecondaryURINotifications(oldResource, newResource);
     }
 
     return this;
@@ -5091,6 +5122,10 @@ function(aRequest) {
     }
 
     request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'get');
+    request.atPutIfAbsent('loaded', this.isLoaded());
 
     //  When we're primary or we don't have a fragment we can keep it simple and
     //  return primaryResource.
@@ -5713,7 +5748,6 @@ function(aRequest, filterResult) {
     }
 
     request = this.constructRequest(aRequest);
-    request.atPutIfAbsent('signalChange', false);
 
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
@@ -5745,9 +5779,7 @@ function(aRequest, filterResult) {
             function(aResult) {
 
                 var resultType,
-                    result,
-
-                    wasDirty;
+                    result;
 
                 //  Default our result, and filter if requested. We do this
                 //  here as well to ensure we don't complete() an incoming
@@ -5759,32 +5791,14 @@ function(aRequest, filterResult) {
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
+                }
 
-                    wasDirty = thisref.isDirty();
-
-                    //  Note here how we pass 'false' here, since we don't want
-                    //  to mark this as 'dirty' (if its not already). This
-                    //  allows us to update the representation without
-                    //  triggering a set of change notifications that will alter
-                    //  the representation before we have a chance to update it,
-                    //  thereby causing much confusion.
-                    thisref.$setPrimaryResource(result, request, false);
-
-                    //  If this URI was loaded and not dirty before, then the
-                    //  only reason it got 'dirtied' in the call above is that
-                    //  we're converting from one kind of representation to
-                    //  another and we don't consider that to be 'dirty'.
-                    if (loaded && !wasDirty) {
-                        thisref.isDirty(false);
-                    }
-                } else {
-                    /*
-                     * TODO: fix comment etc. here
-                    //  unfiltered results should update our resource cache.
-                    //  NOTE that this takes care of loaded/dirty state.
-                    */
-                    // thisref.updateResourceCache(subrequest);
-                    thisref.$setPrimaryResource(result, request, false);
+                //  If we fetched the initial resource and are just going to be
+                //  filtering result format then don't call setter here. we
+                //  don't want to adjust content just because of alternative
+                //  request response types.
+                if (!TP.equal(aResult, thisref.$get('resource'))) {
+                    thisref.$setPrimaryResource(result, request);
                 }
 
                 //  rewrite the request result object so we hold on to the
@@ -5929,9 +5943,6 @@ function(aRequest) {
         resourceIsContent,
         resultIsContent;
 
-    //  TODO:   verify the receiver should cache anything...it should be
-    //  either a "caching" URI (whatever that means) or a primary URI.
-
     if (TP.notValid(aRequest)) {
         return this.raise('TP.sig.InvalidParameter',
                             'No request object.');
@@ -5971,8 +5982,7 @@ function(aRequest) {
     currentResult = this.$getFilteredResult(
                             resource, aRequest.at('resultType'));
 
-    //  NB: We use TP.equal here since we need a 'deep equality' check on the
-    //  resource.
+    //  Core question of whether we're dirty or not, will value change.
     if (TP.equal(currentResult, newResult)) {
         return currentResult;
     }
@@ -6092,13 +6102,6 @@ function(aRequest) {
     //  post-process to maintain internal containers.
     //  ---
 
-    //  NB: First, set ourself to be loaded. Otherwise, comparison getters etc.
-    //  in the methods below could cause endless recursion
-
-    /* (ss) don't do this...we aren't changing the data in this method...
-     * this.isLoaded(true);
-     */
-
     //  Now, set the resource or result based on data types of what we already
     //  have and what we are going to be setting.
 
@@ -6110,7 +6113,6 @@ function(aRequest) {
 
     if (TP.canInvoke(newResult, 'getNativeNode') && !resourceIsContent) {
         //  result _is_ a wrapper object of some form.
-        // this.$setPrimaryResource(newResult, aRequest);
         resource = this.$normalizeRequestedResource(newResult);
     } else if (resourceIsContent && !resultIsContent) {
         resource.set('data', newResult, false);
@@ -6130,10 +6132,8 @@ function(aRequest) {
         newResult = TP.core.Node.construct(newResult);
         newResult.set('uri', this);
 
-        // this.$setPrimaryResource(newResult, aRequest);
         resource = this.$normalizeRequestedResource(newResult);
     } else {
-        // this.$setPrimaryResource(newResult, aRequest);
         resource = this.$normalizeRequestedResource(newResult);
     }
 
@@ -6228,10 +6228,19 @@ function(aRequest) {
                     returnResult;
 
                 resource = TP.tpnode(aResult);
+
                 if (TP.canInvoke(resource, 'transform')) {
-                    //  Force XMLBase and TIBET src attributes (but don't stamp
-                    //  it as 'dirty').
-                    thisref.$setPrimaryResource(resource, null, false);
+
+                    /*
+                    //  Update the resource, passing subrequest so we keep the
+                    //  original request params (like operation) flowing through.
+                    //  TODO: setting the resource here has a bad habit of
+                    //  triggering a cyclic change series from processed to
+                    //  unprocessed data. Not convinced we should set it at all
+                    //  here since we're essentially responding _after_ a
+                    //  getResource call to process the result data.
+                    thisref.$setPrimaryResource(resource, subrequest);
+                    */
 
                     //  Start out by configuring to use the processed result.
                     returnProcessedResult = true;
@@ -6277,9 +6286,6 @@ function(aRequest) {
                     //  the return result should become the new resource
                     thisref.set('resource', returnResult,
                         TP.request('signalChange', false));
-
-                    //  Flag the receiver as having had at least one real value.
-                    thisref.$set('$hadInitialValue', true, false);
                 }
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
@@ -8988,8 +8994,9 @@ function(request, result, async, filter) {
             resource = this.$getFilteredResult(resource, resultType, false);
         }
 
-        //  NOTE we dont' signal change when performing a getter.
-        this.$setPrimaryResource(resource, request, false);
+        if (!this.isLoaded()) {
+            this.$setPrimaryResource(resource, request);
+        }
     }
 
     response = request.getResponse(resource);
@@ -9443,7 +9450,7 @@ function(shouldBeWatched) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest, shouldFlagDirty) {
+function(aResource, aRequest) {
 
     /**
      * @method $setPrimaryResource
@@ -9452,9 +9459,6 @@ function(aResource, aRequest, shouldFlagDirty) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
-     * @listens {TP.sig.Change} Observes the primary resource for Change.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
@@ -9474,8 +9478,7 @@ function(aResource, aRequest, shouldFlagDirty) {
 
         return this.callNextMethod(
             TP.sys.getWindowById(parts.at(TP.core.TIBETURL.CANVAS_INDEX)),
-            aRequest,
-            shouldFlagDirty);
+            aRequest);
     }
 
     return this.callNextMethod();
@@ -11164,7 +11167,7 @@ function(targetURI, aRequest) {
                 //  the low-level HTTP handlers so they need both halves of the
                 //  former updateResourceCache method to be called here.
                 result = targetURI.getRequestedResource(subrequest);
-                targetURI.$setPrimaryResource(result);
+                targetURI.$setPrimaryResource(result, subrequest);
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
@@ -11414,6 +11417,7 @@ function(targetURI, aRequest) {
             function(aResult) {
 
                 if (TP.isTrue(aResult)) {
+
                     targetURI.isDirty(false);
                     targetURI.isLoaded(true);
 

@@ -498,6 +498,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Type.defineMethod('$getEqualityValue',
+function() {
+    return this.get('data');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('getFacetedAspectNames',
 function() {
 

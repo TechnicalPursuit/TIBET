@@ -755,15 +755,25 @@ TP.hc(
          * @returns {Array} An Array of Strings containing stack information.
          */
 
-        var entries,
+        var err,
+            entries,
             str,
             match,
             results,
             i;
 
+        err = errorObj;
+        if (!err) {
+            try {
+                throw new Error('StackDump');
+            } catch (e) {
+                err = e;
+            }
+        }
+
         entries = null;
 
-        if (TP.notEmpty(str = errorObj.stack)) {
+        if (TP.notEmpty(str = err.stack)) {
             entries = str.
                 replace(/(?:\n@:0)?\s+$/m, '').
                 replace(/^(?:\((\S*)\))?@/gm, '{anonymous}($1)@').
@@ -784,6 +794,10 @@ TP.hc(
             }
         }
 
+        if (err.message === 'StackDump') {
+            results.shift();
+        }
+
         return results;
     },
     'ie',
@@ -801,15 +815,25 @@ TP.hc(
          * @returns {Array} An Array of Strings containing stack information.
          */
 
-        var entries,
+        var err,
+            entries,
             str,
             match,
             results,
             i;
 
+        err = errorObj;
+        if (!err) {
+            try {
+                throw new Error('StackDump');
+            } catch (e) {
+                err = e;
+            }
+        }
+
         entries = null;
 
-        if (TP.notEmpty(str = errorObj.stack)) {
+        if (TP.notEmpty(str = err.stack)) {
             entries = str.
                 replace(/^\s*at\s+(.*)$/gm, '$1').
                 replace(/^Anonymous function\s+/gm, '{anonymous}() ').
@@ -832,6 +856,10 @@ TP.hc(
             }
         }
 
+        if (err.message === 'StackDump') {
+            results.shift();
+        }
+
         return results;
     },
     'safari',
@@ -849,15 +877,25 @@ TP.hc(
          * @returns {Array} An Array of Strings containing stack information.
          */
 
-        var entries,
+        var err,
+            entries,
             str,
             results,
             match,
             i;
 
+        err = errorObj;
+        if (!err) {
+            try {
+                throw new Error('StackDump');
+            } catch (e) {
+                err = e;
+            }
+        }
+
         entries = null;
 
-        if (TP.notEmpty(str = errorObj.stack)) {
+        if (TP.notEmpty(str = err.stack)) {
             entries = str.
                 replace(/\[native code\]\n/m, '').
                 replace(/^(?=\w+Error:).*$\n/m, '').
@@ -879,6 +917,10 @@ TP.hc(
             }
         }
 
+        if (err.message === 'StackDump') {
+            results.shift();
+        }
+
         return results;
     },
     'chrome',
@@ -896,17 +938,25 @@ TP.hc(
          * @returns {Array} An Array of Strings containing stack information.
          */
 
-        var entries,
+        var err,
+            entries,
             str,
-
             results,
             i,
-
             entry;
+
+        err = errorObj;
+        if (!err) {
+            try {
+                throw new Error('StackDump');
+            } catch (e) {
+                err = e;
+            }
+        }
 
         entries = null;
 
-        if (TP.notEmpty(str = errorObj.stack)) {
+        if (TP.notEmpty(str = err.stack)) {
             entries =
                 (str + '\n').
                 replace(/^[\s\S]+?\s+at\s+/, ' at ').   //  remove message
@@ -946,6 +996,10 @@ TP.hc(
                 //  Push the entry
                 results.push(entry);
             }
+        }
+
+        if (err.message === 'StackDump') {
+            results.shift();
         }
 
         return results;

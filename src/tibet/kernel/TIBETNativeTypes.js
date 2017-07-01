@@ -4363,7 +4363,7 @@ function(formatParams) {
     /**
      * @method asMD5
      * @summary Returns the receiver as hashed by the MD5 hash.
-     * @param {TP.core.Hash|TP.core.Request} formatParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
      *     parameters. These are parameters to a hashing result format and
      *     should contain a key of 'hashFormat' that has one of the following
      *     values:
@@ -4387,7 +4387,7 @@ function(formatParams) {
     /**
      * @method asSHA1
      * @summary Returns the receiver as hashed by the SHA-1 hash.
-     * @param {TP.core.Hash|TP.core.Request} formatParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
      *     parameters. These are parameters to a hashing result format and
      *     should contain a key of 'hashFormat' that has one of the following
      *     values:

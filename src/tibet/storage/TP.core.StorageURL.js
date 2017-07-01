@@ -472,7 +472,7 @@ function(schemeSpecificString) {
 //  ------------------------------------------------------------------------
 
 TP.core.StorageURL.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest, shouldFlagDirty) {
+function(aResource, aRequest) {
 
     /**
      * @method $setPrimaryResource
@@ -481,8 +481,6 @@ function(aResource, aRequest, shouldFlagDirty) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
-     *     resource as 'dirty'. This defaults to true.
      * @listens {TP.sig.Change} Observes the primary resource for Change.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
