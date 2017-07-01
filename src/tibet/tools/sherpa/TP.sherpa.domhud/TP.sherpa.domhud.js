@@ -429,15 +429,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('FocusAndInspectHalo',
+TP.sherpa.domhud.Inst.defineHandler('FocusHaloAndInspect',
 function(aSignal) {
 
     /**
-     * @method handleFocusAndInspectHalo
+     * @method handleFocusHaloAndInspect
      * @summary Handles notifications of when the receiver wants to focus the
      *     halo and shift the Sherpa's inspector to focus it on the halo's
      *     target.
-     * @param {TP.sig.FocusAndInspectHalo} aSignal The TIBET signal which
+     * @param {TP.sig.FocusHaloAndInspect} aSignal The TIBET signal which
      *     triggered this method.
      * @return {TP.sherpa.domhud} The receiver.
      */
