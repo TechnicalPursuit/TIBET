@@ -550,7 +550,7 @@ function(anObject, optFormat) {
         if (TP.isJSONString(obj)) {
             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
                         ' class="sherpa_pp String">' +
-                        this.runJSONModeOn(obj) +
+                        this.runFormattedJSONModeOn(obj) +
                     '</span>';
         } else {
             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
@@ -694,7 +694,7 @@ function(anObject, optFormat) {
     if (TP.isValid(TP.extern.CodeMirror)) {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
                     ' class="sherpa_pp TP_core_JSONContent">' +
-                    this.runJSONModeOn(anObject) +
+                    this.runFormattedJSONModeOn(anObject) +
                 '</span>';
     } else {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
@@ -1018,7 +1018,7 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('runJSONModeOn',
+TP.sherpa.pp.Type.defineMethod('runFormattedJSONModeOn',
 function(anObject, optFormat) {
 
     var str,
