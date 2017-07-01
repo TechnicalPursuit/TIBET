@@ -1043,7 +1043,7 @@ function(anID, headerText, tileParent, shouldDock) {
         wantsToDock,
 
         centerElem,
-        centerElemOffsetRect;
+        centerElemPageRect;
 
     //  Grab the TP.sherpa.tile's template.
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
@@ -1077,10 +1077,10 @@ function(anID, headerText, tileParent, shouldDock) {
 
     //  Center this based on where the 'center' div is located.
     centerElem = TP.byId('center', this.get('vWin'));
-    centerElemOffsetRect = centerElem.getOffsetRect();
+    centerElemPageRect = centerElem.getOffsetRect();
 
     tileTPElem.setOffsetPosition(
-        TP.pc(centerElemOffsetRect.getX(), centerElemOffsetRect.getY()));
+        TP.pc(centerElemPageRect.getX(), centerElemPageRect.getY()));
 
     return tileTPElem;
 });
