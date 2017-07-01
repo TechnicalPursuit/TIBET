@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.defineSubtype('domhud');
+TP.sherpa.hudsidebar.defineSubtype('domhud');
 
 TP.sherpa.domhud.addTraits(TP.core.D3Tag);
 

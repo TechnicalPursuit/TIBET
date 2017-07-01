@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.defineSubtype('bindshud');
+TP.sherpa.hudsidebar.defineSubtype('bindshud');
 
 TP.sherpa.bindshud.addTraits(TP.core.D3Tag);
 

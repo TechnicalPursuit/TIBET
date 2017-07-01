@@ -23,7 +23,7 @@
     <script src="./src/TP.log.SherpaTestAppender.js"/>
 
     <script src="./src/TP.sherpa.menucontent.js"/>
-    <script src="./src/TP.sherpa.focusablesidebar.js"/>
+    <script src="./src/TP.sherpa.hudsidebar.js"/>
 
     <script src="./src/TP.sherpa.ToolAPI.js"/>
 
