@@ -3170,6 +3170,90 @@ function() {
 
 }).skip(!TP.sys.isHTTPBased());
 
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.describe('getResource matrix',
+function() {
+
+    var params,
+        locStr,
+        resultElem,
+        server;
+
+    locStr = TP.uriExpandPath('http://127.0.0.1:1407/TIBET_endpoints/HTTP_GET_TEST');
+
+    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
+    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+    this.before(function() {
+        this.startTrackingSignals();
+    });
+
+    this.after(function() {
+        this.stopTrackingSignals();
+    });
+
+    this.beforeEach(
+        function() {
+            var url;
+
+            server = TP.test.fakeServer.create();
+
+            //  Make sure our URI does _not_ exist before we start each test.
+            url = TP.core.URI.getInstanceById(locStr);
+            if (TP.isValid(url)) {
+                TP.core.URI.removeInstance(url);
+            }
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
+            this.getSuite().resetSignalTracking();
+        });
+
+    //  ---
+
+    /*
+     * getResource success when not loaded should:
+     *      signal change (provided new value differs from null/undefined)
+     *      set loaded flag to true
+     *      set dirty flag to false
+     */
+    this.it('HTTPURL: getResource !loaded success', function(test, options) {
+        var url,
+            request;
+
+        //  Configure server to return success and real data.
+        server.respondWith(TP.HTTP_GET, locStr, [200, {
+            'Content-Type': TP.XML_ENCODED
+        }, resultElem.asString()]);
+
+        url = TP.uc(locStr);
+
+        //  Verify initial state, not loaded, not dirty.
+        test.assert.isFalse(url.isLoaded());
+        test.assert.isFalse(url.isDirty());
+
+        request = TP.request(params);
+
+        url.getResource(request).then(function(result) {
+            test.assert.didSignal(url, 'ValueChange');
+            test.assert.isTrue(url.isLoaded(), 'loaded');
+            test.assert.isFalse(url.isDirty(), 'dirty');
+        },
+        function(err) {
+            test.fail(err);
+        }).catch(function(err) {
+            test.fail(err);
+        });
+
+        server.respond();
+    });
+});// .skip(!TP.sys.isHTTPBased());
+
 //  ========================================================================
 //  JSONPURL
 //  ========================================================================
