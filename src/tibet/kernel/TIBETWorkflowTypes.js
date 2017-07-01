@@ -2016,6 +2016,20 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Inst.defineMethod('hasParameter',
+function(aKey) {
+    var payload;
+
+    payload = this.$get('payload');
+    if (TP.canInvoke(payload, 'hasKey')) {
+        return payload.hasKey(aKey);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Inst.defineHandler('Response',
 function(aSignal) {
 
