@@ -1396,7 +1396,7 @@ function(aFormat, formatParams) {
      *     This method will also pass the optional formatParams parameter on to
      *     the 'transform' call.
      * @param {String} aFormat The format specification to format the receiver.
-     * @param {TP.core.Hash|TP.core.Request} formatParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
      *     parameters. These are parameters to a template transform.
      * @returns {String} The formatted output.
      */
@@ -1418,7 +1418,7 @@ function(aDate, transformParams) {
      * @summary Transforms the supplied Date using the formats provided by the
      *     'substitute' call.
      * @param {Date} aDate The Date object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1491,7 +1491,7 @@ function(aNumber, transformParams) {
      *     the 'substitute()' call. Note: This method does not use the
      *     'transformParams' parameter.
      * @param {Number} aNumber The Number object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1520,7 +1520,7 @@ function(anObject, transformParams) {
      *     receiver, this call will perform the following substitutions (and
      *     expect the following types for anObject):
      * @param {Object} anObject The object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} A formatted string representation of the object.
@@ -1586,7 +1586,7 @@ function(aString, transformParams) {
      *     substitution' format provided by the internal 'substitute()' call.
      *     Note: This method does not use the 'transformParams' parameter.
      * @param {String} aString The String object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.

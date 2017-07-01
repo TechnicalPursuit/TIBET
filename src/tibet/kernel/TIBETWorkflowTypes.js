@@ -10,8 +10,8 @@
 
 /*
  * Types specific to workflow in terms of requests, resources, and their
- * responses. The types here, particularly TP.core.Request, TP.core.Service,
- * and TP.core.Response provide the foundation of TIBET's "service layer".
+ * responses. The types here, particularly TP.sig.Request, TP.core.Service,
+ * and TP.sig.Response provide the foundation of TIBET's "service layer".
  *
  * Also included here are TIBET's Controller and Application types along with
  * helpers for things like History etc.
@@ -1809,7 +1809,7 @@ function() {
      * @summary Returns the type of response this request expects. By default
      *     this is TP.sig.Response but custom subtypes can be used to provide
      *     specific response processing.
-     * @returns {TP.lang.RootObject.<TP.core.Response>} A TP.core.Response
+     * @returns {TP.lang.RootObject.<TP.sig.Response>} A TP.sig.Response
      *     subtype type object.
      */
 
@@ -1944,7 +1944,7 @@ function() {
      * @method getRootRequest
      * @summary Returns the root request for the receiver, or the receiver if
      *     the receiver is the root request.
-     * @returns {TP.core.Request} The root request.
+     * @returns {TP.sig.Request} The root request.
      */
 
     var root,
