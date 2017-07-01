@@ -1841,7 +1841,7 @@ TP.sig.SherpaSignal.defineSubtype('EndSearchMode');
 
 //  Tile signals
 TP.sig.SherpaSignal.defineSubtype('TileDidOpen');
-TP.sig.SherpaSignal.defineSubtype('TileWillClose');
+TP.sig.SherpaSignal.defineSubtype('TileWillDetach');
 
 //  Halo Signals
 TP.sig.SherpaSignal.defineSubtype('HaloDidBlur');
