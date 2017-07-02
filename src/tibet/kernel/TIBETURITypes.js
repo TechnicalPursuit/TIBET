@@ -10190,7 +10190,7 @@ function(pattern, signalOrProcessor, processor) {
     if (index !== TP.NOT_FOUND) {
         processors.atPut(index, entry);
     } else {
-        this.get('processors').unshift(entry);
+        processors.unshift(entry);
     }
 
     return entry;
