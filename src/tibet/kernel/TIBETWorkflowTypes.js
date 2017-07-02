@@ -2016,20 +2016,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Request.Inst.defineMethod('hasParameter',
-function(aKey) {
-    var payload;
-
-    payload = this.$get('payload');
-    if (TP.canInvoke(payload, 'hasKey')) {
-        return payload.hasKey(aKey);
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Request.Inst.defineHandler('Response',
 function(aSignal) {
 
@@ -2052,6 +2038,30 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Inst.defineMethod('hasParameter',
+function(aKey) {
+
+    /**
+     * @method hasParameter
+     * @summary Returns true if the request has a parameter registered under the
+     *     supplied key.
+     * @param {String} aKey The key to check for.
+     * @returns {Boolean} Whether or not the request has the parameter indicated
+     *     by the supplied key.
+     */
+
+    var payload;
+
+    payload = this.$get('payload');
+    if (TP.canInvoke(payload, 'hasKey')) {
+        return payload.hasKey(aKey);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Inst.defineMethod('isSynchronous',
 function(aResource) {
 
@@ -2061,7 +2071,8 @@ function(aResource) {
      * @param {TP.core.Resource} aResource The resource to check for
      *     synchronicity settings if the receiver has no explicit 'async'
      *     setting.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the request will be generating a
+     *     synchronous response.
      */
 
     var async;

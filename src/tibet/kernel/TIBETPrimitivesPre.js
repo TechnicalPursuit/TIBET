@@ -10020,7 +10020,7 @@ function(anObject, aKey) {
     /**
      * @method objectHasKey
      * @summary Returns true if the object has the key provided.
-     * @param {*} anObject The object to test.
+     * @param {Object} anObject The object to test.
      * @param {String} aKey The key name to check.
      * @returns {Boolean} True if the slot exists.
      */

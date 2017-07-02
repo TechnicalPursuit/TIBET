@@ -5299,7 +5299,7 @@ function() {
      * @summary Returns the value which should be used for testing equality
      *     for the receiver. The default is the receiver, which normally
      *     results in a deep compare for object types.
-     * @returns {*} A value appropriate for use in equality comparisons.
+     * @returns {Object} A value appropriate for use in equality comparisons.
      */
 
     return this;
@@ -5315,7 +5315,7 @@ function() {
      * @summary Returns the value which should be used for testing identity
      *     for the receiver. The default is the receiver itself. Types that
      *     allow themselves to be proxied can return their GID or similar value.
-     * @returns {*} A value appropriate for use in identity comparisons.
+     * @returns {Object} A value appropriate for use in identity comparisons.
      */
 
     return this;
@@ -5454,8 +5454,12 @@ function(that) {
         return false;
     }
 
-    a = TP.canInvoke(this, '$getEqualityValue') ? this.$getEqualityValue() : this;
-    b = TP.canInvoke(that, '$getEqualityValue') ? that.$getEqualityValue() : that;
+    a = TP.canInvoke(this, '$getEqualityValue') ?
+                        this.$getEqualityValue() :
+                        this;
+    b = TP.canInvoke(that, '$getEqualityValue') ?
+                        that.$getEqualityValue() :
+                        that;
 
     //  Once we have the equality values use a primitive deep compare. This
     //  works effectively to allow objects to provide whatever they like, such

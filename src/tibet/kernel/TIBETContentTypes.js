@@ -500,6 +500,14 @@ function() {
 
 TP.core.Content.Type.defineMethod('$getEqualityValue',
 function() {
+
+    /**
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality
+     *     for the receiver.
+     * @returns {Object} A value appropriate for use in equality comparisons.
+     */
+
     return this.get('data');
 });
 
