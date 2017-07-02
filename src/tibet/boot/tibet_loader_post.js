@@ -1161,6 +1161,9 @@ TP.boot.$$documentSetup = function(aDocument) {
      * @returns {null}
      */
 
+    var installedHook,
+        beforeUnloadInstallHandler;
+
     TP.boot.$$addUIHandler(aDocument,
                             'click',
                             TP.core.Mouse.$$handleMouseEvent);
@@ -1202,10 +1205,6 @@ TP.boot.$$documentSetup = function(aDocument) {
                             TP.core.Mouse.$$handleMouseEvent);
 
     TP.boot.$$addUIHandler(aDocument,
-                            'keyup',
-                            TP.core.Keyboard.$$handleKeyEvent);
-
-    TP.boot.$$addUIHandler(aDocument,
                             'cut',
                             TP.$$handleCut);
     TP.boot.$$addUIHandler(aDocument,
@@ -1228,6 +1227,10 @@ TP.boot.$$documentSetup = function(aDocument) {
 
     TP.boot.$$addUIHandler(aDocument,
                             'keypress',
+                            TP.core.Keyboard.$$handleKeyEvent);
+
+    TP.boot.$$addUIHandler(aDocument,
+                            'keyup',
                             TP.core.Keyboard.$$handleKeyEvent);
 
     TP.boot.$$addUIHandler(aDocument,
@@ -1257,6 +1260,58 @@ TP.boot.$$documentSetup = function(aDocument) {
 
     //  Add a mutation signal source for mutations to this document
     TP.boot.$$addMutationSource(aDocument);
+
+    //  Because of a desire to not show the 'onbeforeunload' dialog before the
+    //  user has interacted with the page by using this subset of events, we
+    //  install a handler that will install the 'onbeforeunload' hook handler
+    //  only after one of these events has taken place.
+
+    installedHook = false;
+
+    beforeUnloadInstallHandler = function(evt) {
+
+        //  First, uninstall the handler for this event. Note here how we use
+        //  'evt.type' here because this handler is shared by all of the events.
+        aDocument.removeEventListener(evt.type,
+                                        beforeUnloadInstallHandler,
+                                        true);
+
+        //  Then, we make sure that we haven't already installed the hook by
+        //  having this handler invoked with another event type. We do this by
+        //  using the closured variable.
+        if (!installedHook) {
+
+            //  Install the hook and flip the flag.
+            TP.windowInstallOnBeforeUnloadHook(window);
+            installedHook = true;
+        }
+    };
+
+    //  NB: We install this as a *capturing* handler so that we make sure it
+    //  gets processed first and isn't canceled, etc.
+
+    //  For now, these events are the ones that will trigger the browsers to
+    //  show the onbeforeunload dialog:
+
+    //      click
+    //      dblclick
+    //      contextmenu
+
+    //      cut
+    //      paste
+
+    //      keydown
+    //      keypress
+    //      keyup
+
+    aDocument.addEventListener('click', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('dblclick', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('contextmenu', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('cut', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('paste', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('keydown', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('keypress', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('keyup', beforeUnloadInstallHandler, true);
 
     return;
 };

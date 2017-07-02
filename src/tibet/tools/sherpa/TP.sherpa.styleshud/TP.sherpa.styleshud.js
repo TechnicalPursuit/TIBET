@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.defineSubtype('styleshud');
+TP.sherpa.hudsidebar.defineSubtype('styleshud');
 
 TP.sherpa.styleshud.addTraits(TP.core.D3Tag);
 

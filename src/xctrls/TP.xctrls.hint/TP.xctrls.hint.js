@@ -43,7 +43,9 @@ function(anEvent) {
      */
 
     var sig,
-        tpElem,
+
+        targetElem,
+        targetTPElem,
 
         hintElem,
         textContentNode,
@@ -56,10 +58,29 @@ function(anEvent) {
     //  'xctrls:label' and we want the core control element, which will be the
     //  parent in that case.
     sig = TP.wrap(anEvent);
-    tpElem = TP.wrap(sig.getResolvedTarget());
+
+    targetElem = sig.getResolvedTarget();
+
+    targetTPElem = TP.wrap(targetElem);
 
     //  Grab the xctrls:hint element under the signal target
-    hintElem = TP.byCSSPath('xctrls|hint', tpElem, true);
+    hintElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+
+    //  Couldn't find a hint element. Go up the ancestor chain looking for an
+    //  'on:mouseover' containing the 'OpenTooltip' signal name.
+    if (TP.notValid(hintElem)) {
+        targetElem = TP.nodeAncestorMatchingCSS(
+                            targetElem, '*[on|mouseover*="OpenTooltip"]');
+
+        if (!TP.isElement(targetElem)) {
+            return this;
+        }
+
+        targetTPElem = TP.wrap(targetElem);
+
+        //  Grab the xctrls:hint element under the signal target
+        hintElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+    }
 
     //  Grab it's text content and use that as the hint's message.
     textContentNode = hintElem.getFirstChildContentNode();
@@ -67,7 +88,7 @@ function(anEvent) {
         textContent = TP.str(textContentNode);
     }
 
-    tpElem.signal('TP.sig.UIHint', TP.hc('msg', textContent));
+    targetTPElem.signal('TP.sig.UIHint', TP.hc('msg', textContent));
 
     return this;
 });

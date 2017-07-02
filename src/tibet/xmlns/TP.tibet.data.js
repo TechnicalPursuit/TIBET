@@ -356,22 +356,14 @@ function(aContentObject, aRequest) {
         return this.raise('TP.sig.InvalidValue');
     }
 
-    newResource = resultType.construct();
-
     //  If the new resource result is a content object of some sort (highly
-    //  likely) then it should respond to 'setData' so set its data to the
-    //  resource String (the content object type will convert it to the proper
-    //  type).
-    if (TP.canInvoke(newResource, 'setData')) {
-
-        //  Note that we pass 'false' here, since we don't want to notify
-        //  dependents immediately that the data changed, thereby having them
-        //  compute values for their facets, etc. This would cause, for
-        //  instance, real values for things like 'relevant'. We want those to
-        //  remain undefined for now. When we set the resource of the URI below,
-        //  the change notification mechanism will kick in and the initial value
-        //  of all of those facets will be computed.
-        newResource.setData(aContentObject, false);
+    //  likely) then we should initialize it with both the content String and
+    //  the URI that it should be associated with. The content object type will
+    //  convert it from a String to the proper type.
+    if (TP.isSubtypeOf(resultType, TP.core.Content)) {
+        newResource = resultType.construct(aContentObject, namedURI);
+    } else if (resultType === String) {
+        newResource = TP.str(aContentObject);
     }
 
     //  If the named URI has existing data, then we signal

@@ -1040,7 +1040,10 @@ function(anID, headerText, tileParent, shouldDock) {
 
         tileID,
 
-        wantsToDock;
+        wantsToDock,
+
+        centerElem,
+        centerElemPageRect;
 
     //  Grab the TP.sherpa.tile's template.
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
@@ -1072,9 +1075,12 @@ function(anID, headerText, tileParent, shouldDock) {
     //  Awaken the tile.
     tileTPElem.awaken();
 
-    //  Avoid the north and west drawers
-    //  TODO: This is cheesy - calculate these from drawer positions
-    tileTPElem.setOffsetPosition(TP.pc(65, 215));
+    //  Center this based on where the 'center' div is located.
+    centerElem = TP.byId('center', this.get('vWin'));
+    centerElemPageRect = centerElem.getOffsetRect();
+
+    tileTPElem.setOffsetPosition(
+        TP.pc(centerElemPageRect.getX(), centerElemPageRect.getY()));
 
     return tileTPElem;
 });
@@ -1835,7 +1841,7 @@ TP.sig.SherpaSignal.defineSubtype('EndSearchMode');
 
 //  Tile signals
 TP.sig.SherpaSignal.defineSubtype('TileDidOpen');
-TP.sig.SherpaSignal.defineSubtype('TileWillClose');
+TP.sig.SherpaSignal.defineSubtype('TileWillDetach');
 
 //  Halo Signals
 TP.sig.SherpaSignal.defineSubtype('HaloDidBlur');

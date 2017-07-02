@@ -550,7 +550,7 @@ function(anObject, optFormat) {
         if (TP.isJSONString(obj)) {
             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
                         ' class="sherpa_pp String">' +
-                        this.runJSONModeOn(obj) +
+                        this.runFormattedJSONModeOn(obj) +
                     '</span>';
         } else {
             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
@@ -694,7 +694,7 @@ function(anObject, optFormat) {
     if (TP.isValid(TP.extern.CodeMirror)) {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
                     ' class="sherpa_pp TP_core_JSONContent">' +
-                    this.runJSONModeOn(anObject) +
+                    this.runFormattedJSONModeOn(anObject) +
                 '</span>';
     } else {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
@@ -991,6 +991,96 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.pp.Type.defineMethod('runFormattedCSSModeOn',
+function(anObject, optFormat) {
+
+    var str,
+
+        level,
+        tabSpaces,
+
+        newlineChar,
+        indentChar,
+        newlineCharSize,
+
+        plainText;
+
+    if (TP.isValid(TP.extern.CodeMirror)) {
+
+        str = '';
+        level = 0;
+        tabSpaces = 4;
+
+        if (TP.isValid(optFormat) &&
+            optFormat.at('outputFormat') === TP.PLAIN_TEXT_ENCODED) {
+
+            newlineChar = '\n';
+            indentChar = ' ';
+
+            newlineCharSize = 1;
+
+            plainText = true;
+        } else {
+            newlineChar = '<br/>';
+            indentChar = '&#160;';
+
+            newlineCharSize = 5;
+
+            plainText = false;
+        }
+
+        TP.extern.CodeMirror.runMode(
+            anObject.asString(),
+            {
+                name: 'css'
+            },
+            function(text, style) {
+
+                //  Collapse a brace followed by a comma with a brace coming
+                //  next to a single line
+                if (text === '{' &&
+                    str.slice(-(newlineCharSize + 2)) === '},' + newlineChar) {
+
+                    str = str.slice(0, -newlineCharSize) + indentChar;
+                } else if (str.slice(-newlineCharSize) === newlineChar) {
+                    //  Otherwise, if we're starting a new line, 'tab in' the
+                    //  proper number of spaces.
+                    str += indentChar.times(level * tabSpaces);
+                }
+
+                if (style) {
+
+                    if (plainText) {
+                        str += text;
+                    } else {
+                        str += '<span class="cm-' + style + '">' +
+                                 text.asEscapedXML() +
+                                 '</span>';
+                    }
+                } else {
+                    if (text === '{') {
+                        level++;
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
+                    } else if (text === '}') {
+                        level--;
+                        str += newlineChar +
+                                indentChar.times(level * tabSpaces) + text;
+                    } else if (text === ';') {
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
+                    } else {
+                        str += text;
+                    }
+                }
+            });
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.pp.Type.defineMethod('runJSModeOn',
 function(anObject) {
 
@@ -1018,7 +1108,7 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('runJSONModeOn',
+TP.sherpa.pp.Type.defineMethod('runFormattedJSONModeOn',
 function(anObject, optFormat) {
 
     var str,
@@ -1089,18 +1179,17 @@ function(anObject, optFormat) {
                         level++;
                         str += text + newlineChar +
                                 indentChar.times(level * tabSpaces);
-                    }
-                    if (text === '}' || text === ']') {
+                    } else if (text === '}' || text === ']') {
                         level--;
                         str += newlineChar +
                                 indentChar.times(level * tabSpaces) + text;
-                    }
-                    if (text === ':') {
+                    } else if (text === ':') {
                         str += indentChar + text + indentChar;
-                    }
-                    if (text === ',') {
+                    } else if (text === ',') {
                         str += text + newlineChar +
                                 indentChar.times(level * tabSpaces);
+                    } else {
+                        str += text;
                     }
                 }
             });

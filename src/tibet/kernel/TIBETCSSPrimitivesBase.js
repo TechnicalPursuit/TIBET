@@ -1184,7 +1184,6 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidString
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element. Note that this routine can also
      *     return NaN, if it cannot compute a numeric value.
@@ -1203,8 +1202,9 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    //  No value for this property? Then it's pixel value is 0.
     if (TP.isEmpty(aValue)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
+        return 0;
     }
 
     val = TP.trim(aValue);

@@ -1414,16 +1414,19 @@
     //  how far (in pixels) the mouse has to move to start a drag operation
     TP.sys.setcfg('mouse.drag_distance', 3);
 
-    //  how long the event system has to wait before triggering drag events.
+    //  how long (in ms) the event system has to wait before triggering drag
+    //  events.
     TP.sys.setcfg('mouse.drag_delay', 100);
 
-    //  how long a hover has to wait before triggering a DOMMouseHover event.
+    //  how long (in ms) a hover has to wait before triggering a DOMMouseHover
+    //  event.
     TP.sys.setcfg('mouse.hover_delay', 300);
 
-    //  how long a click has to wait before triggering a DOMClick event.
+    //  how long (in ms) a click has to wait before triggering a DOMClick event.
     TP.sys.setcfg('mouse.click_delay', 0);
 
-    //  how long a hover has to wait before retriggering a DOMMouseHover event.
+    //  how long (in ms) a hover has to wait before retriggering a DOMMouseHover
+    //  event.
     TP.sys.setcfg('mouse.hover_repeat', 100);
 
 
