@@ -335,16 +335,15 @@ function() {
                         return this.raise('TP.sig.InvalidValue');
                     }
 
-                    newResource = resultType.construct();
-
                     //  If the new resource result is a content object of some
-                    //  sort (highly likely) then it should respond to 'setData'
-                    //  so set its data to the resource String (the content
-                    //  object type will convert it to the proper type).
-                    if (TP.canInvoke(newResource, 'setData')) {
-                        newResource.setData(result);
-                    } else {
-                        newResource = result;
+                    //  sort (highly likely) then we should initialize it with
+                    //  both the content String and the URI that it should be
+                    //  associated with. The content object type will convert it
+                    //  from a String to the proper type.
+                    if (TP.isSubtypeOf(resultType, TP.core.Content)) {
+                        newResource = resultType.construct(result, resultURI);
+                    } else if (resultType === String) {
+                        newResource = TP.str(result);
                     }
 
                 } else if (TP.isNode(result)) {
