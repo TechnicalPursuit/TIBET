@@ -578,7 +578,27 @@ function(aValue, shouldSignal) {
     //  'settle'.
     setTimeout(
         function() {
+
+            var inspector,
+
+                extraInfo,
+                findContent;
+
             this.get('editor').focus();
+
+            inspector = TP.byId('SherpaInspector', this.getNativeWindow());
+
+            extraInfo = inspector.get('extraTargetInfo');
+
+            if (TP.notEmpty(extraInfo)) {
+
+                findContent = extraInfo.at('findContent');
+
+                if (TP.notEmpty(findContent)) {
+                    this.get('editor').findAndScrollTo(findContent);
+                }
+            }
+
         }.bind(this), TP.sys.cfg('editor.select.delay', 50));
 
     return this;
