@@ -219,6 +219,7 @@ function(options) {
         logRaise,
         throwExceptions,
         throwHandlers,
+        clickDelay,
         shouldLogSetting,
         promise,
         summarize,
@@ -394,6 +395,12 @@ function(options) {
     //      shouldThrowHandlers: when event handlers throw an Error, should the
     //      Error be thrown 'up' to callers higher in the stack.
 
+    //  Also, we capture the value of 'mouse.click_delay' and set the value to
+    //  0. This is so that GUI tests will run properly with async behavior.
+    //  Otherwise, by delaying the sending of click events, various tests will
+    //  timeout and fail. NOTE: This precludes writing tests that generate and
+    //  test for dblclick events.
+
     logRaise = TP.sys.shouldLogRaise();
     TP.sys.shouldLogRaise(false);
 
@@ -405,6 +412,9 @@ function(options) {
 
     throwHandlers = TP.sys.shouldThrowHandlers();
     TP.sys.shouldThrowHandlers(true);
+
+    clickDelay = TP.sys.cfg('mouse.click_delay');
+    TP.sys.setcfg('mouse.click_delay', 0);
 
     /* eslint-disable handle-callback-err */
 
@@ -469,6 +479,7 @@ function(options) {
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
 
+                TP.sys.setcfg('mouse.click_delay', clickDelay);
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
@@ -488,6 +499,8 @@ function(options) {
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
+
+                TP.sys.setcfg('mouse.click_delay', clickDelay);
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
