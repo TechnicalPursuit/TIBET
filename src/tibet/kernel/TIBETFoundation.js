@@ -5255,6 +5255,14 @@ function() {
         args += 'm';
     }
 
+    if (this.sticky) {
+        args += 'y';
+    }
+
+    if (this.unicode) {
+        args += 'u';
+    }
+
     return TP.join('TP.rc(',
                     this.source.quoted(), ', ', args.quoted(),
                     ')');
