@@ -174,6 +174,10 @@ function(enterSelection) {
                     }
                 }
             }).attr(
+            'indexInData',
+            function(d, i) {
+                return i;
+            }).attr(
             'title',
             function(d) {
                 return d[1];
@@ -184,7 +188,7 @@ function(enterSelection) {
             }).text(
             function(d) {
                 return d[1];
-            });
+            }).classed('item', true);
 
     return newContent;
 });
@@ -246,6 +250,10 @@ function(updateSelection) {
                     }
                 }
             }).attr(
+            'indexInData',
+            function(d, i) {
+                return i;
+            }).attr(
             'title',
             function(d) {
                 return d[1];
@@ -256,7 +264,7 @@ function(updateSelection) {
             }).text(
             function(d) {
                 return d[1];
-            });
+            }).classed('item', true);
 
     return updateSelection;
 });
