@@ -4602,9 +4602,9 @@ function(anAspect, anAction, aDescription) {
 //  ------------------------------------------------------------------------
 
 /**
- * @RE: the discussion on TIBET's ordered pairs, an object's 'items' in TIBET
- *     terminology are ordered pairs of keys/values for Objects and the
- *     index/valuefor Arrays.
+ * RE: the discussion on TIBET's ordered pairs, an object's 'items' in TIBET
+ * terminology are ordered pairs of keys/values for Objects and the index/value
+ * for Arrays.
  */
 
 //  ------------------------------------------------------------------------
@@ -4718,13 +4718,13 @@ function(aSelectFunction) {
 //  STRING REPRESENTATION
 //  ------------------------------------------------------------------------
 
-/*
-There are a number of scenarios where getting a displayable output string
-for an object is important.
+/**
+ * There are a number of scenarios where getting a displayable output string for
+ * an object is important.
 
-The asDisplayString() function is the foundation for many of TIBET's
-formatters since it's capable of producing HTML, XML, or other
-representations of an object and its children/properties.
+ * The asDisplayString() function is the foundation for many of TIBET's
+ * formatters since it's capable of producing HTML, XML, or other
+ * representations of an object and its children/properties.
 */
 
 //  ------------------------------------------------------------------------
@@ -5282,12 +5282,12 @@ function() {
 //  ------------------------------------------------------------------------
 
 /**
-JavaScript has different notions of equality and identity than those required
-by TIBET's semantics. In particular, TIBET's sense of equality requires that
-two arrays containing equal elements return true when tested for equality.
-JavaScript won't do this for reference types. Identity is included for both
-consistency and to allow us to 'proxy' by essentially lying about identity.
-*/
+ * JavaScript has different notions of equality and identity than those required
+ * by TIBET's semantics. In particular, TIBET's sense of equality requires that
+ * two arrays containing equal elements return true when tested for equality.
+ * JavaScript won't do this for reference types. Identity is included for both
+ * consistency and to allow us to 'proxy' by essentially lying about identity.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -6083,10 +6083,10 @@ function(objectA, objectB) {
 //  ------------------------------------------------------------------------
 
 /**
- * @Not all objects work in a way consistent with standard sort functions,
- *     meaning that they can't easily be sorted based on simple criteria. To
- *     helpwith that we define a set of comparison support features here that
- *     you canimplement in your types to help sort at the object level.
+ * Not all objects work in a way consistent with standard sort functions,
+ * meaning that they can't easily be sorted based on simple criteria. To help
+ * with that we define a set of comparison support features here that you can
+ * implement in your types to help sort at the object level.
  */
 
 //  ------------------------------------------------------------------------
@@ -6228,13 +6228,13 @@ function(aSelector, anObject) {
 //  INFERENCING - PART I (stubs)
 //  ------------------------------------------------------------------------
 
-/*
-TIBET augments the programmer with built-in support for inferring object
-functionality in certain cases. This capability helps keep code size
-smaller while supporting a faster development cycle and significantly
-increased level of functionality. The trigger for inferencing is the
-TP.sys.dnu function or DNU, also referred to as the 'backstop'.
-*/
+/**
+ * TIBET augments the programmer with built-in support for inferring object
+ * functionality in certain cases. This capability helps keep code size smaller
+ * while supporting a faster development cycle and significantly increased level
+ * of functionality. The trigger for inferencing is the TP.sys.dnu function or
+ * DNU, also referred to as the 'backstop'.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -7377,13 +7377,13 @@ function(callingContext) {
 //  DUPLICATION
 //  ------------------------------------------------------------------------
 
-/*
-In a pure prototype-based system this is how we'd do everything...copy
-something that's already there and then tweak it. But there's no built-in
-copy command for objects in JavaScript and deep-copy semantics are
-difficult in any case. We do the best we can by implementing a simple copy
-operation that handles most situations.
-*/
+/**
+ * In a pure prototype-based system this is how we'd do everything...copy
+ * something that's already there and then tweak it. But there's no built-in
+ * copy command for objects in JavaScript and deep-copy semantics are difficult
+ * in any case. We do the best we can by implementing a simple copy operation
+ * that handles most situations.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -7603,22 +7603,22 @@ function() {
 //  ITERATION
 //  ------------------------------------------------------------------------
 
-/*
-JavaScript iteration is a real problem when handed an object which could be
-of any type, and TP.ObjectProto has been modified. The iteration methods
-here provide a common interface to iteration which ensures consistency and
-proper behavior regardless. You can still use for/in for very limited cases
-but TIBET's iteration methods, as well as our get*Interface calls, are a
-much better way to either iterate or reflect on an object.
+/**
+ * JavaScript iteration is a real problem when handed an object which could be
+ * of any type, and TP.ObjectProto has been modified. The iteration methods
+ * here provide a common interface to iteration which ensures consistency and
+ * proper behavior regardless. You can still use for/in for very limited cases
+ * but TIBET's iteration methods, as well as our get*Interface calls, are a
+ * much better way to either iterate or reflect on an object.
 
-TIBET's iteration methods are based on the Smalltalk and Ruby APIs for
-iteration, much in the same way TIBET mirrors their collection APIs.
-Additional iteration methods mirroring those found natively in Mozilla
-(every, some, map, etc. are found later in the kernel as well). We've
-extended these functions from the Mozilla API slightly to offer first and
-last element checking as well as the ability to break/continue from a nested
-loop construct quickly. Reverse iteration is also supported in many cases.
-*/
+ * TIBET's iteration methods are based on the Smalltalk and Ruby APIs for
+ * iteration, much in the same way TIBET mirrors their collection APIs.
+ * Additional iteration methods mirroring those found natively in Mozilla
+ * (every, some, map, etc. are found later in the kernel as well). We've
+ * extended these functions from the Mozilla API slightly to offer first and
+ * last element checking as well as the ability to break/continue from a nested
+ * loop construct quickly. Reverse iteration is also supported in many cases.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -7739,13 +7739,13 @@ function(aFunction) {
 //  COMMON ITERATION VARIANTS
 //  ------------------------------------------------------------------------
 
-/*
-The variants here all leverage their base type's ability to perform() over
-an item (individual or ordered pair for a hash). While the core API here is
-based on Smalltalk and Ruby we've got a few extras that help with common
-operations you might want to perform on the contents like using apply, get,
-set, etc.
-*/
+/**
+ * The variants here all leverage their base type's ability to perform() over
+ * an item (individual or ordered pair for a hash). While the core API here is
+ * based on Smalltalk and Ruby we've got a few extras that help with common
+ * operations you might want to perform on the contents like using apply, get,
+ * set, etc.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -8680,10 +8680,10 @@ function(aFunction) {
 //  TYPE-SPECIFIC VARIANTS
 //  ------------------------------------------------------------------------
 
-/*
-The operations here are variants that rely on type-specific processing to do
-their work.
-*/
+/**
+ * The operations here are variants that rely on type-specific processing to do
+ * their work.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -9224,10 +9224,10 @@ function(aNumber) {
 //  ------------------------------------------------------------------------
 
 /**
- * @Standard collection query...do you have this object/value/key/etc? TIBET
- *     adds additional functionality here by supporting two types of testing:
- *     TP.EQUALITY and TP.IDENTITY. So when you ask whether obj.contains(x) you
- *     can ask for the results based on either condition.
+ * Standard collection query...do you have this object/value/key/etc? TIBET adds
+ * additional functionality here by supporting two types of testing: TP.EQUALITY
+ * and TP.IDENTITY. So when you ask whether obj.contains(x) you can ask for the
+ * results based on either condition.
  */
 
 //  ------------------------------------------------------------------------
