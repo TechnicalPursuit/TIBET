@@ -508,7 +508,7 @@ function() {
      * @returns {Object} A value appropriate for use in equality comparisons.
      */
 
-    return this.get('data');
+    return this.get('data').$getEqualityValue();
 });
 
 //  ------------------------------------------------------------------------
