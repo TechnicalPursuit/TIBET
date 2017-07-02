@@ -2413,7 +2413,8 @@ TP.core.Mouse.Type.defineAttribute(
             //  possible.
             if (TP.isElement(targetElem =
                             TP.eventGetResolvedTarget(lastOver))) {
-                //  If the event target has an 'sig:hoverrepeat' attribute,
+
+                //  If the event target has an 'tibet:hoverrepeat' attribute,
                 //  try to convert it to a Number and if that's successful,
                 //  set hoverRepeat to it.
                 if (TP.isNumber(targetRepeat =
@@ -3064,13 +3065,13 @@ function(normalizedEvent) {
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
     if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
-        //  If the event target has an 'sig:clickdelay' attribute, try to
-        //  convert it to a Number and if that's successful, set clickDelay
-        //  to it.
+        //  If the event target has an 'tibet:clickdelay' attribute, try to
+        //  convert it to a Number and if that's successful, set clickDelay to
+        //  it.
         if (TP.isNumber(targetDelay =
                             TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:clickdelay',
+                                            'tibet:clickdelay',
                                             true).asNumber())) {
             clickDelay = targetDelay;
         }
@@ -3615,24 +3616,24 @@ function(normalizedEvent) {
         //  with the appropriate 'enabling attribute', if possible.
         if (TP.isElement(targetElem = TP.eventGetResolvedTarget(
                                                         normalizedEvent))) {
-            //  If the event target has an 'sig:dragdistance' attribute, try
+            //  If the event target has an 'tibet:dragdistance' attribute, try
             //  to convert it to a Number and if that's successful, set
             //  dragDistance to it.
             if (TP.isNumber(targetDistance =
                                 TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:dragdistance',
+                                            'tibet:dragdistance',
                                             true).asNumber())) {
                 dragDistance = targetDistance;
             }
 
-            //  If the event target has an 'sig:dragdelay' attribute, try
+            //  If the event target has an 'tibet:dragdelay' attribute, try
             //  to convert it to a Number and if that's successful, set
             //  dragDelay to it.
             if (TP.isNumber(targetDelay =
                                 TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:dragdelay',
+                                            'tibet:dragdelay',
                                             true).asNumber())) {
                 dragDelay = targetDelay;
             }

@@ -200,22 +200,23 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
             TP.elementSetAttribute(anElement, 'id', id);
         }
 
-        //  if the element has a 'sig:name' and no 'handler' (and its not
-        //  itself a 'sig:dispatch' type of element) then that's shorthand
+        //  if the element has a 'tibet:sig_name' and no 'handler' (and its not
+        //  itself a 'tibet:sig_dispatch' type of element) then that's shorthand
         //  for 'dispatch that signal' as the handler, so we make up a
-        //  'javascript:' handler to do just that, leveraging a method on
-        //  the 'sig:' namespace type. Note how we generate code that uses
-        //  the *resolved* target, so that in case parent elements capture
-        //  the signal, we're signaling from the correct place.
-        if (TP.elementHasAttribute(anElement, 'sig:name', true) &&
+        //  'javascript:' handler to do just that. Note how we generate code
+        //  that uses the *resolved* target, so that in case parent elements
+        //  capture the signal, we're signaling from the correct place.
+        if (TP.elementHasAttribute(anElement, 'tibet:sig_name', true) &&
             TP.isType(sigDispatchType =
-                        TP.sys.getTypeByName('sig:dispatch')) &&
+                        TP.sys.getTypeByName('tibet:sig_dispatch')) &&
             TP.core.ElementNode.getConcreteType(anElement) !==
                         sigDispatchType) {
             /* eslint-disable no-script-url */
-            handler = TP.join('javascript:',
-                                'TP.sig.XMLNS.dispatchSignal(',
-                                    'triggerSignal.getResolvedTarget());');
+            //  TODO: The 'sig' namespace is no longer used for this. Figure out
+            //  the alternative that should be used here now.
+            //  handler = TP.join('javascript:',
+            //                      'TP.sig.XMLNS.dispatchSignal(',
+            //                      'triggerSignal.getResolvedTarget());');
             /* eslint-enable no-script-url */
         } else {
             handler = TP.gid(anElement, true);
