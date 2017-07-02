@@ -1418,6 +1418,10 @@
     //  events.
     TP.sys.setcfg('mouse.drag_delay', 100);
 
+    //  how long (in ms) a hover has to wait before triggering a DOMMouseOver
+    //  event.
+    TP.sys.setcfg('mouse.over_delay', 0);
+
     //  how long (in ms) a hover has to wait before triggering a DOMMouseHover
     //  event.
     TP.sys.setcfg('mouse.hover_delay', 300);
