@@ -58,10 +58,35 @@ sherpa|styleshud > ul.content > li:hover {
 }
 
 sherpa|styleshud > ul.content > li[pclass|selected] {
+
     background-color: gold;
 }
 
 sherpa|styleshud > ul.content > li[pclass|selected]:hover {
+
     background-color: gold;
 }
 
+sherpa|tile#StyleSummary_Tile {
+
+    min-width: 200px;
+    min-height: 200px;
+}
+
+sherpa|tile#StyleSummary_Tile > .body {
+
+    bottom: 0;
+
+    font-family: monospace;
+    font-size: 11px;
+}
+
+sherpa|tile#StyleSummary_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+sherpa|tile#StyleSummary_Tile > .footer {
+
+    display: none;
+}

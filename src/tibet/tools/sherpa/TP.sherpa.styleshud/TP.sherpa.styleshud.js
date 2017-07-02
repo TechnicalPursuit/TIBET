@@ -71,295 +71,145 @@ function(aTPElement) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
-//  ------------------------------------------------------------------------
 
-TP.sherpa.styleshud.Inst.defineMethod('buildNewContent',
-function(enterSelection) {
-
-    /**
-     * @method buildNewContent
-     * @summary Builds new content onto the receiver by appending or inserting
-     *     content into the supplied d3.js 'enter selection'.
-     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
-     *     that new content should be appended to.
-     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
-     *     selection containing any new content that was added.
-     */
-
-    var newContent;
-
-    newContent = enterSelection.append('li');
-    newContent.attr(
-            'pclass:selected',
-            function(d) {
-                if (TP.isTrue(d[2])) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'title',
-            function(d) {
-                return d[2];
-            }).attr(
-            'peerID',
-            function(d, i) {
-                return d[0];
-            }).text(
-            function(d) {
-
-                //  Make sure to trim off any trailing ',' - this selector might
-                //  be part of a comma-separated list.
-                return d[1].trimRight(',');
-            });
-
-    return newContent;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineMethod('getKeyFunction',
-function() {
-
-    /**
-     * @method getKeyFunction
-     * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set.
-     * @description This Function should take a single argument, an individual
-     *     item from the receiver's data set, and return a value that will act
-     *     as that item's key in the overall data set. The default version
-     *     returns the item itself.
-     * @returns {Function} A Function that provides a key for the supplied data
-     *     item.
-     */
-
-    var keyFunc;
-
-    keyFunc =
-        function(d, i) {
-            return i;
-        };
-
-    return keyFunc;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineMethod('getRootUpdateSelection',
-function(containerSelection) {
-
-    /**
-     * @method getRootUpdateSelection
-     * @summary Creates the 'root' update selection that will be used as the
-     *     starting point to begin d3.js drawing operations.
-     * @param {TP.extern.d3.selection} containerSelection The selection made by
-     *     having d3.js select() the receiver's 'selection container'.
-     * @returns {TP.extern.d3.Selection} The receiver.
-     */
-
-    return containerSelection.selectAll('li');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineMethod('getSelectionContainer',
-function() {
-
-    /**
-     * @method getSelectionContainer
-     * @summary Returns the Element that will be used as the 'root' to
-     *     add/update/remove content to/from using d3.js functionality. By
-     *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as the container for d3.js
-     *     enter/update/exit selections.
-     */
-
-    return TP.unwrap(this.get('listcontent'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineMethod('updateExistingContent',
-function(updateSelection) {
-
-    /**
-     * @method updateExistingContent
-     * @summary Updates any existing content in the receiver by altering the
-     *     content in the supplied d3.js 'update selection'.
-     * @param {TP.extern.d3.selection} updateSelection The d3.js update
-     *     selection that existing content should be altered in.
-     * @returns {TP.extern.d3.selection} The supplied update selection.
-     */
-
-    updateSelection.attr(
-            'pclass:selected',
-            function(d) {
-                if (TP.isTrue(d[2])) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'title',
-            function(d) {
-                return d[2];
-            }).attr(
-            'peerID',
-            function(d, i) {
-                return d[0];
-            }).text(
-            function(d) {
-
-                //  Make sure to trim off any trailing ',' - this selector might
-                //  be part of a comma-separated list.
-                return d[1].trimRight(',');
-            });
-
-    return updateSelection;
-});
-
-//  ------------------------------------------------------------------------
-//  Handlers
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineHandler('InspectTarget',
+TP.sherpa.styleshud.Inst.defineHandler('InspectStyleSource',
 function(aSignal) {
 
     /**
-     * @method handleInspectTarget
+     * @method handleInspectStyleSource
      * @summary Handles notifications of when the receiver wants to inspect the
-     *     current target and shift the Sherpa's inspector to focus it on that
-     *     target.
-     * @param {TP.sig.InspectTarget} aSignal The TIBET signal which triggered
-     *     this method.
+     *     current target's style source and shift the Sherpa's inspector to
+     *     focus it on that target.
+     * @param {TP.sig.InspectStyleSource} aSignal The TIBET signal which
+     *     triggered this method.
      * @return {TP.sherpa.styleshud} The receiver.
      */
 
-    var targetElem,
-        peerID,
-        target;
+    var data,
 
-    //  Grab the target lozenge tile and get the value of its peerID attribute.
-    //  This will be the ID of the element that we're trying to focus.
+        targetElem,
+
+        indexInData,
+        itemData,
+
+        target,
+
+        ruleMatcher;
+
+    //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
-    //  No peerID? Exit here.
-    if (TP.isEmpty(peerID)) {
+    if (!TP.elementHasClass(targetElem, 'item')) {
         return this;
     }
 
-    //  Probably a controller, not an element.
-    target = TP.bySystemId(peerID);
+    //  Grab our data.
+    data = this.get('data');
 
-    //  Not an element so focus inspector, not halo.
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    //  Resolve the stylesheet URI that will be at the first position in the
+    //  Array. The resultant URI will be our target to inspect.
+    target = TP.bySystemId(itemData.at(0));
+
+    //  Generate a RegExp that will be used to try to find the rule within the
+    //  stylesheet.
+    ruleMatcher = TP.rc(
+                        TP.regExpEscape(TP.wrap(targetElem).getTextContent()) +
+                        '\\w*{');
+
+    //  Signal to inspect the object with the rule matcher as 'extra targeting
+    //  information' under the 'findContent' key.
     this.signal('InspectObject',
                 TP.hc('targetObject', target,
                         'targetAspect', TP.id(target),
-                        'showBusy', true));
+                        'showBusy', true,
+                        'extraTargetInfo',
+                            TP.hc('findContent', ruleMatcher)));
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.styleshud.Inst.defineHandler('HaloDidFocus',
+TP.sherpa.styleshud.Inst.defineHandler('ShowRuleText',
 function(aSignal) {
 
     /**
-     * @method handleHaloDidFocus
-     * @summary Handles notifications of when the halo focuses on an object.
-     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     * @method handleShowRuleText
+     * @summary Handles notifications of when the receiver wants to show the
+     *     rule text in a side popup panel.
+     * @param {TP.sig.ShowRuleText} aSignal The TIBET signal which triggered
      *     this method.
      * @return {TP.sherpa.styleshud} The receiver.
      */
 
-    var haloTarget;
+    var data,
 
-    haloTarget = aSignal.at('haloTarget');
+        targetElem,
 
-    this.focusOnTarget(haloTarget);
+        indexInData,
+        itemData,
 
-    this.observe(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
+        propertyDeclsStr,
 
-    return this;
-});
+        centerElem,
+        centerElemPageRect,
 
-//  ------------------------------------------------------------------------
+        targetElemPageRect;
 
-TP.sherpa.styleshud.Inst.defineHandler('HaloDidBlur',
-function(aSignal) {
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
 
-    /**
-     * @method handleHaloDidBlur
-     * @summary Handles notifications of when the halo blurs on an object.
-     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.styleshud} The receiver.
-     */
+    //  Grab our data.
+    data = this.get('data');
 
-    this.setValue(null);
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
 
-    this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
 
-    return this;
-});
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
 
-//  ------------------------------------------------------------------------
+    //  The property declarations String will be at the 3rd position in our
+    //  entry. Grab it and run the formatted CSS processing method on it.
+    propertyDeclsStr = itemData.at(2);
+    propertyDeclsStr = TP.sherpa.pp.runFormattedCSSModeOn(propertyDeclsStr);
 
-TP.sherpa.styleshud.Inst.defineHandler('MutationAttach',
-function(aSignal) {
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerElem = TP.byId('center', this.getNativeWindow());
+    centerElemPageRect = centerElem.getPageRect();
 
-    /**
-     * @method handleMutationAttach
-     * @summary Handles notifications of node attachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.styleshud} The receiver.
-     */
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    targetElemPageRect = TP.wrap(targetElem).getPageRect();
 
-    var halo,
-        haloTarget;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineHandler('MutationDetach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationDetach
-     * @summary Handles notifications of node detachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.styleshud} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
+    //  Show the rule text in the tile. Note how we wrap the content with a span
+    //  with a CodeMirror CSS class to make the styling work.
+    TP.bySystemId('Sherpa').showTileAt(
+        'StyleSummary_Tile',
+        'Rule Text',
+        TP.xhtmlnode('<span class="cm-s-elegant">' +
+                        propertyDeclsStr +
+                        '</span>'),
+        TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
 
     return this;
 });
