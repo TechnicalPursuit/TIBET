@@ -14,13 +14,25 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('focusablesidebar');
+TP.sherpa.TemplatedTag.defineSubtype('hudsidebar');
+
+//  This type is intended to be used as a supertype of concrete types, so we
+//  don't allow instance creation
+TP.sherpa.hudsidebar.isAbstract(true);
+
+TP.sherpa.hudsidebar.addTraits(TP.core.D3Tag);
+
+TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.hudsidebar.Inst.defineAttribute('listitems',
+    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.Type.defineMethod('tagAttachDOM',
+TP.sherpa.hudsidebar.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -50,12 +62,14 @@ function(aRequest) {
     tpElem.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
 
+    tpElem.setup();
+
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.Type.defineMethod('tagDetachDOM',
+TP.sherpa.hudsidebar.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -93,7 +107,43 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.Inst.defineHandler('HaloDidFocus',
+TP.sherpa.hudsidebar.Inst.defineMethod('focusOnTarget',
+function(aTPElement) {
+
+    /**
+     * @method focusOnTarget
+     * @summary Focuses the receiver onto the supplied target.
+     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     *     receiver on.
+     * @return {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    TP.override();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
@@ -101,14 +151,25 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.hudsidebar} The receiver.
      */
+
+    var haloTarget;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    this.focusOnTarget(haloTarget);
+
+    this.observe(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.Inst.defineHandler('HaloDidBlur',
+TP.sherpa.hudsidebar.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
@@ -116,9 +177,222 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
+     * @return {TP.sherpa.hudsidebar} The receiver.
      */
 
+    this.setValue(null);
+
+    this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach'));
+
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('MutationAttach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationAttach
+     * @summary Handles notifications of node attachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @return {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
+                            'ClosedChange');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.D3Tag Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('buildNewContent',
+function(enterSelection) {
+
+    /**
+     * @method buildNewContent
+     * @summary Builds new content onto the receiver by appending or inserting
+     *     content into the supplied d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
+     */
+
+    var newContent;
+
+    newContent = enterSelection.append('li');
+    newContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'indexInData',
+            function(d, i) {
+                return i;
+            }).text(
+            function(d) {
+                return d[1];
+            }).classed('item', true);
+
+    return newContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('getKeyFunction',
+function() {
+
+    /**
+     * @method getKeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set.
+     * @description This Function should take a single argument, an individual
+     *     item from the receiver's data set, and return a value that will act
+     *     as that item's key in the overall data set. The default version
+     *     returns the item itself.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
+
+    var keyFunc;
+
+    keyFunc =
+        function(d, i) {
+            return i;
+        };
+
+    return keyFunc;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('getRootUpdateSelection',
+function(containerSelection) {
+
+    /**
+     * @method getRootUpdateSelection
+     * @summary Creates the 'root' update selection that will be used as the
+     *     starting point to begin d3.js drawing operations.
+     * @param {TP.extern.d3.selection} containerSelection The selection made by
+     *     having d3.js select() the receiver's 'selection container'.
+     * @returns {TP.extern.d3.Selection} The receiver.
+     */
+
+    return containerSelection.selectAll('li');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('getSelectionContainer',
+function() {
+
+    /**
+     * @method getSelectionContainer
+     * @summary Returns the Element that will be used as the 'root' to
+     *     add/update/remove content to/from using d3.js functionality. By
+     *     default, this returns the receiver's native Element.
+     * @returns {Element} The element to use as the container for d3.js
+     *     enter/update/exit selections.
+     */
+
+    return TP.unwrap(this.get('listcontent'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('updateExistingContent',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContent
+     * @summary Updates any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that existing content should be altered in.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
+     */
+
+    updateSelection.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'indexInData',
+            function(d, i) {
+                return i;
+            }).text(
+            function(d) {
+                return d[1];
+            }).classed('item', true);
+
+    return updateSelection;
 });
 
 //  ------------------------------------------------------------------------
