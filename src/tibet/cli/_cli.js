@@ -1537,8 +1537,9 @@ CLI.runCommand = function(command, cmdPath) {
                 process.exit(result);
                 /* eslint-enable no-process-exit */
             }
-        } else {
-            this.warn(command + ' returned non-numeric status value');
+        // } else {
+        // TODO:    reactivate this after reviewing all commands/promises.
+            // this.warn(command + ' returned non-numeric status value');
         }
     } catch (e) {
         this.handleError(e, 'processing', command);
