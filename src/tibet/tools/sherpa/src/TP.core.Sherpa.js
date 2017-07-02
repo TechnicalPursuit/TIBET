@@ -1788,6 +1788,50 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('showTileAt',
+function(tileID, title, contentElem, aPoint) {
+
+    /**
+     * @method showTileAt
+     * @summary Shows a tile with the supplied title and content at the supplied
+     *     point.
+     * @param {String} tileID The unique ID of the tile. If a tile with this ID
+     *     cannot be found in the same document as the sidebar, then a new tile
+     *     will be created.
+     * @param {String} title The title of the tile.
+     * @param {Element} contentElem The element to set as the content of the
+     *     body of the tile.
+     * @param {TP.core.Point} aPoint The point to show the tile at, in *page*
+     *     coordinates.
+     * @return {TP.core.Sherpa} The receiver.
+     */
+
+    var tileTPElem;
+
+    //  Look for an existing tile.
+    tileTPElem = TP.byId(tileID, this.get('vWin'));
+
+    //  Couldn't find one? Create one.
+    if (TP.notValid(tileTPElem)) {
+        //  NB: Because we don't supply a parent here, the Sherpa will use the
+        //  'common tile layer'.
+        tileTPElem = this.makeTile(tileID, title);
+    } else {
+        tileTPElem.setHeaderText(title);
+    }
+
+    tileTPElem.setContent(contentElem);
+
+    tileTPElem.setPagePosition(aPoint);
+
+    //  Show the tile.
+    tileTPElem.setAttribute('hidden', false);
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('toggle',
