@@ -93,20 +93,20 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
 
-    //  if there's a policy or the origin is specific rather than the
-    //  receiver's device name then we just want to set up a "redirect"
-    //  handler that pushes the signal to the notification system where
-    //  things like policy and origin targeting can be processed.
+    //  If there's a policy or the origin is specific rather than the receiver's
+    //  device name then we just want to set up a "redirect" handler that pushes
+    //  the signal to the notification system where things like policy and
+    //  origin targeting can be processed.
 
     /* eslint-disable no-extra-parens */
     if (TP.notEmpty(aPolicy) ||
         (anOrigin !== this && anOrigin !== this.getName())) {
     /* eslint-enable no-extra-parens */
 
-        //  we have to track observe/ignore stats more closely when we set
-        //  up redirections since each ignore says to remove the redirector,
-        //  but we need to keep at least one as long as we've got more
-        //  observes than we do ignores
+        //  we have to track observe/ignore stats more closely when we set up
+        //  redirections since each ignore says to remove the redirector, but we
+        //  need to keep at least one as long as we've got more observes than we
+        //  do ignores
         map = this.get('redirections');
 
         for (i = 0; i < len; i++) {
@@ -138,9 +138,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     for (i = 0; i < len; i++) {
         signal = signals.at(i).getSignalName();
 
-        //  Signal paths are signals with a '__' separation. We use a
-        //  subtype specific method to process those. Keyboard shortcuts are
-        //  the typically use of this syntax.
+        //  Signal paths are signals with a '__' separation. We use a subtype
+        //  specific method to process those. Keyboard shortcuts are the
+        //  typically use of this syntax.
         if (/__/.test(signal)) {
             this.addShortcutObserver(signal, handler);
         } else {
@@ -151,15 +151,15 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
             arr.push(handler);
 
-            //  unfortunately there's a bit of potential overhead here since
-            //  we need to unique for each possible signal name in the list
+            //  unfortunately there's a bit of potential overhead here since we
+            //  need to unique for each possible signal name in the list
             arr.unique();
         }
     }
 
-    //  if the handler we registered was not the original one then we
-    //  swapped it out for the redirector and we want the notification
-    //  center to go ahead and register it.
+    //  if the handler we registered was not the original one then we swapped it
+    //  out for the redirector and we want the notification center to go ahead
+    //  and register it.
 
     /* eslint-disable no-extra-parens */
     return (handler !== aHandler);
@@ -3070,8 +3070,8 @@ function(normalizedEvent) {
 
     lastDown = this.get('lastDown');
 
-    //  if we can't compute a distance from the last mousedown then we
-    //  assume this is a valid click event
+    //  If we can't compute a distance from the last mousedown then we assume
+    //  this is a valid click event
     if (!TP.isEvent(lastDown)) {
         this.invokeObservers('click', normalizedEvent);
 
@@ -3083,20 +3083,20 @@ function(normalizedEvent) {
         return;
     }
 
-    //  The clickDelay is used when a piece of UI has been authored in such
-    //  a way that a real distinction wants to be made between 'click' and
-    //  'double click' (rather than 'double click' just being 'more click').
-    //  If another click happens within the clickDelay time, the double
-    //  click handler cancels the timeout and no 'click' handlers are fired.
+    //  The clickDelay is used when a piece of UI has been authored in such a
+    //  way that a real distinction wants to be made between 'click' and 'double
+    //  click' (rather than 'double click' just being 'more click'). If another
+    //  click happens within the clickDelay time, the double click handler
+    //  cancels the timeout and no 'click' handlers are fired.
 
-    //  Initially set the clickDelay to the system configured click delay.
-    //  This is usually set to 0 such that there is no delay and has the
-    //  effect that 'double click' is just 'more click'.
+    //  Initially set the clickDelay to the system configured click delay. This
+    //  is usually set to 0 such that there is no delay and has the effect that
+    //  'double click' is just 'more click'.
     clickDelay = TP.sys.cfg('mouse.click_delay');
 
-    //  Get a resolved event target, given the event. This takes into
-    //  account disabled elements and will look for a target element
-    //  with the appropriate 'enabling attribute', if possible.
+    //  Get a resolved event target, given the event. This takes into account
+    //  disabled elements and will look for a target element with the
+    //  appropriate 'enabling attribute', if possible.
     if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
         //  If the event target has an 'tibet:clickdelay' attribute, try to
         //  convert it to a Number and if that's successful, set clickDelay to
@@ -3110,9 +3110,9 @@ function(normalizedEvent) {
         }
     }
 
-    //  use a timer that can be cancelled by dblclick events so we don't
-    //  cause event-level confusion. the semantics should be maintained by
-    //  the application however that dblclick is "more click"
+    //  Use a timer that can be cancelled by dblclick events so we don't cause
+    //  event-level confusion. the semantics should be maintained by the
+    //  application however that dblclick is "more click".
     theEvent = normalizedEvent;
 
     TP.core.Mouse.$$clickTimer = setTimeout(
