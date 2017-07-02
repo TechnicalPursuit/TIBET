@@ -491,7 +491,7 @@ function(aValue) {
     /* eslint-disable no-extra-parens */
     (function() {
         editorObj.refresh();
-    }).afterUnwind();
+    }).queueForNextRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;
