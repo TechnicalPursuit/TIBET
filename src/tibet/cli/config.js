@@ -129,12 +129,6 @@ Cmd.prototype.execute = function() {
         cfg = CLI.getcfg(option);
     }
 
-    //  getcfg can return empty object when no matching values are found.
-    if (cfg === undefined || Object.keys(cfg).length === 0) {
-        this.info('Config value not found: ' + option);
-        return 0;
-    }
-
     //  Treat 'value' objects as simple results (string, number, boolean, null,
     //  undefined, etc).
     if (typeof cfg !== 'object' || CLI.notValid(cfg)) {
@@ -145,6 +139,12 @@ Cmd.prototype.execute = function() {
     // Output arrays in array form rather than object form.
     if (Array.isArray(cfg)) {
         this.info(JSON.stringify(cfg));
+        return 0;
+    }
+
+    //  getcfg can return empty object when no matching values are found.
+    if (cfg === undefined || Object.keys(cfg).length === 0) {
+        this.info('Config value not found: ' + option);
         return 0;
     }
 
