@@ -5660,8 +5660,12 @@ function(that) {
         return false;
     }
 
-    a = TP.canInvoke(this, '$getIdentityValue') ? this.$getIdentityValue() : this;
-    b = TP.canInvoke(that, '$getIdentityValue') ? that.$getIdentityValue() : that;
+    a = TP.canInvoke(this, '$getIdentityValue') ?
+                        this.$getIdentityValue() :
+                        this;
+    b = TP.canInvoke(that, '$getIdentityValue') ?
+                        that.$getIdentityValue() :
+                        that;
 
     return a === b;
 });
@@ -5791,26 +5795,39 @@ function(objectA, objectB, aStack, bStack) {
      *     key sets that filter out TIBET private/internal slots like $$id.
      *     You don't normally call this directly, it's invoked by $equal as
      *     needed and that's invoked by TP.equal() as needed.
-     *
+     * @param {Object} a The first object to compare.
+     * @param {Object} b The second object to compare.
+     * @param {Array} aStack A 'stack' of 'a side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @param {Array} bStack A 'stack' of 'b side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @returns {Boolean} Whether or not the two objects are equal to one
+     *     another.
      */
 
     var a,
         b,
+
         className,
+
         areArrays,
+
         aCtor,
         bCtor,
-        length,
-        keys,
-        key,
-        aStk,
-        bStk;
 
-    // Unwrap any wrapped objects.
+        aStk,
+        bStk,
+
+        length,
+
+        keys,
+        key;
+
+    //  Unwrap any wrapped objects.
     a = TP.unwrap(objectA);
     b = TP.unwrap(objectB);
 
-    // Compare `[[Class]]` names.
+    //  Compare `[[Class]]` names.
     className = TP.tostr(a);
     if (className !== TP.tostr(b)) {
         return false;
@@ -5949,6 +5966,19 @@ function(objectA, objectB, aStack, bStack) {
 TP.definePrimitive('$equal',
 function(a, b, aStack, bStack) {
 
+    /**
+     * @method $equal
+     * @summary Returns true if the values of the two objects are 'equal'.
+     * @param {Object} a The first object to compare.
+     * @param {Object} b The second object to compare.
+     * @param {Array} aStack A 'stack' of 'a side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @param {Array} bStack A 'stack' of 'b side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @returns {Boolean} Whether or not the two objects are equal to one
+     *     another.
+     */
+
     var type;
 
     //  Identical objects are equal. `0 === -0`, but they aren't identical.
@@ -5978,6 +6008,7 @@ function(a, b, aStack, bStack) {
         return false;
     }
 
+    //  None of these checks passed - do a deep equal.
     return TP.$deepEqual(a, b, aStack, bStack);
 });
 
