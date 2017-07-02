@@ -27,42 +27,6 @@ TP.sherpa.domhud.Inst.defineAttribute('listitems',
     TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Type.defineMethod('tagAttachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagAttachComplete
-     * @summary Executes once the tag has been fully processed and its
-     *     attachment phases are fully complete.
-     * @description Because tibet:data tag content drives binds and we need to
-     *     notify even without a full page load, we notify from here once the
-     *     attachment is complete (instead of during tagAttachData).
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    tpElem.setup();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -175,23 +139,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Perform the initial setup for the receiver.
-     * @return {TP.sherpa.domhud} The receiver.
-     */
-
-    this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
-                            'ClosedChange');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
@@ -267,40 +214,6 @@ function() {
         };
 
     return keyFunc;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Inst.defineMethod('getRootUpdateSelection',
-function(containerSelection) {
-
-    /**
-     * @method getRootUpdateSelection
-     * @summary Creates the 'root' update selection that will be used as the
-     *     starting point to begin d3.js drawing operations.
-     * @param {TP.extern.d3.selection} containerSelection The selection made by
-     *     having d3.js select() the receiver's 'selection container'.
-     * @returns {TP.extern.d3.Selection} The receiver.
-     */
-
-    return containerSelection.selectAll('li');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Inst.defineMethod('getSelectionContainer',
-function() {
-
-    /**
-     * @method getSelectionContainer
-     * @summary Returns the Element that will be used as the 'root' to
-     *     add/update/remove content to/from using d3.js functionality. By
-     *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as the container for d3.js
-     *     enter/update/exit selections.
-     */
-
-    return TP.unwrap(this.get('listcontent'));
 });
 
 //  ------------------------------------------------------------------------
@@ -485,32 +398,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('HaloDidFocus',
-function(aSignal) {
-
-    /**
-     * @method handleHaloDidFocus
-     * @summary Handles notifications of when the halo focuses on an object.
-     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.domhud} The receiver.
-     */
-
-    var haloTarget;
-
-    haloTarget = aSignal.at('haloTarget');
-
-    this.focusOnTarget(haloTarget);
-
-    this.observe(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.domhud.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
@@ -528,55 +415,9 @@ function(aSignal) {
                     TP.ac('TP.sig.MutationAttach',
                             'TP.sig.MutationDetach'));
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Inst.defineHandler('MutationAttach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationAttach
-     * @summary Handles notifications of node attachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.domhud} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Inst.defineHandler('MutationDetach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationDetach
-     * @summary Handles notifications of node detachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.domhud} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
+    //  NB: We don't callNextMethod() here because our supertype will clear our
+    //  data and we don't want that (otherwise, focusing on the canvas root
+    //  above will have been for naught).
 
     return this;
 });
