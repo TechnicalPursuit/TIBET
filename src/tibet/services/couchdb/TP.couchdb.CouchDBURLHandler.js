@@ -41,6 +41,12 @@ TP.couchdb.CouchDBURLHandler.set('excludeConfigName',
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('activateRemoteWatch',
 function() {
 
+    /**
+     * @method activateRemoteWatch
+     * @summary Performs any processing necessary to activate observation of
+     *     remote URL changes.
+     */
+
     var sourceType,
         signalType,
         thisref;
@@ -55,17 +61,19 @@ function() {
     thisref = this;
 
     //  For Couch we set up multiple observations against different URIs.
-    this.getWatcherSourceURIs().perform(function(sourceURI) {
-        var signalSource;
+    this.getWatcherSourceURIs().perform(
+        function(sourceURI) {
+            var signalSource;
 
-        signalSource = sourceType.construct(sourceURI.getLocation(),
-            {withCredentials: true});
-        if (TP.notValid(signalSource)) {
-            return thisref.raise('InvalidURLWatchSource');
-        }
+            signalSource = sourceType.construct(
+                                        sourceURI.getLocation(),
+                                        TP.hc('withCredentials', true));
+            if (TP.notValid(signalSource)) {
+                return thisref.raise('InvalidURLWatchSource');
+            }
 
-        thisref.observe(signalSource, signalType);
-    });
+            thisref.observe(signalSource, signalType);
+        });
 
     return;
 });
@@ -75,35 +83,19 @@ function() {
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('deactivateRemoteWatch',
 function() {
 
-    var sourceType,
-        signalType,
-        thisref;
-
-    sourceType = this.getWatcherSourceType();
-    signalType = this.getWatcherSignalType();
-
-    thisref = this;
-
-    //  For Couch we set up multiple observations against different URIs so we
-    //  need to loop over the same list to deactivate.
-    this.getWatcherSourceURIs().perform(function(sourceURI) {
-        var signalSource;
-
-        signalSource = sourceType.construct(sourceURI.getLocation(),
-            {withCredentials: true});
-        if (TP.notValid(signalSource)) {
-            return thisref.raise('InvalidURLWatchSource');
-        }
-
-        thisref.observe(signalSource, signalType);
-    });
+    /**
+     * @method deactivateRemoteWatch
+     * @summary Performs any processing necessary to shut down observation of
+     *     remote URL changes.
+     */
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.getCouchURL = function(options) {
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('getCouchURL',
+function(options) {
 
     /**
      * @method getCouchURL
@@ -164,37 +156,7 @@ TP.couchdb.CouchDBURLHandler.getCouchURL = function(options) {
     }
 
     return db_url;
-};
-
-//  ------------------------------------------------------------------------
-
-TP.couchdb.CouchDBURLHandler.maskCouchAuth = function(url) {
-
-    /**
-     * @method maskCouchAuth
-     * @summary Returns a version of the url provided with any user/pass
-     *     information masked out. This is used for prompts and logging where
-     *     basic auth data could potentially be exposed to view.
-     * @param {String} url The URL to mask.
-     * @returns {String} The masked URL.
-     */
-
-    var regex,
-        match,
-        newurl;
-
-    //  scheme://(user):(pass)@hostetc...
-    regex = /(.*)\/\/(.*):(.*)@(.*)/;
-
-    if (!regex.test(url)) {
-        return url;
-    }
-
-    match = regex.exec(url);
-    newurl = match[1] + '//' + match[4];
-
-    return newurl;
-};
+});
 
 //  ------------------------------------------------------------------------
 
@@ -357,6 +319,37 @@ function(aSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('maskCouchAuth',
+function(url) {
+
+    /**
+     * @method maskCouchAuth
+     * @summary Returns a version of the url provided with any user/pass
+     *     information masked out. This is used for prompts and logging where
+     *     basic auth data could potentially be exposed to view.
+     * @param {String} url The URL to mask.
+     * @returns {String} The masked URL.
+     */
+
+    var regex,
+        match,
+        newurl;
+
+    //  scheme://(user):(pass)@hostetc...
+    regex = /(.*)\/\/(.*):(.*)@(.*)/;
+
+    if (!regex.test(url)) {
+        return url;
+    }
+
+    match = regex.exec(url);
+    newurl = match[1] + '//' + match[4];
+
+    return newurl;
 });
 
 //  =======================================================================
