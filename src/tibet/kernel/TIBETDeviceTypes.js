@@ -2373,10 +2373,14 @@ TP.core.Mouse.Type.defineAttribute(
                 hoverRepeat,
                 targetElem,
                 targetRepeat,
+                repeatAncestor,
+
                 func;
 
             //  clean up after ourselves.
+            TP.core.Mouse.$set('overTimer', null);
             TP.core.Mouse.$set('hoverTimer', null);
+            TP.core.Mouse.$set('hoverRepeatTimer', null);
 
             //  make sure we've got a last move to work from
             lastMove = TP.core.Mouse.$get('lastMove');
@@ -2417,12 +2421,40 @@ TP.core.Mouse.Type.defineAttribute(
                 //  If the event target has an 'tibet:hoverrepeat' attribute,
                 //  try to convert it to a Number and if that's successful,
                 //  set hoverRepeat to it.
-                if (TP.isNumber(targetRepeat =
-                                    TP.elementGetAttribute(
+                targetRepeat = TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:hoverrepeat',
-                                            true).asNumber())) {
-                    hoverRepeat = targetRepeat;
+                                            'tibet:hoverrepeat',
+                                            true);
+
+                //  If we got a hover repeat value, then try to convert it to a
+                //  Number and use it.
+                if (TP.notEmpty(targetRepeat)) {
+                    targetRepeat = targetRepeat.asNumber();
+
+                    if (TP.isNumber(targetRepeat)) {
+                        hoverRepeat = targetRepeat;
+                    }
+                } else {
+
+                    //  Otherwise, search up the ancestor chain looking for an
+                    //  element with a hover repeat attribute.
+                    repeatAncestor = TP.nodeAncestorMatchingCSS(
+                                            targetElem, '*[tibet|hoverrepeat]');
+
+                    //  If we found an ancestor that had a hover repeat
+                    //  attribute, then obtain its value, try to convert it to a
+                    //  Number and use it.
+                    if (TP.isElement(repeatAncestor)) {
+                        targetRepeat = TP.elementGetAttribute(
+                                                            repeatAncestor,
+                                                            'tibet:hoverrepeat',
+                                                            true);
+                        targetRepeat = targetRepeat.asNumber();
+
+                        if (TP.isNumber(targetRepeat)) {
+                            hoverRepeat = targetRepeat;
+                        }
+                    }
                 }
             }
 
@@ -2501,6 +2533,7 @@ TP.core.Mouse.Type.defineAttribute('redirections', TP.hc());
 
 //  timers for click vs. dblclick and hover delay
 TP.core.Mouse.Type.defineAttribute('clickTimer');
+TP.core.Mouse.Type.defineAttribute('overTimer');
 TP.core.Mouse.Type.defineAttribute('hoverTimer');
 TP.core.Mouse.Type.defineAttribute('hoverRepeatTimer');
 
@@ -3411,6 +3444,7 @@ function(normalizedEvent) {
     this.$set('$notValidDragTarget', false);
 
     try {
+        clearTimeout(this.$get('overTimer'));
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
@@ -3435,46 +3469,134 @@ function(normalizedEvent) {
 
     var targetElem,
 
-        hoverDelay,
-        targetDelay;
+        overDelay,
+        targetOverDelay,
+
+        overAncestor,
+
+        overHandler;
 
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
 
-    //  TODO: remove this, replace with "wake up mr. css processor?"
     if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
         TP.elementSetAttribute(targetElem, 'pclass:hover', 'true', true);
     }
 
-    if (this.$$isDragging(normalizedEvent)) {
-        TP.eventSetType(normalizedEvent, 'dragover');
+    overDelay = TP.sys.cfg('mouse.over_delay');
 
-        this.invokeObservers('dragover', normalizedEvent);
-    } else {
-        this.invokeObservers('mouseover', normalizedEvent);
-    }
-
-    hoverDelay = TP.sys.cfg('mouse.hover_delay');
-
-    //  Get a resolved event target, given the event. This takes into
-    //  account disabled elements and will look for a target element
-    //  with the appropriate 'enabling attribute', if possible.
+    //  Get a resolved event target, given the event. This takes into account
+    //  disabled elements and will look for a target element with the
+    //  appropriate 'enabling attribute', if possible.
     if (TP.isElement(targetElem)) {
-        //  If the event target has an 'sig:hoverdelay' attribute, try
-        //  to convert it to a Number and if that's successful, set
-        //  hoverDelay to it.
-        if (TP.isNumber(targetDelay =
-                            TP.elementGetAttribute(
-                                            targetElem,
-                                            'sig:hoverdelay',
-                                            true).asNumber())) {
-            hoverDelay = targetDelay;
+
+        //  If the event target has an 'tibet:overdelay' attribute, try to
+        //  convert it to a Number and if that's successful, set overDelay to
+        //  it.
+        targetOverDelay = TP.elementGetAttribute(targetElem,
+                                                    'tibet:overdelay',
+                                                    true);
+
+        //  If we got a over delay value, then try to convert it to a Number and
+        //  use it.
+        if (TP.notEmpty(targetOverDelay)) {
+            targetOverDelay = targetOverDelay.asNumber();
+
+            if (TP.isNumber(targetOverDelay)) {
+                overDelay = targetOverDelay;
+            }
+        } else {
+
+            //  Otherwise, search up the ancestor chain looking for an element
+            //  with a over delay attribute.
+            overAncestor = TP.nodeAncestorMatchingCSS(
+                                        targetElem, '*[tibet|overdelay]');
+
+            //  If we found an ancestor that had a over delay attribute, then
+            //  obtain its value, try to convert it to a Number and use it.
+            if (TP.isElement(overAncestor)) {
+                targetOverDelay = TP.elementGetAttribute(
+                                                    overAncestor,
+                                                    'tibet:overdelay',
+                                                    true);
+                targetOverDelay = targetOverDelay.asNumber();
+
+                if (TP.isNumber(targetOverDelay)) {
+                    overDelay = targetOverDelay;
+                }
+            }
         }
     }
 
-    TP.core.Mouse.$set('hoverTimer',
-                        setTimeout(this.$get('hoverFunc'), hoverDelay));
+    overHandler = function() {
+
+        var hoverDelay,
+            targetHoverDelay,
+
+            hoverAncestor;
+
+        if (this.$$isDragging(normalizedEvent)) {
+            TP.eventSetType(normalizedEvent, 'dragover');
+
+            this.invokeObservers('dragover', normalizedEvent);
+        } else {
+            this.invokeObservers('mouseover', normalizedEvent);
+        }
+
+        hoverDelay = TP.sys.cfg('mouse.hover_delay');
+
+        //  Get a resolved event target, given the event. This takes into
+        //  account disabled elements and will look for a target element
+        //  with the appropriate 'enabling attribute', if possible.
+        if (TP.isElement(targetElem)) {
+
+            //  If the event target has an 'tibet:hoverdelay' attribute, try
+            //  to convert it to a Number and if that's successful, set
+            //  hoverDelay to it.
+            targetHoverDelay = TP.elementGetAttribute(
+                                                targetElem,
+                                                'tibet:hoverdelay',
+                                                true);
+
+            //  If we got a hover delay value, then try to convert it to a
+            //  Number and use it.
+            if (TP.notEmpty(targetHoverDelay)) {
+                targetHoverDelay = targetHoverDelay.asNumber();
+
+                if (TP.isNumber(targetHoverDelay)) {
+                    hoverDelay = targetHoverDelay;
+                }
+            } else {
+
+                //  Otherwise, search up the ancestor chain looking for an
+                //  element with a hover delay attribute.
+                hoverAncestor = TP.nodeAncestorMatchingCSS(
+                                            targetElem, '*[tibet|hoverdelay]');
+
+                //  If we found an ancestor that had a hover delay attribute,
+                //  then obtain its value, try to convert it to a Number and use
+                //  it.
+                if (TP.isElement(hoverAncestor)) {
+                    targetHoverDelay = TP.elementGetAttribute(
+                                                        hoverAncestor,
+                                                        'tibet:hoverdelay',
+                                                        true);
+                    targetHoverDelay = targetHoverDelay.asNumber();
+
+                    if (TP.isNumber(targetHoverDelay)) {
+                        hoverDelay = targetHoverDelay;
+                    }
+                }
+            }
+        }
+
+        TP.core.Mouse.$set('hoverTimer',
+                            setTimeout(this.$get('hoverFunc'), hoverDelay));
+    }.bind(this);
+
+    TP.core.Mouse.$set('overTimer',
+                        setTimeout(overHandler, overDelay));
 
     return;
 });
@@ -3511,6 +3633,7 @@ function(normalizedEvent) {
     }
 
     try {
+        clearTimeout(this.$get('overTimer'));
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
