@@ -10603,7 +10603,7 @@ function(aURIOrPushState, aDirection) {
         payload,
         type,
         signal,
-        spoof,
+        guard,
         home,
         routeKey,
         config,
@@ -10996,16 +10996,16 @@ function(aURIOrPushState, aDirection) {
     //  no mechanism for trapping *before* a route has been navigated to). Note
     //  here how we append 'RouteExit' onto that for consistency with routing
     //  signal naming.
-    spoof = TP.sig.RouteExit.construct(payload);
-    spoof.setSignalName(this.getLastRoute() + 'RouteExit');
-    spoof.fire();
+    guard = TP.sig.RouteExit.construct(payload);
+    guard.setSignalName(this.getLastRoute() + 'RouteExit');
+    guard.fire();
 
     //  Fire a RouteEnter signal, using the current route that is being set.
     //  Note here how we append 'RouteEnter' onto that for consistency with
     //  routing signal naming.
-    spoof = TP.sig.RouteEnter.construct(payload);
-    spoof.setSignalName(route + 'RouteEnter');
-    spoof.fire();
+    guard = TP.sig.RouteEnter.construct(payload);
+    guard.setSignalName(route + 'RouteEnter');
+    guard.fire();
 
     //  Fire the signal that we computed above, which should be an instance of
     //  either RouteFinalize or a subtype of RouteFinalize.
