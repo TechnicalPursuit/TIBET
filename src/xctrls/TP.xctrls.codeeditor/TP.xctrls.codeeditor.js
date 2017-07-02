@@ -241,9 +241,11 @@ function(line, ch) {
 
     /**
      * @method createPos
-     * @param
-     * @param
-     * @returns {TP.xctrls.codeeditor} The receiver.
+     * @summary Creates a CodeMirror 'position' object from the supplied line
+     *     and character position. See the CodeMirror manual for more details.
+     * @param {Number} line The line number to create the position at.
+     * @param {Number} ch The character number to create the position at.
+     * @returns {TP.extern.CodeMirror.Pos} A CodeMirror 'position' object.
      */
 
     /* eslint-disable new-cap */
@@ -323,8 +325,11 @@ function(start) {
 
     /**
      * @method getCursor
-     * @param
-     * @returns
+     * @summary Returns the current position of the cursor.
+     * @param {String} start A value indicating where to measure the cursor at.
+     *     This should be one of the following values: 'from', 'to', 'head',
+     *     'anchor'. See the CodeMirror manual for more details.
+     * @returns {TP.extern.CodeMirror.Pos} A CodeMirror 'position' object.
      */
 
     return this.$get('$editorObj').getCursor(start);
