@@ -355,23 +355,27 @@ function() {
                 //  URI to actually apply the handler to. The TIBETURL will
                 //  delegate to that during processing.
                 TP.uc('~app/tibet.json').getConcreteURI().defineMethod(
-                        'processRefreshedContent',
-                function() {
-                    var obj,
-                        str;
+                    'processRefreshedContent',
+                    function() {
+                        var obj,
+                            str;
 
-                    TP.info('Refreshing tibet.json configuration values.');
+                        TP.info('Refreshing tibet.json configuration values.');
 
-                    str = TP.str(this.getContent());
-                    try {
-                        obj = JSON.parse(str);
-                    } catch (e) {
-                        TP.error('Failed to parse: ' + this.getLocation(), e);
-                        return;
-                    }
+                        str = TP.str(this.getContent());
+                        try {
+                            obj = JSON.parse(str);
+                        } catch (e) {
+                            TP.error(
+                                'Failed to parse: ' + this.getLocation(), e);
+                            return;
+                        }
 
-                    TP.boot.$configureOptions(obj);
-                });
+                        TP.boot.$configureOptions(obj);
+
+                        //  Configure routing data from cfg() parameters
+                        TP.core.URIRouter.$configureRoutes();
+                    });
 
                 TP.boot.$getStageInfo('starting').head =
                     'Launching TIBET Sherpa&#8482; IDE...';
