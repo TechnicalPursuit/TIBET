@@ -9975,10 +9975,6 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    var cfg,
-        thisref,
-        keys;
-
     this.$set('processors', TP.ac());
 
     //  Always need a route to match "anything" as our backstop. If no routes
@@ -9988,31 +9984,8 @@ function() {
     //  Define the root pattern route for "empty paths".
     this.definePath(/^\/$/, this.get('root'));
 
-    thisref = this;
-
-    //  TODO:   process config-based token definitions
-    cfg = TP.sys.cfg('route.tokens');
-    if (TP.notEmpty(cfg)) {
-        keys = TP.keys(cfg);
-        keys.forEach(function(key) {
-            var val;
-
-            val = cfg.at(key);
-            thisref.defineToken(key.replace('route.tokens.', ''), val);
-        });
-    }
-
-    //  TODO:   process config-based path-to-routename definitions
-    cfg = TP.sys.cfg('route.paths');
-    if (TP.notEmpty(cfg)) {
-        keys = TP.keys(cfg);
-        keys.forEach(function(key) {
-            var val;
-
-            val = cfg.at(key);
-            thisref.definePath(key.replace('route.paths.', ''), val);
-        });
-    }
+    //  Configure routing data from cfg() parameters.
+    this.$configureRoutes();
 
     return;
 });
@@ -10102,6 +10075,54 @@ function(pattern) {
     }
 
     return TP.ac(regex, names);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('$configureRoutes',
+function() {
+
+    /**
+     * @method $configureRoutes
+     * @summary Configures the routes from the tokens and paths that are in the
+     *     cfg() data. If the route cfg() data is altered, this method should be
+     *     called to update internal structures.
+     * @returns {TP.core.URIRouter} The receiver.
+     */
+
+    var cfg,
+        thisref,
+        keys;
+
+    thisref = this;
+
+    //  process config-based token definitions
+    cfg = TP.sys.cfg('route.tokens');
+    if (TP.notEmpty(cfg)) {
+        keys = TP.keys(cfg);
+        keys.forEach(
+                function(key) {
+                    var val;
+
+                    val = cfg.at(key);
+                    thisref.defineToken(key.replace('route.tokens.', ''), val);
+                });
+    }
+
+    //  process config-based path-to-routename definitions
+    cfg = TP.sys.cfg('route.paths');
+    if (TP.notEmpty(cfg)) {
+        keys = TP.keys(cfg);
+        keys.forEach(
+                function(key) {
+                    var val;
+
+                    val = cfg.at(key);
+                    thisref.definePath(key.replace('route.paths.', ''), val);
+                });
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
