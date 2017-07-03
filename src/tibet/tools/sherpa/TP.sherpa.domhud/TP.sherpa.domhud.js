@@ -16,15 +16,7 @@
 
 TP.sherpa.hudsidebar.defineSubtype('domhud');
 
-TP.sherpa.domhud.addTraits(TP.core.D3Tag);
-
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
-
-TP.sherpa.domhud.Inst.defineAttribute('listcontent',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.domhud.Inst.defineAttribute('listitems',
-    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

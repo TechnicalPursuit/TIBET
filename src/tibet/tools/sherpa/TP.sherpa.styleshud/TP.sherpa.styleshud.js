@@ -16,14 +16,6 @@
 
 TP.sherpa.hudsidebar.defineSubtype('styleshud');
 
-TP.sherpa.styleshud.addTraits(TP.core.D3Tag);
-
-TP.sherpa.styleshud.Inst.defineAttribute('listcontent',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.styleshud.Inst.defineAttribute('listitems',
-    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
