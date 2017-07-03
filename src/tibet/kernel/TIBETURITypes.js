@@ -5071,7 +5071,13 @@ function(aResource, aRequest, shouldSignal) {
     if (TP.equal(oldResource, newResource)) {
         dirty = false;
     } else {
-        dirty = true;
+        //  NOTE we don't consider setting a value to the processed version of
+        //  the same value as an operation that dirties the URI.
+        if (request.at('processedResult') === true) {
+            dirty = false;
+        } else {
+            dirty = true;
+        }
     }
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
