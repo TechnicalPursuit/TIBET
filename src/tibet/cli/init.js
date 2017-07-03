@@ -195,7 +195,6 @@ Cmd.prototype.execute = function() {
                 });
 */
                 cmd.log('project initialized successfully.');
-                cmd.info('Use `tibet build` to build your app.');
                 cmd.info('Use `tibet start` to run your app.');
 
             });
