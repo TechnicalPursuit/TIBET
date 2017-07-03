@@ -9,22 +9,22 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tsh.forceRemoteRefresh}
+ * @type {TP.tsh.processChangedRemotes}
  * @summary A subtype of TP.core.ActionElementNode that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:forceRemoteRefresh');
+TP.core.ActionElementNode.defineSubtype('tsh:processChangedRemotes');
 
-TP.tsh.forceRemoteRefresh.addTraits(TP.tsh.Element);
+TP.tsh.processChangedRemotes.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.forceRemoteRefresh.Type.defineMethod('tshExecute',
+TP.tsh.processChangedRemotes.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
@@ -51,7 +51,7 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    TP.core.URI.refreshChangedURIs();
+    TP.core.URI.processRemoteChangeList();
 
     aRequest.stdout('Remote refreshing complete');
 
@@ -62,10 +62,10 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('forceRemoteRefresh',
-    TP.tsh.forceRemoteRefresh.Type.getMethod('tshExecute'),
+TP.core.TSH.addHelpTopic('processChangedRemotes',
+    TP.tsh.processChangedRemotes.Type.getMethod('tshExecute'),
     'Refreshes pending file system changes. Requires TDS.',
-    ':forceRemoteRefresh',
+    ':processChangedRemotes',
     '');
 
 //  ------------------------------------------------------------------------

@@ -187,7 +187,7 @@ TP.core.URI.Type.defineAttribute(
 
 //  holder for URIs that have had their remote resources changed but that
 //  haven't been refreshed.
-TP.core.URI.Type.defineAttribute('changedResources', TP.hc());
+TP.core.URI.Type.defineAttribute('remoteChangeList', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1016,7 +1016,7 @@ function(aURI) {
 
     //  All marked but unprocessed locations get tracked for later processing.
     loc = aURI.getLocation();
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
     locHash = resourceHash.at(loc);
 
     if (TP.notValid(locHash)) {
@@ -1034,11 +1034,11 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('refreshChangedURIs',
+TP.core.URI.Type.defineMethod('processRemoteChangeList',
 function() {
 
     /**
-     * @method refreshChangedURIs
+     * @method processRemoteChangeList
      * @summary Forces a refresh of all of the queued URIs that had their remote
      * resource changed. The queue is then emptied.
      * @returns {TP.meta.core.URI} The receiver.
@@ -1047,7 +1047,7 @@ function() {
     var resourceHash,
         keys;
 
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
     keys = resourceHash.getKeys();
 
     //  NOTE we iterate in this fashion so we don't remove a referenced URI
@@ -1066,6 +1066,65 @@ function() {
     });
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Local Resource Change Handling
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('getLocalChangeList',
+function() {
+
+    /**
+     * @method getLocalChangeList
+     * @summary Retrieves data for locally dirty URIs. This list is generated on
+     *     the fly from the overall URI instance list.
+     * @returns {TP.core.Hash} The locally dirty change list.
+     */
+
+    var hash;
+
+    hash = TP.hc();
+
+    TP.core.URI.instances.perform(function(item) {
+        var loc;
+
+        if (!item.last().isDirty()) {
+            return;
+        }
+
+        //  This creates a more consistent TIBET URI representation.
+        loc = TP.uriInTIBETFormat(TP.uriExpandPath(item.first()));
+
+        hash.atPut(loc, item.last());
+    });
+
+    return hash;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('pushLocalChangeList',
+function() {
+
+    /**
+     * @method pushLocalChangeList
+     * @summary Pushes any changes for locally dirty URIs which are watched.
+     */
+
+    var hash;
+
+    hash = this.getLocalChangeList();
+
+    hash.perform(function(item) {
+        try {
+            item.last().save();
+        } catch (e) {
+            TP.error('Error saving ' + item.first(), e);
+        }
+    });
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

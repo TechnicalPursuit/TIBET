@@ -811,7 +811,7 @@ function() {
                         'sleep',
                         'cli',
                         'listChangedRemotes',
-                        'forceRemoteRefresh',
+                        'processChangedRemotes',
                         'toggleRemoteWatch',
                         'toggleReportChangedRemotes',
                         //  Loaded TSH commands

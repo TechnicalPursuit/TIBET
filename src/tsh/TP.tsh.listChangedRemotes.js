@@ -52,7 +52,7 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
 
     //  Set cmdAsIs to false to get fancy JSON formatting.
 

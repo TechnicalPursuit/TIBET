@@ -59,7 +59,7 @@ function(aRequest) {
         return this.printUsage(aRequest);
     }
 
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
 
     handler =
         function(aSignal) {
