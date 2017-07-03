@@ -69,7 +69,8 @@ Cmd.NAME = 'tsh';
  * particular system.
  * @type {String}
  */
-Cmd.PHANTOM_PATH = 'phantomjs-prebuilt/lib/phantom/bin/phantomjs';
+Cmd.PHANTOM_PATH =
+    'tibet/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs';
 
 //  ---
 //  Instance Attributes
