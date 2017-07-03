@@ -1079,25 +1079,27 @@ function() {
      * @method getLocalChangeList
      * @summary Retrieves data for locally dirty URIs. This list is generated on
      *     the fly from the overall URI instance list.
-     * @returns {TP.core.Hash} The locally dirty change list.
+     * @returns {TP.core.Hash} The locally dirty change list, keyed by the
+     *     normalized virtual location and having the URI object as the value.
      */
 
     var hash;
 
     hash = TP.hc();
 
-    TP.core.URI.instances.perform(function(item) {
-        var loc;
+    TP.core.URI.instances.perform(
+            function(item) {
+                var loc;
 
-        if (!item.last().isDirty()) {
-            return;
-        }
+                if (!item.last().isDirty()) {
+                    return;
+                }
 
-        //  This creates a more consistent TIBET URI representation.
-        loc = TP.uriInTIBETFormat(TP.uriExpandPath(item.first()));
+                //  This creates a more consistent TIBET URI representation.
+                loc = TP.uriInTIBETFormat(TP.uriExpandPath(item.first()));
 
-        hash.atPut(loc, item.last());
-    });
+                hash.atPut(loc, item.last());
+            });
 
     return hash;
 });
@@ -1110,21 +1112,26 @@ function() {
     /**
      * @method pushLocalChangeList
      * @summary Pushes any changes for locally dirty URIs which are watched.
+     * @returns {TP.meta.core.URI} The receiver.
      */
 
     var hash;
 
+    //  Grab the hash that represents the locally changed URI list. This will be
+    //  keyed by the normalized virtual location and its value will be the URI
+    //  object itself.
     hash = this.getLocalChangeList();
 
-    hash.perform(function(item) {
-        try {
-            item.last().save();
-        } catch (e) {
-            TP.error('Error saving ' + item.first(), e);
-        }
-    });
+    hash.perform(
+            function(item) {
+                try {
+                    item.last().save();
+                } catch (e) {
+                    TP.error('Error saving ' + item.first(), e);
+                }
+            });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6356,9 +6363,10 @@ function(aRequest) {
                     subrequest.set('result', result);
 
                     //  the return result should become the new resource
-                    thisref.set('resource', returnResult,
-                        TP.request('signalChange', false,
-                            'processedResult', true));
+                    thisref.set('resource',
+                                returnResult,
+                                TP.request('signalChange', false,
+                                            'processedResult', true));
                 }
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
