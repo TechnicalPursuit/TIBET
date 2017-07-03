@@ -6262,8 +6262,7 @@ function(content) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('alert: ' + content) : 0;
+    //  At this level, we do nothing. Override this method to take action.
 
     return this;
 });
@@ -6297,8 +6296,7 @@ function(content) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('help: ' + content) : 0;
+    //  At this level, we do nothing. Override this method to take action.
 
     return this;
 });
@@ -6315,8 +6313,7 @@ function(content) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('hint: ' + content) : 0;
+    //  At this level, we do nothing. Override this method to take action.
 
     return this;
 });
