@@ -222,11 +222,18 @@ function() {
                 throw e;
             } finally {
 
-                //  One tricky part is that we can sometimes trigger application
-                //  instance creation during parallel booting. When that happens
-                //  we want to clear the singleton instance before we try
-                //  anything that would depend on routes etc.
-                TP.core.Application.set('singleton', null);
+                if (TP.sys.hasFeature('karma')) {
+                    return;
+                }
+
+                if (TP.sys.cfg('boot.parallel')) {
+                    //  One tricky part is that we can sometimes trigger
+                    //  application instance creation during parallel booting.
+                    //  When that happens we want to clear the singleton
+                    //  instance before we try anything that would depend on
+                    //  routes etc.
+                    TP.core.Application.set('singleton', null);
+                }
             }
         }).then(
         function() {
