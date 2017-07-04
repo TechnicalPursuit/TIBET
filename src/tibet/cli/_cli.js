@@ -304,7 +304,7 @@ CLI.isJSIdentifier = function(aString) {
         return false;
     }
 
-    return /^[a-zA-Z_$]{1}[a-zA-Z0-9_$]*$/.test(aString);
+    return /^[a-zA-Z_$]{1}[.a-zA-Z0-9_$]*$/.test(aString);
 };
 
 /**
