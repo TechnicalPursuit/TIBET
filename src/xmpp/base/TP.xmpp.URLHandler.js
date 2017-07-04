@@ -77,10 +77,16 @@ function(targetURI, aRequest) {
 
     //  Grab any parameters that were supplied on the request (as part of
     //  a command line, etc.)
-    uriparams = TP.ifInvalid(request.at('uriparams'), TP.hc());
+    uriparams = request.at('uriparams');
+    if (TP.notValid(uriparams)) {
+        uriparams = TP.hc();
+    }
 
     //  Grab any parameters that were supplied as part of the URI itself.
-    queryDict = TP.ifInvalid(targetURI.get('queryDict'), TP.hc());
+    queryDict = targetURI.get('queryDict');
+    if (TP.notValid(queryDict)) {
+        queryDict = TP.hc();
+    }
 
     //  Go ahead and put the action in a requestParams hash and configure an
     //  'authentication JID' if it was supplied.
@@ -386,14 +392,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.URLHandler.Type.defineMethod('nuke',
+TP.xmpp.URLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes the target URL. This is an unsupported operation for an
      *     XMPP URL.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -473,7 +479,10 @@ function(targetURI, aRequest) {
     }
 
     //  Grab any parameters that were supplied as part of the URI itself.
-    queryDict = TP.ifInvalid(targetURI.get('queryDict'), TP.hc());
+    queryDict = targetURI.get('queryDict');
+    if (TP.notValid(queryDict)) {
+        queryDict = TP.hc();
+    }
 
     switch (action) {
         case 'command':

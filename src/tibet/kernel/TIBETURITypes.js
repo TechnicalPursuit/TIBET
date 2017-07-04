@@ -65,11 +65,6 @@ virtual URIs:
 
 */
 
-/* JSHint checking */
-
-/* jshint evil:true
-*/
-
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
@@ -102,9 +97,9 @@ virtual URIs:
  *     pairing the MIME type your server sends with a client-side handler.
  *
  *     For flexibility, TP.core.URI uses a combination of URI "helpers" and URI
- *     "handlers". Certain operations on a URI such as load, save, or 'nuke'
- *     (delete), are first checked for rewrite and remap data which would either
- *     change the concrete URI or delegate it to a different concrete handler.
+ *     "handlers". Certain operations on a URI such as load, save, or delete
+ *     are first checked for rewrite and remap data which would either change
+ *     the concrete URI or delegate it to a different concrete handler.
  */
 
 //  ------------------------------------------------------------------------
@@ -166,12 +161,17 @@ TP.core.URI.Type.defineConstant('URI_PATTERN_REGEX',
 //  placeholder for the scheme specific to the receiving type
 TP.core.URI.Type.defineConstant('SCHEME');
 
+//  special aspects for URIs that will broadcast 'Change', but should mostly be
+//  ignored by observers (certainly data-binding observers).
+TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS',
+    TP.ac('dirty', 'expired', 'loaded'));
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  most URI access is synchronous (javascript:, file:, urn:, etc) so we
-//  start with that here and override for http:, localdb:, jsonp:, etc.
+//  most URI access is synchronous (file:, urn:, etc) so we
+//  start with that here and override for http:, jsonp:, etc.
 TP.core.URI.set('supportedModes', TP.core.SyncAsync.SYNCHRONOUS);
 TP.core.URI.set('mode', TP.core.SyncAsync.SYNCHRONOUS);
 
@@ -187,162 +187,151 @@ TP.core.URI.Type.defineAttribute(
 
 //  holder for URIs that have had their remote resources changed but that
 //  haven't been refreshed.
-TP.core.URI.Type.defineAttribute('changedResources', TP.hc());
+TP.core.URI.Type.defineAttribute('remoteChangeList', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Type.defineMethod('construct',
-function(aURI, $$vetted) {
+function(aURI, aResource) {
 
     /**
      * @method construct
-     * @summary Returns a new instance of URI by using the root URI and
-     *     relative URI to determine the specific path being defined. Note that
-     *     special precedence is given to ~ (tilde) prefixed URI resolution
-     *     since a majority of URIs referenced in the typical application are of
-     *     this form.
-     * @param {String} aURI Typically an absolute path but possibly a path
-     *     starting with '.','/','-', or '~' which is adjusted as needed.
-     * @param {Boolean} $$vetted An internally used parameter used to trim
-     *     recursive searches for subtypes.
+     * @summary Returns a new instance of URI. The actual type of URI is based
+     *     on the scheme and other related data. This method serves as a
+     *     common factory for URI instances.
+     * @param {String} aURI Ultimately an absolute path but normally a path
+     *     starting with '.','/','-', or '~' which is expanded as needed.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
      * @returns {?TP.core.URI} The new instance.
      */
 
     var url,
+        check,
         flag,
-        expanded,
         inst,
         type,
-        err;
+        err,
+        built;
 
-    //  this method invokes itself with a fully-expanded URI once the
-    //  concrete subtype has been determined. By checking here we can avoid
-    //  a lot of extra overhead redoing work that was done in the first
-    //  pass.
-    if ($$vetted) {
-        //  This should invoke a relatively simple alloc/init sequence with
-        //  the URI as the only parameter. NOTE that when we go down this
-        //  branch 'this' is always a subtype of TP.core.URI.
-        if (TP.isValid(inst = this.callNextMethod(aURI, $$vetted))) {
-            TP.core.URI.registerInstance(inst);
-        }
+    //  Most common case is a string hoping to become a URI when it grows up. We
+    //  want to check all variations of the incoming string before falling
+    //  through into construction cycle.
+    if (TP.isString(aURI)) {
 
-        return inst;
-    }
-
-    //  most common case is either a string or an existing URI, typically
-    //  without a relativeURI or filePath portion. When we're passed an
-    //  existing URI we want to optimize that case and return it.
-    if (!TP.isString(aURI)) {
-        if (TP.isKindOf(aURI, TP.core.URI)) {
-            return aURI;
-        } else {
-            //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
-            //          with URI components (via rewrite() or other means).
+        //  empty string?
+        if (!aURI.trim()) {
             return;
         }
-    } else {
-        //  check for :: and if found expand it to :tibet: for consistency.
-        if (/urn::/.test(aURI)) {
-            inst = TP.core.URI.getInstanceById(
-                aURI.replace('urn::', 'urn:tibet:'));
-        } else {
-            inst = TP.core.URI.getInstanceById(aURI);
+
+        //  Look for most common cases first (urn and virtual path)
+        inst = TP.core.URI.getInstanceById(TP.uriExpandPath(aURI));
+        if (TP.notValid(inst)) {
+            inst = TP.core.URI.getInstanceById(TP.uriInTIBETFormat(aURI));
         }
 
-        if (TP.isValid(inst)) {
-            return inst;
-        }
-    }
+        if (TP.notValid(inst)) {
 
-    //  given a null or empty string? no address.
-    if (TP.isBlank(aURI)) {
-        return;
-    }
+            //  Assign so we can use a consistent name for input checks below.
+            url = aURI;
 
-    //  adjust our path for Windows local paths...just in case.
-    url = TP.regex.HAS_BACKSLASH.test(aURI) ?
-            TP.uriInWebFormat(aURI) :
-            aURI;
-
-    //  support barename shorthand by rewriting it as a reference to the
-    //  current UI canvas.
-    if (url.indexOf('#') === 0) {
-        url = 'tibet://uicanvas/' + url;
-    }
-
-    //  several areas in TIBET will try to resolve strings to URIs. we want
-    //  this to be effective, but accurate so there are some simple checks
-    //  to help ensure we have something that might be a valid URI string
-    if (!TP.regex.URI_LIKELY.test(url) ||
-        TP.regex.REGEX_LITERAL_STRING.test(url)) {
-        return;
-    }
-
-    //  normalize if possible, removing embedded './', '..', etc., but we
-    //  have to use a check here for ~ or tibet:///~ path
-    if (!TP.regex.TIBET_VIRTUAL_URI_PREFIX.test(url)) {
-        url = TP.uriCollapsePath(url);
-    }
-
-    //  we don't want to see exceptions when certain URI resolutions fail
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
-
-    try {
-        if (TP.regex.TIBET_URL.test(url)) {
-            //  if it starts with ~ or tibet: then we need to check for the
-            //  fully expanded form as a registered instance
-            expanded = TP.uriResolveVirtualPath(url);
-            if (TP.isURI(inst = TP.core.URI.getInstanceById(expanded))) {
-                return inst;
+            if (TP.regex.HAS_LINEBREAK.test(url)) {
+                return;
             }
 
-            //  NOTE the 'true' value here to signify the URI is vetted
-            //  and ready to use without additional processing.
-            inst = TP.core.TIBETURL.construct(url, true);
-        } else if (TP.regex.TIBET_URN.test(url)) {
-            //  check for :: and if found expand it to :tibet: for consistency.
-            if (/urn::/.test(url)) {
+            //  Deal with common shorthands and other formatting variations.
+            if (TP.regex.HAS_BACKSLASH.test(url)) {
+                url = TP.uriInWebFormat(url);
+            }
+
+            if (url.indexOf('~') === 0 || url.indexOf('tibet:') === 0) {
+                type = TP.core.TIBETURL;
+                check = TP.uriResolveVirtualPath(url);
+
+                inst = TP.core.URI.getInstanceById(check);
+            } else if (url.indexOf('urn:') === 0) {
                 url = url.replace('urn::', 'urn:tibet:');
+                type = url.indexOf('urn:tibet:') === 0 ?
+                        TP.core.TIBETURN :
+                        TP.core.URN;
+
+                inst = TP.core.URI.getInstanceById(url);
+            } else if (url.indexOf('#') === 0) {
+                type = TP.core.TIBETURL;
+                url = 'tibet://uicanvas/' + url;
+
+                inst = TP.core.URI.getInstanceById(url);
+            } else if (!TP.regex.URI_LIKELY.test(url) ||
+                    TP.regex.REGEX_LITERAL_STRING.test(url)) {
+                //  several areas in TIBET will try to resolve strings to URIs.
+                //  try to eliminate the non-starters early.
+                return;
+            } else {
+                //  normalize if possible, removing embedded './', '..', etc.,
+                //  but we have to use a check here for ~ or tibet:///~ path
+                url = TP.uriCollapsePath(url);
+                inst = TP.core.URI.getInstanceById(url);
             }
-            url = url.slice(url.indexOf('urn:tibet:'));
 
-            inst = TP.core.URN.construct(url, true);
-        } else {
-            if (TP.isURI(inst = TP.core.URI.getInstanceById(url))) {
-                return inst;
+            if (TP.notValid(inst) && !TP.isType(type)) {
+                //  One last adjustment is when a developer uses a typical url
+                //  of the form '/' or './' etc. In those cases we need to
+                //  update the url to include the current root.
+                url = TP.uriWithRoot(url);
+                inst = TP.core.URI.getInstanceById(url);
             }
+        }
 
-            //  One last adjustment is when a developer uses a typical url of
-            //  the form '/' or './' etc. In those cases we need to update the
-            //  url to include the current root. We can adjust for that.
-            url = TP.uriWithRoot(url);
+    } else if (TP.notValid(aURI)) {
+        return;
+    } else if (TP.isKindOf(aURI, TP.core.URI)) {
+        inst = aURI;
+    } else {
+        //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
+        //          with URI components (via rewrite() or other means).
+        return;
+    }
 
-            //  here we construct the instance and init() it using the root
-            type = this.getConcreteType(url);
+    if (TP.notValid(inst)) {
+        //  we don't want to see exceptions when certain URI resolutions fail
+        flag = TP.sys.shouldLogRaise();
+        TP.sys.shouldLogRaise(false);
+
+        try {
+            type = type || this.getConcreteType(url);
             if (TP.isType(type)) {
-                //  NOTE the 'true' value here to signify the URI is vetted
-                //  and ready to use without additional processing.
-                inst = type.construct(url, true);
+                //  NOTE we skip this method and go directly to alloc/init
+                //  version.
+                inst = type.$construct(url);
+                built = true;
             } else {
                 //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
                 return this.raise(
-                        'TP.sig.NoConcreteType',
-                        'Unable to locate concrete type for URI: ' + url);
+                    'TP.sig.NoConcreteType',
+                    'Unable to locate concrete type for URI: ' + url);
             }
+        } catch (e) {
+            err = TP.ec(
+                    e,
+                    TP.join(TP.sc('URI construct produced error for: '), url));
+            return this.raise('TP.sig.URIException', err);
+        } finally {
+            TP.sys.shouldLogRaise(flag);
         }
-    } catch (e) {
-        err = TP.ec(e,
-            TP.join(TP.sc('URI construct produced error for: '),
-                url));
-        return this.raise('TP.sig.URIException', err);
-    } finally {
-        TP.sys.shouldLogRaise(flag);
+    }
+
+    if (TP.isValid(inst)) {
+        if (built) {
+            inst.register();
+        }
+
+        if (TP.isValid(aResource)) {
+            //  NEVER signal change during construction...no request made.
+            inst.setResource(aResource, TP.hc('signalChange', false));
+        }
     }
 
     return inst;
@@ -351,17 +340,18 @@ function(aURI, $$vetted) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uc',
-function(aURI) {
+function(aURI, aResource) {
 
     /**
      * @method uc
      * @summary A shorthand method for TP.core.URI.construct().
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @returns {TP.core.URI} The new instance.
      */
 
-    return TP.core.URI.construct(aURI);
+    return TP.core.URI.construct(aURI, aResource);
 });
 
 //  ------------------------------------------------------------------------
@@ -410,7 +400,9 @@ function(anObject) {
     //  NOTE that since our IDs don't follow the pure 0-9 and '.' form for
     //  OID we don't use the urn:oid: NID here.
     urn = TP.core.URI.construct(TP.TIBET_URN_PREFIX + id);
-    urn.setResource(anObject);
+
+    //  NEVER signal change during construction...no request made.
+    urn.setResource(anObject, TP.hc('signalChange', false));
 
     return urn;
 });
@@ -618,7 +610,7 @@ function(anID) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Type.defineMethod('registerInstance',
-function(anInstance) {
+function(anInstance, aKey) {
 
     /**
      * @method registerInstance
@@ -626,23 +618,32 @@ function(anInstance) {
      *     Subsequent calls to construct an instance for that URI string will
      *     return the cached instance.
      * @param {TP.core.URI} anInstance The instance to register.
+     * @param {String} [aKey] The optional key to store the instance under.
      * @exception {TP.sig.InvalidURI}
      * @returns {TP.core.URI} The receiver.
      */
 
-    var dict;
-
-    if (!TP.canInvoke(anInstance, 'getID')) {
-        return this.raise('TP.sig.InvalidURI');
-    }
+    var dict,
+        key,
+        current;
 
     //  update our instance registry with the instance, keying it under the
     //  URI ID.
     dict = this.$get('instances');
 
+    key = aKey;
+    if (TP.notValid(key)) {
+        return this.raise('InvalidKey');
+    }
+
+    current = dict.at(key);
+    if (TP.isValid(current) && current !== anInstance) {
+        TP.warn('Replacing URI instance for registration key: ' + key);
+    }
+
     //  Note here how we use the value of the 'uri' attribute - we want the
     //  original (but normalized) URI value - not the resolved 'location'.
-    dict.atPut(anInstance.get('uri'), anInstance);
+    dict.atPut(key, anInstance);
 
     return this;
 });
@@ -654,33 +655,35 @@ function(anInstance) {
 
     /**
      * @method removeInstance
-     * @summary Removes an instance under that instance's URI string.
+     * @summary Removes an instance under all keys that instance is registered
+     *     under.
      * @param {TP.core.URI} anInstance The instance to remove.
      * @exception {TP.sig.InvalidURI}
      * @returns {TP.core.URI} The receiver.
      */
 
     var dict,
+        seconds;
 
-        secondaryURIs,
-        i;
-
-    if (!TP.canInvoke(anInstance, 'getID')) {
-        return this.raise('TP.sig.InvalidURI');
+    if (!TP.isKindOf(anInstance, TP.core.URI)) {
+        return this.raise('InvalidURI');
     }
 
-    //  update our instance registry by removing the instance, finding it's key
+    //  update our instance registry by removing the instance, finding its key
     //  under the fully-expanded URI ID.
     dict = this.$get('instances');
 
-    //  If the URI has sub URIs we need to remove them too.
-    if (TP.notEmpty(secondaryURIs = anInstance.getSecondaryURIs())) {
-        for (i = 0; i < secondaryURIs.getSize(); i++) {
-            this.removeInstance(secondaryURIs.at(i));
-        }
+    //  If the URI has sub URIs we need to remove them as well.
+    if (TP.notEmpty(seconds = anInstance.getSecondaryURIs())) {
+        seconds.forEach(
+                    function(secondary) {
+                        TP.core.URI.removeInstance(secondary);
+                        dict.removeValue(secondary, TP.IDENTITY);
+                    });
     }
 
-    dict.removeKey(anInstance.getLocation());
+    //  remove all references to this URI, regardless of the particular key.
+    dict.removeValue(anInstance, TP.IDENTITY);
 
     return this;
 });
@@ -788,13 +791,15 @@ function(aURI) {
 
     //  Scan for any uri map patterns of any kind.
     if (TP.canInvoke(config, 'getKeys')) {
-        patterns = config.getKeys().filter(function(key) {
-            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-        });
+        patterns = config.getKeys().filter(
+                        function(key) {
+                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                        });
     } else {
-        patterns = TP.keys(config).filter(function(key) {
-            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-        });
+        patterns = TP.keys(config).filter(
+                        function(key) {
+                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                        });
     }
 
     //  No patterns means no mappings.
@@ -806,37 +811,38 @@ function(aURI) {
     //  can sort it in the next step to determine the best match. NOTE we use
     //  some() here to allow for quick return when we find an exact mapping.
     matches = TP.ac();
-    patterns.some(function(key) {
-        var pattern,
-            regex,
-            match;
+    patterns.some(
+        function(key) {
+            var pattern,
+                regex,
+                match;
 
-        pattern = TP.sys.cfg(key);
-        mapname = key.slice(0, key.lastIndexOf('.'));
+            pattern = TP.sys.cfg(key);
+            mapname = key.slice(0, key.lastIndexOf('.'));
 
-        if (TP.isString(pattern)) {
-            //  special case here. if the string is a virtual path we expand it
-            //  and match the value for the URI. if it's identical we call that
-            //  an exact match and communicate that.
-            if (TP.uriExpandPath(pattern) === str) {
-                exact = key;
-                return true;
+            if (TP.isString(pattern)) {
+                //  A special case here. If the string is a virtual path we
+                //  expand it and match the value for the URI. If it's identical
+                //  we call that an exact match and communicate that.
+                if (TP.uriExpandPath(pattern) === str) {
+                    exact = key;
+                    return true;
+                }
+
+                regex = TP.rc(pattern, null, true);
+            } else {
+                regex = pattern;
             }
 
-            regex = TP.rc(pattern, null, true);
-        } else {
-            regex = pattern;
-        }
-
-        if (regex) {
-            match = regex.match(str);
-            if (TP.notEmpty(match)) {
-                matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
+            if (TP.isRegExp(regex)) {
+                match = regex.match(str);
+                if (TP.notEmpty(match)) {
+                    matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
+                }
             }
-        }
 
-        return false;
-    });
+            return false;
+        });
 
     //  If the search found a pattern value that expanded to an exact file match
     //  that one "wins" and we need to return that configuration block.
@@ -971,83 +977,159 @@ function(aURI) {
     /**
      * @method processRemoteResourceChange
      * @summary Processes a 'remote resource' change for the supplied URI.
-     * @description Depending on whether the supplied URI 'auto refreshes' from
-     *     its remote resource or not, this method will either immediately
-     *     refresh the URI or it will puts an entry for the supplied URI into
-     *     a queue that manages URIs that have had their remote resources
-     *     changed, but don't auto refresh. The 'refreshChangedURIs()' method
-     *     can then be used to force these to refresh.
+     *     Invoked automatically by the TDS and Couch URL handlers to notify
+     *     the system that a remote resource has changed value.
+     * @description Depending on whether the supplied URI 'isWatched' and
+     *     therefore will process changes from its remote resource or not, this
+     *     method will either refresh the URI (via refreshFromRemoteResource) or
+     *     it will put an entry for the supplied URI into a hash that tracks
+     *     URIs that have had their remote resources changed without refreshing.
+     *     The 'refreshChangedURIs()' method can then be used to process them.
      * @param {TP.core.URI|String} aURI The URI that had its remote resource
      *     changed.
-     * @returns {TP.extern.Promise} A promise which resolves based on success.
+     * @returns {Promise} A promise which resolves based on success.
      */
 
-    var resourceHash,
+    var shouldProcess,
+        watched,
+        resourceHash,
+        locHash,
         loc,
-        packages,
         count;
 
-    resourceHash = TP.core.URI.get('changedResources');
-    loc = aURI.getLocation();
+    //  Track system-wide process flag.
+    shouldProcess = TP.sys.cfg('uri.process_remote_changes');
+    watched = aURI.isWatched();
 
-    if (aURI.get('autoRefresh')) {
-        //  Confirm the URI in question should be loaded (either it already has
-        //  loaded or it's in the list of "should have loaded" based on config.)
-        if (TP.boot.$isLoadableScript(loc)) {
-            return aURI.refreshFromRemoteResource();
-        } else {
-            //  Could be a package...
-            packages = TP.keys(TP.boot.$$packages);
-            if (packages.contains(loc)) {
-                return aURI.refreshFromRemoteResource().then(function() {
-                    //  Once we load a package update we need to tell the system
-                    //  to refresh it's package cache for potential file
-                    //  updates.
-                    TP.boot.$refreshPackages(loc);
-                });
-            } else if (aURI.getMIMEType() !== TP.JS_TEXT_ENCODED) {
-                //  Another resource that is *not* a JS file - we don't want
-                //  random JS files. Note that the getMIMEType() test is more
-                //  robust than just checking the extension.
-                return aURI.refreshFromRemoteResource();
-            }
-        }
-    } else {
-        if (!resourceHash.containsKey(loc)) {
-            resourceHash.atPut(loc, TP.hc('count', 1, 'targetURI', aURI));
-        } else {
-            count = resourceHash.at(loc).at('count');
-            resourceHash.at(loc).atPut('count', count + 1);
-
-            resourceHash.changed();
-        }
+    //  If we're supposed to process AND the uri is configured for processing
+    //  then let it refresh from its remote data source.
+    if (shouldProcess && watched) {
+        return aURI.refreshFromRemoteResource();
     }
+
+    //  Either processing is off or the resource is marked to not process. If
+    //  it's marked not to process then we can just exit. It shouldn't be in the
+    //  resource hash for changed resources if it's not watched.
+    if (!watched) {
+        return;
+    }
+
+    //  All marked but unprocessed locations get tracked for later processing.
+    loc = aURI.getLocation();
+    resourceHash = TP.core.URI.get('remoteChangeList');
+    locHash = resourceHash.at(loc);
+
+    if (TP.notValid(locHash)) {
+        locHash = TP.hc('count', 0, 'targetURI', aURI);
+        resourceHash.atPut(loc, locHash);
+    }
+
+    count = locHash.at('count');
+    locHash.atPut('count', count + 1);
+
+    resourceHash.changed();
 
     return TP.extern.Promise.resolve();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('refreshChangedURIs',
+TP.core.URI.Type.defineMethod('processRemoteChangeList',
 function() {
 
     /**
-     * @method refreshChangedURIs
+     * @method processRemoteChangeList
      * @summary Forces a refresh of all of the queued URIs that had their remote
      * resource changed. The queue is then emptied.
      * @returns {TP.meta.core.URI} The receiver.
      */
 
-    var resourceHash;
+    var resourceHash,
+        keys;
 
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
+    keys = resourceHash.getKeys();
 
-    resourceHash.perform(
-        function(kvPair) {
-            kvPair.last().at('targetURI').refreshFromRemoteResource();
-        });
+    //  NOTE we iterate in this fashion so we don't remove a referenced URI
+    //  unless we're sure processing it doesn't throw an error.
+    keys.perform(function(key) {
+        var hash;
 
-    resourceHash.empty();
+        hash = resourceHash.at(key);
+        try {
+            hash.at('targetURI').refreshFromRemoteResource();
+            resourceHash.removeKey(key);
+        } catch (e) {
+            TP.error('Error processing URI refresh for ' +
+                hash.at('targetURI'), e);
+        }
+    });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Local Resource Change Handling
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('getLocalChangeList',
+function() {
+
+    /**
+     * @method getLocalChangeList
+     * @summary Retrieves data for locally dirty URIs. This list is generated on
+     *     the fly from the overall URI instance list.
+     * @returns {TP.core.Hash} The locally dirty change list, keyed by the
+     *     normalized virtual location and having the URI object as the value.
+     */
+
+    var hash;
+
+    hash = TP.hc();
+
+    TP.core.URI.instances.perform(
+            function(item) {
+                var loc;
+
+                if (!item.last().isDirty()) {
+                    return;
+                }
+
+                //  This creates a more consistent TIBET URI representation.
+                loc = TP.uriInTIBETFormat(TP.uriExpandPath(item.first()));
+
+                hash.atPut(loc, item.last());
+            });
+
+    return hash;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('pushLocalChangeList',
+function() {
+
+    /**
+     * @method pushLocalChangeList
+     * @summary Pushes any changes for locally dirty URIs which are watched.
+     * @returns {TP.meta.core.URI} The receiver.
+     */
+
+    var hash;
+
+    //  Grab the hash that represents the locally changed URI list. This will be
+    //  keyed by the normalized virtual location and its value will be the URI
+    //  object itself.
+    hash = this.getLocalChangeList();
+
+    hash.perform(
+            function(item) {
+                try {
+                    item.last().save();
+                } catch (e) {
+                    TP.error('Error saving ' + item.first(), e);
+                }
+            });
 
     return this;
 });
@@ -1137,7 +1219,7 @@ TP.core.URI.Inst.defineAttribute('controller');
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('init',
-function(aURIString) {
+function(aURIString, aResource) {
 
     /**
      * @method init
@@ -1146,6 +1228,7 @@ function(aURIString) {
      *     letting each subtype parse the URI components based on
      *     scheme-specific rules.
      * @param {String} aURIString A String containing a proper URI.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.InvalidURI} When the receiver cannot be initialized
      *     from the supplied URI String.
      * @returns {TP.core.URI} The receiver.
@@ -1282,7 +1365,20 @@ function(schemeSpecificString) {
 
         if (TP.notEmpty(fragment = schemeSpecificString.slice(
                                     schemeSpecificString.indexOf('#') + 1))) {
-            this.$set('fragment', fragment, false);
+
+            //  Make sure that the fragment conforms to one of the kinds of
+            //  fragments we support (barenames, #document fragments or any kind
+            //  of XPointer). Note here how we prepend a '#' to the fragment for
+            //  testing for '#document' and for barenames, as those RegExps
+            //  require a leading '#'.
+            if (TP.regex.DOCUMENT_ID.test('#' + fragment) ||
+                TP.regex.BARENAME.test('#' + fragment) ||
+                TP.regex.ANY_POINTER.test(fragment)) {
+
+                this.$set('fragment', fragment, false);
+            } else {
+                this.raise('TP.sig.InvalidFragment');
+            }
         }
     } else {
         this.$set('primaryLocation',
@@ -1365,12 +1461,14 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -1548,7 +1646,7 @@ function(anAspect, anAction, aDescription) {
     primaryResource =
         this.getPrimaryURI().getResource(TP.hc('refresh', false)).get('result');
 
-    //  If this this doesn't have any sub URIs, then it's we'll just let all of
+    //  If this this doesn't have any sub URIs, then we'll just let all of
     //  the parameters default in the supertype call, except we do provide the
     //  'path' and 'target' here.
     if (TP.isEmpty(secondaryURIs = this.getSecondaryURIs())) {
@@ -1561,7 +1659,7 @@ function(anAspect, anAction, aDescription) {
     } else {
 
         //  Otherwise, this is a primary URI and we need to send change
-        //  notifications from all of it's secondaryURIs, if it has any.
+        //  notifications from all of its secondaryURIs, if it has any.
 
         //  Note here how we signal one of the types of TP.sig.StructureChange.
         //  This is because the whole value of the primary URI has changed so,
@@ -1616,6 +1714,42 @@ function(anAspect, anAction, aDescription) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('$constructPrimaryResourceStub',
+function(aPathType) {
+
+    /**
+     * @method $constructPrimaryResource
+     * @summary Constructs a primary resource 'stub' when the primary resource
+     *     is missing for a secondary URI that is trying to access it.
+     * @param {String} aPathType The 'path type' of the path created from the
+     *     secondary URI's fragment.
+     * @returns {Object|null} The object to use as the primary resource stub.
+     */
+
+    var result;
+
+    switch (aPathType) {
+        case TP.TIBET_PATH_TYPE:
+        case TP.JSON_PATH_TYPE:
+            result = TP.hc();
+            break;
+        case TP.CSS_PATH_TYPE:
+        case TP.XPATH_PATH_TYPE:
+        case TP.BARENAME_PATH_TYPE:
+        case TP.XPOINTER_PATH_TYPE:
+        case TP.ELEMENT_PATH_TYPE:
+        case TP.XTENSION_POINTER_PATH_TYPE:
+            result = TP.constructDocument();
+            break;
+        default:
+            break;
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('clearCaches',
 function() {
 
@@ -1660,22 +1794,23 @@ function() {
         TP.sys.logTransform('Clearing content cache for: ' + this.getID(),
             TP.DEBUG) : 0;
 
-    if (TP.isValid(resource = this.get('resource'))) {
+    if (TP.isValid(resource = this.$get('resource'))) {
         this.ignore(resource, 'Change');
     }
 
     //  empty the resource cache(s) - note that we *must* use $set() here to
     //  avoid all of the ID comparison and change notification machinery in the
-    //  regular 'setResource' call.
-    this.$set('resource', null);
+    //  regular setResource call. Force no notification, we cleared the cache,
+    //  we didn't change the value.
+    this.$set('resource', null, false);
 
     //  update expiration status as well as any potentially obsolete headers
     this.set('headers', null);
     this.$set('expired', false);
 
     //  clear any internal state flags that might cause issues reloading
-    this.set('$dirty', false);
-    this.set('$loaded', false);
+    this.isLoaded(false);
+    this.isDirty(false);
 
     return this;
 });
@@ -1687,7 +1822,7 @@ function() {
 
     /**
      * @method empty
-     * @summary Clears any stored content of the receiver, or of it's resource
+     * @summary Clears any stored content of the receiver, or of its resource
      *     URI if it has one which stores its data. Note that only the data is
      *     cleared, not the remaining cache data such as headers etc. This
      *     operation dirties the receiver.
@@ -1764,7 +1899,7 @@ function(aFlag) {
         return url.isExpired();
     }
 
-    this.$set('expired', TP.ifInvalid(aFlag, true));
+    this.$set('expired', TP.ifInvalid(aFlag, true), false);
 
     return this.isExpired();
 });
@@ -1784,6 +1919,30 @@ function() {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getContent',
+function() {
+
+    /**
+     * @method getContent
+     * @summary Returns the URI's resource, forcing any fetch to be synchronous.
+     *     If you need async access use getResource.
+     * @returns {Object} The immediate value of the receiver's resource result.
+     */
+
+    var request;
+
+    request = this.constructRequest();
+    request.atPut('async', false);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPut('operation', 'get');
+    request.atPut('loaded', this.isLoaded());
+
+    return this.getResource(request).get('result');
 });
 
 //  ------------------------------------------------------------------------
@@ -1822,7 +1981,7 @@ function(anObject, resultType, collapse) {
      *     valid TP.core.Node, then a viable JavaScript object by parsing for
      *     JSON strings, and finally just the object itself.
      * @param {Object} anObject The object to "type check".
-     * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP|TP.BEST. The default
+     * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP. The default
      *     is to avoid repackaging the result object other than to optionally
      *     collapse it.
      * @param {Boolean} [collapse=true] False to skip collapsing node lists to a
@@ -1830,79 +1989,86 @@ function(anObject, resultType, collapse) {
      * @returns {Object} The desired return value type.
      */
 
-    var obj;
+    var obj,
+        saved;
 
     if (TP.isValid(anObject)) {
         switch (resultType) {
             case TP.DOM:
 
+                //  Often dealing with TP.core.Content types so we have to work
+                //  from the data, not the object in those cases.
+                if (TP.canInvoke(anObject, 'getNativeNode')) {
+                    obj = anObject.getNativeNode();
+                } else {
+                    obj = anObject;
+                }
+
                 if (TP.notFalse(collapse)) {
-                    obj = TP.collapse(anObject);
+                    obj = TP.collapse(obj);
                     if (TP.isValid(obj)) {
                         obj = TP.node(obj, null, false);
                     }
                 } else {
-                    obj = TP.node(anObject, null, false);
+                    obj = TP.node(obj, null, false);
                 }
                 return obj;
 
             case TP.TEXT:
 
+                //  Often dealing with TP.core.Content types so we have to work
+                //  from the data, not the object in those cases.
+                if (TP.canInvoke(anObject, 'getData')) {
+                    obj = anObject.getData();
+                } else {
+                    obj = anObject;
+                }
+
                 if (TP.notFalse(collapse)) {
-                    obj = TP.collapse(anObject);
+                    obj = TP.collapse(obj);
                     if (TP.isValid(obj)) {
                         obj = TP.str(obj);
                     } else {
                         obj = '';
                     }
                 } else {
-                    obj = TP.str(anObject, false);
-                }
-                return obj;
-
-            case TP.BEST:
-
-                //  The semantics of TP.BEST in all other contexts is that
-                //  you get a DOM node if possible, otherwise you get a
-                //  string if possible, otherwise you get a null.
-                if (TP.notFalse(collapse)) {
-                    obj = TP.collapse(anObject);
-                    if (TP.isValid(obj)) {
-                        obj = TP.node(obj, null, false);
-                    }
-
-                    if (TP.notValid(
-                        obj = TP.node(TP.collapse(anObject), null, false))) {
-                        obj = TP.str(TP.collapse(anObject));
-                    }
-                } else {
-                    if (TP.notValid(obj = TP.node(anObject, null, false))) {
-                        obj = TP.str(anObject);
-                    }
+                    obj = TP.str(obj, false);
                 }
                 return obj;
 
             case TP.WRAP:
 
+                //  Often dealing with TP.core.Content types so we have to work
+                //  from the data, not the object in those cases.
+                if (TP.isKindOf(anObject, TP.core.XMLContent)) {
+                    obj = anObject.getData();
+                } else {
+                    obj = anObject;
+                }
+
                 //  don't want to convert anything that's already in
                 //  reasonable object form...so the primary test is whether
                 //  the object is a string that might be parseable into a
                 //  more object form
-                if (TP.isString(anObject)) {
+                if (TP.isString(obj) && TP.notEmpty(obj)) {
                     //  mirror "best" in some sense, attempting to find XML,
                     //  then JSON, then any parseable object we might be
                     //  able to detect.
-                    if (TP.notValid(obj = TP.tpnode(anObject, null, false)) ||
-                        TP.isTextNode(obj)) {
+                    saved = obj;
+
+                    //  Note here that we turn XML parsing error reporting off
+                    //  and, if it resolves to a single Text node, we will try
+                    //  to convert it further.
+                    if (TP.notValid(obj = TP.tpnode(obj, null, false)) ||
+                        TP.isKindOf(obj, TP.core.TextNode)) {
                         //  json?
                         if (TP.notValid(obj = TP.json2js(
-                                                anObject, null, false))) {
+                                                saved, null, false))) {
                             //  date or other parsable object?
-                            if (TP.notValid(obj =
-                                            TP.parse('Date', anObject))) {
+                            if (TP.notValid(obj = TP.parse('Date', saved))) {
                                 //  default back to original object. not
                                 //  great, but apparently it's not parseable
-                                obj = anObject;
+                                obj = saved;
                             }
                         }
                     }
@@ -1910,15 +2076,13 @@ function(anObject, resultType, collapse) {
                     if (TP.notFalse(collapse)) {
                         obj = TP.collapse(obj);
                     }
-                } else if (TP.isNode(anObject)) {
-                    obj = anObject;
+                } else if (TP.isNode(obj)) {
                     if (TP.notFalse(collapse)) {
                         obj = TP.collapse(obj);
                     }
 
                     obj = TP.tpnode(obj);
                 } else {
-                    obj = anObject;
                     if (TP.notFalse(collapse)) {
                         obj = TP.collapse(obj);
                     }
@@ -1926,7 +2090,6 @@ function(anObject, resultType, collapse) {
                     obj = TP.wrap(obj);
 
                     if (TP.notValid(obj)) {
-                        obj = anObject;
                         if (TP.notFalse(collapse)) {
                             obj = TP.collapse(obj);
                         }
@@ -1935,8 +2098,15 @@ function(anObject, resultType, collapse) {
                 return obj;
 
             default:
-                //  default is no filtering
-                return anObject;
+
+                if (TP.isType(resultType) &&
+                    resultType !== anObject.getType()) {
+                    obj = resultType.from(anObject, this);
+                } else {
+                    obj = anObject;
+                }
+
+                return obj;
         }
     }
 
@@ -2229,8 +2399,11 @@ function() {
     var url;
 
     if (TP.notValid(url = this.$get('decoded'))) {
-        url = decodeURI(encodeURI(this.$get('uri')));
-        this.$set('decoded', url);
+        url = this.$get('uri');
+        if (TP.notEmpty(url)) {
+            url = decodeURI(encodeURI(url));
+            this.$set('decoded', url);
+        }
     }
 
     return url;
@@ -2280,7 +2453,7 @@ function() {
      * @returns {String} The receiver's original source.
      */
 
-    //  For most TP.core.URIs, this is it's location.
+    //  For most TP.core.URIs, this is its location.
     return this.getLocation();
 });
 
@@ -2366,7 +2539,9 @@ function() {
 
     //  When there's no fragment the receiver is the primary, otherwise we
     //  need to get a reference to the primary.
+    /* eslint-disable consistent-this */
     url = this;
+    /* eslint-enable consistent-this */
     if (this.hasFragment()) {
         url = TP.uc(this.getPrimaryLocation());
     }
@@ -2393,15 +2568,23 @@ function(aRequest) {
      *     content set as its result.
      */
 
+    var request;
+
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'get');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $getPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        return this.$getPrimaryResource(aRequest, true);
+        return this.$getPrimaryResource(request, true);
     }
 
-    return this.$requestContent(aRequest,
+    return this.$requestContent(request,
                                 '$getPrimaryResource',
                                 '$getResultFragment');
 });
@@ -2455,9 +2638,12 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var resultType,
-        fragment,
-        result;
+    var fragment,
+        result,
+
+        shouldCollapse,
+
+        resultType;
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -2478,18 +2664,33 @@ function(aRequest, aResult, aResource) {
         result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
 
         //  NB: The result must be a Node or XMLContent to get wrapped into a
-        //  TP.core.Node, otherwise we just the result itself.
+        //  TP.core.Node, otherwise we just use the result itself.
         result = TP.isNode(result) || TP.isKindOf(result, TP.core.XMLContent) ?
                     TP.tpnode(result) :
                     result;
 
-        //  Note here how we collapse just to make sure to have consistent
-        //  results across 'get' calls... what ultimately gets returned from
-        //  this method is determined by the $getFilteredResult() call below.
+        //  Make sure that we obtain the 'shouldCollapse' value from the request
+        //  (if it has one - defaulted to true) and if the fragment is an access
+        //  path, configure it with the same setting.
+
+        //  Note here that if we do collapse, we do so to just to make sure to
+        //  have consistent results across 'get' calls... what ultimately gets
+        //  returned from this method is determined by the $getFilteredResult()
+        //  call below.
+
+        shouldCollapse = TP.ifKeyInvalid(aRequest, 'shouldCollapse', true);
+
+        if (fragment.isAccessPath()) {
+            fragment.set('shouldCollapse', shouldCollapse);
+        }
 
         result = TP.canInvoke(result, 'get') ? result.get(fragment) : undefined;
 
-        result = TP.isCollection(result) ? TP.collapse(result) : result;
+        //  If collapsing wasn't specifically set to false, then collapse the
+        //  result.
+        if (TP.notFalse(shouldCollapse)) {
+            result = TP.isCollection(result) ? TP.collapse(result) : result;
+        }
     } else {
         result = aResult;
     }
@@ -2638,7 +2839,7 @@ function(onlySecondaries) {
     //  Select the keys of the URIs that match our location plus a hash out of
     //  all of the registered URIs keys. Note here how we compare to our own
     //  location so that we don't return ourself in the list of subURIs (the
-    //  generated RegExp will match ourself because of it's open-endedness)
+    //  generated RegExp will match ourself because of its open-endedness)
     subURIKeys = registeredURIs.getKeys().select(
                         function(uriLocation) {
                             /* eslint-disable no-extra-parens */
@@ -2676,12 +2877,33 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the immediate value of the URI, bypassing any attempts
-     *     to load the URI if it hasn't yet been loaded.
+     * @summary Returns the value of the URI, essentially the 'resource'.
      * @returns {Object} The value of the receiver's resource.
      */
 
     return this.$get('resource');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getVirtualLocation',
+function() {
+
+    /**
+     * @method getVirtualLocation
+     * @summary Returns the virtual location of the URI. This will return a
+     *     String with a format matching a 'TIBET virtual URI'.
+     * @returns {String} The receiver's virtual location.
+     */
+
+    var loc;
+
+    if (TP.notEmpty(loc = this.getLocation())) {
+        loc = this.getLocation();
+        return TP.uriInTIBETFormat(loc);
+    }
+
+    return '';
 });
 
 //  ------------------------------------------------------------------------
@@ -2886,7 +3108,8 @@ function(aProperty, aFlag) {
     }
 
     if (TP.isBoolean(aFlag)) {
-        this.$set('$' + aProperty, aFlag);
+        //  NOTE we never signal change for a flag update.
+        this.$set('$' + aProperty, aFlag, false);
     }
 
     return this.$get('$' + aProperty);
@@ -2900,7 +3123,7 @@ function(aFlag) {
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
+     *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -2953,7 +3176,7 @@ function(aFlag) {
     /**
      * @method isLoaded
      * @summary Returns true if the receiver's content has been loaded either
-     *     manually via a setResource() or init(), or by loading the receiver's
+     *     manually via a setResource or init, or by loading the receiver's
      *     URI location.
      * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
@@ -2984,13 +3207,30 @@ function() {
 
     /**
      * @method refreshFromRemoteResource
-     * @summary Refreshes the receiver from the remote resource it's
-     *     representing. Note that subtypes of this type should override this
-     *     method.
-     * @returns {TP.core.URI} The receiver.
+     * @summary Refreshes the receiver's content from the remote resource it
+     *     represents. Upon refreshing the content this method will invoke
+     *     processRefreshedContent to perform any post-processing of the
+     *     content appropriate for the target URI. The default implementation
+     *     must by overridden by subtypes.
+     * @returns {Promise} A promise which resolves on completion.
      */
 
     return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('register',
+function() {
+
+    /**
+     * @method register
+     * @summary Registers the instance under a common key.
+     */
+
+    TP.core.URI.registerInstance(this, TP.uriExpandPath(this.getLocation()));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3109,7 +3349,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
 
     //  Remember this can run async, so any result here can be either data
     //  or a TP.sig.Response when async. We can safely ignore it.
-    this[contentFName](subrequest);
+    this[contentFName](subrequest, true);
 
     //  If async we can only return the result/response being used to
     //  actually process the async activity.
@@ -3174,6 +3414,217 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('$sendDependentURINotifications',
+function(oldResource, newResource, pathInfos, primaryOnly) {
+
+    /**
+     * @method $sendDependentURINotifications
+     * @summary Causes any 'dependent URIs' (either this URI's primary URI or
+     *     any URIs containing in the optional 'path info records' that are
+     *     supplied in 'pathInfos') to send a notification that they
+     *     changed.
+     *     defining control parameters.
+     * @param {Object} oldResource The old value of the resource that this URI
+     *     had.
+     * @param {Object} newResource The new value of the resource that this URI
+     *     was set to.
+     * @param {Array} [pathInfos] Optional data detailing which paths changed.
+     *     If this data isn't supplied, then a single notification is sent from
+     *     this URI's primary URI.
+     * @param {Boolean} [primaryOnly=false] Should we only signal the primary?
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var primaryURI,
+
+        fragExpr,
+
+        description,
+
+        primaryLoc,
+
+        uriRegistry,
+        registryKeys,
+
+        leni,
+        i,
+
+        info,
+
+        keyMatcher,
+
+        lenj,
+        j,
+
+        matchedURI;
+
+    primaryURI = this.getPrimaryURI();
+
+    if (TP.notValid(pathInfos)) {
+
+        fragExpr = this.getFragmentExpr();
+
+        //  Now that we're done signaling the sub URIs, it's time to signal a
+        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+        description = TP.hc(
+            'action', TP.UPDATE,
+            'aspect', TP.isEmpty(fragExpr) ? 'value' : fragExpr,
+            'facet', 'value',
+
+            'path', fragExpr,
+
+            'target', newResource,
+            'oldTarget', oldResource
+            );
+
+        primaryURI.signal('TP.sig.ValueChange', description);
+
+        return this;
+    }
+
+    primaryLoc = primaryURI.getLocation();
+
+    uriRegistry = TP.core.URI.get('instances');
+    registryKeys = uriRegistry.getKeys();
+
+    leni = pathInfos.getSize();
+    for (i = 0; i < leni; i++) {
+
+        info = pathInfos.at(i);
+
+        description = TP.copy(info.at('description'));
+
+        //  Grab the fragment from the 'aspect' of the change record and use it
+        //  to try to match a URI's fragment that would indicate that a change
+        //  notification should be sent from it.
+        fragExpr = description.at('aspect');
+
+        //  Compute a RegExp that looks for that fragment as part of a URI.
+        keyMatcher = TP.rc(primaryLoc + '#\\w+\\(' + fragExpr + '\\)');
+
+        //  Iterate over all of the registered URIs, looking for ones that have
+        //  a fragment that matches the computed RegExp.
+        lenj = registryKeys.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            if (keyMatcher.test(registryKeys.at(j))) {
+                matchedURI = uriRegistry.at(registryKeys.at(j));
+                break;
+            }
+        }
+
+        //  If we found one, use it to signal.
+        if (TP.notTrue(primaryOnly) && TP.isURI(matchedURI)) {
+            description.atPut('aspect', 'value');
+            description.atPut('path', fragExpr);
+
+            description.atPut('oldTarget', oldResource);
+
+            matchedURI.signal(info.at('sigName'), description);
+        }
+
+        //  In any case, signal from the primary URI, using that fragment as the
+        //  'aspect' that changed.
+        description.atPut('aspect', fragExpr);
+        primaryURI.signal(info.at('sigName'), description);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('$sendSecondaryURINotifications',
+function(oldResource, newResource) {
+
+    /**
+     * @method $sendSecondaryURINotifications
+     * @summary Causes any 'secondary URIs' (URIs that point to the same primary
+     *     resource as the receiver, but also have a secondary resource pointed
+     *     to by a fragment) to send a notification that they changed.
+     *     defining control parameters.
+     * @param {Object} oldResource The old value of the resource that this URI
+     *     had.
+     * @param {Object} newResource The new value of the resource that this URI
+     *     was set to.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var secondaryURIs,
+        description,
+        i,
+        fragText;
+
+    secondaryURIs = this.getSecondaryURIs();
+
+    if (TP.notEmpty(secondaryURIs)) {
+
+        //  The 'action' here is TP.DELETE, since the entire resource got
+        //  changed. This very well may mean structural changes occurred and
+        //  the resource that the subURI pointed to doesn't even exist
+        //  anymore.
+
+        //  The 'aspect' here is 'value' - because the 'entire value' of the
+        //  subURI itself has changed. We also include a 'path' for
+        //  convenience, so that observers can use that against the primary
+        //  URI to obtain this URI's value, if they wish.
+
+        //  The 'target' here is computed by running the fragment against
+        //  the resource.
+        description = TP.hc(
+                'action', TP.DELETE,
+                'aspect', 'value',
+                'facet', 'value',
+                'target', newResource,
+
+                //  NB: We supply the old resource and the fragment text
+                //  here for ease of obtaining values.
+                'oldTarget', oldResource
+                );
+
+        //  If we have sub URIs, then observers of them will be expecting to
+        //  get a TP.sig.StructureDelete with 'value' as the aspect that
+        //  changed (we swapped out the entire resource, so the values of
+        //  those will have definitely changed).
+        for (i = 0; i < secondaryURIs.getSize(); i++) {
+
+            fragText = secondaryURIs.at(i).getFragmentExpr();
+
+            description.atPut('path', fragText);
+
+            secondaryURIs.at(i).signal('TP.sig.StructureDelete',
+                                        description);
+
+            if (TP.canInvoke(newResource, 'checkFacets')) {
+                newResource.checkFacets(fragText);
+            }
+        }
+    }
+
+    //  Now that we're done signaling the sub URIs, it's time to signal a
+    //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+    description = TP.hc(
+        'action', TP.UPDATE,
+        'aspect', 'value',
+        'facet', 'value',
+
+        'path', this.getFragmentExpr(),
+
+        //  NB: We supply these values here for consistency with the 'no
+        //  secondaryURIs logic' below.
+        'target', newResource,
+        'oldTarget', oldResource,
+        TP.OLDVAL, oldResource,
+        TP.NEWVAL, newResource
+    );
+
+    this.signal('TP.sig.ValueChange', description);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('setContent',
 function(contentData, aRequest) {
 
@@ -3189,10 +3640,15 @@ function(contentData, aRequest) {
 
     var request;
 
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'set');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  Make sure we don't try to load a URI just because we're setting content.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
 
     return this.$requestContent(request,
@@ -3277,7 +3733,10 @@ function(aDate) {
 
     //  note the default here to the value of the Date header which is
     //  normally served via HTTP and which is configured by TIBET for files
-    theDate = TP.ifInvalid(aDate, this.getHeader('Date'));
+    theDate = aDate;
+    if (TP.notValid(theDate)) {
+        theDate = this.getHeader('Date');
+    }
 
     //  note that if theDate is null we'll get a new date with current time
     theDate = TP.dc(theDate);
@@ -3298,7 +3757,7 @@ function(aDate) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest) {
+function(aResource, aRequest, shouldSignal) {
 
     /**
      * @method $setPrimaryResource
@@ -3307,18 +3766,21 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @listens {TP.sig.Change} Observes the primary resource for Change.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @param {Boolean} [shouldSignal=true] Should changes to the value be
+     *     signaled? By default true, but occasionally set to false when a
+     *     series of changes is being performed etc.
+     * @returns {TP.core.URI|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
 
     var url,
-
         request,
-
+        dirty,
+        loaded,
         oldResource,
-        newResource;
+        newResource,
+        shouldSignalChange;
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
@@ -3327,55 +3789,113 @@ function(aResource, aRequest) {
     }
 
     //  ---
-    //  URI <-> data corellation
+    //  URI <-> data correlation
     //  ---
 
     request = this.constructRequest(aRequest);
 
-    //  Make sure to wrap the resource since we're going to be performing
-    //  TIBETan operations.
-    newResource = TP.wrap(aResource);
+    loaded = request.at('loaded');
 
-    //  on the off chance we got a native node with a default type we want
-    //  to try to get it in wrapped form.
-    if (TP.canInvoke(newResource, ['addTIBETSrc', 'addXMLBase', '$set'])) {
-        //  place our URI value into the node wrapper and node content
-        newResource.$set('uri', this, false);
+    oldResource = this.$get('resource');
 
-        //  make sure the node knows where it loaded from.
-        newResource.addTIBETSrc(this);
+    //  Wrap and augment inbound resource if appropriate (adds XMLBase, etc).
+    newResource = this.$normalizeRequestedResource(aResource);
 
-        //  then, an 'xml:base' attribute. this helps ensure that xml:base
-        //  computations will work more consistently during tag processing
-        newResource.addXMLBase();
-    }
+    //  If we're already loaded we need to know if we're changing the value. We
+    //  compare via a TP.equal to ensure a deep comparison.
+    if (TP.equal(oldResource, newResource)) {
+        dirty = false;
+    } else {
+        if (TP.sys.hasStarted()) {
+            /*
+            console.log(this.getLocation() +
+                ' dirty:\n\n' +
+                TP.getStackInfo().join('\n') +
+                TP.dump(oldResource) + '\n\n' + TP.dump(newResource));
+            */
+        }
 
-    //  If we already have a resource, make sure to 'ignore' it for changes.
-    if (this.isLoaded()) {
-        oldResource = this.$get('resource');
-        this.ignore(oldResource, 'Change');
-    }
-
-    //  If the receiver is the primary resource we can update our cached
-    //  value for future use.
-    this.$set('resource', newResource);
-
-    //  If the new resource is valid and the request parameters contain the flag
-    //  for observing our resource, then observe it for all *Change signals.
-    if (TP.isValid(newResource)) {
-        if (TP.isTrue(request.at('observeResource'))) {
-            //  Observe the new resource object for changes.
-            this.observe(newResource, 'Change');
+        //  NOTE we don't consider setting a value to the processed version of
+        //  the same value as an operation that dirties the URI.
+        if (request.at('processedResult') === true) {
+            dirty = false;
+        } else {
+            dirty = true;
         }
     }
 
-    //  Once we have a value, in any form, we're both dirty and loaded from
-    //  a state perspective.
-    this.isDirty(true);
-    this.isLoaded(true);
+    //  If we already have a resource, make sure to 'ignore' it for changes.
+    if (TP.isValid(oldResource) && TP.isMutable(oldResource)) {
+        this.ignore(oldResource, 'Change');
+    }
+
+    //  If the new resource is valid and the request parameters don't contain a
+    //  false value for the flag for observing our resource, then observe it for
+    //  all *Change signals.
+    if (TP.notFalse(request.at('observeResource')) && TP.isMutable(newResource)) {
+        //  Observe the new resource object for changes.
+        this.observe(newResource, 'Change');
+    }
+
+    //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
+    //  to determine if we should signal change.
+    if (TP.isValid(shouldSignal)) {
+        shouldSignalChange = shouldSignal;
+    } else if (request.hasParameter('signalChange')) {
+        shouldSignalChange = request.at('signalChange');
+    } else {
+        shouldSignalChange = dirty;
+    }
+
+    //  What we do with value and flags depends on the originating operation.
+    switch (request.at('operation')) {
+        case 'load':
+            //  fallthrough
+        case 'get':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);
+            this.isDirty(false);
+            break;
+        case 'set':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);    //  arguable semantics but important for preloaded URIs
+            if (loaded) {
+                this.isDirty(dirty);
+            } else {
+                this.isDirty(false);
+            }
+            break;
+        case 'save':
+            //  NOTE we don't save results for save..., it's usually an empty
+            //  response.
+            this.isLoaded(true);
+            this.isDirty(false);
+
+            //  We don't signal since we're only pushing data, not altering it.
+            shouldSignalChange = false;
+            break;
+        case 'delete':
+            //  NOTE we don't save results for delete..., it's usually an empty
+            //  response.
+            this.isLoaded(false);
+            this.isDirty(false);
+
+            //  We always signal since whatever value was there is now undefined.
+            shouldSignalChange = true;
+            break;
+        default:
+            return this.raise('InvalidOperation', request.at('operation'));
+    }
 
     //  clear any expiration computations
     this.expire(false);
+
+    if (shouldSignalChange) {
+        if (TP.sys.hasStarted()) {
+            // console.log('signaling secondaries via primary for ' + this.getLocation());
+        }
+        this.$sendSecondaryURINotifications(oldResource, newResource);
+    }
 
     return this;
 });
@@ -3398,10 +3918,15 @@ function(aResource, aRequest) {
 
     var request;
 
+    request = this.constructRequest(aRequest);
+
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'set');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  Make sure we don't try to load a URI just because we're setting data.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
 
     //  When we're primary or we don't have a fragment we can keep it
@@ -3424,6 +3949,47 @@ function(aResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('setResourceToResultOf',
+function(aURI, aRequest, shouldCopy) {
+
+    /**
+     * @method setResourceToResultOf
+     * @summary Sets the receiver's resource object to the result of the
+     *     resource pointed to by aURI. If the shouldCopy flag is true, then a
+     *     copy of the result is made before setting it as the resource of the
+     *     receiver.
+     * @param {TP.core.URI} aURI The URI of the resource object to use as the
+     *     resource source.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
+     *     optional parameters.
+     * @param {Boolean} [shouldCopy=false] Whether or not to make a copy of the
+     *     result before using it as the receiver's resource.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the newly set
+     *     content set as its result.
+     */
+
+    var result,
+        newResult;
+
+    result = aURI.getResource(TP.hc('async', false)).get('result');
+    if (TP.isValid(result)) {
+
+        if (TP.isTrue(shouldCopy)) {
+            newResult = TP.copy(result);
+        } else {
+            newResult = result;
+        }
+
+        this.set('shouldCreateContent', true);
+
+        return this.setResource(newResult, aRequest);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$setResultContent',
 function(aRequest, aResult, aResource) {
 
@@ -3442,7 +4008,12 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var result;
+    var result,
+        request,
+        wasDirty,
+        isDirty;
+
+    request = this.constructRequest(aRequest);
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3455,15 +4026,55 @@ function(aRequest, aResult, aResource) {
     result = TP.isNode(result) ? TP.wrap(result) : result;
 
     if (TP.canInvoke(result, 'set')) {
+
+        wasDirty = this.isDirty();
+
+        //  Since we observe our resource for Change, we need to ignore handling
+        //  Change from it, set the resource and then resume observing it.
+        this.ignore(result, 'Change');
         result.set('content', aResource);
+        this.observe(result, 'Change');
+
+        // isDirty = this.isDirty();
+
+        isDirty = this.isDirty(true);
+
+        if (this.$get('resource') !== result) {
+            this.$set('resource', result);
+        }
+
+        //  Then, we broadcast change from ourself as if we were re-broadcasting
+        //  a Change notification from our resource.
+        this.signal('TP.sig.ValueChange',
+                    TP.hc('action', TP.UPDATE,
+                            'aspect', 'value',
+                            'facet', 'value',
+                            'target', result),
+                    TP.INHERITANCE_FIRING,
+                    TP.sig.ValueChange);
+
+        //  Since we won't have broadcast a 'dirty' change above when we set the
+        //  content (due to the ignore/observe shuffle), we go ahead and send it
+        //  here if the flag has changed.
+        if (isDirty !== wasDirty) {
+            TP.$changed.call(
+                        this,
+                        'dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
+        }
+
+        //  We set the content of the object that we're holding as our resource
+        //  - no sense to reset the content itself.
+        return result;
     } else if (!this.isLoaded()) {
         result = TP.core.Content.construct(aResource, this);
-        this.$setPrimaryResource(result);
-        this.isLoaded(true);
     } else {
-        this.raise('TP.sig.InvalidResource',
-            'Unable to modify target resource.');
+        return this.raise('TP.sig.InvalidResource',
+                            'Unable to modify target resource.');
     }
+
+    this.$setPrimaryResource(result, request);
 
     return result;
 });
@@ -3471,7 +4082,7 @@ function(aRequest, aResult, aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setResultFragment',
-function(aRequest, aResult, aResource) {
+function(aRequest, aResult, aResource, shouldSignal) {
 
     /**
      * @method $setResultFragment
@@ -3481,6 +4092,9 @@ function(aRequest, aResult, aResource) {
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} [aResource] Optional data used for set* methods.
+     * @param {Boolean} [shouldSignal=true] Should changes to the value be
+     *     signaled? By default true, but occasionally set to false when a
+     *     series of changes is being performed etc.
      * @exception {TP.sig.InvalidResource} When the target resource is not
      *     modifiable.
      * @returns {Object} The return value for the content operation using this
@@ -3488,7 +4102,29 @@ function(aRequest, aResult, aResource) {
      */
 
     var fragment,
-        result;
+        result,
+        request,
+        fragmentAccessor,
+        oldResource,
+        pathInfo,
+        shouldSignalChange;
+
+    request = this.constructRequest(aRequest);
+
+    //  Signal change any time value changes...unless explicitly turned off.
+    if (TP.isValid(shouldSignal)) {
+        shouldSignalChange = shouldSignal;
+    } else if (request.hasParameter('signalChange')) {
+        shouldSignalChange = request.at('signalChange');
+    } else if (!TP.equal(oldResource, aResource)) {
+        shouldSignalChange = true;
+    }
+
+    //  aResult here will be the resource for the primary URI. Therefore, if we
+    //  are the primary URI, it will be our whole data object. If we are a
+    //  'secondary URI' pointing to a fragment, then we try to access the slice
+    //  of the overall resource and set it using the optionally provided object
+    //  in aResource.
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -3501,15 +4137,34 @@ function(aRequest, aResult, aResource) {
 
         if (TP.regex.DOCUMENT_ID.test(fragment) ||
                 TP.regex.BARENAME.test(fragment)) {
-            //  empty
+            fragmentAccessor = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
-            fragment = TP.apc(fragment, TP.hc('shouldCollapse', true));
-            fragment.set('shouldMakeStructures',
-                            this.get('shouldCreateContent'));
+            fragmentAccessor = TP.apc(fragment, TP.hc('shouldCollapse', true));
+
+            //  If we're configured to create content, then flip the fragment
+            //  accessor's flag to make structures.
+            if (TP.isTrue(this.get('shouldCreateContent'))) {
+
+                fragmentAccessor.set('shouldMakeStructures', true);
+
+                //  If result was not valid, then our primary URI doesn't have
+                //  valid object for us to use as a starting point - try to
+                //  create one based on our path type.
+                if (TP.notValid(result)) {
+
+                    result = this.$constructPrimaryResourceStub(
+                                    fragmentAccessor.getPathType());
+
+                    if (TP.isValid(result)) {
+                        this.getPrimaryURI().setResource(result);
+                    }
+                }
+            }
         }
 
         if (TP.canInvoke(result, 'set')) {
-            result.set(fragment, aResource);
+            oldResource = result.get(fragmentAccessor);
+            result.set(fragmentAccessor, aResource, shouldSignalChange);
         } else {
             this.raise('TP.sig.InvalidResource',
                 'Unable to modify target resource.');
@@ -3518,23 +4173,56 @@ function(aRequest, aResult, aResource) {
         this.raise('TP.sig.InvalidFragment');
     }
 
+    if (fragmentAccessor.isAccessPath()) {
+
+        //  Grab the set of 'path info records' that contain data about the
+        //  paths that changed when the 'set' was executed above. This will be
+        //  used by the notification method to send changed notifications from
+        //  other URIs that contain paths (as their fragments) that are
+        //  'dependent' on that new data that was set.
+        pathInfo = fragmentAccessor.getLastChangedPathsInfo(result);
+        if (shouldSignalChange) {
+
+            //  Send notification from the other URIs that are dependent on the
+            //  new data.
+            this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
+        } else {
+            //  NOTE the 'true' here signifies 'primary only' so we'll always at
+            //  least tell our primary we changed something.
+            this.$sendDependentURINotifications(
+                oldResource, aResource, pathInfo, true);
+        }
+    }
+
+    //  If there was already a value then we consider new values to dirty the
+    //  resource from a state perspective. If we weren't loaded yet we consider
+    //  ourselves to be 'clean' until a subsequent change.
+    if (request.at('loaded')) {
+        if (!TP.equal(oldResource, aResource)) {
+            this.isDirty(true);
+        }
+    } else {
+        this.isLoaded(true);
+        this.isDirty(false);
+    }
+
     return result;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getAutoRefresh',
-function() {
+TP.core.URI.Inst.defineMethod('setValue',
+function(aValue) {
 
     /**
-     * @method getAutoRefresh
-     * @summary Returns whether or not the URI 'auto refreshes' from its remote
-     *     resource when it gets notified that that content has changed.
-     * @returns {Boolean} Whether or not the resource auto-refreshes.
+     * @method setValue
+     * @summary Sets the 'value' of the receiver. This method provides
+     *     polymorphic behavior by calling the receiver's 'setContent' method.
+     * @param {Object} aValue The value to set the value of the receiver to.
+     * @returns {Object} The receiver.
      */
 
-    //  At this level, objects of this type return false.
-    return false;
+    return this.setContent(aValue);
 });
 
 //  ------------------------------------------------------------------------
@@ -3546,9 +4234,9 @@ function() {
      * @method stubResourceContent
      * @summary 'Stubs' the resource content to have a single instance of
      *     TP.lang.Object with a 'value' slot. This object is also configured to
-     *     be a 'good' resource for the URI by turning on it's change mechanism.
+     *     be a 'good' resource for the URI by turning on its change mechanism.
      * @description This method is used to 'stub in' very basic object that can
-     *     store a value in it's 'value' slot and will signal a notification
+     *     store a value in its 'value' slot and will signal a notification
      *     when that value changes. This is necessary in scenarios like data
      *     binding when bindings are triggered into this URI and no resource has
      *     been set.
@@ -3652,7 +4340,7 @@ function(aDataSource, aRequest) {
                     //  In case aResult returned an Array (very likely if it
                     //  ran some sort of 'getter path'), we collapse it here
                     //  - can't transform from an Array of TP.core.Nodes.
-                    result = aResult.collapse();
+                    result = TP.collapse(aResult);
                     resource = TP.wrap(result);
                 }
 
@@ -3704,7 +4392,7 @@ function(aDataSource, aRequest) {
             });
 
     //  trigger the invocation and rely on the handlers for the rest.
-    this.getResource(subrequest);
+    this.getResource(subrequest, TP.hc('resultType', TP.WRAP));
 
     //  If async we can only return the result/response being used to
     //  actually process the async activity.
@@ -3797,7 +4485,7 @@ function(headerData) {
         } else if (TP.isXHR(headerData)) {
             str = TP.ifEmpty(headerData.getAllResponseHeaders(), '');
         } else if (TP.canInvoke(headerData, 'at')) {
-            if (TP.isXHR(xhr = headerData.at('xhr'))) {
+            if (TP.isXHR(xhr = headerData.at('commObj'))) {
                 str = TP.ifEmpty(xhr.getAllResponseHeaders(), '');
             }
         }
@@ -3805,7 +4493,9 @@ function(headerData) {
         //  if we were able to find a string then we can process it into its
         //  component parts
         if (TP.notEmpty(str)) {
-            dict = TP.ifInvalid(dict, TP.hc());
+            if (TP.notValid(dict)) {
+                dict = TP.hc();
+            }
 
             arr = str.split('\n');
 
@@ -3822,7 +4512,9 @@ function(headerData) {
         }
     }
 
-    dict = TP.ifInvalid(dict, TP.hc());
+    if (TP.notValid(dict)) {
+        dict = TP.hc();
+    }
 
     //  finally make sure we have the minimum required headers
     if (TP.notValid(dict.at('Date'))) {
@@ -3918,8 +4610,19 @@ function(aPath) {
 
     nid = TP.ifEmpty(parts.at(1), 'tibet');
 
+    //  make sure urn:tibet:something
+    if (nid === 'tibet') {
+        if (TP.isEmpty(parts.at(2))) {
+            return;
+        }
+
+        if (!parts.at(2).isJSIdentifier()) {
+            return;
+        }
+    }
+
     type = TP.core.URN.$get('nidHandlers').at(nid);
-    if (TP.isType(type)) {
+    if (TP.isType(type) && !type.isAbstract()) {
         return type;
     }
 
@@ -4080,10 +4783,9 @@ function(aRequest, filterResult) {
 
         if (TP.notValid(result) || refresh) {
             result = this.$resolveName(this.getName());
-        }
 
-        if (TP.isValid(result)) {
-            this.isLoaded(true);
+            //  Store the result as our resource, we just refreshed.
+            this.$set('resource', result, false);
         }
     }
 
@@ -4116,13 +4818,17 @@ function() {
     var loc,
         name;
 
-    if (TP.notEmpty(name = this.$get('name'))) {
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
         return name;
     }
 
     loc = this.getLocation();
-
-    name = loc.split(':').slice(2).join(':').split('#').first();
+    if (TP.notValid(loc)) {
+        //  Default to same as URI, the OID. Usually for prototype(s).
+        name = this.$getOID();
+    } else {
+        name = loc.split(':').slice(2).join(':').split('#').first();
+    }
     this.$set('name', name);
 
     return name;
@@ -4183,11 +4889,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('nuke',
+TP.core.URN.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary For the most part, a no-op for URNs.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -4205,14 +4911,14 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('operation', 'nuke');
+    request.atPut('operation', 'delete');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
     handler = TP.core.URIHandler;
 
-    return handler.nuke(url, request);
+    return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
@@ -4319,7 +5025,7 @@ function(aName) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURN.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest) {
+function(aResource, aRequest, shouldSignal) {
 
     /**
      * @method $setPrimaryResource
@@ -4328,24 +5034,22 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
+     * @param {Boolean} [shouldSignal=true] Should changes to the value be
+     *     signaled? By default true, but occasionally set to false when a
+     *     series of changes is being performed etc.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
 
     var url,
-
         request,
-        resource,
-
+        oldResource,
+        newResource,
         hasID,
-
-        shouldSignalChange,
-
-        secondaryURIs,
-        description,
-        fragText,
-        i;
+        dirty,
+        loaded,
+        shouldSignalChange;
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
@@ -4355,127 +5059,115 @@ function(aResource, aRequest) {
 
     request = this.constructRequest(aRequest);
 
-    //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
-    //  same as it's OID), we're going to set it to our 'name'.
-    if (TP.isValid(aResource)) {
+    loaded = request.at('loaded');
+
+    oldResource = this.$get('resource');
+
+    //  NOTE for URN we don't normalize the resource, we leave it as is.
+    newResource = aResource;
+
+    //  If the resource doesn't already have a user-set ID (i.e. its ID is the
+    //  same as its OID), we're going to set it to our 'name'.
+    if (TP.isValid(newResource)) {
         /* eslint-disable no-extra-parens */
-        hasID = (aResource[TP.ID] !== aResource.$$oid);
+        hasID = (newResource[TP.ID] !== newResource.$$oid);
         /* eslint-enable no-extra-parens */
 
         if (!hasID) {
-            if (TP.canInvoke(aResource, 'setID')) {
-                aResource.setID(this.getName());
+            if (TP.canInvoke(newResource, 'setID')) {
+                newResource.setID(this.getName());
             }
         }
     }
 
-    //  If we already have a resource, make sure to 'ignore' it for changes.
-    if (this.isLoaded()) {
-        resource = this.$get('resource');
-        this.ignore(resource, 'Change');
+    //  Core question of whether we're dirty or not, will value change.
+    if (TP.equal(oldResource, newResource)) {
+        dirty = false;
+    } else {
+        //  NOTE we don't consider setting a value to the processed version of
+        //  the same value as an operation that dirties the URI.
+        if (request.at('processedResult') === true) {
+            dirty = false;
+        } else {
+            dirty = true;
+        }
     }
 
-    //  If the receiver is the primary resource we can update our cached value
-    //  for future use.
-    this.$set('resource', aResource);
+    //  If we already have a resource, make sure to 'ignore' it for changes.
+    //  Unfortunately, even if we're about to get the same resource set we have
+    //  to cycle the observations since we can't be sure we observed initially.
+    if (TP.isValid(oldResource) && TP.isMutable(oldResource)) {
+        this.ignore(oldResource, 'Change');
+    }
 
-    //  If the new resource is valid, then configure ourself.
-    if (TP.isValid(aResource)) {
+    //  If the request parameters contain the flag for observing our
+    //  resource, then observe it for all *Change signals.
 
-        //  If the request parameters contain the flag for observing our
-        //  resource, then observe it for all *Change signals.
-        if (TP.isTrue(request.at('observeResource'))) {
-            //  Observe the new resource object for changes.
-            this.observe(aResource, 'Change');
-        }
+    //  NOTE!! We do this here because, if the resource is a TP.core.Content
+    //  object, which will observe it's underlying data, it may already have
+    //  a URI created for it (when that observation is made). In that case,
+    //  if we enter this logic because, the caller here is be providing the
+    //  same resource, it may want to observe this URI for change.
+    if (TP.notFalse(request.at('observeResource')) && TP.isMutable(newResource)) {
+        //  Observe the new resource object for changes.
+        this.observe(newResource, 'Change');
+    }
 
-        //  Once we have a value, in any form, we're both dirty and loaded from
-        //  a state perspective.
-        this.isDirty(true);
-        this.isLoaded(true);
+    //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
+    //  to determine if we should signal change.
+    if (TP.isDefined(shouldSignal)) {
+        shouldSignalChange = shouldSignal;
+    } else if (request.hasParameter('signalChange')) {
+        shouldSignalChange = request.at('signalChange');
     } else {
-        this.isDirty(false);
-        this.isLoaded(false);
+        shouldSignalChange = dirty;
+    }
+
+    //  What we do with value and flags depends on the originating operation.
+    switch (request.at('operation')) {
+        case 'load':
+            //  fallthrough
+        case 'get':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);
+            this.isDirty(false);
+            break;
+        case 'set':
+            this.$set('resource', newResource, false);
+            this.isLoaded(true);    //  arguable semantics but important for preloaded URIs
+            if (loaded) {
+                this.isDirty(dirty);
+            } else {
+                this.isDirty(false);
+            }
+            break;
+        case 'save':
+            //  NOTE we don't save results for save..., it's usually an empty
+            //  response.
+            this.isLoaded(true);
+            this.isDirty(false);
+
+            //  We don't signal since we're only pushing data, not altering it.
+            shouldSignalChange = false;
+            break;
+        case 'delete':
+            //  NOTE we don't save results for delete..., it's usually an empty
+            //  response.
+            this.isLoaded(false);
+            this.isDirty(false);
+
+            //  We always signal since whatever value was there is now undefined.
+            shouldSignalChange = true;
+            break;
+        default:
+            return this.raise('InvalidOperation', request.at('operation'));
     }
 
     //  clear any expiration computations
     this.expire(false);
 
-    //  If there's a valid request and it says to not signal change, then we
-    //  don't. Otherwise, our default is to signal change.
-    if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange', true);
-    } else {
-        shouldSignalChange = true;
-    }
-
     if (shouldSignalChange) {
-
-        //  Secondary URIs are URIs that have the same primary resource as us,
-        //  but also have a fragment, indicating that they also have a secondary
-        //  resource pointed to by the fragment.
-        secondaryURIs = this.getSecondaryURIs();
-
-        if (TP.notEmpty(secondaryURIs)) {
-
-            //  The 'action' here is TP.DELETE, since the entire resource got
-            //  changed. This very well may mean structural changes occurred and
-            //  the resource that the subURI pointed to doesn't even exist
-            //  anymore.
-
-            //  The 'aspect' here is 'value' - because the 'entire value' of the
-            //  subURI itself has changed. We also include a 'path' for
-            //  convenience, so that observers can use that against the primary
-            //  URI to obtain this URI's value, if they wish.
-
-            //  The 'target' here is computed by running the fragment against
-            //  the resource.
-            description = TP.hc(
-                    'action', TP.DELETE,
-                    'aspect', 'value',
-                    'facet', 'value',
-                    'target', aResource,
-
-                    //  NB: We supply the old resource and the fragment text
-                    //  here for ease of obtaining values.
-                    'oldTarget', resource
-                    );
-
-            //  If we have sub URIs, then observers of them will be expecting to
-            //  get a TP.sig.StructureDelete with 'value' as the aspect that
-            //  changed (we swapped out the entire resource, so the values of
-            //  those will have definitely changed).
-            for (i = 0; i < secondaryURIs.getSize(); i++) {
-
-                fragText = secondaryURIs.at(i).getFragmentExpr();
-
-                description.atPut('path', fragText);
-
-                secondaryURIs.at(i).signal('TP.sig.StructureDelete',
-                                            description);
-
-                aResource.checkFacets(fragText);
-            }
-        }
-
-        //  Now that we're done signaling the sub URIs, it's time to signal a
-        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        description = TP.hc(
-            'action', TP.UPDATE,
-            'aspect', 'value',
-            'facet', 'value',
-
-            'path', this.getFragmentExpr(),
-
-            //  NB: We supply these values here for consistency with the 'no
-            //  secondaryURIs logic' below.
-            'target', aResource,
-            'oldTarget', resource,
-            TP.OLDVAL, resource,
-            TP.NEWVAL, aResource
-            );
-
-        this.signal('TP.sig.ValueChange', description);
+        this.$sendSecondaryURINotifications(oldResource, newResource);
     }
 
     return this;
@@ -4516,12 +5208,17 @@ function(aRequest) {
 
     request = this.constructRequest(aRequest);
 
+    //  Track initial state so we can properly process flags/results.
+    request.atPutIfAbsent('operation', 'get');
+    request.atPutIfAbsent('loaded', this.isLoaded());
+
     //  When we're primary or we don't have a fragment we can keep it simple and
     //  return primaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        result = primaryResource;
+        result = this.$getFilteredResult(
+                        primaryResource, request.at('resultType'));
     } else {
         result = this.$getResultFragment(aRequest, primaryResource);
     }
@@ -4573,14 +5270,9 @@ TP.core.URL.Type.defineConstant('SCHEME', null);
 TP.core.URL.Inst.defineAttribute('path');
 TP.core.URL.Inst.defineAttribute('lastRequest');
 
-//  whether or not the URI is being watched for change
-TP.core.URL.Inst.defineAttribute('watched');
-
-//  whether or not the URI should refresh. The default is true.
-TP.core.URL.Inst.defineAttribute('shouldRefresh');
-
-//  whether or not we should autorefresh from a changed remote resource
-TP.core.URL.Inst.defineAttribute('autoRefresh');
+//  whether or not the URI is being watched for change. NOTE: do NOT set this
+//  to false without changing the isWatched method logic. Null implies true.
+TP.core.URL.Inst.defineAttribute('watched', null);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -4596,6 +5288,176 @@ function() {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('canDiffPatch',
+function() {
+
+    /**
+     * @method canDiffPatch
+     * @summary Returns whether or not the receiver can 'diff patch' its remote
+     *     resource.
+     * @description In order to be 'diff patchable', URLs (currently) need to be
+     *     served from the TDS and be a particular resource type:
+     *
+     *          XML
+     *          JSON
+     *          XHTML
+     *          XSLT
+     *          PLAIN TEXT
+     *          CSS
+     *
+     *      They also need to have an extension.
+     * @returns {Boolean} Whether or not the URL contains a resource that is
+     *     'diff patchable'.
+     */
+
+    var mimeType;
+
+    //  Mime type must match one we can actually diff.
+    mimeType = this.getMIMEType();
+
+    switch (mimeType) {
+        case TP.XML_ENCODED:
+        case TP.JSON_ENCODED:
+        case TP.XHTML_ENCODED:
+        case TP.XSLT_ENCODED:
+        case TP.PLAIN_TEXT_ENCODED:
+        case TP.CSS_TEXT_ENCODED:
+        case TP.HTML_TEXT_ENCODED:
+        case TP.XML_TEXT_ENCODED:
+        case TP.JSON_TEXT_ENCODED:
+        case TP.JS_TEXT_ENCODED:
+            return TP.notEmpty(this.getExtension());
+
+        default:
+            return false;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('computeDiffPatchAgainst',
+function(aContent, alternateContent) {
+
+    /**
+     * @method computeDiffPatchAgainst
+     * @summary Computes a patch between the two data sources and returns a
+     *     String that contains the patch in 'unified diff' format.
+     * @param {String} aContent The 'new content' to use to generate the diff.
+     * @param {?String} alternateContent The content to use as the 'alternate
+     *     content' to generate the diff, if the receiver's current *remote*
+     *     content is not to be used. If this is not supplied, the receiver's
+     *     current *remote* content is fetched and used.
+     * @returns {Promise} A Promise whose resolved value will be the patch as
+     *     computed between the two sources in 'unified diff' format.
+     */
+
+    var newContent,
+        promise;
+
+    if (!this.canDiffPatch()) {
+        return this.raise('TP.sig.InvalidOperation',
+                            'This URI is not patchable: ' + this.getLocation());
+    }
+
+    //  Without the JsDiff library, we can't compute a patch in any case
+    if (TP.notValid(TP.extern.JsDiff)) {
+        return this.raise('TP.sig.InvalidObject',
+                            'The JsDiff library is not loaded.');
+    }
+
+    if (TP.isEmpty(aContent)) {
+        return this.raise('TP.sig.InvalidParameter',
+                            'Empty comparison content.');
+    }
+
+    //  Grab the String representation of the new content
+    newContent = TP.str(aContent);
+
+    //  In order to produce a proper patch, we need the remote content *in
+    //  text form* and *how it currently exactly exists on the server* but
+    //  *without updating the receiver's resource*. To accomplish this, we fetch
+    //  using a low-level //  routine.
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+
+                    var req,
+                        currentContent;
+
+                    if (TP.isEmpty(alternateContent)) {
+
+                        //  Note that we ask for the *text*
+                        req = TP.request('resultType', TP.TEXT);
+                        req.defineHandler(
+                            'IOSucceeded',
+                            function(ioSignal) {
+
+                                var content;
+
+                                content = ioSignal.get(
+                                                    'request').at(
+                                                    'commObj').responseText;
+
+                                if (TP.isEmpty(content)) {
+                                    return this.raise('TP.sig.InvalidString',
+                                                        'Empty content for: ' +
+                                                        this.getLocation());
+                                }
+
+                                resolver(content);
+                            });
+
+                        req.defineHandler(
+                            'IOFailed',
+                            function(ioSignal) {
+
+                                rejector();
+                            });
+
+                        //  Fetch the content asynchronously
+                        TP.httpGet(this.getLocation(), req);
+
+                    } else {
+                        currentContent = TP.str(alternateContent);
+
+                        if (TP.isEmpty(currentContent)) {
+                            return this.raise('TP.sig.InvalidString',
+                                                'Empty content for: ' +
+                                                this.getLocation());
+                        }
+
+                        resolver(currentContent);
+                    }
+                }.bind(this));
+
+    //  Create the patch based on the two pieces of content.
+    promise = promise.then(
+                function(currentContent) {
+
+                    var virtualLoc,
+                        patchLoc,
+                        patch;
+
+                    //  The post diff patch call wants a virtual location and so
+                    //  we need to include the same virtual location in the
+                    //  patch.
+                    virtualLoc = this.getVirtualLocation();
+
+                    //  But we only want the most-specific portion.
+                    patchLoc = virtualLoc.slice(
+                                    virtualLoc.lastIndexOf('/') + 1);
+
+                    //  Generate the patch using the TP.extern.JsDiff library.
+                    patch = TP.extern.JsDiff.createPatch(
+                                        patchLoc, currentContent, newContent);
+
+                    return patch;
+                }.bind(this));
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -4617,6 +5479,35 @@ function(aSeparator) {
     }
 
     return TP.uriExtension(this.getLocation(), aSeparator);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('getHost',
+function() {
+
+    /**
+     * @method getHost
+     * @summary Returns the host portion of the receiver.
+     * @description The value returned from this method will vary between
+     *     subtypes. For 'file' urls it will be the empty String while for
+     *     'http' urls it is the portion containing the host:port before the
+     *     'path' portion.
+     * @returns {String} A scheme-specific host string.
+     */
+
+    var path,
+        loc,
+        host;
+
+    if (TP.notEmpty(path = this.getPath())) {
+        loc = this.getLocation();
+        host = loc.slice(0, -path.getSize());
+    } else {
+        host = '';
+    }
+
+    return host;
 });
 
 //  ------------------------------------------------------------------------
@@ -4728,11 +5619,6 @@ function(aRequest) {
 
                 subrequest.set('result', result);
 
-/*
-                // TODO: verify that updateResourceCache is correct below.
-                //thisref.set('resource', result);
-                thisref.updateResourceCache(subrequest);
-*/
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
@@ -4932,7 +5818,9 @@ function(aRequest, filterResult) {
      */
 
     var url,
+        request,
         subrequest,
+        loaded,
         refresh,
         async,
         thisref,
@@ -4944,17 +5832,21 @@ function(aRequest, filterResult) {
         return url.$getPrimaryResource(aRequest, filterResult);
     }
 
+    request = this.constructRequest(aRequest);
+
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
-    subrequest = this.constructSubrequest(aRequest);
+    subrequest = this.constructSubrequest(request);
+
+    loaded = this.isLoaded();
 
     refresh = subrequest.at('refresh');
     if (TP.notValid(refresh)) {
         //  may need to force refresh to true if the content hasn't been loaded
         //  and there wasn't a specific value for refresh.
-        refresh = !this.isLoaded();
+        refresh = !loaded;
     }
 
     //  verify sync/async and warn when inbound value doesn't match up.
@@ -4980,29 +5872,28 @@ function(aRequest, filterResult) {
                 result = aResult;
 
                 if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
-                    resultType =
-                        TP.ifKeyInvalid(aRequest, 'resultType', null);
+                    resultType = TP.ifKeyInvalid(request, 'resultType', null);
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
+                }
 
-                } else {
-                    //  unfiltered results should update our resource cache.
-                    thisref.updateResourceCache(subrequest);
+                //  If we fetched the initial resource and are just going to be
+                //  filtering result format then don't call setter here. we
+                //  don't want to adjust content just because of alternative
+                //  request response types.
+                if (!TP.equal(aResult, thisref.$get('resource'))) {
+                    thisref.$setPrimaryResource(result, request);
                 }
 
                 //  rewrite the request result object so we hold on to the
                 //  processed content rather than the inbound content.
                 subrequest.set('result', result);
 
-                //  TODO: if we set to a filtered value here we'll replace
-                //  the main resource value...commented out for testing.
-                // thisref.set('resource', result);
-
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
-                if (TP.canInvoke(aRequest, 'complete')) {
-                    aRequest.complete(result);
+                if (TP.canInvoke(request, 'complete')) {
+                    request.complete(result);
                 }
             });
 
@@ -5023,8 +5914,8 @@ function(aRequest, filterResult) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -5043,12 +5934,12 @@ function(aRequest, filterResult) {
     } else {
         resource = this.$get('resource');
 
-        // Fake completion of the subrequest and related request.
+        //  Fake completion of the subrequest and related request.
         subrequest.complete(resource);
     }
 
     if (async) {
-        aRequest.andJoinChild(subrequest);
+        request.andJoinChild(subrequest);
 
         //  if we have a response we must have done a refresh, otherwise
         //  we're working with whatever data we had cached. In that case we
@@ -5059,8 +5950,8 @@ function(aRequest, filterResult) {
             //  our cache. now we just need to "fake" a response, which we
             //  want to associate with the original request object if there
             //  was one.
-            if (TP.canInvoke(aRequest, 'getResponse')) {
-                response = aRequest.getResponse();
+            if (TP.canInvoke(request, 'getResponse')) {
+                response = request.getResponse();
             } else {
                 response = subrequest.getResponse();
             }
@@ -5069,43 +5960,73 @@ function(aRequest, filterResult) {
         return response;
     }
 
-    //  if we're not running async then the subrequest will be complete and
-    //  we can return whatever result was produced.
+    //  If the routine was invoked synchronously then the data will have
+    //  been placed in the subrequest.
     return subrequest.getResponse();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('updateResourceCache',
+TP.core.URL.Inst.defineMethod('$normalizeRequestedResource',
+function(aResource, Request) {
+
+    var obj;
+
+    obj = TP.wrap(aResource);
+
+    if (TP.canInvokeInterface(
+            obj, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
+        //  place our URI value into the node wrapper and node content
+        obj.$set('uri', this, false);
+
+        //  make sure the node knows where it loaded from.
+        obj.addTIBETSrc(this);
+
+        //  then, an 'xml:base' attribute. this helps ensure that xml:base
+        //  computations will work more consistently during tag processing
+        obj.addXMLBase();
+    }
+
+    return obj;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
     /**
-     * @method updateResourceCache
-     * @summary Refreshes the receiver's content caches using the result data
-     *     found in aRequest. This method is called from both the asynchronous
-     *     and synchronous forks of the getResource call.
+     * @method getRequestedResource
+     * @summary Returns the resource object appropriate for the request. This
+     *     typically becomes the request's result object and can be used to
+     *     set the URI resource directly.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} The resource stored in the cache on completion.
+     * @returns {Object} The requested form of the cached resource. The cached
+     *     resource is typically a Content object of some form however the
+     *     return value will conform to the 'resultType' provided in the request
+     *     (if any).
      */
 
     var contentType,
 
-        result,
+        resource,
+        newResult,
+        currentResult,
+
         dat,
         dom,
         tname,
         map,
 
-        resource,
         handler,
         type,
 
-        mime;
+        mime,
 
-    //  TODO:   verify the receiver should cache anything...it should be
-    //  either a "caching" URI (whatever that means) or a primary URI.
+        resourceIsContent,
+        resultIsContent;
 
     if (TP.notValid(aRequest)) {
         return this.raise('TP.sig.InvalidParameter',
@@ -5116,7 +6037,9 @@ function(aRequest) {
     //  results on completion. We don't refresh content from those results,
     //  which will be flagged with a false value for refreshContent.
     if (TP.isFalse(aRequest.at('refreshContent'))) {
-        return this.$get('resource');
+        return this.$getFilteredResult(
+                        this.$get('resource'),
+                        aRequest.at('resultType'));
     }
 
     //  the default mime type can often be determined by the Content-Type
@@ -5136,12 +6059,17 @@ function(aRequest) {
     //  without replacing the container when possible.
     resource = this.$get('resource');
 
-    result = aRequest.getResult();
+    newResult = aRequest.getResult();
 
     //  In cases of refresh we'll often be called with the data we already have
     //  as the result.
-    if (resource === result) {
-        return resource;
+
+    currentResult = this.$getFilteredResult(
+                            resource, aRequest.at('resultType'));
+
+    //  Core question of whether we're dirty or not, will value change.
+    if (TP.equal(currentResult, newResult)) {
+        return currentResult;
     }
 
     //  ---
@@ -5150,40 +6078,42 @@ function(aRequest) {
 
     //  capture the raw result data from the request. This is typically
     //  a string, node, or pair based on the original request parameters.
-    if (TP.isArray(result) && result.getSize() === 2) {
-        dat = result.first();
-        dom = result.last();
+    if (TP.isArray(newResult) && newResult.getSize() === 2) {
+        dat = newResult.first();
+        dom = newResult.last();
 
         //  TODO: what if it's an array that doesn't contain a string and a
         //  node?
-    } else if (TP.isNode(result)) {
-        dom = result;
-    } else if (TP.isXHR(result)) {
-        dat = result.responseText;
+    } else if (TP.isNode(newResult)) {
+        dom = newResult;
+    } else if (TP.isXHR(newResult)) {
+        dat = newResult.responseText;
 
         try {
-            dom = result.responseXML;
+            dom = newResult.responseXML;
 
             //  IE has the nasty habit of making an empty '#document' node
             //  here that passes TP.isNode(...) tests, but has no content
-            //  because it couldn't be parsed into real XML.
-            if (dom.childNodes.length === 0) {
+            //  because it couldn't be parsed into real XML. Therefore, we do
+            //  this low-level testing.
+            if (dom && dom.childNodes && dom.childNodes.length === 0) {
                 dom = null;
             }
         } catch (e) {
-            dom = TP.node(result.responseText);
+            dom = TP.node(newResult.responseText);
         }
     } else {
-        dat = result;
+        dat = newResult;
     }
 
     //  ---
     //  Wrap content in best-fit container.
     //  ---
 
-    //  result content handler invocation...if possible.
+    //  result content handler invocation...if possible (but not if the
+    //  requestor wants raw TP.TEXT).
     handler = aRequest.at('contenttype');
-    if (TP.notValid(handler)) {
+    if (TP.notValid(handler) && aRequest.at('resultType') !== TP.TEXT) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         map = TP.core.URI.$getURIMap(this);
         if (TP.isValid(map)) {
@@ -5199,6 +6129,11 @@ function(aRequest) {
             //  Make sure that handler is a type.
             handler = TP.sys.getTypeByName(handler);
         }
+
+        //  Should almost always provide a viable option for content.
+        if (TP.notValid(handler) && !TP.isKindOf(resource, TP.core.Content)) {
+            handler = TP.core.Content.getConcreteType(TP.ifInvalid(dom, dat));
+        }
     }
 
     if (TP.isType(handler)) {
@@ -5206,12 +6141,10 @@ function(aRequest) {
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconstitute" the data as needed
-            result = type.constructContentObject(dom || dat, this);
-            if (TP.notValid(result)) {
+            newResult = type.constructContentObject(dom || dat, this);
+            if (TP.notValid(newResult)) {
                 return this.raise('',
                     'Content handler failed to produce output.');
-            } else {
-                this.$set('resource', result, false);
             }
         } else {
             return this.raise('TP.sig.InvalidParameter',
@@ -5219,7 +6152,7 @@ function(aRequest) {
         }
     } else if (TP.isNode(dom)) {
         //  wait for wrapping during post-processing below.
-        result = dom;
+        newResult = dom;
     } else if (TP.isString(dat)) {
         //  when looking for a content object (a text-specific object)
         //  we work from MIME type as a starting point. Proper XML won't
@@ -5233,54 +6166,60 @@ function(aRequest) {
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconsitute" the data as needed
-            result = type.constructContentObject(dat, this);
-            if (TP.isValid(result)) {
-                this.$set('resource', result, false);
-            }
+            newResult = type.constructContentObject(dat, this);
         } else {
             //  No concrete handler type for the MIME type? Use the string.
-            result = dat;
+            newResult = dat;
         }
     } else if (TP.isHash(dat)) {
         tname = dat.at('type');
         if (TP.isString(tname) &&
             TP.isType(type = TP.sys.getTypeByName(tname)) &&
             TP.canInvoke(type, 'constructContentObject')) {
-            result = type.constructContentObject(dat, this);
-            if (TP.isValid(result)) {
-                this.$set('resource', result, false);
-            }
+            newResult = type.constructContentObject(dat, this);
         }
     } else {
         //  some other form of non-standard result object.
-        result = TP.ifInvalid(dom, dat);
+        newResult = TP.ifInvalid(dom, dat);
     }
 
     //  ---
     //  post-process to maintain internal containers.
     //  ---
 
-    if (TP.canInvoke(result, 'getNativeNode')) {
+    //  Now, set the resource or result based on data types of what we already
+    //  have and what we are going to be setting.
+
+    //  NOTE: THIS IS ORDER DEPENDENT - DO *NOT* CHANGE the testing order here
+    //  without testing extensively.
+
+    resourceIsContent = TP.isKindOf(resource, TP.core.Content);
+    resultIsContent = TP.isKindOf(newResult, TP.core.Content);
+
+    if (TP.canInvoke(newResult, 'getNativeNode') && !resourceIsContent) {
         //  result _is_ a wrapper object of some form.
-        this.$set('resource', result, false);
-    } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
+        resource = this.$normalizeRequestedResource(newResult);
+    } else if (resourceIsContent && !resultIsContent) {
+        resource.set('data', newResult, false);
+    } else if (TP.canInvoke(resource, 'setNativeNode') &&
+                TP.isNode(newResult)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
                         TP.DEBUG) : 0;
 
-        resource.setNativeNode(result);
-    } else if (TP.isNode(result)) {
+        resource.setNativeNode(newResult, false);
+    } else if (TP.isNode(newResult)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Creating new node container.',
                         TP.DEBUG) : 0;
 
         //  note that we pass ourselves along to establish "ownership"
-        result = TP.core.Node.construct(result);
-        result.set('uri', this);
+        newResult = TP.core.Node.construct(newResult);
+        newResult.set('uri', this);
 
-        this.$set('resource', result, false);
+        resource = this.$normalizeRequestedResource(newResult);
     } else {
-        this.$set('resource', result, false);
+        resource = this.$normalizeRequestedResource(newResult);
     }
 
     //  NOTE that callers are responsible for defining the context of
@@ -5289,7 +6228,7 @@ function(aRequest) {
     //  clear any expiration computations.
     this.expire(false);
 
-    return this.$get('resource');
+    return this.$getFilteredResult(resource, aRequest.at('resultType'));
 });
 
 //  ------------------------------------------------------------------------
@@ -5368,15 +6307,51 @@ function(aRequest) {
 
                 var resource,
                     resp,
-                    result;
+                    result,
+
+                    returnProcessedResult,
+                    returnResult;
 
                 resource = TP.tpnode(aResult);
+
                 if (TP.canInvoke(resource, 'transform')) {
-                    //  Force XMLBase and TIBET src attributes.
-                    thisref.$setPrimaryResource(resource);
+
+                    /*
+                    //  Update the resource, passing subrequest so we keep the
+                    //  original request params (like operation) flowing through.
+                    //  TODO: setting the resource here has a bad habit of
+                    //  triggering a cyclic change series from processed to
+                    //  unprocessed data. Not convinced we should set it at all
+                    //  here since we're essentially responding _after_ a
+                    //  getResource call to process the result data.
+                    thisref.$setPrimaryResource(resource, subrequest);
+                    */
+
+                    //  Start out by configuring to use the processed result.
+                    returnProcessedResult = true;
+
+                    //  If, however, a Node can be obtained from the resource,
+                    //  then clone that, wrap it and use that as the return
+                    //  result. Flip the flag off so we don't pick up the
+                    //  processed result as the return result
+
+                    //  TODO: verify this is correct in all cases, and
+                    //  decide if we need to assign a "save result" flag to
+                    //  control this.
+                    if (TP.canInvoke(resource, 'getNativeNode')) {
+                        returnResult = TP.wrap(
+                            TP.nodeCloneNode(resource.getNativeNode()));
+                        returnProcessedResult = false;
+                    }
 
                     resp = TP.process(resource, request);
                     result = resp.get('result');
+
+                    //  If the flag is true, then use the processed result as
+                    //  the return result.
+                    if (returnProcessedResult) {
+                        returnResult = result;
+                    }
 
                     if (request.didFail()) {
                         aRequest.fail(request.getFaultText(),
@@ -5393,15 +6368,11 @@ function(aRequest) {
                     //  content.
                     subrequest.set('result', result);
 
-                    //  TODO: verify this is correct in all cases, and
-                    //  decide if we need to assign a "save result" flag to
-                    //  control this.
-                    //  What if we wanted to reprocess each time? refresh
-                    //  seems like overhead to fetch source rather than
-                    //  reprocessing.
-
-                    //  the processed content should become the new resource
-                    thisref.set('resource', result);
+                    //  the return result should become the new resource
+                    thisref.set('resource',
+                                returnResult,
+                                TP.request('signalChange', false,
+                                            'processedResult', true));
                 }
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
@@ -5498,10 +6469,6 @@ function(aRequest) {
     //  rewritten URI instance is
     url = this.rewrite(request);
 
-    //  clear our current resource data...we don't keep it in case this call
-    //  fails we don't want the old data to be mistaken for the new stuff.
-    this.$set('resource', null, false);
-
     //  map the load operation so we get the right handler based on any
     //  rewriting and routing logic in place for the original URI
     request.atPut('operation', 'load');
@@ -5512,18 +6479,18 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('nuke',
+TP.core.URL.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Destroys the target URL at the storage location. We'd have
      *     called this delete but that's a JS keyword.
      * @description This method is a "mapped" action, meaning the URI undergoes
-     *     rewriting and routing as part of the nuke process. This may, as you
+     *     rewriting and routing as part of the delete process. This may, as you
      *     might expect, alter the physical location being targeted for
      *     destruction. You should probably verify these targets before invoking
-     *     nuke.
+     *     delete.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -5541,10 +6508,10 @@ function(aRequest) {
 
     url = this.rewrite(request);
 
-    request.atPut('operation', 'nuke');
+    request.atPut('operation', 'delete');
     handler = url.remap(this, request);
 
-    return handler.nuke(url, request);
+    return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
@@ -5593,17 +6560,19 @@ function() {
 
     /**
      * @method refreshFromRemoteResource
-     * @summary Refreshes the receiver from the remote resource it's
-     *     representing.
-     * @returns {TP.extern.Promise} A promise which resolves on completion.
+     * @summary Refreshes the receiver's content from the remote resource it
+     *     represents. Upon refreshing the content this method will invoke
+     *     processRefreshedContent to perform any post-processing of the
+     *     content appropriate for the target URI.
+     * @returns {Promise} A promise which resolves on completion.
      */
 
-    var uri,
-        callback,
-        path,
-        secondaryURIs;
+    var callback,
+        secondaryURIs,
+        changedLoc,
+        normalizedLoc;
 
-    if (TP.notFalse(this.get('shouldRefresh'))) {
+    if (this.isWatched()) {
         this.isLoaded(false);
     }
 
@@ -5611,200 +6580,161 @@ function() {
     if (TP.notEmpty(secondaryURIs = this.getSecondaryURIs())) {
         secondaryURIs.forEach(
                 function(aURI) {
-                    if (TP.notFalse(aURI.get('shouldRefresh'))) {
+                    if (aURI.isWatched()) {
                         aURI.isLoaded(false);
                     }
                 });
     }
 
-    //  Snapshot reference for closure usage.
-    uri = this;
-
-    path = uri.getLocation();
+    changedLoc = this.getLocation();
+    normalizedLoc = TP.uriInTIBETFormat(changedLoc);
 
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function(result) {
-        var virtualURI;
+        var url;
 
         if (TP.isError(result)) {
             TP.error(result);
             return;
         }
 
-        //  Notify observers of the URI (elements, etc.) that the
-        //  resource has been refreshed with potentially new content.
-        uri.$changed();
+        url = TP.uc(changedLoc);
 
-        //  Watch specifically for changes to application manifest which
-        //  might indicate new code has been added to the project. These
-        //  files don't get observed since they never trigger a mutation
-        //  observer.
-        virtualURI = TP.uriInTIBETFormat(path);
-        if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
+        //  Is the changed location one of our loaded package files? If so we
+        //  need to process it as a package, not a random file or script.
+        if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
 
             //  Force refresh of any package data, particularly related to the
             //  URI we're referencing.
-            TP.boot.$refreshPackages(virtualURI);
+            TP.boot.$refreshPackages(changedLoc);
 
             //  Import any new scripts that would have booted with the system.
-            TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
+            //  NOTE we pass 'true' to the shouldSignal flag here to tell this
+            //  particular import we want scripts to signal Change on load.
+            TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig, true);
         }
+
+        //  Trigger post-processing for specific URIs.
+        url.processRefreshedContent();
     };
+
 
     //  If the receiver refers to a file that was loaded (meaning it's mentioned
     //  in a TIBET package config) we source it back in rather than just
     //  loading via simple XHR.
-    if (TP.boot.$isLoadableScript(path)) {
-        TP.debug('Sourcing in updates to ' + path);
-        return TP.sys.importSource(path).then(callback, callback);
+    if (TP.boot.$isLoadableScript(changedLoc)) {
+        TP.debug('Sourcing in updates to ' + changedLoc);
+        return TP.sys.importSource(changedLoc).then(callback, callback);
     } else {
+        TP.debug('Reading in changes to ' + changedLoc);
         return this.getResource().then(callback, callback);
     }
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getAutoRefresh',
+TP.core.URL.Inst.defineMethod('processRefreshedContent',
 function() {
 
     /**
-     * @method getAutoRefresh
-     * @summary Returns whether or not the URI 'auto refreshes' from its remote
-     *     resource when it gets notified that that content has changed.
-     * @returns {Boolean} Whether or not the resource auto-refreshes.
+     * @method processRefreshedContent
+     * @summary Invoked when remote resource changes have been loaded to provide
+     *     the receiver with the chance to post-process those changes. If you
+     *     override this method you should signal Change (this.$changed) once
+     *     you have completed processing to notify potential observers.
+     * @returns {TP.core.URL} The receiver.
      */
 
-    var autoRefresh,
-        watched,
-        uri;
-
-    //  See if we have an explicit value for autoRefresh - note the use of
-    //  $get() to avoid endless recursion. If we don't have one, then we have
-    //  intelligent defaults for URLs with certain extensions.
-    if (TP.isNull(autoRefresh = this.$get('autoRefresh'))) {
-
-        watched = TP.ifInvalid(TP.sys.cfg('uri.remote_watch_sources'), TP.ac());
-        uri = this.getLocation();
-
-        autoRefresh = watched.some(
-                        function(path) {
-                            var prefix;
-
-                            prefix = TP.uriExpandPath(prefix);
-                            return uri.indexOf(prefix) === 0;
-                        });
-
-        this.set('autoRefresh', autoRefresh);
-    }
-
-    return autoRefresh;
+    return this.$changed();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('setAutoRefresh',
-function(shouldAutoRefresh) {
+TP.core.URL.Inst.defineMethod('isWatched',
+function() {
 
     /**
-     * @method setAutoRefresh
-     * @summary Sets whether or not the URI 'auto refreshes' from its remote
-     *     resource when it gets notified that that content has changed.
-     * @param {Boolean} shouldAutoRefresh Whether or not the resource should
-     *     auto-refresh.
-     * @returns {TP.core.URL} The receiver.
+     * @method isWatched
+     * @summary Returns whether or not the URI should process remote changes
+     *     when it gets notified that its remote content has changed.
+     * @returns {Boolean} Whether or not the resource processes remote changes.
      */
 
-    //  Note the use of $set() to avoid endless recursion.
-    this.$set('autoRefresh', shouldAutoRefresh);
-
-    //  If autoRefresh is true, then watch the URL. Note that this call just
-    //  returns if the URL is already configured to watch. Also note how we do
-    //  *not* assume to unwatch() if autoRefresh is set to false (i.e. this is a
-    //  one-way behavior).
-    if (shouldAutoRefresh) {
-        this.watch();
-    }
-
-    return this;
+    return TP.notFalse(this.$get('watched'));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.URL.Inst.defineMethod('watch',
-function(aRequest) {
+function() {
 
     /**
      * @method watch
-     * @summary Watches for changes to the URLs remote resource, if the server
-     *     that is supplying the remote resource notifies us when the URL has
-     *     changed.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @summary Flags the URL as being active for remote change processing. When
+     *     uri.watch_remote_changes is true and uri.process_remote_changes is
+     *     true this flag will be checked to ensure the specific URI is not
+     *     excluded from processing. It's not usually necessary to set this to
+     *     true if the URL would pass remote URL isWatchableURI testing.
      */
 
-    var request,
-        url,
+    var url,
+        request,
         handler;
 
-    //  If this URL is already being watched, then just exit
+    //  Early exit if we're already set so we avoid request/rewrite/remap work.
     if (TP.isTrue(this.get('watched'))) {
-        return null;
+        return;
     }
 
-    request = this.constructRequest(aRequest);
-
-    //  rewriting means we'll get to the concrete URI for the receiver so we
-    //  watch the data where it really is
-    url = this.rewrite(request);
-
+    //  We need to get a request and go through rewrite/mapping to get the
+    //  proper handler type for the receiver. That type can then tell us if the
+    //  receiver is a watchable instance.
+    request = this.constructRequest();
     request.atPut('operation', 'watch');
+
+    url = this.rewrite(request);
     handler = url.remap(this, request);
 
-    this.set('watched', true);
+    //  NOTE we don't assume true, we still check that the receiver is a
+    //  watchable URI based on any remote URL filtering for the handler.
+    this.set('watched', handler.isWatchableURI(this));
 
-    return handler.watch(url, request);
+    return this.get('watched');
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.URL.Inst.defineMethod('unwatch',
-function(aRequest) {
+function() {
 
     /**
      * @method unwatch
-     * @summary Removes any watches for changes to the URLs remote resource. See
-     *     this type's 'watch' method for more information.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @summary Flags the URL as not processing remote change notices. When
+     *     uri.watch_remote_changes is true and uri.process_remote_changes is
+     *     true this flag will be checked to ensure the specific URI is not
+     *     excluded from processing.
      */
 
     var request,
-        url,
-        handler;
+        url;
 
-    //  If this URL is already not being watched, then just exit
-    if (TP.notTrue(this.get('watched'))) {
-        return null;
+    //  Early exit if we're already set so we avoid request/rewrite/remap work.
+    if (TP.isFalse(this.get('watched'))) {
+        return;
     }
 
-    request = this.constructRequest(aRequest);
+    request = this.constructRequest();
 
-    //  rewriting means we'll get to the concrete URI for the receiver so we
-    //  unwatch the data where it really is
     url = this.rewrite(request);
-
-    request.atPut('operation', 'unwatch');
-    handler = url.remap(this, request);
+    if (url !== this) {
+        url.unwatch();
+    }
 
     this.set('watched', false);
 
-    return handler.unwatch(url, request);
+    return this;
 });
 
 //  ========================================================================
@@ -5910,7 +6840,8 @@ TP.core.CommURL.Inst.defineAttribute('commObject');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('commDidSucceed', function() {
+TP.core.CommURL.Inst.defineMethod('commDidSucceed',
+function() {
 
     /**
      * @method commDidSucceed
@@ -5959,7 +6890,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponse',
+function() {
 
     /**
      * @method getCommResponse
@@ -5980,7 +6912,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponseText',
+function() {
 
     /**
      * @method getCommResponseText
@@ -6001,7 +6934,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponseType',
+function() {
 
     /**
      * @method getCommResponseType
@@ -6024,7 +6958,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponseXML',
+function() {
 
     /**
      * @method getCommResponseXML
@@ -6045,7 +6980,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
+TP.core.CommURL.Inst.defineMethod('getCommStatusCode',
+function() {
 
     /**
      * @method getCommStatusCode
@@ -6066,7 +7002,8 @@ TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommStatusText', function() {
+TP.core.CommURL.Inst.defineMethod('getCommStatusText',
+function() {
 
     /**
      * @method getCommStatusText
@@ -6238,6 +7175,22 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.HTTPURL.Inst.defineMethod('httpConnect',
+function(aRequest) {
+
+    /**
+     * @method httpConnect
+     * @summary Uses the receiver as a target URI and invokes an HTTP CONNECT
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return TP.httpConnect(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.HTTPURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
@@ -6298,6 +7251,22 @@ function(aRequest) {
      */
 
     return TP.httpOptions(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpPatch',
+function(aRequest) {
+
+    /**
+     * @method httpPatch
+     * @summary Uses the receiver as a target URI and invokes an HTTP PATCH
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return TP.httpPatch(this.asString(), aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -6726,7 +7695,7 @@ function(aFlag) {
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
+     *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -6793,11 +7762,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('nuke',
+TP.core.JSURI.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary For the most part, a no-op for JSURIs.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -6815,14 +7784,14 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('operation', 'nuke');
+    request.atPut('operation', 'delete');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
     handler = TP.core.URIHandler;
 
-    return handler.nuke(url, request);
+    return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
@@ -7167,12 +8136,16 @@ TP.core.TIBETURL.Inst.defineAttribute('nestedURI');
 //  are empty, which helps keep getResource running faster
 TP.core.TIBETURL.Inst.defineAttribute('uriKey');
 
+//  cached copy of the portions of the TIBET URI, used to access canvas name and
+//  other components of the virtual uri.
+TP.core.URI.Inst.defineAttribute('uriParts');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('init',
-function(aURIString) {
+function(aURIString, aResource) {
 
     /**
      * @method init
@@ -7181,6 +8154,7 @@ function(aURIString) {
      *     although variable references (such as uicanvas) may allow it to
      *     resolve to different concrete elements during its life.
      * @param {String} aURIString A String containing a proper URI.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -7229,13 +8203,15 @@ function(parts) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output. TIBET URLs containing valid resource URIs typically respond
      *     with that string for compatibility with their file/http counterparts.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -7243,7 +8219,7 @@ function() {
     //  TIBET URLs with no canvas are effectively simply aliases to the
     //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getConcreteURI().asDumpString();
+        return this.getConcreteURI().asDumpString(depth, level);
     }
 
     //  Otherwise, call up
@@ -7570,7 +8546,7 @@ function(forceRefresh) {
 
     //  When there's a canvas reference the receiver is a pointer to a DOM
     //  element and not an indirect reference to some other concrete URI. In
-    //  that case we will grab the resource, get it's global ID and then compute
+    //  that case we will grab the resource, get its global ID and then compute
     //  a new URL from that.
     if (TP.notEmpty(this.getCanvasName())) {
 
@@ -7976,7 +8952,7 @@ function(aRequest, filterResult) {
                 //  have a content URI then the TIBET URL is being used as
                 //  if it were a urn: which is no longer supported.
                 if ((url = this.getPrimaryURI()) !== this) {
-                    inst = url.$getPrimaryResource(request);
+                    inst = url.$getPrimaryResource(request, filter);
                     async = this.rewriteRequestMode(request);
 
                     if (async) {
@@ -8105,8 +9081,9 @@ function(request, result, async, filter) {
             resource = this.$getFilteredResult(resource, resultType, false);
         }
 
-        this.$set('resource', resource, false);
-        this.isLoaded(true);
+        if (!this.isLoaded()) {
+            this.$setPrimaryResource(resource, request);
+        }
     }
 
     response = request.getResponse(resource);
@@ -8126,7 +9103,26 @@ function() {
      * @returns {Array.<String>} The split parts.
      */
 
-    return this.$get('uri').match(TP.regex.TIBET_URL_SPLITTER);
+    var parts,
+        uri;
+
+    parts = this.$get('uriParts');
+    if (TP.notEmpty(parts)) {
+        return parts;
+    }
+
+    uri = this.$get('uri');
+
+    //  Multiple choices here. May be tibet:, may by expanded.
+    if (uri.indexOf('tibet:') === 0) {
+        parts = uri.match(TP.regex.TIBET_URL_SPLITTER);
+        this.$set('uriParts', parts);
+    } else {
+        parts = uri.match(TP.regex.URL_SPLITTER);
+        this.$set('uriParts', parts);
+    }
+
+    return parts;
 });
 
 //  ------------------------------------------------------------------------
@@ -8162,6 +9158,26 @@ function(schemeSpecificString) {
     this.callNextMethod();
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpConnect',
+function(aRequest) {
+
+    /**
+     * @method httpConnect
+     * @summary Uses the receiver as a target URI and invokes an HTTP CONNECT
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpConnect(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -8246,6 +9262,26 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('httpPatch',
+function(aRequest) {
+
+    /**
+     * @method httpPatch
+     * @summary Uses the receiver as a target URI and invokes an HTTP PATCH
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpPatch(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('httpPost',
 function(aRequest) {
 
@@ -8312,7 +9348,7 @@ function(aFlag) {
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
+     *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -8376,6 +9412,44 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('processRefreshedContent',
+function() {
+
+    /**
+     * @methoe processRefreshedContent
+     * @summary Invoked when remote resource changes have been loaded to provide
+     *     the receiver with the chance to post-process those changes.
+     * @returns {TP.core.URL} The receiver.
+     */
+
+    var concreteURI;
+
+    concreteURI = this.getConcreteURI();
+
+    if (TP.isValid(concreteURI) && concreteURI !== this) {
+        return concreteURI.processRefreshedContent();
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('register',
+function() {
+
+    /**
+     * @method register
+     * @summary Registers the instance under a common key.
+     */
+
+    TP.core.URI.registerInstance(this, TP.uriInTIBETFormat(this.getLocation()));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('load',
 function(aRequest) {
 
@@ -8399,12 +9473,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('nuke',
+TP.core.TIBETURL.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
-     * @summary For this type, this method nukes the receiver's concrete URI.
+     * @method delete
+     * @summary For this type, this method deletes the receiver's concrete URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -8416,7 +9490,7 @@ function(aRequest) {
     concreteURI = this.getConcreteURI();
 
     if (TP.isValid(concreteURI) && concreteURI !== this) {
-        return concreteURI.nuke(aRequest);
+        return concreteURI.delete(aRequest);
     }
 });
 
@@ -8462,6 +9536,43 @@ function(shouldBeWatched) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('$setPrimaryResource',
+function(aResource, aRequest) {
+
+    /**
+     * @method $setPrimaryResource
+     * @summary Sets the receiver's resource object, the object TIBET will
+     *     treat as the primary resource for any subsequent processing.
+     * @param {Object} aResource The resource object to assign.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
+     *     optional parameters.
+     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     *     when the resource must be acquired in an async fashion prior to
+     *     setting any fragment value.
+     */
+
+    var parts;
+
+    parts = this.getURIParts();
+
+    //  If the receiver has a non-empty canvas name, but an empty URL and empty
+    //  fragment, then grab the Window matching the canvas name and use that as
+    //  the resource. Otherwise, we end up setting a #document node for a
+    //  TIBETURL that should be pointing at a Window.
+    if (TP.notEmpty(parts.at(TP.core.TIBETURL.CANVAS_INDEX)) &&
+        TP.isEmpty(parts.at(TP.core.TIBETURL.URL_INDEX)) &&
+        TP.isEmpty(parts.at(TP.core.TIBETURL.FRAGMENT_INDEX))) {
+
+        return this.callNextMethod(
+            TP.sys.getWindowById(parts.at(TP.core.TIBETURL.CANVAS_INDEX)),
+            aRequest);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('updateHeaders',
 function(headerData) {
 
@@ -8486,11 +9597,11 @@ function(headerData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('updateResourceCache',
+TP.core.TIBETURL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
     /**
-     * @method updateResourceCache
+     * @method getRequestedResource
      * @summary TIBET URLs containing valid resource URIs respond to this
      *     method by updating the content cache for that URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -8504,11 +9615,54 @@ function(aRequest) {
     //  if we're just an alias for a concrete URL then we continue to look like
     //  a proxy for that reference in string form
     if ((url = this.getPrimaryURI()) !== this) {
-        return url.updateResourceCache(aRequest);
+        return url.getRequestedResource(aRequest);
     }
 
-    //  TODO:   not sure about this. What about fragments etc.?
-    return this.$get('resource');
+    if (TP.isValid(aRequest)) {
+        return this.$getFilteredResult(this.$get('resource'),
+                                        aRequest.at('resultType'));
+    } else {
+        return this.$get('resource');
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('watch',
+function(aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches for changes to the URLs remote resource, if the server
+     *     that is supplying the remote resource notifies us when the URL has
+     *     changed. For TIBETURLs, this passes through to the concrete URI's
+     *     'watched' property.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return this.getConcreteURI().watch(aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('unwatch',
+function(aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Removes any watches for changes to the URLs remote resource. See
+     *     this type's 'watch' method for more information. For TIBETURLs, this
+     *     passes through to the concrete URI's 'watched' property.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return this.getConcreteURI().unwatch(aRequest);
 });
 
 //  ========================================================================
@@ -8562,15 +9716,15 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.Type.defineMethod('nuke',
+TP.core.URIHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to delete. Note that this call is
-     *     typically made via the nuke call of a URI and so rewriting and
+     *     typically made via the delete call of a URI and so rewriting and
      *     routing have already occurred.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -8581,7 +9735,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    TP.todo('Implement nuke for non-file/http/db urls.');
+    TP.todo('Implement delete for non-file/http/db urls.');
 
     //  DB, File and HTTP urls have their own handlers. This default handler
     //  is typically leveraged only by javascript: and urn: resources whose
@@ -8633,55 +9787,6 @@ function(targetURI, aRequest) {
     request.complete(true);
 
     return response;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Type.defineMethod('watch',
-function(targetURI, aRequest) {
-
-    /**
-     * @method watch
-     * @summary Watches URI data content. This is used for URIs that represent
-     *     remote resources in the system and can be notified by a server-side
-     *     component that those resources have changed.
-     * @description At this level, this method does nothing. Handlers that
-     *     represent change-notification capable servers should override this
-     *     method to set up change notification machinery for this URI back to
-     *     TIBET.
-     * @param {String|TP.core.URI} targetURI A target URI.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The response.
-     */
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Type.defineMethod('unwatch',
-function(targetURI, aRequest) {
-
-    /**
-     * @method unwatch
-     * @summary Unwatches (i.e. ignores) URI data content. This is used for URIs
-     *     that represent remote resources in the system and can be notified by
-     *     a server-side component that those resources have changed.
-     * @description At this level, this method does nothing. Handlers that
-     *     represent change-notification capable servers should override this
-     *     method to tear down change notification machinery that it would have
-     *     method to tear down change notification machinery for this URI that
-     *     it would have set up to TIBET.
-     * @param {String|TP.core.URI} targetURI A target URI.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The response.
-     */
-
-    return;
 });
 
 //  ========================================================================
@@ -8966,11 +10071,8 @@ function() {
     //  Define the root pattern route for "empty paths".
     this.definePath(/^\/$/, this.get('root'));
 
-    //  TODO:   process config-based token definitions
-
-    //  TODO:   process config-based path-to-routename definitions
-
-    //  TODO:   process config-based route-to-controller/target/content
+    //  Configure routing data from cfg() parameters.
+    this.$configureRoutes();
 
     return;
 });
@@ -9064,6 +10166,54 @@ function(pattern) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URIRouter.Type.defineMethod('$configureRoutes',
+function() {
+
+    /**
+     * @method $configureRoutes
+     * @summary Configures the routes from the tokens and paths that are in the
+     *     cfg() data. If the route cfg() data is altered, this method should be
+     *     called to update internal structures.
+     * @returns {TP.core.URIRouter} The receiver.
+     */
+
+    var cfg,
+        thisref,
+        keys;
+
+    thisref = this;
+
+    //  process config-based token definitions
+    cfg = TP.sys.cfg('route.tokens');
+    if (TP.notEmpty(cfg)) {
+        keys = TP.keys(cfg);
+        keys.forEach(
+                function(key) {
+                    var val;
+
+                    val = cfg.at(key);
+                    thisref.defineToken(key.replace('route.tokens.', ''), val);
+                });
+    }
+
+    //  process config-based path-to-routename definitions
+    cfg = TP.sys.cfg('route.paths');
+    if (TP.notEmpty(cfg)) {
+        keys = TP.keys(cfg);
+        keys.forEach(
+                function(key) {
+                    var val;
+
+                    val = cfg.at(key);
+                    thisref.definePath(key.replace('route.paths.', ''), val);
+                });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URIRouter.Type.defineMethod('definePath',
 function(pattern, signalOrProcessor, processor) {
 
@@ -9120,7 +10270,9 @@ function(pattern, signalOrProcessor, processor) {
     }
 
     //  Default the processor function to our standard one.
-    func = TP.ifInvalid(func, this.processMatch.bind(this));
+    if (TP.notValid(func)) {
+        func = this.processMatch.bind(this);
+    }
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
@@ -9146,7 +10298,7 @@ function(pattern, signalOrProcessor, processor) {
     if (index !== TP.NOT_FOUND) {
         processors.atPut(index, entry);
     } else {
-        this.get('processors').unshift(entry);
+        processors.unshift(entry);
     }
 
     return entry;
@@ -9171,17 +10323,49 @@ function(token, pattern) {
      * @returns {TP.core.URIRouter} The receiver.
      */
 
+    var regex;
+
     if (!TP.isString(token)) {
         this.raise('InvalidToken', token);
     }
 
-    if (!TP.isRegExp(pattern)) {
-        this.raise('InvalidPattern', pattern);
+    regex = pattern;
+    if (!TP.isRegExp(regex)) {
+        regex = TP.rc(pattern);
+        if (!TP.isRegExp(regex)) {
+            this.raise('InvalidPattern', pattern);
+        }
     }
 
-    TP.sys.setcfg('route.tokens.' + token, TP.str(pattern));
+    TP.sys.setcfg('route.tokens.' + token, TP.str(regex));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('getLastRoute',
+function() {
+
+    /**
+     * @method getLastRoute
+     * @summary Returns the last route the application was set to. If the
+     *     application hasn't yet been set to a specific route this method
+     *     returns 'Home' as the default value.
+     * @returns {String} The route, or 'Home' if no last route exists.
+     */
+
+    var hist,
+        loc;
+
+    hist = TP.sys.getHistory();
+    loc = hist.getLastLocation();
+
+    if (TP.notValid(loc)) {
+        return 'Home';
+    }
+
+    return this.getRoute(loc);
 });
 
 //  ------------------------------------------------------------------------
@@ -9243,6 +10427,100 @@ function(aURI) {
     }
 
     return route;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('getRouteControllerType',
+function() {
+
+    /**
+     * @method getRouteControllerType
+     * @summary Returns the route controller type that will be used for whatever
+     *     the receiver considers to be the current route.
+     * @description The controller type is computed thusly:
+     *     1. If the current route doesn't have a route map entry, the
+     *     TP.core.RouteController type will be returned.
+     *     2. If the route map entry has a '.controller' entry, then that will
+     *     be used as the type name.
+     *     3. If the route map entry has no '.controller', then a type name will
+     *     be computed by using 'APP.' + the project name + '.' + the route in
+     *     title case + 'Controller'.
+     *     4. If no type object can be found by using the type name from the
+     *     above steps, TP.core.RouteController will be returned.
+     * @returns {TP.meta.*|TP.meta.core.Controller} A computed controller type.
+     */
+
+    var route,
+        routeKey,
+        config,
+        configInfo,
+        controllerName,
+        controller,
+        defaulted;
+
+    route = this.getRoute();
+    if (TP.isEmpty(route)) {
+        return TP.core.RouteController;
+    }
+
+    //  See if the value is a route configuration key.
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
+
+    if (TP.isEmpty(config)) {
+        routeKey = 'route';
+        config = TP.sys.cfg(routeKey);
+        if (TP.isEmpty(config)) {
+            return TP.core.RouteController;
+        }
+    }
+
+    //  If we got real config data, then turn it into real JSON if it isn't
+    //  already.
+    if (TP.isString(config)) {
+
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                        'Unable to build config data from entry: ' + config);
+
+            return TP.core.RouteController;
+        }
+    } else {
+        configInfo = config;
+    }
+
+    //  Try to obtain a controller type name
+    controllerName = configInfo.at(routeKey + '.controller');
+    if (TP.notValid(controllerName)) {
+        controllerName = configInfo.at('controller');
+    }
+
+    //  If there was no controller type name entry, default one by concatenating
+    //  'APP' with the project and route name and the word 'Controller'.
+    if (TP.isEmpty(controllerName)) {
+        controllerName = 'APP.' +
+                            TP.sys.cfg('project.name') +
+                            '.' +
+                            route.asTitleCase() +
+                            'Controller';
+        defaulted = true;
+    }
+
+    //  See if the controller is a type name.
+    controller = TP.sys.getTypeByName(controllerName);
+
+    if (TP.notValid(controller)) {
+        //  Note here how we only warn if the controller name was specified and
+        //  not generated here.
+        TP.ifWarn() && !defaulted ?
+            TP.warn('InvalidRouteController', controllerName, 'for',
+                routeKey + '.controller') : 0;
+    }
+
+    return TP.ifInvalid(controller, TP.core.RouteController);
 });
 
 //  ------------------------------------------------------------------------
@@ -9408,11 +10686,13 @@ function(aURIOrPushState, aDirection) {
      *     response to popstate events and whenever TIBET is asked to push or
      *     replace state on the native history object.
      * @param {String|Object} aURIOrPushState The full URI which should be
-     *     processed for routing or a push state object containing that uri.
+     *     processed for routing or a push state object containing that URI.
      *     Keys of interest in the push state are 'url' and 'pushed'.
      * @param {String} [aDirection] An optional direction hint provided by some
      *     invocation pathways. It is always used when available.
-     * @fires {RouteChange} If the URI has changed the fragment path (route).
+     * @fires {RouteEnter} If the URI has changed the fragment path (route).
+     * @fires {RouteExit} If the URI has changed the fragment path (route).
+     * @fires {RouteFinalize} If the URI has changed the fragment path (route).
      * @exception {TP.sig.InvalidOperation} When an operation cannot be computed
      *     by comparing the old route parameters from the new route parameters.
      */
@@ -9431,18 +10711,17 @@ function(aURIOrPushState, aDirection) {
         payload,
         type,
         signal,
+        guard,
         home,
         routeKey,
         config,
         configInfo,
-        content,
+        reroute,
         urlParams,
         lastParams,
         paramDiff,
         bootParams,
-        route,
-        routeTarget,
-        targetTPElem;
+        route;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -9459,11 +10738,11 @@ function(aURIOrPushState, aDirection) {
     switch (direction) {
         case 'back':
             last = TP.ifEmpty(history.get('lastURI'),
-                history.getNextLocation());
+                                history.getNextLocation());
             break;
         case 'forward':
             last = TP.ifEmpty(history.get('lastURI'),
-                history.getLastLocation());
+                                history.getLastLocation());
             break;
         case 'replace':
             last = history.get('lastURI');
@@ -9498,7 +10777,8 @@ function(aURIOrPushState, aDirection) {
     //  The pushState handlers in TIBET don't push homepage URLs directly, they
     //  always short to '/' or the launch URL. We need to actually setLocation
     //  with a real URI for the related home page tho so we convert here.
-    if (last && (TP.$$nested_loader || url === '/' ||
+    if (TP.notEmpty(last) &&
+        (TP.$$nested_loader || url === '/' ||
             TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL()))) {
 
         //  Clear any flag regarding loading the index or other loader page.
@@ -9659,7 +10939,9 @@ function(aURIOrPushState, aDirection) {
         }
     }
 
-    fragPath = TP.ifInvalid(fragPath, urlParts.at('fragmentPath'));
+    if (TP.notValid(fragPath)) {
+        fragPath = urlParts.at('fragmentPath');
+    }
 
     //  ---
     //  If fragment path changed it's a route
@@ -9674,6 +10956,10 @@ function(aURIOrPushState, aDirection) {
         //  No processed result. Remove the leading '/' for checks we need to
         //  run below for type names, urls, etc.
         route = fragPath.slice(1);
+    }
+
+    if (TP.isEmpty(route)) {
+        return;
     }
 
     if (TP.sys.cfg('log.routes')) {
@@ -9701,84 +10987,45 @@ function(aURIOrPushState, aDirection) {
             configInfo = config;
         }
 
-        //  ---
-        //  Route-to-Content mapping
-        //  ---
-
-        //  The content can be a tag type name, a URI or a String and if found
-        //  we will use that content to update either a specific target or
-        //  the UICANVAS region.
-        content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
-            configInfo.at('content'));
-
-        if (TP.notEmpty(content)) {
-
-            routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
-                                        configInfo.at('target'));
-            if (TP.notEmpty(routeTarget)) {
-
-                //  NB: We want autocollapsed, but wrapped content here.
-                targetTPElem = TP.byPath(routeTarget, canvas, true);
-                if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
-                    this.raise('InvalidElement',
-                                'Unable to find route target: ' + routeTarget);
-                    return;
-                }
-            }
-
-            //  See if the content is a type name.
-            type = TP.sys.getTypeByName(content);
-            if (TP.canInvoke(type, 'generateMarkupContent')) {
-
-                if (TP.notValid(targetTPElem)) {
-                    targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
-                }
-
-                //  Inject the content.
-                targetTPElem.setContent(type.generateMarkupContent(),
-                                        TP.hc('sourceType', type));
-            } else {
-
-                //  Otherwise, see if the value looks like a URL for location.
-                url = TP.uc(content);
-                if (TP.isURI(url)) {
-
-                    url = TP.uriExpandHome(url);
-                    if (TP.sys.cfg('log.routes')) {
-                        TP.debug('setting location to: ' + TP.str(url));
-                    }
-
-                    //  If we weren't able to obtain a target, then just set the
-                    //  location of the canvas to the head of the URL.
-                    if (TP.notValid(targetTPElem)) {
-                        canvas.setLocation(TP.uriHead(url));
-                    } else {
-                        //  Otherwise, set the content of the target to the
-                        //  content of the URL
-                        targetTPElem.setContent(url);
-                    }
+        //  Check for redirection. If found, update to that route immediately.
+        reroute = configInfo.at(routeKey + '.reroute');
+        reroute = reroute || configInfo.at('reroute');
+        if (TP.notEmpty(reroute)) {
+            if (reroute.charAt(0) !== '#') {
+                if (reroute.charAt(0) !== '/') {
+                    TP.go2('#/' + reroute);
                 } else {
-
-                    //  Otherwise, the content was a String. If we couldn't get
-                    //  a target, then use the document's body as the target and
-                    //  set the content.
-                    if (TP.notValid(targetTPElem)) {
-                        targetTPElem =
-                            TP.sys.getUICanvas().getDocument().getBody();
-                    }
-
-                    targetTPElem.setContent(content);
+                    TP.go2('#' + reroute);
                 }
+            } else {
+                TP.go2(reroute);
             }
+            return;
+        }
 
-            //  We won't proceed any further here - we were a configured route.
+        reroute = configInfo.at(routeKey + '.redirect');
+        reroute = reroute || configInfo.at('redirect');
+        if (TP.notEmpty(reroute)) {
+            TP.go2(reroute);
+            return;
+        }
+
+    } else {
+        configInfo = TP.hc();
+    }
+
+    //  Deal with deep link issues. Not all routes can be linked directly so if
+    //  this is the first route (no last route in history) it has to be one that
+    //  is flagged as a deeproot.
+    if (TP.notValid(last)) {
+        if (configInfo.at(routeKey + '.deeproot') !== true) {
+            TP.go2('/');
             return;
         }
     }
 
-    if (TP.isEmpty(route)) {
-        return;
-    }
+    //  If the route changed be sure to refresh the controller list.
+    TP.sys.getApplication().refreshControllers();
 
     //  ---
     //  Route Signaling
@@ -9788,25 +11035,53 @@ function(aURIOrPushState, aDirection) {
 
     //  Support remapping route name to a different signal, but ensure that
     //  signal follows our standard rules for signal names specific to routes.
-    signame = TP.ifInvalid(TP.sys.cfg(routeKey + '.signal'), route);
+    signame = TP.ifInvalid(
+                configInfo.at(routeKey + '.signal'),
+                route + 'Route');
     signame = TP.expandSignalName(signame);
-    if (!/Route$/.test(signame)) {
-        signame = signame + 'Route';
-    }
 
     //  Determine the signal type, falling back as needed since expandSignalName
     //  will return TP.sig. as a default prefix.
+
+    //  First, try for a type that matches either the signal name specified in
+    //  the routing cfg or the route name with 'Route' appended, as computed
+    //  above.
     type = TP.sys.getTypeByName(signame);
-    if (TP.notValid(type)) {
-        signame = signame.replace(/^TP\./, 'APP.');
+
+    //  If that type couldn't be found, try the same local signal name, but with
+    //  a root namespace of 'APP.' instead of 'TP.'
+    if (!TP.isType(type)) {
+
         type = TP.sys.getTypeByName(signame);
+        if (!TP.isType(type)) {
+            //  APP.sig.*
+            signame = signame.replace(/^TP\./, 'APP.');
+            type = TP.sys.getTypeByName(signame);
+        }
+
+        //  If that type couldn't be found, then change the non-root namespace
+        //  from 'sig' to the name of the project.
+        if (!TP.isType(type)) {
+            //  APP.{project.name}.*
+            signame = signame.replace(
+                        /\.sig\./,
+                        '.' + TP.sys.cfg('project.name') + '.');
+            type = TP.sys.getTypeByName(signame);
+        }
     }
 
     //  Build the signal instance we'll fire and set its name as needed.
-    if (TP.isValid(type)) {
+    if (TP.isType(type)) {
         signal = type.construct(payload);
     } else {
-        signal = TP.sig.RouteChange.construct(payload);
+
+        //  Couldn't find a valid signal type above, so we just use
+        //  TP.sig.RouteFinalize as the type and set a 'spoofed' signal name
+        //  using the same algorithm as above.
+        signal = TP.sig.RouteFinalize.construct(payload);
+        signame = TP.ifInvalid(
+                    configInfo.at(routeKey + '.signal'),
+                    route + 'Route');
         signal.setSignalName(signame);
     }
 
@@ -9816,11 +11091,33 @@ function(aURIOrPushState, aDirection) {
 
     if (TP.sys.cfg('log.routes')) {
         TP.info('Signaling: ' + signal.getSignalName() + ' with: ' +
-            TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
+                    TP.ifEmpty(
+                        TP.str(signal.getPayload()),
+                        '{}'));
     }
 
     payload.atPut('route', route);
 
+    //  Now, we first a series of 3 signals matching the routing sequence:
+
+    //  Fire a RouteExit signal, using the last route that was set (this method
+    //  is being executed *after* the route has been set - the browsers provide
+    //  no mechanism for trapping *before* a route has been navigated to). Note
+    //  here how we append 'RouteExit' onto that for consistency with routing
+    //  signal naming.
+    guard = TP.sig.RouteExit.construct(payload);
+    guard.setSignalName(this.getLastRoute() + 'RouteExit');
+    guard.fire();
+
+    //  Fire a RouteEnter signal, using the current route that is being set.
+    //  Note here how we append 'RouteEnter' onto that for consistency with
+    //  routing signal naming.
+    guard = TP.sig.RouteEnter.construct(payload);
+    guard.setSignalName(route + 'RouteEnter');
+    guard.fire();
+
+    //  Fire the signal that we computed above, which should be an instance of
+    //  either RouteFinalize or a subtype of RouteFinalize.
     signal.fire();
 
     return;
@@ -9842,6 +11139,7 @@ function(aRoute) {
      *     parameters). Changes to this section of the URI result in a Route
      *     signal being fired so application logic can respond to route changes.
      * @param {String} aRoute The route information.
+     * @returns {String} The route as set into TIBET's history object.
      */
 
     var route,
@@ -9857,16 +11155,24 @@ function(aRoute) {
         route = '/' + route;
     }
 
+    //  Normalize Home to just the root path.
+    if (route === '/Home' || route === '/home') {
+        route = '/';
+    }
+
     //  Capture the page we're currently viewing in the canvas.
     loc = TP.core.History.getLocation();
 
     //  If we're routing home but not showing the home page we need to update.
     if (route === '/' || TP.isEmpty(route)) {
+
         //  Compare against home page to see if this is a match.
         home = TP.uriExpandPath(TP.sys.getHomeURL());
+
         if (TP.uriHead(TP.uriExpandHome(loc)) !== TP.uriHead(home)) {
             TP.sys.getHistory().pushLocation(home);
-            return;
+
+            return home;
         }
     }
 
@@ -9876,7 +11182,8 @@ function(aRoute) {
         if (TP.sys.cfg('log.routes')) {
             TP.trace('setRoute ignoring duplicate route setting of: ' + route);
         }
-        return;
+
+        return route;
     }
 
     //  Rebuild a version of the current URI with the new route portion.
@@ -9886,7 +11193,7 @@ function(aRoute) {
 
     TP.sys.getHistory().pushLocation(route);
 
-    return;
+    return route;
 });
 
 //  ========================================================================
@@ -9957,14 +11264,19 @@ function(targetURI, aRequest) {
 
                 var result;
 
+                result = aResult;
+
                 //  update the target's header and content information, in
                 //  that order so that any content change signaling happens
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
-                result = targetURI.updateResourceCache(subrequest);
 
-                targetURI.isLoaded(true);
-                targetURI.isDirty(false);
+                //  NOTE we call both the getRequestedResource and
+                //  setPrimaryResource methods here. File URLs don't go through
+                //  the low-level HTTP handlers so they need both halves of the
+                //  former updateResourceCache method to be called here.
+                result = targetURI.getRequestedResource(subrequest);
+                targetURI.$setPrimaryResource(result, subrequest);
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
@@ -9996,12 +11308,10 @@ function(targetURI, aRequest) {
                 //  that order so that any content change signaling happens
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
-                targetURI.updateResourceCache(subrequest);
 
-                //  updateResourceCache resets these, but when we fail we
-                //  don't want them cleared
-                targetURI.isLoaded(false);
-                targetURI.isDirty(true);
+                //  Ensure the URI value is cleared. We don't want it to be
+                //  retained if the process failed.
+                targetURI.$setPrimaryResource(undefined);
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
@@ -10029,14 +11339,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.FileURLHandler.Type.defineMethod('nuke',
+TP.core.FileURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -10216,6 +11526,7 @@ function(targetURI, aRequest) {
             function(aResult) {
 
                 if (TP.isTrue(aResult)) {
+
                     targetURI.isDirty(false);
                     targetURI.isLoaded(true);
 
@@ -10351,14 +11662,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.Type.defineMethod('nuke',
+TP.core.HTTPURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -10371,7 +11682,7 @@ function(targetURI, aRequest) {
 
         targetLoc,
 
-        nukeRequest,
+        deleteRequest,
         resp,
         content,
 
@@ -10393,47 +11704,46 @@ function(targetURI, aRequest) {
     //  so this is more applicable to generic TP.sig.Requests constructed
     //  via hashes passed to the getResource call (typical usage
     //  admittedly).
-    nukeRequest = TP.sig.HTTPNukeRequest.construct(request);
+    deleteRequest = TP.sig.HTTPDeleteRequest.construct(request);
 
     //  make the request that was provided dependent upon the one we just
     //  constructed so it won't process/complete until the child request
     //  does.
-    request.andJoinChild(nukeRequest);
+    request.andJoinChild(deleteRequest);
 
-    //  Yes, nuke requests can have a body. Note that this will get encoded via
-    //  the httpEncode() call in lower layers, so we don't touch it here.
-    if (TP.notValid(nukeRequest.at('body'))) {
+    //  Yes, delete requests can have a body. Note that this will get encoded
+    //  via the httpEncode() call in lower layers, so we don't touch it here.
+    if (TP.notValid(deleteRequest.at('body'))) {
         resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
-        content = TP.ifInvalid(resp.get('result', ''));
+        content = TP.ifInvalid(resp.get('result'), '');
 
-        nukeRequest.atPut('body', content);
+        deleteRequest.atPut('body', content);
     }
 
     //  ensure the required settings are available for this operation
-    nukeRequest.atPut('uri', targetLoc);
-    if (TP.isEmpty(nukeRequest.at('method'))) {
+    deleteRequest.atPut('uri', targetLoc);
+    if (TP.isEmpty(deleteRequest.at('method'))) {
         //  when webdav is enabled we can set the 'method' to a TP.HTTP_DELETE
-        useWebDAV = TP.ifInvalid(nukeRequest.at('iswebdav'),
+        useWebDAV = TP.ifInvalid(deleteRequest.at('iswebdav'),
                                     TP.sys.cfg('http.use_webdav'));
 
         if (useWebDAV) {
-            nukeRequest.atPut('method', TP.HTTP_DELETE);
+            deleteRequest.atPut('method', TP.HTTP_DELETE);
         } else {
             //  all other situations require a 'method' of TP.HTTP_POST, and a
             //  'method' of TP.HTTP_DELETE (which eventually translates into
             //  the increasingly standard 'X-HTTP-Method-Override' header).
-            nukeRequest.atPut('method', TP.HTTP_POST);
-
-            nukeRequest.atPut('method', TP.HTTP_DELETE);
+            // deleteRequest.atPut('method', TP.HTTP_POST);
+            deleteRequest.atPut('method', TP.HTTP_DELETE);
         }
     }
 
     //  this could be either sync or async, but the TP.sig.HTTPLoadRequest's
     //  handle* methods should be processing correctly in either case.
-    TP.core.HTTPService.handle(nukeRequest);
+    TP.core.HTTPService.handle(deleteRequest);
 
     //  subrequests can be rewritten so we need to be in sync on async
-    request.atPut('async', nukeRequest.at('async'));
+    request.atPut('async', deleteRequest.at('async'));
 
     return response;
 });
@@ -10564,9 +11874,10 @@ function(targetURI, aRequest) {
 
 /**
  * @type {TP.core.RemoteURLWatchHandler}
- * @summary Supports operations for remote resources that support notifying the
- *     URL of changes made to those resources from the server side. This type is
- *     normally used as a trait to the main handler type.
+ * @summary Mixin supporting response processing for remote resources that
+ *     can notify of server side changes. This type is normally used as a trait
+ *     to the main handler type. TDS and Couch URL handlers are the primary
+ *     consumers of this mixin.
  */
 
 //  ------------------------------------------------------------------------
@@ -10578,18 +11889,53 @@ TP.core.URIHandler.defineSubtype('RemoteURLWatchHandler');
 TP.core.RemoteURLWatchHandler.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
+//  TypeLocal Attributes
 //  ------------------------------------------------------------------------
 
-//  A dictionary of URL root watchers managed by this handler, keyed by the
-//  root URL string. Note how this is a TYPE_LOCAL attribute.
+//  Helper function for escaping regex metacharacters. NOTE that we need to
+//  take "ignore format" things like path/* and make it path/.* or the regex
+//  will fail. Also note we special case ~ to allow virtual path matches.
+TP.core.RemoteURLWatchHandler.defineConstant('INCLUDE_EXCLUDE_ESCAPER',
+function(str) {
+    return str.replace(
+        /\*/g, '.*').replace(
+        /\./g, '\\.').replace(
+        /\~/g, '\\~').replace(
+        /\//g, '\\/');
+});
+
+//  The list of methods any object which registered with this type must
+//  implement.
+TP.core.RemoteURLWatchHandler.defineConstant('REMOTE_WATCH_API',
+    ['activateRemoteWatch', 'deactivateRemoteWatch']);
+
+//  A list of registered watchers, objects that will be activated/deactivated at
+//  application startup and shutdown to manage remote change handling.
 TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('activateWatchers',
+//  Regular expressions built based on include/exclude configuration data for
+//  the remote url watcher types which mix this in.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeRE');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeRE');
+
+//  Configuration names for the include/exclude configuration setting for the
+//  remote url watcher types which mix this in.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
+    'tds.watch.include');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
+    'tds.watch.exclude');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
+    'tds.watch.uri');
+
+//  ------------------------------------------------------------------------
+//  TypeLocal Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.defineMethod('activateWatchers',
 function() {
 
     /**
@@ -10600,42 +11946,33 @@ function() {
 
     var watchers;
 
-    if (TP.isEmpty(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
+    //  Don't watch if running in phantomjs or karma (both are test environments
+    //  that will cause issues).
+    if (TP.sys.cfg('boot.context') === 'phantomjs' ||
+            TP.sys.hasFeature('karma')) {
+        return;
+    }
+
+    TP.sys.setcfg('uri.watch_remote_changes', true);
+
+    //  These get registered by the types which want activate/deactivate calls.
+    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+    if (TP.isEmpty(watchers)) {
         return this;
     }
 
     //  Iterate over all of the watchers and observe them.
-    watchers.perform(
-            function(kvPair) {
-                var watcherEntry,
-
-                    signalSource,
-                    signalTarget,
-                    signalType;
-
-                watcherEntry = kvPair.last();
-
-                signalSource = watcherEntry.at('signalSource');
-
-                if (TP.isValid(signalSource)) {
-
-                    signalTarget = watcherEntry.at('signalTarget');
-                    signalType = watcherEntry.at('signalType');
-
-                    //  Observe the source for the signal type.
-                    signalTarget.observe(signalSource, signalType);
-                }
-            });
-
-    TP.sys.setcfg('uri.process_remote_changes', true);
+    watchers.perform(function(watcher) {
+        watcher.activateRemoteWatch();
+    });
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('deactivateWatchers',
-function() {
+TP.core.RemoteURLWatchHandler.defineMethod('deactivateWatchers',
+function(aFilterFunction) {
 
     /**
      * @method deactivateWatchers
@@ -10645,310 +11982,72 @@ function() {
 
     var watchers;
 
-    if (TP.isEmpty(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
+    TP.sys.setcfg('uri.watch_remote_changes', false);
+
+    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+    if (TP.isEmpty(watchers)) {
         return this;
     }
 
     //  Iterate over all of the watchers and ignore them.
-    watchers.perform(
-            function(kvPair) {
-                var watcherEntry,
-
-                    signalSource,
-                    signalTarget,
-                    signalType;
-
-                watcherEntry = kvPair.last();
-
-                signalSource = watcherEntry.at('signalSource');
-
-                if (TP.isValid(signalSource)) {
-
-                    signalType = watcherEntry.at('signalType');
-                    signalTarget = watcherEntry.at('signalTarget');
-
-                    //  Ignore the source for the signal type.
-                    signalTarget.ignore(signalSource, signalType);
-                }
-            });
-
-    TP.sys.setcfg('uri.process_remote_changes', false);
+    watchers.perform(function(watcher) {
+        watcher.deactivateRemoteWatch();
+    });
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('watch',
-function(targetURI, aRequest) {
+TP.core.RemoteURLWatchHandler.defineMethod('registerWatcher',
+function(aWatcher) {
 
     /**
-     * @method watch
-     * @summary Watches for changes to the URLs remote resource, if the server
-     *     that is supplying the remote resource notifies us when the URL has
-     *     changed.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @method registerWatcher
+     * @summary Registers a specific object as a remote URL watcher. Registered
+     *     watchers are activated/deactivated in response to the
+     *     activateWatchers/deactivateWatchers methods on this type.
+     * @param {Object} aWatcher A potential remote URL watcher. This object must
+     *     conform to the receiver's REMOTE_WATCH_API.
      */
 
-    var watchSources,
+    var watchers;
 
-        request,
-        response,
+    if (!TP.canInvokeInterface(aWatcher,
+            TP.core.RemoteURLWatchHandler.REMOTE_WATCH_API)) {
+        return this.raise('InvalidURLWatcher', aWatcher);
+    }
 
-        watcherRoot,
-        targetRoot,
-        foundWatchSource,
-        i,
+    watchers = this.$get('watchers');
+    if (TP.notValid(watchers)) {
+        watchers = TP.ac();
+        this.$set('watchers', watchers);
+    }
 
-        activateImmediately,
-
-        watchers,
-        watcherEntry,
-        signalSource,
-
-        watcherURI,
-        watcherLoc,
-
-        watcherType,
-        watchedURLs,
-
-        signalType;
-
-    //  First, make sure that we're configured to watch remote resources and
-    //  that we have remote resources to watch.
-    watchSources = TP.sys.cfg('uri.remote_watch_sources');
-    if (!TP.sys.cfg('uri.remote_watch') || TP.isEmpty(watchSources)) {
+    if (watchers.contains(aWatcher, TP.IDENTITY)) {
         return;
     }
 
-    request = targetURI.constructRequest(aRequest);
-    response = request.getResponse();
+    watchers.push(aWatcher);
 
-    //  Make sure that we match one of our watched sources
-
-    //  We match based on root
-    targetRoot = targetURI.getRoot();
-
-    foundWatchSource = false;
-    for (i = 0; i < watchSources.getSize(); i++) {
-
-        //  Make sure to expand the path before getting its root.
-        watcherRoot = TP.uriRoot(TP.uriExpandPath(watchSources.at(i)));
-
-        //  If the URI's root matches our watcher root, then it must be being
-        //  served from that location - we found a match
-        if (targetRoot === watcherRoot) {
-            foundWatchSource = true;
-            break;
-        }
-    }
-
-    //  The target URI didn't come from one of our watched sources - exit here.
-    if (!foundWatchSource) {
-        return;
-    }
-
-    //  The data structure for watchers looks like this:
-
-    //  watchers =
-    //      {
-    //          <watcherLocation> :
-    //              {
-    //                  'signalSource' : <sourceObj>
-    //                  'signalType' : <typeObj>
-    //                  'watchersURLs' :
-    //                      [
-    //                          <url0>,<url1>,...
-    //                      ]
-    //              }
-    //      }
-
-    activateImmediately = false;
-
-    //  If we don't have a hash of watchers, create one.
-    if (TP.notValid(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
-        watchers = TP.hc();
-        TP.core.RemoteURLWatchHandler.set('watchers', watchers);
-
-        //  Note how we also observe TP.sys for AppShutdown so that we can
-        //  try to shut down our watcher sources when we terminate.
-        this.observe(TP.sys, 'TP.sig.AppShutdown');
-    }
-
-    //  Make sure that we have a valid watcher URI.
-    watcherURI = this.getWatcherURI(targetURI);
-    if (!TP.isURI(watcherURI)) {
-        request.fail('Invalid watcher signal source URI.');
-        return response;
-    }
-
-    //  Make sure that we have an entry for the watcher URI's location.
-    watcherLoc = watcherURI.getLocation();
-    if (TP.notValid(watcherEntry = watchers.at(watcherLoc))) {
-
-        watcherEntry = TP.hc('signalSource', null, 'watchedURLs', TP.ac());
-        watchers.atPut(watcherLoc, watcherEntry);
-
-        //  If we're processing remote changes right now, then we need to
-        //  activate this new watcher immediately. Set the flag and the code at
-        //  the end of this method will do that.
-        if (TP.isTrue(TP.sys.cfg('uri.process_remote_changes'))) {
-            activateImmediately = true;
-        }
-    }
-
-    //  If the watcher entry doesn't already have a signal source, go ahead and
-    //  create one now.
-    if (TP.notValid(signalSource = watcherEntry.at('signalSource'))) {
-
-        //  Make sure that we have a valid signal source type for the watcher.
-        watcherType = this.getWatcherSignalSourceType(targetURI);
-        if (!TP.isType(watcherType)) {
-            request.fail('Invalid watcher signal source type.');
-            return response;
-        }
-
-        //  Construct a source using the source type and watcher URI.
-        signalSource = watcherType.construct(watcherURI.getLocation());
-        watcherEntry.atPut('signalSource', signalSource);
-    }
-
-    //  Add the URL to the list of watched URLs for this watcher, but don't put
-    //  in there more than once.
-    watchedURLs = watcherEntry.at('watchedURLs');
-    if (!watchedURLs.contains(targetURI, TP.IDENTITY)) {
-        //  NB: We add the targetURI to the collection of watched URIs before we
-        //  test the collection.
-        watchedURLs.add(targetURI);
-    }
-
-    //  We only observe if we have real URIs to watch and it's the first one (we
-    //  don't want to observe more than once).
-    if (TP.notEmpty(watchedURLs) && watchedURLs.getSize() === 1) {
-
-        signalType = this.getWatcherSignalType(targetURI);
-        if (TP.isEmpty(signalType)) {
-            request.fail('Invalid watcher signal type.');
-            return response;
-        }
-
-        //  Stash away the signal target and type
-        watcherEntry.atPut('signalTarget', this);
-        watcherEntry.atPut('signalType', signalType);
-    }
-
-    //  If we created a new watcher that is supposed to be activated
-    //  immediately, then do so.
-    if (activateImmediately) {
-        this.observe(signalSource, signalType);
-    }
-
-    return response;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalSourceType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSignalSourceType
-     * @summary Returns the TIBET type of the watcher signal source. Typically,
-     *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.core.SSESignalSource for Server-Sent Event sources.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.meta.lang.RootObject} The type that will be instantiated to
-     *     make a watcher for the supplied URI.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherURI',
-function(aURI) {
-
-    /**
-     * @method getWatcherURI
-     * @summary Returns the URI to the resource that acts as a watcher to watch
-     *     for changes to the resource of the supplied URI. This method must be
-     *     overridden in subtypes and a real implementation supplied.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.core.URI} A URI pointing to the resource that will notify
-     *     TIBET when the supplied URI's resource changes.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSignalType
-     * @summary Returns the TIBET type of the watcher signal. This will be the
-     *     signal that the signal source sends when it wants to notify URIs of
-     *     changes.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.sig.RemoteURLChange} The type that will be
-     *     instantiated to construct new signals that notify observers that the
-     *     *remote* version of the supplied URI's resource has changed. At this
-     *     level, this returns the common supertype of all such signals.
-     */
-
-    return TP.sig.RemoteURLChange;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineHandler('AppShutdown',
+TP.core.RemoteURLWatchHandler.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**
      * @method handleAppShutdown
      * @summary Handles when the app is about to be shut down. This is used to
-     *     try to shut down any remote signal sources which are notifying us of
-     *     changes to URLs that they manage.
+     *     deactivateWatchers to get them to close any open connections.
      * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
      *     application is to be shut down.
      * @returns {TP.core.RemoteURLWatchHandler} The receiver.
      */
 
-    var watchers;
-
-    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
-
-    //  Iterate over all of the watchers and ignore them.
-    watchers.perform(
-            function(kvPair) {
-                var watcherEntry,
-
-                    signalSource,
-                    signalTarget,
-                    signalType;
-
-                watcherEntry = kvPair.last();
-
-                signalSource = watcherEntry.at('signalSource');
-
-                if (TP.isValid(signalSource)) {
-
-                    signalTarget = watcherEntry.at('signalTarget');
-                    signalType = watcherEntry.at('signalType');
-
-                    //  Ignore the source for the signal type.
-                    signalTarget.ignore(signalSource, signalType);
-                }
-            });
+    this.deactivateWatchers();
 
     //  Make sure to remove our observation of AppShutdown.
     this.ignore(TP.sys, 'TP.sig.AppShutdown');
@@ -10957,66 +12056,246 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('unwatch',
-function(targetURI, aRequest) {
+TP.core.RemoteURLWatchHandler.Type.defineMethod('initialize',
+function() {
 
     /**
-     * @method unwatch
-     * @summary Removes any watches for changes to the URLs remote resource. See
-     *     this type's 'watch' method for more information.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @method initialize.
+     * @summary Initializes the type once all application code has loaded. For
+     *     this type that includes signing up for AppShutdown and activating
+     *     any registered watchers if uri.watch_remote_changes is set.
      */
 
-    var request,
-        response,
+    //  Ensure we always attempt to shut down and active watch channels.
+    this.observe(TP.sys, 'TP.sig.AppShutdown');
 
-        watchers,
-
-        watcherURI,
-
-        watcherEntry,
-        watchedURLs;
-
-    request = targetURI.constructRequest(aRequest);
-    response = request.getResponse();
-
-    //  If we don't have a hash of watchers, there's nothing to do, so just
-    //  return here.
-    if (TP.notValid(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
-        return response;
+    //  Activate if we're already set to watch based on startup config data.
+    if (TP.sys.cfg('uri.watch_remote_changes')) {
+        TP.core.RemoteURLWatchHandler.activateWatchers();
     }
 
-    //  Make sure that we have a valid watcher URI.
-    watcherURI = this.getWatcherURI(targetURI);
-    if (!TP.isURI(watcherURI)) {
-        request.fail('Invalid watcher signal source URI.');
-        return response;
-    }
+    return;
 
-    //  If we don't have an entry for the watcher URI, then there's nothing
-    //  to do , so just return here.
-    if (TP.notValid(watcherEntry = watchers.at(watcherURI.getLocation()))) {
-        return response;
-    }
-
-    watchedURLs = watcherEntry.at('watchedURLs');
-
-    //  NB: We remove the targetURI from the collection of watched URIs before
-    //  we test the collection.
-    watchedURLs.remove(targetURI.getLocation());
-
-    return response;
 });
 
-//  =======================================================================
-//  TP.sig.RemoteURLChange
-//  ========================================================================
+//  ------------------------------------------------------------------------
 
-TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChange');
+TP.core.RemoteURLWatchHandler.Type.defineMethod('activateRemoteWatch',
+function() {
+
+    /**
+     * @method activateRemoteWatch
+     * @summary Performs any processing necessary to activate observation of
+     *     remote URL changes.
+     */
+
+    var sourceType,
+        sourceURI,
+        signalSource,
+        signalType;
+
+    sourceType = this.getWatcherSourceType();
+    sourceURI = this.getWatcherSourceURI();
+
+    signalSource = sourceType.construct(sourceURI.getLocation());
+    if (TP.notValid(signalSource)) {
+        return this.raise('InvalidURLWatchSource');
+    }
+
+    signalType = this.getWatcherSignalType();
+    this.observe(signalSource, signalType);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('deactivateRemoteWatch',
+function() {
+
+    /**
+     * @method deactivateRemoteWatch
+     * @summary Performs any processing necessary to shut down observation of
+     *     remote URL changes.
+     */
+
+    var sourceType,
+        sourceURI,
+        signalSource,
+        signalType;
+
+    sourceType = this.getWatcherSourceType();
+    sourceURI = this.getWatcherSourceURI();
+
+    signalSource = sourceType.construct(sourceURI.getLocation());
+    if (TP.notValid(signalSource)) {
+        return this.raise('InvalidURLWatchSource');
+    }
+
+    signalType = this.getWatcherSignalType();
+    this.ignore(signalSource, signalType);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
+function() {
+
+    /**
+     * @method getWatcherSignalType
+     * @summary Returns the TIBET type of the watcher signal. This will be the
+     *     signal that the signal source sends when it wants to notify URIs of
+     *     changes.
+     * @returns {TP.sig.RemoteURLChange} The type that will be instantiated
+     *     to construct new signals that notify observers that the *remote*
+     *     version of the supplied URI's resource has changed.
+     */
+
+    return TP.sig.RemoteURLChange;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceType',
+function() {
+
+    /**
+     * @method getWatcherSourceType
+     * @summary Returns the TIBET type of the watcher signal source. Typically,
+     *     this is one of the prebuilt TIBET watcher types, like
+     *     TP.core.SSE for Server-Sent Event sources.
+     * @returns {TP.core.SSE} The type that will be instantiated to
+     *     make a watcher for the supplied URI.
+     */
+
+    return TP.core.SSE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceURI',
+function() {
+
+    /**
+     * @method getWatcherSourceURI
+     * @summary Returns the URI to the resource that acts as a watcher to watch
+     *     for changes to the resource of the supplied URI.
+     * @returns {TP.core.URI} A URI pointing to the resource that will notify
+     *     TIBET when the supplied URI's resource changes.
+     */
+
+    var watcherURI;
+
+    watcherURI = TP.uc(TP.uriJoinPaths(
+                        TP.sys.cfg('path.app_root'),
+                        TP.sys.cfg(this.get('uriConfigName'))));
+
+    //  Make sure to switch *off* remote refreshing for the watcher URI itself
+    watcherURI.unwatch();
+
+    return watcherURI;
+});
+
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('isWatchableURI',
+function(targetURI) {
+
+    /**
+     * @method isWatchableURI
+     * @summary Tests a URI against include/exclude filters to determine if
+     *     changes to the URI should be considered for processing.
+     * @param {String|TP.core.URI} targetURI The URI to test.
+     * @returns {Boolean} true if the URI passes include/exclude filters.
+     */
+
+    var escaper,
+        targetLoc,
+        targetVirtual,
+        includes,
+        excludes,
+        includeRE,
+        excludeRE;
+
+    //  NOTE each type which mixes this in gets it own copy of the values here.
+    includeRE = this.get('includeRE');
+    excludeRE = this.get('excludeRE');
+
+    if (TP.notValid(includeRE)) {
+
+        targetLoc = targetURI.getLocation();
+        targetVirtual = TP.uriInTIBETFormat(targetLoc);
+
+        escaper = TP.core.RemoteURLWatchHandler.INCLUDE_EXCLUDE_ESCAPER;
+
+        includes = TP.sys.cfg(this.get('includeConfigName'));
+        if (TP.notEmpty(includes)) {
+            //  First normalize any virtual path values.
+            includes = includes.map(function(item) {
+                return TP.uriInTIBETFormat(TP.uriExpandPath(item));
+            });
+            //  Now produce a single source string for regex construct.
+            includes = includes.reduce(function(str, item) {
+                return str ?
+                    str + '|' + escaper(item) :
+                    escaper(item);
+            }, '');
+
+            try {
+                //  USE 'new' HERE to keep escaping simple.
+                includeRE = new RegExp(includes);
+            } catch (e) {
+                this.raise('InvalidWatchIncludes', includes);
+            }
+        }
+
+        includeRE = TP.ifInvalid(includeRE, /.*/);
+
+        excludes = TP.sys.cfg(this.get('excludeConfigName'));
+        if (TP.notEmpty(excludes)) {
+            //  First normalize any virtual path values.
+            excludes = excludes.map(function(item) {
+                return TP.uriInTIBETFormat(TP.uriExpandPath(item));
+            });
+            //  Now produce a single source string for regex construct.
+            excludes = excludes.reduce(function(str, item) {
+                return str ?
+                    str + '|' + escaper(item) :
+                    escaper(item);
+            }, '');
+
+            try {
+                excludeRE = new RegExp(excludes);
+            } catch (e) {
+                this.raise('InvalidWatchExcludes', excludes);
+            }
+        }
+
+        this.set('includeRE', includeRE);
+        this.set('excludeRE', excludeRE);
+    }
+
+    TP.info('checking ' + targetLoc + ' in ' + includes + ' and not ' +
+        excludes);
+
+    if (TP.isValid(excludeRE)) {
+        if (excludeRE.test(targetVirtual)) {
+            return false;
+        }
+    }
+
+    if (TP.isValid(includeRE)) {
+        return includeRE.test(targetVirtual);
+    }
+
+    return true;
+});
 
 //  ========================================================================
 //  end

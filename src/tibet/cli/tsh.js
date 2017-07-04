@@ -12,7 +12,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -33,7 +33,9 @@ path = require('path');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -67,7 +69,7 @@ Cmd.NAME = 'tsh';
  * particular system.
  * @type {String}
  */
-Cmd.PHANTOM_PATH = 'phantomjs-prebuilt/lib/phantom/bin/phantomjs';
+Cmd.PHANTOM_PATH = 'tibet/node_modules/phantomjs-prebuilt/bin/phantomjs';
 
 //  ---
 //  Instance Attributes
@@ -177,8 +179,7 @@ Cmd.prototype.execute = function() {
     // Without a script we can't run so verify that we got something useful.
     script = this.getScript();
     if (script === void 0) {
-        this.usage();
-        return;
+        return this.usage();
     }
     this.options.script = script;
 
@@ -191,10 +192,11 @@ Cmd.prototype.execute = function() {
     CLI.setcfg('profile', this.options.profile);
 
     // Access the argument list. Subtypes can adjust how they assemble this to
-    // alter the default behavior.
-    arglist = this.getArglist();
+    // alter the default behavior. Note the slice() here removes the command
+    // name from the list ('tsh').
+    arglist = this.getArglist().slice(1);
     if (CLI.isEmpty(arglist)) {
-        return;
+        return 0;
     }
 
     // Finalize it, giving subtypes a chance to tweak the arguments as needed.
@@ -202,7 +204,7 @@ Cmd.prototype.execute = function() {
 
     // If no arglist then we presubably output usage() and are just returning.
     if (!arglist) {
-        return;
+        return 0;
     }
 
     // Push the path to our script runner onto the front so our command line is
@@ -220,9 +222,11 @@ Cmd.prototype.execute = function() {
                         this.options['remote-debug-port']);
     }
 
-    // Push app root value since Phantom can't properly determine that based on
-    // where it loads (app vs. lib, tibet_pub or not, etc).
+    // Push root path values since Phantom can't properly determine that based
+    // on where it loads (app vs. lib, tibet_pub or not, etc).
+    arglist.push('--app-head=\'' + CLI.expandPath('~') + '\'');
     arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
+    arglist.push('--lib-root=\'' + CLI.expandPath('~lib') + '\'');
 
     this.debug('phantomjs ' + arglist.join(' '));
 
@@ -304,6 +308,8 @@ Cmd.prototype.execute = function() {
 
         cmd.close(code);
     });
+
+    return 0;
 };
 
 

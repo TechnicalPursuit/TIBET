@@ -80,11 +80,15 @@ function(aRequest) {
      */
 
     var elem,
-        target,
-        href;
 
-    //  Make sure that we have a node to work from.
-    if (!TP.isNode(elem = aRequest.at('node'))) {
+        href,
+
+        target,
+
+        onClickVal;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
@@ -95,7 +99,7 @@ function(aRequest) {
     this.callNextMethod();
 
     //  If the target is a local reference (a path or _self) it means we're
-    //  targeting a TIBET-controlled surface. If not then we dont' want to
+    //  targeting a TIBET-controlled surface. If not then we don't want to
     //  interfere with normal processing so we don't rewrite.
     if (TP.notEmpty(target = TP.elementGetAttribute(elem, 'target', true))) {
         if (!TP.regex.NON_SIMPLE_PATH.test(target) && target !== '_self') {
@@ -104,8 +108,11 @@ function(aRequest) {
     }
 
     //  If there's already a click handler the developer "wins", even if that
-    //  means they don't get the benefit of TIBET here.
-    if (TP.notEmpty(TP.elementGetAttribute(elem, 'onclick', true))) {
+    //  means they don't get the benefit of TIBET here. Note the check for
+    //  "TP.go2('#')" here - it's a possibility that we might rewrite those
+    //  exact expressions.
+    onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#\'')) {
         return;
     }
 
@@ -119,7 +126,13 @@ function(aRequest) {
     //  Links with an empty anchor will try to reset at the top of page. Don't
     //  let that happen either, just "dampen them" via onclick.
     if (href === '#') {
-        TP.elementSetAttribute(elem, 'onclick', 'return false;');
+        TP.elementSetAttribute(
+            elem,
+            'onclick',
+            'TP.core.Mouse.invokeObservers(\'click\', event);' +
+            ' return false;',
+            true);
+
         return;
     }
 
@@ -139,12 +152,106 @@ function(aRequest) {
     //  First, just set the 'href' to '#' to limit traversal and link display.
     TP.elementSetAttribute(elem, 'href', '#', true);
 
-    //  Then add an 'onclick' that will trigger TIBET's go2 call to process the
-    //  link at runtime. Note the '; return false' to help ensure no traversal.
-    TP.elementSetAttribute(elem, 'onclick',
-        'TP.go2(\'' + href + '\', window); return false;',
+    //  Then add an 'onclick' that will service any TIBET click handling
+    //  machinery and then trigger TIBET's go2 call to process the link at
+    //  runtime. Note the '; return false' to help ensure no traversal.
+    TP.elementSetAttribute(
+        elem,
+        'onclick',
+        'TP.core.Mouse.invokeObservers(\'click\', event);' +
+        ' TP.go2(\'' + href + '\', window);' +
+        ' return false;',
         true);
 
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.a.Inst.defineMethod('setAttrHref',
+function(value) {
+
+    /**
+     * @method setAttrHref
+     * @summary Sets the href that the receiver will use to retrieve its
+     *     content.
+     * @param {String} anHref The URL that the receiver will use to fetch its
+     *     content.
+     */
+
+    var elem,
+        target,
+
+        onClickVal;
+
+    elem = this.getNativeNode();
+
+    if (!TP.isElement(elem)) {
+        return;
+    }
+
+    //  If the target is a local reference (a path or _self) it means we're
+    //  targeting a TIBET-controlled surface. If not then we don't want to
+    //  interfere with normal processing so we don't rewrite.
+    if (TP.notEmpty(target = TP.elementGetAttribute(elem, 'target', true))) {
+        if (!TP.regex.NON_SIMPLE_PATH.test(target) && target !== '_self') {
+            return;
+        }
+    }
+
+    //  If there's already a click handler the developer "wins", even if that
+    //  means they don't get the benefit of TIBET here. Note the check for
+    //  "TP.go2('#')" here - it's a possibility that we might rewrite those
+    //  exact expressions.
+    onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#\'')) {
+        return;
+    }
+
+    //  Links with an empty HREF will try to reload the page. We really don't
+    //  want that, we want to have them do nothing. We set '#' here and let the
+    //  check further down add a return false click handler.
+    if (TP.isEmpty(value)) {
+        TP.elementSetAttribute(elem, 'href', '#', true);
+    }
+
+    //  Links with an empty anchor will try to reset at the top of page. Don't
+    //  let that happen either, just "dampen them" via onclick.
+    if (value === '#') {
+        TP.elementSetAttribute(
+            elem,
+            'onclick',
+            'TP.core.Mouse.invokeObservers(\'click\', event);' +
+            ' return false;',
+            true);
+
+        return;
+    }
+
+    //  If the link triggers a javascript url (or is javascript: void 0) exit.
+    /* eslint-disable no-script-url */
+    if (value.startsWith('javascript:')) {
+        return;
+    }
+    /* eslint-enable no-script-url */
+
+    //  First, just set the 'href' to '#' to limit traversal and link display.
+    TP.elementSetAttribute(elem, 'href', '#', true);
+
+    //  Then add an 'onclick' that will service any TIBET click handling
+    //  machinery and then trigger TIBET's go2 call to process the link at
+    //  runtime. Note the '; return false' to help ensure no traversal.
+    TP.elementSetAttribute(
+        elem,
+        'onclick',
+        'TP.core.Mouse.invokeObservers(\'click\', event);' +
+        ' TP.go2(\'' + value + '\', window);' +
+        ' return false;',
+        true);
+
+    //  setting an attribute returns void according to the spec
     return;
 });
 

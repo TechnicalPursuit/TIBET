@@ -76,7 +76,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     resultElem,
@@ -119,7 +119,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service1_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -134,7 +135,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -177,7 +178,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -224,7 +225,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service2_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -239,12 +241,12 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -287,7 +289,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     resultElem,
@@ -330,7 +332,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service3_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -345,7 +348,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -388,7 +391,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     resultElem,
@@ -431,7 +434,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service4_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -446,7 +450,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -489,7 +493,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -536,7 +540,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service5_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -551,12 +556,12 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -599,7 +604,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -646,7 +651,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service6_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -661,12 +667,12 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -713,7 +719,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
                     testBody,
@@ -724,7 +730,7 @@ function() {
                     promise;
 
                 locStr = '/TIBET_endpoints/HTTP_REST_POST_TEST';
-                testBody = 'POST test content';
+                testBody = 'OK from POST';
 
                 //  ---
 
@@ -758,7 +764,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service7_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.TEXT)).get('result');
 
                             test.assert.isKindOf(aResult, String);
                             test.assert.isEqualTo(aResult, testBody);
@@ -769,12 +776,12 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys(testBody, bodyContentTPElem).
                     sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -821,7 +828,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -868,7 +875,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service8_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -883,12 +891,12 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -931,7 +939,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locRe,
                     resultElem,
@@ -978,7 +986,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service9_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -993,12 +1002,12 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -1041,7 +1050,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
 
@@ -1088,11 +1097,11 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service10_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                    TP.hc('resultType', TP.TEXT)).get('result');
 
-                            test.assert.isKindOf(aResult, TP.core.Hash);
-                            test.assert.isEqualTo(
-                                aResult, testBody.get('data'));
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, 'OK from POST');
 
                             return this;
                         };
@@ -1100,7 +1109,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -1149,7 +1158,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
 
@@ -1192,9 +1201,11 @@ function() {
 
                             aResult = resultURI.getResource().get('result');
 
-                            test.assert.isKindOf(aResult, Array);
-                            test.assert.hasKey(aResult.at(0), 'body');
-                            test.assert.hasKey(aResult.at(1), 'body');
+                            aResult = resultURI.getResource(
+                                    TP.hc('resultType', TP.TEXT)).get('result');
+
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, 'OK from POST');
 
                             return this;
                         };
@@ -1202,7 +1213,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server
@@ -1250,7 +1261,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var locStr,
 
@@ -1291,11 +1302,11 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service12_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                    TP.hc('resultType', TP.TEXT)).get('result');
 
-                            test.assert.isKindOf(aResult, Array);
-                            test.assert.hasKey(aResult.at(0), 'body');
-                            test.assert.hasKey(aResult.at(1), 'body');
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, 'OK from POST');
 
                             return this;
                         };
@@ -1303,7 +1314,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Create a 'fake' HTTP server

@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|search {
 
@@ -23,7 +23,7 @@ sherpa|search > .footer {
 
     border-top: 1px solid white;
 
-    background: #eee;
+    background-color: #eee;
 }
 
 sherpa|search > .footer > .circle {
@@ -39,7 +39,7 @@ sherpa|search > .footer > .circle {
     margin-top: -9px;
     margin-left: -9px;
 
-    background: white;
+    background-color: white;
 
     border: 1px solid #666;
     border-radius: 9px;
@@ -58,7 +58,7 @@ sherpa|search > .footer > .circle {
 
 sherpa|search > .footer > .circle:hover {
 
-    background: gold;
+    background-color: rgba(255, 215, 0, 0.5);
 
     color: #333;
 }
@@ -75,13 +75,14 @@ sherpa|search > .content {
     min-width: 0;
     max-width: none;
 
-    background: #eee;
+    background-color: #eee;
 
     border-bottom: 1px solid #aaa;
 }
 
 sherpa|search > .footer > .fieldwrap {
 
+    display: none;
     position: absolute;
 
     top: 5px;
@@ -92,6 +93,11 @@ sherpa|search > .footer > .fieldwrap {
     height: 30px;
 }
 
+.framing.north.east.corner:not([pclass|closed]) sherpa|search .fieldwrap {
+
+    display: block;
+}
+
 sherpa|search #searchPanelInput {
 
     width: 100%;
@@ -100,5 +106,17 @@ sherpa|search #searchPanelInput {
     padding: 0;
 
     box-sizing: border-box;
+}
+
+/* Rules that trigger when the corner is closed */
+
+.framing.north.east.corner[pclass|closed] sherpa|search > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.north.east.corner[pclass|closed] sherpa|search > .content {
+
+    display: none;
 }
 

@@ -28,7 +28,7 @@ TP.log.Appender.defineSubtype('TestAppender');
  * layout for this type since we want the plain text.
  * @type {TP.log.Layout}
  */
-TP.log.TestAppender.Type.$set('defaultLayoutType', 'TP.log.ConsoleLayout');
+TP.log.TestAppender.Type.$set('defaultLayoutType', 'TP.log.TestLayout');
 
 //  ----------------------------------------------------------------------------
 //  Instance Attribute
@@ -61,7 +61,7 @@ function(anEntry) {
         return this;
     }
 
-    //  If the entry is an Error or more severe, then we want to fail the test
+    //  If the entry is an Error then we want to fail the test
     //  case.
     if (anEntry.isError()) {
 
@@ -69,12 +69,7 @@ function(anEntry) {
         content = layout.layout(anEntry).at('content');
         currentCase = this.get('currentTestCase');
 
-        //  We need to set the status code back to TP.ACTIVE here - the test
-        //  thinks it has completed, but since this could be being called
-        //  from an asynchronous callback and it failed, then need to
-        //  'reactivate' the test and fail it.
-        currentCase.set('statusCode', TP.ACTIVE);
-        currentCase.fail(content);
+        currentCase.error(content);
     }
 
     return this;

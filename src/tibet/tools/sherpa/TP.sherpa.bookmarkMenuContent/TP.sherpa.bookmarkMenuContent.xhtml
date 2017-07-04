@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<sherpa:bookmarkMenuContent id="SherpaBookmarkMenu" pclass:hidden="true" bind:in="{data: urn:tibet:sherpa_bookmarks}">
+    <div class="header"/>
+    <div class="content">
+        <ul on:mouseup="SelectMenuItem"/>
+    </div>
+    <sherpa:scrollbutton orientation="up" on:click="ScrollUp">
+        <span class="icon"/>
+    </sherpa:scrollbutton>
+    <sherpa:scrollbutton orientation="down" on:click="ScrollDown">
+        <span class="icon"/>
+    </sherpa:scrollbutton>
+</sherpa:bookmarkMenuContent>
+

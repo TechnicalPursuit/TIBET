@@ -22,12 +22,7 @@ event/signaling system ties directly into the concept of workflow very
 quickly, see the workflow module for more information.
 */
 
-/* JSHint checking */
-
 /* global EventSource:false
-*/
-
-/* jshint evil:true
 */
 
 //  ========================================================================
@@ -288,6 +283,9 @@ TP.sig.Signal.Type.defineAttribute('cancelable', true);
 //  is the receiver a controller root, meaning controller traversal stops?
 TP.sig.Signal.Type.defineAttribute('controllerRoot', null);
 
+//  is the receiver a controller signal, meaning controllers are notified?
+TP.sig.Signal.Type.defineAttribute('controllerSignal', null);
+
 //  TIBET's default is to use observer-style firing.
 TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
 
@@ -300,6 +298,31 @@ TP.sig.Signal.Type.defineAttribute('signalRoot', null);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Type.defineMethod('defineSubtype',
+function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.Signal serve as signaling roots, meaning
+     *     that you never signal a raw TP.sig.Signal without a spoofed signal
+     *     name.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.Signal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Type.defineMethod('fire',
@@ -375,7 +398,7 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the list of signal names from this type through
-     *     TP.sig.Signal.
+     *     TP.sig.Signal by traversing it's supertype chain..
      * @returns {String}
      */
 
@@ -389,6 +412,9 @@ function() {
     }
 
     names = TP.ac();
+
+    /* eslint-disable consistent-this */
+
     type = this;
 
     while (type) {
@@ -398,6 +424,8 @@ function() {
         }
         type = type.getSupertype();
     }
+
+    /* eslint-enable consistent-this */
 
     this.$set('signalNames', names, false);
 
@@ -485,25 +513,41 @@ function(aFlag) {
 
     /**
      * @method isControllerRoot
-     * @summary Combined setter/getter for whether signals of this type will
-     *     stop before traversing the TIBET controller chain. Typical signals
-     *     will notify through the entire chain, however some specific types
-     *     do not, such as WorkflowSignal types like Request and Response.
+     * @summary Combined setter/getter for whether signals of this type act
+     *     as the 'root' for controller signaling. This stops the receiving
+     *     type's supertypes from being passed through the controller chain.
      * @param {Boolean} aFlag
      * @returns {Boolean}
      */
 
-    if (TP.isDefined(aFlag)) {
+    if (aFlag !== undefined) {
         this.$set('controllerRoot', aFlag);
     }
 
-    return TP.isTrue(this.$get('controllerRoot'));
+    return this.$get('controllerRoot') === true;
 });
 
 //  ------------------------------------------------------------------------
 
-//  Most signals do not stop propogation when reaching the controller chain.
-TP.sig.Signal.isControllerRoot(false);
+TP.sig.Signal.Type.defineMethod('isControllerSignal',
+function(aFlag) {
+
+    /**
+     * @method isControllerSignal
+     * @summary Combined setter/getter for whether signals of this type will
+     *     stop before traversing the TIBET controller chain. Only controller
+     *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
+     * @param {Boolean} aFlag
+     * @returns {Boolean} Whether or not signals of this type will traverse the
+     *     TIBET controller chain or not.
+     */
+
+    if (aFlag !== undefined) {
+        this.$set('controllerSignal', aFlag);
+    }
+
+    return this.$get('controllerSignal') === true;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -516,7 +560,8 @@ function(aFlag) {
      *     local signaling root. When true certain forms of signaling will stop
      *     traversing supertypes and stop with the receiver.
      * @param {Boolean} aFlag
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not signals of this type will stop
+     *     traversing supertypes in certain forms of signaling.
      */
 
     if (TP.isDefined(aFlag)) {
@@ -547,11 +592,11 @@ TP.sig.Signal.Inst.defineAttribute('context');
 //  across multiple handlers)
 TP.sig.Signal.Inst.defineAttribute('listener');
 
-//  ignore handlers whose IDs are in this list. this is used to help avoid
+//  skip handlers whose IDs are in this list. this is used to help avoid
 //  duplicate notification of registered handlers. a handler can
-//  "reregister" for notifications during processing if it needs to be
+//  "re-register" for notifications during processing if it needs to be
 //  notified for each match that finds it
-TP.sig.Signal.Inst.defineAttribute('ignoreList');
+TP.sig.Signal.Inst.defineAttribute('notifiedHandlers');
 
 //  the current DOM phase, for DOM signaling -- capturing, bubbling, or at
 //  target.
@@ -570,6 +615,9 @@ TP.sig.Signal.Inst.defineAttribute('recyclable', false);
 //  the computed responder chain for the signal. used by policies which leverage
 //  responder chains for context during signal firing.
 TP.sig.Signal.Inst.defineAttribute('responderChain');
+
+//  currently executing handler
+TP.sig.Signal.Inst.defineAttribute('currentHandler');
 
 //  the pseudo-name for this signal, used for handler matching. when this is
 //  empty/null it will default to the receiving signal's type name.
@@ -671,18 +719,22 @@ function(anItemOrKey, aValue) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
 
     var marker,
-        str;
+        str,
+        $depth,
+        $level;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -693,8 +745,15 @@ function() {
 
     str = '[' + this.getSignalName() + ' :: ';
 
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     try {
-        str += '(' + TP.dump(this.getPayload()) + ')' + ']';
+        if ($level > $depth) {
+            str += '@' + TP.id(this) + ']';
+        } else {
+            str += '(' + TP.dump(this.getPayload(), $depth, $level + 1) + ')' + ']';
+        }
     } catch (e) {
         str += '(' + TP.str(this.getPayload()) + ')' + ']';
     } finally {
@@ -1157,13 +1216,13 @@ function(aKey, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('clearIgnores',
+TP.sig.Signal.Inst.defineMethod('clearNotifications',
 function() {
 
     /**
-     * @method clearIgnores
-     * @summary Clears any ignored handlers from the receiver's list so that
-     *     all handlers are "renewed". Ignores allow a handler to be invoked
+     * @method clearNotifications
+     * @summary Clears any tracked handlers from the receiver's list so that
+     *     all handlers are "renewed". Tracking allow a handler to be invoked
      *     once even if it's been registered multiple times. Clearing them means
      *     the same handler can be reinvoked.
      * @returns {TP.sig.Signal} The receiver.
@@ -1172,7 +1231,7 @@ function() {
     var skips;
 
     //  empty so when reusing a signal instance we can reuse the list too
-    if (TP.isValid(skips = this.get('ignoreList'))) {
+    if (TP.isValid(skips = this.get('notifiedHandlers'))) {
         skips.empty();
     }
 
@@ -1215,7 +1274,7 @@ function() {
 
     newinst.listener = this.listener;
 
-    newinst.ignoreList = this.ignoreList;
+    newinst.notifiedHandlers = this.notifiedHandlers;
 
     newinst.phase = this.phase;
 
@@ -1261,7 +1320,11 @@ function(anOrigin, aPayload, aPolicy) {
     //  default our origin to whatever may already have been set, or to the
     //  receiver itself, which is part of what makes "fire" different from
     //  simple signaling
-    origin = TP.ifInvalid(anOrigin, TP.ifInvalid(this.getOrigin(), this));
+    if (TP.isValid(anOrigin)) {
+        origin = anOrigin;
+    } else {
+        origin = TP.ifInvalid(this.getOrigin(), this);
+    }
     this.setOrigin(origin);
 
     //  instrument with current firing time
@@ -1303,10 +1366,10 @@ function() {
      * @summary Returns the document from which the signal originated. This is
      *     typically the TIBET window's document, but it can vary when UI events
      *     are involved.
-     * @returns {Document} The document that the signal originated in.
+     * @returns {TP.core.Document} The document that the signal originated in.
      */
 
-    return this.getWindow().document;
+    return this.getWindow().getDocument();
 });
 
 //  ------------------------------------------------------------------------
@@ -1358,7 +1421,7 @@ function() {
 
     params = this.getPayload();
     if (TP.isValid(params)) {
-        if (TP.canInvoke(params, TP.ac('at', 'atPut'))) {
+        if (TP.canInvokeInterface(params, TP.ac('at', 'atPut'))) {
             return params;
         }
     }
@@ -1437,6 +1500,51 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Inst.defineMethod('getResolvedTargetGlobalID',
+function() {
+
+    /**
+     * @method getResolvedTargetGlobalID
+     * @summary Returns the global id of the 'resolved' target of the signal.
+     *     For most events this is the same as the origin, but for DOM events,
+     *     particularly those with a native event component, this will often be
+     *     the global ID of the 'resolved' target element.
+     * @returns {String} The 'global ID' of the 'resolved' target of the
+     *     receiver.
+     */
+
+    var payload,
+        id,
+        inst;
+
+    //  fast approach is to use the data in any event/hash with the payload
+    payload = this.getPayload();
+
+    if (TP.isEvent(payload)) {
+        //  events we've instrumented will have the id, otherwise we can
+        //  work from the target to get its ID
+        id = payload.elementGlobalID;
+        if (TP.isEmpty(id)) {
+            inst = payload.resolvedTarget;
+            id = TP.gid(inst);
+        }
+    } else if (TP.isElement(payload)) {
+        //  element payloads we can leverage an ID from
+        id = TP.gid(payload);
+    } else if (TP.isHash(payload)) {
+        //  if we got a hash we can ask it
+        id = payload.at('elementGlobalID');
+    }
+
+    if (TP.notEmpty(id)) {
+        return id;
+    }
+
+    return this.getOrigin();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Signal.Inst.defineMethod('getSignalName',
 function() {
 
@@ -1465,7 +1573,9 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the all of the receiver's 'signal names' - that is,
-     *     each type signal name *and* the receiver's direct *signal* name.
+     *     the 'type' signal name, all of the supertypes signal names *and* the
+     *     receiver's direct *signal* name (if it's a spoofed signal and has a
+     *     different name than it's type).
      * @description Note that this method is different than
      *     'getTypeSignalNames()' below in that this method will always use the
      *     signal name, even for the receiving type - which for a spoofed signal
@@ -1540,34 +1650,26 @@ function() {
         inst,
         id;
 
-    //  DOM-based signals, which are the most common consumers of a
-    //  "target", are usually provided either the original event or a
-    //  hash with specific keys
+    //  DOM-based signals, which are the most common consumers of a "target",
+    //  are usually provided either the original event or a hash with specific
+    //  keys
 
     payload = this.getPayload();
 
     if (TP.isEvent(payload)) {
-        if (TP.isValid(payload.tibetTarget)) {
-            inst = payload.tibetTarget;
-        } else if (TP.isElement(payload.srcElement)) {
-            inst = payload.srcElement;
-        } else {
-            inst = payload.target;
-        }
+        inst = TP.eventGetTarget(payload);
     } else if (TP.isElement(payload)) {
         inst = payload;
     } else if (TP.canInvoke(payload, 'at')) {
-        if (TP.isEmpty(inst = payload.at('tibetTarget'))) {
-            id = payload.at('elementGlobalID');
-            if (TP.notEmpty(id)) {
-                if (TP.isValid(inst = TP.bySystemId(id))) {
-                    if (TP.canInvoke(inst, 'getNativeNode')) {
-                        inst = inst.getNativeNode();
-                    }
+        id = payload.at('elementGlobalID');
+        if (TP.notEmpty(id)) {
+            if (TP.isValid(inst = TP.bySystemId(id))) {
+                if (TP.canInvoke(inst, 'getNativeNode')) {
+                    inst = inst.getNativeNode();
                 }
-            } else {
-                inst = payload.at('target');
             }
+        } else {
+            inst = payload.at('target');
         }
     } else {
         origin = this.getOrigin();
@@ -1589,94 +1691,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('getTargetGlobalID',
-function() {
-
-    /**
-     * @method getTargetGlobalID
-     * @summary Returns the target of the signal. For most events this is the
-     *     same as the origin, but for DOM events, particularly those with a
-     *     native event component, this will often be the global ID of the
-     *     targeted element
-     * @returns {String} The 'global ID' of the target of the receiver.
-     */
-
-    var payload,
-        id,
-        inst;
-
-    //  fast approach is to use the data in any event/hash with the payload
-    payload = this.getPayload();
-
-    if (TP.isEvent(payload)) {
-        //  events we've instrumented will have the id, otherwise we can
-        //  work from the target to get its ID
-        id = payload.elementGlobalID;
-        if (TP.isEmpty(id)) {
-            inst = payload.srcElement || payload.target;
-            id = TP.gid(inst);
-        }
-    } else if (TP.isElement(payload)) {
-        //  element payloads we can leverage an ID from
-        id = TP.gid(payload);
-    } else if (TP.isHash(payload)) {
-        //  if we got a hash we can ask it
-        id = payload.at('elementGlobalID');
-    }
-
-    if (TP.notEmpty(id)) {
-        return id;
-    }
-
-    return this.getOrigin();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Inst.defineMethod('getTargetLocalID',
-function() {
-
-    /**
-     * @method getTargetLocalID
-     * @summary Returns the target ID of the signal. For most events this is
-     *     the same as the origin ID, but for DOM events, particularly those
-     *     with a native event component, this will often be the local ID of the
-     *     targeted element.
-     * @returns {String} The 'local ID' of the target of the receiver.
-     */
-
-    var payload,
-        id,
-        inst;
-
-    //  fast approach is to use the data in any event/hash with the payload
-    payload = this.getPayload();
-
-    if (TP.isEvent(payload)) {
-        //  events we've instrumented will have the id, otherwise we can
-        //  work from the target to get its ID
-        id = payload.elementLocalID;
-        if (TP.isEmpty(id)) {
-            inst = payload.srcElement || payload.target;
-            id = TP.lid(inst);
-        }
-    } else if (TP.isElement(payload)) {
-        //  element payloads we can leverage an ID from
-        id = TP.lid(payload);
-    } else if (TP.isHash(payload)) {
-        //  if we got a hash we can ask it
-        id = payload.at('elementLocalID');
-    }
-
-    if (TP.notEmpty(id)) {
-        return id;
-    }
-
-    return this.getOrigin();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Inst.defineMethod('getTypeSignalNames',
 function() {
 
@@ -1684,8 +1698,8 @@ function() {
      * @method getTypeSignalNames
      * @summary Returns the list of signal names acquired from the receiver's
      *     type and its supertypes up through TP.sig.Signal. This differs from
-     *     getSignalNames in that type names will never include spoofed signal
-     *     names in the result list.
+     *     getSignalNames in that 'type signal' names will never include
+     *     spoofed signal names in the result list.
      * @returns {Array} An Array of signal type names.
      */
 
@@ -1712,11 +1726,19 @@ function() {
     payload = this.getPayload();
 
     if (TP.isEvent(payload)) {
-        return TP.ifInvalid(payload.view, TP.sys.getUICanvas(true));
+        canvasWin = TP.win(payload.view);
+        if (TP.notValid(canvasWin)) {
+            canvasWin = TP.sys.getUICanvas();
+        }
+        return canvasWin;
     }
 
     if (TP.canInvoke(payload, 'at')) {
-        return TP.ifInvalid(payload.at('view'), TP.sys.getUICanvas(true));
+        canvasWin = TP.win(payload.at('view'));
+        if (TP.notValid(canvasWin)) {
+            canvasWin = TP.sys.getUICanvas();
+        }
+        return canvasWin;
     }
 
     //  We didn't get a valid signal payload object, but we can try to use
@@ -1732,34 +1754,51 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('ignoreHandler',
-function(aHandler) {
+TP.sig.Signal.Inst.defineMethod('hasNotified',
+function(aHandler, aContext) {
 
     /**
-     * @method ignoreHandler
-     * @summary Tells the signal instance to ignore a specific handler ID. This
-     *     can be called on the signal instance at any time, but is typically
-     *     called by the signaling system to avoid duplicate notifications
-     *     during DOM traversals.
-     * @param {String|Object} aHandler The handler or handler ID to ignore for a
-     *     particular signaling sequence.
+     * @method hasNotified
+     * @summary Returns true if the signal should skip over notification of the
+     *     handler ID provided. This method works along with the trackHandler
+     *     method to let the signaling system support turning off multiple
+     *     notifications to a handler of a particular signal instance.
+     * @param {String|Object} aHandler A handler whose ID will be checked
+     *     against the notification list for this instance.
+     * @param {Object} aContext The object context that the handler is currently
+     *     executing in. Note that this and the handler can be the same object
+     *     in some circumstances
+     * @returns {Boolean} True if the signal should not be presented to the
+     *     handler for processing.
      */
 
-    var handler,
-        skips;
+    var skips,
+        handlerKey,
+        skipCount;
+
+    if (TP.notValid(skips = this.get('notifiedHandlers'))) {
+        return false;
+    }
 
     if (TP.notValid(aHandler)) {
-        return;
+        return true;
     }
 
-    handler = aHandler.getID();
+    //  The handlerKey is made up of the context ID, the handler's ID and the
+    //  current signal name. This allows proper skip/renew behavior when
+    //  dispatching through an inheritance hierarchy of signals.
+    handlerKey = aContext.getID() +
+                    '_' +
+                    aHandler.getID() +
+                    '_' +
+                    this.getID();
 
-    if (TP.notValid(skips = this.$get('ignoreList'))) {
-        skips = TP.hc();
-        this.$set('ignoreList', skips, false);
+    skipCount = skips.at(handlerKey);
+    if (TP.isValid(skipCount)) {
+        return skipCount > 0;
     }
 
-    return skips.atPut(handler, true);
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -1824,16 +1863,18 @@ function(aFlag) {
      *     'signaling root'.
      */
 
-    var sigType;
+    var type,
+        sigType;
 
-    sigType = TP.sig.SignalMap.$getSignalType(this, this.getType());
+    type = this.getType();
 
-    if (!TP.isType(sigType)) {
+    sigType = TP.sig.SignalMap.$getSignalType(this, type);
+    if (TP.isString(sigType)) {
         sigType = TP.sys.getTypeByName(sigType);
     }
 
     if (!TP.isType(sigType)) {
-        sigType = this.getType();
+        sigType = type;
     }
 
     return sigType.isControllerRoot(aFlag);
@@ -1841,32 +1882,34 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('isIgnoring',
-function(aHandler) {
+TP.sig.Signal.Inst.defineMethod('isControllerSignal',
+function(aFlag) {
 
     /**
-     * @method isIgnoring
-     * @summary Returns true if the signal should skip over notification of the
-     *     handler ID provided. This method works along with the ignoreHandler()
-     *     method to let the signaling system support turning off multiple
-     *     notifications to a handler of a particular signal instance.
-     * @param {String|Object} aHandler A handler whose ID will be checked
-     *     against the ignore list for this instance.
-     * @returns {Boolean} True if the signal should not be presented to the
-     *     handler for processing.
+     * @method isControllerSignal
+     * @summary Combined setter/getter for whether signals of this type will
+     *     stop before traversing the TIBET controller chain. Only controller
+     *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
+     * @param {Boolean} aFlag
+     * @returns {Boolean} Whether or not signals of this type will traverse the
+     *     TIBET controller chain or not.
      */
 
-    var skips;
+    var type,
+        sigType;
 
-    if (TP.notValid(skips = this.get('ignoreList'))) {
-        return false;
+    type = this.getType();
+
+    sigType = TP.sig.SignalMap.$getSignalType(this, type);
+    if (TP.isString(sigType)) {
+        sigType = TP.sys.getTypeByName(sigType);
     }
 
-    if (TP.notValid(aHandler)) {
-        return true;
+    if (!TP.isType(sigType)) {
+        sigType = type;
     }
 
-    return TP.isTrue(skips.at(aHandler.getID()));
+    return sigType.isControllerSignal(aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -1930,7 +1973,7 @@ function() {
      * @returns {Boolean} True if the signal is spoofed.
      */
 
-    return this.getTypeName() !== this.getSignalName();
+    return this.getTypeName() !== TP.expandSignalName(this.getSignalName());
 });
 
 //  ------------------------------------------------------------------------
@@ -1989,7 +2032,7 @@ function() {
 
     this.listener = null;
 
-    this.ignoreList = null;
+    this.notifiedHandlers = null;
 
     this.phase = null;
 
@@ -2048,7 +2091,7 @@ function(aKey) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('renewHandler',
-function(aHandler) {
+function(aHandler, aContext) {
 
     /**
      * @method renewHandler
@@ -2056,25 +2099,48 @@ function(aHandler) {
      *     that the handler can be told multiple times about a single signal
      *     instance. Usually invoked by the handler itself so it can be invoked
      *     multiple times.
-     * @param {String|Object} aHandler The handler or handler ID to ignore for a
-     *     particular signaling sequence.
+     * @param {String|Object} aHandler The handler or handler ID that was
+     *     being skipped due to prior notification for a particular sequence.
+     * @param {Object} aContext The object context that the handler is currently
+     *     executing in. Note that this and the handler can be the same object
+     *     in some circumstances
      */
 
-    var handler,
-        skips;
+    var handlerKey,
+        skips,
+
+        skipCount;
 
     if (TP.notValid(aHandler)) {
         return;
     }
 
-    handler = aHandler.getID();
+    //  The handlerKey is made up of the context ID, the handler's ID and the
+    //  current signal name. This allows proper skip/renew behavior when
+    //  dispatching through an inheritance hierarchy of signals.
+    handlerKey = aContext.getID() +
+                    '_' +
+                    aHandler.getID() +
+                    '_' +
+                    this.getID();
 
-    if (TP.notValid(skips = this.$get('ignoreList'))) {
-        return;
+    if (TP.notValid(skips = this.$get('notifiedHandlers'))) {
+        skips = TP.hc();
+        this.$set('notifiedHandlers', skips, false);
+    }
+
+    //  Decrement the count (or set it to -1). This works in conjunction with
+    //  the trackHandler method (which increments or sets to 1) to allow a
+    //  'count' to be kept for accurate nested behavior.
+    skipCount = skips.at(handlerKey);
+    if (TP.isValid(skipCount)) {
+        skipCount -= 1;
+    } else {
+        skipCount = -1;
     }
 
     //  any non-true value should work here
-    return skips.atPut(handler, false);
+    return skips.atPut(handlerKey, skipCount);
 });
 
 //  ------------------------------------------------------------------------
@@ -2143,7 +2209,7 @@ function(aPhase) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('setSignalName',
-function(aSignalName, clearIgnores) {
+function(aSignalName, clearNotifications) {
 
     /**
      * @method setSignalName
@@ -2152,20 +2218,20 @@ function(aSignalName, clearIgnores) {
      *     lightweight signals whose only differentiation is their name we allow
      *     TP.sig.Signal and other subtypes to stand in for a subtype simply by
      *     changing their names. An additional side-effect of this call is that
-     *     any previous ignore list is cleared since the instance's name, and
-     *     hence the handlers being invoked, could change.
+     *     any previous notification list is cleared since the instance's name,
+     *     and hence the handlers being invoked, could change.
      * @param {String} aSignalName The name this instance should report as being
      *     its signal name.
-     * @param {Boolean} clearIgnores Whether or not to 'clear' any 'ignore's
-     *     that the instance may have. This is true by default.
+     * @param {Boolean} clearNotifications Whether or not to 'clear' any
+     *     notification list that the instance may have. This is true by default.
      * @returns {TP.sig.Signal} The receiver.
      */
 
     this.$set('signalName', aSignalName);
 
-    if (TP.isFalse(clearIgnores)) {
+    if (TP.isFalse(clearNotifications)) {
         //  reset processing controls so execution can happen under new name
-        this.clearIgnores();
+        this.clearNotifications();
     }
 
     return this;
@@ -2336,6 +2402,60 @@ function(aFlag) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('trackHandler',
+function(aHandler, aContext) {
+
+    /**
+     * @method trackHandler
+     * @summary Tells the signal instance to track a specific handler ID. This
+     *     can be called on the signal instance at any time, but is typically
+     *     called by the signaling system to avoid duplicate notifications
+     *     during DOM traversals.
+     * @param {String|Object} aHandler The handler or handler ID to skip for a
+     *     particular signaling sequence.
+     * @param {Object} aContext The object context that the handler is currently
+     *     executing in. Note that this and the handler can be the same object
+     *     in some circumstances
+     */
+
+    var handlerKey,
+        skips,
+
+        skipCount;
+
+    if (TP.notValid(aHandler)) {
+        return;
+    }
+
+    //  The handlerKey is made up of the context ID, the handler's ID and the
+    //  current signal name. This allows proper skip/renew behavior when
+    //  dispatching through an inheritance hierarchy of signals.
+    handlerKey = aContext.getID() +
+                    '_' +
+                    aHandler.getID() +
+                    '_' +
+                    this.getID();
+
+    if (TP.notValid(skips = this.$get('notifiedHandlers'))) {
+        skips = TP.hc();
+        this.$set('notifiedHandlers', skips, false);
+    }
+
+    //  Increment the count (or set it to 1). This works in conjunction with
+    //  the renewHandler method (which increments or sets to -1) to allow a
+    //  'count' to be kept for accurate nested behavior.
+    skipCount = skips.at(handlerKey);
+    if (TP.notValid(skipCount)) {
+        skipCount = 1;
+    } else {
+        skipCount += 1;
+    }
+
+    return skips.atPut(handlerKey, skipCount);
+});
+
+//  ------------------------------------------------------------------------
 //  Exception
 //  ------------------------------------------------------------------------
 
@@ -2360,8 +2480,6 @@ subtype, of what you desire.
 
 //  root of exception/error tree
 TP.sig.Signal.defineSubtype('Exception');
-
-TP.sig.Exception.isSignalingRoot(true);
 
 //  ------------------------------------------------------------------------
 
@@ -2440,9 +2558,9 @@ function() {
 
     err = this.at('error');
     if (TP.isError(err)) {
-        msg = TP.ifInvalid(err.message, err.toString());
+        msg = err.message || err.toString();
     } else if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2472,12 +2590,16 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Exception.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     *     IGNORED for this type.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
+     *     IGNORED for this type.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -2496,10 +2618,10 @@ function() {
 
     err = this.at('error');
     if (TP.isError(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
         msg += TP.getStackInfo(err).join('\n');
     } else if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2542,7 +2664,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2598,7 +2720,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2656,7 +2778,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2725,7 +2847,7 @@ function(verbose) {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2768,7 +2890,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2855,15 +2977,13 @@ TP.sig.Signal.defineSubtype('SYSTEM');
 TP.sig.Exception.defineSubtype('WARN');
 
 TP.sig.WARN.defineSubtype('ERROR');
-TP.sig.ERROR.defineSubtype('SEVERE');
-TP.sig.SEVERE.defineSubtype('FATAL');
+TP.sig.ERROR.defineSubtype('FATAL');
 
 TP.sig.TRACE.Type.defineAttribute('$level', TP.TRACE);
 TP.sig.DEBUG.Type.defineAttribute('$level', TP.DEBUG);
 TP.sig.INFO.Type.defineAttribute('$level', TP.INFO);
 TP.sig.WARN.Type.defineAttribute('$level', TP.WARN);
 TP.sig.ERROR.Type.defineAttribute('$level', TP.ERROR);
-TP.sig.SEVERE.Type.defineAttribute('$level', TP.SEVERE);
 TP.sig.FATAL.Type.defineAttribute('$level', TP.FATAL);
 TP.sig.SYSTEM.Type.defineAttribute('$level', TP.SYSTEM);
 
@@ -2888,9 +3008,9 @@ TP.sig.Signal.defineSubtype('Change');
 
 TP.sig.Change.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 
-//  'Change' is the root of its own tree - we don't signal 'above' it in the
-//  supertype chain.
-TP.sig.Change.isSignalingRoot(true);
+//  Don't signal Change at the controller level.
+//  NOTE this is a LOCAL assignment so subtypes don't inherit it.
+TP.sig.Change.isControllerRoot(true);
 
 //  ------------------------------------------------------------------------
 
@@ -3084,6 +3204,28 @@ TP.sig.StructureChange.defineSubtype('StructureDelete');
 
 TP.sig.Change.defineSubtype('RouteChange');
 
+//  Routing events in particular should inform the controller chain.
+TP.sig.RouteChange.Type.isControllerSignal(true);
+
+//  RouteChange is a special form of Change which should not traverse higher.
+//  NOTE this is a LOCAL assignment so subtypes don't inherit it.
+TP.sig.RouteChange.isSignalingRoot(true);
+
+//  The sequence that the router will fire these is:
+
+//      Exit
+//      Enter
+//      Finalize
+
+//  The signal type for entering a route
+TP.sig.RouteChange.defineSubtype('RouteEnter');
+
+//  The signal type for exiting a route
+TP.sig.RouteChange.defineSubtype('RouteExit');
+
+//  The signal type for finalizing a route
+TP.sig.RouteChange.defineSubtype('RouteFinalize');
+
 //  ------------------------------------------------------------------------
 //  TP.sig.SignalMap
 //  ------------------------------------------------------------------------
@@ -3130,10 +3272,10 @@ if (TP.notValid(TP.sig.SignalMap.interests)) {
 //  prebuilt regexs for testing for default signal construction
 TP.sig.SignalMap.Type.defineConstant(
                     'CHANGE_REGEX',
-                    /Change/);
+                    /Change$/);
 TP.sig.SignalMap.Type.defineConstant(
                     'INDEX_CHANGE_REGEX',
-                    /Index[0-9]+Change/);
+                    /Index[0-9]+Change$/);
 TP.sig.SignalMap.Type.defineConstant(
                     'ERROR_REGEX',
                     /Error|Exception|Invalid|Violation|Failed|NotFound/);
@@ -3425,7 +3567,7 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
     var sig,
         sigType;
 
-    if (TP.isString(aSignal) || !TP.canInvoke(aSignal, 'clearIgnores')) {
+    if (TP.isString(aSignal) || !TP.canInvoke(aSignal, 'clearNotifications')) {
         sigType = TP.sig.SignalMap.$getSignalType(aSignal, defaultType);
 
         if (TP.isType(sigType)) {
@@ -3465,8 +3607,8 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
 
     //  make sure the signal can be run cleanly against all handlers within
     //  a particular policy activation
-    if (TP.canInvoke(sig, 'clearIgnores')) {
-        sig.clearIgnores();
+    if (TP.canInvoke(sig, 'clearNotifications')) {
+        sig.clearNotifications();
     }
 
     if (TP.notEmpty(isCancelable)) {
@@ -3507,10 +3649,9 @@ function(aSignal, aDefaultType) {
      */
 
     var aTypeName,
-
         sigType,
-
-        defaultType;
+        defaultType,
+        match;
 
     //  if we've got a string turn it into a signal type reference
     if (TP.isString(aSignal)) {
@@ -3519,7 +3660,7 @@ function(aSignal, aDefaultType) {
                         TP.SIGNAL_LOG) : 0;
 
         //  the signal type name will be the signal name.
-        aTypeName = aSignal;
+        aTypeName = TP.expandSignalName(aSignal);
 
         if (TP.notValid(sigType = TP.sys.getTypeByName(aTypeName))) {
             TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
@@ -3529,17 +3670,38 @@ function(aSignal, aDefaultType) {
             //  try to get the best default signal possible here
             if (TP.sig.SignalMap.ERROR_REGEX.test(aSignal) ||
                 TP.sig.SignalMap.ERROR_CODE_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.ERROR);
+                defaultType = TP.ifInvalid(aDefaultType, TP.sig.ERROR);
             } else if (TP.sig.SignalMap.WARN_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.WARN);
+                defaultType = TP.ifInvalid(aDefaultType, TP.sig.WARN);
             } else if (TP.sig.SignalMap.CHANGE_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.Change);
+                //  Change comes in terms of facets...so we need to test for
+                //  those to determine best supertype here.
+                match = aSignal.match(
+                    /(Value|Valid|Required|Relevant|Readonly)Change$/);
+                if (TP.isValid(match)) {
+                    if (TP.isValid(TP.sig[match[0]])) {
+                        defaultType = TP.sig[match[0]];
+                    }
+                }
+
+                //  One other class of changes is structural/crud changes...
+                if (TP.notValid(defaultType)) {
+                    match = aSignal.match(
+                        /Structure(Insert|Update|Delete|Change)/);
+                    if (TP.isValid(match)) {
+                        if (TP.isValid(TP.sig[match[0]])) {
+                            defaultType = TP.sig[match[0]];
+                        } else {
+                            //  We know it's a Structure thing...
+                            defaultType = TP.sig.StructureChange;
+                        }
+                    }
+
+                    defaultType = TP.ifInvalid(defaultType, TP.sig.ValueChange);
+                }
+
             } else if (TP.sig.SignalMap.INDEX_CHANGE_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.IndexChange);
+                defaultType = TP.ifInvalid(aDefaultType, TP.sig.IndexChange);
             } else {
                 defaultType = TP.ifInvalid(aDefaultType, TP.sig.Signal);
             }
@@ -4161,19 +4323,22 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
         //  If there was no existing URI, then that means we're creating this
         //  one just to hold the handler. Therefore, we mark it with a local
-        //  attribute so that the '$removeInterest' call below will unregister
-        //  it.
-        //  NB: We only do this if the handler is a Function - other kinds of
-        //  Objects usually want to be retained by other parts of the system, so
-        //  we let the author clear those URIs of their resources manually.
-        //if (!existingURN && TP.isCallable(aHandler)) {
+        //  attribute to keep a 'registration count' so that the
+        //  '$removeInterest' call below will unregister it when that count
+        //  reaches 0.
         if (!existingURN) {
-            urn.defineAttribute('createdForHandler');
-            urn.set('createdForHandler', true, false);
+            urn.defineAttribute('$regCount');
+            urn.set('$regCount', 0, false);
+        }
+
+        //  If the urn owns a '$regCount' slot, then increment the registration
+        //  count.
+        if (TP.owns(urn, '$regCount')) {
+            urn.set('$regCount', urn.get('$regCount') + 1);
         }
 
         //  Set the handler as our newly created URI's resource. Note here how
-        //  we pass a request that tells the setResource() to *not* signal
+        //  we pass a request that tells the setResource to *not* signal
         //  change, since we're really just setting things up.
         urn.setResource(aHandler, TP.request('signalChange', false));
     }
@@ -4319,8 +4484,20 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         handler = TP.uc(handlerID);
-        if (handler.get('createdForHandler') === true) {
-            TP.core.URI.removeInstance(handler);
+
+        //  If the handler is a TIBET URN, then it may have a registration count
+        //  local attribute (see the '$registerInterest call above).
+        if (TP.isKindOf(handler, TP.core.TIBETURN) &&
+            TP.owns(handler, '$regCount')) {
+
+            //  Decrement the registration count
+            handler.set('$regCount', handler.get('$regCount') - 1);
+
+            //  If the registration count is 0, remove the URN from
+            //  TP.core.URI's instance dictionary.
+            if (handler.get('$regCount') === 0) {
+                TP.core.URI.removeInstance(handler);
+            }
         }
     }
 
@@ -4449,8 +4626,11 @@ function(aSignal, handlerFlags) {
         controllers,
         len,
         i,
+        ignore,
+        type,
         controller,
-        handler;
+        handler,
+        oldHandler;
 
     if (!TP.sys.hasLoaded()) {
         return;
@@ -4460,7 +4640,23 @@ function(aSignal, handlerFlags) {
     //  Most are but some like processing/workflow signals are intended for a
     //  local audience and are likely to be converted to promises over time so
     //  we don't want to create dependencies on them being propogated.
-    if (aSignal.isControllerRoot()) {
+    if (aSignal.isSpoofed()) {
+        type = TP.sys.getTypeByName(aSignal.getSignalName());
+        if (TP.isType(type)) {
+            if (!type.isControllerSignal() || type.isControllerRoot()) {
+                ignore = true;
+            }
+        }
+    } else if (!aSignal.isControllerSignal() || aSignal.isControllerRoot()) {
+        ignore = true;
+    }
+
+    if (ignore) {
+        /*
+        TP.debug('notifyControllers ignoring ' + aSignal.getSignalName() +
+            ' sig? ' + aSignal.isControllerSignal() + ' root? ' +
+            aSignal.isControllerRoot());
+        */
         return;
     }
 
@@ -4476,18 +4672,22 @@ function(aSignal, handlerFlags) {
         //  Find/fire best handler for each controller.
         controller = controllers.at(i);
         handler = controller.getBestHandler(aSignal, handlerFlags);
-        if (TP.isCallable(handler)) {
-            if (!aSignal.isIgnoring(handler)) {
-                //  set up so we won't tell it again unless it resets
-                aSignal.ignoreHandler(handler);
 
+        if (TP.isCallable(handler)) {
+            if (!aSignal.hasNotified(handler, controller)) {
                 try {
+                    oldHandler = aSignal.$get('currentHandler');
+                    aSignal.$set('currentHandler', handler, false);
                     handler.call(controller, aSignal);
                 } catch (e) {
                     //  TODO: handler exception
                     //  TODO: Add a callback check at the handler/owner level?
                     TP.error('HandlerException: ' + e.message + ' in: ' +
-                        TP.name(handler));
+                        TP.id(TP.owner(handler)) + ':' + TP.name(handler));
+                } finally {
+                    //  set up so we won't tell it again unless it resets
+                    aSignal.trackHandler(handler, controller);
+                    aSignal.$set('currentHandler', oldHandler, false);
                 }
             }
         }
@@ -4558,6 +4758,8 @@ function(anOrigin, aSignalName, aSignal, options) {
         signalNames,
         item,
         phase,
+        oldHandler,
+        handlerResult,
         handler,
         originalOrigin,
         hFunc,
@@ -4576,10 +4778,10 @@ function(anOrigin, aSignalName, aSignal, options) {
     check = TP.ifInvalid(opts.at('checkPropagation'), true);
 
     checkTarget = TP.ifInvalid(opts.at('checkTarget'), false);
-    scanSupertypes = TP.ifInvalid(opts.at('scanSupertypes'),
-        aSignal.shouldScanSupertypes());
+    scanSupertypes =
+        opts.at('scanSupertypes') || aSignal.shouldScanSupertypes();
 
-    entry = TP.ifInvalid(opts.at('aSigEntry'));
+    entry = opts.at('aSigEntry');
 
     //  two variant here. if check and "standard shouldStop" are true then we
     //  stop OR if shouldStopImmediately is true, regarless of check state.
@@ -4595,7 +4797,7 @@ function(anOrigin, aSignalName, aSignal, options) {
     }
 
     //  set our capture state flag so we can test as needed
-    capture = TP.ifInvalid(opts.at('captureState'));
+    capture = opts.at('captureState');
 
     //  capture the current origin for interest lookup purposes
     //  orgid = (TP.notValid(anOrigin)) ? TP.ANY : TP.id(anOrigin);
@@ -4621,7 +4823,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
         //  affects the list won't affect our current iteration work.
         items = entry.listeners.slice(0);
 
-    } else  {
+    } else {
 
         if (scanSupertypes) {
             signalNames = aSignal.getSignalNames();
@@ -4701,7 +4903,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
         //  "push" of the new signal
         TP.$signal_stack.push(aSignal);
 
-        targetID = aSignal.getTargetGlobalID();
+        targetID = aSignal.getResolvedTargetGlobalID();
 
         for (i = 0; i < items.length; i++) {
             //  two variant here. if check and "standard shouldStop" are true
@@ -4765,7 +4967,6 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  for whatever object is found at that ID. Note that this allows
             //  handlers to be swapped out from under observations without
             //  affecting the signal map itself.
-            handler = TP.bySystemId(item.handler);
 
             //  a side effect of having objects registered under 'tibet:urn's is
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
@@ -4773,6 +4974,9 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  use the URI object as the handler object.
             if (TP.regex.TIBET_URN.test(item.handler)) {
                 handler = TP.uc(item.handler);
+            } else {
+                //  Otherwise, just get the handler by it's system ID
+                handler = TP.bySystemId(item.handler);
             }
 
             if (TP.notValid(handler)) {
@@ -4805,11 +5009,10 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             }
 
             if (TP.sys.shouldThrowHandlers()) {
+
                 //  check for multiple notification bypass, or even a
                 //  signal-configured ignore hook prior to firing
-                if (!aSignal.isIgnoring(handler)) {
-                    //  set up so we won't tell it again unless it resets
-                    aSignal.ignoreHandler(handler);
+                if (!aSignal.hasNotified(handler, handler)) {
 
                     //  put a reference to the listener node itself where the
                     //  handler(s) can get to it when needed
@@ -4818,35 +5021,46 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                     //  run the handler, making sure we can catch any exceptions
                     //  that are signaled
 
-                    //  NOTE that if we're observing TP.ANY signals, we don't
-                    //  supply a 'starting signal name' and we skip spoofs and
-                    //  traversing the signal hierarchy, as that doesn't make
-                    //  sense.
-                    if (signame === TP.ANY) {
-                        handler.handle(
-                            aSignal,
-                            {
-                                startSignal: TP.ANY,
-                                dontTraverseHierarchy: true,
-                                dontTraverseSpoofs: true,
-                                phase: phase
-                            });
-                    } else {
-                        handler.handle(
-                            aSignal,
-                            {
-                                startSignal: signame,
-                                phase: phase
-                            });
+                    try {
+                        //  NOTE that if we're observing TP.ANY signals, we
+                        //  don't supply a 'starting signal name' and we skip
+                        //  spoofs and traversing the signal hierarchy, as that
+                        //  doesn't make sense.
+
+                        oldHandler = aSignal.$get('currentHandler');
+                        aSignal.$set('currentHandler', handler, false);
+
+                        if (signame === TP.ANY) {
+                            handlerResult = handler.handle(
+                                aSignal,
+                                {
+                                    startSignal: TP.ANY,
+                                    dontTraverseHierarchy: true,
+                                    dontTraverseSpoofs: true,
+                                    phase: phase
+                                });
+                        } else {
+                            handlerResult = handler.handle(
+                                aSignal,
+                                {
+                                    startSignal: signame,
+                                    phase: phase
+                                });
+                        }
+                    } finally {
+                        //  set up so we won't tell it again unless it resets
+                        if (handlerResult !== TP.NOT_FOUND) {
+                            aSignal.trackHandler(handler, handler);
+                        }
+                        aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }
             } else {
-                try {
-                    //  check for multiple notification bypass, or even a
-                    //  signal-configured ignore hook prior to firing
-                    if (!aSignal.isIgnoring(handler)) {
-                        //  set up so we won't tell it again unless it resets
-                        aSignal.ignoreHandler(handler);
+                //  check for multiple notification bypass, or even a
+                //  signal-configured skip hook prior to firing
+                if (!aSignal.hasNotified(handler, handler)) {
+
+                    try {
 
                         //  put a reference to the listener node itself where
                         //  the handler(s) can get to it when needed
@@ -4859,8 +5073,12 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         //  don't supply a 'starting signal name' and we skip
                         //  spoofs and traversing the signal hierarchy, as that
                         //  doesn't make sense.
+
+                        oldHandler = aSignal.$get('currentHandler');
+                        aSignal.$set('currentHandler', handler, false);
+
                         if (signame === TP.ANY) {
-                            handler.handle(
+                            handlerResult = handler.handle(
                                 aSignal,
                                 {
                                     startSignal: TP.ANY,
@@ -4869,68 +5087,76 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                                     phase: phase
                                 });
                         } else {
-                            handler.handle(
+                            handlerResult = handler.handle(
                                 aSignal,
                                 {
                                     startSignal: signame,
                                     phase: phase
                                 });
                         }
-                    }
 
-                    //  TODO:   add check here regarding removal of the handler?
-                    //          this would be an alternative to cleanup
-                    //          policies, simply setting state or adding
-                    //          functions to the handlers themselves which
-                    //          return true when the handler should be removed.
+                        //  TODO: add check here regarding removal of the
+                        //  handler? this would be an alternative to cleanup
+                        //  policies, simply setting state or adding functions
+                        //  to the handlers themselves which return true when
+                        //  the handler should be removed.
 
-                    //          if so we can simply suspend the item so it is
-                    //          skipped rather than removing the node
-                } catch (e) {
+                        //  if so we can simply suspend the item so it is
+                        //  skipped rather than removing the node
+                    } catch (e) {
 
-                    //  TODO: handler exception
-                    //  TODO: Add a callback check at the handler/owner level?
+                        //  TODO: handler exception
+                        //  TODO: Add a callback check at the handler/owner
+                        //  level?
 
-                    try {
-                        //  see if we can get the actual function in question so
-                        //  we have better debugging capability
-                        hFunc = handler.getBestHandler(aSignal);
+                        try {
 
-                        if (TP.isCallable(hFunc)) {
+                            //  see if we can get the actual function in
+                            //  question so we have better debugging capability
+                            hFunc = handler.getBestHandler(aSignal);
+
+                            if (TP.isCallable(hFunc)) {
+                                TP.ifError() ?
+                                        TP.error(
+                                        TP.ec(e,
+                                        TP.join('Error in: ', orgid,
+                                                '.', signame,
+                                                ' responder: ',
+                                                handler.getID(),
+                                                '\nhandler: ',
+                                                hFunc.getName())),
+                                        TP.SIGNAL_LOG) : 0;
+                            } else {
+                                TP.ifError() ?
+                                        TP.error(
+                                        TP.ec(e,
+                                        TP.join('Error in: ', orgid,
+                                                '.', signame,
+                                                ' responder: ',
+                                                handler.getID())),
+                                        TP.SIGNAL_LOG) : 0;
+                            }
+                        } catch (e2) {
                             TP.ifError() ?
                                     TP.error(
-                                    TP.ec(e,
-                                    TP.join('Error in: ', orgid,
-                                            '.', signame,
-                                            ' responder: ',
-                                            handler.getID(),
-                                            '\nhandler: ',
-                                            hFunc.getName())),
-                                    TP.SIGNAL_LOG) : 0;
-                        } else {
-                            TP.ifError() ?
-                                    TP.error(
-                                    TP.ec(e,
-                                    TP.join('Error in: ', orgid,
-                                            '.', signame,
-                                            ' responder: ',
-                                            handler.getID())),
+                                    TP.ec(e2,
+                                    TP.join('Error getting handler for: ', orgid,
+                                            '.', signame)),
                                     TP.SIGNAL_LOG) : 0;
                         }
-                    } catch (e2) {
-                        TP.ifError() ?
-                                TP.error(
-                                TP.ec(e2,
-                                TP.join('Error getting handler for: ', orgid,
-                                        '.', signame)),
-                                TP.SIGNAL_LOG) : 0;
-                    }
 
-                    //  register the handler if TIBET is configured for that so
-                    //  that the suspended function can be acquired by the
-                    //  developer for debugging
-                    if (TP.sys.shouldRegisterLoggers()) {
-                        TP.sys.registerObject(handler, null, true, false);
+                        //  register the handler if TIBET is configured for
+                        //  that so that the suspended function can be acquired
+                        //  by the developer for debugging
+                        if (TP.sys.shouldRegisterLoggers()) {
+                            TP.sys.registerObject(handler, null, true, false);
+                        }
+                    } finally {
+                        //  set up so we won't tell it again unless it resets
+                        if (handlerResult !== TP.NOT_FOUND) {
+                            aSignal.trackHandler(handler, handler);
+                        }
+                        aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }
             }
@@ -5148,15 +5374,16 @@ function(originSet, aSignal, aPayload, aType) {
         evt,
         eventType,
         onstarEvtName,
+        onstarSigFullName,
+        onstarSigShortName,
         onAttrDetector,
         origins,
         origin,
+        originType,
         originArray,
         len,
         originGlobalID,
-        sigdata,
-        sigParams,
-        sigPayload;
+        sigdata;
 
     //  in the DOM model we can only fire if we have a signal and origin
     if (TP.notValid(aSignal) || TP.notValid(originSet)) {
@@ -5175,17 +5402,28 @@ function(originSet, aSignal, aPayload, aType) {
 
             //  Make sure the name exists as a key in the native event signal
             //  map.
-            if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(eventType)) {
+            if (TP.NON_OBSERVED_ON_ATTRS.hasKey(eventType)) {
 
+                //  Note how we capture both the low-level event name and the
+                //  higher level signal name here. The author could've used
+                //  either one.
                 onstarEvtName = eventType;
+                onstarSigFullName = TP.NON_OBSERVED_ON_ATTRS.at(eventType);
+                onstarSigShortName = TP.contractSignalName(onstarSigFullName);
 
                 //  Note here how the detector searches for attributes in the
                 //  TP.w3.Xmlns.ON namespace, in case the user hasn't used the
                 //  'on:' prefix. This detector function is used below.
                 onAttrDetector = function(attrNode) {
+
+                    var localName;
+
+                    localName = TP.attributeGetLocalName(attrNode);
+
                     /* eslint-disable no-extra-parens */
-                    return (TP.attributeGetLocalName(attrNode) ===
-                                                            onstarEvtName &&
+                    return ((localName === onstarEvtName ||
+                                localName === onstarSigFullName ||
+                                localName === onstarSigShortName) &&
                             attrNode.namespaceURI === TP.w3.Xmlns.ON);
                     /* eslint-enable no-extra-parens */
                 };
@@ -5223,7 +5461,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  without a target we've got trouble in DOM firing since the target
     //  defines when we stop capturing and start bubbling...
-    target = sig.getTargetGlobalID();
+    target = sig.getResolvedTargetGlobalID();
 
     //  as we loop downward we'll keep track of orgids that have event
     //  listeners registered. this keeps us from doing the lookups twice
@@ -5277,9 +5515,9 @@ function(originSet, aSignal, aPayload, aType) {
             //  type from an origin
             TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                 TP.hc('checkPropagation', false,
-                    'captureState', true,
-                    'aSigEntry', entry,
-                    'checkTarget', true));
+                        'captureState', true,
+                        'aSigEntry', entry,
+                        'checkTarget', true));
         }
 
         //  as long as we didn't default the signal to "ANY" we'll check
@@ -5297,9 +5535,9 @@ function(originSet, aSignal, aPayload, aType) {
                 //  any capturing handlers that are blanket signal handlers
                 TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', true,
-                        'aSigEntry', entry,
-                        'checkTarget', true));
+                            'captureState', true,
+                            'aSigEntry', entry,
+                            'checkTarget', true));
             }
         }
 
@@ -5329,9 +5567,9 @@ function(originSet, aSignal, aPayload, aType) {
             //  type from an origin
             TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                 TP.hc('checkPropagation', false,
-                    'captureState', true,
-                    'aSigEntry', entry,
-                    'checkTarget', true));
+                        'captureState', true,
+                        'aSigEntry', entry,
+                        'checkTarget', true));
         }
 
         //  as long as we didn't default the signal to "ANY" we'll check
@@ -5349,9 +5587,9 @@ function(originSet, aSignal, aPayload, aType) {
                 //  any capturing handlers that are blanket signal handlers
                 TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', true,
-                        'aSigEntry', entry,
-                        'checkTarget', true));
+                            'captureState', true,
+                            'aSigEntry', entry,
+                            'checkTarget', true));
             }
         }
 
@@ -5398,6 +5636,25 @@ function(originSet, aSignal, aPayload, aType) {
 
         origin = originArray.at(i);
 
+        if (TP.isElement(origin)) {
+            //  Grab the TIBET wrapper type for the element and query it to see
+            //  if the current element is considered to be 'opaque' for the
+            //  event at it's level as it bubbles.
+            if (TP.isType(originType =
+                            TP.core.ElementNode.getConcreteType(origin))) {
+                if (originType.isOpaqueBubblerFor(origin, sig)) {
+                    //  If the type has returned true here, that means that
+                    //  we're to stop processing this signal after this origin
+                    //  is processed. To do so is quite simple. Truncate the
+                    //  originArray that we built during the capturing
+                    //  processing (making sure to set the 'len' local variable
+                    //  so that the loop will exit).
+                    originArray = originArray.slice(0, i + 1);
+                    len = i + 1;
+                }
+            }
+        }
+
         //  If a detector function was defined and our origin is an Element,
         //  then we are eligible for 'on:' remapping.
         if (TP.isCallable(onAttrDetector) && TP.isElement(origin)) {
@@ -5409,69 +5666,40 @@ function(originSet, aSignal, aPayload, aType) {
                 //  'true' in the 3rd parameter will cause a search of the
                 //  TP.w3.Xmlns.ON namespace if an attribute prefixed by 'on:'
                 //  isn't found.
-                sigdata = TP.elementGetAttribute(
-                                        origin, 'on:' + onstarEvtName, true);
-                sigdata = TP.trim(sigdata);
 
-                //  If the signal data starts with a '{', then its not just a
-                //  signal name. There's a 'signal descriptor'.
-                if (sigdata.startsWith('{')) {
+                //  First, try the event name.
+                if (TP.elementHasAttribute(
+                            origin, 'on:' + onstarEvtName, true)) {
+                    sigdata = TP.elementGetAttribute(
+                                origin,
+                                'on:' + onstarEvtName,
+                                true);
+                } else if (TP.elementHasAttribute(
+                            origin, 'on:' + onstarSigFullName, true)) {
 
-                    //  What's left is a JS-formatted String. Parse that into a
-                    //  TP.core.Hash.
-                    sigParams = TP.json2js(TP.reformatJSToJSON(sigdata));
-
-                    //  If an 'origin' slot was supplied, then we look that up
-                    //  by ID (using the original origin's document).
-                    if (TP.notEmpty(orgid = sigParams.at('origin'))) {
-
-                        //  Just in case it was supplied as a quoted value
-                        orgid = orgid.unquoted();
-
-                        //  Note how we pass false to avoid getting a wrapped
-                        //  origin, which we don't want here.
-                        origin = TP.byId(
-                                    orgid, TP.nodeGetDocument(origin), false);
-                    }
-
-                    //  If a signal was supplied, use it as the signal name
-                    //  instead of the name of the original DOM signal that was
-                    //  fired.
-                    signame = TP.ifInvalid(sigParams.at('signal'), signame);
-
-                    //  Just in case it was supplied in the signal params as a
-                    //  quoted value
-                    signame = signame.unquoted();
-
-                    //  Grab whatever payload was specified.
-                    sigPayload = sigParams.at('payload');
-
+                    //  Next, try the 'full signal name' (which we would have
+                    //  gotten from the TP.NON_OBSERVED_ON_ATTRS above).
+                    sigdata = TP.elementGetAttribute(
+                                origin,
+                                'on:' + onstarSigFullName,
+                                true);
                 } else {
-
-                    //  No signal data - the signal name is all of the signal
-                    //  data.
-                    signame = sigdata;
+                    //  Last, try the 'short signal name'
+                    sigdata = TP.elementGetAttribute(
+                                origin,
+                                'on:' + onstarSigShortName,
+                                true);
                 }
 
-                if (TP.notValid(sigPayload)) {
-                    sigPayload = TP.hc();
+                //  If we were able to successfully extract signal data, then
+                //  queue up a signal that will fire based on this data.
+                if (TP.notEmpty(sigdata)) {
+                    TP.queueSignalFromData(
+                                sigdata,
+                                origin,
+                                sig,
+                                TP.sig.ResponderSignal);
                 }
-
-                sigPayload.atPut('event', sig.getPayload());
-
-                //  Note that it's important to put the current origin on the
-                //  signal here in case that the new signal is a
-                //  RESPONDER_FIRING signal (very likely) as it will look there
-                //  for the first responder when computing the responder chain.
-                sigPayload.atPut('target', origin);
-
-                //  Queue the new signal and continue - thereby skipping
-                //  processing for the bubbling phase of this signal (for this
-                //  origin) in deference to signaling the new signal. Note here
-                //  how we supply 'TP.sig.ResponderSignal' as the default type
-                //  to use if the mapped signal type isn't a real type.
-                TP.queue(origin, signame, sigPayload,
-                            null, TP.sig.ResponderSignal);
 
                 continue;
             }
@@ -5488,8 +5716,8 @@ function(originSet, aSignal, aPayload, aType) {
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
@@ -5497,8 +5725,8 @@ function(originSet, aSignal, aPayload, aType) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
         }
 
         //  local id
@@ -5512,8 +5740,8 @@ function(originSet, aSignal, aPayload, aType) {
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
@@ -5521,8 +5749,8 @@ function(originSet, aSignal, aPayload, aType) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
         }
 
         //  propagation
@@ -5572,8 +5800,8 @@ function(originSet, aSignal, aPayload, aType) {
     //  that we notify capturers, check for stopPropagation, then bubble
     TP.sig.SignalMap.notifyObservers(null, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', true,
-                        'checkTarget', true));
+                            'captureState', true,
+                            'checkTarget', true));
 
     if (sig.shouldStop() || sig.shouldStopImmediately()) {
         return sig;
@@ -5581,8 +5809,8 @@ function(originSet, aSignal, aPayload, aType) {
 
     TP.sig.SignalMap.notifyObservers(null, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
 
     return sig;
 });
@@ -5616,7 +5844,8 @@ function(anOrigin, aSignal, aPayload, aType) {
         responders,
         i,
         len,
-        responder;
+        responder,
+        shouldContinue;
 
     if (TP.notValid(aSignal)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
@@ -5675,11 +5904,14 @@ function(anOrigin, aSignal, aPayload, aType) {
 
                 //  Each responder is an element. We want to notify any
                 //  tibet:ctrl and tibet:tag found on the element.
-                TP.sig.SignalMap.$notifyResponders(responder, sig);
+                shouldContinue = TP.sig.SignalMap.$notifyResponders(
+                                                            responder, sig);
 
                 //  Always check whether we should continue. Any form of stop
                 //  propagation setting will cause responder signals to stop.
-                if (sig.shouldStop() || sig.shouldStopImmediately()) {
+                if (!shouldContinue ||
+                    sig.shouldStop() ||
+                    sig.shouldStopImmediately()) {
                     return sig;
                 }
             }
@@ -5692,16 +5924,18 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     sig.setPhase(TP.AT_TARGET);
 
-    //  NOTE that we only do this if the target is a responder
-    //  element...otherwise we don't really have a valid 'at target' step.
+    //  NOTE that we only do this if the target is a responder element...
+    //  otherwise we don't really have a valid 'at target' step.
     if (TP.isValid(target) && TP.nodeGetResponderElement(target) === target) {
 
         //  tibet:ctrl and tibet:tag found on the element.
-        TP.sig.SignalMap.$notifyResponders(target, sig);
+        shouldContinue = TP.sig.SignalMap.$notifyResponders(target, sig);
 
         //  if any of the handlers at this origin "level" said to stop
         //  then we stop now before executing the bubbling handlers.
-        if (sig.shouldStop() || sig.shouldStopImmediately()) {
+        if (!shouldContinue ||
+            sig.shouldStop() ||
+            sig.shouldStopImmediately()) {
             return sig;
         }
     }
@@ -5727,13 +5961,15 @@ function(anOrigin, aSignal, aPayload, aType) {
         for (i = 0; i < len; i++) {
             responder = responders.at(i);
 
-            //  Each responder is an element. We want to notify any
-            //  tibet:ctrl and tibet:tag found on the element.
-            TP.sig.SignalMap.$notifyResponders(responder, sig);
+            //  Each responder is an element. We want to notify any tibet:ctrl
+            //  and tibet:tag found on the element.
+            shouldContinue = TP.sig.SignalMap.$notifyResponders(responder, sig);
 
             //  Always check whether we should continue. Any form of stop
             //  propagation setting will cause responder signals to stop.
-            if (sig.shouldStop() || sig.shouldStopImmediately()) {
+            if (!shouldContinue ||
+                sig.shouldStop() ||
+                sig.shouldStopImmediately()) {
                 return sig;
             }
         }
@@ -5764,10 +6000,12 @@ function(target, signal) {
      *     RESPONDER_FIRING policy and not typically invoked directly.
      * @param {Element} target The element to notify for.
      * @param {TP.sig.Signal} signal The signal to handle.
+     * @returns {Boolean} Whether or not to continue signalling responders along
+     *     the responder chain.
      */
 
     var id,
-        last,
+        lastType,
         type,
         responder;
 
@@ -5775,27 +6013,31 @@ function(target, signal) {
 
     id = TP.elementGetAttribute(target, 'tibet:ctrl', true);
     if (TP.notEmpty(id)) {
+
+        //  First, try to look up the responder by 'global ID'
         responder = TP.bySystemId(id);
+        if (TP.notValid(responder)) {
+
+            //  Next, try to look it up by 'local ID', relative to the context
+            //  (i.e. page) that the target it in (which is obtained by
+            //  supplying the target).
+            responder = TP.byId(id, target);
+        }
+
         if (TP.notValid(responder)) {
             TP.ifWarn() ?
                 TP.warn('Unable to resolve tibet:ctrl ' + id + '.') : 0;
-        } else {
+        }
 
+        if (TP.isValid(responder)) {
             if (TP.isType(responder)) {
-                last = responder;
-                responder = responder.construct();
-                if (TP.notValid(responder)) {
-                    return this.raise(
-                                'InvalidController',
-                                TP.sc('Unable to construct controller',
-                                        ' instance of: ', id));
-                }
+                lastType = responder;
             } else {
-                last = responder.getType();
+                lastType = responder.getType();
             }
 
             if (TP.canInvoke(responder, 'handle')) {
-                signal.setOrigin(TP.gid(target));
+                signal.setOrigin(target);
                 responder.handle(signal);
             } else {
                 return this.raise('InvalidController',
@@ -5809,7 +6051,7 @@ function(target, signal) {
             //  we're at the same 'DOM element' level for the next check of
             //  'tibet:tag'.
             if (signal.shouldStopImmediately()) {
-                return;
+                return false;
             }
         }
     }
@@ -5833,11 +6075,11 @@ function(target, signal) {
             }
 
             //  Don't dispatch twice to an instance of the same type.
-            if (type !== last) {
-                last = type;
+            if (type !== lastType) {
+                lastType = type;
 
                 if (TP.canInvoke(responder, 'handle')) {
-                    signal.setOrigin(TP.gid(target));
+                    signal.setOrigin(target);
                     responder.handle(signal);
                 } else {
                     this.raise('InvalidResponder',
@@ -5850,7 +6092,7 @@ function(target, signal) {
                 //  we're at the same 'DOM element' level for the next check of
                 //  'tibet:tag'.
                 if (signal.shouldStopImmediately()) {
-                    return;
+                    return false;
                 }
             }
         }
@@ -5859,10 +6101,10 @@ function(target, signal) {
     //  isResponderFor
 
     type = TP.nodeGetConcreteType(target);
-    if (type !== last) {
+    if (type !== lastType) {
         responder = TP.wrap(target);
         if (TP.canInvoke(responder, 'handle')) {
-            signal.setOrigin(TP.gid(target));
+            signal.setOrigin(target);
             responder.handle(signal);
         } else {
             this.raise('InvalidResponder',
@@ -5871,7 +6113,17 @@ function(target, signal) {
         }
     }
 
-    return;
+    //  Depending on the signal's phase, we check to see if the type is
+    //  configured to be opaque for either the capturing or bubbling phase. If
+    //  it is, then we return false because we don't want the rest of the
+    //  responder chain to be processed (for that phase).
+    if (signal.getPhase() === TP.CAPTURING) {
+        return !type.isOpaqueCapturerFor(target, signal);
+    } else if (signal.getPhase() === TP.BUBBLING) {
+        return !type.isOpaqueBubblerFor(target, signal);
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -6212,7 +6464,7 @@ function(originSet, aSignal, aPayload, aType) {
     if (TP.notValid(scope = payload.at('scope'))) {
 
         //  Make sure that we have both an Event and an Event target.
-        if (TP.isEvent(evt = payload.at('event'))) {
+        if (TP.isEvent(evt = payload.at('trigger').getEvent())) {
 
             if (TP.isElement(origin = originSet)) {
                 //  Wrap the origin and compute its binding scope values.
@@ -6277,7 +6529,7 @@ function(originSet, aSignal, aPayload, aType) {
             //  TODO: handler exception
             //  TODO: Add a callback check at the handler/owner level?
             TP.error('HandlerException: ' + e.message + ' in: ' +
-                TP.name(handler));
+                TP.id(TP.owner(handler)) + ':' + TP.name(handler));
         }
     }
 
@@ -6603,8 +6855,19 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
                 signal = aSignal;
             }
 
-            adjustMap = origin.removeObserver(origin, signal,
-                                                aHandler, aPolicy);
+            switch (origin.removeObserver.getArity()) {
+                case 4:
+                    adjustMap = origin.removeObserver(origin, signal, aHandler,
+                        aPolicy);
+                    break;
+                case 3:
+                    adjustMap = origin.removeObserver(signal, aHandler, aPolicy);
+                    break;
+                default:
+                    adjustMap = origin.removeObserver(signal, aHandler);
+                    break;
+            }
+
             if (!adjustMap) {
                 return;
             }
@@ -6651,8 +6914,21 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
             if (owner !== origin && TP.canInvoke(owner, 'removeObserver')) {
-                adjustMap = owner.removeObserver(anOrigin, typename,
-                                                    aHandler, aPolicy);
+
+                switch (owner.removeObserver.getArity()) {
+                    case 4:
+                        adjustMap = owner.removeObserver(anOrigin, typename,
+                            aHandler, aPolicy);
+                        break;
+                    case 3:
+                        adjustMap = owner.removeObserver(typename, aHandler,
+                            aPolicy);
+                        break;
+                    default:
+                        adjustMap = owner.removeObserver(typename, aHandler);
+                        break;
+                }
+
                 if (!adjustMap) {
                     return;
                 }
@@ -6829,8 +7105,19 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
                 signal = aSignal;
             }
 
-            adjustMap = origin.addObserver(origin, signal,
-                                            aHandler, aPolicy);
+            switch (origin.addObserver.getArity()) {
+                case 4:
+                    adjustMap = origin.addObserver(origin, signal, aHandler,
+                        aPolicy);
+                    break;
+                case 3:
+                    adjustMap = origin.addObserver(signal, aHandler, aPolicy);
+                    break;
+                default:
+                    adjustMap = origin.addObserver(signal, aHandler);
+                    break;
+            }
+
             if (!adjustMap) {
                 return;
             }
@@ -6879,8 +7166,21 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
             if (owner !== origin && TP.canInvoke(owner, 'addObserver')) {
-                adjustMap = owner.addObserver(anOrigin, typename,
-                                                aHandler, aPolicy);
+
+                switch (owner.addObserver.getArity()) {
+                    case 4:
+                        adjustMap = owner.addObserver(anOrigin, typename,
+                            aHandler, aPolicy);
+                        break;
+                    case 3:
+                        adjustMap = owner.addObserver(typename, aHandler,
+                            aPolicy);
+                        break;
+                    default:
+                        adjustMap = owner.addObserver(typename, aHandler);
+                        break;
+                }
+
                 if (!adjustMap) {
                     return;
                 }
@@ -7362,10 +7662,15 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  or default firing policy etc. Note that we give preference to any
     //  'default' signal type that was passed in and, if that doesn't exist,
     //  then ask the signal instance itself.
-    type = TP.ifInvalid(
-                type, TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(
+    if (TP.notValid(type)) {
+        if (TP.isValid(aType)) {
+            type = aType;
+        } else {
+            type = TP.sig.SignalMap.$getSignalType(
                         aSignal,
-                        TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy))));
+                        TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy));
+        }
+    }
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event
@@ -7689,11 +7994,6 @@ function(anOrigin, anException, aPayload) {
                         TP.error(TP.annotate(aPayload, str)) :
                         TP.error(str);
                     break;
-                case TP.SEVERE:
-                    TP.isValid(aPayload) ?
-                        TP.severe(TP.annotate(aPayload, str)) :
-                        TP.severe(str);
-                    break;
                 case TP.FATAL:
                     TP.isValid(aPayload) ?
                         TP.fatal(TP.annotate(aPayload, str)) :
@@ -7774,1153 +8074,6 @@ function(anOrigin, anException, aPayload) {
     }
 
     return;
-});
-
-//  ========================================================================
-//  Signal Sources
-//  ========================================================================
-
-/*
-TP.core.SignalSource is the core signaling type from which all other signal
-sources derive. Signal sources are objects that throw off signals; devices like
-mice and keyboards and remote sources like server-sent event servers.
-*/
-
-TP.lang.Object.defineSubtype('core.SignalSource');
-
-//  ========================================================================
-//  TP.core.MutationSignalSource
-//  ========================================================================
-
-/*
-*/
-
-TP.core.SignalSource.defineSubtype('core.MutationSignalSource');
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-//  A hash mapping a document ID to a MutationObserver
-TP.core.MutationSignalSource.Type.defineAttribute('observers');
-
-TP.core.MutationSignalSource.Type.defineAttribute('queries');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.set('observers', TP.hc());
-    this.set('queries', TP.hc());
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineMethod('watchDocument',
-function(aDocument) {
-
-    /**
-     * @method watchDocument
-     * @summary Sets up observations for mutation on the document provided.
-     * @param {Document} aDocument The document to register a Mutation Observer
-     *     on.
-     * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
-     *     MutationSignalSource type.
-     */
-
-    var observer,
-        method;
-
-    //  PhantomJS (at least at the time of this writing, doesn't support these).
-    if (TP.notValid(self.MutationObserver)) {
-        return this;
-    }
-
-    method = TP.composeHandlerName('MutationEvent');
-
-    //  Note that 'observer' and 'obs' are the same object here - we use 'obs'
-    //  inside the callback to avoid a closure.
-    observer = new MutationObserver(
-            function(mutationRecords, obs) {
-                var records,
-                    recordGroups;
-
-                records = mutationRecords.filter(
-                                    function(aRecord) {
-                                        return !aRecord.handled;
-                                    });
-
-                recordGroups = records.groupBy(
-                                    function(aRecord) {
-                                        return aRecord.target;
-                                    });
-
-                recordGroups.perform(
-                        function(kvPair) {
-
-                            var likeRecords,
-
-                                target,
-
-                                len,
-                                i,
-
-                                likeRecord,
-
-                                addedNodes,
-                                removedNodes,
-
-                                newRecord;
-
-                            //  NB: We don't care about the key here - it was
-                            //  just a way of uniquing based on the target node.
-                            likeRecords = kvPair.last();
-
-                            target = likeRecords.at(0).target;
-
-                            if (TP.elementHasAttribute(
-                                    target, 'tibet:nomutationtracking', true)) {
-                                return;
-                            }
-
-                            if (TP.nodeAncestorMatchesCSS(
-                                    target, '*[tibet|nomutationtracking]')) {
-                                return;
-                            }
-
-                            addedNodes = TP.ac();
-                            removedNodes = TP.ac();
-
-                            len = likeRecords.getSize();
-                            for (i = 0; i < len; i++) {
-                                likeRecord = likeRecords.at(i);
-                                likeRecord.handled = true;
-
-                                addedNodes = addedNodes.concat(
-                                                TP.ac(likeRecord.addedNodes));
-                                removedNodes = removedNodes.concat(
-                                                TP.ac(likeRecord.removedNodes));
-                            }
-
-                            newRecord = {};
-
-                            newRecord.target = likeRecords.at(0).target;
-                            newRecord.type = likeRecords.at(0).type;
-                            newRecord.addedNodes = addedNodes;
-                            newRecord.removedNodes = removedNodes;
-
-                            this[method](newRecord);
-
-                        }.bind(this));
-
-            }.bind(this));
-
-    observer.observe(
-        aDocument,
-        {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            attributeOldValue: false
-        });
-
-    this.get('observers').atPut(TP.id(aDocument), observer);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineMethod('unwatchDocument',
-function(aDocument) {
-
-    /**
-     * @method unwatchDocument
-     * @summary Removes mutation observation for the document provided.
-     * @param {Document} aDocument The document to remove a Mutation Observer
-     *     from.
-     * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
-     *     MutationSignalSource type.
-     */
-
-    var observerKey,
-        observer;
-
-    observerKey = TP.id(aDocument);
-
-    if (TP.isValid(observer = this.get('observers').at(observerKey))) {
-
-        //  Try to empty the observer's queue in a (maybe vain) attempt to get
-        //  rid of extra mutation records.
-        observer.takeRecords();
-
-        observer.disconnect();
-    }
-
-    this.get('observers').removeKey(observerKey);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineHandler('MutationEvent',
-function(aMutationRecord) {
-
-    /**
-     * @method handleMutationEvent
-     * @summary Responds to notifications that a mutation has occurred.
-     * @param {MutationRecord} aMutationRecord The incoming mutation record.
-     * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
-     *     MutationSignalSource type.
-     */
-
-    var targetNode,
-        targetType,
-
-        mutationType,
-
-        fname,
-
-        attrName,
-
-        prevValue,
-        newValue,
-        operation,
-
-        args,
-
-        addedNodes,
-        removedNodes,
-
-        queryEntries,
-
-        targetDoc,
-
-        queryKeys,
-        len,
-        i,
-        entry;
-
-    if (!TP.isNode(targetNode = aMutationRecord.target)) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    if (!TP.isType(targetType = TP.wrap(targetNode).getType())) {
-        return this;
-    }
-
-    if (!TP.isWindow(targetNode.ownerDocument.defaultView)) {
-        return;
-    }
-
-    mutationType = aMutationRecord.type;
-
-    switch (mutationType) {
-        case 'attributes':
-
-            fname = 'mutationChangedAttribute';
-
-            if (!TP.isElement(targetNode = aMutationRecord.target)) {
-                return this.raise('TP.sig.InvalidElement');
-            }
-
-            if (TP.canInvoke(targetType, fname)) {
-                attrName = aMutationRecord.attributeName;
-
-                prevValue = aMutationRecord.oldValue;
-                newValue = TP.elementGetAttribute(targetNode, attrName, true);
-
-                if (TP.notValid(prevValue) &&
-                    TP.elementHasAttribute(targetNode, attrName, true)) {
-                    operation = TP.CREATE;
-                } else if (!TP.elementHasAttribute(targetNode, attrName, true)) {
-                    operation = TP.DELETE;
-                } else {
-                    operation = TP.UPDATE;
-                }
-
-                args = TP.hc('attrName', aMutationRecord.attributeName,
-                                'newValue', newValue,
-                                'prevValue', prevValue,
-                                'operation', operation);
-
-                targetType[fname](targetNode, args);
-            }
-
-            break;
-
-        case 'childList':
-
-            if (!TP.isEmpty(aMutationRecord.addedNodes) &&
-                !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
-
-                addedNodes = TP.ac(addedNodes);
-
-                //  Need to check the nodes individually for mutation tracking
-                //  stoppage.
-                addedNodes = addedNodes.filter(
-                        function(aNode) {
-
-                            if (TP.isElement(aNode) &&
-                                TP.elementHasAttribute(
-                                        aNode,
-                                        'tibet:nomutationtracking',
-                                        true)) {
-                                return false;
-                            }
-
-                            if (TP.nodeAncestorMatchesCSS(
-                                        aNode,
-                                        '*[tibet|nomutationtracking]')) {
-                                return false;
-                            }
-
-                            return true;
-                        });
-            }
-
-            if (TP.notEmpty(addedNodes)) {
-                fname = 'mutationAddedNodes';
-
-                if (TP.canInvoke(targetType, fname)) {
-                    targetType[fname](targetNode, addedNodes);
-                }
-            }
-
-            if (!TP.isEmpty(aMutationRecord.removedNodes) &&
-                !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
-
-                removedNodes = TP.ac(removedNodes);
-
-                //  Need to check the nodes individually for mutation tracking
-                //  stoppage.
-                removedNodes = removedNodes.filter(
-                        function(aNode) {
-
-                            if (TP.isElement(aNode) &&
-                                TP.elementHasAttribute(
-                                        aNode,
-                                        'tibet:nomutationtracking',
-                                        true)) {
-                                return false;
-                            }
-
-                            if (TP.nodeAncestorMatchesCSS(
-                                        aNode,
-                                        '*[tibet|nomutationtracking]')) {
-                                return false;
-                            }
-
-                            return true;
-                        });
-            }
-
-            if (TP.notEmpty(removedNodes)) {
-                fname = 'mutationRemovedNodes';
-
-                if (TP.canInvoke(targetType, fname)) {
-                    targetType[fname](targetNode, removedNodes);
-                }
-            }
-
-            if (TP.notEmpty(queryEntries = this.get('queries'))) {
-                targetDoc = TP.nodeGetDocument(targetNode);
-
-                queryKeys = queryEntries.getKeys();
-                len = queryKeys.getSize();
-
-                for (i = 0; i < len; i++) {
-                    entry = queryEntries.at(queryKeys.at(i));
-
-                    if (entry.at('document') === targetDoc) {
-                        this.executeSubtreeQueryAndDispatch(
-                                queryKeys.at(i),
-                                entry,
-                                addedNodes,
-                                removedNodes,
-                                targetDoc);
-                    }
-                }
-            }
-
-            break;
-
-        default:
-            break;
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineMethod('addSubtreeQuery',
-function(observer, queryPath, queryContext) {
-
-    var observerGID,
-        observerDoc;
-
-    if (!TP.isElement(observer)) {
-        //  TODO: Raise an InvalidString here
-        return this;
-    }
-
-    observerGID = TP.gid(observer, true);
-    observerDoc = TP.nodeGetDocument(observer);
-
-    this.get('queries').atPut(observerGID,
-                                TP.hc('document', observerDoc,
-                                        'path', queryPath,
-                                        'context', queryContext));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineMethod('removeSubtreeQuery',
-function(observer) {
-
-    this.get('queries').removeKey(TP.gid(observer));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MutationSignalSource.Type.defineMethod('executeSubtreeQueryAndDispatch',
-function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
-
-    var queryObserver,
-        queryPath,
-        queryContext,
-
-        results,
-
-        matchingNodes;
-
-    //  Make sure that we can get the Element that is registered under observer
-    //  GID.
-    if (!TP.isValid(queryObserver = TP.bySystemId(queryObserverGID))) {
-        //  TODO: Raise an InvalidObject here
-        return this;
-    }
-
-    //  This might be null if the receiver is interested in all added/removed
-    //  nodes.
-    queryPath = queryEntry.at('path');
-
-    //  NB: 'queryContext' won't be used if there is no query path object.
-    if (!TP.isElement(queryContext = queryEntry.at('context'))) {
-        queryContext = aDocument.documentElement;
-    }
-
-    //  If there is a valid path, then execute it.
-    if (TP.isValid(queryPath)) {
-        results = queryPath.executeGet(queryContext);
-    }
-
-    //  If there are added nodes, invoke that machinery.
-    if (TP.notEmpty(addedNodes)) {
-        if (TP.notEmpty(results)) {
-            matchingNodes = results.intersection(addedNodes, TP.IDENTITY);
-        } else {
-            matchingNodes = addedNodes;
-        }
-
-        if (TP.notEmpty(matchingNodes) &&
-            TP.canInvoke(queryObserver, 'mutationAddedFilteredNodes')) {
-            queryObserver.mutationAddedFilteredNodes(matchingNodes);
-        }
-    }
-
-    //  If there are removed nodes, invoke that machinery.
-    if (TP.notEmpty(removedNodes)) {
-        if (TP.notEmpty(results)) {
-            matchingNodes = results.intersection(removedNodes, TP.IDENTITY);
-        } else {
-            matchingNodes = removedNodes;
-        }
-
-        if (TP.notEmpty(matchingNodes) &&
-            TP.canInvoke(
-                    queryObserver, 'mutationRemovedFilteredNodes')) {
-            queryObserver.mutationRemovedFilteredNodes(matchingNodes);
-        }
-    }
-
-    return this;
-});
-
-//  ========================================================================
-//  TP.core.URISignalSource
-//  ========================================================================
-
-/*
-TP.core.URISignalSource is a type of signaling source that has a URI associated
-with it. These would include signal sources like server-sent event servers.
-*/
-
-TP.core.SignalSource.defineSubtype('core.URISignalSource');
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The URI event source's URI
-TP.core.URISignalSource.Inst.defineAttribute('uri');
-
-//  ------------------------------------------------------------------------
-
-TP.core.URISignalSource.Inst.defineMethod('init',
-function(aURI) {
-
-    /**
-     * @method init
-     * @summary Initialize a new signal instance.
-     * @param {TP.core.URI} aURI The URI to use to listen for events from.
-     * @exception TP.sig.InvalidURI
-     * @returns {TP.core.URISignalSource} A new instance.
-     */
-
-    var uri;
-
-    //  supertype initialization
-    this.callNextMethod();
-
-    //  Not a valid URI? We can't initialize properly then...
-    if (!TP.isURI(uri = TP.uc(aURI))) {
-        this.raise('TP.sig.InvalidURI');
-
-        return null;
-    }
-
-    this.set('uri', uri);
-
-    return this;
-});
-
-//  ========================================================================
-//  TP.core.SSESignalSource
-//  ========================================================================
-
-TP.core.URISignalSource.defineSubtype('core.SSESignalSource');
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The low-level Server-Side Events source object.
-TP.core.URISignalSource.Inst.defineAttribute('$eventSource');
-
-//  The private TP.core.Hash containing a map of custom event names to the
-//  handlers that were installed for each one so that we can unregister them.
-TP.core.URISignalSource.Inst.defineAttribute('$customEventHandlers');
-
-//  The Server-Side Events observer count
-TP.core.URISignalSource.Inst.defineAttribute('observerCount');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('init',
-function(aURI) {
-
-    /**
-     * @method init
-     * @summary Initialize a new signal instance.
-     * @param {TP.core.URI} aURI The URI to use to listen for events from.
-     * @returns {TP.core.SSESignalSource} A new instance.
-     */
-
-    //  supertype initialization
-    this.callNextMethod();
-
-    this.set('$customEventHandlers', TP.hc());
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('addObserver',
-function(anOrigin, aSignal, aHandler, aPolicy) {
-
-    /**
-     * @method addObserver
-     * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
-     *     origin(s).
-     * @param {Function} aHandler The specific handler to turn on observations
-     *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
-     * @returns {Boolean} True if the observer wants the main notification
-     *     engine to add the observation, false otherwise.
-     */
-
-    var observerCount,
-
-        sigTypes;
-
-    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  See if we have an observer count. If not, initialize it to 1.
-    if (TP.notValid(observerCount = this.get('observerCount'))) {
-        observerCount = 1;
-    } else {
-        observerCount += 1;
-    }
-    this.set('observerCount', observerCount);
-
-    //  If there are 1 or more observers and the connection is not open, then
-    //  open it.
-    if (observerCount > 0 && !this.connectionIsOpen()) {
-
-        //  Open the connection
-        if (!this.openConnection()) {
-            //  Can't open the connection - no sense in registering the handler
-            //  with the notification system.
-            return false;
-        }
-    }
-
-    //  Set up any custom handlers based on what kinds of signal(s) we were
-    //  supplied here.
-
-    if (!TP.isArray(sigTypes = aSignal)) {
-        sigTypes = TP.ac(aSignal);
-    }
-
-    sigTypes = sigTypes.collect(
-            function(aSignalType) {
-                var sigType,
-                    subs;
-
-                //  Grab the real type object if it wasn't supplied.
-                sigType = TP.isType(aSignalType) ?
-                                aSignalType :
-                                TP.sys.getTypeByName(aSignalType);
-
-                if (TP.notValid(subs = sigType.getSubtypes())) {
-                    return sigType;
-                }
-
-                return TP.ac(sigType, subs);
-            });
-    sigTypes = sigTypes.flatten();
-
-    this.setupCustomHandlers(sigTypes);
-
-    //  Tell the notification to register our handler, etc.
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('closeConnection',
-function() {
-
-    /**
-     * @method closeConnection
-     * @summary Closes the connection to the remote server-sent events server.
-     * @returns {Boolean} Whether or not the connection closed successfully.
-     */
-
-    var eventSource;
-
-    //  Try to obtain the event source object.
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        //  NOTE we don't raise here since this is often called during shutdown
-        //  and we don't want to report on errors we can't do anything about.
-        return false;
-    }
-
-    //  Close the connection
-    eventSource.close();
-
-    //  Signal it to any observers, since the spec doesn't provide for a
-    //  native-level 'close' event handler... booo.
-    this.signal('TP.sig.SourceClosed');
-
-    this.set('$eventSource', null);
-
-    //  Empty whatever remaining custom handlers that weren't unregistered (we
-    //  don't have to worry about removing them as event listeners from the
-    //  event source object since we're disposing of it).
-    this.get('$customEventHandlers').empty();
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('connectionIsOpen',
-function() {
-
-    /**
-     * @method connectionIsOpen
-     * @summary Returns whether or not the connection is currently open.
-     * @returns {Boolean} Whether or not the connection is currently open.
-     */
-
-    //  If we have a valid eventSource, then we're open
-    return TP.isValid(this.get('$eventSource'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('openConnection',
-function() {
-
-    /**
-     * @method openConnection
-     * @summary Opens the connection to the remote server-sent events server.
-     * @exception TP.sig.InvalidURI
-     * @exception TP.sig.InvalidSource
-     * @returns {Boolean} Whether or not the connection opened successfully.
-     */
-
-    var sourceURI,
-        eventSource;
-
-    //  If there is an existing event source, then close its connection
-    if (this.connectionIsOpen()) {
-        this.get('$eventSource').close();
-    }
-
-    //  If there is no valid URI, then we can't open the connection... return
-    //  false.
-    if (!TP.isURI(sourceURI = this.get('uri'))) {
-        this.raise('TP.sig.InvalidURI');
-
-        return false;
-    }
-
-    //  Try to open a connection to the remote server-sent events server.
-    try {
-        eventSource = new EventSource(sourceURI.asString());
-    } catch (e) {
-        this.raise('TP.sig.InvalidSource');
-
-        return false;
-    }
-
-    if (TP.isValid(eventSource)) {
-        this.set('$eventSource', eventSource);
-        this.setupStandardHandlers();
-    }
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('removeObserver',
-function(anOrigin, aSignal, aHandler, aPolicy) {
-
-    /**
-     * @method removeObserver
-     * @summary Removes a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
-     *     origin(s).
-     * @param {Function} aHandler The specific handler to turn off observations
-     *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
-     * @returns {Boolean} True if the observer wants the main notification
-     *     engine to remove the observation, false otherwise.
-     */
-
-    var observerCount,
-
-        sigTypes;
-
-    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  See if we have an observer count. If not, we didn't have any observers,
-    //  so just return true
-    if (TP.notValid(observerCount = this.get('observerCount'))) {
-        return true;
-    } else {
-        observerCount -= 1;
-    }
-    this.set('observerCount', observerCount);
-
-    //  Tear down any custom handlers based on what kinds of signal(s) we were
-    //  supplied here.
-
-    if (!TP.isArray(sigTypes = aSignal)) {
-        sigTypes = TP.ac(aSignal);
-    }
-
-    sigTypes = sigTypes.collect(
-            function(aSignalType) {
-                var sigType,
-                    subs;
-
-                //  Grab the real type object if it wasn't supplied.
-                sigType = TP.isType(aSignalType) ?
-                                aSignalType :
-                                TP.sys.getTypeByName(aSignalType);
-
-                if (TP.notValid(subs = sigType.getSubtypes())) {
-                    return sigType;
-                }
-
-                return TP.ac(sigType, subs);
-            });
-    sigTypes = sigTypes.flatten();
-
-    this.teardownCustomHandlers(sigTypes);
-
-    //  If there are no observers and the connection is open, close it.
-    if (observerCount === 0 && this.connectionIsOpen()) {
-
-        //  Close the connection
-        this.closeConnection();
-    }
-
-    //  Always tell the notification to remove our handler, etc.
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('setupCustomHandlers',
-function(signalTypes) {
-
-    /**
-     * @method setupCustomHandlers
-     * @summary Sets up handlers for 'custom' server-side events.
-     * @description Because the Server-Sent Events specification does not
-     *     specify that the general 'message' handler will fire when there is a
-     *     custom 'event' (as specified by the 'event:' tag in the received
-     *     data), we look at the signals being registered and if they have a
-     *     'NATIVE_NAME' slot, we use that to register a handler with our
-     *     private EventSource object under that event name. If they don't have
-     *     a 'NATIVE_NAME' slot, then we register a handler under the 'message'
-     *     event name.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
-     * @exception TP.sig.InvalidSource
-     * @returns {TP.core.SSESignalSource} The receiver.
-     */
-
-    var eventSource,
-        thisArg,
-        handlerRegistry;
-
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource');
-
-        return this;
-    }
-
-    //  Grab ourself, since we'll need it for the registered handler
-    thisArg = this;
-
-    //  A map that we need to keep up-to-date for handler unregistration
-    handlerRegistry = this.get('$customEventHandlers');
-
-    //  Loop over the signal types (or their names) and see if they need a
-    //  custom handler registered for them.
-    signalTypes.perform(
-        function(aSignalType) {
-            var eventName,
-                signalName,
-
-                handlerFunc;
-
-            eventName = TP.ifEmpty(aSignalType.NATIVE_NAME, 'message');
-
-            //  If there's already a handler registered for this native
-            //  event type then just return here. We don't want multiple
-            //  handlers for the same native event.
-            if (handlerRegistry.hasKey(eventName)) {
-                return;
-            }
-
-            signalName = aSignalType.getSignalName();
-
-            handlerFunc = function(evt) {
-                var payload,
-                    data;
-
-                try {
-                    data = TP.json2js(evt.data);
-                } catch (e) {
-                    data = evt.data;
-                }
-
-                payload = TP.hc(
-                            'origin', evt.origin,
-                            'data', data,
-                            'lastEventId', evt.lastEventId,
-                            'sourceURL', eventSource.url
-                            );
-
-                thisArg.signal(signalName, payload);
-
-                return;
-            };
-
-            //  Put it in the handler registry in case we went to unregister
-            //  it interactively later.
-            handlerRegistry.atPut(eventName, handlerFunc);
-
-            //  Add the custom event listener to the event source.
-            eventSource.addEventListener(eventName, handlerFunc, false);
-        });
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('setupStandardHandlers',
-function() {
-
-    /**
-     * @method setupStandardHandlers
-     * @summary Sets up the 'standard' Server-Side Events handlers for our
-     *     event source object.
-     * @exception TP.sig.InvalidSource
-     * @returns {TP.core.SSESignalSource} The receiver.
-     */
-
-    var eventSource,
-        errorCount;
-
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource');
-
-        return this;
-    }
-
-    //  Set up the event listener that will trigger when the connection is
-    //  opened.
-    eventSource.addEventListener(
-        'open',
-        function(evt) {
-            var payload;
-
-            payload = TP.hc(
-                        'url', eventSource.url,
-                        'withCredentials', eventSource.withCredentials,
-                        'readyState', eventSource.readyState
-                        );
-
-            this.signal('TP.sig.SourceOpen', payload);
-
-            return;
-        }.bind(this),
-        false);
-
-    //  Set up the event listener that will trigger when there is a *generic*
-    //  message (i.e. one with no custom event type - those are registered as
-    //  custom handlers).
-    eventSource.addEventListener(
-        'message',
-        function(evt) {
-            var payload;
-
-            payload = TP.hc(
-                        'origin', evt.origin,
-                        'data', evt.data,
-                        'lastEventId', evt.lastEventId,
-                        'sourceURL', eventSource.url
-                        );
-
-            this.signal('TP.sig.SourceDataReceived', payload);
-
-            return;
-        }.bind(this),
-        false);
-
-    errorCount = 0;
-
-    //  Set up the event listener that will trigger when there is an error.
-    eventSource.addEventListener(
-        'error',
-        function(evt) {
-            var payload;
-
-            //  Too many errors.
-            if (errorCount > TP.sys.cfg('sse.max_errors')) {
-                this.raise('TP.sig.UnstableConnection');
-                this.closeConnection();
-                return;
-            }
-
-            errorCount++;
-
-            //  If the readyState is set to EventSource.CLOSED, then the browser
-            //  is 'failing the connection'. In this case, we signal a
-            //  'TP.sig.SourceClosed' and return.
-            if (eventSource.readyState === EventSource.CLOSED) {
-                this.closeConnection();
-                return;
-            }
-
-            //  If the readyState is set to EventSource.CONNECTING, then the
-            //  browser is trying to 'reestablish the connection'. In this case,
-            //  we signal a 'TP.sig.SourceReconnecting' and return.
-            if (eventSource.readyState === EventSource.CONNECTING) {
-
-                this.signal('TP.sig.SourceReconnecting', payload);
-                return;
-            }
-
-            //  Otherwise, there was truly some sort of error, so we signal
-            //  'TP.sig.SourceError' with some information
-            payload = TP.hc(
-                        'url', eventSource.url,
-                        'withCredentials', eventSource.withCredentials,
-                        'readyState', eventSource.readyState
-                        );
-
-            this.signal('TP.sig.SourceError', payload);
-
-            this.closeConnection();
-            return;
-        }.bind(this),
-        false);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SSESignalSource.Inst.defineMethod('teardownCustomHandlers',
-function(signalTypes) {
-
-    /**
-     * @method teardownCustomHandlers
-     * @summary Tears down handlers for 'custom' server-side events.
-     * @description Because the Server-Sent Events specification does not
-     *     specify that the general 'message' handler will fire when there is a
-     *     custom 'event' (as specified by the 'event:' tag in the received
-     *     data), we look at the signals being registered and if they have a
-     *     'NATIVE_NAME' slot, we use that to unregister a handler with our
-     *     private EventSource objec
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
-     * @returns {TP.core.SSESignalSource} The receiver.
-     */
-
-    var eventSource,
-        handlerRegistry;
-
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        //  NOTE we don't raise here since this is often called during shutdown
-        //  and we don't want to report on errors we can't do anything about.
-        return this;
-    }
-
-    //  A map that we have kept up-to-date for handler unregistration
-    handlerRegistry = this.get('$customEventHandlers');
-
-    //  Loop over the signal types (or their names) and see if they need a
-    //  custom handler registered for them.
-    signalTypes.perform(
-        function(aSignalType) {
-            var customName,
-
-                handlerFunc;
-
-            //  If the signal type has a NATIVE_NAME slot, then remove the
-            //  custom handler that we would've set up using that value as the
-            //  event name.
-            if (TP.notEmpty(customName = aSignalType.NATIVE_NAME)) {
-
-                //  If there is a callable function registered in the handler
-                //  registry under the custom event name, remove it.
-                if (TP.isCallable(handlerFunc =
-                                    handlerRegistry.atPut(customName))) {
-
-                    handlerRegistry.removeKey(customName);
-                    eventSource.removeEventListener(customName,
-                                                    handlerFunc,
-                                                    false);
-                }
-            }
-        });
-
-    return this;
-});
-
-//  ========================================================================
-//  REMOTE SIGNAL SOURCE SIGNALS
-//  ========================================================================
-
-TP.sig.Signal.defineSubtype('RemoteSourceSignal');
-TP.sig.RemoteSourceSignal.Type.defineAttribute('defaultPolicy',
-    TP.INHERITANCE_FIRING);
-
-TP.sig.RemoteSourceSignal.defineSubtype('SourceOpen');
-TP.sig.RemoteSourceSignal.defineSubtype('SourceDataReceived');
-TP.sig.RemoteSourceSignal.defineSubtype('SourceClosed');
-
-TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
-
-TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
-
-//  ========================================================================
-//  RootObject Extensions
-//  ========================================================================
-
-TP.lang.RootObject.Type.defineHandler('Signal',
-function(aSignal) {
-
-    /**
-     * @method handleSignal
-     * @summary Handles notification of an incoming signal. For types the
-     *     standard handle call will try to locate a signal-specific handler
-     *     function just like with instances, but the default method for
-     *     handling them defers to an instance rather than the type itself.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @returns {Object} The function's return value.
-     */
-
-    var inst;
-
-    //  try to construct an instance and get it to handle things
-    if (TP.notValid(inst = this.from(aSignal))) {
-        return this.raise('TP.sig.InvalidHandler',
-                            'Unable to construct handler instance');
-    }
-
-    return inst.handle(aSignal);
 });
 
 //  ========================================================================

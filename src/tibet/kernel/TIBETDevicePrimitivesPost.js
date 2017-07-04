@@ -278,26 +278,58 @@ function(anEvent) {
      *     - Whether the native target is a Document
      *     - Whether the native target or any of its ancestors are disabled.
      *     - Whether the native target or any of its ancestors have a
-     *     'tibet:opaque' attribute that allows them to capture a particular
-     *     signal and therefore designates them as the 'proper target'.
+     *     'tibet:opaque_capturing' attribute that allows them to capture a
+     *     particular signal in the capture phase or 'tibet:opaque_bubbling'
+     *     attribute that allows them to capture a particular signal in the
+     *     bubbling phase and therefore designates them as the 'proper target'.
      * @param {Event} anEvent The event to resolve the target of.
      * @exception TP.sig.InvalidEvent
      * @returns {The} proper target for the supplied Event object.
      */
 
-    var target,
+    var doc,
+        focusedElem,
+
+        target,
         signalTypeName,
 
         current,
 
         computedTarget,
-        targetType;
+        targetType,
+
+        theSignal,
+
+        isDisabled;
 
     if (!TP.isEvent(anEvent)) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
-    target = TP.eventGetTarget(anEvent);
+    //  If the event is a type of 'key' event of some sort, then using the
+    //  event's 'target' as the 'starting point' is insufficient. The reason is
+    //  that, at least on the Chrome browser platforms, key events will only be
+    //  dispatched to those elements that hold the *native* browser focus (i.e.
+    //  that match the '.activeElement') - not the one that TIBET considers to
+    //  be focused. Therefore, we need to obtain the focused element as TIBET
+    //  sees it and use that.
+
+    if (TP.regex.KEY_EVENT.test(TP.eventGetType(anEvent))) {
+
+        //  Grab the target document and the focused element *as TIBET sees it*.
+        doc = TP.eventGetTargetDocument(anEvent);
+        focusedElem = TP.documentGetFocusedElement(doc);
+
+        //  If the focused element isn't the same as the target document's
+        //  '.activeElement', then use the focused element as the target.
+        if (focusedElem !== doc.activeElement) {
+            target = focusedElem;
+        }
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.eventGetTarget(anEvent);
+    }
 
     //  Sometimes IE will return a target that is not a Node. Can't go any
     //  further if that happens.
@@ -316,7 +348,7 @@ function(anEvent) {
         target = TP.ifInvalid(target.parentNode, target);
     }
 
-    //  we'll search for capturing on the TIBET name for the event
+    //  Make sure that it's a DOM signal that TIBET can handle.
     signalTypeName = TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent));
     if (TP.notValid(signalTypeName)) {
         return target;
@@ -331,13 +363,19 @@ function(anEvent) {
         current = current.parentNode;
     }
 
+    theSignal = TP.wrap(anEvent);
+
     while (current &&
             current.nodeType !== Node.DOCUMENT_NODE &&
             current.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
 
+        isDisabled =
+            TP.elementHasAttribute(current, 'disabled', true) ||
+            TP.elementHasAttribute(current, 'pclass:disabled', true);
+
         //  If the element at this level is 'disabled', then nothing we do here
         //  matters, so we bail out returning null.
-        if (TP.elementIsDisabled(current)) {
+        if (isDisabled) {
             return null;
         }
 
@@ -349,7 +387,7 @@ function(anEvent) {
             //  if the current element should capture the event at it's level.
             if (TP.isType(targetType =
                             TP.core.ElementNode.getConcreteType(current))) {
-                if (targetType.isOpaqueForSignal(current, signalTypeName)) {
+                if (targetType.isOpaqueCapturerFor(current, theSignal)) {
                     //  set computedTarget to the current, but NOTE NO BREAK
                     //  here so the iteration will continue up the tree until
                     //  we're sure we're not under a disabled element.
@@ -367,7 +405,8 @@ function(anEvent) {
     //  'original' (unless it was a Node.TEXT_NODE) event target, since we
     //  couldn't find any elements that had the attribute we were searching for.
     //  This allows a nice defaulting behavior when we're in a page (or DOM
-    //  section) that's not using the 'tibet:opaque' attribute and doesn't care.
+    //  section) that's not using the 'tibet:opaque_capturing' or
+    //  'tibet:opaque_bubbling' attribute and doesn't care.
     return computedTarget || target;
 });
 
@@ -691,16 +730,19 @@ function(anEvent) {
      * @returns {Element} The 'resolved target' of the event.
      */
 
-    var evt;
+    var evt,
+        target;
 
     evt = TP.eventNormalize(anEvent);
+
+    target = TP.eventGetTarget(evt);
 
     //  If there is no resolved target and the target is the Window, then we
     //  resolve the target to the window's document documentElement. This
     //  normalizes top-level events (like resize) so that users can subscribe
     //  for these events on the document or document element.
-    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(evt.target)) {
-        return evt.target.document.documentElement;
+    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(target)) {
+        return target.document.documentElement;
     }
 
     //  Note that we don't have a '$$' property for this property
@@ -852,7 +894,7 @@ keyboard events more effectively.
 
 TP.definePrimitive('dispatch',
 function(anOrigin, aSignal, anElement, anEventOrHash, aPolicy, isCancelable,
-isBubbling) {
+         isBubbling) {
 
     /**
      * @method dispatch
@@ -898,10 +940,10 @@ isBubbling) {
     //  copy of the args we can manipulate as needed
     argsOrEvent = anEventOrHash;
 
-    //  origin can be provided or null, in which case we look to see if we
-    //  got an element that can provide the origin data
+    //  origin can be provided or null, in which case we look to see if we got
+    //  an element or document that can provide the origin data
     if (TP.isEmpty(anOrigin)) {
-        if (TP.isElement(anElement)) {
+        if (TP.isElement(anElement) || TP.isDocument(anElement)) {
             localID = TP.lid(anElement, true);
             globalID = TP.gid(anElement);
         }
@@ -922,9 +964,13 @@ isBubbling) {
         globalID = anOrigin;
     }
 
-    //  for tibet purposes we always want to use fullname origins to ensure
-    //  proper lookups that can cross frame references
-    origin = globalID;
+    if (TP.isElement(anOrigin)) {
+        origin = anOrigin;
+    } else {
+        //  for tibet purposes we always want to use fullname origins to ensure
+        //  proper lookups that can cross frame references
+        origin = globalID;
+    }
 
     //  the signal can be provided as a String or as a TP.sig.Signal or can
     //  be null, in which case we default to the UI signal name which maps
@@ -1009,7 +1055,6 @@ isBubbling) {
     if (TP.canInvoke(argsOrEvent, 'atPut')) {
         argsOrEvent.atPut('elementGlobalID', globalID);
         argsOrEvent.atPut('elementLocalID', localID);
-        argsOrEvent.atPut('tibetTarget', anElement);
 
         //  Use the 'TIBET shadow version' of the W3C compliant property
         //  here.
@@ -1020,7 +1065,6 @@ isBubbling) {
         try {
             argsOrEvent.elementGlobalID = globalID;
             argsOrEvent.elementLocalID = localID;
-            argsOrEvent.tibetTarget = anElement;
 
             //  Use the 'TIBET shadow version' of the W3C compliant property
             //  here.
@@ -1098,7 +1142,7 @@ function(nativeEvt) {
     }
 
     //  Get the native event's target
-    sourceElement = nativeEvt.target;
+    sourceElement = TP.eventGetTarget(nativeEvt);
 
     //  Get the source element's window
     sourceWindow = TP.nodeGetWindow(sourceElement);
@@ -1122,8 +1166,8 @@ function(nativeEvt) {
     TP.eventStopPropagation(nativeEvt);
 
     //  If the nodeType of the source element is a Node.TEXT_NODE node, then
-    //  it won't have an id and its parent should be treated as an opaque
-    //  node. Therefore, if it has a parent node, set the source element to
+    //  it won't have an id and its parent should be treated as the source
+    //  element. Therefore, if it has a parent node, set the source element to
     //  be that.
     if (TP.isTextNode(sourceElement)) {
         if (TP.notValid(sourceElement = sourceElement.parentNode)) {
@@ -1169,16 +1213,8 @@ function(nativeEvt) {
     localID = TP.lid(sourceElement, true);
     globalID = TP.gid(sourceElement, true);
 
-    evtInfo = TP.eventNormalize(nativeEvt);
-
-    try {
-        evtInfo.elementGlobalID = globalID;
-        evtInfo.elementLocalID = localID;
-        evtInfo.tibetTarget = sourceElement;
-    } catch (e) {
-        TP.ifError() ?
-            TP.error(TP.ec(e, 'Error instrumenting event object.')) : 0;
-    }
+    evtInfo = TP.hc('elementLocalID', localID,
+                    'elementGlobalID', globalID);
 
     //  If we have a valid firing policy, use that policy to fire the signal
     if (TP.isValid(firingPolicy = sourceElement.firingPolicy) &&
@@ -1312,10 +1348,12 @@ function(anEvent) {
      * @param {Event} anEvent The native event object.
      */
 
-    var targetElem,
+    var targetNode,
 
         fname,
-        elemType;
+        elemType,
+
+        sigName;
 
     if (anEvent.$captured) {
         return;
@@ -1325,16 +1363,21 @@ function(anEvent) {
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
-    if (TP.isElement(targetElem = TP.eventGetResolvedTarget(anEvent))) {
+    targetNode = TP.eventGetResolvedTarget(anEvent);
+    if (TP.notValid(targetNode)) {
+        targetNode = TP.eventGetTarget(anEvent);
+    }
+
+    if (TP.isElement(targetNode) || TP.isDocument(targetNode)) {
         fname = 'on' + TP.eventGetType(anEvent);
 
-        elemType = TP.wrap(targetElem).getType();
+        elemType = TP.wrap(targetNode).getType();
 
         //  Message the type for the element that is 'responsible' for this
         //  event. It's native control sent this event and we need to let
         //  the type know about it.
         if (TP.canInvoke(elemType, fname)) {
-            elemType[fname](targetElem, anEvent);
+            elemType[fname](targetNode, anEvent);
         }
 
         //  If the native event was prevented, then we should just bail out
@@ -1345,11 +1388,13 @@ function(anEvent) {
             return;
         }
 
+        sigName = TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent));
+
         //  Dispatch the signal
         TP.dispatch(
-                null,   //  'V' will be computed from targetElem
-                TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent)),
-                targetElem,
+                null,   //  'V' will be computed from targetNode
+                TP.sys.getTypeByName(sigName).construct(anEvent, true),
+                targetNode,
                 anEvent,
                 TP.DOM_FIRING);
     }

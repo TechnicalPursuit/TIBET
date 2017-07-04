@@ -58,7 +58,7 @@ function(aPayload) {
     } else if (TP.canInvoke(aPayload, 'getPayload')) {
         //  other requests have their payloads extracted and reused
         payload = aPayload.getPayload();
-    } else if (TP.canInvoke(aPayload, TP.ac('at', 'atPut'))) {
+    } else if (TP.canInvokeInterface(aPayload, TP.ac('at', 'atPut'))) {
         //  dictionaries are used as is
         payload = aPayload;
     } else {
@@ -116,12 +116,14 @@ TP.sig.ShellRequest.Inst.defineAttribute('$tagtime');
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -192,7 +194,9 @@ function(aResult) {
 
     responder = this.get('responder');
     if (TP.canInvoke(responder, 'saveProfile')) {
-        responder.saveProfile.bind(responder).fork(0);
+        setTimeout(function() {
+            responder.saveProfile();
+        }, 0);
     }
 
     return TP.CONTINUE;
@@ -411,9 +415,14 @@ function() {
      * @returns {Array} An array of 0 to N input objects.
      */
 
-    //  If the receiver has a value in TP.STDIN, use it. Otherwise return an
-    //  empty Array.
-    return TP.ifInvalid(this.at(TP.STDIN), TP.ac());
+    var stdin;
+
+    stdin = this.at(TP.STDIN);
+    if (TP.notValid(stdin)) {
+        stdin = TP.ac();
+    }
+
+    return stdin;
 });
 
 //  ------------------------------------------------------------------------

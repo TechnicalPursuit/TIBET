@@ -2,67 +2,284 @@
 	LESS variables common across all 'xctrls:' controls for the 'tpi' theme.
 */
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 //  common variables
 
-@xctrls_-border-color-normal: black;
-@xctrls_-border-color-hover: #D59D6E;
-@xctrls_-border-color-focus: #6A9FB5;
-@xctrls_-border-color-active: #D23E3E;
-@xctrls_-border-color-disabled: #444444;
+@xctrls_-border-color-normal: #aaa;
+@xctrls_-border-color-hover: #aaa;
+@xctrls_-border-color-focus: #aaa;
+@xctrls_-border-color-active: #aaa;
+@xctrls_-border-color-disabled: #eee;
 
 //  xctrls|button variables
 
 @xctrls_button-border-width: 1px;
 @xctrls_button-border-style: solid;
-@xctrls_button-border-radius: 4px;
+@xctrls_button-border-radius: 3px;
 
-@xctrls_button-font-family: Helvetica, Arial, sans-serif;
+@xctrls_button-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_button-font-size: 99%;
 @xctrls_button-font-color-normal: black;
-@xctrls_button-font-color-hover: #D59D6E;
-@xctrls_button-font-color-focus: #46A3C9;
-@xctrls_button-font-color-active: #D23E3E;
-@xctrls_button-font-color-disabled: #444444;
+@xctrls_button-font-color-hover: #666;
+@xctrls_button-font-color-focus: #666;
+@xctrls_button-font-color-active: #666;
+@xctrls_button-font-color-disabled: #aaa;
+
+@xctrls_button-background-color-normal: white;
+@xctrls_button-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_button-background-color-focus: gold;
+@xctrls_button-background-color-active: gold;
+@xctrls_button-background-color-disabled: #eee;
+
+//  xctrls|buttonitem variables
+
+@xctrls_buttonitem-border-width: 1px;
+@xctrls_buttonitem-border-style: solid;
+@xctrls_buttonitem-border-radius: 3px;
+
+@xctrls_buttonitem-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_buttonitem-font-size: 99%;
+@xctrls_buttonitem-font-color-normal: black;
+@xctrls_buttonitem-font-color-hover: #666;
+@xctrls_buttonitem-font-color-focus: #666;
+@xctrls_buttonitem-font-color-active: #666;
+@xctrls_buttonitem-font-color-disabled: #aaa;
+
+@xctrls_buttonitem-background-color-normal: white;
+@xctrls_buttonitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_buttonitem-background-color-focus: gold;
+@xctrls_buttonitem-background-color-active: gold;
+@xctrls_buttonitem-background-color-disabled: #eee;
+
+@xctrls_buttonitem-background-color-selected: gold;
 
 //  xctrls|checkitem variables
 
-@xctrls_checkitem-font-family: Helvetica, Arial, sans-serif;
+@xctrls_checkitem-font-family: arial, helvetica, clean, sans-serif;
 @xctrls_checkitem-font-color-normal: black;
-@xctrls_checkitem-font-color-hover: #D59D6E;
-@xctrls_checkitem-font-color-focus: #46A3C9;
-@xctrls_checkitem-font-color-active: #D23E3E;
-@xctrls_checkitem-font-color-disabled: #444444;
+@xctrls_checkitem-font-color-hover: #666;
+@xctrls_checkitem-font-color-focus: #666;
+@xctrls_checkitem-font-color-active: #666;
+@xctrls_checkitem-font-color-disabled: #aaa;
+
+@xctrls_checkitem-background-color-normal: white;
+@xctrls_checkitem-background-color-hover: white;
+@xctrls_checkitem-background-color-focus: white;
+@xctrls_checkitem-background-color-active: white;
+@xctrls_checkitem-background-color-disabled: white;
+
+@xctrls_checkitem-check-border-color-normal: black;
+@xctrls_checkitem-check-border-color-hover: black;
+@xctrls_checkitem-check-border-color-focus: black;
+@xctrls_checkitem-check-border-color-active: black;
+@xctrls_checkitem-check-border-color-disabled: #eee;
 
 @xctrls_checkitem-check-color-normal: black;
-@xctrls_checkitem-check-color-hover: #D59D6E;
-@xctrls_checkitem-check-color-focus: #46A3C9;
-@xctrls_checkitem-check-color-active: #D23E3E;
-@xctrls_checkitem-check-color-disabled: #444444;
+@xctrls_checkitem-check-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_checkitem-check-color-focus: gold;
+@xctrls_checkitem-check-color-active: gold;
+@xctrls_checkitem-check-color-disabled: #eee;
 
 //  xctrls|radioitem variables
 
-@xctrls_radioitem-font-family: Helvetica, Arial, sans-serif;
+@xctrls_radioitem-font-family: arial, helvetica, clean, sans-serif;
 @xctrls_radioitem-font-color-normal: black;
-@xctrls_radioitem-font-color-hover: #D59D6E;
-@xctrls_radioitem-font-color-focus: #46A3C9;
-@xctrls_radioitem-font-color-active: #D23E3E;
-@xctrls_radioitem-font-color-disabled: #444444;
+@xctrls_radioitem-font-color-hover: #666;
+@xctrls_radioitem-font-color-focus: #666;
+@xctrls_radioitem-font-color-active: #666;
+@xctrls_radioitem-font-color-disabled: #aaa;
+
+@xctrls_radioitem-background-color-normal: white;
+@xctrls_radioitem-background-color-hover: white;
+@xctrls_radioitem-background-color-focus: white;
+@xctrls_radioitem-background-color-active: white;
+@xctrls_radioitem-background-color-disabled: white;
 
 @xctrls_radioitem-check-color-normal: black;
-@xctrls_radioitem-check-color-hover: #D59D6E;
-@xctrls_radioitem-check-color-focus: #46A3C9;
-@xctrls_radioitem-check-color-active: #D23E3E;
-@xctrls_radioitem-check-color-disabled: #444444;
+@xctrls_radioitem-check-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_radioitem-check-color-focus: gold;
+@xctrls_radioitem-check-color-active: gold;
+@xctrls_radioitem-check-color-disabled: #eee;
 
 //  xctrls|textitem variables
 
-@xctrls_textitem-font-family: Helvetica, Arial, sans-serif;
+@xctrls_textitem-font-family: arial, helvetica, clean, sans-serif;
 @xctrls_textitem-font-color-normal: black;
-@xctrls_textitem-font-color-hover: #D59D6E;
-@xctrls_textitem-font-color-focus: #46A3C9;
-@xctrls_textitem-font-color-active: #D23E3E;
-@xctrls_textitem-font-color-disabled: #444444;
+@xctrls_textitem-font-color-hover: #666;
+@xctrls_textitem-font-color-focus: #666;
+@xctrls_textitem-font-color-active: #666;
+@xctrls_textitem-font-color-disabled: #aaa;
 
-@xctrls_textitem-backgroundcolor-selected: gray;
+@xctrls_textitem-background-color-normal: transparent;
+@xctrls_textitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_textitem-background-color-focus: gold;
+@xctrls_textitem-background-color-active: gold;
+@xctrls_textitem-background-color-disabled: #eee;
+
+@xctrls_textitem-background-color-selected: gray;
+
+//  xctrls|dialog variables
+
+@xctrls_dialog-border-width: 1px;
+@xctrls_dialog-border-style: solid;
+@xctrls_dialog-border-radius: 4px;
+
+@xctrls_dialog-border-color-normal: #666;
+@xctrls_dialog-border-color-hover: initial;
+@xctrls_dialog-border-color-focus: initial;
+@xctrls_dialog-border-color-active: initial;
+@xctrls_dialog-border-color-disabled: initial;
+
+@xctrls_dialog-background-color: white;
+
+@xctrls_dialog-header-background-color: #eee;
+@xctrls_dialog-header-color: black;
+@xctrls_dialog-header-font-size: 120%;
+@xctrls_dialog-header-line-height: 1.5;
+
+@xctrls_dialog-footer-background-color: #eee;
+
+//  xctrls|list variables
+
+@xctrls_listitem-padding-width: 2px;
+
+@xctrls_list-border-width: 1px;
+@xctrls_list-border-style: solid;
+@xctrls_list-border-radius: 4px;
+
+@xctrls_list-border-color-normal: #eee;
+@xctrls_list-border-color-hover: initial;
+@xctrls_list-border-color-focus: initial;
+@xctrls_list-border-color-active: initial;
+@xctrls_list-border-color-disabled: initial;
+
+@xctrls_listitem-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_listitem-font-color-normal: black;
+@xctrls_listitem-font-color-hover: #666;
+@xctrls_listitem-font-color-focus: #666;
+@xctrls_listitem-font-color-active: #666;
+@xctrls_listitem-font-color-disabled: #aaa;
+
+@xctrls_listitem-border-width: 1px;
+@xctrls_listitem-border-style: solid;
+
+@xctrls_listitem-border-color-normal: #eee;
+@xctrls_listitem-border-color-hover: initial;
+@xctrls_listitem-border-color-focus: black;
+@xctrls_listitem-border-color-active: initial;
+@xctrls_listitem-border-color-disabled: initial;
+
+@xctrls_listitem-background-color-normal: white;
+@xctrls_listitem-background-color-hover: rgba(255, 215, 0, 0.5);
+//  NB: We don't set a background-color for focused items - it hides whether
+//  they're selected or not.
+@xctrls_listitem-background-color-active: gold;
+@xctrls_listitem-background-color-disabled: white;
+
+@xctrls_listitem-background-color-selected-normal: gold;
+
+@xctrls_listitem-grouping-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_listitem-grouping-font-weight: bold;
+@xctrls_listitem-grouping-font-color-normal: black;
+@xctrls_listitem-grouping-font-color-disabled: #aaa;
+
+@xctrls_listitem-grouping-background-color-normal: #eee;
+@xctrls_listitem-grouping-background-color-hover: #eee;
+
+//  xctrls|notifier variables
+
+@xctrls_notifier-border-width: 1px;
+@xctrls_notifier-border-style: solid;
+@xctrls_notifier-border-radius: 4px;
+
+@xctrls_notifier-border-color-normal: #666;
+@xctrls_notifier-border-color-hover: initial;
+@xctrls_notifier-border-color-active: initial;
+
+@xctrls_notifier-background-color: white;
+@xctrls_notifier-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_notifier-background-color-active: gold;
+
+//  xctrls|table variables
+
+@xctrls_tableitem-padding-width: 2px;
+
+@xctrls_table-border-width: 1px;
+@xctrls_table-border-style: solid;
+@xctrls_table-border-radius: 4px;
+
+@xctrls_table-border-color-normal: #eee;
+@xctrls_table-border-color-hover: initial;
+@xctrls_table-border-color-focus: initial;
+@xctrls_table-border-color-active: initial;
+@xctrls_table-border-color-disabled: initial;
+
+@xctrls_tableitem-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_tableitem-font-color-normal: black;
+@xctrls_tableitem-font-color-hover: #666;
+@xctrls_tableitem-font-color-focus: #666;
+@xctrls_tableitem-font-color-active: #666;
+@xctrls_tableitem-font-color-disabled: #aaa;
+
+@xctrls_tableitem-border-width: 1px;
+@xctrls_tableitem-border-style: solid;
+
+@xctrls_tableitem-border-color-normal: #eee;
+@xctrls_tableitem-border-color-hover: initial;
+@xctrls_tableitem-border-color-focus: black;
+@xctrls_tableitem-border-color-active: initial;
+@xctrls_tableitem-border-color-disabled: initial;
+
+@xctrls_tableitem-background-color-normal: white;
+@xctrls_tableitem-background-color-hover: rgba(255, 215, 0, 0.5);
+//  NB: We don't set a background-color for focused items - it hides whether
+//  they're selected or not.
+@xctrls_tableitem-background-color-active: gold;
+@xctrls_tableitem-background-color-disabled: white;
+
+@xctrls_tableitem-background-color-selected-normal: gold;
+
+@xctrls_tableitem-grouping-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_tableitem-grouping-font-weight: bold;
+@xctrls_tableitem-grouping-font-color-normal: black;
+@xctrls_tableitem-grouping-font-color-disabled: #aaa;
+
+@xctrls_tableitem-grouping-background-color-normal: #eee;
+@xctrls_tableitem-grouping-background-color-hover: #eee;
+
+//  xctrls|tabitem variables
+
+@xctrls_tabitem-border-width: 1px;
+@xctrls_tabitem-border-style: solid;
+@xctrls_tabitem-border-radius: 6px;
+
+@xctrls_tabitem-font-family: arial, helvetica, clean, sans-serif;
+@xctrls_tabitem-font-color-normal: black;
+@xctrls_tabitem-font-color-hover: #666;
+@xctrls_tabitem-font-color-focus: #666;
+@xctrls_tabitem-font-color-active: #666;
+@xctrls_tabitem-font-color-disabled: #aaa;
+
+@xctrls_tabitem-background-color-normal: white;
+@xctrls_tabitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_tabitem-background-color-focus: gold;
+@xctrls_tabitem-background-color-active: gold;
+@xctrls_tabitem-background-color-disabled: #eee;
+
+@xctrls_tabitem-background-color-selected-normal: gold;
+
+//  xctrls|tooltip variables
+
+@xctrls_tooltip-border-width: 1px;
+@xctrls_tooltip-border-style: solid;
+@xctrls_tooltip-border-radius: 4px;
+
+@xctrls_tooltip-border-color-normal: #666;
+@xctrls_tooltip-border-color-hover: initial;
+@xctrls_tooltip-border-color-active: initial;
+
+@xctrls_tooltip-background-color: white;
+@xctrls_tooltip-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_tooltip-background-color-active: gold;
 

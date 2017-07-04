@@ -1,0 +1,137 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+sherpa|changes {
+
+    display: block;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+}
+
+sherpa|changes > .header {
+
+    position: absolute;
+
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+
+    height: 30px;
+
+    border: 0;
+    border-top: 1px solid white;
+    border-top-left-radius: 5px;
+
+    background-color: #eee;
+}
+
+sherpa|changes > .header > sherpa|count[name="server"] {
+
+    position: absolute;
+
+    left: 50%;
+
+    margin-left: -50px;
+}
+
+sherpa|changes > .header > sherpa|sync {
+
+    position: absolute;
+
+    left: 50%;
+
+    margin-left: -12px;
+}
+
+sherpa|changes > .header > sherpa|count[name="client"] {
+
+    position: absolute;
+
+    left: 50%;
+
+    margin-left: 16px;
+}
+
+sherpa|changes > .content {
+
+    position: absolute;
+
+    top: 31px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    min-width: 0;
+    max-width: none;
+
+    background-color: #eee;
+
+    border-top: 1px solid #aaa;
+}
+
+sherpa|changes > .content > span {
+    line-height: 2em;
+    margin: 0;
+    padding: 0;
+}
+
+sherpa|changes > .content > xctrls|list {
+    position: absolute;
+    top: 2em;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    margin: 0 40px 4px;
+}
+
+sherpa|changes > .header > .trigger.button {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    width: 48px;
+    height: 30px;
+
+    background-size: 20px;
+    background-position: 12px;
+    background-repeat: no-repeat;
+
+    background-image: url("~ide_root/media/ic_change_history_black_24px.svg");
+
+    cursor: pointer;
+}
+
+sherpa|changes > .header > .trigger.button:hover {
+
+    background-color: rgba(255, 215, 0, 0.5);
+
+    color: #333;
+}
+
+/*
+ * if the right side (containing changes) is closed then we can only view the
+ * trigger, not the rest of the header components (like toggle etc).
+ */
+#background:not(.edge-east-open) sherpa|changes > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.south.east.corner[pclass|closed] sherpa|changes > .content {
+
+    display: none;
+}
+
+#background:not(.edge-east-open) .framing.corner:not([pclass|closed]) sherpa|changes > .header > * {
+
+    display: block;
+}
+

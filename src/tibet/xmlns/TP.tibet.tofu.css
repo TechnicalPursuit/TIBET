@@ -1,5 +1,5 @@
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 tibet|tofu {
 
@@ -14,7 +14,7 @@ tibet|tofu {
     width: 150px;
     height: 1.5em;
 
-    border: solid 1px #CCCCCC;
+    border: solid 1px #ccc;
 
     text-align: center;
     vertical-align: middle;
@@ -30,6 +30,7 @@ tibet|tofu {
 }
 
 tibet|tofu > .content {
+
     display: none;
 }
 

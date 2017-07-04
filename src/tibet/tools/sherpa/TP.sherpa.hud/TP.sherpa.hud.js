@@ -29,6 +29,13 @@ TP.sherpa.hud.Inst.resolveTraits(
         TP.sherpa.hud);
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Inst.defineAttribute('initialBackgroundClassNames');
+TP.sherpa.hud.Inst.defineAttribute('currentBackgroundClassNames');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -36,52 +43,6 @@ TP.sherpa.hud.Inst.defineMethod('isVisible',
 function() {
 
     return !TP.bc(this.getAttribute('hidden'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
-
-    /**
-     * @method setAttrHidden
-     * @summary
-     * @returns {TP.sherpa.hud} The receiver.
-     */
-
-    var wasHidden,
-
-        drawerElement,
-
-        drawerFinishedFunc;
-
-    wasHidden = TP.bc(this.getAttribute('hidden'));
-
-    if (wasHidden === beHidden) {
-        return this;
-    }
-
-    drawerElement = TP.byId('south', this.getNativeWindow(), false);
-
-    if (TP.isTrue(beHidden)) {
-
-        TP.elementGetStyleObj(drawerElement).height = '';
-
-        this.hideAllHUDDrawers();
-
-        this.getNativeWindow().focus();
-    } else {
-
-        (drawerFinishedFunc = function(aSignal) {
-            drawerFinishedFunc.ignore(
-                drawerElement, 'TP.sig.DOMTransitionEnd');
-
-        }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
-
-        this.showAllHUDDrawers();
-    }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -114,22 +75,62 @@ function() {
 
     TP.elementAddClass(centerElem, 'fullscreen');
 
-    //  Remove classes from the background div that cause other components (like
-    //  the console output) to resize when drawers are open fully.
+    //  Capture the current classes for the 'visible' state for the background
+    //  element to the set of classes that are present on the background
+    //  element. We will restore these when the HUD is shown.
+
     backgroundElem = TP.byId('background', win, false);
 
-    //  Stash the current classes for the 'visible' state for the background
-    //  element on a custom attribute.
-    TP.elementSetAttribute(backgroundElem,
-                            'tibet:visible-classes',
-                            TP.elementGetAttribute(backgroundElem, 'class', true),
-                            true);
+    this.set('currentBackgroundClassNames',
+                TP.elementGetAttribute(backgroundElem, 'class', true));
 
-    //  NB: This should match the original setting of 'class' for the background
-    //  element.
-    TP.elementSetAttribute(backgroundElem, 'class', 'noselect', true);
+    TP.elementSetAttribute(
+        backgroundElem,
+        'class',
+        this.get('initialBackgroundClassNames'),
+        true);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Inst.defineMethod('setAttrClosed',
+function(beClosed) {
+
+    /**
+     * @method setAttrClosed
+     * @summary
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    var wasClosed,
+
+        drawerElement;
+
+    wasClosed = TP.bc(this.getAttribute('closed'));
+
+    if (wasClosed === beClosed) {
+        //  Exit here - no need to call up to our supertype to toggle the
+        //  attribute, since it already has the value we desire.
+        return this;
+    }
+
+    drawerElement = TP.byId('south', this.getNativeWindow(), false);
+
+    if (TP.isTrue(beClosed)) {
+
+        TP.elementGetStyleObj(drawerElement).height = '';
+
+        this.hideAllHUDDrawers();
+
+        this.getNativeWindow().focus();
+    } else {
+
+        this.showAllHUDDrawers();
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -148,7 +149,9 @@ function() {
         hudDrawers,
 
         centerElem,
-        backgroundElem;
+        backgroundElem,
+
+        currentBackgroundClassNames;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
@@ -162,19 +165,49 @@ function() {
 
     TP.elementRemoveClass(centerElem, 'fullscreen');
 
-    //  Remove classes from the background div that cause other components (like
-    //  the console output) to resize when drawers are open fully.
+    //  Restore the current classes for the 'visible' state for the background
+    //  element from either what was captured before we hid or the initial set
+    //  of classes that was present on the background element when the HUD was
+    //  initialized.
+
     backgroundElem = TP.byId('background', win, false);
 
-    //  Restore the current classes for the 'visible' state for the background
-    //  element from a custom attribute to the 'class' attribute and remove the
-    //  custom attribute.
-    TP.elementSetAttribute(
-        backgroundElem,
-        'class',
-        TP.elementGetAttribute(backgroundElem, 'tibet:visible-classes', true),
-        true);
-    TP.elementRemoveAttribute(backgroundElem, 'tibet:visible-classes', true);
+    //  If there are no current background class names, then initialize them to
+    //  the initial background class names
+    currentBackgroundClassNames = this.get('currentBackgroundClassNames');
+    if (TP.isEmpty(currentBackgroundClassNames)) {
+        this.set('currentBackgroundClassNames',
+                    this.get('initialBackgroundClassNames'));
+    } else {
+        TP.elementSetAttribute(
+            backgroundElem,
+            'class',
+            currentBackgroundClassNames,
+            true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    var backgroundElem;
+
+    backgroundElem = TP.byId('background', this.getNativeWindow(), false);
+
+    //  Capture the initial set of background class names for use later in
+    //  toggling.
+    this.set('initialBackgroundClassNames',
+                TP.elementGetAttribute(backgroundElem, 'class', true));
 
     return this;
 });

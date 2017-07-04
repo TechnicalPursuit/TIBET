@@ -10,8 +10,8 @@
 
 /*
  * Types specific to workflow in terms of requests, resources, and their
- * responses. The types here, particularly TP.core.Request, TP.core.Service,
- * and TP.core.Response provide the foundation of TIBET's "service layer".
+ * responses. The types here, particularly TP.sig.Request, TP.core.Service,
+ * and TP.sig.Response provide the foundation of TIBET's "service layer".
  *
  * Also included here are TIBET's Controller and Application types along with
  * helpers for things like History etc.
@@ -83,14 +83,14 @@ function(originSignalPairs) {
      * @returns {TP.core.Triggered} The receiver.
      */
 
-    var obj;
+    var thisref;
 
-    obj = this;
+    thisref = this;
 
     if (TP.notEmpty(originSignalPairs)) {
         originSignalPairs.forEach(
                             function(pair) {
-                                obj.addTrigger.apply(obj, pair);
+                                thisref.addTrigger.apply(thisref, pair);
                             });
     }
 
@@ -131,15 +131,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.ignore(pair.first(), pair.last());
+                    thisref.ignore(pair.first(), pair.last());
                 });
 
     return this;
@@ -159,15 +159,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.observe(pair.first(), pair.last());
+                    thisref.observe(pair.first(), pair.last());
                 });
 
     return this;
@@ -232,14 +232,14 @@ function(originSignalPairs) {
      * @returns {TP.core.Triggered} The receiver.
      */
 
-    var obj;
+    var thisref;
 
-    obj = this;
+    thisref = this;
 
     if (TP.notEmpty(originSignalPairs)) {
         originSignalPairs.forEach(
                             function(pair) {
-                                obj.addTrigger.apply(obj, pair);
+                                thisref.addTrigger.apply(thisref, pair);
                             });
     }
 
@@ -289,15 +289,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.ignore(pair.first(), pair.last());
+                    thisref.ignore(pair.first(), pair.last());
                 });
 
     return this;
@@ -317,15 +317,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.observe(pair.first(), pair.last());
+                    thisref.observe(pair.first(), pair.last());
                 });
 
     return this;
@@ -545,7 +545,7 @@ function() {
         return keys;
     }
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         keys = vcard.getAccessKeys();
     } else {
         keys = TP.ac();
@@ -575,7 +575,7 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getRoles().first();
     }
 
@@ -600,7 +600,7 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getUnits().last();
     }
 
@@ -634,11 +634,11 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getRoles();
     }
 
-    return;
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -654,20 +654,20 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
-        return vcard.getUnits().last();
+    if (TP.isValid(vcard = this.getVcard())) {
+        return vcard.getUnits();
     }
 
-    return;
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Resource.Inst.defineMethod('getVCard',
+TP.core.Resource.Inst.defineMethod('getVcard',
 function() {
 
     /**
-     * @method getVCard
+     * @method getVcard
      * @summary Returns the receiver's vcard, if one has been set.
      * @returns {TP.vcard.vcard} A TIBET vcard wrapper element.
      */
@@ -736,7 +736,7 @@ function(aSignal) {
         }
     }
 
-    return;
+    return TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
@@ -902,13 +902,15 @@ function(aParamInfo, aRequest) {
 
         saveCredentials;
 
-    if (TP.notValid(sourceCard = this.get('vcard')) &&
+    if (TP.notValid(sourceCard = this.getVcard()) &&
         TP.notValid(aParamInfo)) {
         return this;
     }
 
-    defaults = TP.ifInvalid(this.getType().get('defaultedParameters'),
-                            TP.hc());
+    defaults = this.getType().get('defaultedParameters');
+    if (TP.notValid(defaults)) {
+        defaults = TP.hc();
+    }
 
     //  Grab our current user - we may need it later
     currentUser = TP.sys.getEffectiveUser();
@@ -974,7 +976,7 @@ function(aParamInfo, aRequest) {
                         if (TP.isEmpty(paramValue = credentials.at(
                                         vcardPropName))) {
                             if (TP.isEmpty(paramValue =
-                                            TP.prompt(promptText))) {
+                                            prompt(promptText))) {
                                 paramValue = TP.isFalse(isRequired) ?
                                                 TP.NULL : null;
                             }
@@ -986,7 +988,7 @@ function(aParamInfo, aRequest) {
                         //  Otherwise, if the parameter value is '{PROMPT}',
                         //  then we prompt the user for it but *DO NOT* store it
                         //  in the credentials database.
-                        paramValue = TP.prompt(promptText);
+                        paramValue = prompt(promptText);
                     }
                 } else {
                     //  Otherwise, ask the user for credentials for ourself (as
@@ -1000,7 +1002,7 @@ function(aParamInfo, aRequest) {
                     if (TP.isEmpty(paramValue =
                                     credentials.at(vcardPropName))) {
                         if (TP.isEmpty(paramValue =
-                                        TP.prompt(promptText))) {
+                                        prompt(promptText))) {
                             paramValue = TP.isFalse(isRequired) ?
                                             TP.NULL : null;
                         }
@@ -1129,8 +1131,37 @@ TP.sig.WorkflowSignal.Inst.resolveTraits(
 TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy',
                                             TP.INHERITANCE_FIRING);
 
-//  Turn off notification of WorkflowSignal and subtypes through controllers.
-TP.sig.WorkflowSignal.Type.isControllerRoot(true);
+//  WorkflowSignals should traverse the controller chain...but not
+//  WorkflowSignal itself. NOTE that being a controller signal is inherited but
+//  acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.WorkflowSignal.Type.isControllerSignal(true);
+TP.sig.WorkflowSignal.isControllerRoot(true);
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.WorkflowSignal.Type.defineMethod('defineSubtype',
+function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.WorkflowSignal serve as signaling roots,
+     *     meaning that you never signal a raw TP.sig.WorkflowSignal.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.WorkflowSignal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1172,12 +1203,18 @@ function(anOrigin, aPayload, aPolicy) {
     //  workflow signals always use a request ID as their origin so that
     //  they can tie together "processes" which are embodied as signal
     //  chains related to an originating request, unless explicitly altered
-    origin = TP.ifInvalid(anOrigin, this.getRequestID());
+    origin = anOrigin;
+    if (TP.notValid(origin)) {
+        origin = this.getRequestID();
+    }
     this.setOrigin(origin);
 
     //  workflow signals are fired using an inheritance-based signal model
     //  unless specifically told otherwise
-    policy = TP.ifInvalid(aPolicy, this.getType().getDefaultPolicy());
+    policy = aPolicy;
+    if (TP.notValid(policy)) {
+        policy = this.getType().getDefaultPolicy();
+    }
 
     //  instrument with current firing time
     this.$set('time', Date.now());
@@ -1400,6 +1437,13 @@ TP.sig.Request.Inst.defineAttribute('peerJoins');
 //  chaining
 TP.sig.Request.Inst.defineAttribute('$deferredPromise');
 
+/**
+ * Whether this request has been logged. Normally not used but if errors occur
+ * during the request this slot is used to avoid logging multiple times.
+ * @type {Boolean}
+ */
+TP.sig.Request.Inst.defineAttribute('logged');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1496,7 +1540,7 @@ function(aRequest) {
     }
 
     //  map handle* "methods" in the payload into the receiver
-    if (TP.canInvoke(request, TP.ac('at', 'getKeys'))) {
+    if (TP.canInvokeInterface(request, TP.ac('at', 'getKeys'))) {
         keys = TP.keys(request);
         len = keys.getSize();
         for (i = 0; i < len; i++) {
@@ -1765,7 +1809,7 @@ function() {
      * @summary Returns the type of response this request expects. By default
      *     this is TP.sig.Response but custom subtypes can be used to provide
      *     specific response processing.
-     * @returns {TP.lang.RootObject.<TP.core.Response>} A TP.core.Response
+     * @returns {TP.lang.RootObject.<TP.sig.Response>} A TP.sig.Response
      *     subtype type object.
      */
 
@@ -1878,6 +1922,46 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Inst.defineMethod('getRootID',
+function() {
+
+    /**
+     * @method getRootID
+     * @summary Returns the root ID for this request, the ID of the receiver's
+     *     rootRequest if any.
+     * @returns {String} A request ID.
+     */
+
+    return this.getRootRequest().getID();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('getRootRequest',
+function() {
+
+    /**
+     * @method getRootRequest
+     * @summary Returns the root request for the receiver, or the receiver if
+     *     the receiver is the root request.
+     * @returns {TP.sig.Request} The root request.
+     */
+
+    var root,
+        result;
+
+    /* eslint-disable */
+    result = this;
+    while (TP.isValid(root = result.at('rootRequest'))) {
+        result = root;
+    }
+    /* eslint-enable */
+
+    return TP.ifInvalid(result, this);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Inst.defineMethod('handle',
 function(aSignal) {
 
@@ -1927,7 +2011,7 @@ function(aSignal) {
         }
     }
 
-    return;
+    return TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
@@ -1954,6 +2038,30 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Inst.defineMethod('hasParameter',
+function(aKey) {
+
+    /**
+     * @method hasParameter
+     * @summary Returns true if the request has a parameter registered under the
+     *     supplied key.
+     * @param {String} aKey The key to check for.
+     * @returns {Boolean} Whether or not the request has the parameter indicated
+     *     by the supplied key.
+     */
+
+    var payload;
+
+    payload = this.$get('payload');
+    if (TP.canInvoke(payload, 'hasKey')) {
+        return payload.hasKey(aKey);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Inst.defineMethod('isSynchronous',
 function(aResource) {
 
@@ -1963,7 +2071,8 @@ function(aResource) {
      * @param {TP.core.Resource} aResource The resource to check for
      *     synchronicity settings if the receiver has no explicit 'async'
      *     setting.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the request will be generating a
+     *     synchronous response.
      */
 
     var async;
@@ -3014,7 +3123,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
 
     //  three objects get special consideration with respect to notification
     //  to keep observe/ignore overhead to a minimum.
+    /* eslint-disable consistent-this */
     request = this;
+    /* eslint-enable consistent-this */
     responder = this.get('responder');
     requestor = this.get('requestor');
 
@@ -3060,7 +3171,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 continue;
             }
 
-            handlerName = TP.composeHandlerName({signal: signame + suffix});
+            handlerName = TP.composeHandlerName({
+                signal: signame + suffix
+            });
 
             response.setSignalName(signame + suffix);
 
@@ -3102,7 +3215,10 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  once all standard processing of the request has been completed we
     //  look for any joined requests and see which we should activate as
     //  members of a downstream pipeline.
-    state = TP.ifInvalid(aState, this.get('statusCode'));
+    state = aState;
+    if (TP.notValid(state)) {
+        state = this.get('statusCode');
+    }
     if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
         //  If we're succeeding we can include 'AND' joins since they rely on
         //  us being successful.
@@ -3150,7 +3266,10 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  requests which care about either our exact status code (success vs.
     //  failure), or which care simply that we're done processing.
 
-    state = TP.ifInvalid(aState, this.get('statusCode'));
+    state = aState;
+    if (TP.notValid(state)) {
+        state = this.get('statusCode');
+    }
     if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
         //  If we're succeeding we can include 'AND' joins since they rely on
         //  us being successful.
@@ -3239,10 +3358,11 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
             if (TP.isValid(aFaultInfo)) {
                 err = aFaultInfo.at('error');
             }
-            err = TP.ifInvalid(err, new Error(
+            if (TP.notValid(err)) {
                 //  NOTE this isn't 'result' since that may default to the
                 //  result value from the request. We only want failure data.
-                TP.ifInvalid(aResultOrFault, 'UnknownRequestFault')));
+                err = new Error(aResultOrFault || 'UnknownRequestFault');
+            }
             deferred.reject(err);
         }
     }
@@ -3437,7 +3557,10 @@ function(anOrigin, aPayload, aPolicy) {
     //  workflow signals always use a request ID as their origin so that
     //  they can tie together "processes" which are embodied as signal
     //  chains related to an originating request, unless explicitly altered
-    origin = TP.ifInvalid(anOrigin, this.getRequestID());
+    origin = anOrigin;
+    if (TP.notValid(origin)) {
+        origin = this.getRequestID();
+    }
     this.setOrigin(origin);
 
     //  to avoid thrashing on request/response observations too much we
@@ -3770,8 +3893,8 @@ function(onFulfilled, onRejected) {
      *     promise reaches it's fulfilled state.
      * @param {Function} onRejected A Function that will be executed if the
      *     promise reaches it's rejected state.
-     * @returns {TP.extern.Promise} A promise that can be used to be the 'next
-     *     step' in a chain of promises.
+     * @returns {Promise} A promise that can be used to be the 'next step' in a
+     *     chain of promises.
      */
 
     var request,
@@ -3783,10 +3906,11 @@ function(onFulfilled, onRejected) {
     request = this.getRequest();
 
     //  Stash away a reference to the *deferred* (not its Promise). We'll need
-    //  to resolve() or reject() this later then the request completes.
+    //  to resolve() or reject() this later when the request completes.
     deferred = TP.extern.Promise.pending();
-    promise = deferred.promise;
     request.set('$deferredPromise', deferred);
+
+    promise = deferred.promise;
 
     if (TP.isCallable(onRejected)) {
         promise = promise.then(onFulfilled, onRejected);
@@ -3802,7 +3926,9 @@ function(onFulfilled, onRejected) {
             if (TP.isValid(fault)) {
                 err = fault.at('error');
             }
-            err = TP.ifInvalid(err, new Error('UnknownRequestFault'));
+            if (TP.notValid(err)) {
+                err = new Error('UnknownRequestFault');
+            }
             deferred.reject(err);
         }
     }
@@ -3976,11 +4102,11 @@ function() {
 });
 
 //  ========================================================================
-//  Public:Guest
+//  Public:guest
 //  ========================================================================
 
-//  Build a default role for "Public" organization and "Guest" role.
-TP.core.Role.defineSubtype('Public.Guest');
+//  Build a default role for "Public" organization and "guest" role.
+TP.core.Role.defineSubtype('Public.guest');
 
 //  ========================================================================
 //  TP.core.Unit
@@ -4113,7 +4239,7 @@ function(resourceID) {
     inst = this.callNextMethod();
 
     if (TP.notValid(this.$get('realUser'))) {
-        this.setRealUser(inst);
+        this.set('realUser', inst);
     }
 
     return inst;
@@ -4136,7 +4262,6 @@ function() {
     windows = TP.core.Window.getOpenWindows();
     windows.perform(
         function(win) {
-
             TP.windowAssignACLKeys(win, TP.ACL_EFFECTIVE);
         });
 
@@ -4275,14 +4400,13 @@ function() {
      * @returns {TP.core.User} The current real user instance.
      */
 
-    var realUser,
-        cookieUser;
+    var realUser;
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
 
-        cookieUser = TP.core.Cookie.getCookie(TP.sys.cfg('user.cookie'));
-        TP.core.User.construct(
-            TP.ifEmpty(cookieUser, TP.sys.cfg('user.default_name')));
+        //  Constructing a user will set it as the realUser if no previous value
+        //  was configured.
+        TP.core.User.construct(TP.sys.cfg('user.default_name'));
 
         realUser = this.$get('realUser');
     }
@@ -4466,8 +4590,7 @@ function(resourceID) {
             return credentials;
         }
 
-        //  Right now, we use TP.core.LocalStorage (i.e. 'localStorage')
-        credentialsStorage = TP.core.LocalStorage.construct();
+        credentialsStorage = TP.core.SessionStorage.construct();
 
         //  See if there is a credentials store in the credentials storage place
         //  (named by TP.CREDENTIALS_DB_NAME) using our password. This will
@@ -4512,7 +4635,7 @@ function() {
     if (TP.isEmpty(password = this.$get('credentialsPassword'))) {
 
         if (TP.isEmpty(
-            password = TP.prompt('Please enter your credentials password'))) {
+            password = prompt('Please enter your credentials password'))) {
 
             //  The user didn't enter a password - keep this from continuing to
             //  prompt by setting it to TP.NULL
@@ -4523,6 +4646,27 @@ function() {
     }
 
     return password;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.User.Inst.defineMethod('getUsername',
+function() {
+
+    /**
+     * @method getUsername
+     * @summary Returns the receiver's username.
+     * @returns {TP.core.String} The receiver's username.
+     */
+
+    var vcard;
+
+    vcard = this.get('vcard');
+    if (TP.isValid(vcard)) {
+        return vcard.get('nickname');
+    } else {
+        return TP.sys.cfg('user.default_name');
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -4546,8 +4690,7 @@ function() {
         return this;
     }
 
-    //  Right now, we use TP.core.LocalStorage (i.e. 'localStorage')
-    credentialsStorage = TP.core.LocalStorage.construct();
+    credentialsStorage = TP.core.SessionStorage.construct();
 
     //  Put the credentials into storage. Note how we convert our 'credentials'
     //  hash into a regular Object for more compact JSONification.
@@ -5912,6 +6055,8 @@ function() {
     });
 
     return;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
@@ -5960,7 +6105,8 @@ TP.core.Controller.Inst.defineMethod('getStateMachine',
 function() {
 
     /**
-     * Returns the receiver's state machine, if it has one.
+     * @method getStateMachine
+     * @summary Returns the receiver's state machine, if it has one.
      * @returns {TP.core.StateMachine} The receiver's state machine instance.
      */
 
@@ -5968,7 +6114,8 @@ function() {
     //  responder methods won't be live. We can fix that with this trick.
     if (TP.sys.hasInitialized()) {
 
-        TP.core.Controller.Inst.defineMethod('getStateMachine', function() {
+        TP.core.Controller.Inst.defineMethod('getStateMachine',
+        function() {
             return this.getStateMachines().first();
         });
 
@@ -5984,11 +6131,13 @@ TP.core.Controller.Inst.defineMethod('setStateMachine',
 function(aStateMachine) {
 
     /**
-     * Assigns a state machine instance to the receiver. Controllers which have
-     *     state machines can leverage the current state as part of their signal
-     *     processing to filter handlers based on state.
+     * @method setStateMachine
+     * @summary Assigns a state machine instance to the receiver. Controllers
+     *     which have state machines can leverage the current state as part of
+     *     their signal processing to filter handlers based on state.
      * @param {TP.core.StateMachine} aStateMachine The new state machine
      *     instance.
+     * @returns {TP.core.Controller} The receiver.
      */
 
     var machines;
@@ -6002,19 +6151,194 @@ function(aStateMachine) {
 });
 
 //  ========================================================================
-//  TP.core.UIController
+//  TP.core.RouteController
 //  ========================================================================
 
 /**
- * @type {TP.core.UIController}
- * @summary This type is a common supertype for all UI controllers in the
- *     system. It contains any default handlers for signals that should be
- *     responded to by all UI controllers.
+ * @type {TP.core.RouteController}
+ * @summary This type is a common supertype for all route controllers. The key
+ *     aspect of this type is that it defines use of a singleton instance.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Controller.defineSubtype('UIController');
+TP.core.Controller.defineSubtype('RouteController');
+
+TP.core.RouteController.Type.shouldUseSingleton(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RouteController.Inst.defineHandler('RouteFinalize',
+function(aSignal) {
+
+    /**
+     * @method handleRouteFinalize
+     * @summary A handler for any finalizations to the current application
+     *     route.
+     * @param {TP.sig.RouteFinalize} aSignal The startup signal.
+     * @returns {TP.core.RouteController} The receiver.
+     */
+
+    return this.setContentForRoute(aSignal.at('route'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RouteController.Inst.defineMethod('setContentForRoute',
+function(aRoute) {
+
+    /**
+     * @method setContentForRoute
+     * @summary Reads the configuration data for the route provided (or the
+     *     current application route) and updates any identified target with
+     *     the value of the 'content' key. Target is typically a URI pointing
+     *     to some portion of the UI while 'content' is often a custom tag
+     *     name or template URI which defines the content to be set.
+     * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
+     *     to the current application route acquired from the URI Router.
+     * @returns {TP.core.RouteController} The receiver.
+     */
+
+    var route,
+
+        routeKey,
+        config,
+
+        configInfo,
+        content,
+        routeTarget,
+        targetTPElem,
+        canvas,
+        type,
+        url;
+
+    route = aRoute;
+
+    //  If the route is empty, then set it to the current application route.
+    if (TP.isEmpty(route)) {
+        route = TP.sys.getRouter().getRoute();
+    }
+
+    //  If the route is still empty it's a reference to the home route.
+    if (TP.isEmpty(route) || route === '/') {
+        route = 'Home';
+    }
+
+    //  See if the value is a route configuration key.
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
+
+    //  No configuration means no target/content information.
+    if (TP.isEmpty(config)) {
+
+        //  Don't warn for the Home route - many times, the app won't have a
+        //  defined Home route.
+        if (route !== 'Home') {
+            TP.warn('Unable to find route cfg info for: ' + route);
+        }
+
+        return this;
+    }
+
+    //  Convert any value we find into JSON so we can access values.
+    if (TP.isString(config)) {
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                'Unable to build config data from entry: ' + config);
+            return this;
+        }
+    } else {
+        configInfo = config;
+    }
+
+    //  ---
+    //  Route-to-Content/Target mapping
+    //  ---
+
+    //  The content can be a tag type name, a URI or a String and if found we
+    //  will use that content to update either a specific target or the body of
+    //  the current UI canvas.
+    content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
+                            configInfo.at('content'));
+    if (TP.isEmpty(content)) {
+        return this;
+    }
+
+    //  Grab the current UI canvas - we'll use this below to either obtain a
+    //  target element or to set its location.
+    canvas = TP.sys.getUICanvas();
+
+    //  The target should be a 'path' (CSS selector, XPath, etc.) that can be
+    //  used to obtain a target element.
+    routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
+                                configInfo.at('target'));
+
+    if (TP.notEmpty(routeTarget)) {
+
+        //  NB: We want autocollapsed, but wrapped content here.
+        targetTPElem = TP.byPath(routeTarget, canvas, true);
+        if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
+            this.raise('InvalidElement',
+                        'Unable to find route target: ' + routeTarget);
+            return this;
+        }
+    }
+
+    //  See if the content is a type name.
+    type = TP.sys.getTypeByName(content);
+    if (TP.canInvoke(type, 'generateMarkupContent')) {
+
+        if (TP.notValid(targetTPElem)) {
+            targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
+        }
+
+        //  Inject the content.
+        targetTPElem.setContent(type.generateMarkupContent(),
+                                TP.hc('sourceType', type));
+    } else {
+
+        //  Otherwise, see if the value looks like a URL for location.
+        url = TP.uc(content);
+        if (TP.isURI(url)) {
+
+            url = TP.uriExpandHome(url);
+            if (TP.sys.cfg('log.routes')) {
+                TP.debug('setting location to: ' + TP.str(url));
+            }
+
+            //  If we weren't able to obtain a target, then just set the
+            //  location of the canvas to the head of the URL.
+            if (TP.notValid(targetTPElem)) {
+                canvas.setLocation(TP.uriHead(url));
+            } else {
+                //  Otherwise, set the content of the target to the
+                //  content of the URL
+                targetTPElem.setContent(url);
+            }
+        } else {
+
+            //  Otherwise, the content was a String. If we couldn't get
+            //  a target, then use the document's body as the target and
+            //  set the content.
+            if (TP.notValid(targetTPElem)) {
+                targetTPElem =
+                    TP.sys.getUICanvas().getDocument().getBody();
+            }
+
+            //  Set the content of the target element. Note here how we supply
+            //  the route name as the 'contentKey'. This can be used by
+            //  intelligent elements to decide how to handle content that they
+            //  might see more than once.
+            targetTPElem.setContent(content, TP.request('contentKey', route));
+        }
+    }
+
+    return this;
+});
 
 //  ========================================================================
 //  TP.core.Application
@@ -6046,11 +6370,19 @@ TP.core.Application.Type.defineAttribute('singleton');
 
 /**
  * An array of controller instances which represent the current controller
- * stack. The list always ends with an Application instance which represents
- * the final controller in the responder chain.
- * @type {TP.core.Controller[]}
+ * stack. The list always ends with an Application instance or Sherpa instance
+ * which serve as common backstops for controller signal handling.
+ * @type {TP.core.Object[]}
  */
 TP.core.Application.Inst.defineAttribute('controllers');
+
+/**
+ * An array of custom controllers pushed/popped via the pushController and
+ * popController methods. Note that these controllers are always backed by
+ * the current route controller, application instance, and Sherpa instance.
+ * @type {TP.core.Object[]}
+ */
+TP.core.Application.Inst.defineAttribute('customControllers');
 
 /**
  * The router type whose route method is used to process client-side routes.
@@ -6060,28 +6392,6 @@ TP.core.Application.Inst.defineAttribute('router');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('init',
-function(aResourceID, aRequest) {
-
-    /**
-     * @method init
-     * @summary Initializes a new instance.
-     * @param {String} aResourceID The unique identifier for this application.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
-     *     hash containing initialization parameters.
-     * @returns {TP.core.Application} A new instance.
-     */
-
-    this.callNextMethod();
-
-    //  Initialize an empty controller list.
-    this.$set('controllers', TP.ac());
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.Application.Inst.defineMethod('finalizeGUI',
@@ -6095,7 +6405,15 @@ function() {
      * @returns {TP.core.Application} The receiver.
      */
 
+    //  Show the UI root frame.
     TP.boot.showUIRoot();
+
+    //  Refresh the UI canvas frame's whole document to start things off. This
+    //  will update any data bindings that need it throughout the whole
+    //  document. Note that, in a non-Sherpa-loaded app, that the UI canvas
+    //  frame and the UI root frame are the same. In either case, what we want
+    //  to update is the *canvas* frame here.
+    TP.sys.getUICanvas().getDocument().refresh();
 
     return this;
 });
@@ -6112,92 +6430,87 @@ function(aSignal) {
      * @returns {Array} The list of controllers.
      */
 
-    var controllers,
-        sherpa,
-        route,
-        routeKey,
-        config,
-        configInfo,
-        controller,
-        controllerName,
-        defaulted;
+    var controllers;
 
     controllers = this.$get('controllers');
 
-    //  Ensure we copy current list and include the application itself as the
-    //  final controller in the list...unless we're running with the Sherpa in
-    //  which case we add the Sherpa as a tooling controller.
-    controllers = controllers.slice(0);
-    controllers.push(this);
+    if (TP.notValid(controllers)) {
+        controllers = this.refreshControllers();
+    }
 
-    if (TP.sys.hasStarted() && TP.sys.hasFeature('sherpa')) {
+    return controllers;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('refreshControllers',
+function() {
+
+    /**
+     * @method refreshControllers
+     * @summary Rebuilds the list of controllers that the system uses as TIBET's
+     *     "signal responder chain".
+     * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
+     * @returns {Array} The list of controllers.
+     */
+
+    var controllers,
+        customs,
+        controller,
+        sherpa;
+
+    TP.info('Refreshing controller stack...');
+
+    controllers = TP.ac();
+    this.$set('controllers', controllers, false);
+
+    //  If the system has initialized and we're loading the Sherpa, then try to
+    //  make it the last (i.e. topmost) controller if an instance can be found
+    //  under the system ID 'Sherpa'.
+    if (TP.sys.hasInitialized() && TP.sys.hasFeature('sherpa')) {
         sherpa = TP.bySystemId('Sherpa');
         if (TP.isValid(sherpa)) {
             controllers.push(sherpa);
         }
     }
 
-    if (!TP.sys.hasStarted()) {
+    //  The application instance is always a member of this list
+    controllers.push(this);
+
+    //  We have to be far enough along that type initialization has happened or
+    //  too much of the history/route processing infrastructure will be missing.
+    if (!TP.sys.hasInitialized()) {
+        controllers.reverse();
         return controllers;
     }
 
-    route = this.getRouter().getRoute();
-    if (TP.isEmpty(route)) {
-        return controllers;
-    }
-
-    //  See if the value is a route configuration key.
-    routeKey = 'route.map.' + route;
-    config = TP.sys.cfg(routeKey);
-
-    if (TP.isEmpty(config)) {
-        return controllers;
-    }
-
-    if (TP.isString(config)) {
-        configInfo = TP.json2js(TP.reformatJSToJSON(config));
-        if (TP.isEmpty(configInfo)) {
-            this.raise('InvalidObject',
-                        'Unable to build config data from entry: ' + config);
-            return controllers;
+    //  Once we've started we also include any current route controller.
+    controller = this.getRouter().getRouteControllerType();
+    if (TP.isValid(controller)) {
+        if (TP.isType(controller)) {
+            controller = controller.construct();
+            if (TP.isValid(controller)) {
+                controllers.push(controller);
+            }
+        } else {
+            controllers.push(controller);
         }
-    } else {
-        configInfo = config;
     }
 
-    //  Try to obtain a controller type name
-    controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
-                                    configInfo.at('controller'));
-    defaulted = false;
-
-    //  If there was no controller type name entry, default one by concatenating
-    //  'APP' with the project and route name and the word 'Controller.
-    if (TP.isEmpty(controllerName)) {
-        controllerName = 'APP.' +
-                            TP.sys.cfg('project.name') +
-                            '.' +
-                            route.asTitleCase() +
-                            'Controller';
-        defaulted = true;
+    //  Add in any custom controllers that have been registered with the
+    //  application object.
+    customs = this.$get('customControllers');
+    if (TP.notEmpty(customs)) {
+        controllers = controllers.concat(customs);
+        this.$set('controllers', controllers, false);
     }
 
-    //  See if the controller is a type name.
-    controller = TP.sys.getTypeByName(controllerName);
+    //  Since we've been 'push'ing, we need to reverse to make sure things are
+    //  in the proper order (most specific controllers to least specific - like
+    //  Application, Sherpa, etc.).
+    controllers.reverse();
 
-    if (TP.notValid(controller)) {
-        //  Note here how we only warn if the controller name was specified and
-        //  not generated here.
-        TP.ifWarn() && !defaulted ?
-            TP.warn('InvalidRouteController', controllerName, ' for ',
-                    TP.name(aSignal)) : 0;
-
-        return controllers;
-    }
-
-    //  Copy the controllers Array and unshift the new controller onto the front
-    //  of it.
-    controllers = controllers.slice(0);
-    controllers.unshift(controller);
+    this.changed('Controllers', TP.UPDATE, TP.hc(TP.NEWVAL, controllers));
 
     return controllers;
 });
@@ -6208,11 +6521,14 @@ TP.core.Application.Inst.defineMethod('getHistory',
 function() {
 
     /**
-     * Returns the current object responsible for managing history for the
-     * application, which focuses on history for the UICANVAS window.
+     * @method getHistory
+     * @summary Returns the current object responsible for managing history for
+     *     the application, which focuses on history for the UICANVAS window.
      * @returns {TP.core.History} A History object.
      */
 
+    //  NB: All TP.core.History functionality is type-level, which is why we
+    //  return the type itself here.
     return TP.core.History;
 });
 
@@ -6224,7 +6540,7 @@ function() {
     /**
      * @method getRouter
      * @summary Returns the current router instance used by the application.
-     * @returns {TP.core.URIRouter} The active router.
+     * @returns {TP.core.URIRouter|null} The active router.
      */
 
     var type,
@@ -6242,6 +6558,8 @@ function() {
         this.$set('router', type);
         return type;
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -6266,16 +6584,21 @@ TP.core.Application.Inst.defineMethod('popController',
 function() {
 
     /**
-     * Pops the current top controller off the controller stack. The application
-     * instance will not be removed if it is the only controller remaining.
+     * @method popController
+     * @summary Pops the current top controller off the controller stack. The
+     *     application instance will not be removed if it is the only controller
+     *     remaining.
      * @returns {TP.core.Controller} The controller that was popped.
      */
 
     var controllers;
 
-    controllers = this.$get('controllers');
+    controllers = this.$get('customControllers');
+    if (TP.notValid(controllers)) {
+        return;
+    }
 
-    return controllers.shift();
+    return controllers.pop();
 });
 
 //  ------------------------------------------------------------------------
@@ -6284,9 +6607,11 @@ TP.core.Application.Inst.defineMethod('pushController',
 function(aController) {
 
     /**
-     * Pushes a new controller onto the controller stack. The controller stack
-     * is a built-in part of TIBET's "signal responder chain" so managing the
-     * controller stack is a key part of managing application event processing.
+     * @method pushController
+     * @summary Pushes a new controller onto the controller stack. The
+     *     controller stack is a built-in part of TIBET's "signal responder
+     *     chain" so managing the controller stack is a key part of managing
+     *     application event processing.
      * @param {TP.core.Controller} aController The controller to push.
      * @returns {TP.core.Application} The receiver.
      */
@@ -6297,9 +6622,19 @@ function(aController) {
         return this.raise('InvalidController');
     }
 
-    controllers = this.$get('controllers');
-    if (!controllers.contains(aController)) {
-        controllers.unshift(aController);
+    controllers = this.$get('customControllers');
+    if (TP.notValid(controllers)) {
+        controllers = TP.ac();
+        this.$set('customControllers', controllers, false);
+    }
+
+    //  Make sure that the list of custom controllers doesn't already include
+    //  the supplied controller.
+    if (!controllers.contains(aController, TP.IDENTITY)) {
+        controllers.push(aController);
+
+        //  Refresh the main list of controllers.
+        this.refreshControllers();
     }
 
     return this;
@@ -6319,12 +6654,18 @@ function(aList) {
 
     var controllers;
 
-    controllers = TP.ifInvalid(aList, TP.ac());
+    controllers = aList;
+    if (TP.notValid(controllers)) {
+        controllers = TP.ac();
+    }
     if (!TP.isArray(controllers)) {
         return this.raise('InvalidParameter');
     }
 
-    this.$set('controllers', controllers);
+    this.$set('customControllers', controllers, false);
+
+    //  Refresh the main list of controllers.
+    this.refreshControllers();
 
     return this;
 });
@@ -6363,6 +6704,14 @@ function(themeName) {
 TP.core.Application.Inst.defineMethod('setRouter',
 function(aRouter) {
 
+    /**
+     * @method setRouter
+     * @summary Sets the supplied router instance as TIBET's active router.
+     * @param {TP.core.URIRouter} aRouter The router to set as the active
+     *     router.
+     * @returns {TP.core.Application} The receiver.
+     */
+
     if (TP.canInvoke(aRouter, 'route')) {
         this.$set('router', aRouter);
     } else {
@@ -6386,7 +6735,7 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    // Do any final steps to ensure the UI is ready for operation.
+    //  Do any final steps to ensure the UI is ready for operation.
     this.finalizeGUI();
 
     (function(signal) {
@@ -6409,7 +6758,7 @@ function(aSignal) {
             homeURL = window.sessionStorage.getItem(
                 'TIBET.project.home_page');
             if (TP.notEmpty(homeURL)) {
-                //  preserve the value in runtime config to support the
+                //  Preserve the value in runtime config to support the
                 //  TP.sys.getHomeURL call.
                 TP.sys.setcfg('session.home_page', homeURL);
 
@@ -6428,16 +6777,10 @@ function(aSignal) {
         try {
             TP.boot.$setStage('liftoff');
         } finally {
-            //  Set our final stage/state flags so dependent
-            //  pieces of logic can switch to their "started"
-            //  states (ie. no more boot log usage etc.)
+            //  Set our final stage/state flags so dependent pieces of logic can
+            //  switch to their "started" states (ie. no more boot log usage
+            //  etc.)
             TP.sys.hasStarted(true);
-        }
-
-        //  Activate any remote watch logic to enable live-sourcing if flagged.
-        if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
-                !TP.sys.hasFeature('karma')) {
-            TP.core.RemoteURLWatchHandler.activateWatchers();
         }
 
         //  Signal that everything is ready and that the application did start.
@@ -6459,25 +6802,58 @@ function(aSignal) {
      * @method handleAppStart
      * @summary A handler that is called when the system has loaded everything
      *     and is ready to activate your TIBET application.
-     * @param {TP.sig.AppStart} aSignal The startup signal.
+     * @param {TP.sig.AppStart} aSignal The start signal.
      * @returns {TP.core.Application} The receiver.
      */
 
     TP.core.Application.get('singleton').start(aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineHandler('RouteChange',
+TP.core.Application.Inst.defineHandler('AppStop',
 function(aSignal) {
 
     /**
-     * @method handleRouteChange
-     * @summary A handler for any changes to the current application route.
-     *     The default integrates route change notifications with any current
-     *     application state machine to let the application state reflect the
-     *     current route.
-     * @param {TP.sig.RouteChange} aSignal The startup signal.
+     * @method handleAppStop
+     * @summary A handler that is called when the user is ready to terminate
+     *     your TIBET application.
+     * @param {TP.sig.AppStop} aSignal The stop signal.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var exitToURI;
+
+    //  If the signal defines an 'exitTo' property in its payload, then try to
+    //  create a URI from that.
+    exitToURI = aSignal.at('exitTo');
+
+    if (TP.notEmpty(exitToURI)) {
+        exitToURI = exitToURI.unquoted();
+        exitToURI = TP.uc(exitToURI);
+    }
+
+    //  Call terminate and, if it was defined, navigate to the URI given.
+    TP.sys.terminate(exitToURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('RouteFinalize',
+function(aSignal) {
+
+    /**
+     * @method handleRouteFinalize
+     * @summary A handler for any finalizations to the current application
+     *     route. The default integrates route change notifications with any
+     *     current application state machine to let the application state
+     *     reflect the current route.
+     * @param {TP.sig.RouteFinalize} aSignal The finalization signal.
+     * @returns {TP.core.Application} The receiver.
      */
 
     var machine,
@@ -6485,14 +6861,20 @@ function(aSignal) {
         route,
         targets;
 
-    TP.debug('RouteChange: ' + aSignal.at('route'));
+    TP.info('Application RouteFinalize: ' + aSignal.at('route'));
 
+    //  Grab the current state machine
     machine = this.getStateMachine();
+
+    //  If it's valid and active, and if the signal has a supplied route, then
+    //  compute a state name from the signal's type name, removing the 'Route'
+    //  part of the name.
     if (TP.isValid(machine) && machine.isActive()) {
+
         route = aSignal.at('route');
         if (TP.isEmpty(route)) {
             signame = TP.expandSignalName(aSignal.getSignalName());
-            route = signame.split('.').last().replace(/Route/, '');
+            route = signame.split('.').last().strip(/Route/);
         }
 
         targets = machine.getTargetStates();
@@ -6584,6 +6966,7 @@ function() {
     /**
      * @method back
      * @summary Causes the receiver to go back a page in browser history.
+     * @returns {TP.core.History} The receiver.
      */
 
     this.set('direction', 'back', false);
@@ -6591,7 +6974,7 @@ function() {
 
     this.getNativeWindow().history.back();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6667,7 +7050,10 @@ function(anIndex) {
     title = win.title || '';
     url = TP.uriNormalize(win.location.toString());
 
-    index = TP.ifInvalid(anIndex, this.get('index'));
+    index = anIndex;
+    if (TP.notValid(index)) {
+        index = this.get('index');
+    }
     state = {};
     state.index = index;
 
@@ -6692,6 +7078,7 @@ function() {
     /**
      * @method forward
      * @summary Causes the receiver to go forward a page in browser history.
+     * @returns {TP.core.History} The receiver.
      */
 
     this.set('direction', 'forward', false);
@@ -6699,7 +7086,7 @@ function() {
 
     this.getNativeWindow().history.forward();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6713,7 +7100,15 @@ function() {
      * @returns {String[]} The current history list.
      */
 
-    return this.$get('history');
+    var history;
+
+    history = this.$get('history');
+    if (TP.notValid(history)) {
+        history = TP.ac();
+        this.$set('history', history);
+    }
+
+    return history;
 });
 
 //  ------------------------------------------------------------------------
@@ -6738,7 +7133,7 @@ function() {
     /**
      * @method getLastLocation
      * @summary Returns the previous location in the history list, if any.
-     * @returns {String} The location at the prior history index.
+     * @returns {String|null} The location at the prior history index.
      */
 
     var entry;
@@ -6750,6 +7145,8 @@ function() {
     if (TP.isValid(entry)) {
         return entry.at(2);
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -6828,7 +7225,9 @@ TP.core.History.Type.defineMethod('getNativeState',
 function() {
 
     /**
-     * Returns any state object associated with the browser history location.
+     * @method getNativeState
+     * @summary Returns any state object associated with the browser history
+     *     location.
      * @returns {Object} Any state object associated via pushState or
      *     replaceState for the current browser location.
      */
@@ -6842,7 +7241,8 @@ TP.core.History.Type.defineMethod('getNativeTitle',
 function() {
 
     /**
-     * Returns any title associated with the browser history location.
+     * @method getNativeTitle
+     * @summary Returns any title associated with the browser history location.
      * @returns {String} The title of the native window.
      */
 
@@ -6871,7 +7271,7 @@ function() {
     /**
      * @method getNextLocation
      * @summary Returns the next location in the history list, if any.
-     * @returns {String} The location at the next history index.
+     * @returns {String|null} The location at the next history index.
      */
 
     var entry;
@@ -6881,6 +7281,8 @@ function() {
     if (TP.isValid(entry)) {
         return entry.at(2);
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -6903,7 +7305,9 @@ TP.core.History.Type.defineMethod('getState',
 function() {
 
     /**
-     * Returns any state object associated with the current history location.
+     * @method getState
+     * @summary Returns any state object associated with the current history
+     *     location.
      * @returns {Object} Any state object associated via pushState or
      *     replaceState for the current location.
      */
@@ -6917,7 +7321,9 @@ TP.core.History.Type.defineMethod('getTitle',
 function() {
 
     /**
-     * Returns any title associated with the current local history location.
+     * @method getTitle
+     * @summary Returns any title associated with the current local history
+     *     location.
      * @returns {String} Any title associated via pushState or replaceState
      *     for the current location.
      */
@@ -6936,6 +7342,7 @@ function(anOffset) {
      *     location in window history.
      * @param {Number} anOffset A positive or negative number of pages to go in
      *     the browser history.
+     * @returns {TP.core.History} The receiver.
      */
 
     if (!TP.isNumber(anOffset)) {
@@ -6944,7 +7351,7 @@ function(anOffset) {
 
     //  no-op
     if (anOffset === 0) {
-        return;
+        return this;
     }
 
     this.set('direction', anOffset < 0 ? 'back' : 'forward', false);
@@ -6952,7 +7359,7 @@ function(anOffset) {
 
     this.getNativeWindow().history.go(anOffset);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6984,8 +7391,10 @@ function(anEvent) {
         //  the URL bar was set to (which will often vary for base path usage).
         loc = state.url;
     }
-    loc = TP.ifInvalid(loc,
-        TP.uriNormalize(anEvent.target.location.toString()));
+
+    if (TP.notValid(loc)) {
+        loc = TP.uriNormalize(TP.eventGetTarget(anEvent).location.toString());
+    }
 
     //  Just because we got this event doesn't mean location actually changed.
     //  At least one browser will trigger these even if you set the window
@@ -7069,22 +7478,21 @@ function(aURL, fromDoc) {
     }
 
     //  Make sure we can deal with URL parts below.
-    urlParts = TP.ifInvalid(urlParts, TP.uriDecompose(url));
+    if (TP.notValid(urlParts)) {
+        urlParts = TP.uriDecompose(url);
+    }
 
     //  For both path and parameters migrate any from the launch URL as long as
     //  we don't overlay anything specific from the inbound URL. NOTE that the
     //  fragmentPath is never "empty", it's "/" when there's no path/route data.
-    if (urlParts.at('fragmentPath') === '/') {
-        urlParts.atPut('fragmentPath', launchParts.at('fragmentPath'));
-    }
-
     if (TP.isEmpty(urlParts.at('fragmentParams'))) {
         urlParts.atPut('fragmentParams', launchParts.at('fragmentParams'));
     }
 
     url = TP.uriCompose(urlParts);
 
-    //  Dampening happens in pushState so we can just pass value through.
+    //  Dampening happens in pushState so we can just pass value through. Note
+    //  that this method returns undefined.
     return this.pushState({}, '', url, fromDoc);
 });
 
@@ -7095,14 +7503,17 @@ function(stateObj, aTitle, aURL, fromDoc) {
 
     /**
      * @method pushState
-     * @summary Replaces the current location of the browser and sets it to an
-     *     encoded version of the supplied history value.
-     * @param
-     * @param
-     * @param
+     * @summary Changes the current location of the browser and sets it to an
+     *     encoded version of the supplied URL.
+     * @param {Object} stateObj The object to associate with the history entry
+     *     that will be created with this method. This can be useful for storing
+     *     entry-specific state.
+     * @param {String} aTitle The title of the state that is being pushed.
+     * @param {String} aURL The location to use when displaying this history
+     *     entry in the URL bar.
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
-     * @returns {TP.core.History} The receiver.
+     * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
      */
 
     var url,
@@ -7112,7 +7523,6 @@ function(stateObj, aTitle, aURL, fromDoc) {
         index,
         title,
         router,
-        result,
         history,
         loc,
         parts,
@@ -7146,11 +7556,15 @@ function(stateObj, aTitle, aURL, fromDoc) {
     //  list and then set location='url' you can't go forward, the list ends.
     history.length = index + 1;
 
+    //  Configure the supplied state object or a new one. Note here how we have
+    //  to use a POJO, since this gets used below in the native 'pushState'
+    //  call.
     state = stateObj || {};
     state.index = index + 1;
     state.title = title;
     state.url = url;
 
+    //  We also track it in our internal history object.
     entry = TP.ac(state, title, url);
     history.push(entry);
 
@@ -7216,8 +7630,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
 
         //  Update the native window history and URL bar value. This will show
         //  the "routable" value but not the actual canvas URI in some cases.
-        result = this.getNativeWindow().history.pushState(
-                                                state, title, pushable);
+        this.getNativeWindow().history.pushState(state, title, pushable);
 
         //  If we're here due to a direct change via a document being loaded
         //  don't allow further processing.
@@ -7225,7 +7638,11 @@ function(stateObj, aTitle, aURL, fromDoc) {
             return;
         }
 
+        //  If the URI we're pushing contains '#' followed by '/' or '?', then
+        //  grab the router and, if the router can route, then move 'forward'
+        //  with that route.
         if (/#(\/|\?)/.test(pushable)) {
+
             router = TP.sys.getRouter();
             if (TP.canInvoke(router, 'route')) {
                 router.route(url, 'forward');
@@ -7239,7 +7656,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         this.reportLocation();
     }
 
-    return result;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -7252,7 +7669,6 @@ function(aURL) {
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
      * @param
-     * @returns {TP.core.History} The receiver.
      */
 
     return this.replaceState({}, '', aURL);
@@ -7265,12 +7681,15 @@ function(stateObj, aTitle, aURL) {
 
     /**
      * @method replaceState
-     * @summary Replaces the current location of the browser and sets it to an
-     *     encoded version of the supplied history value.
-     * @param
-     * @param
-     * @param
-     * @returns {TP.core.History} The receiver.
+     * @summary Replaced the current location of the browser and sets it to an
+     *     encoded version of the supplied URL.
+     * @param {Object} stateObj The object to associate with the history entry
+     *     that will be created with this method. This can be useful for storing
+     *     entry-specific state.
+     * @param {String} aTitle The title of the state that is being pushed.
+     * @param {String} aURL The location to use when displaying this history
+     *     entry in the URL bar.
+     * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
      */
 
     var url,
@@ -7278,10 +7697,14 @@ function(stateObj, aTitle, aURL) {
         title,
         index,
         current,
-        result,
         entry,
         router,
         history;
+
+    if (!TP.isURIString(aURL)) {
+        TP.raise(this, 'TP.sig.InvalidURI');
+        return;
+    }
 
     url = TP.str(aURL);
     url = decodeURIComponent(url);
@@ -7298,14 +7721,20 @@ function(stateObj, aTitle, aURL) {
     this.set('direction', 'replace', false);
     this.set('lastURI', current, false);
 
+    //  Update our internal history, and track the index in the state object so
+    //  we can update when we get notifications.
     history = this.get('history');
     index = this.get('index');
 
+    //  Configure the supplied state object or a new one. Note here how we have
+    //  to use a POJO, since this gets used below in the native 'pushState'
+    //  call.
     state = stateObj || {};
     state.index = index;
     state.title = title;
     state.url = url;
 
+    //  We also track it in our internal history object.
     entry = TP.ac(state, title, url);
     history.atPut(index, entry);
 
@@ -7319,8 +7748,13 @@ function(stateObj, aTitle, aURL) {
                         ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
-        result = this.getNativeWindow().history.replaceState(state, title, url);
+        //  Update the native window history and URL bar value. This will show
+        //  the "routable" value but not the actual canvas URI in some cases.
+        this.getNativeWindow().history.replaceState(state, title, url);
 
+        //  If the URI we're pushing contains '#' followed by '/' or '?', then
+        //  grab the router and, if the router can route, then 'replace' with
+        //  that route.
         router = TP.sys.getRouter();
         if (TP.canInvoke(router, 'route')) {
             router.route(url, 'replace');
@@ -7333,7 +7767,7 @@ function(stateObj, aTitle, aURL) {
         this.reportLocation();
     }
 
-    return result;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -7345,16 +7779,22 @@ function(anIndex) {
      * @method reportLocation
      * @summary Logs the history location at an index.
      * @param {Number} [anIndex] An index to report, or the current index.
+     * @returns {TP.core.History} The receiver.
      */
 
     var index,
         entry,
-        native,
+        nativeLoc,
         local,
         method;
 
-    native = this.getNativeLocation();
-    index = TP.ifInvalid(anIndex, this.get('index'));
+    nativeLoc = this.getNativeLocation();
+    index = anIndex;
+
+    if (TP.notValid(index)) {
+        index = this.get('index');
+    }
+
     entry = this.get('history').at(index);
     local = entry.at(2);
 
@@ -7363,7 +7803,7 @@ function(anIndex) {
         //  alternative pages have been loading in the UICANVAS.
         method = 'debug';
     } else {
-        method = local === native ? 'debug' : 'error';
+        method = local === nativeLoc ? 'debug' : 'error';
     }
 
     if (TP.isValid(entry)) {
@@ -7371,6 +7811,8 @@ function(anIndex) {
     } else {
         TP[method]('history.at(' + index + ') -> ' + 'empty.');
     }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7381,9 +7823,10 @@ function(anIndex) {
     /**
      * @method setIndex
      * @summary Updates the receiver's internal history index to a new offset.
-     * @param
-     * @raises {TP.sig.InvalidParameter} If index in not a number.
-     * @raises {TP.sig.InvalidIndex} If index would be out of range.
+     * @param {Number} anIndex The index to set the current index to.
+     * @exception {TP.sig.InvalidParameter} If index in not a number.
+     * @exception {TP.sig.InvalidIndex} If index would be out of range.
+     * @returns {TP.core.History} The receiver.
      */
 
     if (!TP.isNumber(anIndex)) {
@@ -7395,6 +7838,8 @@ function(anIndex) {
     }
 
     this.$set('index', anIndex);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7427,7 +7872,7 @@ function(anEvent) {
         i;
 
     //  Ensure it's for the window we're watching.
-    if (!anEvent || anEvent.target !== this.getNativeWindow()) {
+    if (!anEvent || TP.eventGetTarget(anEvent) !== this.getNativeWindow()) {
         return this;
     }
 
@@ -7547,638 +7992,6 @@ function(anEvent) {
 });
 
 //  ========================================================================
-//  TP.core.Worker
-//  ========================================================================
-
-/**
- * @type {TP.core.Worker}
- * @summary This type provides an interface to the browser's 'worker thread'
- *     capability.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.defineSubtype('core.Worker');
-
-//  This type is used as a common supertype, but is not instantiable.
-TP.core.Worker.isAbstract(true);
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-//  a pool of worker objects, keyed by the worker type name. Note that this is a
-//  LOCAL attribute
-TP.core.Worker.defineAttribute('$workerPoolDict');
-
-//  the maximum number of workers allowed in the pool for this type
-TP.core.Worker.Type.defineAttribute('$maxWorkerCount');
-
-//  the total number of workers currently allocated for this type
-TP.core.Worker.Type.defineAttribute('$currentWorkerCount');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Initializes the type.
-     */
-
-    this.set('$workerPoolDict', TP.hc());
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Type.defineMethod('getWorker',
-function() {
-
-    /**
-     * @method getWorker
-     * @summary Returns a worker either from a pool of workers that exist for
-     *     the type being messaged or a new worker, if no workers are available
-     *     in the pool for the receiving type.
-     * @returns TP.core.Worker A worker of the type being messaged.
-     */
-
-    var poolDict,
-        pool,
-
-        worker;
-
-    //  The dictionary of pools is on the TP.core.Worker type itself as a type
-    //  local.
-    poolDict = TP.core.Worker.get('$workerPoolDict');
-
-    //  See if there is a pool for this receiving type, keyed by its name (the
-    //  type name). If not, create one and register it.
-    if (TP.notValid(pool = poolDict.at(this.getName()))) {
-        pool = TP.ac();
-        poolDict.atPut(this.getName(), pool);
-        this.set('$currentWorkerCount', 0);
-    }
-
-    //  If there are workers available for this receiving type, use one of them.
-    if (TP.notEmpty(pool)) {
-        worker = pool.shift();
-    } else if (this.get('$currentWorkerCount') < this.get('$maxWorkerCount')) {
-        //  Otherwise, if the current worker count is less than the max worker
-        //  count for this type, then go ahead and construct one and bump the
-        //  current count.
-        worker = this.construct();
-        this.set('$currentWorkerCount', this.get('$currentWorkerCount') + 1);
-    } else {
-        //  Otherwise, the pool was empty and if we allocated another worker
-        //  we'd be over our max limit, so we warn.
-        TP.ifWarn() ?
-            TP.warn('Maximum number of workers reached for: ' +
-                    this.getName() +
-                    '.') : 0;
-    }
-
-    return worker;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Type.defineMethod('repoolWorker',
-function(worker) {
-
-    /**
-     * @method repoolWorker
-     * @summary Puts the supplied Worker into the pool for the receiving type.
-     * @param {TP.core.Worker} worker The worker to put into the pool.
-     * @returns TP.meta.core.Worker The receiver.
-     */
-
-    var poolDict,
-        pool;
-
-    //  The dictionary of pools is on the TP.core.Worker type itself as a type
-    //  local.
-    poolDict = TP.core.Worker.get('$workerPoolDict');
-
-    //  See if there is a pool for this receiving type, keyed by its name (the
-    //  type name). If not, create one and register it.
-    if (TP.notValid(pool = poolDict.at(this.getName()))) {
-        pool = TP.ac();
-        poolDict.atPut(this.getName(), pool);
-    }
-
-    //  Put the worker into the pool, ready to be used again.
-    pool.push(worker);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  a worker thread object used by this object to interface with the worker
-//  thread.
-TP.core.Worker.Inst.defineAttribute('$workerThreadObj');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Inst.defineMethod('init',
-function() {
-
-    /**
-     * @method init
-     * @summary Initializes a new instance of the receiver.
-     * @returns {TP.core.Worker} A new instance.
-     */
-
-    var workerHelperURI,
-        workerThread;
-
-    //  construct the instance from the root down
-    this.callNextMethod();
-
-    //  Initialize the worker thread with the worker helper stub.
-    workerHelperURI = TP.uc('~lib_etc/workers/tibet_worker_helper.js');
-    workerThread = new Worker(workerHelperURI.getLocation());
-
-    this.set('$workerThreadObj', workerThread);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Inst.defineMethod('eval',
-function(jsSrc) {
-
-    /**
-     * @method eval
-     * @summary Evaluates the supplied JavaScript source code inside of the
-     *     worker thread that this object represents.
-     * @param {String} jsSrc The source code to evaluate inside of the worker.
-     * @returns Promise A promise that will resolve when the evaluation is
-     *     complete.
-     */
-
-    var workerThread,
-        newPromise;
-
-    if (TP.isEmpty(jsSrc)) {
-        return this.raise('InvalidParameter', 'No source code provided.');
-    }
-
-    workerThread = this.get('$workerThreadObj');
-
-    //  Construct a Promise around sending the supplied source code to the
-    //  worker for evaluation.
-    newPromise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
-
-            workerThread.onmessage = function(e) {
-
-                //  Run the Promise resolver with the data returned in the
-                //  message event.
-                return resolver(e.data);
-            };
-
-            workerThread.onerror = function(e) {
-
-                var err;
-
-                //  Convert from an ErrorEvent into a real Error object
-                err = new Error(e.message, e.filename, e.lineno);
-
-                //  Run the Promise rejector with the Error object constructed
-                //  from the data returned in the error event.
-                return rejector(err);
-            };
-
-            //  Post a message telling the worker helper stub code loaded into
-            //  the thread to evaluate the supplied source code.
-            workerThread.postMessage({
-                funcRef: 'evalJS',      //  func ref in worker
-                thisRef: 'self',        //  this ref in worker
-                params: TP.ac(jsSrc)    //  params ref - JSONified structure
-            });
-        });
-
-    return newPromise;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Inst.defineMethod('import',
-function(aCodeURL) {
-
-    /**
-     * @method import
-     * @summary Imports the JavaScript source code referred to by the supplied
-     *     URL into the worker thread that this object represents.
-     * @param {TP.core.URL|String} aCodeURL The URL referring to the resource
-     *     containing the source code to import inside of the worker.
-     * @returns Promise A promise that will resolve when the importation is
-     *     complete.
-     */
-
-    var url,
-
-        workerThread,
-        newPromise;
-
-    if (!TP.isURIString(aCodeURL) && !TP.isURI(aCodeURL)) {
-        return this.raise('InvalidURL',
-                            'Not a valid URL to JavaScript source code.');
-    }
-
-    url = TP.uc(aCodeURL).getLocation();
-
-    workerThread = this.get('$workerThreadObj');
-
-    newPromise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
-
-            workerThread.onmessage = function(e) {
-
-                //  Run the Promise resolver with the data returned in the
-                //  message event.
-                return resolver(e.data);
-            };
-
-            workerThread.onerror = function(e) {
-
-                var err;
-
-                //  Convert from an ErrorEvent into a real Error object
-                err = new Error(e.message, e.filename, e.lineno);
-
-                //  Run the Promise rejector with the Error object constructed
-                //  from the data returned in the error event.
-                return rejector(err);
-            };
-
-            //  Post a message telling the worker helper stub code loaded into
-            //  the thread to import source code from the supplied URL.
-            workerThread.postMessage({
-                funcRef: 'importJS',    //  func ref in worker
-                thisRef: 'self',        //  'this' ref in worker
-                params: TP.ac(url)      //  params ref - JSONified structure
-            });
-        });
-
-    return newPromise;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Inst.defineMethod('defineWorkerMethod',
-function(name, body, async) {
-
-    /**
-     * @method defineWorkerMethod
-     * @summary Defines a method inside of the worker represented by the
-     *     receiver and a peer method on the receiver that calls it, thereby
-     *     presenting a seamless interface to it. The peer method will return a
-     *     Promise that will resolve when the worker has posted results back for
-     *     that call.
-     * @param {String} name The name of the method.
-     * @param {Function} body The body of the method.
-     * @param {Boolean} async Whether or not the method is itself asynchronous.
-     *     If so, it is important that it be written in such a way to take a
-     *     callback as it's last formal parameter. In that way, it can inform
-     *     the worker it is done and the worker can post the results back to
-     *     this object. The default is false.
-     * @returns Promise A promise that will resolve when the definition is
-     *     complete.
-     */
-
-    var methodSrc,
-        isAsync,
-
-        promise;
-
-    if (TP.isEmpty(name)) {
-        return this.raise('InvalidString', 'Invalid method name');
-    }
-
-    if (!TP.isCallable(body)) {
-        return this.raise('InvalidFunction', 'Invalid method body');
-    }
-
-    //  Get the source of the method body handed in and prepend
-    //  'self.<methodName>' onto the front.
-    methodSrc = 'self.' + name + ' = ' + body.toString();
-
-    isAsync = TP.ifInvalid(async, false);
-
-    //  Use our 'eval' method to evaluate the code. This is *not* the regular JS
-    //  'eval' global call - this method evaluates the code over in worker
-    //  thread and returns a Promise that will resolve when that is done.
-    /* eslint-disable no-eval */
-    promise = this.eval(methodSrc);
-    /* eslint-enable no-eval */
-
-    //  Attach to the Promise that was returned from evaluating the code.
-    promise.then(
-        function() {
-
-            var peerMethod;
-
-            //  Now, define that method on *this* object to call over into the
-            //  worker thread to invoke what we just eval'ed over there.
-            peerMethod = function() {
-                var args,
-                    workerThread,
-                    newPromise;
-
-                args = Array.prototype.slice.call(arguments);
-
-                workerThread = this.get('$workerThreadObj');
-
-                newPromise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-
-                        workerThread.onmessage = function(e) {
-
-                            var data;
-
-                            //  Run the Promise resolver with the result data
-                            //  returned in the message event (if there is
-                            //  result data).
-                            data = JSON.parse(e.data);
-                            if (TP.isValid(data)) {
-                                return resolver(data.result);
-                            }
-
-                            //  No result data - so just call the resolver.
-                            return resolver();
-                        };
-
-                        workerThread.onerror = function(e) {
-
-                            var err;
-
-                            //  Convert from an ErrorEvent into a real Error
-                            //  object
-                            err = new Error(e.message, e.filename, e.lineno);
-
-                            //  Run the Promise rejector with the Error object
-                            //  constructed from the data returned in the error
-                            //  event.
-                            return rejector(err);
-                        };
-
-                        workerThread.postMessage({
-                            funcRef: name,      //  func ref in worker
-                            thisRef: 'self',    //  this ref in worker
-                            params: args,       //  params ref - JSONified
-                                                //  structure
-                            async: isAsync
-                        });
-                    });
-
-                return newPromise;
-            };
-
-            //  Install that method on ourself.
-            this.defineMethod(name, peerMethod);
-        }.bind(this));
-
-    return promise;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Inst.defineMethod('repool',
-function() {
-
-    /**
-     * @method repool
-     * @summary Puts the receiver into the pool for its type.
-     * @returns TP.core.Worker The receiver.
-     */
-
-    this.getType().repoolWorker(this);
-
-    return this;
-});
-
-//  ========================================================================
-//  TP.core.LESSWorker
-//  ========================================================================
-
-/**
- * @type {TP.core.LESSWorker}
- * @summary A subtype of TP.core.Worker that manages a LESSCSS engine.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.defineSubtype('core.LESSWorker');
-
-//  ------------------------------------------------------------------------
-//  Type Constants
-//  ------------------------------------------------------------------------
-
-//  used to 'initialize' the worker since LESSCSS makes some assumptions on
-//  startup which are not valid for our environment (i.e. trying to process
-//  LESS stylesheets found on the document - a web worker has no DOM environment
-//  of any kind).
-TP.core.LESSWorker.Type.defineConstant('SETUP_STRING',
-'window = self; window.document = { getElementsByTagName: function(tagName) { if (tagName === "script") { return [{dataset: {}}]; } else if (tagName === "style") { return []; } else if (tagName === "link") { return []; } } };');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.LESSWorker.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Initializes the type.
-     */
-
-    //  We allocate a maximum of 2 workers in our pool to compile LESS.
-    this.set('$maxWorkerCount', 2);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  a worker thread object used by this object to interface with the worker
-//  thread.
-TP.core.LESSWorker.Inst.defineAttribute('$workerIsSettingUp');
-
-//  the Promise kept by this worker that will be used for chaining chunks of
-//  asynchronous work together.
-TP.core.LESSWorker.Inst.defineAttribute('$workerPromise');
-
-//  ------------------------------------------------------------------------
-
-TP.core.LESSWorker.Inst.defineMethod('compile',
-function(srcText, options) {
-
-    /**
-     * @method compile
-     * @summary Compiles the supplied LESS source text into regular CSS.
-     * @param {String} srcText The LESS source text to compile.
-     * @param {TP.core.Hash} options Options to the LESS engine. This is
-     *     optional.
-     * @returns Promise A promise that will resolve when the compilation is
-     *     complete.
-     */
-
-    var opts,
-        resultFunc,
-
-        workerPromise;
-
-    if (TP.isEmpty(srcText)) {
-        return this.raise('InvalidString', 'Invalid LESSCSS source text');
-    }
-
-    if (TP.notEmpty(options)) {
-        opts = options.asObject();
-    } else {
-        opts = {};
-    }
-
-    //  Define a Function that will process the result.
-    resultFunc =
-        function(results) {
-            var error,
-                output,
-                resultOpts;
-
-            error = results[0];
-            output = results[1];
-            resultOpts = results[2];
-
-            if (TP.notEmpty(error)) {
-                TP.ifError() ?
-                    TP.error('Error processing LESSCSS: ' +
-                        TP.str(error)) : 0;
-                return;
-            }
-
-            return TP.hc('css', output.css,
-                            'imports', output.imports,
-                            'compilationOptions', TP.hc(resultOpts));
-        };
-
-    workerPromise = this.get('$workerPromise');
-
-    //  If our worker isn't set up, do so and then call our 'compileLESS' method
-    //  that will dispatch over into the worker.
-    if (TP.notValid(workerPromise) &&
-        TP.notTrue(this.get('$workerIsSettingUp'))) {
-
-        //  Flip our flag so that we don't do this again. We only flip this to
-        //  true once and don't flip it back so that the test above only
-        //  succeeds once.
-        this.set('$workerIsSettingUp', true);
-
-        //  Evaluate the setup String, then import the copy of LESSCSS in the
-        //  dependencies directory, then define a worker method that will
-        //  'render' the LESSCSS code we hand to it (automagically sent over to
-        //  the worker by this type).
-        /* eslint-disable no-eval */
-        workerPromise = this.eval(this.getType().SETUP_STRING).then(
-        /* eslint-enable no-eval */
-            function() {
-
-                //  Import the LESS library
-                return this.import(TP.uc('~lib_deps/less-tpi.min.js'));
-            }.bind(this)).then(
-            function() {
-
-                //  Define the compilation 'worker method'. Note that worker
-                //  methods actually get shipped over to the worker thread, so
-                //  they can't contain TIBETisms. Also worker methods return a
-                //  Promise, which we leverage below.
-
-                /* eslint-disable no-undef,no-shadow */
-                return this.defineWorkerMethod(
-                        'compileLESS',
-                        function(lessSrc, options, callback) {
-                            var cb;
-
-                            //  Define a callback that will return any error,
-                            //  any result and the original options we hand it.
-                            cb = function(err, res) {
-                                callback(err, res, options);
-                            };
-
-                            window.less.render(lessSrc, options, cb);
-                        },
-                        true);
-                /* eslint-enable no-undef,no-shadow */
-            }.bind(this)).then(
-            function() {
-                //  Then run the compilation 'worker method'.
-                return this.compileLESS(srcText, opts).
-                                    then(function(results) {
-
-                                        //  After this is executed, the worker
-                                        //  is no longer setting up.
-                                        this.set('$workerIsSettingUp', false);
-
-                                        //  Return the worker to the pool when
-                                        //  we're done, and make sure to pass
-                                        //  along the results to the result
-                                        //  function.
-                                        this.repool();
-
-                                        return results;
-                                    }.bind(this)).then(resultFunc);
-            }.bind(this));
-    } else {
-
-        //  Otherwise, the worker is set up - just run the compilation 'worker
-        //  method'.
-        workerPromise = workerPromise.then(
-                function() {
-
-                    return this.compileLESS(srcText, opts).
-                                    then(function(results) {
-
-                                        //  Return the worker to the pool when
-                                        //  we're done, and make sure to pass
-                                        //  along the results to the result
-                                        //  function.
-                                        this.repool();
-
-                                        return results;
-                                    }.bind(this)).then(resultFunc);
-                }.bind(this));
-    }
-
-    //  Capture the worker Promise so that we can continue to chain onto it.
-    this.set('$workerPromise', workerPromise);
-
-    //  If the current worker count is equal to our max worker count, we repool
-    //  ourselves as we're the last worker available, but we do have the
-    //  capability to continue chaining onto the worker Promise.
-    if (this.getType().get('$currentWorkerCount') ===
-        this.getType().get('$maxWorkerCount')) {
-        this.repool();
-    }
-
-    //  Return the worker Promise so that more things can be chained onto it.
-    return workerPromise;
-});
-
-//  ========================================================================
 //  TIBET convenience methods
 //  ========================================================================
 
@@ -8238,7 +8051,7 @@ function() {
     /**
      * @method getRouter
      * @summary Retrieves the application uri router.
-     * @returns {TP.core.History} The TIBET router.
+     * @returns {TP.core.URIRouter} The TIBET router.
      */
 
     return this.getApplication().getRouter();
@@ -8251,9 +8064,9 @@ function() {
 
     /**
      * @method getState
-     * @summary Returns the current state, which is an
-     *     string representing the current operation or "state" of the
-     *     application (editing, viewing, printing, etc).
+     * @summary Returns the current state, which is a string representing the
+     *     current operation or "state" of the application (editing, viewing,
+     *     printing, etc).
      * @returns {String} The current value for application state.
      */
 
@@ -8334,7 +8147,7 @@ function() {
     /**
      * @method getRouter
      * @summary Retrieves the application uri router.
-     * @returns {TP.core.History} The TIBET router.
+     * @returns {TP.core.URIRouter} The TIBET router.
      */
 
     return TP.sys.getRouter();

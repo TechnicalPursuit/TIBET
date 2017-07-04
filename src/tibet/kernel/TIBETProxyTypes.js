@@ -252,11 +252,9 @@ function(aTypename) {
 
     //  this will construct the true instance for us as normal
     // type = this.callNextMethod();
-    /* jshint -W053 */
     /* eslint-disable no-new-wrappers */
     type = new String(aTypename);
     /* eslint-enable no-new-wrappers */
-    /* jshint +W053 */
 
     proto = TP.lang.Proxy.getInstPrototype();
 
@@ -350,6 +348,10 @@ function() {
         id,
         type;
 
+    if (!TP.sys.cfg('oo.$$use_proxies')) {
+        return;
+    }
+
     proto = TP.lang.Proxy.getInstPrototype();
     type_ids = TP.sys.getCustomTypeNames();
 
@@ -361,11 +363,9 @@ function() {
                 //  important to get a true String object, not a primitive
                 //  string, so we can instrument it
 
-                /* jshint -W053 */
                 /* eslint-disable no-new-wrappers */
                 type = new String(id);
                 /* eslint-enable no-new-wrappers */
-                /* jshint +W053 */
 
                 type.$$fault = proto.$$fault;
                 type.$$isMemberOf = proto.$$isMemberOf;

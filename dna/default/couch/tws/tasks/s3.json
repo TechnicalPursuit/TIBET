@@ -1,0 +1,16 @@
+{
+    "type": "task",
+    "name": "s3",
+    "owner": "Team TIBET",
+    "plugin": "s3-upload",
+    "params": {
+        "auth": {
+            "id": "your_s3_id_after_tibet_encrypt",
+            "secret": "your_s3_secret_after_tibet_encrypt"
+        },
+        "region": "us-east-1",
+        "bucket": "default",
+        "key": "",
+        "body": ""
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "type": "job",
+    "flow": "sample",
+    "owner": "Team TIBET",
+    "params": {
+        "smtp": {
+            "to": "[[to_address]]",
+            "subject": "[[subject]]"
+        }
+    }
+}

@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 //  TODO
 /* eslint-disable no-unreachable */
@@ -21,7 +21,6 @@
 
 var CLI,
     path,
-    find,
     fs,
     handlebars,
     helpers,
@@ -29,16 +28,17 @@ var CLI,
 
 CLI = require('./_cli');
 path = require('path');
-find = require('findit');
 fs = require('fs');
 handlebars = require('handlebars');
-helpers = require('../../../etc/cli/config_helpers');
+helpers = require('../../../etc/helpers/config_helpers');
 
 //  ---
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -95,8 +95,8 @@ Cmd.prototype.PACKAGED_RESOURCE = /.+\.(js|jscript|json|xml|xhtml|xsl|xsd|css)$/
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['force', 'list'],
-        'string': ['dir', 'dna', 'name'],
+        'boolean': ['force', 'list', 'update'],
+        'string': ['dir', 'dirname', 'dna', 'name'],
         'default': {}
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -124,17 +124,7 @@ Cmd.prototype.TEMPLATE_KEY = 'appname';
  * @return {Object}
  */
 Cmd.prototype.configure = function() {
-    var options;
-
-    options = this.options;
-
-    options.name = options._[1] || options.name;
-    options.dirname = options._[2] || options.dir || './' + options.name;
-    options.dna = options.dna || this.DNA_DEFAULT;
-
-    this.verbose(CLI.beautify(JSON.stringify(options)));
-
-    return options;
+    throw new Error('MissingOverride');
 };
 
 
@@ -165,6 +155,12 @@ Cmd.prototype.execute = function() {
     }
 
     //  Clone the dna to working destination directory.
+    code = this.executeMakeWorkingDir();
+    if (code !== 0) {
+        return code;
+    }
+
+    //  Clone the dna to working destination directory.
     code = this.executeClone();
     if (code !== 0) {
         return code;
@@ -182,9 +178,10 @@ Cmd.prototype.execute = function() {
 /**
  * Removes any working directory which might have been constructed.
  */
-Cmd.prototype.executeCleanup = function(code) {
+Cmd.prototype.executeCleanup = function(code, force) {
     var options,
         working,
+        list,
         msg,
         err;
 
@@ -200,6 +197,25 @@ Cmd.prototype.executeCleanup = function(code) {
         this.warn(msg + ' after error.');
     } else {
         this.log(msg + '.');
+    }
+
+    //  Get a full list of remaining files in the working directory so we can
+    //  test whether it's empty of actual content files.
+    list = CLI.sh.ls('-RA', working).filter(function(file) {
+        var fullpath;
+
+        fullpath = path.join(working, file);
+        return !CLI.sh.test('-d', fullpath);
+    });
+
+    //  Force is true when cleaning an old working dir prior to execution.
+    if (!force) {
+        if (list.length > 0) {
+            this.warn(list.length + ' file' + (list.length > 1 ? 's' : '') +
+                ' not repositioned. Check working directory: ' +
+                working);
+            return 0;
+        }
     }
 
     err = CLI.sh.rm('-rf', working);
@@ -220,47 +236,15 @@ Cmd.prototype.executeCleanup = function(code) {
  */
 Cmd.prototype.executeClone = function() {
     var options,
-        name,
         dna,
-        tmpdir,
         working,
-        os,
         err,
         flags;
 
     options = this.options;
     dna = options.dna;
-    name = options.name;
 
-    os = require('os');
-    tmpdir = os.tmpdir();
-
-    //  Start locally so it's easy to diff/merge from same parent.
-    working = path.join(process.cwd(), '_' + name + '_');
-    options.tmpdir = working;
-
-    if (CLI.sh.test('-e', working)) {
-        if (!options.force) {
-            //  Use OS tmpdir if local dir won't work.
-            working = path.join(tmpdir, name);
-            options.tmpdir = working;
-            if (CLI.sh.test('-e', working)) {
-                this.error('Unable to find a working directory.');
-                return 1;
-            }
-        } else {
-            this.executeCleanup();
-        }
-    }
-
-    CLI.sh.mkdir('-p', working);
-    err = CLI.sh.error();
-    if (err) {
-        this.error('Error creating working directory: ' + err);
-        return 1;
-    } else {
-        this.log('working in: ' + working);
-    }
+    working = options.tmpdir;
 
     // NOTE there are some minor quirks/deviations from how the same command
     // might work at the command line depending on your shell etc.
@@ -284,7 +268,9 @@ Cmd.prototype.executeClone = function() {
         return 1;
     }
 
-    return 0;
+    //  Before we go any further we have to rename any directories which include
+    //  template references themselves.
+    return this.executeProcessDirs();
 };
 
 
@@ -302,7 +288,7 @@ Cmd.prototype.executeList = function() {
 
     dir = path.join(module.filename, this.DNA_ROOT);
     if (CLI.sh.test('-d', dir)) {
-        list = CLI.sh.ls('-A', dir);
+        list = CLI.sh.ls('-RA', dir);
         err = CLI.sh.error();
         if (CLI.sh.error()) {
             this.error('Error checking dna directory: ' + err);
@@ -314,11 +300,50 @@ Cmd.prototype.executeList = function() {
 
     if (list) {
         list.forEach(function(item) {
-            if (item.charAt(0) === '.') {
+            if (item.charAt(0) === '.' || item.charAt(0) === '_') {
                 return;
             }
             cmd.log(item);
         });
+    }
+
+    return 0;
+};
+
+
+/**
+ * Create a working directory to clone and process for new content.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeMakeWorkingDir = function() {
+    var options,
+        name,
+        working,
+        err;
+
+    options = this.options;
+    name = options.name;
+
+    //  Start locally so it's easy to diff/merge from same parent.
+    working = path.join(process.cwd(), '_' + name + '_');
+    options.tmpdir = working;
+
+    if (CLI.sh.test('-e', working)) {
+        if (!options.force) {
+            this.error('Working directory already exists. Use --force to ignore.');
+            return 1;
+        } else {
+            this.executeCleanup(0, true);
+        }
+    }
+
+    CLI.sh.mkdir('-p', working);
+    err = CLI.sh.error();
+    if (err) {
+        this.error('Error creating working directory: ' + err);
+        return 1;
+    } else {
+        this.log('working in: ' + working);
     }
 
     return 0;
@@ -331,10 +356,7 @@ Cmd.prototype.executeList = function() {
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executePackage = function() {
-    var options,
-        code;
-
-    options = this.options;
+    var code;
 
     code = 0;
 
@@ -342,9 +364,7 @@ Cmd.prototype.executePackage = function() {
 
     this.executeCleanup(code);
 
-    this.info('Application DNA \'' + path.basename(options.dna) +
-        '\' cloned to ' + options.dirname +
-        ' as \'' + options.name + '\'.');
+    this.summarize();
 
     return code;
 };
@@ -360,9 +380,8 @@ Cmd.prototype.executePosition = function() {
         dest,
         working,
         err,
-        finder,
+        list,
         code,
-        skips,
         cmd;
 
     this.log('positioning files...');
@@ -377,7 +396,7 @@ Cmd.prototype.executePosition = function() {
     working = options.tmpdir;
 
     //  If the target dir doesn't exist we make that directory so we can then
-    //  iterate across the working dir files via the finder logic below.
+    //  iterate across the working dir files via the logic below.
     if (!CLI.sh.test('-e', dest)) {
         cmd.verbose('creating target directory: ' + dest);
         CLI.sh.mkdir('-p', dest);
@@ -389,69 +408,108 @@ Cmd.prototype.executePosition = function() {
         }
     }
 
-    //  Target directory already exist. Only choice now is to try to move files
-    //  iteratively and log those that we can't move without destroying data.
-    finder = find(working);
     code = 0;
 
-    skips = [];
+    list = CLI.sh.ls('-RA', working);
 
-    finder.on('error', function(e) {
-        cmd.error('Error positioning working tree: ' + e);
-        code = 1;
-    });
-
-    // Ignore hidden directories and the node_modules directory.
-    finder.on('directory', function(dir, stat, stop) {
-        var base,
+    //  Move any directories that don't exist in target location. This will bulk
+    //  move as many files as possible without interaction overhead.
+    list.forEach(function(file) {
+        var fullpath,
             target;
 
-        base = path.basename(dir);
-        if (base.charAt(0) === '.' || base === 'node_modules') {
-            stop();
+        fullpath = path.join(working, file);
+        if (!CLI.sh.test('-d', fullpath)) {
+            return;
         }
 
         //  Check for target directories and create as needed.
-        target = path.join(dest, dir.replace(working, ''));
+        target = path.join(dest, file);
         cmd.verbose('checking directory: ' + target);
         if (!CLI.sh.test('-d', target)) {
-            cmd.debug('creating target directory: ' + target);
-            CLI.sh.mkdir('-p', target);
+            cmd.debug('moving directory: ' + file);
+            CLI.sh.mv(fullpath, target);
+        } else {
+            cmd.verbose('directory exists');
         }
     });
 
-    // Ignore links. (There shouldn't be any...but just in case.).
-    finder.on('link', function(link) {
-        cmd.warn('Warning: ignoring link: ' + link);
-    });
+    //  Rescan working directory for anything remaining after directory moves.
+    list = CLI.sh.ls('-RA', working);
 
-    finder.on('file', function(file) {
-        var target,
+    list.forEach(function(file) {
+        var fullpath,
+            target,
+            skipped,
             exists,
+            olddat,
+            newdat,
+            answer,
             err2;
+
+        fullpath = path.join(working, file);
+        if (CLI.sh.test('-d', fullpath)) {
+            //  Skip directories. We've moved any that didn't already exist. The
+            //  remaining ones will hopefully be emptied by the time we invoke
+            //  the cleanup routine.
+            return;
+        }
+
+        if (!CLI.sh.test('-f', fullpath)) {
+            cmd.warn('ignoring special file: ' + fullpath);
+            CLI.sh.rm('-rf', fullpath);
+            return;
+        }
 
         //  Ignore any configuration file we see.
         if (path.basename(file) === cmd.DNA_CONFIG) {
+            //  Remove it so it doesn't make working dir look dirty.
+            cmd.verbose('cleansing marker file: ' + file);
+            CLI.sh.rm('-rf', fullpath);
             return;
         }
 
         cmd.verbose('positioning file: ' + file);
 
+        skipped = false;
         target = path.join(dest, file.replace(working, ''));
         exists = CLI.sh.test('-e', target);
-        if (exists && !options.force) {
-            cmd.info('skipping existing file: ' + target);
-            skips.push(target);
-        } else {
-            if (exists) {
-                //  Must be forcing...
-                cmd.warn('replacing existing file: ' + target);
-                CLI.sh.mv('-f', file, target);
-            } else {
-                //  No flags for mv here or (at least on current shelljs) this
-                //  will fail.
-                CLI.sh.mv(file, target);
+
+        if (exists) {
+            //  If they're the same we can provide a clearer set of messaging
+            //  and avoid making it sound like we replaced/updated content.
+            olddat = CLI.sh.cat(target);
+            newdat = CLI.sh.cat(fullpath);
+            if (olddat === newdat) {
+                cmd.verbose('ignoring duplicate file: ' + fullpath);
+                CLI.sh.rm('-rf', fullpath);
+                return;
             }
+
+            //  NOTE we put update first because we can use --force to cleanse a
+            //  working dir but then rely on update for file positioning.
+            if (options.update) {
+                answer = CLI.prompt.question(
+                    'Replace ' + file + ' ? [n] ');
+                if (answer.toLowerCase().charAt(0) === 'y') {
+                    cmd.warn('updating existing file: ' + target);
+                    CLI.sh.mv('-f', fullpath, target);
+                } else {
+                    cmd.log('skipping conflicted file: ' + target);
+                    skipped = true;
+                }
+            } else if (options.force) {
+                cmd.warn('replacing existing file: ' + target);
+                CLI.sh.mv('-f', fullpath, target);
+            } else {
+                cmd.log('skipping existing file: ' + target);
+                skipped = true;
+            }
+        } else {
+            CLI.sh.mv(fullpath, target);
+        }
+
+        if (!skipped) {
             err2 = CLI.sh.error();
             if (CLI.sh.error()) {
                 cmd.error('Error positioning file: ' + err2);
@@ -467,16 +525,25 @@ Cmd.prototype.executePosition = function() {
         }
     });
 
-    finder.on('end', function() {
-        if (code === 0) {
-            cmd.log('positioning complete...');
-            code = cmd.executePackage();
-        } else {
-            this.executeCleanup(code);
-        }
-    });
+    if (code === 0) {
+        cmd.log('positioning complete...');
+        code = cmd.executePackage();
+    } else {
+        cmd.executeCleanup(code);
+    }
 
     return code;
+};
+
+
+/**
+ * Performs any post-processing necessary after executeProcess and prior to
+ * executePosition. This is typically used to overlay base DNA content with
+ * specific template or style content.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executePostProcess = function() {
+    return 0;
 };
 
 
@@ -489,7 +556,7 @@ Cmd.prototype.executeProcess = function() {
         badexts,
         badpaths,
         params,
-        finder,
+        list,
         cmd,
         working,
         code;
@@ -503,60 +570,46 @@ Cmd.prototype.executeProcess = function() {
     badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg'];
     badpaths = ['.DS_Store'];
 
-    cmd.log('processing files...');
+    cmd.log('processing templates...');
 
     //  Delegate production of template parameters to the specific command.
     //  Common differences here are appname vs. typename (root.ns.type).
     params = this.getTemplateParameters();
 
-    //  ---
-    //  Process templated content to inject name.
-    //  ---
-
-    finder = find(working);
-    code = 0;
-
-    finder.on('error', function(e) {
-        cmd.error('Error processing working tree: ' + e);
-        code = 1;
-    });
-
-    // Ignore hidden directories and the node_modules directory.
-    finder.on('directory', function(dir, stat, stop) {
-        var base;
-
-        cmd.verbose('Processing dir: ' + dir);
-
-        base = path.basename(dir);
-        if (base.charAt(0) === '.' || base === 'node_modules') {
-            stop();
-        }
-    });
-
-    // Ignore links. (There shouldn't be any...but just in case.).
-    finder.on('link', function(link) {
-        cmd.warn('Warning: ignoring link: ' + link);
-    });
-
-    finder.on('file', function(file) {
-
-        var content,  // File content after template injection.
-            data,     // File data.
-            template; // The compiled template content.
+    //  Get the list of files which are potential templating targets.
+    list = CLI.sh.ls('-RA', working).filter(function(file) {
+        var fullpath;
 
         if (badexts.indexOf(path.extname(file)) !== -1 ||
             badpaths.indexOf(path.basename(file)) !== -1) {
-            return;
+            return false;
         }
 
-        cmd.verbose('processing file: ' + file);
+        fullpath = path.join(working, file);
+
+        return CLI.sh.test('-f', fullpath);
+    });
+
+    code = 0;
+
+    list.forEach(function(file) {
+        var fullpath,   //  Complete file name.
+            content,    //  File content after template injection.
+            data,       //  File data.
+            template,   //  The compiled template content.
+            fileparam;  //  adjusted filename for template params.
+
+        fullpath = path.join(working, file);
+
+        cmd.verbose('processing file: ' + fullpath);
+
         try {
-            data = fs.readFileSync(file, {encoding: 'utf8'});
+            data = fs.readFileSync(fullpath, {encoding: 'utf8'});
             if (!data) {
                 throw new Error('Empty');
             }
         } catch (e) {
-            cmd.error('Error reading ' + file + ': ' + e.message);
+            cmd.error('Error reading ' + fullpath + ': ' + e.message);
             code = 1;
             return;
         }
@@ -567,11 +620,16 @@ Cmd.prototype.executeProcess = function() {
                 throw new Error('InvalidTemplate');
             }
         } catch (e) {
-            cmd.error('Error compiling template ' + file + ': ' +
+            cmd.error('Error compiling template ' + fullpath + ': ' +
                 e.message);
             code = 1;
             return;
         }
+
+        fileparam = path.basename(file);
+        fileparam = fileparam.replace(path.extname(file), '');
+        fileparam = fileparam.split('_')[0] || fileparam.split('_')[1];
+        params.filename = fileparam;
 
         try {
             content = template(params);
@@ -579,20 +637,20 @@ Cmd.prototype.executeProcess = function() {
                 throw new Error('InvalidContent');
             }
         } catch (e) {
-            cmd.error('Error injecting template data in ' + file +
+            cmd.error('Error injecting template data in ' + fullpath +
                 ': ' + e.message);
             code = 1;
             return;
         }
 
         if (data === content) {
-            cmd.verbose('Ignoring static file: ' + file);
+            cmd.verbose('ignoring static file: ' + fullpath);
         } else {
-            cmd.verbose('Updating file: ' + file);
+            cmd.verbose('updating file: ' + fullpath);
             try {
-                fs.writeFileSync(file, content);
+                fs.writeFileSync(fullpath, content);
             } catch (e) {
-                cmd.error('Error writing file ' + file + ': ' + e.message);
+                cmd.error('Error writing file ' + fullpath + ': ' + e.message);
                 code = 1;
                 return;
             }
@@ -600,22 +658,79 @@ Cmd.prototype.executeProcess = function() {
 
         //  Allow command to process the file name and rename it from template
         //  format to final format as needed.
-        code = cmd.executeRename(file);
+        code = cmd.executeRename(fullpath);
     });
 
-    finder.on('end', function() {
-        if (code === 0) {
-            cmd.log('templating complete...');
+    if (code === 0) {
+        cmd.log('templating complete...');
 
-            //  Note that positioning will trigger package updates if successful
-            //  so we don't need to do that here.
-            code = cmd.executePosition();
-        } else {
-            this.executeCleanup(code);
+        //  Do any post-processing necessary to refine/replace the baseline
+        //  DNA before we reposition the working dir files.
+        code = cmd.executePostProcess();
+        if (code !== 0) {
+            return;
         }
-    });
+
+        //  Note that positioning will trigger package updates if successful
+        //  so we don't need to do that here.
+        code = cmd.executePosition();
+    } else {
+        cmd.executeCleanup(code);
+    }
 
     return code;
+};
+
+
+/**
+ * Performs template processing on directories in the working directory.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeProcessDirs = function() {
+    var options,
+        cmd,
+        working,
+        params,
+        dirs,
+        keys;
+
+    options = this.options;
+
+    cmd = this;
+
+    working = options.tmpdir;
+
+    cmd.log('processing directories...');
+
+    //  Delegate production of template parameters to the specific command.
+    //  Common differences here are appname vs. typename (root.ns.type).
+    params = this.getTemplateParameters();
+    keys = Object.keys(params);
+
+    dirs = CLI.sh.ls('-RA', working).filter(function(fname) {
+        var passed,
+            fullpath;
+
+        fullpath = path.join(working, fname);
+        if (!CLI.sh.test('-d', fullpath)) {
+            return false;
+        }
+
+        passed = keys.some(function(key) {
+            var regex;
+
+            regex = new RegExp('__' + key + '__($|[^/])');
+            return regex.test(fullpath);
+        });
+
+        return passed;
+    });
+
+    dirs.forEach(function(dir) {
+        cmd.executeRename(path.join(working, dir));
+    });
+
+    return 0;
 };
 
 
@@ -628,16 +743,20 @@ Cmd.prototype.executeRename = function(file) {
     var params,
         regex,
         code,
+        cmd,
         fname,
         newname;
 
     code = 0;
+
+    cmd = this;
 
     fname = file;
 
     //  The parameters that feed templating for this command are the same things
     //  we can use in the renaming process to rename template files.
     params = this.getTemplateParameters();
+
     Object.keys(params).forEach(function(key) {
         var value;
 
@@ -654,7 +773,7 @@ Cmd.prototype.executeRename = function(file) {
                 fname = newname;
             }
         } catch (e) {
-            this.error('Error renaming template ' + fname + ': ' + e.message);
+            cmd.error('Error renaming ' + fname + ': ' + e.message);
             code = 1;
         }
     });
@@ -693,7 +812,7 @@ Cmd.prototype.getTemplateParameters = function() {
     params = CLI.blend(obj, options);
     this.params = params;
 
-    this.verbose(CLI.beautify(JSON.stringify(params)));
+    this.trace(CLI.beautify(JSON.stringify(params)));
 
     return params;
 };
@@ -716,12 +835,28 @@ Cmd.prototype.prereqs = function() {
         return 1;
     }
 
+    //  Name has to be a valid JS identifier or it won't work in the various
+    //  templates which ultimately generate client-side code.
+    if (!CLI.isJSIdentifier(options.name) && !options.list) {
+        this.error('Name must be a valid JS identifier: ' + options.name);
+        this.usage();
+        return 1;
+    }
+
     code = this.verifyDNA();
     if (code === 0) {
         code = this.verifyDestination();
     }
 
     return code;
+};
+
+
+/**
+ * Write a summary of what the command has done.
+ */
+Cmd.prototype.summarize = function() {
+    return;
 };
 
 
@@ -752,7 +887,7 @@ Cmd.prototype.verifyDestination = function() {
         dirname = dest.slice(dest.lastIndexOf(path.sep) + 1);
         options.dirname = dirname;
 
-        list = CLI.sh.ls('-A', dest);
+        list = CLI.sh.ls('-RA', dest);
         err = CLI.sh.error();
         if (CLI.sh.error()) {
             this.error('Error checking destination directory: ' + err);
@@ -760,10 +895,12 @@ Cmd.prototype.verifyDestination = function() {
         }
 
         if (list.length !== 0 && this.NEEDS_FORCE) {
-            if (options.force) {
-                this.warn('--force specified, ignoring existing content.');
+            if (options.update) {
+                this.warn('--update specified, updating existing content.');
+            } else if (options.force) {
+                this.warn('--force specified, replacing existing content.');
             } else {
-                this.error('Current directory is not empty. Use --force to ignore.');
+                this.error('Current directory is not empty. Use --force or --update.');
                 return 1;
             }
         }
@@ -772,7 +909,9 @@ Cmd.prototype.verifyDestination = function() {
         options.dest = dest;
 
         if (CLI.sh.test('-e', dest) && this.NEEDS_FORCE) {
-            if (options.force) {
+            if (options.update) {
+                this.warn('--update specified, conflicts will prompt.');
+            } else if (options.force) {
                 this.warn('--force specified, removing and rebuilding ' + dest);
                 err = CLI.sh.rm('-rf', dest);
                 if (err) {
@@ -782,7 +921,7 @@ Cmd.prototype.verifyDestination = function() {
             } else {
                 this.error('Destination directory ' + dest +
                     ' already exists.' +
-                    ' Use --force to replace.');
+                    ' Use --update to patch, --force to replace.');
                 return 1;
             }
         }
@@ -819,6 +958,12 @@ Cmd.prototype.verifyDNA = function() {
     //  DNA can be entered as 'typename' (CompiledTag) but we convert to
     //  lowercase to normalize for directory use.
     dna = dna.toLowerCase();
+
+    //  If the dna reference is a tag name we leave the full scan to reflection
+    //  during a later phase.
+    if (/:|[a-zA-Z0-9]\./.test(dna)) {
+        return this.configureForDNA({});
+    }
 
     // If the dna reference doesn't include either a / or dot indicating a
     // path then we work strictly from the TIBET dna directory choices.
@@ -884,7 +1029,7 @@ Cmd.prototype.verifyDNA = function() {
             return 1;
         }
 
-        this.verbose('dna config: ' +
+        this.trace('dna config: ' +
             CLI.beautify(JSON.stringify(dnaconfig)));
 
         return this.configureForDNA(dnaconfig);

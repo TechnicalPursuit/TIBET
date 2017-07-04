@@ -1,13 +1,27 @@
 {
     "default": {
+        "https": false,
+        "https_port": 1443,
         "port": 1407,
-        "pouch": "pouch"
+        "crypto": {
+            "salt": "mmm...salty"
+        },
+        "plugins": {
+            "tds": ["tasks"]
+        },
+        "static": {
+            "private": []
+        },
+        "tasks": {
+            "db_name": "{{appname}}_tasks"
+        },
+        "vcard": {
+            "strategy": "tds"
+        }
     },
     "development": {
-        "use": {
-            "watch": true,
-            "patch": true,
-            "cli": true
+        "plugins": {
+            "tds": ["cli", "patch", "tasks", "watch"]
         }
     }
 }

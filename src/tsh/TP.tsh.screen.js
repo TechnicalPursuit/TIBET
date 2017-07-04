@@ -39,8 +39,10 @@ function(aRequest) {
 
     var shell,
 
-        tdp,
-        arg0;
+        arg0,
+
+        screenNum,
+        screens;
 
     shell = aRequest.at('cmdShell');
 
@@ -54,21 +56,51 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
+    //  This command only works in the context of a loaded and enabled Sherpa
+    if (!TP.sys.hasFeature('sherpa')) {
+        aRequest.stdout(
+                'The :screen command requires a loaded and enabled Sherpa');
+        aRequest.complete(TP.TSH_NO_VALUE);
+
+        return;
+    }
+
     arg0 = shell.getArgument(aRequest, 'ARG0');
 
-    tdp = TP.bySystemId('DeveloperPortal');
-    tdp.toggleZoomed();
-    tdp.setCurrentScreenCell('screen_' + arg0 + '_cell');
-    tdp.toggleZoomed();
+    //  :screen 3
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    screenNum = TP.nc(arg0);
+    if (TP.isNumber(screenNum)) {
+
+        screens = TP.byId('SherpaWorld', TP.win('UIROOT')).get('screens');
+        if (screenNum < 0 || screenNum > screens.getSize() - 1) {
+            aRequest.stdout('screen index is invalid: ' + screenNum);
+            aRequest.complete(TP.TSH_NO_VALUE);
+        }
+
+        //  Fire a 'ToggleScreen' signal, supplying the screen index to switch
+        //  to.
+        TP.signal(null,
+                    'ToggleScreen',
+                    TP.hc('screenIndex', screenNum));
+
+        aRequest.stdout('world switched to screen ' + screenNum);
+        aRequest.complete(TP.TSH_NO_VALUE);
+    } else {
+        aRequest.stdout('screen switching requires numeric index');
+        aRequest.complete(TP.TSH_NO_VALUE);
+
+        return;
+    }
+
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('screen',
     TP.tsh.screen.Type.getMethod('tshExecute'),
     'Sets the canvas being viewed to a screen.',
     ':screen',

@@ -60,7 +60,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var contentElem;
@@ -91,7 +91,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 //  Test for elements from the template
@@ -123,7 +123,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var contentElem;
@@ -154,7 +154,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 //  Test for elements from the template
@@ -186,7 +186,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -237,7 +237,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -288,7 +288,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -339,7 +339,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -428,7 +428,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -497,7 +497,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -604,7 +604,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -657,7 +657,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -711,7 +711,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -808,7 +808,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -864,7 +864,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -1008,7 +1008,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var windowContext,
@@ -1135,55 +1135,55 @@ function() {
     //  ---
 
     this.it('tibet:template producing standard markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing pre-transformed custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing custom markup producing further custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within standard markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup producing further custom markup having substitutions', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup having variables', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup having variables producing further custom markup having substitutions', function(test, options) {
-
+        //  empty
     });
 
 }).todo();
@@ -1227,55 +1227,55 @@ function() {
     //  ---
 
     this.it('tibet:template producing standard markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing pre-transformed custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing custom markup producing further custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within standard markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup producing further custom markup having substitutions', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup having variables', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup having variables producing further custom markup having substitutions', function(test, options) {
-
+        //  empty
     });
 
 }).todo();
@@ -1319,55 +1319,55 @@ function() {
     //  ---
 
     this.it('tibet:template producing standard markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing pre-transformed custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing custom markup producing further custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within standard markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup producing further custom markup having substitutions', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup having variables', function(test, options) {
-
+        //  empty
     });
 
     //  ---
 
     this.it('tibet:template producing substitutions within custom markup having variables producing further custom markup having substitutions', function(test, options) {
-
+        //  empty
     });
 
 }).todo();

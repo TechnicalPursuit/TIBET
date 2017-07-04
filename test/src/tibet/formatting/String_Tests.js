@@ -296,7 +296,10 @@ function() {
 
         //  Using a local hash - key has Function value
         testRep = ''.format('Bill says: %{aKey}',
-                            TP.hc('aKey', function() {return 'hi there'; }));
+                            TP.hc('aKey',
+                                    function() {
+                                        return 'hi there';
+                                    }));
         correctRep = 'Bill says: hi there';
 
         test.assert.isEqualTo(
@@ -309,7 +312,10 @@ function() {
         //  Using a local hash - key has Function value that takes a param - the
         //  value being formatted
         testRep = 'Bill'.format('What\'s your name? %{aKey}',
-                TP.hc('aKey', function(item) {return 'My name is: ' + item; }));
+                TP.hc('aKey',
+                        function(item) {
+                            return 'My name is: ' + item;
+                        }));
 
         correctRep = 'What\'s your name? My name is: Bill';
 
@@ -404,7 +410,12 @@ function() {
 
         //  ---
 
-        testRep = 'Bill says: %{aKey}'.transform(null, TP.hc('aKey', function() {return 'hi there'; }));
+        testRep = 'Bill says: %{aKey}'.transform(
+                        null,
+                        TP.hc('aKey',
+                                function() {
+                                    return 'hi there';
+                                }));
 
         correctRep = 'Bill says: hi there';
 
@@ -415,7 +426,11 @@ function() {
 
         //  ---
 
-        testRep = 'What\'s your name? %{aKey}'.transform('Bill', TP.hc('aKey', function(item) {return 'My name is: ' + item; }));
+        testRep = 'What\'s your name? %{aKey}'.transform(
+                    'Bill', TP.hc('aKey',
+                                    function(item) {
+                                        return 'My name is: ' + item;
+                                    }));
         correctRep = 'What\'s your name? My name is: Bill';
 
         test.assert.isEqualTo(
@@ -707,7 +722,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('bar', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><li>{{goo}}</li><li>moomoo</li></ul>';
+        correctRep = '<ul><span tibet:template_expr="foo.bar"><li>{{goo}}</li><li>moomoo</li></span></ul>';
 
         test.assert.isEqualTo(
             testRep,

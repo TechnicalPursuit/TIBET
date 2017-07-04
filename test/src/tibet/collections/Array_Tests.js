@@ -32,8 +32,12 @@ function() {
             obja,
             objb;
 
-        obja = {a: 1};
-        objb = {b: 2};
+        obja = {
+            a: 1
+        };
+        objb = {
+            b: 2
+        };
 
         arr = [obja, objb, obja, obja, objb, obja];
         arr.remove(objb, TP.IDENTITY);
@@ -41,6 +45,34 @@ function() {
         test.assert.isEqualTo(arr.length, 4);
         test.assert.isEqualTo(JSON.stringify(arr),
             '[{"a":1},{"a":1},{"a":1},{"a":1}]');
+    });
+});
+
+Array.Inst.describe('getLastPosition',
+function() {
+
+    this.it('finds correctly from the tail forward',
+    function(test, options) {
+        var arr;
+
+        arr = [0, 1, 2, 3, 2, 4];
+        test.assert.isEqualTo(arr.getLastPosition(2), 4);
+    });
+
+    this.it('finds correctly for the tail element',
+    function(test, options) {
+        var arr;
+
+        arr = [0, 1, 2, 3, 2, 4];
+        test.assert.isEqualTo(arr.getLastPosition(4), 5);
+    });
+
+    this.it('finds correctly for the head element',
+    function(test, options) {
+        var arr;
+
+        arr = [0, 1, 2, 3, 2, 4];
+        test.assert.isEqualTo(arr.getLastPosition(0), 0);
     });
 });
 

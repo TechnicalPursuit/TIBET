@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+</head>
+
+<body xmlns:ev="http://www.w3.org/2001/xml-events">
+
+    <h2>On Test #2</h2><br/>
+    <br/>
+    <br/>
+    <tibet:testElem id="testElem1"/>
+    <br/>
+    <br/>
+    A mapping of the native 'click' event to a custom signal type that will invoke the handler on the above instance of a custom element type.
+    <button id="triggerElem1" on:click="{signal: ClickTestSignal, origin: testElem1, payload: {foo: 'bar', baz: 'goo'}}">Click me to send the event and dispatch the signal</button>
+
+    <br/>
+    <br/>
+    A mapping of the TIBET-level 'TP.sig.DOMClick' event to a custom signal type that will invoke the handler on this instance of this custom element type.
+    <button id="triggerElem2" on:TP.sig.DOMClick="{signal: ClickTestSignal, origin: testElem1, payload: {foo: 'bar', baz: 'goo'}}">Click me to send the event and dispatch the signal</button>
+
+    <br/>
+    <br/>
+    A mapping of the TIBET-level 'DOMClick' event to a custom signal type that will invoke the handler on this instance of this custom element type.
+    <button id="triggerElem3" on:DOMClick="{signal: ClickTestSignal, origin: testElem1, payload: {foo: 'bar', baz: 'goo'}}">Click me to send the event and dispatch the signal</button>
+
+</body>
+</html>

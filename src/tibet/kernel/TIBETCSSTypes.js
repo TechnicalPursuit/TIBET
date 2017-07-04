@@ -122,7 +122,7 @@ function(params) {
     /* eslint-disable no-unused-vars */
 
     var theTargets,
-        theProperty,
+        styleProperty,
 
         dummyVal;
 
@@ -130,8 +130,12 @@ function(params) {
         return;
     }
 
-    if (TP.isEmpty(theProperty = params.atIfInvalid('property',
-                                                this.get('styleProperty')))) {
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
+
+    if (TP.isEmpty(styleProperty)) {
         return;
     }
 
@@ -141,8 +145,7 @@ function(params) {
     if (TP.isArray(theTargets)) {
         theTargets.perform(
             function(aTarget) {
-
-                TP.elementClearStyleProperty(aTarget, theProperty);
+                TP.elementClearStyleProperty(aTarget, styleProperty);
             });
 
         //  Make sure that any drawing that needed to 'flush' to the window
@@ -150,7 +153,7 @@ function(params) {
         dummyVal = TP.documentGetBody(TP.nodeGetDocument(
                                         theTargets.first())).offsetHeight;
     } else {
-        TP.elementClearStyleProperty(theTargets, theProperty);
+        TP.elementClearStyleProperty(theTargets, styleProperty);
         dummyVal = TP.documentGetBody(TP.nodeGetDocument(
                                         theTargets)).offsetHeight;
     }
@@ -254,7 +257,7 @@ function(controlParams, stepParams) {
 
     //  Make sure that we're configuring the job to know that it's running a
     //  visual animation
-    ctrlParams = TP.ifInvalid(controlParams, TP.hc());
+    ctrlParams = TP.isValid(controlParams) ? controlParams : TP.hc();
     ctrlParams.atPut('isAnimation', true);
 
     //  Call next method to get the transition job.
@@ -297,7 +300,7 @@ function(params) {
      */
 
     var theTargets,
-        theProperty,
+        styleProperty,
 
         oldVal;
 
@@ -305,25 +308,27 @@ function(params) {
         return;
     }
 
-    if (TP.isEmpty(theProperty = params.atIfInvalid('property',
-                                                this.get('styleProperty')))) {
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
+
+    if (TP.isEmpty(styleProperty)) {
         return;
     }
 
     if (TP.isArray(theTargets)) {
         theTargets.perform(
             function(aTarget) {
-
                 var val;
 
-                val = TP.elementGetStyleProperty(aTarget, theProperty);
-
-                TP.elementPushStyleProperty(aTarget, theProperty, val);
+                val = TP.elementGetStyleProperty(aTarget, styleProperty);
+                TP.elementPushStyleProperty(aTarget, styleProperty, val);
             });
     } else {
-        oldVal = TP.elementGetStyleProperty(theTargets, theProperty);
+        oldVal = TP.elementGetStyleProperty(theTargets, styleProperty);
 
-        TP.elementPushStyleProperty(theTargets, theProperty, oldVal);
+        TP.elementPushStyleProperty(theTargets, styleProperty, oldVal);
     }
 
     return;
@@ -343,7 +348,7 @@ function(params) {
     /* eslint-disable no-unused-vars */
 
     var theTargets,
-        theProperty,
+        styleProperty,
 
         oldVal,
 
@@ -353,8 +358,12 @@ function(params) {
         return;
     }
 
-    if (TP.isEmpty(theProperty = params.atIfInvalid('property',
-                                                this.get('styleProperty')))) {
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
+
+    if (TP.isEmpty(styleProperty)) {
         return;
     }
 
@@ -364,12 +373,10 @@ function(params) {
     if (TP.isArray(theTargets)) {
         theTargets.perform(
             function(aTarget) {
-
                 var val;
 
-                val = TP.elementPopStyleProperty(aTarget, theProperty);
-
-                TP.elementGetStyleObj(aTarget)[theProperty] = val;
+                val = TP.elementPopStyleProperty(aTarget, styleProperty);
+                TP.elementGetStyleObj(aTarget)[styleProperty] = val;
             });
 
         //  Make sure that any drawing that needed to 'flush' to the window
@@ -377,9 +384,9 @@ function(params) {
         dummyVal = TP.documentGetBody(TP.nodeGetDocument(
                                         theTargets.first())).offsetHeight;
     } else {
-        oldVal = TP.elementPopStyleProperty(theTargets, theProperty);
+        oldVal = TP.elementPopStyleProperty(theTargets, styleProperty);
 
-        TP.elementGetStyleObj(theTargets)[theProperty] = oldVal;
+        TP.elementGetStyleObj(theTargets)[styleProperty] = oldVal;
 
         //  Make sure that any drawing that needed to 'flush' to the window
         //  does so.
@@ -444,8 +451,10 @@ function(job, params) {
         toAsNumber,
         byAsNumber;
 
-    styleProperty = params.atIfInvalid('property',
-                                        this.get('styleProperty'));
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
 
     //  We can't proceed without a style property.
     if (TP.isEmpty(styleProperty)) {
@@ -564,8 +573,10 @@ function(job, params) {
         len,
         i;
 
-    styleProperty = params.atIfInvalid('property',
-                                        this.get('styleProperty'));
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
 
     //  We can't proceed without a style property.
     if (TP.isEmpty(styleProperty)) {
@@ -669,8 +680,10 @@ function(job, params) {
         toAsNumber,
         byAsNumber;
 
-    styleProperty = params.atIfInvalid('property',
-                                        this.get('styleProperty'));
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
 
     //  We can't proceed without a style property.
     if (TP.isEmpty(styleProperty)) {
@@ -814,8 +827,10 @@ function(job, params) {
         toAsNumber,
         byAsNumber;
 
-    styleProperty = params.atIfInvalid('property',
-                                        this.get('styleProperty'));
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
 
     //  We can't proceed without a style property.
     if (TP.isEmpty(styleProperty)) {
@@ -957,8 +972,10 @@ function(job, params) {
         len,
         i;
 
-    styleProperty = params.atIfInvalid('property',
-                                        this.get('styleProperty'));
+    styleProperty = params.at('property');
+    if (TP.notValid(styleProperty)) {
+        styleProperty = this.get('styleProperty');
+    }
 
     //  We can't proceed without a style property.
     if (TP.isEmpty(styleProperty)) {

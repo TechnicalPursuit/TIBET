@@ -22,24 +22,15 @@
         var app,
             appRoot,
             express,
-            fullpath,
-            logger,
             path,
+            sh,
+            pubs,
+            privs,
+            list,
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
-
-        logger.debug('Integrating TDS public static routes.');
 
         //  ---
         //  Requires
@@ -47,10 +38,58 @@
 
         path = require('path');
         express = require('express');
+        sh = require('shelljs');
 
         //  ---
-        //  Variables
+        //  Setup
         //  ---
+
+        //  Create a helper function for registering top-level public items. We
+        //  do this so that we can invoke it in this routine if we're not using
+        //  logins or in the the private-static.js plugin if we are.
+        options.registerPublicStatics = function(rootDir, skips, opts, metadata) {
+
+            //  sh.ls here means only top-level files are processed/filtered.
+            list = sh.ls(rootDir).filter(function(fname) {
+                var ok;
+
+                //  Never vend hidden or 'helper' files.
+                if (fname.match(/^(\.|_)/)) {
+                    return false;
+                }
+
+                //  Process against each entry in the private list. These are
+                //  supposed to be a list of specific directories to mask off. By
+                //  default the 'src' directory requires login to access code.
+                ok = true;
+                skips.forEach(function(priv) {
+                    if (priv === fname) {
+                        ok = false;
+                    }
+                });
+
+                return ok;
+            });
+
+            //  activate handlers for the files which made it past the root tests.
+            list.forEach(function(fname) {
+                var full;
+
+                //  note we use metadata passed in to allow for invocation via
+                //  the private-static module which reports correctly.
+                if (options.argv.verbose) {
+                    if (metadata) {
+                        opts.logger.system('enabling public static path: ' +
+                            fname, metadata);
+                    } else {
+                        opts.logger.system('enabling public static path: ' +
+                            fname);
+                    }
+                }
+                full = path.join(rootDir, fname);
+                opts.app.use('/' + fname, express.static(full));
+            });
+        };
 
         //  Get the application root. This will limit the scope of the files we
         //  serve and provide a root for accessing application resources.
@@ -60,21 +99,35 @@
         //  Routes
         //  ---
 
-        //  The following paths are leveraged by the login page, even if there's
-        //  been no code loaded yet, and by the initial startup sequence in the
-        //  case of the TIBET library which simply avoids a ton of
-        //  deserialization of the user object to confirm login.
-        fullpath = path.join(appRoot, 'TIBET-INF');
-        app.use('/TIBET-INF', express.static(fullpath));
+        //  If we're attempting to use logins we have to avoid opening up any
+        //  directories/files that would sidestep the routes for / and login.
+        if (TDS.cfg('boot.use_login')) {
+            pubs = ['TIBET-INF', 'media', 'styles'];
+            pubs.forEach(function(pub) {
+                app.use('/' + pub, express.static(path.join(appRoot, pub)));
+            });
+            return;
+        }
 
-        fullpath = path.join(appRoot, 'tibet.json');
-        app.use('/tibet.json', express.static(fullpath));
+        privs = TDS.getcfg('tds.static.private');
 
-        fullpath = path.join(appRoot, 'styles');
-        app.use('/styles', express.static(fullpath));
+        //  If the list of private files is empty they're all public.
+        if (TDS.notValid(privs) || privs.length === 0) {
+            app.use('/', express.static(appRoot));
 
-        fullpath = path.join(appRoot, 'media');
-        app.use('/media', express.static(fullpath));
+            //  Map HTML directory to the root so you don't see /html/foo.xhtml
+            app.use('/', express.static(path.join(appRoot, 'html')));
+            return;
+        }
+
+        if (!Array.isArray(privs)) {
+            throw new Error('Invalid tds.static.private specification: ' +
+                privs);
+        }
+
+        //  If we got here we're not using logins and we have at least some
+        //  private content so we need to conditionally open up public paths.
+        options.registerPublicStatics(appRoot, privs, options);
     };
 
 }(this));

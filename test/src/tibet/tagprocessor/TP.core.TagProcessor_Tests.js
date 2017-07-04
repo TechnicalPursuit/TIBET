@@ -250,7 +250,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
             function(result) {
                 var processor,
 
@@ -281,7 +281,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
             function(result) {
                 var processor;
 
@@ -303,7 +303,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
             function(result) {
                 var processor;
 
@@ -326,7 +326,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
             function(result) {
                 var processor;
 
@@ -348,7 +348,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
             function(result) {
                 var processor;
 
@@ -412,7 +412,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext;
@@ -456,7 +456,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var elem,
@@ -509,7 +509,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -548,7 +548,7 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XInclude1.xml');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
             function(result) {
 
                 var tpDoc,
@@ -573,7 +573,8 @@ function() {
                     loc,
                     [
                         404,
-                        {},
+                        {
+                        },
                         ''
                     ]);
 
@@ -590,7 +591,7 @@ function() {
 
                 tpDoc.setContent(result);
 
-                test.then(
+                test.chain(
                     function() {
 
                         var windowContext;
@@ -620,7 +621,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
 
                 var windowContext;

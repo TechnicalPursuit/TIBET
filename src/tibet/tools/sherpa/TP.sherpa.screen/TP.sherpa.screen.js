@@ -17,5 +17,68 @@
 TP.sherpa.Element.defineSubtype('screen');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineAttribute('contentIFrame',
+    TP.cpc('> iframe', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('getContentDocument',
+function() {
+
+    var iframeTPElem,
+        iframeTPDoc;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPDoc = iframeTPElem.getContentDocument();
+
+    return iframeTPDoc;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('getContentWindow',
+function() {
+
+    var iframeTPElem,
+        iframeTPWin;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPWin = iframeTPElem.getContentWindow();
+
+    return iframeTPWin;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('getLocation',
+function() {
+
+    var iframeTPElem,
+        iframeTPDoc;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPDoc = iframeTPElem.getContentDocument();
+
+    return iframeTPDoc.getLocation();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('setLocation',
+function(aURL, aRequest) {
+
+    var iframeTPElem,
+        iframeTPWin;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPWin = iframeTPElem.getContentWindow();
+
+    return iframeTPWin.setLocation(aURL, aRequest);
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

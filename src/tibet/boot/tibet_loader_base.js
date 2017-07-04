@@ -16,13 +16,6 @@
  *     provide default UI during the startup process.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          evil:true,
-          maxerr:999,
-          nonstandard:true,
-          node:true
-*/
 /* global TP:true,
           ActiveXObject:false,
           netscape:false,
@@ -71,22 +64,27 @@ if (TP.sys.cfg('boot.context') === 'electron') {
 //  tibet_cfg Overrides / Updates
 //  ============================================================================
 
-TP.boot.$$theme = {
-    trace: TP.sys.cfg('log.color.trace'),
-    info: TP.sys.cfg('log.color.info'),
-    warn: TP.sys.cfg('log.color.warn'),
-    error: TP.sys.cfg('log.color.error'),
-    fatal: TP.sys.cfg('log.color.fatal'),
-    severe: TP.sys.cfg('log.color.severe'),
-    system: TP.sys.cfg('log.color.system'),
+//  NOTE this is the 'initial setting' which is used through the point where the
+//  system can load configuration data and run TP.boot.$updateDependentVars.
+TP.boot.$$buildTheme = function(aName) {
+    var cfg,
+        name,
+        theme;
 
-    time: TP.sys.cfg('log.color.time'),
-    delta: TP.sys.cfg('log.color.delta'),
-    slow: TP.sys.cfg('log.color.slow'),
+    name = aName || 'default';
+    theme = {};
+    cfg = TP.sys.cfg('theme.' + name);
+    Object.keys(cfg).forEach(function(key) {
+        var style;
 
-    debug: TP.sys.cfg('log.color.debug'),
-    verbose: TP.sys.cfg('log.color.verbose')
+        style = key.split('.')[2];
+        if (style) {
+            theme[style] = cfg[key];
+        }
+    });
+    return theme;
 };
+TP.boot.$$theme = TP.boot.$$buildTheme();
 
 //  ============================================================================
 //  Feature Detection
@@ -164,6 +162,15 @@ TP.sys.addFeatureTest = function(aFeatureName, featureTest, testNow) {
      */
 
     TP.sys.$featureTests[aFeatureName] = featureTest;
+
+    //  Install a system property getter to return platform feature values on
+    //  'TP.has'
+    TP.sys.installSystemPropertyGetter(
+        TP.has,
+        aFeatureName,
+        function(aName) {
+            return TP.sys.hasFeature(aName);
+        });
 
     if (testNow) {
         return TP.boot.hasFeature(aFeatureName);
@@ -376,15 +383,9 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
             break;
     }
 
-    //  If level wasn't explicitly set above we'll set it now based on the
-    //  nature of the input. This is simplistic, but we'll assume if it's a
-    //  simple string it's TP.ERROR and if it's an object it's TP.SEVERE.
+    //  If level wasn't explicitly set above we'll set it now.
     if (TP.boot.$notValid(lvl)) {
-        if (typeof msg === 'string') {
-            lvl = TP.ERROR;
-        } else {
-            lvl = TP.SEVERE;
-        }
+        lvl = TP.ERROR;
     }
 
     log = msg;
@@ -620,14 +621,18 @@ TP.boot.$$log = function(argList, aLogLevel) {
      */
 
     var level,
-        message;
+        message,
+        i;
 
     //  Get level in numeric form so we can test leveling below.
     level = TP.ifInvalid(aLogLevel, TP.INFO);
     level = TP.boot[level.toUpperCase()];
 
-    //  TODO: Convert argument list into a single message object we can output.
-    message = argList[0];
+    message = [];
+    for (i = 0; i < argList.length; i++) {
+        message.push(TP.boot.$stringify(argList[i]));
+    }
+    message = message.join(' ');
 
     if (level >= TP.boot.ERROR && level < TP.boot.SYSTEM) {
         return TP.boot.$stderr(message, level);
@@ -1322,9 +1327,6 @@ if (TP.sys.isUA('IE')) {
     //  without them being hoisted into the global space
     (function() {
 
-        //  We assign to 'xmlDoc' here to avoid JSHint errors, but we don't
-        //  really use it.
-
         //  NB: MSXML versions 4 and 5 are not recommended by Microsoft, but
         //  we go ahead and set the TP.$msxml variable to the real version of
         //  MSXML that is installed. It's just that this shouldn't be used for
@@ -1463,9 +1465,9 @@ TP.sys.isSupported = function() {
         //  Must at least match major version.
 
         /* eslint-disable no-extra-parens */
-        if ('major' in config && TP.$browserMajor >= (1 * config.major)) {
+        if ('major' in config && TP.$browserMajor >= Number(config.major)) {
             if ('minor' in config) {
-                if (TP.$browserMinor >= (1 * config.minor)) {
+                if (TP.$browserMinor >= Number(config.minor)) {
         /* eslint-enable no-extra-parens */
                     //  Major passed, minor passed. We're good.
                     flag = flag && true;
@@ -1848,11 +1850,13 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
         len;
 
     if (targetUrl == null) {
-        return TP.boot.$httpError('InvalidURL: ' + targetUrl);
+        TP.boot.$httpError('InvalidURL: ' + targetUrl);
+        return;
     }
 
     if (callType == null) {
-        return TP.boot.$httpError('InvalidCallType: ' + callType);
+        TP.boot.$httpError('InvalidCallType: ' + callType);
+        return;
     }
 
     //  same domain? if not we'll need permission to do this
@@ -1867,24 +1871,26 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             netscape.security.PrivilegeManager.enablePrivilege(
                                                 'UniversalBrowserRead');
         } catch (e) {
-            return TP.boot.$httpError(
-                        'PrivilegeException. url: ' + targetUrl,
-                        TP.boot.$ec(e));
+            TP.boot.$httpError('PrivilegeException. url: ' + targetUrl,
+                TP.boot.$ec(e));
+            return;
         }
     }
 
     try {
         httpObj = TP.boot.$httpConstruct();
     } catch (e) {
-        return TP.boot.$httpError(
+        TP.boot.$httpError(
             'RequestObjectError.  url: ' + targetUrl, TP.boot.$ec(e));
+        return;
     }
 
     try {
         httpObj.open(callType, targetUrl, false);
     } catch (e) {
-        return TP.boot.$httpError(
+        TP.boot.$httpError(
             'RequestOpenError. url: ' + targetUrl, TP.boot.$ec(e));
+        return;
     }
 
     //  process any headers, note we always bypass caches if possible
@@ -1903,9 +1909,9 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             }
         }
     } catch (e) {
-        return TP.boot.$httpError(
-                    'HeaderConfigurationError. url: ' + targetUrl,
-                    TP.boot.$ec(e));
+        TP.boot.$httpError('HeaderConfigurationError. url: ' + targetUrl,
+            TP.boot.$ec(e));
+        return;
     }
 
     //  isolate the actual send call for finer-grained error handling
@@ -1933,9 +1939,9 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             }
         }
     } catch (e) {
-        return TP.boot.$httpError(
-                    'HTTPCallException: url: ' + targetUrl,
-                    TP.boot.$ec(e));
+        TP.boot.$httpError('HTTPCallException: url: ' + targetUrl,
+            TP.boot.$ec(e));
+        return;
     }
 
     return httpObj;
@@ -2326,6 +2332,9 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 //  Cache for TIBET Formatted URIs. We look these up a lot during booting.
 TP.boot.$$tibetURIS = {};
 
+//  Cache for TIBET path keys. We don't need to compute these each time.
+TP.boot.$$pathKeys = [];
+
 //  ----------------------------------------------------------------------------
 
 TP.boot.$uriInTIBETFormat = function(aPath) {
@@ -2339,7 +2348,15 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
      * @returns {String} The supplied path with typical TIBET prefixes.
      */
 
-    var path;
+    var boot,
+        path,
+        cfg,
+        matches,
+        keys;
+
+    if (!aPath) {
+        return aPath;
+    }
 
     //  Don't try to do this until we've computed the proper root paths.
     if (!TP.boot.$$approot || !TP.boot.$$libroot) {
@@ -2350,16 +2367,66 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     if (path) {
         return path;
     }
+    path = aPath;
 
-    //  TODO: best to replace with a better list derived from reflection on the
-    //  sys.cfg path.* properties.
-    path = aPath.replace(TP.boot.$uriExpandPath('~lib_cfg'), '~lib_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~lib_src'), '~lib_src');
-    path = path.replace(TP.boot.$uriExpandPath('~lib'), '~lib');
-    path = path.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~app_src'), '~app_src');
-    path = path.replace(TP.boot.$uriExpandPath('~app'), '~app');
-    path = path.replace(TP.boot.$uriExpandPath('~'), '~');
+    boot = TP.boot;
+    cfg = TP.sys.getcfg();
+
+    TP.boot.$$pathKeys = TP.boot.$$pathKeys ||
+        Object.keys(cfg).filter(function(key) {
+            return /path\.(lib_|app_)/.test(key) && cfg[key];
+        });
+    keys = TP.boot.$$pathKeys;
+
+    //  Goal here is to find all keys which provide a match and then select the
+    //  one that matches the longest string...that's the "best fit"...with one
+    //  exception. We're looking for a valid "path", not a "key" so if the key
+    //  matches the entire string we reject it.
+    matches = [];
+    keys.forEach(function(key) {
+        var value;
+
+        value = boot.$uriExpandPath(cfg[key]);
+        if (path.indexOf(value) === 0) {
+            matches.push([key, value]);
+        }
+    });
+
+    switch (matches.length) {
+        case 0:
+            break;
+        case 1:
+            path = path.replace(matches[0][1], matches[0][0]);
+            break;
+        default:
+            //  Sort matches by value length and use the longest one.
+            matches.sort(function(a, b) {
+                if (a[1].length > b[1].length) {
+                    return -1;
+                } else if (b[1].length > a[1].length) {
+                    return 1;
+                } else {
+                    //  lib comes before app...
+                    if (a[0].indexOf('path.lib') !== -1 &&
+                            b[0].indexOf('path.app') !== -1) {
+                        return -1;
+                    } else if (b[0].indexOf('path.lib') !== -1 &&
+                            a[0].indexOf('path.app') !== -1) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+            path = path.replace(matches[0][1], matches[0][0]);
+            break;
+    }
+
+    path = path.replace(/^path\./, '~');
+
+    //  Process any "last chance" conversion options.
+    path = path.replace(this.$uriExpandPath('~lib'), '~lib');
+    path = path.replace(this.$uriExpandPath('~app'), '~app');
+    path = path.replace(this.$uriExpandPath('~'), '~');
 
     TP.boot.$$tibetURIS[aPath] = path;
 
@@ -3569,6 +3636,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
     } catch (e) {
         $ERROR = e;
     } finally {
+        /* eslint-disable no-unsafe-finally */
         if ($ERROR) {
             if (shouldThrow) {
                 throw $ERROR;
@@ -3579,6 +3647,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
                 throw new Error('DOMAppendException');
             }
         }
+        /* eslint-enable no-unsafe-finally */
     }
 
     return theNode;
@@ -3862,6 +3931,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
         arr,
         current,
         frame,
+        doc,
         win,
         next,
         name;
@@ -3885,13 +3955,19 @@ TP.sys.getWindowById = function(anID, aWindow) {
         case 'uiroot':
             frame = TP.boot.getUIRoot();
             if (frame) {
-                return frame.contentDocument.defaultView;
+                doc = frame.contentDocument;
+                if (doc !== undefined) {
+                    return doc.defaultView;
+                }
             }
             return;
         case 'uiboot':
             frame = TP.boot.getUIBoot();
             if (frame) {
-                return frame.contentDocument.defaultView;
+                doc = frame.contentDocument;
+                if (doc !== undefined) {
+                    return doc.defaultView;
+                }
             }
             return;
         default:
@@ -4305,9 +4381,10 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
                 //  TODO: Do we want the object portion here as well?
                 str = anObject.message;
                 if (shouldEscape === true) {
-                    return TP.boot.$xmlEscape(str);
+                    return TP.boot.$xmlEscape(str) +
+                        TP.boot.$xmlEscape(TP.boot.$stringify(anObject.object));
                 } else {
-                    return str;
+                    return str + TP.boot.$stringify(anObject.object);
                 }
             }
 
@@ -4496,12 +4573,19 @@ TP.boot.$lpad = function(obj, length, padChar) {
      */
 
     var str,
-        pad;
+        pad,
+        count;
 
     str = '' + obj;
-    pad = padChar || ' ';
 
-    while (str.length < length) {
+    if (!length) {
+        return str;
+    }
+
+    pad = padChar || ' ';
+    count = length - str.length;
+
+    while (count--) {
         str = pad + str;
     }
 
@@ -4537,17 +4621,25 @@ TP.boot.$rpad = function(obj, length, padChar) {
      * @param {Number} length The number of characters to pad the String
      *     representation with.
      * @param {String} padChar The pad character to use to pad the String
-     *     representation.
+     *     representation. Note that if the padChar is an entity such as &#160;
+     *     it is counted as having length 1.
      * @returns {String} The 'right padded' String.
      */
 
     var str,
-        pad;
+        pad,
+        count;
 
     str = '' + obj;
-    pad = padChar || ' ';
 
-    while (str.length < length) {
+    if (!length) {
+        return str;
+    }
+
+    pad = padChar || ' ';
+    count = length - str.length;
+
+    while (count--) {
         str = str + pad;
     }
 
@@ -4688,12 +4780,14 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.Annotation.prototype.asDumpString = function() {
+TP.boot.Annotation.prototype.asDumpString = function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -4987,7 +5081,9 @@ TP.boot.$$formatLogEntry = function(entry, options) {
      *         constructs.
      *     [options.console=false] {Boolean} Whether or not this content is
      *         destined for a plain JS console and should therefore not be
-     *         colorized, etc.
+     *         colorized, etc. NOTE that this is normally invoked via either
+     *         PhantomJS or Electron and those components are responsible for
+     *         colorizing text _after_ it is sent from the client.
      * @returns {String} The formatted log entry.
      */
 
@@ -5004,7 +5100,8 @@ TP.boot.$$formatLogEntry = function(entry, options) {
         str,
         err,
         msg,
-        dlimit;
+        dlimit,
+        colorize;
 
     if (!entry) {
         return;
@@ -5037,7 +5134,7 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     //  out.
     if (obj instanceof TP.boot.Annotation) {
         if (obj.object instanceof Error) {
-            str = '\n' + obj.object.stack;
+            str = obj.message + '\n' + obj.object.stack;
         } else {
             str = sep + TP.boot.$stringify(obj.message, sep, esc) +
                 sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
@@ -5059,35 +5156,49 @@ TP.boot.$$formatLogEntry = function(entry, options) {
         str = esc ? TP.boot.$xmlEscape(obj) : obj;
     }
 
-    //  Output format is;
-    //
-    //      time   delta    log level  message
-    //
-    //      000000 [+000] - level_name str
-    //
+    //  ---
+    //  colorizing
+    //  ---
 
-    time = ('' + time.getTime()).slice(-6);
+    //  Bit of a hack...should do at the point of origin...but for now this
+    //  works well enough.
+    str = str.replace(/(\d+ms)/g, TP.boot.$colorize('$1', 'ms'));
+    if (str.indexOf('--- ') === 0 || str.indexOf('TIBET Boot System') === 0) {
+        str = TP.boot.$colorize(str, 'task');
+    }
+
+    //  ---
+    //  timestamp etc.
+    //  ---
+
+    time = '' + time.getTime();
     delta = '';
 
     name = TP.boot.Log.getStringForLevel(level) || '';
     name = name.toLowerCase();
+
+    colorize = TP.boot.$colorize;
 
     if (TP.boot.$$loglevel === TP.DEBUG) {
         delta = entry[TP.boot.LOG_ENTRY_DELTA];
         dlimit = TP.sys.cfg('boot.delta_threshold');
         if (delta > dlimit) {
             TP.boot.$$bottlenecks += 1;
-            delta = TP.boot.$style('[+' + delta + '] ', 'slow');
+            delta = colorize('+' + delta + 'ms', 'slow');
         } else {
-            delta = TP.boot.$style('[+' + delta + '] ', 'delta');
+            delta = colorize('+' + delta + 'ms ', 'delta');
         }
     }
 
     if (console) {
         msg = str;
     } else {
-        msg = TP.boot.$style(time, 'time') + ' ' + delta + '- ' +
-            TP.boot.$style(name + ' ' + str, name);
+        msg = colorize(time, 'stamp') + ' ' +
+            (delta ? delta + ' ' : '') +
+            colorize('[', name) +
+            colorize(TP.boot[name.toUpperCase()], name) +
+            colorize(']', name) + ' ' +
+            str;
     }
 
     return msg;
@@ -5095,14 +5206,14 @@ TP.boot.$$formatLogEntry = function(entry, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$style = function(aString, aTheme) {
+TP.boot.$colorize = function(aString, aSpec) {
 
     /**
-     * @method $style
+     * @method $colorize
      * @summary A method that styles the supplied String according to the
      *     setting of the current color mode and the supplied theme name.
      * @param {String} aString The String to style.
-     * @param {String} aTheme The name of the theme to use to style the supplied
+     * @param {String} aSpec The name of the style specification to use.
      *     String. This will normally come from one of the definitions in
      *     TP.boot.$$theme but can also be a dot ('.') separated list of those
      *     names for styling with multiple themes (i.e. 'trace.time').
@@ -5111,56 +5222,37 @@ TP.boot.$style = function(aString, aTheme) {
 
     var mode,
         styles,
+        spec,
         parts,
-        color,
-        codes,
         result;
 
-    mode = TP.sys.cfg('log.color.mode');
+    //  Color mode defines browser vs. console style entries.
+    mode = TP.sys.cfg('color.mode');
     styles = TP.boot.$$styles[mode];
 
-    try {
-        if (TP.boot.$$PROP_KEY_REGEX.test(aTheme)) {
-            result = '';
-
-            parts = aTheme.split('.');
-            parts.forEach(
-                    function(style) {
-                        color = TP.boot.$$theme[style];
-
-                        //  Do we have a mapping for this color in our theme?
-                        if (TP.boot.$notValid(color)) {
-                            return;
-                        }
-
-                        //  If we had a color mapping in the theme, find the
-                        //  codes.
-                        codes = styles[color];
-                        if (TP.boot.$notValid(codes)) {
-                            return;
-                        }
-
-                        result = codes[0] + (result || aString) + codes[1];
-                    });
-        } else {
-
-            //  Do we have a mapping for this color in our theme?
-            color = TP.boot.$$theme[aTheme];
-            if (TP.boot.$notValid(color)) {
-                return aString;
-            }
-
-            //  If we had a color mapping in the theme, find the codes.
-            codes = styles[color];
-            if (TP.boot.$notValid(codes)) {
-                return aString;
-            }
-
-            result = codes[0] + aString + codes[1];
-        }
-    } catch (e) {
+    //  Do we have a mapping for this color in our theme?
+    spec = TP.boot.$$theme[aSpec];
+    if (TP.boot.$notValid(spec)) {
         return aString;
     }
+
+    result = '';
+
+    //  We support chained style names in the spec so split and iterate.
+    parts = spec.split('.');
+    parts.forEach(
+        function(style) {
+            var entry;
+
+            entry = styles[style];
+
+            //  Do we have a mapping for this style in our style map?
+            if (TP.boot.$notValid(entry)) {
+                return;
+            }
+
+        result = entry[0] + (result || aString) + entry[1];
+    });
 
     return result;
 };
@@ -5189,9 +5281,14 @@ TP.boot.$consoleReporter = function(entry) {
     var msg,
         level;
 
-    TP.sys.setcfg('log.color.mode', 'console');
-    msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '\n', escape: false, console: true});
+    TP.sys.setcfg('color.mode', 'console');
+    msg = TP.boot.$$formatLogEntry(
+        entry,
+        {
+            separator: '\n',
+            escape: false,
+            console: true
+        });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5212,9 +5309,6 @@ TP.boot.$consoleReporter = function(entry) {
         top.console.warn(msg);
         break;
     case TP.boot.ERROR:
-        top.console.error(msg);
-        break;
-    case TP.boot.SEVERE:
         top.console.error(msg);
         break;
     case TP.boot.FATAL:
@@ -5261,9 +5355,14 @@ TP.boot.$bootuiReporter = function(entry) {
         TP.boot.$consoleConfigured = true;
     }
 
-    TP.sys.setcfg('log.color.mode', 'browser');
-    msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '<br/>', escape: true, console: false});
+    TP.sys.setcfg('color.mode', 'browser');
+    msg = TP.boot.$$formatLogEntry(
+        entry,
+        {
+            separator: '<br/>',
+            escape: false,
+            console: false
+        });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5292,9 +5391,6 @@ TP.boot.$bootuiReporter = function(entry) {
         TP.boot.$displayMessage(msg);
         break;
     case TP.boot.ERROR:
-        TP.boot.$displayMessage(msg, true);
-        break;
-    case TP.boot.SEVERE:
         TP.boot.$displayMessage(msg, true);
         break;
     case TP.boot.FATAL:
@@ -5353,9 +5449,14 @@ TP.boot.$phantomReporter = function(entry) {
         return;
     }
 
-    TP.sys.setcfg('log.color.mode', 'terminal');
-    msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '\n', escape: false, console: true});
+    TP.sys.setcfg('color.mode', 'console');
+    msg = TP.boot.$$formatLogEntry(
+        entry,
+        {
+            separator: '\n',
+            escape: false,
+            console: true
+        });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5377,9 +5478,6 @@ TP.boot.$phantomReporter = function(entry) {
         break;
     case TP.boot.ERROR:
         top.console.error('error ' + msg);
-        break;
-    case TP.boot.SEVERE:
-        top.console.error('severe ' + msg);
         break;
     case TP.boot.FATAL:
         top.console.error('fatal ' + msg);
@@ -5492,8 +5590,6 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
             return 'WARN';
         case TP.boot.ERROR:
             return 'ERROR';
-        case TP.boot.SEVERE:
-            return 'SEVERE';
         case TP.boot.FATAL:
             return 'FATAL';
         case TP.boot.SYSTEM:
@@ -5511,7 +5607,7 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
     /**
      * @method isErrorLevel
      * @summary Returns true if the level provided represents a form of error.
-     * @param {Constant} aLevel A TP error level such as TP.SEVERE.
+     * @param {Constant} aLevel A TP error level such as TP.FATAL.
      * @returns {Boolean} True if the given level is considered an error.
      */
 
@@ -5534,7 +5630,7 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
      * @method isFatalCondition
      * @summary Returns true if the level and stage combine to make the
      *     combination represent a fatal boot error.
-     * @param {Constant} aLevel A TP error level such as TP.SEVERE.
+     * @param {Constant} aLevel A TP error level such as TP.FATAL.
      * @param {Constant} aStage A TP boot stage such as 'rendering'. Defaults to
      *     the current stage.
      * @returns {Boolean} True if the given pairing is considered fatal.
@@ -5581,12 +5677,14 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
 //  Instance Methods
 //  ----------------------------------------------------------------------------
 
-TP.boot.Log.prototype.asDumpString = function() {
+TP.boot.Log.prototype.asDumpString = function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the receiver.
      */
 
@@ -5657,7 +5755,7 @@ TP.boot.Log.prototype.asPrettyString = function() {
 TP.boot.Log.prototype.asString = function() {
 
     /**
-     * @method asDumpString
+     * @method asString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the receiver.
@@ -5886,7 +5984,11 @@ TP.boot.Log.prototype.report = function(entry) {
 
     if (TP.boot.Log.isErrorLevel(level) && level >= limit ||
             TP.sys.cfg('boot.console_log')) {
-        TP.boot.$consoleReporter(entry, {console: true});
+        TP.boot.$consoleReporter(
+            entry,
+            {
+                console: true
+            });
     }
 
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
@@ -6286,17 +6388,18 @@ TP.boot.$computeLogBufferSize = function(forceUIUpdate) {
     level = TP.boot.$$loglevel;
 
     switch (level) {
-        case 0:         //  trace
+        case 0:         //  all
+        case 1:         //  trace
+        case 2:         //  debug
             size = size * 2;
             break;
-        case 1:         //  info
-        case 2:         //  warn
-        case 3:         //  error
-        case 4:         //  severe
+        case 3:         //  info
+        case 4:         //  warn
+        case 5:         //  error
+        case 6:         //  fatal
             size = Math.max(Math.floor(size / 2), size);
             break;
-        case 5:         //  fatal
-        case 6:         //  system
+        case 7:         //  system
             size = 1;
             break;
         default:
@@ -6728,6 +6831,7 @@ TP.boot.showUIBoot = function() {
     TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
 
     elem.style.display = 'block';
+    elem.style.visibility = 'visible';
 
     elem.focus();
 };
@@ -6799,6 +6903,7 @@ TP.boot.showUIConsole = function() {
     elem = doc.getElementById(TP.sys.cfg('boot.uiconsole'));
     if (elem) {
         elem.style.display = 'block';
+        elem.style.visibility = 'visible';
     }
 
     //  Force log display to the last entry.
@@ -6923,7 +7028,6 @@ TP.sys.writeBootLog = function(level, reporter) {
  *  TP.ifInfo() ? TP.info(...) : 0;
  *  TP.ifWarn() ? TP.warn(...) : 0;
  *  TP.ifError() ? TP.error(...) : 0;
- *  TP.ifSevere() ? TP.severe(...) : 0;
  *  TP.ifFatal() ? TP.fatal(...) : 0;
  *  TP.ifSystem() ? TP.system(...) : 0;
 */
@@ -7016,24 +7120,6 @@ TP.ifError = function(aLogName) {
      */
 
     return TP.boot.$$loglevel <= TP.boot.ERROR;
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifSevere = function(aLogName) {
-
-    /**
-     * @method ifSevere
-     * @summary Returns true if logging is enabled for TP.SEVERE level
-     *     for the specified log, or the current default log. This function
-     *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
-     * @param {String} aLogName An optional log name to check for level.
-     * @returns {Boolean} True if severe-level logging is active.
-     */
-
-    return TP.boot.$$loglevel <= TP.boot.SEVERE;
 };
 
 //  ------------------------------------------------------------------------
@@ -7170,21 +7256,6 @@ TP.error = function(varargs) {
      */
 
     return TP.$$log(arguments, TP.ERROR, this);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.severe = function(varargs) {
-
-    /**
-     * @method severe
-     * @summary Logs anObject at TP.SEVERE level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
-     *     checked as a possible log name, all other values are considered parts
-     *     of the final message to be logged.
-     */
-
-    return TP.$$log(arguments, TP.SEVERE, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7344,7 +7415,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         } else {
             prefix = 'Completed in ';
         }
-        TP.boot.$stdout(prefix + stagetime + ' ms.', TP.SYSTEM);
+        TP.boot.$stdout(prefix + stagetime + 'ms.', TP.SYSTEM);
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
@@ -7392,7 +7463,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$stdout('' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            ' ms: ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            'ms: ' + TP.boot.$getBootStats(), TP.SYSTEM);
 
         // TP.boot.$stdout('', TP.SYSTEM);
         // TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
@@ -7404,7 +7475,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$stdout('Stopped after ' +
             (TP.boot.$getStageTime('stopped', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            ' ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
         // TP.boot.$stdout('', TP.SYSTEM);
         // TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
@@ -7556,7 +7627,7 @@ TP.boot.$getArgumentPrimitive = function(value) {
 
     //  Try to convert to number, boolean, regex,
     if (TP.boot.NUMBER_REGEX.test(value)) {
-        return 1 * value;
+        return Number(value);
     } else if (TP.boot.BOOLEAN_REGEX.test(value)) {
         return value === 'true';
     } else if (TP.boot.REGEX_REGEX.test(value)) {
@@ -8015,6 +8086,11 @@ TP.boot.$setLibRoot = function(aPath) {
 
     path = TP.boot.$uriExpandPath(aPath);
     path = decodeURI(path);
+
+    if (path.charAt(path.length - 1) === '/') {
+        path = path.slice(0, -1);
+    }
+
     TP.boot.$$libroot = path;
 
     TP.sys.setcfg('path.lib_root', path);
@@ -8126,7 +8202,8 @@ TP.boot.$configurePackage = function() {
     }
 
     file = TP.boot.$uriExpandPath(package);
-    TP.boot.$stdout('Loading package: ' + file, TP.DEBUG);
+    TP.boot.$stdout('Loading package: ' +
+        TP.boot.$uriInTIBETFormat(file), TP.DEBUG);
 
     xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest');
     if (xml) {
@@ -8515,7 +8592,9 @@ TP.boot.$updateDependentVars = function() {
      *     reading in new config data.
      */
 
-    var level;
+    var level,
+        scheme,
+        theme;
 
     //  Logging level drives how the UI looks, so it needs to be updated.
     level = TP.sys.cfg('boot.level');
@@ -8562,22 +8641,68 @@ TP.boot.$updateDependentVars = function() {
     //  two from a node filtering perspective
     TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
-    //  Reconfigure the color scheme based on any updates to the log colors.
-    TP.boot.$$theme = {
-        trace: TP.sys.cfg('log.color.trace'),
-        info: TP.sys.cfg('log.color.info'),
-        warn: TP.sys.cfg('log.color.warn'),
-        error: TP.sys.cfg('log.color.error'),
-        fatal: TP.sys.cfg('log.color.fatal'),
-        severe: TP.sys.cfg('log.color.severe'),
-        system: TP.sys.cfg('log.color.system'),
+    //  Reconfigure style color settings to match any updates to color scheme.
+    scheme = TP.sys.cfg('boot.color.scheme');
 
-        time: TP.sys.cfg('log.color.time'),
-        delta: TP.sys.cfg('log.color.delta'),
-        slow: TP.sys.cfg('log.color.slow'),
-        debug: TP.sys.cfg('log.color.debug'),
-        verbose: TP.sys.cfg('log.color.verbose')
-    };
+    TP.boot.$$styles.browser.black[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.black') + ';">';
+    TP.boot.$$styles.browser.red[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.red') + ';">';
+    TP.boot.$$styles.browser.green[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.green') + ';">';
+    TP.boot.$$styles.browser.yellow[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.yellow') + ';">';
+    TP.boot.$$styles.browser.blue[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.blue') + ';">';
+    TP.boot.$$styles.browser.magenta[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.magenta') + ';">';
+    TP.boot.$$styles.browser.cyan[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.cyan') + ' ;">';
+    TP.boot.$$styles.browser.white[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.white') + ';">';
+    TP.boot.$$styles.browser.gray[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.gray') + ';">';
+
+    TP.boot.$$styles.browser.bgBlack[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgBlack') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.gray') + ';">';
+    TP.boot.$$styles.browser.bgRed[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgRed') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgGreen[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgGreen') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgYellow[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgYellow') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgBlue[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgBlue') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgMagenta[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgMagenta') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgCyan[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgCyan') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgWhite[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgWhite') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+
+    TP.boot.$$styles.browser.dim[0] =
+        '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.dim') + ';">';
+    TP.boot.$$styles.browser.reset[0] =
+        '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.black') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.white') + ';">';
+    TP.boot.$$styles.browser.inverse[0] =
+        '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.white') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.black') + ';">';
+
+    //  Adjust baseline boot.color.theme to the any updated settings.
+    theme = TP.sys.cfg('boot.color.theme');
+    TP.boot.$$theme = TP.boot.$$buildTheme(theme);
 
     //  Clear any cached UI elements in cases of turning off/altering boot UI.
     TP.boot.$releaseUIElements();
@@ -8789,6 +8914,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 //  ============================================================================
 
 TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
+
     /**
      * @method $sourceImport
      * @summary Imports a script text which loads and integrates JS. This
@@ -8897,6 +9023,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
     } catch (e) {
         $ERROR = e;
     } finally {
+        /* eslint-disable no-unsafe-finally */
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
         //  the onerror hook so we can check $STATUS and proceed from there.
@@ -8933,6 +9060,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
 
         //  clear the onerror url reference
         TP.boot.$$onerrorURL = null;
+        /* eslint-enable no-unsafe-finally */
     }
 
     TP.boot.$$loadNode = null;
@@ -8984,7 +9112,9 @@ TP.boot.$$importComplete = function() {
      */
 
     var stage,
-        win;
+        win,
+
+        autofocusedElem;
 
     //  if we've been 'importing' and the list is now empty then we're
     //  done with whatever phase we've been processing
@@ -9027,6 +9157,33 @@ TP.boot.$$importComplete = function() {
                         win = TP.sys.getWindowById(TP.sys.cfg('boot.uiboot'));
                     } else {
                         win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
+                    }
+
+                    //  If we're using a login page, then focus (the first)
+                    //  element that has an 'autofocus' attribute. Sometimes,
+                    //  based on what's happening on boot, this field will have
+                    //  lost focus. NB: We do this in a fairly primitive fashion
+                    //  rather than using the prebuilt TIBET functionality to
+                    //  focus the autofocused element because we don't want to
+                    //  invoke other TIBET machinery this early in the boot
+                    //  process. In particular, we don't want an 'Application'
+                    //  singleton object to be created prematurely before the
+                    //  phase two, which very well may include an Application
+                    //  subtype. It is this subtype that we actually want the
+                    //  singleton to be created from.
+                    if (TP.sys.cfg('boot.use_login')) {
+                        //  Grab the first element under supplied element that
+                        //  has an 'autofocus' attribute on it (the value of
+                        //  that attribute is irrelevant).
+                        autofocusedElem = TP.byCSSPath(
+                                            '*[autofocus]',
+                                            win.document.documentElement,
+                                            true,
+                                            false);
+
+                        if (TP.isElement(autofocusedElem)) {
+                            autofocusedElem.focus();
+                        }
                     }
 
                     if (win) {
@@ -9220,7 +9377,7 @@ TP.boot.$importComponents = function(loadSync) {
             logpath = TP.boot.$join(logpackage,
                             '::',
                             nd.getAttribute('load_config'),
-                            ' inline <', tn, '> source');
+                            ' inline ', tn, ' source');
         }
 
         //  if we've reached this point then we're not deferring the node so
@@ -9228,8 +9385,9 @@ TP.boot.$importComponents = function(loadSync) {
         //  source to actually load. Doing this here avoids having to have
         //  an overly complex callback function when we've got to go over
         //  the wire to get the actual source before we can import.
-        TP.boot.$stdout('Loading ' + (srcpath ? srcpath : logpath),
-                        TP.DEBUG);
+        TP.boot.$stdout('Loading ' +
+            TP.boot.$uriInTIBETFormat(srcpath ? srcpath : logpath),
+            TP.DEBUG);
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
@@ -9343,7 +9501,7 @@ TP.boot.$importComponents = function(loadSync) {
     } else if (tn === 'echo') {
         //  note we do these regardless of debug/verbose settings
 
-        level = 1 * (nd.getAttribute('level') || TP.boot.INFO);
+        level = Number(nd.getAttribute('level') || TP.boot.INFO);
 
         //  first check for content as an attribute
         if ((msg = nd.getAttribute('message')) != null) {
@@ -9393,6 +9551,7 @@ TP.boot.$$importPhase = function() {
 
     var package,
         config,
+        phase,
         nodelist;
 
     //  Get the list of filtered nodes by listing the assets. This action causes
@@ -9400,11 +9559,13 @@ TP.boot.$$importPhase = function() {
 
     package = TP.boot.$$bootfile;
     config = TP.sys.cfg('boot.config');
+    phase = TP.sys.cfg('boot.phase_one') ? 'Phase One' : 'Phase Two';
 
     nodelist = TP.boot.$listPackageAssets(package, config);
 
     //  remaining list is our workload for actual importing
-    TP.boot.$stdout('Importing ' + nodelist.length + ' components.',
+    TP.boot.$stdout('Importing ' + nodelist.length + ' ' +
+        phase + ' components.',
                    TP.SYSTEM);
 
     TP.boot.$$bootnodes = nodelist;
@@ -9539,7 +9700,7 @@ TP.boot.$config = function() {
             return;
         } else {
             TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
-                TP.SEVERE);
+                TP.ERROR);
         }
     }
 
@@ -9616,7 +9777,7 @@ TP.boot.$expandConfig = function(anElement) {
                             config = TP.boot.$documentGetElementById(
                                 anElement.ownerDocument, ref);
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('<config> not found: ' +
+                                throw new Error('config not found: ' +
                                     TP.boot.$getCurrentPackage() + '#' + ref);
                             }
 
@@ -9862,14 +10023,14 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         if (TP.boot.$notEmpty(version)) {
             version = parseInt(version, 10);
             if (!version) {
-                throw new Error('<package> has non-numeric version: ' +
+                throw new Error('package has non-numeric version: ' +
                     version + package.getAttribute('version'));
             }
 
             //  Booters are intended to be backward compatible so we want the
             //  version to be more recent than whatever's in the config file.
             if (version > TP.boot.$version) {
-                throw new Error('<package> version mismatch: ' +
+                throw new Error('package version mismatch: ' +
                     version + ' vs: ' + TP.boot.$version);
             }
         }
@@ -9882,7 +10043,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
 
         node = TP.boot.$documentGetElementById(doc, config);
         if (!node) {
-            throw new Error('<config> not found: ' +
+            throw new Error('config not found: ' +
                 TP.boot.$getCurrentPackage() + '#' + config);
         }
 
@@ -10037,7 +10198,7 @@ TP.boot.$getDefaultConfig = function(aPackageDoc) {
 
     package = aPackageDoc.getElementsByTagName('package')[0];
     if (TP.boot.$notValid(package)) {
-        throw new Error('<package> tag missing.');
+        throw new Error('package tag missing.');
     }
 
     //  TODO: make this default of 'base' a constant?
@@ -10086,6 +10247,21 @@ TP.boot.$getFullPath = function(anElement, aPath) {
     }
 
     return '';
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$getLoadedPackages = function() {
+
+    /**
+     * @method $getLoadedPackages
+     * @summary Returns an array of unique package file names which were loaded.
+     * @returns {Array} The array of unique package names.
+     */
+
+    return Object.keys(TP.boot.$$paths).map(function(path) {
+        return TP.boot.$uriInTIBETFormat(path);
+    });
 };
 
 //  ----------------------------------------------------------------------------
@@ -10207,8 +10383,8 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
      *     concatenated into aList if the list is provided (aList is used during
      *     recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
-     * @param {Array.<>} aList The array of asset descriptions to expand upon.
-     * @returns {Array.<>} The asset array.
+     * @param {Array} aList The array of asset descriptions to expand upon.
+     * @returns {Array} The asset array.
      */
 
     var list,
@@ -10253,7 +10429,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             config = TP.boot.$documentGetElementById(
                                 anElement.ownerDocument, ref);
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('<config> not found: ' + ref);
+                                throw new Error('config not found: ' + ref);
                             }
                             TP.boot.$listConfigAssets(config, result);
 
@@ -10262,7 +10438,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                         case 'echo':
 
                             //  Shouldn't exist, these should have been
-                            //  converted into <script> tags calling
+                            //  converted into script tags calling
                             //  TP.boot.$stdout.
                             break;
 
@@ -10272,7 +10448,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             config = child.getAttribute('config');
 
                             if (TP.boot.$isEmpty(src)) {
-                                throw new Error('<package> missing src: ' +
+                                throw new Error('package missing src: ' +
                                     TP.boot.$nodeAsString(child));
                             }
 
@@ -10353,8 +10529,8 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
      *     list).
      * @param {string} aPath The path to the package manifest to list.
      * @param {string} aConfig The ID of the config in the package to list.
-     * @param {Array.<>} aList The array of asset descriptions to expand upon.
-     * @returns {Array.<>} The asset array.
+     * @param {Array} aList The array of asset descriptions to expand upon.
+     * @returns {Array} The asset array.
      */
 
     var path,
@@ -10383,7 +10559,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
 
         node = TP.boot.$documentGetElementById(doc, config);
         if (TP.boot.$notValid(node)) {
-            throw new Error('<config> not found: ' + path + '#' + config);
+            throw new Error('config not found: ' + path + '#' + config);
         }
 
         //  If aList is empty we're starting fresh which means we need a fresh
@@ -10492,6 +10668,7 @@ TP.boot.$importApplication = function() {
      */
 
     //  Clear script dictionary. This will be used to unique across all imports.
+
     TP.boot.$$scripts = {};
 
     TP.boot.$$totalwork = 0;
@@ -10714,15 +10891,20 @@ TP.boot.$activate = function() {
      *     hooks and then tells the entire system to activate.
      */
 
-    TP.boot.$setStage('activating');
-
     try {
 
         //  protect the codebase from inadvertent exits
 
         //  make sure that the application knows to prompt the user before
         //  quitting.
-        TP.windowInstallOnBeforeUnloadHook(window);
+        //  NB: We no longer install this hook here because of a change in the
+        //  way browsers present the onbeforeunload dialog box. They wait for
+        //  one of a set of user gestures (click, key, etc. events) before
+        //  allowing the dialog box to show. Therefore, we now install this
+        //  after the first one of those events has fired. See
+        //  TP.boot.$$documentSetup for more information.
+
+        //  TP.windowInstallOnBeforeUnloadHook(window);
 
         //  make sure that the application knows to send the terminate signals
         //  before quitting.
@@ -10742,11 +10924,11 @@ TP.boot.$activate = function() {
             //  call will complete the boot sequence from within the kernel.
             TP.sys.activate();
         } catch (e2) {
-            TP.boot.$stderr('Error activating application.',
+            TP.boot.$stderr('Error initializing components.',
                 TP.boot.$ec(e2));
         }
     } catch (e) {
-        TP.boot.$stderr('Error activating application.', TP.boot.$ec(e));
+        TP.boot.$stderr('Error initializing components.', TP.boot.$ec(e));
     }
 };
 
@@ -10768,7 +10950,7 @@ TP.boot.$stageAction = function() {
         case 'paused':
 
             TP.boot.$$restarttime = new Date();
-            TP.boot.$stdout('Startup process reengaged by user.',
+            TP.boot.$stdout('Startup process re-engaged by user.',
                 TP.SYSTEM);
             TP.boot.$activate();
 
@@ -10779,7 +10961,7 @@ TP.boot.$stageAction = function() {
             //  Happens in two-phase booting when waiting for login to return us
             //  a hook file to trigger the second phase of the boot process.
             TP.boot.$$restarttime = new Date();
-            TP.boot.$stdout('Startup process reengaged by user.',
+            TP.boot.$stdout('Startup process re-engaged by user.',
                 TP.SYSTEM);
             TP.boot.$$importPhaseTwo();
 

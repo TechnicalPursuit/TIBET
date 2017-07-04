@@ -2,7 +2,7 @@
  * Syn - 0.0.2
  * 
  * @copyright 2016 Bitovi
- * Tue, 14 Jun 2016 17:43:20 GMT
+ * Mon, 26 Dec 2016 17:45:06 GMT
  * @license MIT
  */
 
@@ -2569,9 +2569,14 @@ var __m7 = (function (Syn) {
 		_type: function (options, element, callback) {
 			//break it up into parts ...
 			//go through each type and run
-			var parts = (options + "")
-				.match(/(\[[^\]]+\])|([^\[])/g),
-				self = this,
+            var parts;
+            if (Array.isArray(options)) {
+                parts = options;
+            } else {
+                parts = (options + "").match(/(\[[^\]]+\])|([^\[])/g);
+            }
+
+			var self = this,
 				runNextPart = function (runDefaults, el) {
 					var part = parts.shift();
 					if (!part) {

@@ -47,7 +47,9 @@ function(aRequest) {
         suiteName,
         cases,
         context,
-        obj;
+        contextDefaulted,
+        obj,
+        nsRoot;
 
     shell = aRequest.at('cmdShell');
 
@@ -102,7 +104,15 @@ function(aRequest) {
         cases = cases.unquoted();
     }
 
-    context = shell.getArgument(aRequest, 'tsh:context', 'app');
+    //  Note how we keep track of whether the context has been defaulted for use
+    //  below when the target is a type object.
+    contextDefaulted = false;
+    context = shell.getArgument(aRequest, 'tsh:context');
+    if (TP.isEmpty(context)) {
+        context = 'app';
+        contextDefaulted = true;
+    }
+
     if (TP.isString(context)) {
         context = context.unquoted();
     }
@@ -115,19 +125,34 @@ function(aRequest) {
                     'cases', cases);
 
     //  Stubs for when Karma isn't around.
-    karma = TP.ifInvalid(
-                TP.extern.karma, {
-                    info: TP.NOOP,
-                    error: TP.NOOP,
-                    results: TP.NOOP,
-                    complete: TP.NOOP
-                });
+    karma = TP.extern.karma;
+    if (TP.notValid(karma)) {
+        karma = {
+            info: TP.NOOP,
+            error: TP.NOOP,
+            results: TP.NOOP,
+            complete: TP.NOOP
+        };
+    }
 
-    if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
+    TP.test.Suite.set('$rootRequest', aRequest);
+
+    //  Define a local version of 'complete' that nulls out the suite's root
+    //  request.
+    aRequest.defineMethod('complete',
+        function() {
+            TP.test.Suite.set('$rootRequest', null);
+            return this.callNextMethod();
+        });
+
+    if (TP.notValid(target) && TP.isEmpty(suiteName)) {
 
         total = runner.getCases(options).getSize();
 
-        karma.info({total: total});
+        karma.info(
+            {
+                total: total
+            });
 
         runner.runSuites(options).then(
             function(result) {
@@ -140,13 +165,16 @@ function(aRequest) {
             }
         );
 
-    } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
+    } else if (TP.notValid(target) && TP.notEmpty(suiteName)) {
 
         aRequest.stdout(TP.TSH_NO_VALUE);
 
         total = runner.getCases(options).getSize();
 
-        karma.info({total: total});
+        karma.info(
+            {
+                total: total
+            });
 
         runner.runSuites(options).then(
             function(result) {
@@ -168,13 +196,24 @@ function(aRequest) {
             obj = target;
         }
 
+        //  If the target object is a type and the context was defaulted (to
+        //  'app' above), then we poke around a bit more to see if we should
+        //  actually be defaulting it to 'lib' instead.
+        if (TP.isType(obj) && contextDefaulted) {
+            nsRoot = obj.get('nsRoot');
+            if (nsRoot !== 'APP') {
+                context = 'lib';
+                options.atPut('context', context);
+            }
+        }
+
         if (TP.notValid(obj)) {
-            aRequest.fail('Unable to resolve object: ' + target);
+            aRequest.fail('Unable to resolve object: ' + TP.id(target));
             return;
         }
 
         if (!TP.canInvoke(obj, 'runTestSuites')) {
-            aRequest.fail('Object cannot run tests: ' + TP.id(obj));
+            aRequest.fail('Object has no runTestSuites method: ' + TP.id(obj));
             return;
         }
 
@@ -192,7 +231,10 @@ function(aRequest) {
                 params.target = obj;
                 total += runner.getCases(params).getSize();
 
-                karma.info({total: total});
+                karma.info(
+                    {
+                        total: total
+                    });
 
                 //  Type first, then Inst, then Local
                 TP.sys.logTest('# Running Type tests for ' + TP.name(target));
@@ -236,9 +278,12 @@ function(aRequest) {
         params.target = obj;
         total = runner.getCases(params).getSize();
 
-        karma.info({total: total});
+        karma.info(
+            {
+                total: total
+            });
 
-        TP.sys.logTest('# Running Local tests for ' + target);
+        TP.sys.logTest('# Running Local tests for ' + TP.id(obj));
         obj.runTestSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?
@@ -253,11 +298,13 @@ function(aRequest) {
     }
 
     return;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('test',
     TP.tsh.test.Type.getMethod('cmdRunContent'),
     'Executes an object\'s tests or test suite.',
     ':test [<target>|<suite>] [--target <target>] [--suite <suite>]' +

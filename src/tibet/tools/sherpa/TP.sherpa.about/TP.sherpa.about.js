@@ -17,26 +17,35 @@
 TP.sherpa.TemplatedTag.defineSubtype('about');
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
 
-TP.sherpa.about.Type.defineAttribute('LIB_VERSION');
+TP.sherpa.about.Inst.defineHandler('Feedback',
+function(aSignal) {
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
+    window.open(
+        'mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
+    this.signal('Toggle');
 
-TP.sherpa.about.Type.defineMethod('initialize',
-function() {
+    return this;
+});
 
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
+TP.sherpa.about.Inst.defineHandler('Help',
+function(aSignal) {
 
-    this.set('LIB_VERSION', TP.sys.getLibVersion());
+    window.open('https://www.technicalpursuit.com/support.xhtml', '_blank');
 
-    return;
+    this.signal('Toggle');
+
+    return this;
+});
+
+TP.sherpa.about.Inst.defineHandler('Issue',
+function(aSignal) {
+
+    window.open('https://github.com/TechnicalPursuit/TIBET/issues', '_blank');
+
+    this.signal('Toggle');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

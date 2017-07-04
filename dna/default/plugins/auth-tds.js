@@ -25,33 +25,27 @@
         var app,
             authenticate,
             crypto,
-            LocalStrategy,
             logger,
+            LocalStrategy,
+            salt,
             Promise,
             strategy,
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
-
-        logger.debug('Integrating TDS auth-tds strategy.');
-
-        //  ---
-        //  Requires
-        //  ---
+        logger = options.logger;
 
         crypto = require('crypto');
         LocalStrategy = require('passport-local');
         Promise = require('bluebird').Promise;
+
+        salt = process.env.TDS_CRYPTO_SALT || TDS.cfg('tds.crypto.salt');
+        if (!salt) {
+            logger.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            logger.warn('Defaulting to encryption salt default value');
+            salt = 'mmm...salty';
+        }
 
         //  ---
         //  Middleware
@@ -68,18 +62,20 @@
                     hex;
 
                 //  Simple authentication is a hash check against TDS data.
-                pass = TDS.cfg('tds.users.' + username);
+                pass = TDS.cfg('users.' + username);
                 if (pass) {
 
                     //  Compute a simple hash to compare against the stored
                     //  user configuration value (which is similarly hashed).
-                    hex = crypto.createHash('md5').update(
-                        password).digest('hex');
+                    hex = crypto.createHash('sha256').update(
+                        password + salt).digest('hex');
 
                     if (hex === pass) {
                         //  Match? Resolve the promise and provide a "user"
                         //  object of some form.
-                        return resolve({id: username});
+                        return resolve({
+                            id: username
+                        });
                     }
 
                     return reject('Password mismatch.');

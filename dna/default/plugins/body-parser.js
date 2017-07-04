@@ -9,8 +9,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint-disable no-console */
-
 (function(root) {
 
     'use strict';
@@ -27,36 +25,26 @@
             bodyLimit,
             bodyParser,
             jsonParser,
-            level,
+            meta,
             TDS,
-            urlEncoded;
-
-        //  ---
-        //  Config Check
-        //  ---
+            urlEncoded,
+            urlExtended;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         TDS = app.TDS;
 
-        //  NOTE this plugin loads prior to the logger so our only option is to
-        //  use the console for output meaning we must level check ourselves.
-        level = TDS.cfg('tds.log.level') || 'info';
-        if (level === 'debug') {
-            console.log('debug: Integrating TDS body parser.');
-        }
-
-        //  ---
-        //  Requires
-        //  ---
+        //  NOTE this plugin loads prior to the logger so our best option here
+        //  is to use the prelog function to queue logging output.
+        meta = {
+            type: 'plugin',
+            name: 'body-parser'
+        };
+        TDS.prelog('system', 'loading middleware', meta);
 
         bodyParser = require('body-parser');
 
         //  ---
-        //  Variables
+        //  Initialization
         //  ---
 
         bodyLimit = TDS.cfg('tds.max_bodysize') || '5mb';
@@ -67,12 +55,22 @@
 
         /**
          */
-        jsonParser = bodyParser.json({limit: bodyLimit});
+        jsonParser = bodyParser.json(
+            {
+                limit: bodyLimit
+            });
 
         /**
          */
         urlEncoded = bodyParser.urlencoded({
             extended: false,
+            limit: bodyLimit
+        });
+
+        /**
+         */
+        urlExtended = bodyParser.urlencoded({
+            extended: true,
             limit: bodyLimit
         });
 
@@ -82,7 +80,8 @@
 
         options.parsers = {
             json: jsonParser,
-            urlencoded: urlEncoded
+            urlencoded: urlEncoded,
+            urlextended: urlExtended
         };
 
         return options.parsers;

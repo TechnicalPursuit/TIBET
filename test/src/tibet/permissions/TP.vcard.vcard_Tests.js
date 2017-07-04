@@ -28,6 +28,8 @@ function() {
                                 TP.sys.cfg('user.default_name'));
         test.assert.isEqualTo(defaultCard.get('shortname'),
                                 TP.sys.cfg('user.default_name'));
+        test.assert.isEqualTo(defaultCard.get('nickname'),
+                                TP.sys.cfg('user.default_name'));
         test.assert.isEqualTo(defaultCard.get('role'),
                                 TP.sys.cfg('user.default_role'));
         test.assert.isEqualTo(defaultCard.get('orgname'),
@@ -54,7 +56,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var loadPromise;
 
@@ -85,6 +87,8 @@ function() {
                                 'Bill Test');
         test.assert.isEqualTo(testCard.get('shortname'),
                                 'Bill');
+        test.assert.isEqualTo(testCard.get('nickname'),
+                                'bedney');
         test.assert.isEqualTo(testCard.get('jid'),
                                 'bill@test.com');
         test.assert.isEqualTo(testCard.get('role'),
@@ -102,7 +106,7 @@ function() {
         var testCard;
 
         //  Use the card registered under 'Bill Test'.
-        testCard = TP.vcard.vcard.get('vcards').at('Bill Test');
+        testCard = TP.vcard.vcard.get('instances').at('Bill Test');
 
         test.assert.isEqualTo(testCard.get('fullname'),
                                 'Bill Test');

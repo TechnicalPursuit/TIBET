@@ -75,15 +75,11 @@ function() {
     this.afterEach(
         function() {
 
-            //  Unload the current page by setting it to the
-            //  blank
-            this.getDriver().setLocation(unloadURI);
-
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
 
             //  Reset the metrics we're tracking.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -94,7 +90,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -110,14 +106,11 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
-                //  afterEach() method, which unloads the URI and which should
-                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
-                    function() {
-                        test.assert.didSignal(dataTPElem,
-                                                'TP.sig.UIDataDestruct');
-                    });
+                test.getDriver().setLocation(unloadURI);
+
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -133,7 +126,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -149,14 +142,11 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
-                //  afterEach() method, which unloads the URI and which should
-                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
-                    function() {
-                        test.assert.didSignal(dataTPElem,
-                                                'TP.sig.UIDataDestruct');
-                    });
+                test.getDriver().setLocation(unloadURI);
+
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -172,7 +162,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -189,14 +179,11 @@ function() {
                 test.assert.isMemberOf(dataResource,
                                         TP.test.DataTestMarkupEmployee);
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
-                //  afterEach() method, which unloads the URI and which should
-                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
-                    function() {
-                        test.assert.didSignal(dataTPElem,
-                                                'TP.sig.UIDataDestruct');
-                    });
+                test.getDriver().setLocation(unloadURI);
+
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -212,7 +199,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -229,14 +216,11 @@ function() {
                 test.assert.isMemberOf(dataResource,
                                         TP.test.DataTestJSONEmployee);
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
-                //  afterEach() method, which unloads the URI and which should
-                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
-                    function() {
-                        test.assert.didSignal(dataTPElem,
-                                                'TP.sig.UIDataDestruct');
-                    });
+                test.getDriver().setLocation(unloadURI);
+
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -252,7 +236,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -272,7 +256,7 @@ function() {
                 //  ---
 
                 //  Reset the metrics we're tracking.
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
 
                 //  Now set the content to other XML on the fly.
                 dataTPElem.setContent('<data><randomXML/></data>');
@@ -289,7 +273,7 @@ function() {
                 //  ---
 
                 //  Reset the metrics we're tracking.
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
 
                 //  Now set the content to JSON on the fly.
                 dataTPElem.setContent('{"foo":["1st","2nd",{"hi":"there"}]}');
@@ -305,10 +289,10 @@ function() {
 
                 //  ---
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  NB: By chain()ing this, it gets invoked *after* this test's
                 //  afterEach() method, which unloads the URI and which should
                 //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
+                test.chain(
                     function() {
                         test.assert.didSignal(dataTPElem,
                                                 'TP.sig.UIDataDestruct');
@@ -328,7 +312,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var dataTPElem,
                     srcURI,
@@ -348,7 +332,7 @@ function() {
                 //  ---
 
                 //  Reset the metrics we're tracking.
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
 
                 //  Now set the content to other JSON on the fly.
                 dataTPElem.setContent('{"foo":["1st","2nd",{"hi":"there"}]}');
@@ -365,7 +349,7 @@ function() {
                 //  ---
 
                 //  Reset the metrics we're tracking.
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
 
                 //  Now set the content to XML on the fly.
                 dataTPElem.setContent('<data><randomXML/></data>');
@@ -381,10 +365,10 @@ function() {
 
                 //  ---
 
-                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  NB: By chain()ing this, it gets invoked *after* this test's
                 //  afterEach() method, which unloads the URI and which should
                 //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.then(
+                test.chain(
                     function() {
                         test.assert.didSignal(dataTPElem,
                                                 'TP.sig.UIDataDestruct');

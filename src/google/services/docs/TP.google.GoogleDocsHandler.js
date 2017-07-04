@@ -77,13 +77,13 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.google.GoogleDocsHandler.Type.defineMethod('nuke',
+TP.google.GoogleDocsHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -123,7 +123,7 @@ function(targetURI, aRequest) {
     response = request.getResponse();
 
     //  Saving data to Google requires 'data' to save ;-)
-    resp = targetURI.getResource(TP.hc('async', false));
+    resp = targetURI.getResource(TP.hc('async', false, 'resultType', TP.TEXT));
 
     if (TP.isEmpty(content = resp.get('result'))) {
         request.fail();

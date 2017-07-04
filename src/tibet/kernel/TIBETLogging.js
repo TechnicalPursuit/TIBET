@@ -307,7 +307,8 @@ TP.log.Nestable.Inst.defineAttribute('parent');
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Nestable.Inst.defineMethod('getName', function() {
+TP.log.Nestable.Inst.defineMethod('getName',
+function() {
 
     /**
      * @method getName
@@ -555,7 +556,14 @@ function() {
      * @returns {Array.<TP.log.Filter>} The filter list.
      */
 
-    return TP.ifInvalid(this.$get('filters'), TP.ac());
+    var filters;
+
+    filters = this.$get('filters');
+    if (TP.notValid(filters)) {
+        filters = TP.ac();
+    }
+
+    return filters;
 });
 
 //  ============================================================================
@@ -727,8 +735,10 @@ function() {
         return inst;
     }
 
-    name = TP.ifInvalid(this.$get('defaultAppenderType'),
-                        TP.sys.cfg('log.appender'));
+    name = this.$get('defaultAppenderType');
+    if (TP.notValid(name)) {
+        name = TP.sys.cfg('log.appender');
+    }
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -890,14 +900,7 @@ function() {
      * @returns {TP.log.Logger} The receiver.
      */
 
-    var appenders;
-
-    appenders = this.$get('appenders');
-    if (TP.isValid(appenders)) {
-        appenders.empty();
-    }
-
-    return this;
+    return this.$set('appenders', TP.ac());
 });
 
 //  ----------------------------------------------------------------------------
@@ -912,25 +915,20 @@ function() {
      * @returns {TP.log.Logger} The receiver.
      */
 
-    var filters;
-
-    filters = this.$get('filters');
-    if (TP.isValid(filters)) {
-        filters.empty();
-    }
-
-    return this;
+    return this.$set('filters', TP.ac());
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.log.Logger.Inst.defineMethod('getAppenders',
-function() {
+function(localOnly) {
 
     /**
      * @method getAppenders
      * @summary Returns an array of appenders for the receiver. If the receiver
      *     inheritsAppenders() the list includes all inherited appenders.
+     * @param {Boolean} [localOnly=false] True to avoid collecting inherited
+     *     appenders.
      * @returns {Array.<TP.log.Appender>} The appender list.
      */
 
@@ -941,7 +939,7 @@ function() {
 
     appenders = this.$get('appenders');
 
-    if (!this.inheritsAppenders()) {
+    if (!this.inheritsAppenders() || localOnly === true) {
         return appenders;
     }
 
@@ -965,12 +963,14 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.log.Logger.Inst.defineMethod('getFilters',
-function() {
+function(localOnly) {
 
     /**
      * @method getFilters
      * @summary Returns an array of filters for the receiver. If the receiver
      *     inheritsFilters() the list includes all inherited filters.
+     * @param {Boolean} [localOnly=false] True to avoid collecting inherited
+     *     appenders.
      * @returns {Array.<TP.log.Filter>} The filter list.
      */
 
@@ -981,7 +981,7 @@ function() {
 
     filters = this.$get('filters');
 
-    if (!this.inheritsFilters()) {
+    if (!this.inheritsFilters() || localOnly === true) {
         return filters;
     }
 
@@ -1295,27 +1295,6 @@ function(varargs) {
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Logger.Inst.defineMethod('severe',
-function(varargs) {
-
-    /**
-     * @method severe
-     * @summary Log all arguments provided at severe level. If there is a
-     *     marker for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
-     */
-
-    if (!this.isEnabled(TP.log.SEVERE)) {
-        return;
-    }
-
-    return this.$logArglist(TP.log.SEVERE, TP.args(arguments));
-});
-
-//  ----------------------------------------------------------------------------
-
 TP.log.Logger.Inst.defineMethod('fatal',
 function(varargs) {
 
@@ -1409,8 +1388,10 @@ function() {
         return inst;
     }
 
-    name = TP.ifInvalid(this.$get('defaultLayoutType'),
-        TP.sys.cfg('log.layout'));
+    name = this.$get('defaultLayoutType');
+    if (TP.notValid(name)) {
+        name = TP.sys.cfg('log.layout');
+    }
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -1471,7 +1452,14 @@ function() {
      * @returns {TP.log.Layout} The receiver's layout.
      */
 
-    return TP.ifInvalid(this.$get('layout'), this.getType().getDefaultLayout());
+    var layout;
+
+    layout = this.$get('layout');
+    if (TP.notValid(layout)) {
+        layout = this.getType().getDefaultLayout();
+    }
+
+    return layout;
 });
 
 //  ----------------------------------------------------------------------------
@@ -1719,7 +1707,7 @@ function() {
 
     //  NB: The boot system expects to see these in all uppercase. For example,
     //  TP.boot.ERROR.
-    return TP.boot.Log.isErrorLevel(this.get('name').toUpperCase());
+    return TP.boot.Log.isErrorLevel(this.getLevel().get('name').toUpperCase());
 });
 
 //  ============================================================================
@@ -2023,9 +2011,8 @@ TP.log.Level.construct('DEBUG', 200);
 TP.log.Level.construct('INFO', 300);
 TP.log.Level.construct('WARN', 400);
 TP.log.Level.construct('ERROR', 500);
-TP.log.Level.construct('SEVERE', 600);
-TP.log.Level.construct('FATAL', 700);
-TP.log.Level.construct('SYSTEM', 800);
+TP.log.Level.construct('FATAL', 600);
+TP.log.Level.construct('SYSTEM', 700);
 
 //  ============================================================================
 //  TP.log.Marker
@@ -2230,7 +2217,10 @@ function() {
 
     var end;
 
-    end = TP.ifInvalid(this.end, Date.now());
+    end = this.end;
+    if (TP.notValid(end)) {
+        end = Date.now();
+    }
 
     return end.getTime() - this.start.getTime();
 });
@@ -2428,16 +2418,6 @@ function(argList, aLogLevel, logRoot) {
 //
 //  ----------------------------------------------------------------------------
 
-// TODO: update with defineMethod once API update for TP.defineMethod is done.
-
-/**
- * The default logger instance.
- * @type {TP.log.Logger}
- */
-TP.$defaultLogger = null;
-
-//  ----------------------------------------------------------------------------
-
 TP.definePrimitive('getDefaultLogger',
 function() {
 
@@ -2447,14 +2427,7 @@ function() {
      * @returns {TP.log.Logger} The default logger instance.
      */
 
-    var logger;
-
-    logger = this.$get('defaultLogger');
-    if (TP.notValid(logger)) {
-        logger = this.getLogger(this.getID());
-    }
-
-    return logger;
+    return TP.log.Manager.getLogger(this.getID());
 });
 
 //  ----------------------------------------------------------------------------
@@ -2465,20 +2438,20 @@ function(aName) {
     /**
      * @method getLogger
      * @summary Returns a logger for the library side of operation. All loggers
-     *     returned by this method will inherit (ultimately) from the APP
+     *     returned by this method will inherit (ultimately) from the TP or APP
      *     logger.
      * @param {String} aName The logger to return, or create and return.
      * @returns {TP.log.Logger} The named logger instance.
      */
 
-    var name;
+    var name,
+        id;
 
-    if (TP.isEmpty(aName)) {
-        return this.raise('InvalidName');
-    }
+    id = this.getID();
+    name = TP.ifEmpty(aName, id);
 
-    if (aName !== 'TP' && aName.indexOf('TP.') !== 0) {
-        name = 'TP.' + aName;
+    if (aName !== id && aName.indexOf(id + '.') !== 0) {
+        name = id + '.' + aName;
     }
 
     name = TP.ifInvalid(name, aName);
@@ -2508,27 +2481,6 @@ function(aLogger) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('setDefaultLogger',
-function(aLogger) {
-
-    /**
-     * @method setDefaultLogger
-     * @summary Defines the default application logger instance.
-     * @param {TP.log.Logger} aLogger The logger to register as the default.
-     * @returns {TP.log.Logger} The receiver.
-     */
-
-    if (!TP.isKindOf(aLogger, TP.log.Logger)) {
-        return this.raise('InvalidParameter');
-    }
-
-    this.$set('$defaultLogger', aLogger);
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
 TP.definePrimitive('setLogLevel',
 function(aLevel, aLogger) {
 
@@ -2543,7 +2495,7 @@ function(aLevel, aLogger) {
 
     var level;
 
-    level = TP.isString(aLevel) ? TP.log[aLevel] : aLevel;
+    level = TP.isString(aLevel) ? TP.log[aLevel.toUpperCase()] : aLevel;
     if (TP.notValid(level)) {
         this.raise('InvalidLevel');
     }
@@ -2704,34 +2656,6 @@ function(aLogName) {
 
 //  ----------------------------------------------------------------------------
 
-
-TP.definePrimitive('ifSevere',
-function(aLogName) {
-
-    /**
-     * @method ifSevere
-     * @summary Returns true if logging is enabled for TP.log.SEVERE level
-     *     for the specified log, or the current default log. This function
-     *     is commonly used in the idiomatic expression:
-     *     <code>
-     *          TP.ifSevere() ? TP.severe(...) : 0;
-     *     </code>
-     *     This idiom can help performance in cases where message construction
-     *     overhead is high.
-     * @param {String} aLogName An optional log name to check for level.
-     * @returns {Boolean} True if severe-level logging is active.
-     */
-
-    var logger;
-
-    logger = aLogName ? this.getLogger(aLogName) : this.getDefaultLogger();
-
-    return logger.isEnabled(TP.log.SEVERE);
-
-}, null, 'TP.ifSevere');
-
-//  ----------------------------------------------------------------------------
-
 TP.definePrimitive('ifFatal',
 function(aLogName) {
 
@@ -2800,7 +2724,6 @@ TP.definePrimitive('debug', TP.debug);
 TP.definePrimitive('info', TP.info);
 TP.definePrimitive('warn', TP.warn);
 TP.definePrimitive('error', TP.error);
-TP.definePrimitive('severe', TP.severe);
 TP.definePrimitive('fatal', TP.fatal);
 TP.definePrimitive('system', TP.system);
 
@@ -2815,49 +2738,12 @@ TP.definePrimitive('system', TP.system);
  */
 
 //  ----------------------------------------------------------------------------
-
-/**
- * The default logger instance.
- * @type {TP.log.Logger}
- */
-APP.$defaultLogger = null;
-
-//  ----------------------------------------------------------------------------
-
-APP.defineMethod('getLogger',
-function(aName) {
-
-    /**
-     * @method getLogger
-     * @summary Returns a logger for the application side of operation. All
-     *     loggers returned by this method will inherit (ultimately) from the
-     *     APP logger.
-     * @param {String} aName The logger to return, or create and return.
-     * @returns {TP.log.Logger} The named logger instance.
-     */
-
-    var name;
-
-    if (TP.isEmpty(aName)) {
-        return this.raise('InvalidName');
-    }
-
-    if (aName !== 'APP' && aName.indexOf('APP.') !== 0) {
-        name = 'APP.' + aName;
-    }
-
-    name = TP.ifInvalid(name, aName);
-
-    return TP.log.Manager.getLogger(name);
-});
-
-//  ----------------------------------------------------------------------------
 //  TODO: convert these into traits, or some other approach for sharing...
 //  ----------------------------------------------------------------------------
 
 APP.getDefaultLogger = TP.getDefaultLogger;
+APP.getLogger = TP.getLogger;
 APP.getLogLevel = TP.getLogLevel;
-APP.setDefaultLogger = TP.setDefaultLogger;
 APP.setLogLevel = TP.setLogLevel;
 
 APP.ifTrace = TP.ifTrace;
@@ -2865,7 +2751,6 @@ APP.ifDebug = TP.ifDebug;
 APP.ifInfo = TP.ifInfo;
 APP.ifWarn = TP.ifWarn;
 APP.ifError = TP.ifError;
-APP.ifSevere = TP.ifSevere;
 APP.ifFatal = TP.ifFatal;
 APP.ifSystem = TP.ifSystem;
 
@@ -2875,7 +2760,6 @@ APP.debug = TP.debug;
 APP.info = TP.info;
 APP.warn = TP.warn;
 APP.error = TP.error;
-APP.severe = TP.severe;
 APP.fatal = TP.fatal;
 APP.system = TP.system;
 
@@ -2987,7 +2871,7 @@ function(anObject, aLogLevel) {
      *     'charset'        encoding used for multi-part
      *     'multiparttypes' used for multi-part encodings
      *
-     *     'xhr'            the XMLHttpRequest object used, if any
+     *     'commObj'        the XMLHttpRequest object used, if any
      *
      *     'request'        TP.sig.Request reference
      *     'response'       TP.sig.Response reference
@@ -3289,24 +3173,26 @@ function(anEntry) {
         layout,
         content;
 
-    //  Try to find a matching console API method to our level name. If we find
-    //  it we'll use that to output the message content.
+    //  Remap our logging level to the standardized browser console logging
+    //  level. TIBET semantics and browser semantics sometimes differ...
     name = anEntry.getLevel().get('name').toLowerCase();
-    if (TP.canInvoke(top.console, name)) {
-        writer = name;
-    } else {
-        switch (name) {
-            case 'severe':
-                writer = 'error';
-                break;
-            case 'fatal':
-                writer = 'error';
-                break;
-            default:
-                // trace, debug, info, system, all
-                writer = 'log';
-                break;
-        }
+    switch (name) {
+        case 'error':
+        case 'fatal':
+            writer = 'error';
+            break;
+        case 'info':
+            writer = 'info';
+            break;
+        case 'trace':
+            //  Chrome at least treats 'debug' as a 'verbose' mode so use that
+            //  if found, otherwise just use standard logging.
+            writer = TP.isValid(top.console.debug) ? 'debug' : 'log';
+            break;
+        default:
+            //  debug, system, all
+            writer = 'log';
+            break;
     }
 
     //  If the entry contains multiple parts and we have access to a
@@ -3314,7 +3200,7 @@ function(anEntry) {
     //  that it's all the result of a single logging call...
     //  TODO:
 
-    // Format the little critter...
+    //  Format the little critter...
     layout = this.getLayout();
     content = layout.layout(anEntry).at('content');
 
@@ -3646,8 +3532,10 @@ function(anEntry) {
         content,
         message,
         asIs,
+        cmdID,
+        stdio,
 
-        stdio;
+        rootRequest;
 
     // Try to find a matching console API method to our level name. If we find
     // it we'll use that to output the message content.
@@ -3658,7 +3546,6 @@ function(anEntry) {
             stdio = 'stdout';
             break;
         case 'error':
-        case 'severe':
         case 'fatal':
             writer = 'error';
             stdio = 'stderr';
@@ -3710,7 +3597,16 @@ function(anEntry) {
             top.console.log(message);
         }
     } else {
-        TP[stdio](message, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
+
+        rootRequest = TP.test.Suite.get('$rootRequest');
+
+        if (TP.isValid(rootRequest)) {
+            cmdID = rootRequest.getRootID();
+        }
+
+        TP[stdio](
+            message,
+            TP.hc('cmdTAP', true, 'cmdAsIs', asIs, 'cmdID', cmdID));
     }
 
     return this;

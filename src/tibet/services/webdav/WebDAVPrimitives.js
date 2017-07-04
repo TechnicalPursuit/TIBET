@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @Basic support for WebDAV calls via XMLHttpRequest.
+ * @Basic support for WebDAV calls.
  */
 
 //  ------------------------------------------------------------------------
@@ -26,13 +26,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     request.atPut('propertyXML', '<D:acl/>');
 
@@ -51,15 +50,14 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         headers,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_REPORT);
@@ -106,13 +104,12 @@ function(targetUrl, aRequest) {
      *     TP.uc('http://localhost:8080/TIBET-INF/bin/wdtst/foo.txt'));
      *
      *     result is an XHR object whose 'status' should be 207.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     request.atPut('propertyXML', '<D:allprop/>');
 
@@ -132,13 +129,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     request.atPut('propertyXML',
                     TP.join(
@@ -164,13 +160,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     request.atPut('propertyXML', '<D:current-user-privilege-set/>');
 
@@ -194,8 +189,7 @@ function(targetUrl, aRequest) {
      *     parameters. For this method, this includes an additional parameter of
      *     'propertyNames'.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -204,7 +198,7 @@ function(targetUrl, aRequest) {
         content,
         i;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  have to have a list of property names to retrieve the values for.
     propertyNames = request.at('propertyNames');
@@ -242,14 +236,13 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_REPORT);
@@ -284,15 +277,14 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         headers,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_REPORT);
@@ -331,15 +323,14 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         headers,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_REPORT);
@@ -394,8 +385,7 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 207.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -403,7 +393,7 @@ function(targetUrl, aRequest) {
         propertyEntry,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  have to have a property entry to retrieve the value for.
     propertyEntry = request.at('property');
@@ -443,13 +433,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     request.atPut('propertyXML', '<D:propname/>');
 
@@ -468,14 +457,13 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_REPORT);
@@ -516,15 +504,14 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
 
         propertyEntry;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  have to have a property entry to retrieve the value for.
     propertyEntry = request.at('property');
@@ -574,15 +561,14 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 200.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
 
         propertyEntry;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  have to have a property entry to retrieve the value for.
     propertyEntry = request.at('property');
@@ -618,15 +604,14 @@ function(targetUrl, aRequest, useQuery) {
      * @param {Boolean} useQuery Whether or not to use a TP.$httpQuery() call or
      *     a TP.$httpSend() call (the default).
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         method,
         headers;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  have to have a method for the operation
     method = request.at('method');
@@ -674,13 +659,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_CHECKIN);
@@ -702,13 +686,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_CHECKOUT);
@@ -744,8 +727,7 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 201.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -754,7 +736,7 @@ function(targetUrl, aRequest) {
         overwrite,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_COPY);
@@ -802,7 +784,7 @@ function(targetUrl, aRequest) {
     /**
      * @method webdavLock
      * @summary Sets a lock on the resource at the target URL. The returning
-     *     XMLHttpRequest object will have the unique lock token used to unlock
+     *     response object will have the unique lock token used to unlock
      *     the resource as part of its response data.
      * @description The supplied request object has three parameters that are
      *     used when setting the lock. These should be one of the TP.WEBDAV_*
@@ -835,8 +817,7 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 200 and whose
      *     content will contain the lock token.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -852,7 +833,7 @@ function(targetUrl, aRequest) {
 
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_LOCK);
@@ -919,13 +900,12 @@ function(targetUrl, aRequest) {
      *     TP.uc('http://localhost:8080/TIBET-INF/bin/wdtst/'));
      *
      *     result is an XHR object whose 'status' should be 201.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_MKCOL);
@@ -963,8 +943,7 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 201.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -973,7 +952,7 @@ function(targetUrl, aRequest) {
         overwrite,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_MOVE);
@@ -1037,8 +1016,7 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'propertyXML' which should be a string or node
      *     containing the property information being queried for.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -1046,7 +1024,7 @@ function(targetUrl, aRequest) {
         propXML,
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_PROPFIND);
@@ -1103,8 +1081,7 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes additional
      *     parameters of either 'setList' or 'removeList' (or both) parameters,
      *     containing entries of the form shown in the discussion section.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
@@ -1119,7 +1096,7 @@ function(targetUrl, aRequest) {
 
         content;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_PROPPATCH);
@@ -1183,13 +1160,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_REPORT);
@@ -1226,15 +1202,14 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 204.
      * @exception TP.sig.InvalidParameter
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         headers,
         locktoken;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_UNLOCK);
@@ -1271,13 +1246,12 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
 
-    request = TP.ifInvalid(aRequest, TP.hc());
+    request = TP.request(aRequest);
 
     //  make sure we're aiming the desired target/operation
     request.atPut('method', TP.WEBDAV_VERSIONCONTROL);

@@ -9,13 +9,8 @@
 //  ========================================================================
 
 /**
- * @
+ *
  */
-
-/* JSHint checking */
-
-/* jshint evil:true
-*/
 
 //  ------------------------------------------------------------------------
 //  Shell Primitives
@@ -57,10 +52,10 @@ function(aRequest) {
      *          When a typename is given the ultimate target is that type's
      *          default instance. [TSH].
      *
-     *          {Function} success The Function that should run if the
+     *          {Function} TP.ONSUCCESS The Function that should run if the
      *          shell command successfully completes.
      *
-     *          {Function} failure The Function that should run if the
+     *          {Function} TP.ONFAIL The Function that should run if the
      *          shell command does not successfully complete.
      *
      * @returns {TP.sig.ShellRequest} The request instance used.
@@ -87,7 +82,10 @@ function(aRequest) {
     if (TP.isString(aRequest)) {
         params = TP.hc('cmdSrc', aRequest);
     } else {
-        params = TP.ifInvalid(aRequest, TP.hc());
+        params = aRequest;
+        if (TP.notValid(params)) {
+            params = TP.hc();
+        }
     }
 
     cmdSrc = params.at('cmdSrc');
@@ -124,7 +122,8 @@ function(aRequest) {
     stdio = TP.ifInvalid(params.at('cmdStdio'), '');
     if (TP.isString(stdio)) {
         stdio = TP.core.Resource.getResourceById(stdio);
-    } else if (TP.canInvoke(stdio, ['notify', 'stdin', 'stdout', 'stderr'])) {
+    } else if (TP.canInvokeInterface(
+                stdio, TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         void 0;
     }
 
@@ -187,19 +186,35 @@ function(aRequest) {
         stdioProvider = TP.lang.Object.construct();
         stdioProvider.defineMethod('notify',
                         function(anObject, req) {
-                            stdioResults.push({meta: 'notify', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'notify',
+                                    data: anObject
+                                });
                         });
         stdioProvider.defineMethod('stdin',
                         function(anObject, aDefault, req) {
-                            stdioResults.push({meta: 'stdin', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'stdin',
+                                    data: anObject
+                                });
                         });
         stdioProvider.defineMethod('stdout',
                         function(anObject, req) {
-                            stdioResults.push({meta: 'stdout', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'stdout',
+                                    data: anObject
+                                });
                         });
         stdioProvider.defineMethod('stderr',
                         function(anObject, req) {
-                            stdioResults.push({meta: 'stderr', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'stderr',
+                                    data: anObject
+                                });
                         });
 
         stdioProvider.defineMethod('report',
@@ -236,7 +251,7 @@ function(aRequest) {
     shell.attachSTDIO(stdioProvider);
 
     //  Configure the success handler, or a default one to report any output.
-    success = params.at('success');
+    success = params.at(TP.ONSUCCESS);
     if (TP.notValid(success)) {
         if (request.at('cmdSilent') !== true) {
             success = TP.isCallable(stdioProvider.report) ?
@@ -260,7 +275,7 @@ function(aRequest) {
 
 
     //  Configure the failure handler, or a default one to report any output.
-    failure = params.at('failure');
+    failure = params.at(TP.ONFAIL);
     if (TP.notValid(failure)) {
         if (request.at('cmdSilent') !== true) {
             failure = TP.isCallable(stdioProvider.report) ?
@@ -299,6 +314,13 @@ TP.core.Service.defineSubtype('Shell');
 TP.core.Shell.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Local Attributes
+//  ------------------------------------------------------------------------
+
+//  container for help information
+TP.core.Shell.defineAttribute('helpTopics');
+
+//  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
@@ -313,6 +335,16 @@ TP.core.Shell.Type.defineConstant('MIN_PASSWORD_LEN', 2);
 
 TP.core.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
     TP.rc('(xmlns|xmlns:\\w+|class|tibet:tag|tag|tsh:argv|argv)'));
+
+//  'starter' snippet list used for new accounts. a list of pairs:
+//  ([[command, user text], ...])
+TP.core.Shell.Type.defineAttribute(
+                'STARTER_SNIPPETS',
+                TP.ac(
+                        TP.ac(':clear', 'Clear'),
+                        TP.ac(':flag', 'Config flags'),
+                        TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                ));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -409,7 +441,7 @@ function(aSignal) {
 
         //  Fork it so that, in case the shell isn't running, it gives it a
         //  chance to get up and running.
-        notifyFunc.fork(2000);
+        setTimeout(notifyFunc, TP.sys.cfg('shell.update.delay', 2000));
     }
 
     return this;
@@ -420,31 +452,46 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Type.defineMethod('addHelpTopic',
-function(method, abstract, usage, description) {
+function(command, method, abstract, usage, description) {
 
     /**
      * @method addHelpTopic
-     * @summary Adds a help abstract for a particular shell command. The
-     *     resulting text is output by the :help command.
-     * @param {Function} method The method object that represents the command.
-     * @param {String} abstract The abstract of the command that the help topic
-     *     is being added for.
-     * @param {String} usage The usage of the command that the help topic is
-     *     being added for.
-     * @param {String} description The description of the command that the help
-     *     topic is being added for.
-     * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
-     *     object.
+     * @summary Adds a help usage/abstract for a particular shell command. The
+     *     resulting text is output by the built-in :help command.
+     * @param {String} command The command name ([ns]:[tag]) for the topic.
+     * @param {String} usage The usage string for the command.
+     * @param {String} abstract The abstract of the command. Should be a single
+     *     line of text maximum.
+     * @param {Function} method The method object that implements the command.
+     * @returns {TP.core.Shell} The receiver.
      */
 
-    if (TP.isMethod(method)) {
-        method.$$abstract = abstract;
-        method.$$usage = usage;
-        method.$$description = description;
-    } else {
-        TP.ifWarn() ?
-            TP.warn('Defining help for non-existent shell command') : 0;
+    var topics;
+
+    if (TP.isEmpty(command) || !TP.isMethod(method)) {
+        return this.raise('InvalidParameter');
     }
+
+    if (TP.isEmpty(usage) || TP.isEmpty(abstract)) {
+        TP.warn('Empty usage or abstract string for help topic: ' + command);
+    }
+
+    topics = TP.core.Shell.get('helpTopics');
+    if (TP.notValid(topics)) {
+        topics = TP.hc();
+        topics.setSortFunction(TP.sort.CASE_INSENSITIVE);
+        TP.core.Shell.$set('helpTopics', topics);
+    }
+
+    //  tuck usage/abstract onto method itself. we'll retreive from there.
+    //  use slot access here since we don't define these as 'attributes'.
+    method.$$usage = usage;
+    method.$$abstract = abstract;
+    method.$$description = abstract;
+
+    //  save the command name and the implementation. when we retrieve this we
+    //  can use the method to access the abstract and its comment text for docs.
+    topics.atPut(command, method);
 
     return this;
 });
@@ -452,6 +499,10 @@ function(method, abstract, usage, description) {
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+//  whether or not we just loaded the profile. Used as a flag between
+//  initProfile() and saveProfile()
+TP.core.Shell.Inst.defineAttribute('$justLoadedProfile');
 
 //  the current list of aliases for this shell
 TP.core.Shell.Inst.defineAttribute('aliases');
@@ -469,9 +520,6 @@ TP.core.Shell.Inst.defineAttribute('executionInstance');
 //  history list support
 TP.core.Shell.Inst.defineAttribute('history');
 TP.core.Shell.Inst.defineAttribute('historyIndex', 0);
-
-//  pinned history (aka snippets). a simple list.
-TP.core.Shell.Inst.defineAttribute('snippets');
 
 TP.core.Shell.Inst.defineAttribute('nextPID', 0);
 
@@ -525,8 +573,6 @@ function(aResourceID, aRequest) {
     //  configure our internal list/lookup variables
     this.$set('aliases', TP.hc());
     this.$set('history', TP.ac());
-
-    this.$set('snippets', TP.ac());
 
     this.$set('pathStack', TP.ac());
 
@@ -644,7 +690,7 @@ function(aCommandName) {
     shells = TP.ac(TP.core.TSH);
     for (i = 0; i < shells.getSize(); i++) {
         method = shells.at(i).Inst.getMethod(
-                                    'execute' + cmdName.asStartUpper());
+                                    'execute' + TP.makeStartUpper(cmdName));
 
         //  Found an 'execute<cmdName>' method on the target type.
         if (TP.isMethod(method)) {
@@ -933,10 +979,6 @@ function(aRequest) {
     //  flip the running state to true
     if (this.isLoginShell(aRequest)) {
         this.announce(aRequest);
-
-        //  NOTE that we rely on successful login to manage running state
-        //  when we're in a login shell
-        // this.login(aRequest);
     } else {
         this.isRunning(true);
     }
@@ -966,19 +1008,29 @@ function() {
 
         dataSet,
 
-        historyEntries;
+        historyEntries,
+        snippetEntries,
+        bookmarkEntries; // ,
+        // screenEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
+
         profileStorage = TP.core.LocalStorage.construct();
 
         userData = profileStorage.at('user_' + name);
 
-        newHistory = TP.ac();
-
         if (TP.notEmpty(userData)) {
+
             dataSet = TP.json2js(userData);
 
+            //  ---
+            //  History
+            //  ---
+
             if (TP.notEmpty(historyEntries = dataSet.at('history'))) {
+
+                newHistory = TP.ac();
+
                 historyEntries.perform(
                     function(anEntry, anIndex) {
 
@@ -1032,8 +1084,68 @@ function() {
                     this.set('historyIndex', 1);
                 }
             }
+
+            //  ---
+            //  Snippets
+            //  ---
+
+            snippetEntries = dataSet.at('snippets');
+
+            if (TP.isEmpty(snippetEntries)) {
+                snippetEntries = this.getType().STARTER_SNIPPETS.copy();
+            }
+
+            TP.uc('urn:tibet:tsh_snippets').setResource(
+                                            snippetEntries,
+                                            TP.hc('observeResource', true));
+            //  ---
+            //  Bookmarks
+            //  ---
+
+            bookmarkEntries = dataSet.at('bookmarks');
+
+            if (TP.isEmpty(bookmarkEntries)) {
+                bookmarkEntries = TP.ac();
+            }
+
+            TP.uc('urn:tibet:sherpa_bookmarks').setResource(
+                                            bookmarkEntries,
+                                            TP.hc('observeResource', true));
+            //  ---
+            //  Screens
+            //  ---
+/*
+            screenEntries = dataSet.at('screens');
+
+            if (TP.notEmpty(screenEntries)) {
+                TP.byId('SherpaWorld', TP.win('UIROOT')).setScreenLocations(
+                                                                screenEntries);
+            }
+*/
+
+        } else {
+
+            //  ---
+            //  Snippets
+            //  ---
+
+            snippetEntries = this.getType().STARTER_SNIPPETS.copy();
+            TP.uc('urn:tibet:tsh_snippets').setResource(
+                                            snippetEntries,
+                                            TP.hc('observeResource', true));
+
+            //  ---
+            //  Bookmarks
+            //  ---
+
+            bookmarkEntries = TP.ac();
+            TP.uc('urn:tibet:sherpa_bookmarks').setResource(
+                                            bookmarkEntries,
+                                            TP.hc('observeResource', true));
         }
     }
+
+    this.set('$justLoadedProfile', true);
 
     return;
 });
@@ -1051,12 +1163,23 @@ function() {
     var name,
 
         historyEntries,
+        snippetEntries,
+        bookmarkEntries,
+//        screenEntries,
 
         userData,
         profileStorage;
 
+    if (this.get('$justLoadedProfile') === true) {
+        this.set('$justLoadedProfile', false);
+        return;
+    }
+
     if (TP.notEmpty(name = this.get('username'))) {
-        //  Save the history
+
+        //  ---
+        //  History
+        //  ---
 
         historyEntries =
             this.get('history').collect(
@@ -1075,7 +1198,46 @@ function() {
                         'cmdSilent', aShellReq.at('cmdSilent'));
                 });
 
-        userData = TP.hc('history', historyEntries);
+        //  ---
+        //  Snippets
+        //  ---
+
+        snippetEntries =
+            TP.uc('urn:tibet:tsh_snippets').getResource().get('result');
+        if (TP.isEmpty(snippetEntries)) {
+            snippetEntries = TP.ac();
+        }
+
+        //  ---
+        //  Bookmarks
+        //  ---
+
+        bookmarkEntries =
+            TP.uc('urn:tibet:sherpa_bookmarks').getResource().get('result');
+        if (TP.isEmpty(bookmarkEntries)) {
+            bookmarkEntries = TP.ac();
+        }
+
+        //  ---
+        //  Screens
+        //  ---
+/*
+        screenEntries =
+            TP.byId('SherpaWorld', TP.win('UIROOT')).getScreenLocations();
+
+        if (TP.isEmpty(screenEntries)) {
+            screenEntries = TP.ac();
+        }
+*/
+        //  ---
+        //  Save it all
+        //  ---
+
+        userData = TP.hc(
+                    'history', historyEntries,
+                    'snippets', snippetEntries,
+                    'bookmarks', bookmarkEntries); // ,
+                    // 'screens', screenEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
         profileStorage.atPut('user_' + name, TP.js2json(userData));
@@ -1105,7 +1267,10 @@ function(aName) {
 
     //  TODO:   map alias storage into local DB or local store, or
     //          cookie, or file, but store it somewhere.
-    dict = TP.ifInvalid(this.get('aliases'), TP.hc());
+    dict = this.get('aliases');
+    if (TP.notValid(dict)) {
+        dict = TP.hc();
+    }
 
     //  first we look locally, then we'll check parent. note that we test
     //  to see if the value is defined, which still allows it to be null so
@@ -1200,26 +1365,34 @@ function(aRequest) {
 
     list = this.get('history');
 
-    root = TP.ifInvalid(aRequest.at('rootRequest'), aRequest);
+    root = aRequest.at('rootRequest');
+    if (TP.notValid(root)) {
+        root = aRequest;
+    }
 
     cmd = root.at('cmd');
     cmd = cmd.trim();
 
     //  no matter what, we reset the history index to the end so any
     //  next/prev operations are reset
-    histmax = TP.ifInvalid(this.getVariable('HISTSIZE'),
-                            this.getType().HISTORY_MAX);
+    histmax = this.getVariable('HISTSIZE');
+    if (TP.notValid(histmax)) {
+        histmax = this.getType().HISTORY_MAX;
+    }
 
     dups = TP.ifInvalid(this.getVariable('HISTDUP'), 'prev');
     dups.toLowerCase();
 
     if (dups === 'prev' && list.getSize() > 0) {
         if (list.last().at('cmd') === cmd) {
-            return list.getSize() - 1;
+            index = list.last().at('cmdHistoryID');
+            this.set('historyIndex', index + 1);
+            return index;
         }
     } else if (dups === 'all') {
         for (i = list.getSize() - 1; i >= 0; i--) {
             if (list.at(i).at('cmd') === cmd) {
+                this.set('historyIndex', i + 1);
                 return i;
             }
         }
@@ -1465,7 +1638,7 @@ function(aName) {
     //  NOTE the fallback here, configuration variables and then environment
     //  variables set during boot...and note that these are not the
     //  converted values, but the original values as provided by the call.
-    return TP.sys.cfg(aName) || TP.sys.env(aName);
+    return TP.sys.cfg(aName) || TP.sys.env(aName) || window[aName];
 });
 
 //  ------------------------------------------------------------------------
@@ -1497,6 +1670,7 @@ function(aName, aValue) {
     }
 
     this.getExecutionInstance().atPut(name, aValue);
+    window[name] = aValue;
 
     return this;
 });
@@ -1544,6 +1718,7 @@ function(aRequest) {
 
     var response,
         cmd,
+        thisref,
         constructOutInfo;
 
     aRequest.isActive(true);
@@ -1599,10 +1774,14 @@ function(aRequest) {
         //  the last real work has to be the execute call so we can handle
         //  the possibility of asynchronous work going on underneath.
 
-        //  Note here how we fork() the execution (but as quickly as
+        //  Note here how we fork the execution (but as quickly as
         //  possible so that it goes back on the stack ASAP) so that the GUI
         //  has the chance to draw the output cell before we run.
-        this.execute.bind(this).fork(0, aRequest);
+        thisref = this;
+        setTimeout(
+            function() {
+                thisref.execute(aRequest);
+            }, 0);
     } else {
         //  the last real work has to be the execute call so we can handle
         //  the possibility of asynchronous work going on underneath
@@ -1688,8 +1867,9 @@ function(aProvider) {
      * @returns {TP.core.Shell} The receiver.
      */
 
-    if (!TP.canInvoke(aProvider,
-                        TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
+    if (!TP.canInvokeInterface(
+                    aProvider,
+                    TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         return this.raise(
             'TP.sig.InvalidProvider',
             'STDIO provider must implement stdin, stdout, and stderr');
@@ -1953,8 +2133,10 @@ function(aPath) {
 
     list = this.get('pathStack');
 
-    pathmax = TP.ifInvalid(this.getVariable('PATHSIZE'),
-                            this.getType().PATH_MAX);
+    pathmax = this.getVariable('PATHSIZE');
+    if (TP.notValid(pathmax)) {
+        pathmax = this.getType().PATH_MAX;
+    }
 
     dups = TP.ifInvalid(this.getVariable('PATHDUP'), 'prev');
     dups.toLowerCase();
@@ -2064,7 +2246,10 @@ function(aPath) {
         return this.getPath();
     }
 
-    home = TP.ifInvalid(this.getVariable('HOME'), TP.getAppRoot());
+    home = this.getVariable('HOME');
+    if (TP.notValid(home)) {
+        home = TP.getAppRoot();
+    }
 
     //  ensure we strip any quotes the user may have used
     url = aPath.unquoted();
@@ -2080,7 +2265,6 @@ function(aPath) {
 
     schemes.perform(
         function(item) {
-
             if (TP.isValid(item) && item !== '' && url.startsWith(item)) {
                 isURI = true;
             }
@@ -2252,8 +2436,8 @@ function(aRequest) {
     }
 
     //  default when not set is to map it to the TIBET code frame.
-    if (TP.isWindow(self.$$TIBET)) {
-        win = self.$$TIBET;
+    if (TP.isWindow(TP.global.$$TIBET)) {
+        win = TP.global.$$TIBET;
     }
 
     //  "shouldn't happen" ;), but just in case...
@@ -2296,6 +2480,7 @@ function(aRequest) {
         //  on. In order for the shell to work properly, it will use a with(...)
         //  statement in conjunction with this object (which will become $SCOPE)
         //  to do things like resolve object references.
+
         obj = {};
 
         //  We do go ahead and instance program these methods onto this object
@@ -2890,6 +3075,7 @@ function(aRequest, forms) {
         return;
     }
 
+    /* eslint-disable consistent-this */
     shell = this;
 
     args = TP.elementGetAttributes(node);
@@ -2921,13 +3107,15 @@ function(aRequest, forms) {
             value = TP.xmlEntitiesToLiterals(item.last().trim());
 
             if (name === 'tsh:argv') {
+
                 argv = TP.ac();
                 dict.atPut('ARGV', argv);
 
                 argvParts = TP.$tokenizedSplit(value);
+
                 len = argvParts.getSize();
                 for (i = 0; i < len; i++) {
-                    argvPart = argvParts[i];
+                    argvPart = argvParts.at(i);
 
                     //  Make sure to null out val and expandedVal
                     val = null;
@@ -2938,18 +3126,19 @@ function(aRequest, forms) {
                     //  to inspect so we retokenize the individual argument. If
                     //  that results in something that's not "atomic" we treat
                     //  it as a string token.
-                    parts = TP.$tokenize(argvPart,
-                            TP.tsh.script.$tshAndJSOperators,
-                            true, false, false, true);
+                    parts = TP.$tokenize(
+                                argvPart,
+                                TP.tsh.script.$tshAndJSOperators,
+                                true, false, false, true);
 
                     if (parts.length > 1) {
-                        partName = parts[0].name;
+                        partName = parts.at(0).name;
                         part = {
                             name: partName,
                             value: argvPart
                         };
                     } else {
-                        part = parts[0];
+                        part = parts.at(0);
                     }
 
                     //  If it's a Number or RegExp literal string, then
@@ -2960,10 +3149,9 @@ function(aRequest, forms) {
                     } else if (part.name === 'regexp') {
                         //  Handle RegExps
                         reParts = part.value.split('/');
-                        reText = TP.tsh.cmd.expandContent(
+                        reText = TP.tsh.eval.expandContent(
                                         reParts.at(1), shell, aRequest);
-                        expandedVal = TP.rc(reText,
-                                            reParts.at(2));
+                        expandedVal = TP.rc(reText, reParts.at(2));
                     } else if (part.name === 'keyword' &&
                                 (part.value === 'true' ||
                                  part.value === 'false')) {
@@ -2989,7 +3177,7 @@ function(aRequest, forms) {
                         //  optionally resolve object references to see if we
                         //  evaluated to a number, boolean, etc.
                         if (part.value.charAt(0) === '`') {
-                            val = TP.tsh.cmd.expandContent(part.value,
+                            val = TP.tsh.eval.expandContent(part.value,
                                 shell, aRequest);
                             expandedVal = shell.resolveObjectReference(val);
                             expandedVal = TP.ifUndefined(expandedVal, val);
@@ -3042,15 +3230,15 @@ function(aRequest, forms) {
                     }
 
                     //  If we don't have an 'expanded value', then call
-                    //  upon the TP.tsh.cmd type to expand / resolve the
+                    //  upon the TP.tsh.eval type to expand / resolve the
                     //  value. Which one depends on quoting and whether the
                     //  value is an atomic variable reference or not.
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
 
-                            expandedVal = shell.resolveObjectReference(val,
-                                true);
+                            expandedVal = shell.resolveObjectReference(
+                                                                val, true);
 
                             //  Requote if original references were
                             //  string-based.
@@ -3058,7 +3246,7 @@ function(aRequest, forms) {
                                 expandedVal = TP.str(expandedVal);
                             }
                         } else {
-                            expandedVal = TP.tsh.cmd.expandContent(
+                            expandedVal = TP.tsh.eval.expandContent(
                                             val, shell, aRequest);
 
                             if (expandedVal === 'null') {
@@ -3082,8 +3270,10 @@ function(aRequest, forms) {
                     } else {
                         part = TP.ac(expandedVal, expandedVal);
                     }
+
                     dict.atPut('ARG' + index, part);
                     argv.push(part);
+
                     index++;
                 }
 
@@ -3099,8 +3289,8 @@ function(aRequest, forms) {
                 } else if (TP.regex.REGEX_LITERAL_STRING.test(val)) {
                     //  Handle RegExps
                     reParts = val.split('/');
-                    reText = TP.tsh.cmd.expandContent(
-                        reParts.at(1), shell, aRequest);
+                    reText = TP.tsh.eval.expandContent(
+                                reParts.at(1), shell, aRequest);
                     expandedVal = TP.rc(reText, reParts.at(2));
                 } else if (TP.regex.ANY_NUMBER.test(val) ||
                             TP.regex.PERCENTAGE.test(val)) {
@@ -3116,14 +3306,13 @@ function(aRequest, forms) {
                         expandedVal = val.unquoted();
                         val = val.unquoted();
                     } else if (val.charAt(0) === '`') {
-                        val = TP.tsh.cmd.expandContent(value,
-                            shell, aRequest);
+                        val = TP.tsh.eval.expandContent(value, shell, aRequest);
                         expandedVal = shell.resolveObjectReference(val);
                         expandedVal = TP.ifUndefined(expandedVal, val);
                     }
 
                     //  If we don't have an 'expanded value', then call upon the
-                    //  TP.tsh.cmd type to expand this content for us. Content
+                    //  TP.tsh.eval type to expand this content for us. Content
                     //  expansion includes command substitution (i.e. `...`
                     //  constructs) and template rendering but *not* variable
                     //  substitution and/or object resolution.
@@ -3131,8 +3320,8 @@ function(aRequest, forms) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
 
-                            expandedVal = shell.resolveObjectReference(val,
-                                true);
+                            expandedVal = shell.resolveObjectReference(
+                                                                val, true);
 
                             //  Requote if original references were
                             //  string-based.
@@ -3140,8 +3329,8 @@ function(aRequest, forms) {
                                 expandedVal = TP.str(expandedVal);
                             }
                         } else {
-                            expandedVal = TP.tsh.cmd.expandContent(
-                                                    val, shell, aRequest);
+                            expandedVal = TP.tsh.eval.expandContent(
+                                val, shell, aRequest);
                             if (expandedVal === 'null') {
                                 expandedVal = null;
                             } else if (expandedVal === 'undefined') {
@@ -3166,6 +3355,8 @@ function(aRequest, forms) {
                 }
             }
         });
+
+    /* eslint-enable consistent-this */
 
     //  Make sure there's at least an empty ARGV, if one hasn't been populated
     //  above.
@@ -3381,7 +3572,7 @@ function(aRequest) {
     return aRequest.complete(str);
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('about',
     TP.core.Shell.Inst.getMethod('executeAbout'),
     'Outputs a simple identification string.',
     ':about',
@@ -3458,7 +3649,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('alias',
     TP.core.Shell.Inst.getMethod('executeAlias'),
     'Define or display a command alias.',
     ':alias [name] [value]',
@@ -3490,7 +3681,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('clear',
     TP.core.Shell.Inst.getMethod('executeClear'),
     'Clears the console output.',
     ':clear',
@@ -3558,7 +3749,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('flag',
     TP.core.Shell.Inst.getMethod('executeFlag'),
     'Generates a list of TIBET control flags.',
     ':flag [name[=value]]',
@@ -3579,40 +3770,26 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
-    var methods,
-        shell;
+    var topics,
+        result;
 
-    methods = this.getInterface('methods');
-    methods = methods.filter(function(method) {
-        return /^execute([A-Z])+/.test(method);
+    topics = TP.core.Shell.get('helpTopics');
+    result = TP.hc();
+
+    topics.perform(function(pair) {
+        var cmd,
+            func;
+
+        cmd = pair.first();
+        func = pair.last();
+
+        result.atPut(cmd, func.$$abstract);
     });
 
-    shell = this;
-
-    methods = methods.map(function(method) {
-        var func,
-            name,
-            str;
-
-        func = shell[method];
-
-        name = method.slice('execute'.length);
-
-        str = ':' + name.slice(0, 1)[0].toLowerCase() + name.slice(1);
-
-        if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
-            str += ' - ' + func.$$abstract;
-        }
-
-        return str;
-    });
-
-    aRequest.stdout(methods.sort());
-
-    return aRequest.complete();
+    return aRequest.complete(result);
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('help',
     TP.core.Shell.Inst.getMethod('executeHelp'),
     'Outputs a list of available commands.',
     ':Help',
@@ -3636,7 +3813,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('save',
     TP.core.Shell.Inst.getMethod('executeSave'),
     'Saves current user profile settings to the persistent store.',
     ':save',
@@ -3695,7 +3872,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('set',
     TP.core.Shell.Inst.getMethod('executeSet'),
     'Sets a shell variable to a specified value or clears it.',
     ':set [name] [value]',

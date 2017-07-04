@@ -1,0 +1,44 @@
+
+/*
+	CSS styles common across 'xctrls:tabbar' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+*[data-theme] {
+
+    /* All themed 'xctrls:tabbar' controls */
+
+    xctrls|tabbar {
+
+        & xctrls|tabitem {
+
+            text-align: center;
+
+            padding: 0.1em 1em;
+
+            margin-left: -1px;
+
+            z-index: 1;
+
+            cursor: pointer;
+        }
+
+        & xctrls|tabitem:first-of-type {
+
+            margin-left: 0;
+        }
+    }
+
+    /* All themed, non-disabled 'xctrls:tabbar' controls */
+
+    xctrls|tabbar:not([pclass|disabled]) {
+    }
+
+    /* All themed, non-disabled 'xctrls:tabbar' control labels */
+
+    xctrls|tabbar:not([pclass|disabled]) xctrls|label {
+    }
+}
+

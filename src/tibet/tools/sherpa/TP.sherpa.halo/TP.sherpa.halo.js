@@ -17,14 +17,13 @@
 TP.sherpa.Element.defineSubtype('halo');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
+TP.sherpa.halo.Inst.defineAttribute('$dontSignalBlurFocus');
+
+TP.sherpa.halo.Inst.defineAttribute('$lastTargetTPElem');
 
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
 TP.sherpa.halo.Inst.defineAttribute('haloRect');
@@ -45,8 +44,7 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem,
-        tpElem;
+    var elem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -57,68 +55,7 @@ function(aRequest) {
         return;
     }
 
-    tpElem = TP.wrap(elem);
-
-    (function(aSignal) {
-
-        var signalGlobalPoint,
-            haloGlobalRect,
-
-            contextMenuTPElem;
-
-        if (aSignal.getShiftKey()) {
-
-            //  Make sure to prevent default to avoid having the context menu
-            //  pop up.
-            aSignal.preventDefault();
-            aSignal.stopPropagation();
-
-            this.changeHaloFocusOnClick(aSignal);
-        } else {
-
-            //  NB: We use global coordinates here as the halo and the signal
-            //  that we're testing very well might have occurred in different
-            //  documents.
-
-            signalGlobalPoint = aSignal.getGlobalPoint();
-            haloGlobalRect = this.getGlobalRect();
-
-            if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
-
-                //  Make sure to prevent default to avoid having the context
-                //  menu pop up.
-                aSignal.preventDefault();
-                aSignal.stopPropagation();
-
-                contextMenuTPElem = TP.byId('SherpaContextMenu',
-                                            TP.win('UIROOT'));
-
-                contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
-
-                contextMenuTPElem.activate();
-            }
-        }
-    }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
-
-    (function(aSignal) {
-
-        if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
-            aSignal.preventDefault();
-            aSignal.stopPropagation();
-
-            this.changeHaloFocusOnClick(aSignal);
-
-            return;
-        } else if (this.contains(aSignal.getTarget())) {
-            this[TP.composeHandlerName('HaloClick')](aSignal);
-        }
-
-    }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMClick');
-
-    tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
-                    TP.ac('HiddenChange',
-                            'DrawerClosedWillChange',
-                            'DrawerClosedDidChange'));
+    TP.wrap(elem).configure();
 
     return;
 });
@@ -127,74 +64,46 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
-
-    /**
-     * @method setAttrHidden
-     * @param {Boolean} beHidden
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var wasHidden;
-
-    wasHidden = TP.bc(this.getAttribute('hidden'));
-
-    if (wasHidden === beHidden) {
-        return this;
-    }
-
-    if (TP.isTrue(beHidden)) {
-        this.ignore(this, 'TP.sig.DOMMouseMove');
-        this.ignore(this, 'TP.sig.DOMMouseOver');
-        this.ignore(this, 'TP.sig.DOMMouseOut');
-
-        this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-
-        this.ignore(TP.ANY, 'TP.sig.DetachComplete');
-
-        this.set('haloRect', null);
-    } else {
-        this.observe(this, 'TP.sig.DOMMouseMove');
-        this.observe(this, 'TP.sig.DOMMouseOver');
-        this.observe(this, 'TP.sig.DOMMouseOut');
-
-        this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-
-        this.observe(TP.ANY, 'TP.sig.DetachComplete');
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.halo.Inst.defineMethod('blur',
 function() {
 
     /**
      * @method blur
+     * @summary Removes the 'halo focus' from a target element. Note that this
+     *     is different than showing/hiding the halo, although other halo
+     *     machinery will usually hide the halo as part of a 'de-focusing'
+     *     process that includes this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
     var currentTargetTPElem;
 
-    this.moveAndSizeToTarget(null);
-
+    //  Grab the current target. If there's no current target, then just exit
+    //  here.
     currentTargetTPElem = this.get('currentTargetTPElem');
+    if (TP.notValid(currentTargetTPElem)) {
+        return this;
+    }
+
+    //  If the current target has been marked as 'refreshing' by TIBET, then we
+    //  don't bother to send blur/focus signals.
+    if (currentTargetTPElem.hasAttribute('tibet:refreshing')) {
+        this.set('$dontSignalBlurFocus', true);
+    }
 
     if (TP.isValid(currentTargetTPElem)) {
-
-        this.ignore(this.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-        this.ignore(currentTargetTPElem.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-
         this.set('currentTargetTPElem', null);
     }
 
-    this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem),
-                TP.OBSERVER_FIRING);
+    //  If we haven't set the 'don't signal blur/focus signals' flag, then go
+    //  ahead and signal. Note that we only set this flag when we're doing the
+    //  minimal work to reset the focus on top of the current target where it
+    //  has been refreshed from its underlying content.
+    if (TP.notTrue(this.get('$dontSignalBlurFocus'))) {
+        this.signal('TP.sig.HaloDidBlur',
+                    TP.hc('haloTarget', currentTargetTPElem),
+                    TP.OBSERVER_FIRING);
+    }
 
     return this;
 });
@@ -206,6 +115,8 @@ function(aSignal) {
 
     /**
      * @method changeHaloFocusOnClick
+     * @summary Changes the halo focus depending on information in the supplied
+     *     signal, which is some form of button click.
      * @param {TP.sig.DOMSignal} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.halo} The receiver.
@@ -232,57 +143,88 @@ function(aSignal) {
         aSignal.getButton() === TP.LEFT &&
         currentTargetTPElem.haloCanBlur(this, aSignal)) {
 
-        this.blur();
+        //  NOTE: Make sure to hide the halo *before* we blur - this way any
+        //  signal handlers that are watching the target element are properly
+        //  shut down.
         this.setAttribute('hidden', true);
+        this.blur();
 
         handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
 
-        //  If there is an existing target and it's either identical to the
-        //  signal target or it contains the signal target, then we want to
-        //  traverse 'up' the parent hierarchy.
-        if (TP.isValid(currentTargetTPElem) &&
-                (currentTargetTPElem.identicalTo(sigTarget) ||
-                    currentTargetTPElem.contains(sigTarget))) {
+        //  A Shift-Right-Click - we're shifting focus to a new element.
 
-            newTargetTPElem = TP.wrap(sigTarget);
+        newTargetTPElem = TP.wrap(sigTarget);
 
-            //  If the target element wasn't the same as the currently focused
-            //  element, and a focusable element can be computed, then blur the
-            //  existing element and focus the parent.
-            if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+        //  If we have an existing target
+        if (TP.isValid(currentTargetTPElem)) {
 
-                newTargetTPElem = this.getNearestFocusable(
-                                            newTargetTPElem, aSignal);
+            //  If the Control key is being pressed, and the current target is
+            //  either identical to the new one or it contains the new one, then
+            //  we want to traverse 'up' the parent hierarchy.
+            if (aSignal.getCtrlKey() &&
+                (currentTargetTPElem.identicalTo(newTargetTPElem) ||
+                currentTargetTPElem.contains(newTargetTPElem))) {
 
-                //  Couldn't find a new target... exit.
-                if (TP.notValid(newTargetTPElem)) {
-                    return;
+                //  Note here how we ask the *current* target for its nearest
+                //  focusable element. The new target very well might at this
+                //  point be a descendant of the current target and so asking it
+                //  for its nearest focusable target will probably return either
+                //  the current target or actually a descendant of the current
+                //  target that is somewhere 'between' the two.
+
+                newTargetTPElem = currentTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
+            } else {
+
+                //  The Control key is not being pressed, so we could use the
+                //  new target. But first, we need to make sure it can be
+                //  halo'ed on. If not, find it's nearest haloable element 'up'
+                //  the parent hierarchy.
+                if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                    newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
                 }
-
-                this.blur();
-                this.focusOn(newTargetTPElem);
-
-                handledSignal = true;
             }
-        } else {
-            newTargetTPElem = TP.wrap(sigTarget);
 
-            newTargetTPElem = this.getNearestFocusable(
-                                            newTargetTPElem, aSignal);
+        } else {
+
+            //  No current target - completely new selection.
+
+            //  If it can't be focused, traverse 'up' the parent hierarchy.
+            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                                this, aSignal);
+            }
         }
 
-        if (TP.isValid(newTargetTPElem)) {
+        //  Couldn't find a new target... exit.
+        if (TP.notValid(newTargetTPElem)) {
+            return this;
+        }
 
-            this.blur();
+        //  We computed a new target. If it's not the same as the current
+        //  target, then blur the current one and focus on the new one.
+        if (TP.isValid(newTargetTPElem) &&
+            !newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+            if (TP.isValid(currentTargetTPElem)) {
+                this.blur();
+            }
+
             this.focusOn(newTargetTPElem);
 
+            //  This will 'unhide' the halo.
             this.setAttribute('hidden', false);
 
             handledSignal = true;
         }
     }
 
+    //  If we actually handled the signal, then we need to clear whatever text
+    //  selection might have gotten made. It seems that 'preventDefault()'ing
+    //  the event (which we do in the callers of this method) doesn't quite do
+    //  all of the right things.
     if (handledSignal) {
         if (TP.isValid(newTargetTPElem)) {
             TP.documentClearSelection(newTargetTPElem.getNativeDocument());
@@ -294,34 +236,180 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('focusOn',
-function(target) {
+TP.sherpa.halo.Inst.defineMethod('configure',
+function() {
 
     /**
-     * @method focusOn
-     * @param {TP.core.ElementNode} target
+     * @method configure
+     * @summary Configure the halo as part of the startup process.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    if (TP.isKindOf(target, TP.core.ElementNode)) {
+    var world,
+        currentScreenTPWin;
 
-        this.moveAndSizeToTarget(target);
+    this.observe(TP.ANY, 'SherpaHaloToggle');
 
-        this.set('currentTargetTPElem', target);
+    //  Observe the current UI canvas document for click & context menu
+    this.observe(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
-        this.observe(this.getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-        this.observe(target.getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+    //  Grab the world's current screen TP.core.Window and observe it for when
+    //  it's document unloads & loads so that we can manage our click & context
+    //  menu observations.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
 
-        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
-                    TP.OBSERVER_FIRING);
+    this.observe(currentScreenTPWin,
+                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
 
-    } else if (TP.isValid(this.get('currentTargetTPElem'))) {
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+                    'ClosedChange');
+
+    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
+
+    //  Make sure to initialize this to whatever our 'pclass:hidden' value is
+    //  initially.
+    this.set('$wasShowing', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('deleteTarget',
+function() {
+
+    /**
+     * @method deleteTarget
+     * @summary Deletes the current target element.
+     * @returns {String} The TP.TSH_NO_VALUE value to avoid console output.
+     */
+
+    var currentTargetTPElem;
+
+    //  No current target element? Exit here.
+    currentTargetTPElem = this.get('currentTargetTPElem');
+    if (TP.notValid(currentTargetTPElem)) {
+        return TP.TSH_NO_VALUE;
+    }
+
+    //  Now, we have to make sure that we can delete the target
+    if (!currentTargetTPElem.haloCanDelete(this)) {
+        return TP.TSH_NO_VALUE;
+    }
+
+    //  Make sure to confirm this operation, since it's destructive.
+    TP.confirm('Really delete the halo\'ed element?').then(
+        function(shouldDelete) {
+
+            if (shouldDelete) {
+
+                //  This will cause the 'MutationDetach' signal to fire, which
+                //  will blur the halo, etc. See that handler for more
+                //  information.
+                currentTargetTPElem.detach();
+                TP.bySystemId('SherpaConsoleService').notify(
+                    'Halo\'ed element deleted');
+            }
+        });
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('emptyTarget',
+function() {
+
+    /**
+     * @method emptyTarget
+     * @summary Empties the current target element of its content.
+     * @returns {String} The TP.TSH_NO_VALUE value to avoid console output.
+     */
+
+    var currentTargetTPElem;
+
+    //  No current target element? Exit here.
+    currentTargetTPElem = this.get('currentTargetTPElem');
+    if (TP.notValid(currentTargetTPElem)) {
+        return TP.TSH_NO_VALUE;
+    }
+
+    //  Make sure to confirm this operation, since it's destructive.
+    TP.confirm('Really empty the halo\'ed element?').then(
+        function(shouldEmpty) {
+
+            if (shouldEmpty) {
+                currentTargetTPElem.empty();
+                TP.bySystemId('SherpaConsoleService').notify(
+                    'Halo\'ed element emptied');
+            }
+        });
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('focusOn',
+function(newTargetTPElem) {
+
+    /**
+     * @method focusOn
+     * @summary Sets the 'halo focus' to the supplied target element. Note that
+     *     this is different than showing/hiding the halo, although other halo
+     *     machinery may show the halo as part of a 'focusing' process that
+     *     includes this method.
+     * @param {TP.core.ElementNode} newTargetTPElem The element to focus the
+     *     halo on.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    //  If we got a valid TP.core.ElementNode, then we need to go through the
+    //  focusing process.
+    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
+
+        //  If it's the same element, then just return
+        if (currentTargetTPElem === newTargetTPElem) {
+            return this;
+        }
+
+        //  If we're visible, then move and size the halo to the target
+        if (!this.getAttribute('hidden')) {
+            this.moveAndSizeToTarget(newTargetTPElem);
+        }
+
+        //  Set the current halo target to be the target passed in.
+        this.set('currentTargetTPElem', newTargetTPElem);
+
+        //  If we haven't set the 'don't signal blur/focus signals' flag, then
+        //  go ahead and signal. Note that we only set this flag when we're
+        //  doing the minimal work to reset the focus on top of the current
+        //  target where it has been refreshed from its underlying content.
+        if (TP.notTrue(this.get('$dontSignalBlurFocus'))) {
+            this.signal('TP.sig.HaloDidFocus',
+                        TP.hc('haloTarget', newTargetTPElem),
+                        TP.OBSERVER_FIRING);
+        }
+
+        //  If the current target has been marked as 'refreshing' by TIBET,
+        //  then we've set a flag to not bother to send blur/focus signals. We
+        //  need to put that flag back so that we start resending them again.
+        if (newTargetTPElem.hasAttribute('tibet:refreshing')) {
+            this.set('$dontSignalBlurFocus', false);
+        }
+
+    } else if (TP.isValid(currentTargetTPElem)) {
+
+        //  Otherwise, just blur the existing target.
         this.blur();
     } else {
-        //  No existing target
-        void 0;
+        //  Empty. No existing target
     }
 
     return this;
@@ -329,36 +417,118 @@ function(target) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('DetachComplete',
+TP.sherpa.halo.Inst.defineHandler('DocumentLoaded',
 function(aSignal) {
 
-    var currentTargetTPElem,
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    this.observe(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    this.ignore(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the overall canvas
+     *     that the halo is working with.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var sigOriginTPDoc,
+
+        currentTargetTPElem,
+
+        currentTargetLocalID,
 
         mutatedIDs,
 
-        currentGlobalID,
-        newTargetTPElem,
-
-        sigOriginTPNode;
+        currentTargetGlobalID,
+        newTargetTPElem;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
     if (!TP.isKindOf(currentTargetTPElem, TP.core.ElementNode)) {
         return this;
     }
 
+    //  Grab the signal origin (which is a TP.core.DocumentNode).
+    sigOriginTPDoc = aSignal.getOrigin();
+
+    //  Grab the current halo target's ID.
+    currentTargetLocalID = currentTargetTPElem.getLocalID();
+
+    //  If there were nodes that changed as part of this detachment that can be
+    //  determined by their node IDs, then process those first.
     if (TP.notEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
 
-        currentGlobalID = currentTargetTPElem.getID();
-        if (mutatedIDs.contains(currentGlobalID)) {
+        //  Grab the current halo target's ID.
+        currentTargetGlobalID = currentTargetTPElem.getID();
 
+        //  If the current halo target's ID is in the list of mutated nodes that
+        //  got detached, then that could mean 2 things:
+        //      1. An ancestor of the current halo target got detached, taking
+        //      the current halo target with it. Therefore, it is in the
+        //      collection of nodes that got removed.
+        //      2. The halo target itself (and including itself) was the
+        //      'top-level' node that got detached. In this case, due to how
+        //      TIBET node compilation works, a new 'version' of the node will
+        //      be present in the DOM, with the *same ID* as the halo target. In
+        //      this case, we just need to blur/focus the halo, causing it to
+        //      refocus onto the new version of the node.
+        if (mutatedIDs.contains(currentTargetGlobalID)) {
+
+            //  Blur off of the 'old' target element. It's no longer part of our
+            //  DOM anyway.
             this.blur();
 
-            newTargetTPElem = TP.byId(currentTargetTPElem.getLocalID(),
-                                        aSignal.getOrigin().getDocument());
+            //  See if we can 'reacquire' a new target element, but ones that
+            //  uses the same ID as the old target in the DOM. If we can, then
+            //  we're in case #2 above. If we cannot, then we're in case #1.
+            newTargetTPElem = TP.byId(currentTargetLocalID, sigOriginTPDoc);
 
+            //  If we got one, then focus on it - otherwise, make sure that
+            //  we're hidden.
             if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
+
                 this.focusOn(newTargetTPElem);
+
+                //  This will 'unhide' the halo.
+                this.setAttribute('hidden', false);
             } else {
+
+                //  This will 'hide' the halo.
                 this.setAttribute('hidden', true);
             }
 
@@ -367,48 +537,369 @@ function(aSignal) {
         }
     }
 
-    //  We didn't actually detach the target element itself. See if the element
-    //  that was getting detached was an ancestor (i.e. contains) the target
-    //  element.
+    //  Next, we see if the halo target element is still somewhere in the DOM,
+    //  even if it or one of its ancestors didn't get removed. In this case, we
+    //  move and resize the halo, since almost assuredly the halo target element
+    //  would have moved.
 
-    sigOriginTPNode = aSignal.getSignalOrigin();
+    if (!currentTargetTPElem.isDetached()) {
+        this.moveAndSizeToTarget(currentTargetTPElem);
 
-    if (TP.isKindOf(sigOriginTPNode, TP.core.Node) &&
-        sigOriginTPNode.contains(currentTargetTPElem, TP.IDENTITY)) {
-
-        this.blur();
-        this.setAttribute('hidden', true);
-
+        //  We handled this detachment signal - exit
         return this;
     }
 
-    //  Next, check to see if any of the detached nodes were under current
-    //  target. In this case, we don't need to refocus, but we may need to
-    //  resize.
+    //  Otherwise, nothing else is possible. The halo target element is
+    //  completely gone and we can't determine if it reappeared, so we just
+    //  blur, hide ourself and exit.
+    this.blur();
 
-    if (sigOriginTPNode.identicalTo(currentTargetTPElem)) {
+    //  This will 'hide' the halo.
+    this.setAttribute('hidden', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('MutationStyleChange',
+function(aSignal) {
+
+    /**
+     * @method handleMutationStyleChange
+     * @summary Handles notifications of node style changes from the overall
+     *     canvas that the halo is working with.
+     * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem;
+
+    //  If we're not hidden, then we move and resize to our target. It's size
+    //  and position might very well have changed due to style changes in the
+    //  document.
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
         this.moveAndSizeToTarget(currentTargetTPElem);
     }
 
-    /*
-    if (TP.notEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
+    return this;
+});
 
-        if (TP.isValid(currentTargetTPElem)) {
+//  ------------------------------------------------------------------------
 
-            doc = currentTargetTPElem.getNativeDocument();
+TP.sherpa.halo.Inst.defineHandler('OutlinerDOMInsert',
+function(aSignal) {
 
-            for (i = 0; i < mutatedIDs.getSize(); i++) {
-                mutatedNode = TP.byId(mutatedIDs.at(i), doc, false);
+    /**
+     * @method handleOutlinerDOMInsert
+     * @summary Handles notifications of node insertions from the outliner.
+     * @param {TP.sig.OutlinerDOMInsert} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
 
-                if (currentTargetTPElem.contains(mutatedNode, TP.IDENTITY)) {
+    var newTargetTPElem,
+        currentTargetTPElem;
 
-                    this.moveAndSizeToTarget(currentTargetTPElem);
-                    return this;
-                }
+    newTargetTPElem = aSignal.at('insertedTPElem');
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    //  If the new target is not the same as the current target (which in all
+    //  likelihood will not be), then we refocus ourself onto the newly inserted
+    //  node as our target.
+    if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+        //  See if we can focus the new target element - if not, we'll search up
+        //  the parent chain for the nearest focusable element
+        if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
+        }
+
+        //  Couldn't find a focusable target... exit.
+        if (TP.notValid(newTargetTPElem)) {
+            return this;
+        }
+
+        if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+            !newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+            //  This will move the halo off of the old element.
+            this.blur();
+
+            //  This will move the halo to the new element.
+            this.focusOn(newTargetTPElem);
+        }
+
+        //  This will 'unhide' the halo.
+        this.setAttribute('hidden', false);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var hud,
+        hudIsHidden,
+
+        wasHidden;
+
+    //  Grab the HUD and see if it's currently open or closed.
+    hud = TP.byId('SherpaHUD', this.getNativeWindow());
+    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+
+    //  If the HUD is hidden, then we also hide ourself. But not before
+    //  capturing whether we were 'currently showing' or not (i.e. the HUD can
+    //  hide or show independent of us). Otherwise, if the HUD is showing, then
+    //  we set ourself to whatever value we had when the HUD last hid.
+    if (hudIsHidden) {
+        wasHidden = TP.bc(this.getAttribute('hidden'));
+        this.set('$wasShowing', !wasHidden);
+
+        //  This will 'hide' the halo.
+        this.setAttribute('hidden', true);
+    } else {
+        this.setAttribute('hidden', !this.get('$wasShowing'));
+    }
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMClick',
+function(aSignal) {
+
+    /**
+     * @method handleDOMClick
+     * @summary Handles notifications of mouse click signals.
+     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    //  If the Shift key is down and we're not currently hidden, then change our
+    //  focus based on a variety of key combinations and mouse button states.
+    if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
+
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+
+        this.changeHaloFocusOnClick(aSignal);
+
+        return;
+    } else if (this.contains(aSignal.getTarget())) {
+
+        //  Otherwise, dispatch off to a 'corner-based' click handler.
+        this[TP.composeHandlerName('HaloClick')](aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMContextMenu',
+function(aSignal) {
+
+    /**
+     * @method handleDOMContextMenu
+     * @summary Handles notifications of context menu signals.
+     * @param {TP.sig.DOMContextMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var signalGlobalPoint,
+        haloGlobalRect,
+
+        triggerTPDoc;
+
+    //  If the Shift key is down, then change our focus based on a variety of
+    //  key combinations and mouse button states.
+    if (aSignal.getShiftKey()) {
+
+        //  Make sure to prevent default to avoid having the context menu
+        //  pop up.
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+
+        //  Change focus of the halo to a target element contained within the
+        //  signal. Note that this will *not* affect whether the halo is
+        //  currently showing or not, by design.
+        this.changeHaloFocusOnClick(aSignal);
+
+    } else {
+
+        //  NB: We use global coordinates here as the halo and the signal
+        //  that we're testing very well might have occurred in different
+        //  documents.
+
+        signalGlobalPoint = aSignal.getGlobalPoint();
+        haloGlobalRect = this.getGlobalRect();
+
+        if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
+
+            //  Make sure to prevent default to avoid having the context
+            //  menu pop up.
+            aSignal.preventDefault();
+            aSignal.stopPropagation();
+
+            triggerTPDoc = TP.tpdoc(TP.win('UIROOT'));
+
+            this.signal(
+                'OpenPopup',
+                TP.hc(
+                    'overlayID', 'SherpaContextMenuPopup',
+                    'overlayCSSClass', 'sherpahalocontextmenu',
+                    'contentID', 'SherpaHaloContextMenu',
+                    'hideOn', 'SelectMenuItem',
+                    'useTopLevelContentElem', true,
+                    'trigger', aSignal,
+                    'triggerPath', '#' + triggerTPDoc.getBody().getLocalID(),
+                    'triggerTPDocument', triggerTPDoc,
+                    'triggerPoint', aSignal.getGlobalPoint()));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMMouseMove',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseMove
+     * @summary Handles notifications of mouse move signals.
+     * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    // this.showHaloCorner(aSignal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMMouseOver',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseOver
+     * @summary Handles notifications of mouse over signals.
+     * @param {TP.sig.DOMMouseOver} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    // this.showHaloCorner(aSignal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMMouseOut',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseOut
+     * @summary Handles notifications of mouse out signals.
+     * @param {TP.sig.DOMMouseOut} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    // this.hideHaloCorner();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMMouseWheel',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseWheel
+     * @summary Handles notifications of mouse wheel signals.
+     * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem,
+        newTargetTPElem;
+
+    //  If the Shift key is down, then change our focus based on a variety of
+    //  key combinations and mouse button states.
+    if (aSignal.getShiftKey()) {
+
+        aSignal.preventDefault();
+
+        if (aSignal.getWheelDelta().abs() > 0.5) {
+            currentTargetTPElem = this.get('currentTargetTPElem');
+
+            if (aSignal.getDirection() === TP.UP) {
+                newTargetTPElem = currentTargetTPElem.getHaloParent(this);
+            } else {
+                newTargetTPElem = currentTargetTPElem.getNextHaloChild(
+                                                                this, aSignal);
+            }
+
+            //  Couldn't find a new target... exit.
+            if (TP.notValid(newTargetTPElem)) {
+                return this;
+            }
+
+            //  See if we can focus the new target element - if not, we'll
+            //  search up the parent chain for the nearest focusable element
+            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                                this, aSignal);
+            }
+
+            //  Couldn't find a focusable target... exit.
+            if (TP.notValid(newTargetTPElem)) {
+                return this;
+            }
+
+            //  We computed a new target. If it's not the same as the current
+            //  target, then blur the current one and focus on the new one.
+            if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+                !newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+                //  This will move the halo off of the old element.
+                this.blur();
+
+                //  This will move the halo to the new element.
+                this.focusOn(newTargetTPElem);
+
+                //  NB: We don't worry about unhiding the halo here, since it
+                //  should've been already visible.
             }
         }
     }
-    */
 
     return this;
 });
@@ -418,8 +909,20 @@ function(aSignal) {
 TP.sherpa.halo.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
+    /**
+     * @method handleDOMResize
+     * @summary Handles notifications of document size changes from the overall
+     *     canvas that the halo is working with.
+     * @param {TP.sig.DOMResize} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
     var currentTargetTPElem;
 
+    //  If we're not hidden, then we move and resize to our target. It's size
+    //  and position might very well have changed due to resizing changes in
+    //  the document.
     if (TP.isFalse(this.getAttribute('hidden'))) {
         currentTargetTPElem = this.get('currentTargetTPElem');
         this.moveAndSizeToTarget(currentTargetTPElem);
@@ -433,73 +936,23 @@ function(aSignal) {
 TP.sherpa.halo.Inst.defineHandler('DOMScroll',
 function(aSignal) {
 
-    var currentTargetTPElem;
-
-    if (TP.isFalse(this.getAttribute('hidden'))) {
-        currentTargetTPElem = this.get('currentTargetTPElem');
-        this.moveAndSizeToTarget(currentTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaHUD'},
-function(aSignal) {
-
     /**
-     * @method handleHiddenChange
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    this.setAttribute('hidden', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler(
-{signal: 'DrawerClosedWillChange', origin: 'SherpaHUD'},
-function(aSignal) {
-
-    /**
-     * @method handleDrawerClosedWillChange
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    if (TP.isFalse(this.getAttribute('hidden'))) {
-        this.set('$wasShowing', true);
-        this.setAttribute('hidden', true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler(
-{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
-function(aSignal) {
-
-    /**
-     * @method handleDrawerClosedDidChange
+     * @method handleDOMScroll
+     * @summary Handles notifications of document scrolling changes from the
+     *     overall canvas that the halo is working with.
+     * @param {TP.sig.DOMScroll} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
     var currentTargetTPElem;
 
-    if (this.get('$wasShowing')) {
-
+    //  If we're not hidden, then we move and resize to our target. It's size
+    //  and position might very well have changed due to scrolling changes in
+    //  the document.
+    if (TP.isFalse(this.getAttribute('hidden'))) {
         currentTargetTPElem = this.get('currentTargetTPElem');
-
         this.moveAndSizeToTarget(currentTargetTPElem);
-
-        this.setAttribute('hidden', false);
-
-        this.set('$wasShowing', null);
     }
 
     return this;
@@ -512,7 +965,8 @@ function(aSignal) {
 
     /**
      * @method handleHaloClick
-     * @summary Handles notifications of mouse click events.
+     * @summary Handles notifications of mouse click signals when they aren't
+     *     being used to focus and blur the receiver.
      * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered this
      *     method.
      * @returns {TP.sherpa.halo} The receiver.
@@ -563,147 +1017,73 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('DOMMouseMove',
+TP.sherpa.halo.Inst.defineHandler('SherpaHaloToggle',
 function(aSignal) {
 
     /**
-     * @method handleDOMMouseMove
-     * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which triggered
+     * @method handleSherpaHaloToggle
+     * @summary Handles notifications of halo toggle signals.
+     * @param {TP.sig.SherpaHaloToggle} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    this.showHaloCorner(aSignal);
+    var targetTPElem;
 
-    return this;
-});
+    targetTPElem = this.get('currentTargetTPElem');
 
-//  ------------------------------------------------------------------------
+    //  If we current having a valid target, then capture it and hide & blur the
+    //  halo
+    if (TP.isValid(targetTPElem)) {
 
-TP.sherpa.halo.Inst.defineHandler('DOMMouseOver',
-function(aSignal) {
+        this.set('$lastTargetTPElem', targetTPElem);
 
-    /**
-     * @method handleDOMMouseOver
-     * @param {TP.sig.DOMMouseOver} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
+        //  This will 'hide' the halo.
+        this.setAttribute('hidden', true);
+        this.blur();
+    } else {
 
-    // this.showHaloCorner(aSignal);
+        //  See if there is a previously captured target.
+        targetTPElem = this.get('$lastTargetTPElem');
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('DOMMouseOut',
-function(aSignal) {
-
-    /**
-     * @method handleDOMMouseOut
-     * @param {TP.sig.DOMMouseOut} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    // this.hideHaloCorner();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('DOMMouseWheel',
-function(aSignal) {
-
-    /**
-     * @method handleDOMMouseWheel
-     * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var currentTargetTPElem,
-        newTargetTPElem;
-
-    if (aSignal.getShiftKey()) {
-
-        aSignal.preventDefault();
-
-        if (aSignal.getWheelDelta().abs() > 0.5) {
-            currentTargetTPElem = this.get('currentTargetTPElem');
-
-            if (aSignal.getDirection() === TP.UP) {
-                newTargetTPElem = currentTargetTPElem.getHaloParent(this);
-            } else {
-                newTargetTPElem = currentTargetTPElem.getNextHaloChild(
-                                                                this, aSignal);
-            }
-
-            newTargetTPElem = this.getNearestFocusable(
-                                            newTargetTPElem, aSignal);
-
-            //  Couldn't find a new target... exit.
-            if (TP.notValid(newTargetTPElem)) {
-                return;
-            }
-
-            if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
-                !newTargetTPElem.identicalTo(currentTargetTPElem)) {
-
-                this.blur();
-                this.focusOn(newTargetTPElem);
-            }
+        //  If there is no previously captured target, then use the body.
+        if (TP.notValid(targetTPElem)) {
+            targetTPElem =
+                TP.sys.getUICanvas().getDocument().getBody();
         }
+
+        //  If there is no body, then use the document element.
+        if (TP.notValid(targetTPElem)) {
+            targetTPElem =
+                TP.sys.getUICanvas().getDocument().getDocumentElement();
+        }
+
+        //  If we actually got a target of some sort, then focus on it and
+        //  unhide the halo
+        if (TP.isValid(targetTPElem)) {
+            this.focusOn(targetTPElem);
+
+            //  This will 'unhide' the halo.
+            this.setAttribute('hidden', false);
+        }
+
+        //  Null out any previously captured target.
+        this.set('$lastTargetTPElem', null);
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineMethod('getNearestFocusable',
-function(newTargetTPElem, aSignal) {
-
-    var canFocus,
-
-        focusableTPElem;
-
-    //  Couldn't find a new target... exit.
-    if (TP.notValid(newTargetTPElem)) {
-        return null;
-    }
-
-    focusableTPElem = newTargetTPElem;
-
-    canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
-
-    if (canFocus === TP.ANCESTOR) {
-
-        while (TP.isValid(focusableTPElem =
-                            focusableTPElem.getHaloParent(this))) {
-
-            canFocus = focusableTPElem.haloCanFocus(this, aSignal);
-
-            if (canFocus && canFocus !== TP.ANCESTOR) {
-                break;
-            }
-        }
-    }
-
-    //  Couldn't find one to focus on? Return null.
-    if (!canFocus) {
-        return null;
-    }
-
-    return focusableTPElem;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineMethod('hideHaloCorner',
 function() {
+
+    /**
+     * @method hideHaloCorner
+     * @summary Sets whether the current 'last corner' is hidden.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
 
     var lastCorner,
         elem;
@@ -724,28 +1104,106 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineMethod('inspectTargetAspect',
+function(aspectPathParts) {
+
+    /**
+     * @method inspectTargetAspect
+     * @summary Shifts the focus of the Sherpa Inspector to the halo target's
+     *     aspect pointed to by the supplied path parts.
+     * @param {Array} aspectPathParts The Array of path parts that make up the
+     *     path to the aspect to be inspected.
+     * @returns {String} The TP.TSH_NO_VALUE value to avoid console output.
+     */
+
+    var currentTargetTPElem,
+        newTargetTPElem,
+
+        pathParts;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    //  Note here how we go after the current halo target's nearest 'generator'.
+    //  That will usually be its custom tag. If one cannot be found, it will be
+    //  the current target's nearest 'parent'.
+    newTargetTPElem = currentTargetTPElem.getNearestHaloGenerator(this);
+
+    //  If we acquired a new target, then we blur off of our current target and
+    //  focus on it.
+    if (TP.isValid(newTargetTPElem)) {
+
+        this.blur();
+        this.focusOn(newTargetTPElem);
+
+        //  This will 'unhide' the halo.
+        this.setAttribute('hidden', false);
+    } else {
+        //  Otherwise, we just keep the same target.
+        newTargetTPElem = currentTargetTPElem;
+    }
+
+    //  Unshift the special '__TARGET__' identifier onto the front of the aspect
+    //  path.
+    pathParts = TP.copy(aspectPathParts);
+    pathParts.unshift('__TARGET__');
+
+    //  Fire the signal for the Inspector to pick up to shift its focus.
+    this.signal('InspectObject',
+                    TP.hc('targetObject', newTargetTPElem,
+                            'targetPath', pathParts.join(TP.PATH_SEP),
+                            'showBusy', true));
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('isFocused',
+function() {
+
+    /**
+     * @method isFocused
+     * @summary Returns whether or not the halo is currently focused on a
+     *     target.
+     * @returns {Boolean} Whether or not the halo is focused.
+     */
+
+    return TP.isValid(this.get('currentTargetTPElem'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineMethod('moveAndSizeToTarget',
-function(aTarget) {
+function(newTargetTPElem) {
 
     /**
      * @method moveAndSizeToTarget
-     * @param {TP.core.ElementNode|undefined} aTarget
+     * @summary Moves and sizes the receiver to the supplied target element or
+     *     to the current target if a new target element isn't supplied (the
+     *     current target's visual location might have shifted).
+     * @param {TP.core.ElementNode|undefined} [newTargetTPElem] The new target
+     *     to move and resize the receiver around.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
     var currentTargetTPElem,
 
         theRect,
-        ourRect;
+        ourRect,
+
+        styleVals;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
-    if (TP.notValid(aTarget)) {
+    if (TP.notValid(newTargetTPElem)) {
         //  No new target
 
         if (TP.notValid(currentTargetTPElem)) {
-            //  No existing target either - bail out.
-            return;
+            //  No existing target either - reset the halo rectangle and bail
+            //  out.
+            this.set('haloRect', null);
+
+            return this;
         }
 
         //  Grab rect for the existing target. Note that this will be supplied
@@ -754,34 +1212,116 @@ function(aTarget) {
     } else {
         //  Grab rect for the new target. Note that this will be supplied in
         //  *global* coordinates.
-        theRect = aTarget.getHaloRect(this);
+        theRect = newTargetTPElem.getHaloRect(this);
     }
 
-    if (TP.notValid(aTarget) && TP.notValid(currentTargetTPElem)) {
-        this.setAttribute('hidden', true);
+    //  Given that the halo rect returned by one of the targets above is in
+    //  *global* coordinates, we need to sure to adjust for the fact that
+    //  the halo itself might be in a container that's positioned. We go to
+    //  the halo's offset parent and get it's global rectangle.
+
+    //  Note that we do this because the halo is currently hidden and won't
+    //  give proper coordinates when computing relative to its offset
+    //  parent.
+    ourRect = this.getOffsetParent().getGlobalRect(true);
+
+    theRect.subtractByPoint(ourRect.getXYPoint());
+
+    this.setOffsetPositionAndSize(theRect);
+
+    this.set('haloRect', theRect);
+
+    if (TP.isValid(newTargetTPElem)) {
+        //  Test to see if its less than our minimum width/height as defined in
+        //  our style sheet. If so, set the 'size' attribute to 'belowMinimum'.
+        styleVals = TP.elementGetComputedStyleValuesInPixels(
+                        this.getNativeNode(),
+                        TP.ac('minWidth', 'minHeight'));
+
+        if (newTargetTPElem.getWidth() < styleVals.at('minWidth') ||
+            newTargetTPElem.getHeight() < styleVals.at('minHeight')) {
+            this.setAttribute('size', 'belowMinimum');
+        } else {
+            this.removeAttribute('size');
+        }
+    } else {
+        //  No valid new target - just remove the 'size' attribute
+        this.removeAttribute('size');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
+function(beHidden) {
+
+    /**
+     * @method setAttrHidden
+     * @summary Sets the 'hidden' attribute of the receiver. This causes the
+     *     halo to show or hide itself independent of whether it's focused or
+     *     not.
+     * @param {Boolean} beHidden Whether or not the halo should be hidden.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
+        //  Exit here - no need to call up to our supertype to toggle the
+        //  attribute, since it already has the value we desire.
+        return this;
+    }
+
+    if (TP.isTrue(beHidden)) {
+        this.ignore(this, 'TP.sig.DOMMouseMove');
+        this.ignore(this, 'TP.sig.DOMMouseOver');
+        this.ignore(this, 'TP.sig.DOMMouseOut');
+
+        this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+
+        this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationDetach',
+                            'TP.sig.MutationStyleChange'));
+
+        this.ignore(this.getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
         this.set('haloRect', null);
     } else {
 
-        //  Given that the halo rect returned by one of the targets above is in
-        //  *global* coordinates, we need to sure to adjust for the fact that
-        //  the halo itself might be in a container that's positioned. We go to
-        //  the halo's offset parent and get it's global rectangle.
+        //  If we don't have a valid target element, then we exit here *without
+        //  calling up to our supertype*. We don't want the attribute to be
+        //  toggled, but we don't have valid target to show the halo on.
+        if (TP.notValid(this.get('currentTargetTPElem'))) {
+            return this;
+        }
 
-        //  Note that we do this because the halo is currently hidden and won't
-        //  give proper coordinates when computing relative to its offset
-        //  parent.
-        ourRect = this.getOffsetParent().getGlobalRect(true);
+        this.observe(this, 'TP.sig.DOMMouseMove');
+        this.observe(this, 'TP.sig.DOMMouseOver');
+        this.observe(this, 'TP.sig.DOMMouseOut');
 
-        theRect.subtractByPoint(ourRect.getXYPoint());
+        this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
 
-        this.setOffsetPositionAndSize(theRect);
-        this.setAttribute('hidden', false);
+        this.observe(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.MutationDetach',
+                            'TP.sig.MutationStyleChange'));
 
-        this.set('haloRect', theRect);
+        this.observe(this.getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.observe(TP.sys.getUICanvas().getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
+        this.moveAndSizeToTarget(this.get('currentTargetTPElem'));
     }
 
-    return this;
+    //  Need to 'call up' to make sure the attribute value is actually captured.
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -791,6 +1331,7 @@ function(aSignal) {
 
     /**
      * @method showHaloCorner
+     * @summary Sets whether a particular halo corner should be shown.
      * @param {TP.sig.DOMSignal} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.halo} The receiver.

@@ -1,123 +1,131 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|breadcrumb {
 
     position: absolute;
-    display: block;
+    display: none;
 
-    top: 45px;
-    left: 60px;
-    right: 0px;
+    top: 5px;
+    left: 0;
+    right: 0;
 
     height: 18px;
 }
 
+#background.edge-north-open sherpa|breadcrumb {
+
+    display: flex;
+}
+
 sherpa|breadcrumb > .content {
+
+    display: flex;
 
     font-size: 10px;
     line-height: 1.5em;
 
-    list-style: none;
     overflow: hidden;
 
-    margin: 0px;
+    margin: 0;
+
+    white-space: nowrap;
 }
 
-sherpa|breadcrumb > .content li {
+sherpa|breadcrumb > .content div.item {
 
-    float: left;
+    flex-shrink: 9;
+
+    overflow: hidden;
+
+    background-color: red;
+
+    color: white;
+
+    padding: 1px 5px 1px 10px;
+
+    border: solid 1px rgb(199, 199, 199);
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+    cursor: pointer;
+
+    direction: rtl;
 }
 
-sherpa|breadcrumb > .content li a {
+sherpa|breadcrumb > .content div.item::after {
 
-    position: relative;
-    display: block;
-
-    float: left;
-    padding: 1px 0px 1px 35px;
-
-    color: white !important;
-    text-decoration: none;
-
-    background: hsla(240,10%,60%,1);
-}
-
-sherpa|breadcrumb > .content li a:after {
-
-    content: ' ';
+    content: " ";
 
     position: absolute;
     display: block;
 
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
 
     top: 50%;
-    left: 100%;
 
-    margin-top: -12px;
+    margin-top: -9px;
+    margin-right: -12px;
 
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-    border-left: 8px solid hsla(240,10%,60%,1);
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+
+    border-left: 8px solid red;
+
+    border-radius: 3px;
 
     z-index: 2;
 }
 
-sherpa|breadcrumb > .content li a:before {
+sherpa|breadcrumb > .content div.item::before {
 
-    content: ' ';
+    content: " ";
 
     position: absolute;
     display: block;
 
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
 
     top: 50%;
-    left: 100%;
 
-    margin-top: -12px;
+    margin-top: -9px;
+    margin-right: -13px;
     margin-left: 1px;
 
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
     border-left: 8px solid white;
+    border-radius: 3px;
 
     z-index: 1;
 }
 
-sherpa|breadcrumb > .content li:first-child a {
+sherpa|breadcrumb > .content div.itemcontent {
 
-    padding-left: 2px;
+    direction: ltr;
+
+    user-select: none;
+
+    white-space: nowrap;
+    overflow: hidden;
+
+    line-height: 1.35;
+    padding-top: 0;
 }
 
-sherpa|breadcrumb > .content li:nth-child(2) a       { background:        hsla(240,10%,70%,1); }
-sherpa|breadcrumb > .content li:nth-child(2) a:after { border-left-color: hsla(240,10%,70%,1); }
-sherpa|breadcrumb > .content li:nth-child(3) a       { background:        hsla(240,10%,75%,1); }
-sherpa|breadcrumb > .content li:nth-child(3) a:after { border-left-color: hsla(240,10%,75%,1); }
-sherpa|breadcrumb > .content li:nth-child(4) a       { background:        hsla(240,10%,80%,1); }
-sherpa|breadcrumb > .content li:nth-child(4) a:after { border-left-color: hsla(240,10%,80%,1); }
-sherpa|breadcrumb > .content li:nth-child(5) a       { background:        hsla(240,10%,85%,1); }
-sherpa|breadcrumb > .content li:nth-child(5) a:after { border-left-color: hsla(240,10%,85%,1); }
-sherpa|breadcrumb > .content li:nth-child(6) a       { background:        hsla(240,10%,90%,1); }
-sherpa|breadcrumb > .content li:nth-child(6) a:after { border-left-color: hsla(240,10%,90%,1); }
+sherpa|breadcrumb > .content div.itemcontent:hover {
 
-sherpa|breadcrumb > .content li:last-child a {
-
-    color: black;
-    pointer-events: none;
-    cursor: default;
+    color: gold;
 }
 
-sherpa|breadcrumb > .content li a:hover {
+sherpa|breadcrumb > .content div.textcontent {
 
-    background: hsla(240,10%,50%,1);
-}
+    position: relative;
 
-sherpa|breadcrumb > .content li a:hover:after {
+    float: right;
 
-    border-left-color: hsla(240,10%,50%,1) !important;
+    min-width: 100%;
 }
 

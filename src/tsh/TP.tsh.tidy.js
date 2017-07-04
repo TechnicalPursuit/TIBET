@@ -58,18 +58,18 @@ function(aRequest) {
 
     aRequest.stdout('Coming soon.');
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('tidy',
     TP.tsh.tidy.Type.getMethod('tshExecute'),
     'Runs a URI through the HTML Tidy service.',
     ':tidy',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

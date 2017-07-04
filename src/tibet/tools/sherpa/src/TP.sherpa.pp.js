@@ -73,7 +73,8 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp Array">');
+    output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Array">');
     len = anObject.getSize();
 
     try {
@@ -103,7 +104,8 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromBoolean',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp Boolean">' +
             this.runJSModeOn(TP.str(anObject)) +
             '</span>';
 });
@@ -128,7 +130,7 @@ function(anObject, optFormat) {
     }
 
     obj = anObject.toISOString().asEscapedXML();
-    return '<span class="sherpa_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp Date">' +
             this.runJSModeOn(obj) +
             '</span>';
 });
@@ -181,7 +183,8 @@ function(anObject, optFormat) {
         str += '\n' + stackStr.join('');
     }
 
-    return '<span class="sherpa_pp Error">' + str + '</span>';
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+            ' class="sherpa_pp Error">' + str + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -225,7 +228,8 @@ function(anObject, optFormat) {
 
         str = str.replace(/\n/g, '<br/>');
 
-        return '<span class="sherpa_pp Function">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Function">' +
                 str +
                 '</span>';
     } else {
@@ -234,7 +238,8 @@ function(anObject, optFormat) {
         //  NOTE the CDATA blocks here combined with <span> of
         //  'white-space: pre' to hold on to remaining whitespace while
         //  ensuring we ignore any embedded < or > symbols etc.
-        return '<span class="sherpa_pp Function">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Function">' +
                     '<![CDATA[' + str + ']]>' +
                 '</span>';
     }
@@ -270,7 +275,8 @@ function(anObject, optFormat) {
                         '</span>');
     }
 
-    return '<span class="sherpa_pp NamedNodeMap">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp NamedNodeMap">' +
             content.join('') +
             '</span>';
 });
@@ -304,8 +310,10 @@ function(anObject, optFormat) {
             str = TP.str(anObject).asEscapedXML();
         }
 
-        str = '<span class="sherpa_pp Node">' +
-            str + '</span>';
+        str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Node">' +
+                    str +
+                '</span>';
     } finally {
         try {
             delete anObject[marker];
@@ -359,7 +367,10 @@ function(anObject, optFormat) {
     //  Decrement the traversal level
     format.atPut('currentLevel', format.at('currentLevel') - 1);
 
-    return '<span class="sherpa_pp NodeList">' + content.join('') + '</span>';
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp NodeList">' +
+                content.join('') +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -387,7 +398,7 @@ function(anObject, optFormat) {
     }
 
     obj = anObject.asEscapedXML();
-    return '<span class="sherpa_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp Number">' +
             this.runJSModeOn(obj) +
             '</span>';
 });
@@ -444,7 +455,8 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp Object">');
+    output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp Object">');
 
     formatInLoop = true;
     try {
@@ -508,8 +520,8 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="sherpa_pp RegExp">' +
-            this.runJSModeOn(obj) +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp RegExp">' +
+                this.runJSModeOn(obj) +
             '</span>';
 });
 
@@ -527,20 +539,23 @@ function(anObject, optFormat) {
     if (TP.regex.STARTS_WITH_ELEM_MARKUP.test(anObject)) {
         obj = TP.str(anObject);
 
-        return '<span class="sherpa_pp String">' +
-                this.runXMLModeOn(obj) +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp String">' +
+                    this.runXMLModeOn(obj) +
                 '</span>';
     } else {
 
         obj = anObject;
 
         if (TP.isJSONString(obj)) {
-            return '<span class="sherpa_pp String">' +
-                    this.runJSONModeOn(obj) +
+            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                        ' class="sherpa_pp String">' +
+                        this.runFormattedJSONModeOn(obj) +
                     '</span>';
         } else {
-            return '<span class="sherpa_pp String">' +
-                    this.runJSModeOn(obj) +
+            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                        ' class="sherpa_pp String">' +
+                        this.runJSModeOn(obj) +
                     '</span>';
         }
     }
@@ -555,7 +570,8 @@ function(anObject, optFormat) {
     //  wrapper. The object in TP.boot.Annotation instances is almost always
     //  an Error object of some kind.
 
-    return '<span class="sherpa_pp TP_boot_Annotation">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_boot_Annotation">' +
                 '<span data-name="object">' +
                     TP.xhtmlstr(anObject.object) +
                 '</span>' +
@@ -591,8 +607,6 @@ function(anObject, optFormat) {
                 return 'warn';
             case TP.boot.ERROR:
                 return 'error';
-            case TP.boot.SEVERE:
-                return 'severe';
             case TP.boot.FATAL:
                 return 'fatal';
             case TP.boot.SYSTEM:
@@ -638,9 +652,38 @@ function(anObject, optFormat) {
         str += '</span>';
     }
 
-    return '<span class="sherpa_pp TP_boot_Log">' +
-            str +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_boot_Log">' +
+                str +
             '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromTP_core_Content',
+function(anObject, optFormat) {
+
+    var publicURI,
+        sourceURI,
+
+        retVal;
+
+    //  Need to rewire these slots temporarily to avoid recursion warnings.
+
+    publicURI = anObject.$publicURI;
+    anObject.$publicURI = publicURI.asRecursionString();
+
+    sourceURI = anObject.sourceURI;
+    anObject.sourceURI = sourceURI.asRecursionString();
+
+    //  Now just invoke the regular 'fromObject' machinery.
+    retVal = this.fromObject(anObject);
+
+    //  Put them back.
+    anObject.$publicURI = publicURI;
+    anObject.sourceURI = sourceURI;
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -649,11 +692,13 @@ TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
     if (TP.isValid(TP.extern.CodeMirror)) {
-        return '<span class="sherpa_pp TP_core_JSONContent">' +
-                    this.runJSONModeOn(anObject) +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp TP_core_JSONContent">' +
+                    this.runFormattedJSONModeOn(anObject) +
                 '</span>';
     } else {
-        return '<span class="sherpa_pp TP_core_JSONContent">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp TP_core_JSONContent">' +
                     anObject.asString().asEscapedXML() +
                 '</span>';
     }
@@ -709,7 +754,8 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp TP_core_Hash">');
+    output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_core_Hash">');
 
     keys = TP.keys(anObject);
     keys.compact();
@@ -766,8 +812,9 @@ function(anObject, optFormat) {
         str = TP.str(anObject).asEscapedXML();
     }
 
-    str = '<span class="sherpa_pp TP_core_Node">' +
-            str +
+    str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_core_Node">' +
+                str +
             '</span>';
 
     try {
@@ -807,7 +854,10 @@ function(anObject, optFormat) {
         data = anObject.at('cmd');
     }
 
-    str = '<span class="sherpa_pp">' + data + '</span>';
+    str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp">' +
+                data +
+            '</span>';
 
     try {
         delete anObject[marker];
@@ -861,9 +911,10 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="sherpa_pp TP_core_Window" gid="' +
-                TP.gid(anObject) + '">' +
-            content.join('') +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp TP_core_Window" gid="' +
+                    TP.gid(anObject) + '">' +
+                content.join('') +
             '</span>';
 });
 
@@ -904,9 +955,128 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="sherpa_pp Window" gid="' + TP.gid(anObject) + '">' +
-            content.join('') +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Window" gid="' +
+                    TP.gid(anObject) + '">' +
+                content.join('') +
             '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('runCSSModeOn',
+function(anObject) {
+
+    var str;
+
+    str = '';
+    TP.extern.CodeMirror.runMode(
+        TP.str(anObject),
+        {
+            name: 'css'
+        },
+        function(text, style) {
+
+            if (style) {
+                str += '<span class="cm-' + style + '">' +
+                         text.asEscapedXML() +
+                         '</span>';
+            } else {
+                str += text.asEscapedXML();
+            }
+        });
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('runFormattedCSSModeOn',
+function(anObject, optFormat) {
+
+    var str,
+
+        level,
+        tabSpaces,
+
+        newlineChar,
+        indentChar,
+        newlineCharSize,
+
+        plainText;
+
+    if (TP.isValid(TP.extern.CodeMirror)) {
+
+        str = '';
+        level = 0;
+        tabSpaces = 4;
+
+        if (TP.isValid(optFormat) &&
+            optFormat.at('outputFormat') === TP.PLAIN_TEXT_ENCODED) {
+
+            newlineChar = '\n';
+            indentChar = ' ';
+
+            newlineCharSize = 1;
+
+            plainText = true;
+        } else {
+            newlineChar = '<br/>';
+            indentChar = '&#160;';
+
+            newlineCharSize = 5;
+
+            plainText = false;
+        }
+
+        TP.extern.CodeMirror.runMode(
+            anObject.asString(),
+            {
+                name: 'css'
+            },
+            function(text, style) {
+
+                //  Collapse a brace followed by a comma with a brace coming
+                //  next to a single line
+                if (text === '{' &&
+                    str.slice(-(newlineCharSize + 2)) === '},' + newlineChar) {
+
+                    str = str.slice(0, -newlineCharSize) + indentChar;
+                } else if (str.slice(-newlineCharSize) === newlineChar) {
+                    //  Otherwise, if we're starting a new line, 'tab in' the
+                    //  proper number of spaces.
+                    str += indentChar.times(level * tabSpaces);
+                }
+
+                if (style) {
+
+                    if (plainText) {
+                        str += text;
+                    } else {
+                        str += '<span class="cm-' + style + '">' +
+                                 text.asEscapedXML() +
+                                 '</span>';
+                    }
+                } else {
+                    if (text === '{') {
+                        level++;
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
+                    } else if (text === '}') {
+                        level--;
+                        str += newlineChar +
+                                indentChar.times(level * tabSpaces) + text;
+                    } else if (text === ';') {
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
+                    } else {
+                        str += text;
+                    }
+                }
+            });
+    }
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -938,18 +1108,43 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('runJSONModeOn',
-function(anObject) {
+TP.sherpa.pp.Type.defineMethod('runFormattedJSONModeOn',
+function(anObject, optFormat) {
 
     var str,
+
         level,
-        tabSpaces;
+        tabSpaces,
+
+        newlineChar,
+        indentChar,
+        newlineCharSize,
+
+        plainText;
 
     if (TP.isValid(TP.extern.CodeMirror)) {
 
         str = '';
         level = 0;
         tabSpaces = 4;
+
+        if (TP.isValid(optFormat) &&
+            optFormat.at('outputFormat') === TP.PLAIN_TEXT_ENCODED) {
+
+            newlineChar = '\n';
+            indentChar = ' ';
+
+            newlineCharSize = 1;
+
+            plainText = true;
+        } else {
+            newlineChar = '<br/>';
+            indentChar = '&#160;';
+
+            newlineCharSize = 5;
+
+            plainText = false;
+        }
 
         TP.extern.CodeMirror.runMode(
             anObject.asString(),
@@ -960,33 +1155,41 @@ function(anObject) {
 
                 //  Collapse a brace followed by a comma with a brace coming
                 //  next to a single line
-                if (text === '{' && str.slice(-7) === '},<br/>') {
-                    str = str.slice(0, -5) + '&#160;';
-                } else if (str.slice(-5) === '<br/>') {
+                if (text === '{' &&
+                    str.slice(-(newlineCharSize + 2)) === '},' + newlineChar) {
+
+                    str = str.slice(0, -newlineCharSize) + indentChar;
+                } else if (str.slice(-newlineCharSize) === newlineChar) {
                     //  Otherwise, if we're starting a new line, 'tab in' the
                     //  proper number of spaces.
-                    str += '&#160;'.times(level * tabSpaces);
+                    str += indentChar.times(level * tabSpaces);
                 }
 
                 if (style) {
-                    str += '<span class="cm-' + style + '">' +
-                             text.asEscapedXML() +
-                             '</span>';
+
+                    if (plainText) {
+                        str += text;
+                    } else {
+                        str += '<span class="cm-' + style + '">' +
+                                 text.asEscapedXML() +
+                                 '</span>';
+                    }
                 } else {
                     if (text === '{' || text === '[') {
                         level++;
-                        str += text + '<br/>';
-                    }
-                    if (text === '}' || text === ']') {
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
+                    } else if (text === '}' || text === ']') {
                         level--;
-                        str += '<br/>' +
-                                '&#160;'.times(level * tabSpaces) + text;
-                    }
-                    if (text === ':') {
-                        str += '&#160;' + text + '&#160;';
-                    }
-                    if (text === ',') {
-                        str += text + '<br/>';
+                        str += newlineChar +
+                                indentChar.times(level * tabSpaces) + text;
+                    } else if (text === ':') {
+                        str += indentChar + text + indentChar;
+                    } else if (text === ',') {
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
+                    } else {
+                        str += text;
                     }
                 }
             });
@@ -1044,7 +1247,7 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('transformNull',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp Null">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp Null">' +
             this.runJSModeOn(anObject) +
             '</span>';
 });
@@ -1078,7 +1281,10 @@ function(anObject, optFormat) {
             return this.transformUndefined(anObject, format);
         }
 
-        return '<span class="sherpa_pp Object">' + anObject + '</span>';
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Object">' +
+                    anObject +
+                '</span>';
     }
 
     if (TP.isValid(anObject)) {
@@ -1096,8 +1302,9 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('transformUndefined',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp Undefined">' +
-            this.runJSModeOn(anObject) +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp Undefined">' +
+                this.runJSModeOn(anObject) +
             '</span>';
 });
 

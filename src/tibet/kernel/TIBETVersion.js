@@ -10,26 +10,24 @@
 (function() {
     var release;
 
-    release = TP.sys.release;   // jshint ignore:line
+    release = TP.sys.release;
 
     //  --- latest.js start ---
-    /* jshint ignore:start */
     /* eslint-disable quote-props,quotes */
     release({
-        "describe": "v5.0.0-dev.11-develop-0-g2bf743af31",
+        "describe": "v5.0.0-dev.12-develop-2894-g63f9585906",
         "major": "5",
         "minor": "0",
         "patch": "0",
-        "suffix": "dev",
-        "increment": "12",
-        "ptag": "v5.0.0-dev.11-develop",
-        "commits": "0",
-        "phash": "2bf743af31",
-        "time": "1467942986576",
-        "semver": "v5.0.0-dev.12+g2bf743af31.0.1467942986576"
+        "suffix": "pre",
+        "increment": "1",
+        "ptag": "v5.0.0-dev.12-develop",
+        "commits": "2894",
+        "phash": "63f9585906",
+        "time": "1499207923430",
+        "semver": "v5.0.0-pre.1+g63f9585906.2894.1499207923430"
     });
     /* eslint-enable quote-props,quotes */
-    /* jshint ignore:end */
     //  --- latest.js end ---
 
 }());

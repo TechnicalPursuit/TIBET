@@ -1,0 +1,80 @@
+/*
+    CSS styles for 'xctrls:dialog' controls.
+*/
+
+@import url("@{xctrls_src}/TP.xctrls_mixins.less");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The dialog */
+
+xctrls|dialog {
+
+    position: absolute;
+
+    user-select: none;
+
+    /* Hovering over the dialog */
+
+    &:hover {
+    }
+
+    /* Focusing on the dialog */
+
+    /* doesn't work in any browser:
+    &:focus
+    */
+    &[pclass|focus] {
+    }
+
+    /* The dialog header */
+
+    & > *[tibet|pelem="header"] {
+
+        position: absolute;
+    }
+
+    /* The dialog body */
+
+    & > *[tibet|pelem="body"] {
+
+        position: absolute;
+    }
+
+    /* The dialog footer */
+
+    & > *[tibet|pelem="footer"] {
+
+        position: absolute;
+    }
+
+    & .dialogContent {
+
+        display: flex;
+        justify-content: center;
+
+        height: 100%;
+
+        flex-wrap: wrap;
+    }
+
+    & .dialogMessage {
+
+        display: flex;
+        justify-content: center;
+        align-self: center;
+
+        width: 100%;
+    }
+
+    & .dialogControls {
+
+        display: flex;
+        justify-content: flex-end;
+        align-self: flex-end;
+
+        width: 100%;
+    }
+}

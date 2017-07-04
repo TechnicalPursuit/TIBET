@@ -17,10 +17,6 @@ construction of the TIBET metaobject/inheritance system and the rest of the
 TIBET platform.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true */
-
 //  ------------------------------------------------------------------------
 //  GLOBAL DISCOVERY
 //  ------------------------------------------------------------------------
@@ -82,7 +78,6 @@ function(params, windowContext) {
         variables = true;
     }
 
-    /* jshint forin:true */
     /* eslint-disable guard-for-in */
     for (key in context) {
         try {
@@ -149,7 +144,6 @@ function(params, windowContext) {
         }
     }
     /* eslint-enable guard-for-in */
-    /* jshint forin:false */
 
     return arr;
 });
@@ -160,11 +154,11 @@ function(params, windowContext) {
 
 //  the missing type hash. we hold the types missing from TIBET's type
 //  system here
-TP.sys.$missingTypes = TP.ifInvalid(TP.sys.$missingTypes, TP.hc());
+TP.sys.$missingTypes = TP.sys.$missingTypes || TP.hc();
 
 //  Right now its a primitive hash
-TP.sys.$missingTypes.$isHash = TP.ifInvalid(TP.sys.$missingTypes.$isHash,
-                                            false);
+TP.sys.$missingTypes.$isHash =
+    TP.ifInvalid(TP.sys.$missingTypes.$isHash, false);
 
 //  ------------------------------------------------------------------------
 
@@ -268,9 +262,7 @@ function(aName, shouldFault) {
      *     given.
      */
 
-    var fault,
-
-        type,
+    var type,
         tName,
         entry,
 
@@ -285,15 +277,11 @@ function(aName, shouldFault) {
         return;
     }
 
-    //  default faulting behavior to true so most callers will get the type
-    //  even if the current value is actually a type proxy
-    fault = TP.ifInvalid(shouldFault, true);
-
     if (!TP.isType(aName)) {
         tName = aName;
 
         //  Namespaces end with a colon (:) as in ev: or xmpp:.
-        if (tName.charAt(tName.length - 1) === ':') {
+        if (tName[tName.length - 1] === ':') {
             tName += 'XMLNS';
         }
 
@@ -352,7 +340,10 @@ function(aName, shouldFault) {
     //  never seen it. this is typically only called by the proxy type
     //  itself during proxy construction to avoid recursive behavior
     if (TP.$$isTypeProxy(type) && type !== TP.lang.Proxy) {
-        if (!fault) {
+
+        //  Note the explicit check for false... undefined here would allow the
+        //  method's default value of this parameter to true.
+        if (TP.isFalse(shouldFault)) {
             return;
         }
 
@@ -442,6 +433,8 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
 
             retFunc;
 
+        /* eslint-disable consistent-this */
+
         //  we'll need a reference to the receiving function that can be
         //  scoped properly by the closure we build, so capture it in a
         //  local variable
@@ -469,10 +462,11 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
             //  otherwise, build a return Function that applies the bound
             //  Function with its own arguments when invoked.
             retFunc = function() {
-
                 return thisFunc.apply(aThis, arguments);
             };
         }
+
+        /* eslint-enable consistent-this */
 
         return retFunc;
     };
@@ -568,100 +562,6 @@ function(aThis, varargs) {
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('atEnd',
-function(aFlag) {
-
-    /**
-     * @method atEnd
-     * @summary Combined setter/getter that allows functions used during
-     *     iterations to be configured with the current loop index state, or
-     *     checked for it inside your processing logic.
-     * @description The TIBET iteration process sets loop index state on the
-     *     function being invoked so you can write more intelligent loops that
-     *     can deal with edge cases. To do this the functions (which may be
-     *     bound) drill down to set their values as low as possible in the
-     *     binding chain, and look outward through the binding chain to see if
-     *     they have state information. This method helps to ensure that no
-     *     matter which function you get a handle to you'll get the proper data
-     *     back when querying for loop indexes.
-     * @param {Boolean} aFlag True if the iteration is at the end (last index
-     *     location).
-     * @returns {Boolean} The current end state.
-     */
-
-    var func,
-        end;
-
-    func = TP.unbound(this);
-
-    if (TP.isBoolean(aFlag)) {
-        func.$end = aFlag;
-
-        return aFlag;
-    }
-
-    end = func.$end;
-
-    if (TP.notValid(end)) {
-        try {
-            end = func.caller.$end;
-        } catch (e) {
-            void 0;
-        }
-    }
-
-    return end;
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('atStart',
-function(aFlag) {
-
-    /**
-     * @method atStart
-     * @summary Combined setter/getter that allows functions used during
-     *     iterations to be configured with the current loop index state, or
-     *     checked for it inside your processing logic.
-     * @description The TIBET iteration process sets loop index state on the
-     *     function being invoked so you can write more intelligent loops that
-     *     can deal with edge cases. To do this the functions (which may be
-     *     bound) drill down to set their values as low as possible in the
-     *     binding chain, and look outward through the binding chain to see if
-     *     they have state information. This method helps to ensure that no
-     *     matter which function you get a handle to you'll get the proper data
-     *     back when querying for loop indexes.
-     * @param {Boolean} aFlag True if the iteration is at the start (first index
-     *     location).
-     * @returns {Boolean} The current start state.
-     */
-
-    var func,
-        start;
-
-    func = TP.unbound(this);
-
-    if (TP.isBoolean(aFlag)) {
-        func.$start = aFlag;
-
-        return aFlag;
-    }
-
-    start = func.$start;
-
-    if (TP.notValid(start)) {
-        try {
-            start = func.caller.$start;
-        } catch (e) {
-            void 0;
-        }
-    }
-
-    return start;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('unbound',
 function(aFunction) {
 
@@ -701,15 +601,17 @@ function() {
      * @method afterUnwind
      * @summary Causes the receiver to be executed when the stack has been
      *     completely 'unwound' (i.e. when we're back at the main event loop).
-     * @description The provides a convenient way for the receiver to execute at
-     *     the 'top' of the event loop to allow for things like intermediate
-     *     display to occur. If you want to pass arguments to the function
-     *     itself, simply pass them as parameters to this method:
+     * @description This method provides a convenient way for the receiver to
+     *     execute at the 'top' of the event loop. If you want to pass arguments
+     *     to the function itself, simply pass them as parameters to this
+     *     method:
      *         f.afterUnwind(farg1, farg2, ...).
      *     Note that this method provides a slightly better mechanism for
      *     executing Functions at the top the stack than a '0' based timeout or
-     *     fork as it leverage some underlying platform capabilities.
-     * @returns {Function} The receiver.
+     *     fork as it leverage some underlying platform capabilities, but
+     *     shouldn't be used when waiting for the screen to refresh as the GUI
+     *     thread might not have been serviced yet. Instead, use the
+     *     queueForNextRepaint() method.
      */
 
     var thisref,
@@ -726,7 +628,6 @@ function() {
 
     //  have to build a second function to ensure the arguments are used
     func = function() {
-
         return thisref.apply(thisref, arglist);
     };
 
@@ -772,7 +673,10 @@ function() {
             //  Now set up the MutationObserver to flush the queue whenever the
             //  TP.$$unwindElem changes.
             new MutationObserver(flushQueue).observe(
-                            TP.$$unwindElem, {attributes: true});
+                TP.$$unwindElem,
+                {
+                    attributes: true
+                });
         }
 
         //  Push the Function we built above onto the TP.$$unwindQueue and tweak
@@ -787,61 +691,70 @@ function() {
         //  just use setTimeout() with an interval of 0, which works to achieve
         //  a similar effect in most environments.
         if (arguments.length < 1) {
-            return setTimeout(this, 0);
+
+            //  NB: We specifically do not capture the return value here because
+            //  the caller couldn't know what mechanism we use to run this, so
+            //  it's of limited value.
+            setTimeout(this, 0);
         }
 
-        return setTimeout(func, 0);
+        //  NB: We specifically do not capture the return value here because the
+        //  caller couldn't know what mechanism we use to run this, so it's of
+        //  limited value.
+        setTimeout(func, 0);
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('fork',
-function(aDelay) {
+Function.Inst.defineMethod('queueForNextRepaint',
+function(aWindow) {
 
     /**
-     * @method fork
-     * @summary Causes the receiver to be forked via a timeout or interval.
-     * @description Keep in mind that JS engines are NOT threaded, so the real
-     *     value in this model is being able to chain routines so that gaps
-     *     occur between processing cycles such that display can occur. The
-     *     TIBET test harness, and boot system are examples of chaining that
-     *     allow intermediate display to occur. If you want to pass arguments to
-     *     the function itself simply pass them after the delay parameter:
-     *         f.fork(delay, farg1, farg2, ...).
-     * @param {Number} aDelay Millisecond delay before the function is actually
-     *     run.
-     * @returns {Object} The object to use to stop the fork() prematurely (via
-     *     clearTimeout()).
+     * @method queueForNextRepaint
+     * @summary Causes the receiver to be executed when the browser is
+     *     repainting the screen.
+     * @description This method provides a convenient way for the receiver to
+     *     execute the next time the browser repaints the screen. If you want to
+     *     pass arguments to the function itself, simply pass them as parameters
+     *     to this method:
+     *         f.queueForNextRepaint(farg1, farg2, ...).
+     * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
+     *     refresh. This is an optional parameter that will default to the
+     *     current UI canvas.
+     * @returns {Object} The object to use to stop the queueForNextRepaint()
+     *     prematurely (via cancelAnimationFrame()).
      */
 
     var thisref,
         arglist,
 
-        func;
+        func,
 
-    //  no arguments? easy to call then
-    if (arguments.length < 2) {
-        return setTimeout(
-                    this, TP.ifInvalid(aDelay, TP.sys.cfg('fork.delay')));
-    }
+        win;
 
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
-
-    //  Note here how we gather the arguments starting at position 1, skipping
-    //  our delay.
-    arglist = TP.args(arguments, 1);
+    arglist = TP.args(arguments);
 
     //  have to build a second function to ensure the arguments are used
     func = function() {
-
         return thisref.apply(thisref, arglist);
     };
 
-    return setTimeout(func,
-                        TP.ifInvalid(aDelay, TP.sys.cfg('fork.delay')));
+    //  Just in case we were handed a TP.core.Window
+    win = TP.unwrap(aWindow);
+
+    if (!TP.isWindow(win)) {
+        win = TP.sys.getUICanvas(true);
+    }
+
+    //  Call requestAnimationFrame with the Function that we calculated above.
+    //  This will 'schedule' the call for the next time the screen is refreshed.
+    return win.requestAnimationFrame(func);
 });
 
 //  ------------------------------------------------------------------------
@@ -1046,7 +959,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('getMethodPatch',
-function(newMethodText) {
+function(newMethodText, loadedFromSourceFile) {
 
     /**
      * @method getMethodPatch
@@ -1055,7 +968,11 @@ function(newMethodText) {
      *     operation to work. The JsDiff package is typically loaded by the
      *     Sherpa config.
      * @param {String} newMethodText The new method text.
-     * @returns {String} A string representing patch file content.
+     * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
+     *     was loaded from a source file on startup or is being dynamically
+     *     patched during runtime.
+     * @returns {String} The patch as computed between the current method text
+     *     and the supplied method text in 'unified diff' format.
      */
 
     var path,
@@ -1063,9 +980,9 @@ function(newMethodText) {
         str,
         matcher,
         resp,
-        content,
+        currentContent,
         match,
-        newtext,
+        newContent,
         patch;
 
     //  In case this Function is bound
@@ -1093,40 +1010,47 @@ function(newMethodText) {
     //  the server for the latest version of the file. This is so that we can
     //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    resp = url.getResource(TP.hc('async', false, 'refresh', true));
-    content = resp.get('result');
+    resp = url.getResource(
+            TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true));
+    currentContent = resp.get('result');
 
-    if (TP.isEmpty(content)) {
+    if (TP.isEmpty(currentContent)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source text not found.') :
             0;
         return;
     }
 
-    //  Get the current method's body text...
-    str = TP.src(this);
+    if (TP.isFalse(loadedFromSourceFile)) {
+        //  This method did not come from a source file on startup - just append
+        //  it to the existing content.
+        newContent = currentContent + newMethodText;
+    } else {
+        //  Get the current method's body text...
+        str = TP.src(this);
 
-    //  Convert the body text into a RegExp we can use as a way of indexing
-    //  into the original source file text.
-    matcher = TP.rc(RegExp.escapeMetachars(
-                str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
-                    replace(/SECRET_SAUCE/g, '\\s*'));
+        //  Convert the body text into a RegExp we can use as a way of indexing
+        //  into the original source file text.
+        matcher = TP.rc(RegExp.escapeMetachars(
+                    str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
+                        replace(/SECRET_SAUCE/g, '\\s*'));
 
-    match = content.match(matcher);
-    if (TP.notValid(match)) {
-        TP.ifWarn() ?
-            TP.warn('Unable to generate method patch.' +
-                        ' Method index not found.') :
-            0;
-        return null;
+        match = currentContent.match(matcher);
+        if (TP.notValid(match)) {
+            TP.ifWarn() ?
+                TP.warn('Unable to generate method patch.' +
+                            ' Method index not found.') :
+                0;
+            return null;
+        }
+
+        newContent = currentContent.slice(0, match.index) +
+                        newMethodText +
+                        currentContent.slice(match.index + match.at(0).length);
     }
 
-    newtext = content.slice(0, match.index) +
-                newMethodText +
-                content.slice(match.index + match.at(0).length);
-
     //  NOTE we use the original srcPath string here to retain relative address.
-    patch = TP.extern.JsDiff.createPatch(path, content, newtext);
+    patch = TP.extern.JsDiff.createPatch(path, currentContent, newContent);
 
     return patch;
 });
@@ -1431,74 +1355,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('stripNestedFunctionContent',
-function() {
-
-    /**
-     * @method stripNestedFunctionContent
-     * @summary Strips out the content of any nested function literal content in
-     *     the receiver's String representation and returns it. Note that this
-     *     method leaves the empty 'function() {...}' statements in the returned
-     *     value to act as 'placeholders'.
-     * @returns {String} The receiver's source String with any nested Function
-     *     literals stripped of their content.
-     */
-
-    var text,
-        strSplice,
-
-        nestedFuncIndexes,
-
-        offset,
-        i,
-
-        indexPair,
-        len;
-
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.stripNestedFunctionContent();
-    }
-
-    text = this.toString();
-
-    strSplice = function(str, index, count, add) {
-        return str.slice(0, index) + (add || '') + str.slice(index + count);
-    };
-
-    //  Grab indexes of any Function literals embedded of our source string.
-    nestedFuncIndexes = this.$getFunctionLiteralIndexes();
-
-    offset = 0;
-
-    //  Start at 1 here... the receiver's 'function() {...}' literal text will
-    //  be in the 0th position and we're only interested in nested Function
-    //  literals.
-    for (i = 1; i < nestedFuncIndexes.getSize(); i++) {
-        if (offset >= text.length) {
-            break;
-        }
-
-        indexPair = nestedFuncIndexes.at(i);
-
-        //  The length of how much we'll slice out.
-        len = indexPair.at(1) - indexPair.at(0);
-
-        //  Delete the content of the nested literal using our 'string splice'
-        //  defined above. Note the use of the offset here.
-        text = strSplice(text, indexPair.at(0) - offset, len);
-
-        //  We keep an offset because, as chunks are deleted out of the string,
-        //  the original starting index for the *next* pair of indexes has to be
-        //  adjusted to be less by that amount.
-        offset = len;
-    }
-
-    return text;
-});
-
-//  ------------------------------------------------------------------------
 //  TYPE MEMBERSHIP
 //  ------------------------------------------------------------------------
 
@@ -1747,16 +1603,20 @@ function() {
         }
 
         arr = TP.ac();
+
+        /* eslint-disable consistent-this */
+
         type = this;
-        /* jshint boss:true */
         /* eslint-disable no-cond-assign */
         while (type = type[TP.SUPER]) {
             arr.push(type);
         }
         /* eslint-enable no-cond-assign */
-        /* jshint boss:false */
 
         this[TP.ANCESTORS] = arr;
+
+        /* eslint-enable consistent-this */
+
         return arr;
     }
 
@@ -1798,16 +1658,20 @@ function() {
         }
 
         arr = TP.ac();
+
+        /* eslint-disable consistent-this */
+
         type = this;
-        /* jshint boss:true */
         /* eslint-disable no-cond-assign */
         while (type = type[TP.SUPER]) {
             arr.push(type.getName());
         }
         /* eslint-enable no-cond-assign */
-        /* jshint boss:false */
 
         this[TP.ANCESTOR_NAMES] = arr;
+
+        /* eslint-enable consistent-this */
+
         return arr;
     }
 
@@ -1930,9 +1794,26 @@ function(anObject, aType) {
 
         testType;
 
-    if (TP.notValid(anObject) ||
-        TP.notValid(aType) ||
-        TP.notValid(anObject.constructor)) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    //  NB: We have to treat NaN specially - sigh. Note here that we compare
+    //  directly with NaN since isNaN will return true for things like the
+    //  'undefined' value.
+    /* eslint-disable use-isnan */
+    if (anObject === NaN) {
+    /* eslint-enable use-isnan */
+        //  empty
+    } else if (
+        //  This seems very pendantic, but these are single compare statements
+        //  in most JS VMs and so are much faster than '!anObject', etc. They're
+        //  also more accurate, since otherwise "falsey" values won't be
+        //  properly tested.
+        anObject === undefined || anObject === null ||
+        aType === undefined || aType === null ||
+        anObject.constructor === undefined || anObject.constructor === null) {
+        //  If any of these are not a valid object, then just return false -
+        //  can't do any comparisons.
         return false;
     }
 
@@ -2026,15 +1907,32 @@ function(anObject, aType) {
     var typeName,
         superTNames;
 
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
     //  if we're a direct member of that type then yes, we're a kind of that
     //  type...and this is a fairly fast test
     if (TP.isMemberOf(anObject, aType)) {
         return true;
     }
 
-    if (TP.notValid(anObject) ||
-        TP.notValid(aType) ||
-        TP.notValid(anObject.constructor)) {
+    //  NB: We have to treat NaN specially - sigh. Note here that we compare
+    //  directly with NaN since isNaN will return true for things like the
+    //  'undefined' value.
+    /* eslint-disable use-isnan */
+    if (anObject === NaN) {
+    /* eslint-enable use-isnan */
+        //  empty
+    } else if (
+        //  This seems very pendantic, but these are single compare statements
+        //  in most JS VMs and so are much faster than '!anObject', etc. They're
+        //  also more accurate, since otherwise "falsey" values won't be
+        //  properly tested.
+        anObject === undefined || anObject === null ||
+        aType === undefined || aType === null ||
+        anObject.constructor === undefined || anObject.constructor === null) {
+        //  If any of these are not a valid object, then just return false -
+        //  can't do any comparisons.
         return false;
     }
 
@@ -2259,8 +2157,8 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         if (!TP.sys.hasStarted()) {
             TP.fatal(str);
         } else {
-            //  Uncaught errors are severe relative to those we raise/catch.
-            TP.ifSevere() ? TP.severe(str) : 0;
+            //  Uncaught errors are errors relative to those we raise/catch.
+            TP.ifError() ? TP.error(str) : 0;
         }
     } catch (e) {
         //  don't let log errors trigger recursion, but don't bury them either.
@@ -2278,7 +2176,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
     //  encapsulate it in no-unused-vars directives.
 
     /* eslint-disable no-undef */
-    $STATUS = TP.FAILED;            //  jshint ignore:line
+    $STATUS = TP.FAILED;
     /* eslint-enable no-undef */
 
     return TP.sys.shouldCaptureErrors();
@@ -2308,7 +2206,9 @@ window.onerror = TP.sys.onerror;
  */
 
 //  TIBET's pending signal queue. This is used by the TP.queue() calls etc.
-TP.sys.$signalQueue = TP.ifInvalid(TP.sys.$signalQueue, TP.ac());
+if (TP.notValid(TP.sys.$signalQueue)) {
+    TP.sys.$signalQueue = TP.ac();
+}
 
 //  ------------------------------------------------------------------------
 
@@ -2650,15 +2550,19 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineHandler',
-function(aDescriptor, aHandler, isCapturing) {
+function(signalName, aHandler, aDescriptor) {
 
     /**
      * @method defineHandler
-     * @summary Defines a new signal handler. The descriptor can be a simple
-     *     string when describing just a signal name, or you can provide a
-     *     Hash or Object defining additional criteria such as origin, state,
-     *     capturing, etc. which further restrict when the handler should be
-     *     matched for use with a signal.
+     * @summary Defines a new signal handler. The signalName is typically a
+     *     string but can also be a signal type. The descriptor provides a way
+     *     to override signalName if you need, and to also provide criteria
+     *     origin, state, capturing, etc. which further restrict when the
+     *     handler should be matched for use with a signal.
+     * @param {String|TP.lang.RootObject.Type} signalName The signal or type
+     *     this handler will respond to. NOTE that this value can be ignored
+     *     completed if you provide a 'signal' key in the descriptor.
+     * @param {Function} aHandler The function body for the event handler.
      * @param {String|Object} descriptor The 'descriptor' parameter can be
      *     either a simple String denoting signal name or a property descriptor.
      *     That property descriptor should be a plain JS object containing one
@@ -2667,10 +2571,6 @@ function(aDescriptor, aHandler, isCapturing) {
      *          origin (object or String id)
      *          state (String state name)
      *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
-     * @param {Function} aHandler The function body for the event handler.
-     * @param {Boolean} [isCapturing=false] Should this be considered a
-     *     capturing handler? Can also be specified via 'phase: TP.CAPTURING' in
-     *     the descriptor property.
      * @returns {Object} The receiver.
      */
 
@@ -2681,30 +2581,47 @@ function(aDescriptor, aHandler, isCapturing) {
         return this.raise('InvalidFunction');
     }
 
-    if (!TP.isString(aDescriptor) &&
-            !TP.isPlainObject(aDescriptor)) {
-        return this.raise('InvalidParameter');
-    }
+    if (TP.isValid(aDescriptor)) {
 
-    desc = aDescriptor;
-    if (isCapturing) {
-        if (TP.isString(aDescriptor)) {
+        if (TP.isTrue(aDescriptor)) {
+            TP.warn('Deprecated API. Use a descriptor object for capture flag.');
             desc = {
-                signal: aDescriptor,
                 phase: TP.CAPTURING
             };
+        } else if (!TP.isPlainObject(aDescriptor)) {
+            return this.raise('InvalidDescriptor');
         } else {
+            desc = aDescriptor;
+        }
+
+        //  Map over signalName as signal key if missing. Otherwise note that
+        //  the signalName value is essentially discarded.
+        if (TP.notValid(desc.signal)) {
+            desc.signal = signalName;
+        }
+
+        //  Support 'capturing: true' shortcut in descriptor.
+        if (TP.isTrue(desc.capturing)) {
             desc.phase = TP.CAPTURING;
         }
-    }
 
-    //  NOTE this will throw if things aren't proper in the descriptor.
-    name = TP.composeHandlerName(desc);
+        name = TP.composeHandlerName(desc);
+
+    } else if (TP.isString(signalName)) {
+        name = TP.composeHandlerName(signalName);
+    } else {
+        desc = {
+            signal: signalName
+        };
+        name = TP.composeHandlerName(desc);
+    }
 
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from
     //  whining about us defining a method starting with 'handle'.
-    this.defineMethod(name, aHandler, null, null, true);
+    //  NOTE that we pass the descriptor along to defineMethod in case it has
+    //  other keys of interest to that method such as patchCallee.
+    this.defineMethod(name, aHandler, desc, null, true);
 
     return this;
 });
@@ -3123,6 +3040,9 @@ function(aFilter) {
         //  NB: This was written to be hyper-efficient, hence the use of native
         //  JS here.
         keys = [];
+
+        /* eslint-disable consistent-this */
+
         obj = this;
 
         do {
@@ -3135,6 +3055,8 @@ function(aFilter) {
                         function(aKey) {
                             return !TP.regex.INTERNAL_SLOT.test(aKey);
                         });
+
+        /* eslint-enable consistent-this */
 
         return keys;
     }
@@ -3187,7 +3109,6 @@ function(aFilter) {
             TP.warn('Scanning ' + filter + ' on ' + this) : 0;
     }
 
-    /* jshint forin:true */
     for (key in this) {
         //  private/hidden can be masked off quickly
         if (TP.regex.PRIVATE_SLOT.test(key)) {
@@ -3271,7 +3192,6 @@ function(aFilter) {
         //  still valid? add it to the list
         keys.push(key);
     }
-    /* jshint forin:false */
 
     return keys;
 });
@@ -4036,7 +3956,7 @@ function(aSelectFunction) {
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
-    if (!TP.canInvoke(this, ['at', 'getKeys'])) {
+    if (!TP.canInvokeInterface(this, ['at', 'getKeys'])) {
         return this.raise('TP.sig.InvalidPairRequest');
     }
 
@@ -4160,7 +4080,7 @@ function(aSelectFunction) {
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
-    if (!TP.canInvoke(this, ['at', 'getKeys'])) {
+    if (!TP.canInvokeInterface(this, ['at', 'getKeys'])) {
         return this.raise('TP.sig.InvalidPairRequest');
     }
 
@@ -4223,12 +4143,14 @@ TP.StringProto.getKVPairs = TP.StringProto.getPairs;
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} The receiver's dump String representation.
      */
 
@@ -4238,7 +4160,9 @@ function() {
         len,
         i,
         val,
-        str;
+        str,
+        $depth,
+        $level;
 
     if (TP.isWindow(this)) {
         return '[' + TP.tname(this) + ' :: ' + TP.windowAsString(this) + ']';
@@ -4258,13 +4182,14 @@ function() {
         void 0;
     }
 
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
 
     str = '[' + TP.tname(this) + ' :: ';
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
 
     try {
         keys = TP.$getOwnKeys(this);
@@ -4281,7 +4206,18 @@ function() {
                     arr.push(keys[i] + ': ' + 'this');
                 }
             } else {
-                arr.push(keys[i] + ': ' + TP.dump(this[keys[i]]));
+                if ($level > $depth && TP.isMutable(this)) {
+                    if (TP.isReferenceType(this)) {
+                        arr.push(keys[i] + ': ' +
+                            '@' + TP.id(this) + ']');
+                    } else {
+                        arr.push(keys[i] + ': ' +
+                            TP.str(this) + ']');
+                    }
+                } else {
+                    arr.push(keys[i] + ': ' + TP.dump(this[keys[i]],
+                        $depth, $level + 1));
+                }
             }
         }
 
@@ -4338,11 +4274,9 @@ function() {
         void 0;
     }
 
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
 
     try {
         keys = TP.$getOwnKeys(this);
@@ -4460,7 +4394,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
     if (asp === 'value') {
         sig = 'TP.sig.ValueChange';
     } else {
-        sig = asp.toString().asStartUpper() + sig;
+        sig = TP.makeStartUpper(asp.toString()) + sig;
     }
 
     //  Convert nChange to IndexNChange signals.
@@ -4639,7 +4573,7 @@ function(anAspect, anAction, aDescription) {
     if (asp === 'value') {
         sig = 'TP.sig.ValueChange';
     } else {
-        sig = asp.toString().asStartUpper() + sig;
+        sig = TP.makeStartUpper(asp.toString()) + sig;
     }
 
     //  Build up a standard form for the description hash.
@@ -4668,9 +4602,9 @@ function(anAspect, anAction, aDescription) {
 //  ------------------------------------------------------------------------
 
 /**
- * @RE: the discussion on TIBET's ordered pairs, an object's 'items' in TIBET
- *     terminology are ordered pairs of keys/values for Objects and the
- *     index/valuefor Arrays.
+ * RE: the discussion on TIBET's ordered pairs, an object's 'items' in TIBET
+ * terminology are ordered pairs of keys/values for Objects and the index/value
+ * for Arrays.
  */
 
 //  ------------------------------------------------------------------------
@@ -4784,13 +4718,13 @@ function(aSelectFunction) {
 //  STRING REPRESENTATION
 //  ------------------------------------------------------------------------
 
-/*
-There are a number of scenarios where getting a displayable output string
-for an object is important.
+/**
+ * There are a number of scenarios where getting a displayable output string for
+ * an object is important.
 
-The asDisplayString() function is the foundation for many of TIBET's
-formatters since it's capable of producing HTML, XML, or other
-representations of an object and its children/properties.
+ * The asDisplayString() function is the foundation for many of TIBET's
+ * formatters since it's capable of producing HTML, XML, or other
+ * representations of an object and its children/properties.
 */
 
 //  ------------------------------------------------------------------------
@@ -4859,7 +4793,10 @@ function(aHash, aLevel) {
         valueTransform,
         nullTransform;
 
-    params = TP.ifInvalid(aHash, TP.hc('filter', 'unique_attributes'));
+    params = aHash;
+    if (TP.notValid(params)) {
+        params = TP.hc('filter', 'unique_attributes');
+    }
 
     lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.max_descent') :
                                 Math.max(0, aLevel);
@@ -4884,11 +4821,7 @@ function(aHash, aLevel) {
     valueSuffix = TP.ifInvalid(params.at('valueSuffix'), '');
     itemSuffix = TP.ifInvalid(params.at('itemSuffix'), '');
     itemSeparator = TP.ifInvalid(params.at('itemSeparator'), '; ');
-    emptyFunction = TP.ifInvalid(params.at('emptyFunction'),
-                                            function() {
-
-                                                return '';
-                                            });
+    emptyFunction = TP.ifInvalid(params.at('emptyFunction'), TP.RETURN_EMPTY);
     footer = TP.ifInvalid(params.at('footer'), ';');
     nullValue = TP.ifInvalid(params.at('nullValue'), 'null');
     filter = TP.ifInvalid(params.at('filter'), 'unique_attributes');
@@ -5228,6 +5161,11 @@ function(aFilterName, aLevel) {
         return TP.NO_SOURCE_REP;
     }
 
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.asSource();
+    }
+
     //  A custom TIBET type
     if (TP.isType(this)) {
         return TP.join(this.getSupertype().getName(),
@@ -5317,6 +5255,14 @@ function() {
         args += 'm';
     }
 
+    if (this.sticky) {
+        args += 'y';
+    }
+
+    if (this.unicode) {
+        args += 'u';
+    }
+
     return TP.join('TP.rc(',
                     this.source.quoted(), ', ', args.quoted(),
                     ')');
@@ -5344,12 +5290,12 @@ function() {
 //  ------------------------------------------------------------------------
 
 /**
-JavaScript has different notions of equality and identity than those required
-by TIBET's semantics. In particular, TIBET's sense of equality requires that
-two arrays containing equal elements return true when tested for equality.
-JavaScript won't do this for reference types. Identity is included for both
-consistency and to allow us to 'proxy' by essentially lying about identity.
-*/
+ * JavaScript has different notions of equality and identity than those required
+ * by TIBET's semantics. In particular, TIBET's sense of equality requires that
+ * two arrays containing equal elements return true when tested for equality.
+ * JavaScript won't do this for reference types. Identity is included for both
+ * consistency and to allow us to 'proxy' by essentially lying about identity.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -5361,7 +5307,7 @@ function() {
      * @summary Returns the value which should be used for testing equality
      *     for the receiver. The default is the receiver, which normally
      *     results in a deep compare for object types.
-     * @returns {*} A value appropriate for use in equality comparisons.
+     * @returns {Object} A value appropriate for use in equality comparisons.
      */
 
     return this;
@@ -5377,7 +5323,7 @@ function() {
      * @summary Returns the value which should be used for testing identity
      *     for the receiver. The default is the receiver itself. Types that
      *     allow themselves to be proxied can return their GID or similar value.
-     * @returns {*} A value appropriate for use in identity comparisons.
+     * @returns {Object} A value appropriate for use in identity comparisons.
      */
 
     return this;
@@ -5516,8 +5462,12 @@ function(that) {
         return false;
     }
 
-    a = TP.canInvoke(this, '$getEqualityValue') ? this.$getEqualityValue() : this;
-    b = TP.canInvoke(that, '$getEqualityValue') ? that.$getEqualityValue() : that;
+    a = TP.canInvoke(this, '$getEqualityValue') ?
+                        this.$getEqualityValue() :
+                        this;
+    b = TP.canInvoke(that, '$getEqualityValue') ?
+                        that.$getEqualityValue() :
+                        that;
 
     //  Once we have the equality values use a primitive deep compare. This
     //  works effectively to allow objects to provide whatever they like, such
@@ -5710,8 +5660,12 @@ function(that) {
         return false;
     }
 
-    a = TP.canInvoke(this, '$getIdentityValue') ? this.$getIdentityValue() : this;
-    b = TP.canInvoke(that, '$getIdentityValue') ? that.$getIdentityValue() : that;
+    a = TP.canInvoke(this, '$getIdentityValue') ?
+                        this.$getIdentityValue() :
+                        this;
+    b = TP.canInvoke(that, '$getIdentityValue') ?
+                        that.$getIdentityValue() :
+                        that;
 
     return a === b;
 });
@@ -5750,7 +5704,7 @@ function(that) {
     }
 
     //  force primitive comparison
-    return +this === +that;
+    return Number(this) === Number(that);
 });
 
 //  ------------------------------------------------------------------------
@@ -5803,7 +5757,7 @@ function(that) {
     }
 
     //  force primitive comparison
-    return +this === +that;
+    return Number(this) === Number(that);
 });
 
 //  ------------------------------------------------------------------------
@@ -5841,65 +5795,82 @@ function(objectA, objectB, aStack, bStack) {
      *     key sets that filter out TIBET private/internal slots like $$id.
      *     You don't normally call this directly, it's invoked by $equal as
      *     needed and that's invoked by TP.equal() as needed.
-     *
+     * @param {Object} a The first object to compare.
+     * @param {Object} b The second object to compare.
+     * @param {Array} aStack A 'stack' of 'a side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @param {Array} bStack A 'stack' of 'b side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @returns {Boolean} Whether or not the two objects are equal to one
+     *     another.
      */
 
     var a,
         b,
+
         className,
+
         areArrays,
+
         aCtor,
         bCtor,
-        length,
-        keys,
-        key,
-        aStk,
-        bStk;
 
-    // Unwrap any wrapped objects.
+        aStk,
+        bStk,
+
+        length,
+
+        keys,
+        key;
+
+    //  Unwrap any wrapped objects.
     a = TP.unwrap(objectA);
     b = TP.unwrap(objectB);
 
-    // Compare `[[Class]]` names.
+    //  Compare `[[Class]]` names.
     className = TP.tostr(a);
     if (className !== TP.tostr(b)) {
         return false;
     }
 
-    /* eslint-disable no-fallthrough */
+    /* eslint-disable no-fallthrough,no-implicit-coercion */
     switch (className) {
 
-        // Strings, numbers, regular expressions, dates, and booleans are compared by value.
+        //  Strings, numbers, regular expressions, dates, and booleans are
+        //  compared by value.
         case '[object RegExp]':
-            // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+            //  RegExps are coerced to strings for comparison
+            //  (Note: '' + /a/i === '/a/i')
         case '[object String]':
-            // Primitives and their corresponding object wrappers are
-            // equivalent; thus, `"5"` is equivalent to `new String("5")`.
+            //  Primitives and their corresponding object wrappers are
+            //  equivalent; thus, `"5"` is equivalent to `new String("5")`.
             return '' + a === '' + b;
 
         case '[object Number]':
-            // `NaN`s are equivalent, but non-reflexive.
+            //  `NaN`s are equivalent, but non-reflexive.
             if (+a !== +a) {
-                // Object(NaN) is equivalent to NaN.
+                //  Object(NaN) is equivalent to NaN.
                 return +b !== +b;
             }
-            // An `egal` comparison is performed for other numeric values.
+            //  An `egal` comparison is performed for other numeric values.
             return +a === 0 ? 1 / +a === 1 / b : +a === +b;
 
         case '[object Date]':
         case '[object Boolean]':
-            // Coerce dates and booleans to numeric primitive values. Dates are compared by their
-            // millisecond representations. Note that invalid dates with millisecond representations
-            // of `NaN` are not equivalent.
+            //  Coerce dates and booleans to numeric primitive values. Dates are
+            //  compared by their millisecond representations. Note that invalid
+            //  dates with millisecond representations of `NaN` are not
+            //  equivalent.
             return +a === +b;
 
         case '[object Symbol]':
-            return window.SymbolProto.valueOf.call(a) === window.SymbolProto.valueOf.call(b);
+            return window.SymbolProto.valueOf.call(a) ===
+                        window.SymbolProto.valueOf.call(b);
 
         default:
             void 0;
     }
-    /* eslint-enable no-fallthrough */
+    /* eslint-enable no-fallthrough,no-implicit-coercion */
 
     areArrays = className === '[object Array]';
     if (!areArrays) {
@@ -5907,48 +5878,54 @@ function(objectA, objectB, aStack, bStack) {
             return false;
         }
 
-        // Objects with different constructors are not equivalent, but `Object`s or `Array`s
-        // from different frames are.
+        //  Objects with different constructors are not equivalent, but
+        //  `Object`s or `Array`s from different frames are.
         aCtor = a.constructor;
         bCtor = b.constructor;
 
-        if (aCtor !== bCtor && !(TP.isFunction(aCtor) && aCtor instanceof aCtor &&
-                TP.isFunction(bCtor) && bCtor instanceof bCtor) &&
+        if (aCtor !== bCtor &&
+            !(TP.isFunction(aCtor) &&
+                aCtor instanceof aCtor &&
+                TP.isFunction(bCtor) &&
+                bCtor instanceof bCtor) &&
                 ('constructor' in a && 'constructor' in b)) {
             return false;
         }
     }
 
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic
-    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+    //  Assume equality for cyclic structures. The algorithm for detecting
+    //  cyclic structures is adapted from ES 5.1 section 15.12.3, abstract
+    //  operation `JO`.
 
-    // Initializing stack of traversed objects.
-    // It's done here since we only need them for objects and arrays comparison.
+    //  Initializing stack of traversed objects.
+    //  It's done here since we only need them for objects and arrays
+    //  comparison.
     aStk = aStack || TP.ac();
     bStk = bStack || TP.ac();
 
     length = aStk.length;
     while (length--) {
-        // Linear search. Performance is inversely proportional to the number of
-        // unique nested structures.
+        //  Linear search. Performance is inversely proportional to the number
+        //  of unique nested structures.
         if (aStk.at(length) === a) {
             return bStack.at(length) === b;
         }
     }
 
-    // Add the first object to the stack of traversed objects.
+    //  Add the first object to the stack of traversed objects.
     aStk.push(a);
     bStk.push(b);
 
-    // Recursively compare objects and arrays.
+    //  Recursively compare objects and arrays.
     if (areArrays) {
-        // Compare array lengths to determine if a deep comparison is necessary.
+        //  Compare array lengths to determine if a deep comparison is
+        //  necessary.
         length = a.length;
         if (length !== b.length) {
             return false;
         }
 
-        // Deep compare the contents, ignoring non-numeric properties.
+        //  Deep compare the contents, ignoring non-numeric properties.
         while (length--) {
             if (!TP.$equal(a[length], b[length], aStk, bStk)) {
                 return false;
@@ -5956,17 +5933,18 @@ function(objectA, objectB, aStack, bStack) {
         }
     } else {
 
-        // Deep compare objects.
+        //  Deep compare objects.
         keys = TP.keys(a);
         length = keys.length;
 
-        // Ensure that both objects contain the same number of properties before comparing deep equality.
+        //  Ensure that both objects contain the same number of properties
+        //  before comparing deep equality.
         if (TP.keys(b).length !== length) {
             return false;
         }
 
         while (length--) {
-            // Deep compare each member
+            //  Deep compare each member
             key = keys.at(length);
             if (!(TP.objectHasKey(b, key) && TP.$equal(
                     TP.isFunction(a.at) ? a.at(key) : a[key],
@@ -5976,7 +5954,7 @@ function(objectA, objectB, aStack, bStack) {
         }
     }
 
-    // Remove the first object from the stack of traversed objects.
+    //  Remove the first object from the stack of traversed objects.
     aStk.pop();
     bStk.pop();
 
@@ -5987,34 +5965,50 @@ function(objectA, objectB, aStack, bStack) {
 
 TP.definePrimitive('$equal',
 function(a, b, aStack, bStack) {
+
+    /**
+     * @method $equal
+     * @summary Returns true if the values of the two objects are 'equal'.
+     * @param {Object} a The first object to compare.
+     * @param {Object} b The second object to compare.
+     * @param {Array} aStack A 'stack' of 'a side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @param {Array} bStack A 'stack' of 'b side' comparison objects used to
+     *     track equality as we descend deeply.
+     * @returns {Boolean} Whether or not the two objects are equal to one
+     *     another.
+     */
+
     var type;
 
-    // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    //  Identical objects are equal. `0 === -0`, but they aren't identical.
+    //  See the [Harmony `egal` proposal]
+    //  (http://wiki.ecmascript.org/doku.php?id=harmony:egal).
     if (a === b) {
         return a !== 0 || 1 / a === 1 / b;
     }
 
-    // A strict comparison is necessary because `null == undefined`.
+    //  A strict comparison is necessary because `null == undefined`.
     /* eslint-disable eqeqeq */
     if (a == null || b == null) {
         return a === b;
     }
     /* eslint-enable eqeqeq */
 
-    // `NaN`s are equivalent, but non-reflexive.
+    //  `NaN`s are equivalent, but non-reflexive.
     /* eslint-disable no-self-compare */
     if (a !== a) {
         return b !== b;
     }
     /* eslint-enable no-self-compare */
 
-    // Exhaust primitive checks
+    //  Exhaust primitive checks
     type = typeof a;
     if (type !== 'function' && type !== 'object' && typeof b !== 'object') {
         return false;
     }
 
+    //  None of these checks passed - do a deep equal.
     return TP.$deepEqual(a, b, aStack, bStack);
 });
 
@@ -6128,10 +6122,10 @@ function(objectA, objectB) {
 //  ------------------------------------------------------------------------
 
 /**
- * @Not all objects work in a way consistent with standard sort functions,
- *     meaning that they can't easily be sorted based on simple criteria. To
- *     helpwith that we define a set of comparison support features here that
- *     you canimplement in your types to help sort at the object level.
+ * Not all objects work in a way consistent with standard sort functions,
+ * meaning that they can't easily be sorted based on simple criteria. To help
+ * with that we define a set of comparison support features here that you can
+ * implement in your types to help sort at the object level.
  */
 
 //  ------------------------------------------------------------------------
@@ -6263,11 +6257,9 @@ function(aSelector, anObject) {
         //  checks for equality...we let the object decide
         return anObject.equalTo(aSelector);
     } else {
-        /* jshint eqeqeq:false */
         /* eslint-disable eqeqeq */
         return aSelector == anObject;
         /* eslint-enable eqeqeq */
-        /* jshint eqeqeq:true */
     }
 });
 
@@ -6275,13 +6267,13 @@ function(aSelector, anObject) {
 //  INFERENCING - PART I (stubs)
 //  ------------------------------------------------------------------------
 
-/*
-TIBET augments the programmer with built-in support for inferring object
-functionality in certain cases. This capability helps keep code size
-smaller while supporting a faster development cycle and significantly
-increased level of functionality. The trigger for inferencing is the
-TP.sys.dnu function or DNU, also referred to as the 'backstop'.
-*/
+/**
+ * TIBET augments the programmer with built-in support for inferring object
+ * functionality in certain cases. This capability helps keep code size smaller
+ * while supporting a faster development cycle and significantly increased level
+ * of functionality. The trigger for inferencing is the TP.sys.dnu function or
+ * DNU, also referred to as the 'backstop'.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -6314,11 +6306,19 @@ function() {
      *     can't produce a valid key.
      */
 
-    if (this.toString() === 'cssFloat') {
+    var str;
+
+    str = this.toString();
+
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(str)) {
+        return str;
+    }
+
+    if (str === 'cssFloat') {
         return 'float';
     }
 
-    return this.toString().asHyphenated();
+    return str.asHyphenated();
 });
 
 //  ------------------------------------------------------------------------
@@ -6336,26 +6336,32 @@ function() {
      *     can't produce a valid key.
      */
 
-    if (this.toString() === 'float') {
+    var str;
+
+    str = this.toString();
+
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(str)) {
+        return str;
+    }
+
+    if (str === 'float') {
         return 'cssFloat';
     }
 
-    return this.toString().asCamelCase();
+    return str.asCamelCase();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('asStartUpper',
+TP.defineMetaInstMethod('clearTextContent',
 function() {
 
     /**
-     * @method asStartUpper
-     * @summary Returns a new string with the initial character in upper case.
-     *     No other transformation is performed.
-     * @description Since all objects can actually be used as object indexes and
-     *     we attempt to convert things into proper message formatting for
-     *     get()/set() calls we try to avoid overhead here from the inferencing
-     *     engine on things like numerical indexing for arrays etc.
+     * @method clearTextContent
+     * @summary Clears out any text content of mutable items in the receiver,
+     *     thereby clearing all of the non-mutable (primitive) items and leaving
+     *     just the data structure.
+     * @description At this type level, this method does nothing.
      * @returns {Object} The receiver.
      */
 
@@ -6644,7 +6650,7 @@ function(attributeName) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6656,7 +6662,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -6792,6 +6798,8 @@ function(attributeName) {
     var path,
         pathStr,
 
+        attrStr,
+
         funcName,
 
         val,
@@ -6825,9 +6833,11 @@ function(attributeName) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }
 
+    attrStr = attributeName.toString();
+
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attrStr);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6839,7 +6849,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attrStr);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -6856,7 +6866,7 @@ function(attributeName) {
     //  If we got a valid path above or if we have a 'value' facet that has an
     //  access path, then invoke the path.
     if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
+        TP.isValid(path = this.getAccessPathFor(attrStr, 'value'))) {
 
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
@@ -6875,7 +6885,7 @@ function(attributeName) {
     }
 
     //  let the standard mechanism handle it
-    return this.getProperty(attributeName);
+    return this.getProperty(attrStr);
 });
 
 //  ------------------------------------------------------------------------
@@ -6929,7 +6939,7 @@ function(attributeName) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6941,7 +6951,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -7151,7 +7161,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -7165,7 +7175,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }
@@ -7258,7 +7268,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -7272,7 +7282,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }
@@ -7391,11 +7401,9 @@ function(callingContext) {
         //  on IE or Mozilla this will foreground the native debugger, if
         //  installed and open. but it's a bit flaky.
         try {
-            /* jshint -W087 */
             /* eslint-disable no-debugger */
             debugger;
             /* eslint-enable no-debugger */
-            /* jshint +W087 */
         } catch (e) {
             void 0;
         }
@@ -7408,13 +7416,13 @@ function(callingContext) {
 //  DUPLICATION
 //  ------------------------------------------------------------------------
 
-/*
-In a pure prototype-based system this is how we'd do everything...copy
-something that's already there and then tweak it. But there's no built-in
-copy command for objects in JavaScript and deep-copy semantics are
-difficult in any case. We do the best we can by implementing a simple copy
-operation that handles most situations.
-*/
+/**
+ * In a pure prototype-based system this is how we'd do everything...copy
+ * something that's already there and then tweak it. But there's no built-in
+ * copy command for objects in JavaScript and deep-copy semantics are difficult
+ * in any case. We do the best we can by implementing a simple copy operation
+ * that handles most situations.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -7634,85 +7642,53 @@ function() {
 //  ITERATION
 //  ------------------------------------------------------------------------
 
-/*
-JavaScript iteration is a real problem when handed an object which could be
-of any type, and TP.ObjectProto has been modified. The iteration methods
-here provide a common interface to iteration which ensures consistency and
-proper behavior regardless. You can still use for/in for very limited cases
-but TIBET's iteration methods, as well as our get*Interface calls, are a
-much better way to either iterate or reflect on an object.
+/**
+ * JavaScript iteration is a real problem when handed an object which could be
+ * of any type, and TP.ObjectProto has been modified. The iteration methods
+ * here provide a common interface to iteration which ensures consistency and
+ * proper behavior regardless. You can still use for/in for very limited cases
+ * but TIBET's iteration methods, as well as our get*Interface calls, are a
+ * much better way to either iterate or reflect on an object.
 
-TIBET's iteration methods are based on the Smalltalk and Ruby APIs for
-iteration, much in the same way TIBET mirrors their collection APIs.
-Additional iteration methods mirroring those found natively in Mozilla
-(every, some, map, etc. are found later in the kernel as well). We've
-extended these functions from the Mozilla API slightly to offer first and
-last element checking as well as the ability to break/continue from a nested
-loop construct quickly. Reverse iteration is also supported in many cases.
-*/
+ * TIBET's iteration methods are based on the Smalltalk and Ruby APIs for
+ * iteration, much in the same way TIBET mirrors their collection APIs.
+ * Additional iteration methods mirroring those found natively in Mozilla
+ * (every, some, map, etc. are found later in the kernel as well). We've
+ * extended these functions from the Mozilla API slightly to offer first and
+ * last element checking as well as the ability to break/continue from a nested
+ * loop construct quickly. Reverse iteration is also supported in many cases.
+ */
 
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
      * @summary Performs the function with each item of the receiver where an
      *     item is typically a key/value pair in array form.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Object} The receiver.
      */
 
-    var reverse,
-        i,
+    var i,
         k,
-        len,
-        ind,
-        instrument;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
+        len;
 
     //  this works effectively for most object, even if it has to iterate
     //  once using for/in to acquire the list
     k = TP.keys(this);
     len = k.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction - *not* func in case it was bound -
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell
-            //  when its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
-
         //  second parameter is location of data, so it will vary based on
         //  direction, content, etc. NOTE here that it's the actual key
         //  (hash key) to the data value
-        if (aFunction(TP.ac(k[ind], this.at(k[ind])), k[ind]) === TP.BREAK) {
-            break;
-        }
+        aFunction([k[i], this.at(k[i])], k[i]);
     }
 
     return this;
@@ -7721,7 +7697,7 @@ function(aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
@@ -7729,68 +7705,19 @@ function(aFunction, shouldReverse) {
      *     is the core method in the iteration model, providing the basis for
      *     many of the other iteration aspects in TIBET.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Array} The receiver.
      */
 
-    var len,
-        reverse,
-
-        instrument,
-
-        i,
-        ind;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    len = this.length;
-
-    //  SORT the array if necessary, before doing the iteration so we can
-    //  deal with lazy sorting properly.
-    this.$sortIfNeeded();
-
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
-    for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection.
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
-
-        //  second parameter is location of data, so it will vary
-        //  based on direction, content, etc
-        if (aFunction(this[ind], ind) === TP.BREAK) {
-            break;
-        }
-    }
-
-    return this;
+    return this.forEach(aFunction);
 });
 
 //  ------------------------------------------------------------------------
 
 Number.Inst.defineMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
@@ -7798,51 +7725,19 @@ function(aFunction, shouldReverse) {
      *     the receiver. Note that negative numbers won't cause an iteration to
      *     occur.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Number} The receiver.
      */
 
-    var i,
-        ind,
-        instrument,
-        reverse;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (this > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
+    var i;
 
     for (i = 0; i < this; i++) {
-        ind = reverse ? this - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell
-            //  when its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === this - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
-
         //  since we're using a number as our iteration control the
         //  value and index provided are the same. the perform call
         //  for each collection type deals with that in its own way
-        if (aFunction(ind, ind) === TP.BREAK) {
-            break;
-        }
+        aFunction(i, i);
     }
 
     return this;
@@ -7851,7 +7746,7 @@ function(aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
@@ -7859,53 +7754,21 @@ function(aFunction, shouldReverse) {
      *     of the receiver. Each iteration receives one character from the
      *     string.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {String} The receiver.
      */
 
     var i,
-        len,
-        ind,
-        instrument,
-        reverse;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
+        len;
 
     len = this.length;
-
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell
-            //  when its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === this - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  since we're iterating on a string here we'll pass the
         //  character at the current index as the 'item'
-        if (aFunction(this.charAt(ind), ind) === TP.BREAK) {
-            break;
-        }
+        aFunction(this.charAt(i), i);
     }
 
     return this;
@@ -7915,13 +7778,13 @@ function(aFunction, shouldReverse) {
 //  COMMON ITERATION VARIANTS
 //  ------------------------------------------------------------------------
 
-/*
-The variants here all leverage their base type's ability to perform() over
-an item (individual or ordered pair for a hash). While the core API here is
-based on Smalltalk and Ruby we've got a few extras that help with common
-operations you might want to perform on the contents like using apply, get,
-set, etc.
-*/
+/**
+ * The variants here all leverage their base type's ability to perform() over
+ * an item (individual or ordered pair for a hash). While the core API here is
+ * based on Smalltalk and Ruby we've got a few extras that help with common
+ * operations you might want to perform on the contents like using apply, get,
+ * set, etc.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -7947,6 +7810,23 @@ function(aFunction) {
         });
 
     return tmparr;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('collect',
+function(aFunction) {
+
+    /**
+     * @method collect
+     * @summary Returns a new array which contains the elements of the receiver
+     *     transformed by the function provided.
+     * @param {Function} aFunction A function which should return the
+     *     transformation of the element it is passed.
+     * @returns {Array} An array containing the transformed elements.
+     */
+
+    return this.map(aFunction);
 });
 
 //  ------------------------------------------------------------------------
@@ -8033,14 +7913,24 @@ function(aFunction) {
      * @fires Change
      */
 
-    var thisref;
+    var thisref,
+        change;
 
     thisref = this;
+
+    if (TP.canInvoke(this, 'shouldSignalChange')) {
+        change = this.shouldSignalChange();
+        this.shouldSignalChange(false);
+    }
 
     this.perform(
         function(item, index) {
             thisref.atPut(index, aFunction(item, index));
         });
+
+    if (TP.canInvoke(this, 'shouldSignalChange')) {
+        this.shouldSignalChange(change);
+    }
 
     //  NOTE: this ASSumes the function did something to at least one index
     this.changed('value', TP.UPDATE);
@@ -8063,15 +7953,24 @@ function(aFunction, startIndex) {
      * @returns {Object} The first object to match the test criteria.
      */
 
-    var result;
+    var start,
+        result,
+        items,
+        len,
+        i,
+        item;
 
-    this.perform(
-        function(item, index) {
-            if (aFunction(item, index)) {
-                result = item;
-                return TP.BREAK;
-            }
-        });
+    start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
+
+    items = this.getItems();
+    len = items.getSize();
+    for (i = start; i < len; i++) {
+        item = items.at(i);
+        if (aFunction(item, i)) {
+            result = item;
+            break;
+        }
+    }
 
     return result;
 });
@@ -8097,20 +7996,26 @@ function(aMethodName, varargs) {
      */
 
     var args,
-        retval;
+        retval,
+        items,
+        len,
+        i,
+        item;
 
     args = TP.args(arguments, 1);
 
-    this.perform(
-        function(item) {
+    items = this.getItems();
+    len = items.getSize();
 
-            if (TP.canInvoke(item, aMethodName)) {
-                retval = item[aMethodName].apply(item, args);
-                if (TP.isValid(retval)) {
-                    return TP.BREAK;
-                }
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
+        if (TP.canInvoke(item, aMethodName)) {
+            retval = item[aMethodName].apply(item, args);
+            if (TP.isValid(retval)) {
+                break;
             }
-        });
+        }
+    }
 
     return retval;
 });
@@ -8142,7 +8047,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             var val;
 
             val = func(item, index);
@@ -8181,7 +8085,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             var val;
 
             val = func(item, index);
@@ -8218,8 +8121,7 @@ function(aPattern, aFunction) {
     /**
      * @method grep
      * @summary Returns an array containing items (potentially transformed by
-     *     aFunction) whose TP.str(item) values matched the regular expression
-     *     pattern provided.
+     *     aFunction) whose values matched the regular expression pattern.
      * @description This method works on the values of the collection, so a call
      *     to grep() on a Hash will not grep the keys, it will grep the values.
      *     Use grepKeys() to scan a collection by its keys/indexes.
@@ -8241,18 +8143,10 @@ function(aPattern, aFunction) {
     tmparr = TP.ac();
     grepRegex = TP.isRegExp(aPattern) ? aPattern : TP.rc(aPattern);
 
-    this.perform(
+    this.getValues().perform(
         function(item, index) {
-
-            //  by default we grep the values, not the keys
-            if (TP.isPair(item)) {
-                if (grepRegex.test(TP.str(item.last()))) {
-                    tmparr.push(func(item, index));
-                }
-            } else {
-                if (grepRegex.test(TP.str(item))) {
-                    tmparr.push(func(item, index));
-                }
+            if (grepRegex.test(TP.str(item))) {
+                tmparr.push(func(item, index));
             }
         });
 
@@ -8267,7 +8161,7 @@ function(aPattern, aFunction) {
     /**
      * @method grepKeys
      * @summary Returns an array containing items (potentially transformed by
-     *     aFunction) whose TP.str(index) values matched the regular expression
+     *     aFunction) whose key values matched the regular expression
      *     pattern provided.
      * @description The value being tested is the index (0-N for Arrays, key
      *     value for Object/Hash).
@@ -8289,10 +8183,9 @@ function(aPattern, aFunction) {
     tmparr = TP.ac();
     grepRegex = TP.isRegExp(aPattern) ? aPattern : TP.rc(aPattern);
 
-    this.perform(
+    this.getKeys().perform(
         function(item, index) {
-
-            if (grepRegex.test(TP.str(index))) {
+            if (grepRegex.test(TP.str(item))) {
                 tmparr.push(func(item, index));
             }
         });
@@ -8330,7 +8223,7 @@ function(keyCriteria, selectionCriteria) {
      *
      *     while the same array after:
      *
-     *     groupBy(function(item){return item.isOdd()})
+     *     groupBy(function(item, index){return item.isOdd()})
      *
      *     returns:
      *
@@ -8381,7 +8274,7 @@ function(keyCriteria, selectionCriteria) {
                         arr;
 
                     if (TP.isCallable(selectionCriteria)) {
-                        if (!selectionCriteria(item)) {
+                        if (!selectionCriteria(item, index)) {
                             return;
                         }
                     }
@@ -8494,7 +8387,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             if (aFunction(item, index)) {
                 good.push(item);
             } else {
@@ -8526,7 +8418,6 @@ function(aMethodName) {
 
     return this.perform(
         function(item) {
-
             if (TP.canInvoke(item, aMethodName)) {
                 return item[aMethodName].apply(item, args);
             } else {
@@ -8621,15 +8512,21 @@ function(aFunction, terminateFunction) {
      * @returns {Object} The receiver.
      */
 
-    this.perform(
-        function(item, index) {
+    var items,
+        len,
+        i,
+        item;
 
-            aFunction(item, index);
+    items = this.getItems();
+    len = items.getSize();
 
-            if (terminateFunction(item, index)) {
-                return TP.BREAK;
-            }
-        });
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
+        aFunction(item, i);
+        if (terminateFunction(item, i)) {
+            break;
+        }
+    }
 
     return this;
 });
@@ -8653,15 +8550,21 @@ function(aFunction, terminateFunction) {
      * @returns {Object} The receiver.
      */
 
-    this.perform(
-        function(item, index) {
+    var items,
+        len,
+        i,
+        item;
 
-            if (TP.notTrue(terminateFunction(item, index))) {
-                return TP.BREAK;
-            }
+    items = this.getItems();
+    len = items.getSize();
 
-            aFunction(item, index);
-        });
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
+        if (terminateFunction(item, i)) {
+            break;
+        }
+        aFunction(item, i);
+    }
 
     return this;
 });
@@ -8724,7 +8627,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             if (!aFunction(item, index)) {
                 tmparr.push(item);
             }
@@ -8735,6 +8637,29 @@ function(aFunction) {
     }
 
     return tmparr;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('reject',
+function(aFunction) {
+
+    /**
+     * @method reject
+     * @summary Tests each element against the function provided and returns a
+     *     new array containing those elements which aren't rejected by the
+     *     function. The function should return true for elements which are to
+     *     be skipped.
+     * @param {Function} aFunction A function which should return true or false
+     *     after testing the element it is passed.
+     * @returns {Array} A new array containing the elements which weren't
+     *     rejected.
+     */
+
+    return this.filter(
+        function(item, index) {
+            return !aFunction(item, index);
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -8759,7 +8684,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             if (aFunction(item, index)) {
                 tmparr.push(item);
             }
@@ -8773,13 +8697,32 @@ function(aFunction) {
 });
 
 //  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('select',
+function(aFunction) {
+
+    /**
+     * @method select
+     * @summary Tests each element against the function provided and returns a
+     *     new array containing those elements which are selected by the
+     *     function. The function should return true for elements which are to
+     *     be returned.
+     * @param {Function} aFunction A function which should return true or false
+     *     after testing the element it is passed.
+     * @returns {Array} A new array containing the elements selected.
+     */
+
+    return this.filter(aFunction);
+});
+
+//  ------------------------------------------------------------------------
 //  TYPE-SPECIFIC VARIANTS
 //  ------------------------------------------------------------------------
 
-/*
-The operations here are variants that rely on type-specific processing to do
-their work.
-*/
+/**
+ * The operations here are variants that rely on type-specific processing to do
+ * their work.
+ */
 
 //  ------------------------------------------------------------------------
 
@@ -8799,23 +8742,24 @@ function() {
      */
 
     var args,
-        retval;
+        retval,
+        len,
+        i,
+        item;
 
     args = TP.args(arguments);
 
-    this.perform(
-        function(item) {
-
-            try {
-                retval = item.apply(item, args);
-
-                //  a successful execution means break our iteration
-                return TP.BREAK;
-            } catch (e) {
-                //  an exception in the function just means continue trying
-                return;
-            }
-        });
+    len = this.length;
+    for (i = 0; i < len; i++) {
+        item = this[i];
+        try {
+            retval = item.apply(item, args);
+            break;
+        } catch (e) {
+            //  an exception in the function just means continue trying
+            void 0;
+        }
+    }
 
     return retval;
 });
@@ -8909,7 +8853,7 @@ function(anInterface, inline) {
         return this.select(
             function(it) {
 
-                return TP.canInvoke(it, anInterface);
+                return TP.canInvokeInterface(it, anInterface);
             });
     }
 
@@ -8919,7 +8863,7 @@ function(anInterface, inline) {
     len = this.length;
     for (i = 0; i < len; i++) {
         item = this[i];
-        if (!TP.canInvoke(item, anInterface)) {
+        if (!TP.canInvokeInterface(item, anInterface)) {
             this.atPut(i, null, false);
         }
     }
@@ -8944,27 +8888,25 @@ function(aFunction, startIndex) {
      */
 
     var retval,
-        start;
+        start,
+        len,
+        i,
+        item;
 
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
 
     this.$sortIfNeeded();
 
     retval = undefined;
+    len = this.length;
+    for (i = start; i < len; i++) {
+        item = this[i];
 
-    this.perform(
-        function(item, index) {
-
-            if (index < start) {
-                return;
-            }
-
-            if (aFunction(item, index)) {
-                retval = item;
-
-                return TP.BREAK;
-            }
-        });
+        if (aFunction(item, i)) {
+            retval = item;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -8990,20 +8932,22 @@ function(aMethodName, varargs) {
      */
 
     var args,
-        retval;
+        retval,
+        len,
+        i,
+        item;
 
     args = TP.args(arguments, 1);
-
-    this.perform(
-        function(item) {
-
-            if (TP.canInvoke(item, aMethodName)) {
-                retval = item[aMethodName].apply(item, args);
-                if (TP.isValid(retval)) {
-                    return TP.BREAK;
-                }
+    len = this.length;
+    for (i = 0; i < len; i++) {
+        item = this[i];
+        if (TP.canInvoke(item, aMethodName)) {
+            retval = item[aMethodName].apply(item, args);
+            if (TP.isValid(retval)) {
+                break;
             }
-        });
+        }
+    }
 
     return retval;
 });
@@ -9077,14 +9021,14 @@ function(aThis, anArgArray, whenError, stopOnError) {
      *     after any error occur. Default is false.
      */
 
-    var that,
+    var thisref,
         results,
         arr,
         runner,
         errors,
         next;
 
-    that = this;
+    thisref = this;
     results = TP.ac();
     errors = TP.ac();
 
@@ -9098,7 +9042,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
                         if (TP.isCallable(whenError)) {
                             whenError(next, index, e);
                         } else {
-                            that.raise('TP.sig.InvokeFailed',
+                            thisref.raise('TP.sig.InvokeFailed',
                                 TP.ec(e, 'Invocation failed'));
                         }
                     } finally {
@@ -9109,7 +9053,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
 
     runner = function() {
         if (stopOnError && errors.length > 0) {
-            that.signal('TP.sig.InvokeComplete',
+            thisref.signal('TP.sig.InvokeComplete',
                 TP.hc('results', results, 'errors', errors));
         }
 
@@ -9117,7 +9061,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
         if (TP.isCallable(next)) {
             setTimeout(next);
         } else {
-            that.signal('TP.sig.InvokeComplete',
+            thisref.signal('TP.sig.InvokeComplete',
                 TP.hc('results', results, 'errors', errors));
         }
     };
@@ -9319,10 +9263,10 @@ function(aNumber) {
 //  ------------------------------------------------------------------------
 
 /**
- * @Standard collection query...do you have this object/value/key/etc? TIBET
- *     adds additional functionality here by supporting two types of testing:
- *     TP.EQUALITY and TP.IDENTITY. So when you ask whether obj.contains(x) you
- *     can ask for the results based on either condition.
+ * Standard collection query...do you have this object/value/key/etc? TIBET adds
+ * additional functionality here by supporting two types of testing: TP.EQUALITY
+ * and TP.IDENTITY. So when you ask whether obj.contains(x) you can ask for the
+ * results based on either condition.
  */
 
 //  ------------------------------------------------------------------------
@@ -9445,6 +9389,10 @@ function(aValue, aTest) {
         return this.containsString(aValue);
     }
 
+    if (TP.isRegExp(aValue)) {
+        return this.containsStringMatching(aValue);
+    }
+
     it = this.detect(
         function(item) {
 
@@ -9484,6 +9432,32 @@ function(aValue) {
 });
 
 //  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('containsStringMatching',
+function(aValue) {
+
+    /**
+     * @method containsStringMatching
+     * @summary Returns true if the receiver contains at least one string that
+     *     matches the RegExp provided.
+     * @param {RegExp} aValue The RegExp that at least one element in the
+     *     receiver should match for this method to return true.
+     * @returns {Boolean} Whether or not the receiver contains at least one
+     *     String that tests true for the RegExp provided.
+     */
+
+    var i;
+
+    for (i = 0; i < this.length; i++) {
+        if (aValue.test(this[i])) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  METHOD CONFORMANCE
 //  ------------------------------------------------------------------------
 
@@ -9499,7 +9473,7 @@ function() {
      * @returns {Array} An array of method names.
      */
 
-    return this.getLocalInterface('methods');
+    return this.getLocalInterface(TP.SLOT_FILTERS.methods);
 });
 
 //  ------------------------------------------------------------------------
@@ -9643,7 +9617,8 @@ function(aName) {
     }
 
     nsmFunc = function() {
-        TP.raise(this, 'TP.sig.NoSuchMethod'); return;
+        TP.raise(this, 'TP.sig.NoSuchMethod');
+        return;
     };
 
     nsmFunc[TP.NAME] = aName;

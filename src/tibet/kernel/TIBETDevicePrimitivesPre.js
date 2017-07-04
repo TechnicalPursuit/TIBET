@@ -194,6 +194,22 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
     }
 }
 
+//  A Hash containing keys/values of 'on:*' attribute names and signals that
+//  will not be processed via observe/ignore in the notification system because
+//  they're handled specially.
+if (TP.notValid(TP.NON_OBSERVED_ON_ATTRS)) {
+
+    //  We start with the list of DOM signals. Whether platform-supplied or a
+    //  synthetic TIBET event, it doesn't matter. These are handled specially.
+    TP.NON_OBSERVED_ON_ATTRS = TP.hc(TP.DOM_SIGNAL_TYPE_MAP);
+
+    //  Then we add the signals for attach/detach. These are handled by the
+    //  awakening processing phase and so don't need to be handled via
+    //  observe/ignore.
+    TP.NON_OBSERVED_ON_ATTRS.atPut('attach', 'TP.sig.AttachComplete');
+    TP.NON_OBSERVED_ON_ATTRS.atPut('detach', 'TP.sig.DetachComplete');
+}
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

@@ -147,7 +147,7 @@
  *     &    &amp;       When prefixed (.&) this operator will pipe stderr
  *                      rather than stdout. Also used in certain combinations to
  *                      signify that error data is flowing. Reserved as a suffix
- *                      for fork().
+ *                      for fork.
  *
  *     %    &percnt;    Job access. When used alone this lists the current
  *                      TP.core.Job instances which are running. By listing them
@@ -230,6 +230,22 @@ TP.core.TSH.Type.defineConstant('COMMAND_START_REGEX',
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
+
+//  'starter' snippet list used for new accounts. a list of pairs:
+//  ([[command, user text], ...])
+TP.core.TSH.Type.defineAttribute(
+                'STARTER_SNIPPETS',
+                TP.ac(
+                        TP.ac(':history', 'History'),
+                        TP.ac(':help', 'Help'),
+                        TP.ac(':clear', 'Clear'),
+                        TP.ac(':flag', 'Config flags'),
+                        TP.ac(':doclint', 'Doclint'),
+                        TP.ac(':test', 'Run App Tests'),
+                        TP.ac(':toggleRemoteWatch', 'Toggle Remote Watch'),
+                        TP.ac(':listChangedRemotes', 'List Changed Remotes'),
+                        TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                ));
 
 //  standard phases for content processing pipeline. NOTE that there are two
 //  other explicit phases which are not found here. The 'Construct' phase is
@@ -343,6 +359,9 @@ TP.core.TSH.Inst.defineAttribute('introduction', null);
 //  whether or not we're watching changes to remote resources
 TP.core.TSH.Inst.defineAttribute('remoteWatch');
 
+//  a TP.core.Socket object used to communicate with the TDS
+TP.core.TSH.Inst.defineAttribute('cliSocket');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -454,14 +473,37 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
+    /* eslint-disable consistent-this */
+
     //  capture 'this' for closure purposes
     shell = this;
 
     successFunc = function(userName) {
 
-        //  creating a TP.core.User instance will trigger the UI updating done
-        //  based on vcard role/unit assignments (if this user has a vcard)
-        TP.core.User.construct(userName);
+        var existingUser,
+            existingUserName,
+
+            newUser;
+
+        existingUser = TP.sys.getEffectiveUser();
+        existingUserName = existingUser.get('username');
+
+        if (TP.notValid(existingUser)) {
+
+            //  creating a TP.core.User instance will trigger the UI updating
+            //  done based on vcard role/unit assignments (if this user has a
+            //  vcard). Note that this also sets the real user.
+            TP.core.User.construct(userName);
+
+        } else if (existingUserName !== userName) {
+
+            //  The user names didn't match - construct a new user and manually
+            //  set it to be the real user.
+            newUser = TP.core.User.construct(userName);
+
+            //  Set the real user to the new user
+            TP.core.User.set('realUser', newUser);
+        }
 
         //  access to the shell instance through our previously defined
         //  shell = this reference
@@ -488,16 +530,13 @@ function(aRequest) {
         //  if we're logged in, initiate the run sequence which will load any
         //  startup files but allow the login output message to display by
         //  forking the call here
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        (function() {
-
+        setTimeout(function() {
             shell.initProfile();
 
             //  notify any observers that we've logged in
             shell.signal('TP.sig.TSH_Login');
 
-        }).fork(20);
-        /* eslint-enable no-wrap-func,no-extra-parens */
+        }, TP.sys.cfg('shell.init.delay', 20));
     };
 
     //  If the user is running this shell in an already-authenticated
@@ -506,7 +545,7 @@ function(aRequest) {
     if (TP.notEmpty(user = request.at('username'))) {
         name = user;
     } else if (TP.isValid(user = TP.sys.getEffectiveUser()) &&
-                TP.notEmpty(name = user.get('vcard').get('shortname'))) {
+                TP.notEmpty(name = user.get('username'))) {
 
         this.set('username', name);
 
@@ -613,7 +652,8 @@ function(aRequest) {
                         !passwordResult.equalTo(this.at('username'))) {
                         shell.isRunning(false);
 
-                        invalidPasswordReq = TP.sig.UserOutputRequest.construct(
+                        invalidPasswordReq =
+                            TP.sig.UserOutputRequest.construct(
                                     TP.hc('output', 'Login failed.' +
                                         ' Defaulting requestor settings.' +
                                         ' Use :login to try again.'));
@@ -636,6 +676,8 @@ function(aRequest) {
 
             return;
         });
+
+    /* eslint-enable consistent-this */
 
     //  first-stage request (username) and response handler are defined so
     //  initiate the sequence, using the shell as the originator
@@ -895,8 +937,8 @@ function(aString) {
  *     precedence rules to complete any "pre-processing" transformations.
  *
  *     // NOTE that doing these at this point implies that xi:include and //
- *     early-stage XSLT etc. can produce tsh:cmd tags whose content is // still
- *     in sugared form. We can allow this _when_ there is already // tsh:cmd
+ *     early-stage XSLT etc. can produce tsh:eval tags whose content is // still
+ *     in sugared form. We can allow this _when_ there is already // tsh:eval
  *     content and the request is sugared. otherwise we should // be prepared to
  *     strip such content or "disable" it so the exec loop // ignores tags
  *     injected through those means.
@@ -933,7 +975,7 @@ function(aString) {
  *     combined into a new document via a custom join() // which first converts
  *     nodes to strings, joins, then TP.node()s.
  *
- *     // NOTE that the tsh:script and tsh:cmd tags injected during // the
+ *     // NOTE that the tsh:script and tsh:eval tags injected during // the
  *     initial processing phase can be produced in "pre-compiled // form" to
  *     keep this overhead low for interactive scripts
  *
@@ -1059,6 +1101,8 @@ function(aRequest) {
     if (TP.isTrue(aRequest.at('cmdHistory'))) {
         hid = this.addHistory(aRequest);
         aRequest.atPut('cmdHistoryID', hid);
+
+        this.saveProfile();
     }
 
     //  ---
@@ -1239,7 +1283,10 @@ function(aRequest) {
     //  We default the maximum of the phase cycles to twice the number of
     //  our phases, unless a Number is defined in the 'cmdPhaseMax' slot of
     //  the request.
-    cyclemax = aRequest.atIfInvalid('cmdPhaseMax', phases.getSize() * 2);
+    cyclemax = aRequest.at('cmdPhaseMax');
+    if (TP.notValid(cyclemax)) {
+        cyclemax = phases.getSize() * 2;
+    }
 
     aRequest.atPut('cmdPhases', phases);
 
@@ -1301,9 +1348,11 @@ function(aRequest) {
 
             //  compute next phase, allowing the previous processing to
             //  define where we go from here as needed.
-            nextPhase = TP.ifInvalid(
-                aRequest.at('nextPhase'),
-                aRequest.at('cmdPhases').after(aRequest.at('cmdPhase')));
+            nextPhase = aRequest.at('nextPhase');
+            if (TP.notValid(nextPhase)) {
+                nextPhase =
+                    aRequest.at('cmdPhases').after(aRequest.at('cmdPhase'));
+            }
 
             aRequest.atPut('cmdPhase', nextPhase);
         }
@@ -1805,7 +1854,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('echo',
     TP.core.TSH.Inst.getMethod('executeEcho'),
     'Echoes the arguments provided for debugging.',
     ':echo',
@@ -1829,11 +1878,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('log',
     TP.core.TSH.Inst.getMethod('executeLog'),
     'Generates a listing of a particular log.',
     ':log',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -1854,7 +1903,8 @@ function(aRequest) {
     args = this.getArgument(aRequest, 'ARGV');
 
     //  If a name was supplied, then use it. Otherwise, the current effective
-    //  user's shortname or the 'username' property from a cookie will be used.
+    //  user's vCard 'nickname' or the 'username' property from a cookie will be
+    //  used.
     if (TP.notEmpty(name = args.first())) {
         aRequest.atPut('username', name);
     }
@@ -1864,7 +1914,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('login',
     TP.core.TSH.Inst.getMethod('executeLogin'),
     'Logs in to a specific user profile.',
     ':login',
@@ -1900,7 +1950,7 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('logout',
     TP.core.TSH.Inst.getMethod('executeLogout'),
     'Logs out of a specific user profile.',
     ':logout',
@@ -1924,11 +1974,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('sort',
     TP.core.TSH.Inst.getMethod('executeSort'),
     'Sorts stdin and writes it to stdout.',
     ':sort',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -1948,11 +1998,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('uniq',
     TP.core.TSH.Inst.getMethod('executeUniq'),
     'Uniques stdin and writes it to stdout.',
     ':uniq',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  DEBUGGING BUILT-INS
@@ -1974,11 +2024,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('break',
     TP.core.TSH.Inst.getMethod('executeBreak'),
     'Sets a debugger breakpoint.',
     ':break',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -1998,11 +2048,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('expect',
     TP.core.TSH.Inst.getMethod('executeExpect'),
     'Sets an expectation to be verified.',
     ':expect',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2022,11 +2072,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('watch',
     TP.core.TSH.Inst.getMethod('executeWatch'),
     'Sets a value watch expression to be monitored.',
     ':watch',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  JOB BUILT-INS
@@ -2048,11 +2098,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('job',
     TP.core.TSH.Inst.getMethod('executeJob'),
     'Generates a table of active "processes".',
     ':job',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2072,11 +2122,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('kill',
     TP.core.TSH.Inst.getMethod('executeKill'),
     'Kill an active TIBET "job" instance.',
     ':kill',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  FORMATTING BUILT-INS
@@ -2163,7 +2213,7 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('as',
     TP.core.TSH.Inst.getMethod('executeAs'),
     'Transforms stdin and writes it to stdout.',
     ':as',
@@ -2187,19 +2237,19 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('man',
     TP.core.TSH.Inst.getMethod('executeMan'),
-    '',
+    'Produces a man page for the target object.',
     ':man',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeResources',
+TP.core.TSH.Inst.defineMethod('executeResource',
 function(aRequest) {
 
     /**
-     * @method executeResources
+     * @method executeResource
      * @summary Produces a list of computed resources as defined by the
      *     currently loaded list of types. This command is used by the TIBET
      *     command line's resource command to produce the list of computed
@@ -2210,19 +2260,40 @@ function(aRequest) {
      */
 
     var types,
-        arr;
+        arr,
+        tname,
+        type,
+        raw;
 
     arr = [];
-    types = TP.sys.getTypes();
+
+    raw = this.getArgument(aRequest, 'tsh:raw', null, true);
+    tname = this.getArgument(aRequest, 'tsh:type', null, true);
+    if (TP.notEmpty(tname)) {
+        type = this.resolveObjectReference(tname, aRequest);
+        if (TP.isType(type)) {
+            types = TP.hc(tname, type);
+        } else {
+            return aRequest.fail(
+                'Unable to find type ' + TP.str(tname));
+        }
+    } else {
+        types = TP.sys.getTypes();
+    }
 
     //  types will be a hash of names/type objects.
     types.perform(function(item) {
-        var type;
+        var itemtype;
 
-        type = item.last();
-        if (TP.canInvoke(type, 'computeResourceURI')) {
-            arr.push(type.computeResourceURI('template'));
-            arr.push(type.computeResourceURI('style'));
+        itemtype = item.last();
+        if (TP.canInvoke(itemtype, 'computeResourceURI')) {
+            arr.push(itemtype.computeResourceURI('template'));
+            arr.push(itemtype.computeResourceURI('style'));
+
+            if (raw) {
+                arr.push(itemtype.computeResourceURI('source'));
+                arr.push(itemtype.computeResourceURI('tests'));
+            }
         }
     });
 
@@ -2241,10 +2312,10 @@ function(aRequest) {
     return aRequest.complete(arr);
 });
 
-TP.core.TSH.addHelpTopic(
-    TP.core.TSH.Inst.getMethod('executeResources'),
-    '',
-    ':resources',
+TP.core.TSH.addHelpTopic('resource',
+    TP.core.TSH.Inst.getMethod('executeResource'),
+    'Produce a list of computed resource URIs for the application.',
+    ':resource',
     '');
 
 //  ------------------------------------------------------------------------
@@ -2376,10 +2447,10 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('source',
     TP.core.TSH.Inst.getMethod('executeSource'),
     'Reloads the source file for an object/type.',
-    ':import',
+    ':source [target]',
     '');
 
 //  ------------------------------------------------------------------------
@@ -2402,11 +2473,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('builtins',
     TP.core.TSH.Inst.getMethod('executeBuiltins'),
     'Lists the available built-in functions.',
     ':builtins',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2443,7 +2514,7 @@ function(aRequest) {
     aRequest.complete(keys);
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('globals',
     TP.core.TSH.Inst.getMethod('executeGlobals'),
     'Display global variables, functions, etc.',
     ':globals',
@@ -2481,14 +2552,13 @@ function(aRequest) {
 
     setTimeout(
         function() {
-
             aRequest.complete();
         }, ms);
 
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('sleep',
     TP.core.TSH.Inst.getMethod('executeSleep'),
     'Pauses and waits a specified amount of time.',
     ':sleep',
@@ -2514,11 +2584,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('wait',
     TP.core.TSH.Inst.getMethod('executeWait'),
     'Pauses execution until a signal is received.',
     ':wait',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  TIBET COMMAND INTERFACE
@@ -2539,29 +2609,42 @@ function(aRequest) {
         url,
         argv,
         seenKeys,
+        noSocket,
+        configure,
+        process,
         args,
-        req;
+        str,
+        req,
+
+        shell,
+        cliSocket;
 
     //  TODO: sanity check them for non-alphanumeric 'command line' chars.
 
-    cmd = this.getArgument(aRequest, 'tsh:cmd', null, true);
+    cmd = this.getArgument(aRequest, 'tsh:eval', null, true);
     if (TP.isEmpty(cmd)) {
         cmd = 'help';
     }
 
-    //  The url root we want to send to is in tds.cli.url
-    url = TP.uriJoinPaths(TP.sys.getLaunchRoot(), TP.sys.cfg('tds.cli.uri'));
+    noSocket = this.getArgument(aRequest, 'tsh:nosocket');
 
-    //  TODO: Maybe use TP.httpEncode() here?
-    url += '?cmd=' + encodeURIComponent(cmd);
+    shell = TP.core.TSH.getDefaultInstance();
+
+    //  ---
+    //  Assemble the command string. We use the same "url format" in all cases.
+    //  ---
+
+    str = 'cmd=' + encodeURIComponent(cmd);
 
     argv = this.getArgument(aRequest, 'ARGV');
     if (TP.notEmpty(argv)) {
+
         argv.shift();       //  pop off the first one, it's the command.
+
         if (TP.notEmpty(argv)) {
             argv.forEach(
                     function(item, ind) {
-                        url += '&arg' + ind + '=' + encodeURIComponent(item);
+                        str += '&arg' + ind + '=' + encodeURIComponent(item);
                     });
         }
     }
@@ -2593,43 +2676,221 @@ function(aRequest) {
             if (seenKeys.at(key)) {
                 return;
             }
+
             seenKeys.atPut(key, true);
 
-            url += '&' + encodeURIComponent(key);
+            str += '&' + encodeURIComponent(key);
             if (TP.notEmpty(value)) {
                 if (value !== true) {
-                    //  TODO: remove quotes?
-                    url += '=' + encodeURIComponent(
+                    str += '=' + encodeURIComponent(
                         ('' + value).stripEnclosingQuotes());
                 }
             }
         });
 
-    url = TP.uc(url);
-    if (TP.notValid(url)) {
-        return aRequest.fail('Invalid request input.');
+    //  ---
+    //  Helpers
+    //  ---
+
+    //  Helper function to process a single result object (print/resolve).
+    process = function(result, request) {
+
+        if (TP.isEmpty(result)) {
+            return;
+        }
+
+        //  TODO:   currently this isn't translating to console style.
+        if (TP.notEmpty(result.level)) {
+            request.atPut('messageLevel',
+                TP.log.Level.getLevel(result.level));
+        }
+
+        if (TP.notEmpty(result.ok)) {
+            if (result.status === 0) {
+                request.complete();
+                return;
+            }
+
+            if (TP.notEmpty(result.data)) {
+                request.stdout(result.data);
+            }
+        } else {
+            if (result.status !== undefined) {
+                request.fail();
+                return;
+            }
+
+            request.stderr(result.reason);
+        }
+    };
+
+    //  Helper function to configure the methods for standard socket events.
+    configure = function(request) {
+
+        var socket;
+
+        socket = shell.get('cliSocket');
+
+        socket.defineMethod('onopen', function() {
+            request.stdout('CLI socket connection opened.');
+            socket.send(str);
+        });
+
+        // When data is received
+        socket.defineMethod('onmessage', function(event) {
+
+            var result;
+
+            try {
+                result = JSON.parse(event.data);
+                process(result, request);
+            } catch (e) {
+                request.stderr(e.message);
+                result = event.data;
+                request.stdout(result);
+            }
+        });
+
+        // A connection could not be made
+        socket.defineMethod('onerror', function(event) {
+
+            shell.set('cliSocket', null);
+
+            request.stderr(event);
+            request.fail(event);
+        });
+
+        // A connection was closed
+        socket.defineMethod('onclose', function(event) {
+
+            shell.set('cliSocket', null);
+
+            request.complete();
+        });
+
+    };
+
+    //  ---
+    //  URI version
+    //  ---
+
+    if (noSocket === true || !TP.core.Socket.isSupported()) {
+
+        url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
+
+        url += '?' + str + '&nosocket=true';
+        url = TP.uc(url);
+
+        if (TP.notValid(url)) {
+            return aRequest.fail('Invalid request input.');
+        }
+
+        req = TP.sig.HTTPRequest.construct(
+            TP.hc('uri', url.getLocation(), 'resultType', TP.TEXT));
+
+        req.defineHandler('RequestSucceeded',
+                            function() {
+                                var result,
+                                    obj;
+
+                                result = req.getResult();
+
+                                try {
+                                    obj = JSON.parse(result);
+                                    if (TP.isArray(obj)) {
+                                        obj.forEach(function(item) {
+                                            process(item, aRequest);
+                                        });
+                                    } else {
+                                        process(obj, aRequest);
+                                    }
+                                } catch (e) {
+                                    aRequest.stdout(result);
+                                    aRequest.complete();
+                                }
+                            });
+
+        req.defineHandler('RequestFailed',
+                            function() {
+                                var result,
+                                    obj;
+
+                                result = req.getResult();
+
+                                try {
+                                    obj = JSON.parse(result);
+                                    if (TP.isArray(obj)) {
+                                        obj.forEach(function(item) {
+                                            process(item, aRequest);
+                                        });
+                                    } else {
+                                        process(obj, aRequest);
+                                    }
+                                } catch (e) {
+                                    aRequest.stderr(result);
+                                    aRequest.fail(result);
+                                }
+                            });
+
+        url.httpPost(req);
+
+        return this;
     }
 
-    req = TP.sig.HTTPRequest.construct(
-                    TP.hc('uri', url.getLocation()));
+    //  ---
+    //  Socket version
+    //  ---
 
-    req.defineHandler('RequestSucceeded',
-                        function() {
-                            aRequest.stdout(req.getResult());
-                            aRequest.complete();
-                        });
-    req.defineHandler('RequestFailed',
-                        function() {
-                            aRequest.stderr(req.getResult());
-                            aRequest.complete();
-                        });
+    cliSocket = shell.get('cliSocket');
 
-    url.httpPost(req);
+    //  We have a socket, but it's closed. Null it out and re-create it.
+    if (TP.isValid(cliSocket) && cliSocket.isClosed()) {
+        cliSocket = null;
+        shell.set('cliSocket', null);
+    }
 
-    return this;
+    if (TP.notValid(cliSocket)) {
+
+        //  Calling the URL with no command or arguments sets up the socket.
+        url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
+
+        TP.httpPost(url).then(
+            function() {
+                var path,
+                    socket;
+
+                path = TP.uriExpandPath('~app').slice(0, -1).replace(
+                                                            'http:', 'ws:');
+
+                //  Create, configure, and activate the new socket.
+                socket = TP.core.Socket.construct(path, TP.ac('tibet-cli'));
+                shell.set('cliSocket', socket);
+
+                configure(aRequest);
+                socket.activate();
+
+                //  NOTE: no send() here...it's in the onopen handler installed
+                //  via the configure() call.
+            });
+
+        return;
+
+    } else {
+
+        //  Rebuild the event listeners by tearing down any current ones,
+        //  reconfiguring the methods on the instance, and re-attaching
+        //  listeners on the underlying source.
+        cliSocket.teardownStandardHandlers();
+        configure(aRequest);
+        cliSocket.setupStandardHandlers();
+
+        cliSocket.send(str);
+    }
+
+    return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('cli',
     TP.core.TSH.Inst.getMethod('executeCli'),
     'Runs a tibet CLI call. Requires active TDS.',
     ':cli',

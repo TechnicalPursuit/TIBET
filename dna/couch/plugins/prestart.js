@@ -20,21 +20,6 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var app,
-            logger;
-
-        //  ---
-        //  Config Check
-        //  ---
-
-        app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
-
-        logger.debug('Executing TDS pre-start hook.');
 
         //  ---
         //  Middleware

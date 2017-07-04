@@ -15,9 +15,6 @@ set/get as well as object creation via construct(). This section installs the
 basic support required for encapsulation.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true */
 /* eslint no-new-func:0, no-new-wrappers:0, no-new-object:0 */
 
 //  ------------------------------------------------------------------------
@@ -390,11 +387,9 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
 
         //  for 'change' testing we demand equivalent types
         if (typeof oldVal === typeof newVal) {
-            /* jshint eqeqeq:false */
             /* eslint-disable eqeqeq */
             if (oldVal == newVal) {
             /* eslint-enable eqeqeq */
-            /* jshint eqeqeq:true */
                 return this;
             }
         }
@@ -468,11 +463,9 @@ function(attributeName, attributeValue, shouldSignal) {
 
         if (TP.isDefined(oldVal)) {
             if (typeof oldVal === typeof newVal) {
-                /* jshint eqeqeq:false */
                 /* eslint-disable eqeqeq */
                 if (oldVal == newVal) {
                 /* eslint-enable eqeqeq */
-                /* jshint eqeqeq:true */
                     return this;
                 }
             }
@@ -485,7 +478,10 @@ function(attributeName, attributeValue, shouldSignal) {
 
         this[attr] = newVal;
 
-        sigFlag = TP.ifInvalid(shouldSignal, this.shouldSignalChange());
+        sigFlag = shouldSignal;
+        if (TP.notValid(sigFlag)) {
+            sigFlag = this.shouldSignalChange();
+        }
 
         if (sigFlag) {
             oldFlag = this.shouldSignalChange();
@@ -709,11 +705,9 @@ function(anIndex, varargs, aValue) {
 
         this[index] = varargs;
 
-        /* jshint eqeqeq:false */
         /* eslint-disable eqeqeq */
         if (val != varargs) {
         /* eslint-enable eqeqeq */
-        /* jshint eqeqeq:true */
             op = val === undefined ? TP.CREATE : TP.UPDATE;
 
             //  Still subject to whether the object has 'shouldSignalChange()'
@@ -730,6 +724,8 @@ function(anIndex, varargs, aValue) {
             return TP.raise(this, 'TP.sig.InvalidIndex');
 
         default:
+
+            /* eslint-disable consistent-this */
 
             //  navigate to the proper location, stopping just before the
             //  end so we've trimmed down to index and value
@@ -760,14 +756,14 @@ function(anIndex, varargs, aValue) {
                 }
             }
 
+            /* eslint-enable consistent-this */
+
             // fall through so we can do change notification
     }
 
-    /* jshint eqeqeq:false */
     /* eslint-disable eqeqeq */
     if (val != aValue) {
     /* eslint-enable eqeqeq */
-    /* jshint eqeqeq:true */
         //  Since we changed multiple slots, some or all of which might have
         //  already existed, we just send 'TP.UPDATE' here with an aspect of
         //  'length'.
@@ -1132,6 +1128,8 @@ function(anObject) {
      * @summary Constructs and returns a new instance of Boolean. Booleans are
      *     localized by using the current locale's parse routine to help ensure
      *     proper translation of Boolean string input.
+     * @description Note that this method, being on a type that produces
+     *     non-mutable instances, will always return its primitive value.
      * @param {Object} anObject An optional object to return in Boolean form.
      * @returns {Boolean} A new instance.
      */
@@ -1153,16 +1151,14 @@ function(anObject) {
             val = Boolean.fromString(anObject);
             kallee.$$onStack = false;
 
-            return val;
+            return val.valueOf();
         } else {
             kallee.$$onStack = false;
         }
     }
 
-    /* jshint -W053 */
     //  only one possible argument for a Boolean
-    return new Boolean(anObject);
-    /* jshint +W053 */
+    return (new Boolean(anObject)).valueOf();
 });
 
 //  ------------------------------------------------------------------------
@@ -1352,6 +1348,8 @@ function(anObject) {
      *     may have been registered via addParser. If those parsers are
      *     unsuccessful the current TP.core.Locale is invoked to parse the input
      *     string in an attempt to offer locale-specific Number construction.
+     *     Note that this method, being on a type that produces non-mutable
+     *     instances, will always return its primitive value.
      * @param {Object} anObject An optional object to return in Number form.
      * @returns {Number} A new instance.
      */
@@ -1369,16 +1367,14 @@ function(anObject) {
             val = Number.fromString(anObject);
             kallee.$$onStack = false;
 
-            return val;
+            return val.valueOf();
         } else {
             kallee.$$onStack = false;
         }
     }
 
-    /* jshint -W053 */
     //  number only takes one argument so we can invoke directly
-    return new Number(anObject);
-    /* jshint +W053 */
+    return (new Number(anObject)).valueOf();
 });
 
 //  ------------------------------------------------------------------------
@@ -1405,9 +1401,7 @@ function() {
     var i,
         newinst;
 
-    /* jshint -W010 */
     newinst = new Object();
-    /* jshint +W010 */
 
     //  do the key/value pair thing for all even pairs, any dangling key
     //  gets a null as a value.
@@ -1508,6 +1502,8 @@ function(varargs) {
      * @method construct
      * @summary Constructs and returns a new instance of String from the
      *     arguments supplied. This routine localizes each argument.
+     * @description Note that this method, being on a type that produces
+     *     non-mutable instances, will always return its primitive value.
      * @param {Array} varargs A variable list of 0 to N values to build the
      *     String from.
      * @returns {String} A new instance.

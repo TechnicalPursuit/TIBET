@@ -16,7 +16,7 @@
 //  TP.core.Device
 //  ========================================================================
 
-TP.core.SignalSource.defineSubtype('core.Device');
+TP.sig.SignalSource.defineSubtype('core.Device');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -93,20 +93,20 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
 
-    //  if there's a policy or the origin is specific rather than the
-    //  receiver's device name then we just want to set up a "redirect"
-    //  handler that pushes the signal to the notification system where
-    //  things like policy and origin targeting can be processed.
+    //  If there's a policy or the origin is specific rather than the receiver's
+    //  device name then we just want to set up a "redirect" handler that pushes
+    //  the signal to the notification system where things like policy and
+    //  origin targeting can be processed.
 
     /* eslint-disable no-extra-parens */
     if (TP.notEmpty(aPolicy) ||
         (anOrigin !== this && anOrigin !== this.getName())) {
     /* eslint-enable no-extra-parens */
 
-        //  we have to track observe/ignore stats more closely when we set
-        //  up redirections since each ignore says to remove the redirector,
-        //  but we need to keep at least one as long as we've got more
-        //  observes than we do ignores
+        //  we have to track observe/ignore stats more closely when we set up
+        //  redirections since each ignore says to remove the redirector, but we
+        //  need to keep at least one as long as we've got more observes than we
+        //  do ignores
         map = this.get('redirections');
 
         for (i = 0; i < len; i++) {
@@ -138,9 +138,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     for (i = 0; i < len; i++) {
         signal = signals.at(i).getSignalName();
 
-        //  Signal paths are signals with a '__' separation. We use a
-        //  subtype specific method to process those. Keyboard shortcuts are
-        //  the typically use of this syntax.
+        //  Signal paths are signals with a '__' separation. We use a subtype
+        //  specific method to process those. Keyboard shortcuts are the
+        //  typically use of this syntax.
         if (/__/.test(signal)) {
             this.addShortcutObserver(signal, handler);
         } else {
@@ -151,15 +151,15 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
             arr.push(handler);
 
-            //  unfortunately there's a bit of potential overhead here since
-            //  we need to unique for each possible signal name in the list
+            //  unfortunately there's a bit of potential overhead here since we
+            //  need to unique for each possible signal name in the list
             arr.unique();
         }
     }
 
-    //  if the handler we registered was not the original one then we
-    //  swapped it out for the redirector and we want the notification
-    //  center to go ahead and register it.
+    //  if the handler we registered was not the original one then we swapped it
+    //  out for the redirector and we want the notification center to go ahead
+    //  and register it.
 
     /* eslint-disable no-extra-parens */
     return (handler !== aHandler);
@@ -352,8 +352,8 @@ function(aSignal, aHandler) {
 //  ------------------------------------------------------------------------
 
 TP.core.Device.Type.defineMethod('signalObservers',
-function(anOrigin, aSignal, aPayload, aPolicy, aType,
-isCancelable, isBubbling) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable,
+         isBubbling) {
 
     /**
      * @method signalObservers
@@ -596,24 +596,76 @@ function(aSignal, aHandler) {
 //  ------------------------------------------------------------------------
 
 TP.core.Keyboard.Type.defineMethod('resetEventData',
-function() {
+function(filterWindow) {
 
     /**
      * @method resetEventData
      * @summary Resets any event data cached by the receiver. It is important
      *     to call this when the GUI is flushed between page refreshes to avoid
      *     having obsolete references to old DOM structures.
+     * @param {Window} filterWindow The window to filter cached events by. If
+     *     the event occurred in this window, it will be cleared.
      */
 
-    this.set('lastDown', null);
-    this.set('lastPress', null);
-    this.set('lastUp', null);
+    var evtTestFunc,
+        sigTestFunc;
 
-    this.get('keyup').setEvent(null);
-    this.get('keydown').setEvent(null);
-    this.get('keypress').setEvent(null);
+    evtTestFunc = function(sigName) {
 
-    this.get('modifierkeychange').setEvent(null);
+        var event;
+
+        event = this.get(sigName);
+
+        if (TP.isEvent(event) &&
+            TP.eventGetWindow(event) === filterWindow) {
+            return true;
+        }
+
+        return false;
+    }.bind(this);
+
+    sigTestFunc = function(sigName) {
+
+        var signal;
+
+        signal = this.get(sigName);
+
+        if (TP.isValid(signal) &&
+            TP.isValid(signal.getPayload()) &&
+            TP.unwrap(signal.getWindow()) === filterWindow) {
+            return true;
+        }
+
+        return false;
+    }.bind(this);
+
+    if (evtTestFunc('lastDown')) {
+        this.set('lastDown', null);
+    }
+
+    if (evtTestFunc('lastPress')) {
+        this.set('lastPress', null);
+    }
+
+    if (evtTestFunc('lastUp')) {
+        this.set('lastUp', null);
+    }
+
+    if (sigTestFunc('keyup')) {
+        this.get('keyup').setEvent(null);
+    }
+
+    if (sigTestFunc('keydown')) {
+        this.get('keydown').setEvent(null);
+    }
+
+    if (sigTestFunc('keypress')) {
+        this.get('keypress').setEvent(null);
+    }
+
+    if (sigTestFunc('modifierkeychange')) {
+        this.get('modifierkeychange').setEvent(null);
+    }
 
     return;
 });
@@ -916,8 +968,9 @@ function(singletonName, normalizedEvent, aSignal) {
         //  the setEvent functions they can optionally implement.
         signal.setEvent(normalizedEvent);
 
-        //  when we reuse singleton we need to initialize origin to target
-        signal.set('origin', signal.get('target'));
+        //  when we reuse singleton we need to initialize origin to the resolved
+        //  target
+        signal.set('origin', signal.getResolvedTarget());
     }
 
     //  capture the information we'll need to see about redirections
@@ -1337,7 +1390,7 @@ function(normalizedEvent) {
 
     /**
      * @method $$handleKeyDown
-     * @summary Responds to notifications that a keyup event has occurred.
+     * @summary Responds to notifications that a keydown event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1370,7 +1423,7 @@ function(normalizedEvent) {
 
     /**
      * @method $$handleKeyPress
-     * @summary Responds to notifications that a keyup event has occurred.
+     * @summary Responds to notifications that a keypress event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1918,7 +1971,7 @@ function(normalizedEvent) {
 
     //  No char was there? Guess we'll use the key code itself in string form
     if (TP.notValid(vk)) {
-        vk = 'KeyCode' + (TP.isString(key) ? key : '');
+        vk = 'KeyCode' + (TP.isString(key) ? key : 'UNKNOWN');
     }
 
     signame = this.computeFullSignalName(normalizedEvent, vk, shift);
@@ -2320,10 +2373,14 @@ TP.core.Mouse.Type.defineAttribute(
                 hoverRepeat,
                 targetElem,
                 targetRepeat,
+                repeatAncestor,
+
                 func;
 
             //  clean up after ourselves.
+            TP.core.Mouse.$set('overTimer', null);
             TP.core.Mouse.$set('hoverTimer', null);
+            TP.core.Mouse.$set('hoverRepeatTimer', null);
 
             //  make sure we've got a last move to work from
             lastMove = TP.core.Mouse.$get('lastMove');
@@ -2360,15 +2417,44 @@ TP.core.Mouse.Type.defineAttribute(
             //  possible.
             if (TP.isElement(targetElem =
                             TP.eventGetResolvedTarget(lastOver))) {
-                //  If the event target has an 'sig:hoverrepeat' attribute,
+
+                //  If the event target has an 'tibet:hoverrepeat' attribute,
                 //  try to convert it to a Number and if that's successful,
                 //  set hoverRepeat to it.
-                if (TP.isNumber(targetRepeat =
-                                    TP.elementGetAttribute(
+                targetRepeat = TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:hoverrepeat',
-                                            true).asNumber())) {
-                    hoverRepeat = targetRepeat;
+                                            'tibet:hoverrepeat',
+                                            true);
+
+                //  If we got a hover repeat value, then try to convert it to a
+                //  Number and use it.
+                if (TP.notEmpty(targetRepeat)) {
+                    targetRepeat = targetRepeat.asNumber();
+
+                    if (TP.isNumber(targetRepeat)) {
+                        hoverRepeat = targetRepeat;
+                    }
+                } else {
+
+                    //  Otherwise, search up the ancestor chain looking for an
+                    //  element with a hover repeat attribute.
+                    repeatAncestor = TP.nodeAncestorMatchingCSS(
+                                            targetElem, '*[tibet|hoverrepeat]');
+
+                    //  If we found an ancestor that had a hover repeat
+                    //  attribute, then obtain its value, try to convert it to a
+                    //  Number and use it.
+                    if (TP.isElement(repeatAncestor)) {
+                        targetRepeat = TP.elementGetAttribute(
+                                                            repeatAncestor,
+                                                            'tibet:hoverrepeat',
+                                                            true);
+                        targetRepeat = targetRepeat.asNumber();
+
+                        if (TP.isNumber(targetRepeat)) {
+                            hoverRepeat = targetRepeat;
+                        }
+                    }
                 }
             }
 
@@ -2447,11 +2533,15 @@ TP.core.Mouse.Type.defineAttribute('redirections', TP.hc());
 
 //  timers for click vs. dblclick and hover delay
 TP.core.Mouse.Type.defineAttribute('clickTimer');
+TP.core.Mouse.Type.defineAttribute('overTimer');
 TP.core.Mouse.Type.defineAttribute('hoverTimer');
 TP.core.Mouse.Type.defineAttribute('hoverRepeatTimer');
 
 //  whether or not we've sent the 'dragdown' signal
 TP.core.Mouse.Type.defineAttribute('$sentDragDown', false);
+
+//  if we're not in a valid drag target
+TP.core.Mouse.Type.defineAttribute('$notValidDragTarget', false);
 
 TP.core.Mouse.Type.defineAttribute('leftDown', false);
 TP.core.Mouse.Type.defineAttribute('middleDown', false);
@@ -2556,51 +2646,148 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Mouse.Type.defineMethod('resetEventData',
-function() {
+function(filterWindow) {
 
     /**
      * @method resetEventData
      * @summary Resets any event data cached by the receiver. It is important
      *     to call this when the GUI is flushed between page refreshes to avoid
      *     having obsolete references to old DOM structures.
+     * @param {Window} filterWindow The window to filter cached events by. If
+     *     the event occurred in this window, it will be cleared.
      */
 
-    this.set('lastDown', null);
-    this.set('lastMove', null);
-    this.set('lastUp', null);
+    var evtTestFunc,
+        sigTestFunc;
 
-    this.set('lastOver', null);
-    this.set('lastOut', null);
+    evtTestFunc = function(sigName) {
 
-    this.set('lastClick', null);
-    this.set('lastDblClick', null);
+        var event;
 
-    this.set('lastContextMenu', null);
-    this.set('lastMouseWheel', null);
+        event = this.get(sigName);
 
-    this.get('mousedown').setEvent(null);
-    this.get('mousemove').setEvent(null);
-    this.get('mouseup').setEvent(null);
+        if (TP.isEvent(event) &&
+            TP.eventGetWindow(event) === filterWindow) {
+            return true;
+        }
 
-    this.get('mouseover').setEvent(null);
-    this.get('mouseout').setEvent(null);
+        return false;
+    }.bind(this);
 
-    this.get('click').setEvent(null);
-    this.get('dblclick').setEvent(null);
-    this.get('contextmenu').setEvent(null);
+    sigTestFunc = function(sigName) {
 
-    this.get('mousewheel').setEvent(null);
+        var signal;
 
-    this.get('mousehover').setEvent(null);
+        signal = this.get(sigName);
 
-    this.get('dragdown').setEvent(null);
-    this.get('dragmove').setEvent(null);
-    this.get('dragup').setEvent(null);
+        if (TP.isValid(signal) &&
+            TP.isValid(signal.getPayload()) &&
+            signal.getWindow() === filterWindow) {
+            return true;
+        }
 
-    this.get('dragover').setEvent(null);
-    this.get('dragout').setEvent(null);
+        return false;
+    }.bind(this);
 
-    this.get('draghover').setEvent(null);
+    if (evtTestFunc('lastDown')) {
+        this.set('lastDown', null);
+    }
+
+    if (evtTestFunc('lastMove')) {
+        this.set('lastMove', null);
+    }
+
+    if (evtTestFunc('lastUp')) {
+        this.set('lastUp', null);
+    }
+
+    if (evtTestFunc('lastOver')) {
+        this.set('lastOver', null);
+    }
+
+    if (evtTestFunc('lastOut')) {
+        this.set('lastOut', null);
+    }
+
+    if (evtTestFunc('lastClick')) {
+        this.set('lastClick', null);
+    }
+
+    if (evtTestFunc('lastDblClick')) {
+        this.set('lastDblClick', null);
+    }
+
+    if (evtTestFunc('lastContextMenu')) {
+        this.set('lastContextMenu', null);
+    }
+
+    if (evtTestFunc('lastMouseWheel')) {
+        this.set('lastMouseWheel', null);
+    }
+
+    if (sigTestFunc('mousedown')) {
+        this.get('mousedown').setEvent(null);
+    }
+
+    if (sigTestFunc('mousemove')) {
+        this.get('mousemove').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseup')) {
+        this.get('mouseup').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseover')) {
+        this.get('mouseover').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseout')) {
+        this.get('mouseout').setEvent(null);
+    }
+
+    if (sigTestFunc('click')) {
+        this.get('click').setEvent(null);
+    }
+
+    if (sigTestFunc('dblclick')) {
+        this.get('dblclick').setEvent(null);
+    }
+
+    if (sigTestFunc('contextmenu')) {
+        this.get('contextmenu').setEvent(null);
+    }
+
+    if (sigTestFunc('mousewheel')) {
+        this.get('mousewheel').setEvent(null);
+    }
+
+    if (sigTestFunc('mousehover')) {
+        this.get('mousehover').setEvent(null);
+    }
+
+    if (sigTestFunc('dragdown')) {
+        this.get('dragdown').setEvent(null);
+    }
+
+    if (sigTestFunc('dragmove')) {
+        this.get('dragmove').setEvent(null);
+    }
+
+    if (sigTestFunc('dragup')) {
+        this.get('dragup').setEvent(null);
+    }
+
+    if (sigTestFunc('dragover')) {
+        this.get('dragover').setEvent(null);
+    }
+
+    if (sigTestFunc('dragout')) {
+        this.get('dragout').setEvent(null);
+    }
+
+    if (sigTestFunc('draghover')) {
+        this.get('draghover').setEvent(null);
+    }
 
     return;
 });
@@ -2692,8 +2879,9 @@ function(singletonName, normalizedEvent, aSignal) {
         //  the setEvent functions they can optionally implement.
         signal.setEvent(normalizedEvent);
 
-        //  when we reuse singleton we need to initialize origin to target
-        signal.set('origin', signal.get('target'));
+        //  when we reuse singleton we need to initialize origin to the resolved
+        //  target
+        signal.set('origin', signal.getResolvedTarget());
     }
 
     //  capture the information we'll need to see about redirections
@@ -2874,7 +3062,6 @@ function(normalizedEvent) {
         targetElem,
         targetDelay,
 
-        thisRef,
         theEvent;
 
     if (TP.isNumber(TP.core.Mouse.$$clickTimer)) {
@@ -2883,8 +3070,8 @@ function(normalizedEvent) {
 
     lastDown = this.get('lastDown');
 
-    //  if we can't compute a distance from the last mousedown then we
-    //  assume this is a valid click event
+    //  If we can't compute a distance from the last mousedown then we assume
+    //  this is a valid click event
     if (!TP.isEvent(lastDown)) {
         this.invokeObservers('click', normalizedEvent);
 
@@ -2896,43 +3083,42 @@ function(normalizedEvent) {
         return;
     }
 
-    //  The clickDelay is used when a piece of UI has been authored in such
-    //  a way that a real distinction wants to be made between 'click' and
-    //  'double click' (rather than 'double click' just being 'more click').
-    //  If another click happens within the clickDelay time, the double
-    //  click handler cancels the timeout and no 'click' handlers are fired.
+    //  The clickDelay is used when a piece of UI has been authored in such a
+    //  way that a real distinction wants to be made between 'click' and 'double
+    //  click' (rather than 'double click' just being 'more click'). If another
+    //  click happens within the clickDelay time, the double click handler
+    //  cancels the timeout and no 'click' handlers are fired.
 
-    //  Initially set the clickDelay to the system configured click delay.
-    //  This is usually set to 0 such that there is no delay and has the
-    //  effect that 'double click' is just 'more click'.
+    //  Initially set the clickDelay to the system configured click delay. This
+    //  is usually set to 0 such that there is no delay and has the effect that
+    //  'double click' is just 'more click'.
     clickDelay = TP.sys.cfg('mouse.click_delay');
 
-    //  Get a resolved event target, given the event. This takes into
-    //  account disabled elements and will look for a target element
-    //  with the appropriate 'enabling attribute', if possible.
+    //  Get a resolved event target, given the event. This takes into account
+    //  disabled elements and will look for a target element with the
+    //  appropriate 'enabling attribute', if possible.
     if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
-        //  If the event target has an 'sig:clickdelay' attribute, try to
-        //  convert it to a Number and if that's successful, set clickDelay
-        //  to it.
+        //  If the event target has an 'tibet:clickdelay' attribute, try to
+        //  convert it to a Number and if that's successful, set clickDelay to
+        //  it.
         if (TP.isNumber(targetDelay =
                             TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:clickdelay',
+                                            'tibet:clickdelay',
                                             true).asNumber())) {
             clickDelay = targetDelay;
         }
     }
 
-    //  use a timer that can be cancelled by dblclick events so we don't
-    //  cause event-level confusion. the semantics should be maintained by
-    //  the application however that dblclick is "more click"
-    thisRef = this;
+    //  Use a timer that can be cancelled by dblclick events so we don't cause
+    //  event-level confusion. the semantics should be maintained by the
+    //  application however that dblclick is "more click".
     theEvent = normalizedEvent;
 
     TP.core.Mouse.$$clickTimer = setTimeout(
         function() {
 
-            thisRef.invokeObservers('click', theEvent);
+            TP.core.Mouse.invokeObservers('click', theEvent);
 
             TP.core.Mouse.$$clickTimer = undefined;
         }, clickDelay);
@@ -3141,7 +3327,8 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    var dragDownEvent;
+    var dragDownEvent,
+        doc;
 
     //  TODO:   verify whether this is still required on target browsers
     TP.core.Keyboard.getCurrentKeyboard().$$updateModifierStates(
@@ -3156,12 +3343,30 @@ function(normalizedEvent) {
             if (TP.isEvent(dragDownEvent = this.get('lastDown'))) {
                 dragDownEvent = dragDownEvent.copy();
                 TP.eventSetType(dragDownEvent, 'dragdown');
+
+                //  Turn on suspending all mutation observers during a drag
+                //  session. This significantly increases drag performance
+                //  during the session and gets switched back to false in
+                //  $$handleMouseUp.
+                TP.sys.$$suspendAllTIBETMutationObservers = true;
+
                 this.invokeObservers('dragdown', dragDownEvent);
+
                 this.$set('$sentDragDown', true);
             }
         }
 
         TP.eventSetType(normalizedEvent, 'dragmove');
+
+        doc = TP.eventGetTargetDocument(normalizedEvent);
+        if (TP.isDocument(doc)) {
+
+            if (doc.selection) {
+                doc.selection.empty();
+            } else {
+                doc.defaultView.getSelection().removeAllRanges();
+            }
+        }
 
         this.invokeObservers('dragmove', normalizedEvent);
     } else {
@@ -3200,7 +3405,8 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    var wasDragging;
+    var wasDragging,
+        doc;
 
     //  Note how we do this before we update the button state.
     wasDragging = this.$$isDragging(normalizedEvent);
@@ -3212,13 +3418,33 @@ function(normalizedEvent) {
     if (wasDragging) {
         TP.eventSetType(normalizedEvent, 'dragup');
 
+        doc = TP.eventGetTargetDocument(normalizedEvent);
+        if (TP.isDocument(doc)) {
+
+            if (doc.selection) {
+                doc.selection.empty();
+            } else {
+                doc.defaultView.getSelection().removeAllRanges();
+            }
+        }
+
         this.invokeObservers('dragup', normalizedEvent);
+
+        //  Turn off suspending all mutation observers. Note how we do this
+        //  *before* we invoke the dragup observers. That way, if any of them do
+        //  DOM manipulation, mutation observer firing will again be taking
+        //  place for those operations.
+        TP.sys.$$suspendAllTIBETMutationObservers = false;
+
         this.$set('$sentDragDown', false);
     } else {
         this.invokeObservers('mouseup', normalizedEvent);
     }
 
+    this.$set('$notValidDragTarget', false);
+
     try {
+        clearTimeout(this.$get('overTimer'));
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
@@ -3243,46 +3469,134 @@ function(normalizedEvent) {
 
     var targetElem,
 
-        hoverDelay,
-        targetDelay;
+        overDelay,
+        targetOverDelay,
+
+        overAncestor,
+
+        overHandler;
 
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
 
-    //  TODO: remove this, replace with "wake up mr. css processor?"
     if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
         TP.elementSetAttribute(targetElem, 'pclass:hover', 'true', true);
     }
 
-    if (this.$$isDragging(normalizedEvent)) {
-        TP.eventSetType(normalizedEvent, 'dragover');
+    overDelay = TP.sys.cfg('mouse.over_delay');
 
-        this.invokeObservers('dragover', normalizedEvent);
-    } else {
-        this.invokeObservers('mouseover', normalizedEvent);
-    }
-
-    hoverDelay = TP.sys.cfg('mouse.hover_delay');
-
-    //  Get a resolved event target, given the event. This takes into
-    //  account disabled elements and will look for a target element
-    //  with the appropriate 'enabling attribute', if possible.
+    //  Get a resolved event target, given the event. This takes into account
+    //  disabled elements and will look for a target element with the
+    //  appropriate 'enabling attribute', if possible.
     if (TP.isElement(targetElem)) {
-        //  If the event target has an 'sig:hoverdelay' attribute, try
-        //  to convert it to a Number and if that's successful, set
-        //  hoverDelay to it.
-        if (TP.isNumber(targetDelay =
-                            TP.elementGetAttribute(
-                                            targetElem,
-                                            'sig:hoverdelay',
-                                            true).asNumber())) {
-            hoverDelay = targetDelay;
+
+        //  If the event target has an 'tibet:overdelay' attribute, try to
+        //  convert it to a Number and if that's successful, set overDelay to
+        //  it.
+        targetOverDelay = TP.elementGetAttribute(targetElem,
+                                                    'tibet:overdelay',
+                                                    true);
+
+        //  If we got a over delay value, then try to convert it to a Number and
+        //  use it.
+        if (TP.notEmpty(targetOverDelay)) {
+            targetOverDelay = targetOverDelay.asNumber();
+
+            if (TP.isNumber(targetOverDelay)) {
+                overDelay = targetOverDelay;
+            }
+        } else {
+
+            //  Otherwise, search up the ancestor chain looking for an element
+            //  with a over delay attribute.
+            overAncestor = TP.nodeAncestorMatchingCSS(
+                                        targetElem, '*[tibet|overdelay]');
+
+            //  If we found an ancestor that had a over delay attribute, then
+            //  obtain its value, try to convert it to a Number and use it.
+            if (TP.isElement(overAncestor)) {
+                targetOverDelay = TP.elementGetAttribute(
+                                                    overAncestor,
+                                                    'tibet:overdelay',
+                                                    true);
+                targetOverDelay = targetOverDelay.asNumber();
+
+                if (TP.isNumber(targetOverDelay)) {
+                    overDelay = targetOverDelay;
+                }
+            }
         }
     }
 
-    TP.core.Mouse.$set('hoverTimer',
-                        setTimeout(this.$get('hoverFunc'), hoverDelay));
+    overHandler = function() {
+
+        var hoverDelay,
+            targetHoverDelay,
+
+            hoverAncestor;
+
+        if (this.$$isDragging(normalizedEvent)) {
+            TP.eventSetType(normalizedEvent, 'dragover');
+
+            this.invokeObservers('dragover', normalizedEvent);
+        } else {
+            this.invokeObservers('mouseover', normalizedEvent);
+        }
+
+        hoverDelay = TP.sys.cfg('mouse.hover_delay');
+
+        //  Get a resolved event target, given the event. This takes into
+        //  account disabled elements and will look for a target element
+        //  with the appropriate 'enabling attribute', if possible.
+        if (TP.isElement(targetElem)) {
+
+            //  If the event target has an 'tibet:hoverdelay' attribute, try
+            //  to convert it to a Number and if that's successful, set
+            //  hoverDelay to it.
+            targetHoverDelay = TP.elementGetAttribute(
+                                                targetElem,
+                                                'tibet:hoverdelay',
+                                                true);
+
+            //  If we got a hover delay value, then try to convert it to a
+            //  Number and use it.
+            if (TP.notEmpty(targetHoverDelay)) {
+                targetHoverDelay = targetHoverDelay.asNumber();
+
+                if (TP.isNumber(targetHoverDelay)) {
+                    hoverDelay = targetHoverDelay;
+                }
+            } else {
+
+                //  Otherwise, search up the ancestor chain looking for an
+                //  element with a hover delay attribute.
+                hoverAncestor = TP.nodeAncestorMatchingCSS(
+                                            targetElem, '*[tibet|hoverdelay]');
+
+                //  If we found an ancestor that had a hover delay attribute,
+                //  then obtain its value, try to convert it to a Number and use
+                //  it.
+                if (TP.isElement(hoverAncestor)) {
+                    targetHoverDelay = TP.elementGetAttribute(
+                                                        hoverAncestor,
+                                                        'tibet:hoverdelay',
+                                                        true);
+                    targetHoverDelay = targetHoverDelay.asNumber();
+
+                    if (TP.isNumber(targetHoverDelay)) {
+                        hoverDelay = targetHoverDelay;
+                    }
+                }
+            }
+        }
+
+        TP.core.Mouse.$set('hoverTimer',
+                            setTimeout(this.$get('hoverFunc'), hoverDelay));
+    }.bind(this);
+
+    TP.core.Mouse.$set('overTimer',
+                        setTimeout(overHandler, overDelay));
 
     return;
 });
@@ -3319,6 +3633,7 @@ function(normalizedEvent) {
     }
 
     try {
+        clearTimeout(this.$get('overTimer'));
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
@@ -3344,6 +3659,11 @@ function(normalizedEvent) {
     var dragButtonDown,
 
         lastDown,
+
+        target,
+        val,
+        ans,
+
         distance,
 
         dragDistance,
@@ -3362,6 +3682,10 @@ function(normalizedEvent) {
         return true;
     }
 
+    if (TP.isTrue(this.$get('$notValidDragTarget'))) {
+        return false;
+    }
+
     /* eslint-disable no-extra-parens */
     dragButtonDown =
                 (this.$get('leftDown') &&
@@ -3375,6 +3699,29 @@ function(normalizedEvent) {
     if (dragButtonDown) {
         if (!TP.isEvent(lastDown = this.get('lastDown'))) {
             return false;
+        }
+
+        //  Compute whether or not the target wants to allow dragging (and cache
+        //  the value if it doesn't).
+        target = TP.eventGetTarget(normalizedEvent);
+        val = TP.elementGetAttribute(
+                        target, 'tibet:nodragtrapping', true);
+        if (val === 'true') {
+            this.$set('$notValidDragTarget', true);
+            return false;
+        }
+
+        if (TP.isElement(
+            ans = TP.nodeAncestorMatchingCSS(
+                        target,
+                        '*[tibet|nodragtrapping]'))) {
+
+            val = TP.elementGetAttribute(
+                        ans, 'tibet:nodragtrapping', true);
+            if (val === 'true') {
+                this.$set('$notValidDragTarget', true);
+                return false;
+            }
         }
 
         distance = TP.computeDistance(lastDown, normalizedEvent);
@@ -3392,24 +3739,24 @@ function(normalizedEvent) {
         //  with the appropriate 'enabling attribute', if possible.
         if (TP.isElement(targetElem = TP.eventGetResolvedTarget(
                                                         normalizedEvent))) {
-            //  If the event target has an 'sig:dragdistance' attribute, try
+            //  If the event target has an 'tibet:dragdistance' attribute, try
             //  to convert it to a Number and if that's successful, set
             //  dragDistance to it.
             if (TP.isNumber(targetDistance =
                                 TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:dragdistance',
+                                            'tibet:dragdistance',
                                             true).asNumber())) {
                 dragDistance = targetDistance;
             }
 
-            //  If the event target has an 'sig:dragdelay' attribute, try
+            //  If the event target has an 'tibet:dragdelay' attribute, try
             //  to convert it to a Number and if that's successful, set
             //  dragDelay to it.
             if (TP.isNumber(targetDelay =
                                 TP.elementGetAttribute(
                                             targetElem,
-                                            'sig:dragdelay',
+                                            'tibet:dragdelay',
                                             true).asNumber())) {
                 dragDelay = targetDelay;
             }

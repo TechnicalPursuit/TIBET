@@ -1,13 +1,13 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|consoleoutput {
 
     display: block;
     position: absolute;
 
-    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 85%;
 
     text-align: left;
@@ -20,6 +20,7 @@ sherpa|consoleoutput {
     bottom: 10px;
     left: 10px;
 
+    /* The 20px here is the bottom + a top offset of the same size */
     max-height: calc(100% - 20px);
 
     padding-left: 5px;
@@ -31,6 +32,8 @@ sherpa|consoleoutput {
     z-index: 27500;
 
     transition: margin 0.25s;
+
+    opacity: 0.85;
 }
 
 sherpa|consoleoutput[pclass|hidden] {
@@ -81,24 +84,26 @@ sherpa|consoleoutput[mode="growl"] sherpa|consoleoutputitem:last-child {
 }
 
 sherpa|consoleoutput[sticky][exposed] {
-	opacity: 1 !important;
+
+    opacity: 1 !important;
 }
 
 sherpa|consoleoutput[sticky][concealed] {
-	opacity: 0 !important;
+
+    opacity: 0 !important;
 }
 
 sherpa|consoleoutput[class~="fade_out"] {
 
-	opacity: 0;
+    opacity: 0;
 
-	transition-property: opacity;
+    transition-property: opacity;
 
     /* These are set by the
        'sherpa.tdc.cell_fadeout_delay' and 'sherpa.tdc.cell_fadeout_duration'
        cfg() variables respectively. They are defaulted to 2000ms.
-	transition-delay: 2s;
-	transition-duration: 2s;
+    transition-delay: 2s;
+    transition-duration: 2s;
     */
 }
 
@@ -110,6 +115,7 @@ sherpa|consoleoutput a {
 .wrapper {
 
     display: inline-flex;
+
     flex-direction: column;
 
     justify-content: flex-end;
@@ -128,36 +134,39 @@ sherpa|consoleoutputitem {
     margin-bottom: 2px;
 }
 
-sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child {
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child {
 
     border-bottom: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.up_arrow, .down_arrow {
+.up_arrow,
+.down_arrow {
 
     display: none;
 
     position: absolute;
 
     left: 10px;
+
     width: 20px;
     height: 20px;
 
     background-color: yellow;
+
     border: solid 1px black;
 }
 
-.flex-cell {
+.flex-item {
 
-    background: #EEE;
+    background-color: #eee;
+
     border: solid 1px #666;
-
     border-radius: 5px;
 }
 
-.flex-cell > .header {
+.flex-item > .header {
 
     top: 0;
     right: 0;
@@ -170,7 +179,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background: #EEE;
+    background-color: #eee;
 
     min-width: auto;
 
@@ -179,103 +188,143 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     font-size: inherit;
 }
 
-.flex-cell > .header > * {
+.flex-item > .header > * {
 
-    /*line-height: 30px;*/
+    /* line-height: 30px; */
 
-    /*font-weight: bold;*/
-    /*font-size: 116%;*/
+    /* font-weight: bold; */
+    /* font-size: 116%; */
 }
 
-.flex-cell > .header > .hid {
-
-    text-decoration: none;
-    display: inline-block;
-    min-width: 32px;
-}
-
-.flex-cell > .header > .hid:hover {
-
-    font-weight: bold;
-}
-
-.flex-cell > .header > .content {
+.flex-item > .header > .hid {
 
     position: relative;
     display: inline-block;
 
+    top: -4px;
+
+    min-width: 32px;
+
+    text-decoration: none;
+}
+
+.flex-item > .header > .hid:hover {
+
+    font-weight: bold;
+}
+
+.flex-item > .header > .content {
+
+    position: relative;
+    display: inline-block;
+
+    height: 16px;
+
+    overflow: hidden;
+
     white-space: pre-wrap;
 }
 
-.flex-cell > .header > .typeinfo {
+.flex-item > .header > .typeinfo {
+
+    display: inline-block;
 
     float: right;
+
     margin: 0 8px;
-    display: inline-block;
 
     color: darkgoldenrod;
 
     white-space: pre-wrap;
 }
 
-.flex-cell > .header > .stats {
+.flex-item > .header > .stats {
+
+    display: inline-block;
 
     float: right;
+
     margin: 0 8px;
-    display: inline-block;
 
     color: grey;
 
     white-space: pre-wrap;
 }
 
-.flex-cell > .content {
+.flex-item > .content {
 
     top: 31px;
     right: 0;
     bottom: 9px;
     left: 0;
 
-    background: #FFF;
+    background-color: #fff;
 
     min-width: auto;
 
     margin: 2px;
-    border: 1px dotted #DADADA;
+    border: 1px dotted #dadada;
 
     overflow: auto;
 
     text-align: left;
 
     color: black;
-
-    -ms-user-select: text;
-    -moz-user-select: text;
-    -webkit-user-select: text;
 }
 
-.flex-cell > .content > * {
+.flex-item > .content > * {
 
-    line-height: 1.0em;
+    line-height: 1em;
+
     white-space: pre-wrap;
 }
 
-.flex-cell > .content > sherpa|scrollbutton {
+.flex-item > .content > .result.asis-container {
 
-    transform: rotate(90deg);
-	box-shadow: 1px -1px 1px #888888;
+    white-space: initial;
 }
 
-.flex-cell > .content > sherpa|scrollbutton[orientation="up"] {
+.flex-item > .content > .result iframe {
 
-    bottom: 10px;
-	left: calc(50% - 16px);
+    position: relative;
+
+    width: 100%;
+    height: 1024px;
 }
 
-.flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
+.flex-item > .content > sherpa|scrollbutton {
+
+    box-shadow: 1px -1px 1px #888;
+}
+
+.flex-item > .content > sherpa|scrollbutton[orientation="up"] {
 
     bottom: 10px;
-	left: calc(50% + 16px);
+    left: calc(50% - 16px);
+}
+
+.flex-item > .content > sherpa|scrollbutton .icon {
+
+    bottom: 2px;
+    font-size: 18px;
+}
+
+.flex-item > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
+
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
+.flex-item > .content > sherpa|scrollbutton[orientation="down"] {
+
+    bottom: 10px;
+    left: calc(50% + 16px);
+}
+
+.flex-item > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
+
+    /* This is the same as '&#8595' */
+    content: "\2193";
 }
 
 sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
@@ -284,114 +333,140 @@ sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
 }
 
 /* Output styles for the consoleoutputitem based on log level */
-sherpa|consoleoutputitem[class~="trace"] .flex-cell,
-sherpa|consoleoutputitem[class~="trace"] .flex-cell > .header {
-    background-color: #EEE;
+sherpa|consoleoutputitem[class~="trace"] .flex-item,
+sherpa|consoleoutputitem[class~="trace"] .flex-item > .header {
+
+    background-color: #eee;
 }
-sherpa|consoleoutputitem[class~="debug"] .flex-cell,
-sherpa|consoleoutputitem[class~="debug"] .flex-cell > .header {
-    background-color: #EEE;
+
+sherpa|consoleoutputitem[class~="debug"] .flex-item,
+sherpa|consoleoutputitem[class~="debug"] .flex-item > .header {
+
+    background-color: #eee;
 }
-sherpa|consoleoutputitem[class~="info"] .flex-cell,
-sherpa|consoleoutputitem[class~="info"] .flex-cell > .header {
-    background-color: #EEE;
+
+sherpa|consoleoutputitem[class~="info"] .flex-item,
+sherpa|consoleoutputitem[class~="info"] .flex-item > .header {
+
+    background-color: #eee;
 }
-sherpa|consoleoutputitem[class~="warn"] .flex-cell,
-sherpa|consoleoutputitem[class~="warn"] .flex-cell > .header {
+
+sherpa|consoleoutputitem[class~="warn"] .flex-item,
+sherpa|consoleoutputitem[class~="warn"] .flex-item > .header {
+
     background-color: orange;
 }
-sherpa|consoleoutputitem[class~="error"] .flex-cell,
-sherpa|consoleoutputitem[class~="error"] .flex-cell > .header {
+
+sherpa|consoleoutputitem[class~="error"] .flex-item,
+sherpa|consoleoutputitem[class~="error"] .flex-item > .header {
+
     background-color: red;
 }
-sherpa|consoleoutputitem[class~="severe"] .flex-cell,
-sherpa|consoleoutputitem[class~="severe"] .flex-cell > .header {
+
+sherpa|consoleoutputitem[class~="fatal"] .flex-item,
+sherpa|consoleoutputitem[class~="fatal"] .flex-item > .header {
+
     background-color: red;
 }
-sherpa|consoleoutputitem[class~="fatal"] .flex-cell,
-sherpa|consoleoutputitem[class~="fatal"] .flex-cell > .header {
-    background-color: red;
-}
-sherpa|consoleoutputitem[class~="system"] .flex-cell,
-sherpa|consoleoutputitem[class~="system"] .flex-cell > .header {
+
+sherpa|consoleoutputitem[class~="system"] .flex-item,
+sherpa|consoleoutputitem[class~="system"] .flex-item > .header {
+
     background-color: mediumseagreen;
 }
 
 /* Output styles for the consoleoutputitem based on TAP result */
-sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell > .header {
-    background-color: #EEE;
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-item > .header {
+
+    background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell > .header {
-    background-color: #EEE;
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-item > .header {
+
+    background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell > .header {
-    background-color: #EEE;
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-item > .header {
+
+    background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
-    background-color: #EEE;
-}
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
+    background-color: #eee;
+}
 
 /* Output styles based on log level */
-.flex-cell > .content.trace {
+.flex-item > .content.trace {
+
     color: #aaa;
 }
-.flex-cell > .content.debug {
+
+.flex-item > .content.debug {
+
     color: #aaa;
 }
-.flex-cell > .content.info {
+
+.flex-item > .content.info {
+
     color: black;
 }
-.flex-cell > .content.warn {
+
+.flex-item > .content.warn {
+
     color: orange;
 }
-.flex-cell > .content.error {
+
+.flex-item > .content.error {
+
     color: red;
 }
-.flex-cell > .content.severe {
+
+.flex-item > .content.fatal {
+
     color: red;
 }
-.flex-cell > .content.fatal {
-    color: red;
-}
-.flex-cell > .content.system {
+
+.flex-item > .content.system {
+
     color: green;
 }
 
 /* Output styles based on TAP result */
-.flex-cell > .content.tap-pass {
+.flex-item > .content.tap-pass {
+
     color: green;
 }
 
-.flex-cell > .content.tap-fail {
+.flex-item > .content.tap-fail {
     color: orange;
 }
 
-.flex-cell > .content.tap-comment {
+.flex-item > .content.tap-error {
+    color: red;
+}
+
+.flex-item > .content.tap-comment {
     color: #aaa;
 }
 
-.flex-cell > .content.tap-unknown {
-    color: #fff;
+.flex-item > .content.tap-unknown {
+    color: gray;
 }
 
-
 /* Footer style */
-.flex-cell > .footer {
+.flex-item > .footer {
 
     bottom: 0;
     left: 0;
     right: 0;
     height: 8px;
 
-    background: #EEE;
+    background-color: #eee;
 
     min-width: auto;
 
@@ -406,26 +481,81 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     text-align: center;
 }
 
-.flex-cell > .content dl {
+.flex-item > .content dl {
+
     display: flex;
+
     flex-wrap: wrap;
     flex-direction: row;
 }
 
-.flex-cell > .content dl > dt {
+.flex-item > .content dl > dt {
+
     flex: 0 0 25%;
+
     margin: 0;
+
     line-height: 2em;
-}
-.flex-cell > .content dl > dt:nth-of-type(even) {
-    background: #eee;
 }
 
-.flex-cell > .content dl > dd {
+.flex-item > .content dl > dt:nth-of-type(even) {
+
+    background-color: #eee;
+}
+
+.flex-item > .content dl > dd {
+
     flex: 0 0 75%;
+
     margin: 0;
+
     line-height: 2em;
 }
-.flex-cell > .content dl > dd:nth-of-type(even) {
-    background: #eee;
+
+.flex-item > .content dl > dd:nth-of-type(even) {
+
+    background-color: #eee;
+}
+
+.flex-item > .content ul {
+
+    display: flex;
+
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.flex-item > .content ul > li {
+
+    flex: 0 0 100%;
+
+    margin: 0;
+
+    line-height: 2em;
+}
+
+.flex-item > .content ul > li:nth-of-type(even) {
+
+    background-color: #eee;
+}
+
+.flex-item > .content > .result a {
+
+    color: inherit;
+
+    text-decoration: none;
+}
+
+.flex-item > .content > .result a:hover {
+
+    color: slateblue;
+
+    text-decoration: underline;
+}
+
+.flex-item > .content > .result a[target="_blank"]::after {
+
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==");
+
+    margin: 0 3px 0 1px;
 }

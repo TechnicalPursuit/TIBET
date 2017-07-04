@@ -10,14 +10,6 @@
  *     rest of the tibet_loader boot script.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          evil:true,
-          maxerr:999,
-          nonstandard:true,
-          node:true
-*/
-
 /* global TP:true, APP:true */
 
 //  ----------------------------------------------------------------------------
@@ -123,42 +115,80 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(root,
-                            'TP',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        root,
+        'TP',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.boot object, which holds functions and data needed
     //  for booting and for loading code dynamically.
-    Object.defineProperty(TP,
-                            'boot',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'boot',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.extern object, which holds functions and data related to
     //  external code (environmental or loaded libraries)
-    Object.defineProperty(TP,
-                            'extern',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'extern',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
-    Object.defineProperty(TP,
-                            'sys',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'sys',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.core object, which is responsible for core system types.
-    Object.defineProperty(TP,
-                            'core',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'core',
+        {
+            value: {}, writable: true, configurable: true
+        });
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(root,
-                            'APP',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        root,
+        'APP',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  No... just no. Note writable and configurable default to false.
-    Object.defineProperty(TP, '$', {value: null});
-    Object.defineProperty(TP, '_', {value: null});
+    Object.defineProperty(
+        TP,
+        '$',
+        {
+            value: null
+        });
+    Object.defineProperty(
+        TP,
+        '_',
+        {
+            value: null
+        });
 
 } else {
     TP = root.TP || {};
@@ -177,13 +207,11 @@ if (Object.defineProperty) {
 //  interesting one-liner that works in any environment to obtain the
 //  global.
 
-//  Turn off the JSHint warning - we know we're invoking the 'Function'
+//  Turn off the lint warning - we know we're invoking the 'Function'
 //  constructor without 'new'... that's part of the trick.
-/* jshint ignore:start */
 /* eslint-disable new-cap,no-eval */
 TP.global = Function('return this')() || (42, eval)('this');
 /* eslint-enable new-cap,no-eval */
-/* jshint ignore:end */
 
 if (!TP.sys.$nativeglobals) {
 
@@ -307,7 +335,6 @@ TP.DEBUG = 'DEBUG';
 TP.INFO = 'INFO';
 TP.WARN = 'WARN';
 TP.ERROR = 'ERROR';
-TP.SEVERE = 'SEVERE';
 TP.FATAL = 'FATAL';
 TP.SYSTEM = 'SYSTEM';
 TP.OFF = 'OFF';
@@ -319,10 +346,9 @@ TP.boot.DEBUG = 2;
 TP.boot.INFO = 3;
 TP.boot.WARN = 4;
 TP.boot.ERROR = 5;
-TP.boot.SEVERE = 6;
-TP.boot.FATAL = 7;
-TP.boot.SYSTEM = 8;
-TP.boot.OFF = 9;
+TP.boot.FATAL = 6;
+TP.boot.SYSTEM = 7;
+TP.boot.OFF = 8;
 
 TP.boot.LOG_NAMES = [
     'ALL',
@@ -331,7 +357,6 @@ TP.boot.LOG_NAMES = [
     'INFO',
     'WARN',
     'ERROR',
-    'SEVERE',
     'FATAL',
     'SYSTEM',
     'OFF'
@@ -367,7 +392,9 @@ TP.boot.$$logcss = null;
 //  Boot-level constants
 //  ---
 
-TP.NOOP = function() {};
+TP.NOOP = function() {
+    //  empty
+};
 
 //  TIBET signaling key for "all objects or origins".
 TP.ANY = 'ANY';
@@ -383,7 +410,7 @@ TP.DOM = 1;
 TP.TEXT = 2;
 TP.XHR = 3;
 TP.WRAP = 4;
-TP.BEST = 5;
+TP.NATIVE = 5;
 
 //  direction/comparison
 TP.UP = 'UP';
@@ -505,6 +532,7 @@ TP.boot.$$uiSubhead;
 //  ---
 
 //  Cached user-agent info.
+
 TP.$$uaInfo = {};
 
 //  one-time capture of the document head since we append quite often ;)
@@ -614,50 +642,66 @@ TP.boot.$$propertyQueries = {};
 //  stdout/stderr styling
 //  ---
 
-/*
- * The colors/control codes below are from colors.js
- * Copyright (c) 2010 Marak Squires, Alexis Sellier (cloudhead)
- * TODO: replace with ansi.js and/or alternative so we get 256-color support.
- */
-
+//  We use 'modes' (browser, and console) to group different definitions of how
+//  a color is actually applied..or not. The JavaScript console and terminal (in
+//  the case of PhantomJS or Electron) need just the string. Browser output has
+//  HTML/CSS content to wrap the target strings instead of ANSI escape codes.
 TP.boot.$$styles = {};
 
+//  Color values here are inspired by chalk.js's wiki page 'chalk
+//  colors'...which ironically chalk.js doesn't actually output.
+//  Note that the browser mode values are rebuilt during startup using data
+//  from TP.sys.cfg() for the current color.scheme.
+//
+//  black:      #2d2d2d
+//  red:        #f58e8e
+//  green:      #a9d3ab
+//  yellow:     #fed37f
+//  blue:       #7aabd4
+//  magenta:    #d6add5
+//  cyan:       #79d4d5
+//  white:      #d6d6d6
+//  gray:       #939393
+//  dim:        #565656
+//  fgText:     #646464
+
+//  Browser version using inline styles. We avoid external CSS to avoid
+//  reliance on additional files during startup for the loader/boot logic.
 TP.boot.$$styles.browser = {
-    //  styles
+//  Modifiers
+    reset: ['<span style="background-color:#d6d6d6;color:#2d2d2d;">', '</span>'],
     bold: ['<b>', '</b>'],
+    dim: ['<span style="color:#565656;">', '</span>'],
     italic: ['<i>', '</i>'],
     underline: ['<u>', '</u>'],
-    inverse: ['<span style="background-color:black;color:white;">',
-      '</span>'],
+    inverse: ['<span style="background-color:black;color:white;">', '</span>'],
+    hidden: ['<span style="visibility:hidden">', '</span>'],
     strikethrough: ['<del>', '</del>'],
-    //  text colors
-    //  grayscale
-    white: ['<span style="color:white;">', '</span>'],
-    grey: ['<span style="color:#aaa;">', '</span>'],
-    black: ['<span style="color:black;">', '</span>'],
-    //  colors
-    blue: ['<span style="color:blue;">', '</span>'],
-    cyan: ['<span style="color:cyan;">', '</span>'],
-    green: ['<span style="color:green;">', '</span>'],
-    magenta: ['<span style="color:magenta;">', '</span>'],
-    red: ['<span style="color:red;">', '</span>'],
-    yellow: ['<span style="color:yellow;">', '</span>'],
-    //  background colors
-    //  grayscale
-    whiteBG: ['<span style="background-color:white;">', '</span>'],
-    greyBG: ['<span style="background-color:#aaa;">', '</span>'],
-    blackBG: ['<span style="background-color:black;">', '</span>'],
-    //  colors
-    blueBG: ['<span style="background-color:blue;">', '</span>'],
-    cyanBG: ['<span style="background-color:cyan;">', '</span>'],
-    greenBG: ['<span style="background-color:green;">', '</span>'],
-    magentaBG: ['<span style="background-color:magenta;">', '</span>'],
-    redBG: ['<span style="background-color:red;">', '</span>'],
-    yellowBG: ['<span style="background-color:yellow;">', '</span>']
+
+//  Colors
+    black: ['<span style="color:#2d2d2d;">', '</span>'],
+    red: ['<span style="color:#f58e8e;">', '</span>'],
+    green: ['<span style="color:#a9d3ab;">', '</span>'],
+    yellow: ['<span style="color:#fed37f;">', '</span>'],
+    blue: ['<span style="color:#7aabd4;">', '</span>'],
+    magenta: ['<span style="color:#d6add5;">', '</span>'],
+    cyan: ['<span style="color:#79d4d5;">', '</span>'],
+    white: ['<span style="color:#d6d6d6;">', '</span>'],
+    gray: ['<span style="color:#939393;">', '</span>'],
+
+//  bgColors
+    bgBlack: ['<span style="background-color:#2d2d2d;color:#d6d6d6;">', '</span>'],
+    bgRed: ['<span style="background-color:#f58e8e;color:#646464;">', '</span>'],
+    bgGreen: ['<span style="background-color:#a9d3ab;color:#646464;">', '</span>'],
+    bgYellow: ['<span style="background-color:#fed37f;color:#646464;">', '</span>'],
+    bgBlue: ['<span style="background-color:#7aabd4;color:#646464;">', '</span>'],
+    bgMagenta: ['<span style="background-color:#d6add5;color:#646464;">', '</span>'],
+    bgCyan: ['<span style="background-color:#79d4d5;color:#646464;">', '</span>'],
+    bgWhite: ['<span style="background-color:#d6d6d6;color:#646464;">', '</span>']
 };
 
-// Generate one for output to the browser console that avoids injecting markup
-// or control codes...neither will work.
+// Generate the browser console settings. This is essentially a set of empty
+// strings since we don't actually want to put markup into the JS console.
 TP.boot.$$styles.console = (function() {
     var i,
         obj;
@@ -671,39 +715,6 @@ TP.boot.$$styles.console = (function() {
 
     return obj;
 }());
-
-TP.boot.$$styles.terminal = {
-    //  styles
-    bold: ['\x1B[1m', '\x1B[22m'],
-    italic: ['\x1B[3m', '\x1B[23m'],
-    underline: ['\x1B[4m', '\x1B[24m'],
-    inverse: ['\x1B[7m', '\x1B[27m'],
-    strikethrough: ['\x1B[9m', '\x1B[29m'],
-    //  text colors
-    //  grayscale
-    white: ['\x1B[37m', '\x1B[39m'],
-    grey: ['\x1B[90m', '\x1B[39m'],
-    black: ['\x1B[30m', '\x1B[39m'],
-    //  colors
-    blue: ['\x1B[34m', '\x1B[39m'],
-    cyan: ['\x1B[36m', '\x1B[39m'],
-    green: ['\x1B[32m', '\x1B[39m'],
-    magenta: ['\x1B[35m', '\x1B[39m'],
-    red: ['\x1B[31m', '\x1B[39m'],
-    yellow: ['\x1B[33m', '\x1B[39m'],
-    //  background colors
-    //  grayscale
-    whiteBG: ['\x1B[47m', '\x1B[49m'],
-    greyBG: ['\x1B[49;5;8m', '\x1B[49m'],
-    blackBG: ['\x1B[40m', '\x1B[49m'],
-    //  colors
-    blueBG: ['\x1B[44m', '\x1B[49m'],
-    cyanBG: ['\x1B[46m', '\x1B[49m'],
-    greenBG: ['\x1B[42m', '\x1B[49m'],
-    magentaBG: ['\x1B[45m', '\x1B[49m'],
-    redBG: ['\x1B[41m', '\x1B[49m'],
-    yellowBG: ['\x1B[43m', '\x1B[49m']
-};
 
 //  ---
 //  stage processing
@@ -739,95 +750,87 @@ TP.boot.$$stage = null;
 TP.boot.$$stages = {
 prelaunch: {
     order: 0,
-    log: 'Prelaunch',
-    head: 'Pre-Launch',
-    sub: 'Verifying environment...',
+    log: 'Verifying',
+    head: 'Verifying platform...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 configuring: {
     order: 1,
-    log: 'Configure',
-    head: 'Configure',
-    sub: 'Reading configuration...',
+    log: 'Configuring',
+    head: 'Reading configuration data...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 expanding: {
     order: 2,
     log: 'Expanding',
-    head: 'Expanding',
-    sub: 'Processing boot manifest...',
+    head: 'Expanding package#config...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 import_phase_one: {
     order: 3,
-    log: 'Import Phase One',
-    head: 'Import Phase One',
-    sub: 'Importing phase-one (static/library) components...',
+    log: 'Loading Phase One',
+    head: 'Loading cross-platform kernel...',
+    sub: '',
     image: '~app_boot/media/tibet_logo.png'
 },
 import_paused: {
     order: 4,
     log: 'Import Pause',
-    head: 'Import Paused',
-    sub: 'Waiting to start phase-two import...',
+    head: 'Paused',
+    sub: 'Waiting to load application components...',
     image: '~app_boot/media/playpause.png'
 },
 import_phase_two: {
     order: 5,
-    log: 'Import Phase Two',
-    head: 'Import Phase Two',
-    sub: 'Importing phase-two (dynamic/application) components...',
+    log: 'Loading Phase Two',
+    head: 'Loading application components...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 paused: {
     order: 6,
-    log: 'Paused',
-    head: 'Paused',
-    sub: 'Proceed when ready.',
+    log: 'Startup Paused',
+    head: 'Proceed when ready.',
+    sub: '',
     image: '~app_boot/media/playpause.png'
 },
-activating: {
-    order: 7,
-    log: 'Activating',
-    head: 'Activating',
-    sub: 'Activating application...',
-    image: '~app_boot/media/app_logo.png',
-    fatal: true
-},
 initializing: {
-    order: 8,
-    log: 'Initialization',
-    head: 'Initializing',
-    sub: 'Initializing loaded components...',
+    order: 7,
+    log: 'Initializing',
+    head: 'Initializing components...',
+    sub: '',
     image: '~app_boot/media/app_logo.png',
     fatal: true
 },
-rendering: {
-    order: 9,
-    log: 'Rendering',
-    head: 'Rendering',
-    sub: 'Rendering application UI...',
+starting: {
+    order: 8,
+    log: 'Starting',
+    head: 'Starting application...',
+    sub: '',
     image: '~app_boot/media/app_logo.png',
     fatal: true
 },
 liftoff: {
-    order: 10,
+    order: 9,
     log: 'Started',
-    head: 'Started',
-    sub: 'Application running.',
+    head: 'Application started.',
+    sub: '',
     image: '~app_boot/media/app_logo.png',
     hook: function() {
-        TP.boot.$displayStatus('Application running: ' +
+        TP.boot.$displayStatus('Application started: ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
             TP.boot.$getStageTime('paused')) + 'ms.');
         TP.boot.hideUIBoot();
     }
 },
 stopped: {
-    order: 11,
+    order: 10,
     log: 'Stopped',
-    head: 'Stopped',
-    sub: 'Boot halted.',
+    head: 'Application launch halted.',
+    sub: '',
     image: '~app_boot/media/alert.png',
     hook: function() {
         TP.boot.$displayStatus('Boot halted after: ' +
@@ -1374,6 +1377,92 @@ TP.boot.shouldStop = function(aReason) {
 };
 
 //  ============================================================================
+//  System Property Getters
+//  ============================================================================
+
+TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
+
+    /**
+     * @method installSystemPropertyGetter
+     * @summary Installs the getter function on anObj under propName such that
+     *     it can be used to retrieve values without function invocation syntax.
+     *     This is particularly handy when using this with ACP expressions,
+     *     which don't allow function invocation.
+     * @description Note that propName can be a dot-separated name and this
+     *     method will 'do the right thing' and build a 'path' of plain JS
+     *     objects to the getter. Common system property objects are:
+     *
+     *          TP.cfg  ->  Allows access to system cfg data
+     *          TP.env  ->  Allows access to system env data
+     *          TP.has  ->  Allows access to system feature data
+     *
+     * @param {Object} anObj The object to install the getter on.
+     * @param {String} propName The property name to use to access the getter.
+     * @param {Function} getter The Function that will be run when the property
+     *     is accessed.
+     */
+
+    var obj,
+        parts,
+        len,
+        i,
+        name;
+
+    if (/\./.test(propName)) {
+        obj = anObj;
+
+        parts = propName.split('.');
+        len = parts.length;
+
+        for (i = 0; i < len - 1; i++) {
+            name = parts[i];
+
+            if (TP.boot.$notValid(obj[name])) {
+                //  Remove any partial path descriptor that might be in the way
+                //  of altering the value.
+                delete obj[name];
+                obj[name] = {};
+            }
+
+            obj = obj[name];
+        }
+
+        name = parts[len - 1];
+    } else {
+        obj = anObj;
+        name = propName;
+    }
+
+    if (obj.hasOwnProperty(name)) {
+        return;
+    }
+
+    Object.defineProperty(
+        obj,
+        name,
+        {
+            //  Make sure this can be altered/removed/updated as needed.
+            configurable: true,
+            get: function() {
+                return getter(propName);
+            }
+        });
+
+    return;
+};
+
+//  Common system property objects
+
+//  Used for cfg() properties
+TP.cfg = {};
+
+//  Used for env() properties
+TP.env = {};
+
+//  Used for hasFeature() properties
+TP.has = {};
+
+//  ============================================================================
 //  Environment and Configuration Primitives
 //  ============================================================================
 
@@ -1382,6 +1471,28 @@ TP.boot.shouldStop = function(aReason) {
  * routines to manage the values in the TIBET environment and configuration
  * dictionaries.
  */
+
+//  ----------------------------------------------------------------------------
+
+//  During startup we call getcfg a lot and TP.core.Hash isn't around so we end
+//  up using objects instrumented with at/atPut. Build those 'methods' here.
+TP.boot.$$getprop_at = function(slotKey) {
+    return this[slotKey];
+};
+TP.boot.$$getprop_atPut = function(slotKey, aValue) {
+    this[slotKey] = aValue;
+};
+
+//  The one other method used on cfg results is getKeys so iteration can
+//  occur...but we have to remove the three methods themselves from list.
+TP.boot.$$getprop_getKeys = function() {
+    var keys;
+
+    keys = Object.keys(this);
+    return keys.filter(function(key) {
+        return key !== 'at' && key !== 'atPut' && key !== 'getKeys';
+    });
+};
 
 //  ----------------------------------------------------------------------------
 
@@ -1410,7 +1521,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         keys,
         len,
         i,
-        obj;
+        obj,
+        keyPrefix;
 
     if (aHash === undefined || aHash === null) {
         return aDefault;
@@ -1453,6 +1565,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         return val;
     }
 
+    keyPrefix = key + '.';
+
     //  If the key didn't access a direct value it may be a prefix in the sense
     //  that it's intended to access a subset of values. Try to collect them.
     arr = [];
@@ -1460,36 +1574,33 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         keys = aHash.getKeys();
         len = keys.length;
         for (i = 0; i < len; i++) {
-            if (keys[i].indexOf(key + '.') === 0) {
+            if (keys[i].indexOf(keyPrefix) === 0) {
                 arr.push(keys[i]);
             }
         }
     } else {
-        for (i in aHash) {
-            if (aHash.hasOwnProperty(i)) {
-                if (i.indexOf(key + '.') === 0) {
-                    arr.push(i);
-                }
+        keys = Object.keys(aHash);
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            if (keys[i].indexOf(keyPrefix) === 0) {
+                arr.push(keys[i]);
             }
         }
     }
 
-    //  if we found at least one key then return the set, otherwise
-    //  we're going to return the default value rather than an empty
-    //  array since that seems the most semantically consistent
+    //  if we found at least one key then return the set, otherwise we're going
+    //  to return the default value rather than an empty array since that seems
+    //  the most semantically consistent
     if (arr.length > 0) {
 
-        if (typeof TP.hc === 'function') {
-            obj = TP.hc();
-        } else {
-            obj = {};
-            obj.at = function(slotKey) {return this[slotKey]; };
-            obj.atPut = function(slotKey, aValue) {this[slotKey] = aValue; };
-        }
+        obj = {};
+        obj.at = TP.boot.$$getprop_at;
+        obj.atPut = TP.boot.$$getprop_atPut;
+        obj.getKeys = TP.boot.$$getprop_getKeys;
 
         len = arr.length;
         for (i = 0; i < len; i++) {
-            obj.atPut(arr[i], aHash.at(arr[i]));
+            obj[arr[i]] = aHash.at(arr[i]);
         }
 
         return obj;
@@ -1546,7 +1657,8 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
             return;
         } else if (TP.boot.$argsDone === true) {
             TP.boot.$stdout('Forcing reset of \'' + key +
-                '\' override to ' + aValue, TP.boot.DEBUG);
+                '\' override to ' +
+                JSON.stringify(aValue), TP.boot.DEBUG);
         }
     }
 
@@ -1596,16 +1708,24 @@ TP.sys.configlookups = {};
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
     Object.defineProperty(TP.sys.configuration, 'at', {
-        value: function(aKey) {return this[aKey]; },
+        value: function(aKey) {
+                return this[aKey];
+            },
         enumerable: false
     });
     Object.defineProperty(TP.sys.configuration, 'atPut', {
-        value: function(aKey, aValue) {this[aKey] = aValue; },
+        value: function(aKey, aValue) {
+            this[aKey] = aValue;
+        },
         enumerable: false
     });
 } else {
-    TP.sys.configuration.at = function(aKey) {return this[aKey]; };
-    TP.sys.configuration.atPut = function(aKey, aValue) {this[aKey] = aValue; };
+    TP.sys.configuration.at = function(aKey) {
+        return this[aKey];
+    };
+    TP.sys.configuration.atPut = function(aKey, aValue) {
+        this[aKey] = aValue;
+    };
 }
 
 // Cache values set on the launch URL which represent user overrides.
@@ -1677,6 +1797,14 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      * @returns {Object} The value of the named property.
      */
 
+    //  Install a system property getter to return property values on 'TP.cfg'
+    TP.sys.installSystemPropertyGetter(
+        TP.cfg,
+        aKey,
+        function(aName) {
+            return TP.sys.cfg(aName);
+        });
+
     return TP.boot.$$setprop(TP.sys.configuration, aKey, aValue, null,
                                 shouldSignal, override);
 };
@@ -1701,16 +1829,24 @@ TP.sys.environment = {};
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
     Object.defineProperty(TP.sys.environment, 'at', {
-        value: function(aKey) {return this[aKey]; },
+        value: function(aKey) {
+            return this[aKey];
+        },
         enumerable: false
     });
     Object.defineProperty(TP.sys.environment, 'atPut', {
-        value: function(aKey, aValue) {this[aKey] = aValue; },
+        value: function(aKey, aValue) {
+            this[aKey] = aValue;
+        },
         enumerable: false
     });
 } else {
-    TP.sys.environment.at = function(aKey) {return this[aKey]; };
-    TP.sys.environment.atPut = function(aKey, aValue) {this[aKey] = aValue; };
+    TP.sys.environment.at = function(aKey) {
+        return this[aKey];
+    };
+    TP.sys.environment.atPut = function(aKey, aValue) {
+        this[aKey] = aValue;
+    };
 }
 
 //  ----------------------------------------------------------------------------
@@ -1758,6 +1894,15 @@ TP.boot.$$setenv = function(aKey, aValue) {
      * @param {Object} aValue The value to assign.
      * @returns {Object} The value of the named property.
      */
+
+    //  Install a system property getter to return environment values on
+    //  'TP.env'
+    TP.sys.installSystemPropertyGetter(
+        TP.env,
+        aKey,
+        function(aName) {
+            return TP.sys.env(aName);
+        });
 
     return TP.boot.$$setprop(TP.sys.environment, aKey, aValue, 'env');
 };

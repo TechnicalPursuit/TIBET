@@ -297,7 +297,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -354,7 +355,8 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -476,7 +478,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -627,6 +630,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         lastSourcedScript,
 
         scripts,
+        scriptTextSiblingsContents,
+        nextScriptSibling,
 
         i,
 
@@ -693,7 +698,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  automatically, since by emptying the content of the document above, we
     //  blew away the Mutation Observer registration.
     if (TP.isElement(docElem) && awakenContent) {
-        TP.core.MutationSignalSource[TP.composeHandlerName('MutationEvent')](
+        TP.sig.MutationSignalSource[TP.composeHandlerName('MutationEvent')](
             {
                 type: 'childList',
                 target: docElem,
@@ -716,16 +721,31 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  are removed from the document, we make sure to capture their URLs
     //  *before* we set it into the document.
 
-    //  Grab all of the existing scripts.
+    //  Grab all of the existing script nodes.
     scriptURLs = TP.ac();
     scripts = TP.nodeGetElementsByTagName(nodeContent,
                                             'script',
                                             TP.w3.Xmlns.XHTML);
 
+    scriptTextSiblingsContents = TP.ac();
+
     //  Loop over them, capture their 'src' URL *and remove them from the
-    //  document*.
+    //  document*. If they have following sibling content that consists of a
+    //  Text node, capture that too.
     for (i = 0; i < scripts.getSize(); i++) {
+
         scriptURLs.push(scripts.at(i).src);
+
+        //  If the next sibling after the script node is a text node, we capture
+        //  its contents and will put them back after we re-create the script
+        //  nodes below. This lessens the impact of this process on the
+        //  formatting of authored content.
+        nextScriptSibling = scripts.at(i).nextSibling;
+        if (TP.isTextNode(nextScriptSibling)) {
+            scriptTextSiblingsContents.push(nextScriptSibling.nodeValue);
+            TP.nodeDetach(nextScriptSibling);
+        }
+
         TP.nodeDetach(scripts.at(i));
     }
 
@@ -801,10 +821,12 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     loadFunc = function(evt) {
         var scriptURL,
 
-            newScript;
+            newScript,
+
+            textSiblingContent;
 
         if (TP.isEvent(evt)) {
-            evt.target.removeEventListener('load', loadFunc, false);
+            TP.eventGetTarget(evt).removeEventListener('load', loadFunc, false);
         }
 
         if (TP.notEmpty(scriptURLs)) {
@@ -819,6 +841,16 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             //  Append it into the document head.
             TP.nodeAppendChild(docHead, newScript, false);
+
+            //  If there is text sibling content for this particular script
+            //  node, then append it after the new script node.
+            textSiblingContent = scriptTextSiblingsContents.at(count);
+            if (TP.notEmpty(textSiblingContent)) {
+                TP.nodeAppendChild(
+                        docHead,
+                        aDocument.createTextNode(textSiblingContent),
+                        false);
+            }
 
             //  Make sure to increment the count for the next pass!
             count++;
@@ -1254,7 +1286,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -1634,11 +1667,6 @@ function(anElement) {
             wholeName = kvPair.first();
             nsURIVal = kvPair.last();
 
-            //  We don't process the default namespace.
-            if (wholeName === 'xmlns') {
-                return;
-            }
-
             entry = docXMLNSAttrs.at(wholeName);
 
             //  If the document element has an attribute defined exactly the
@@ -1648,6 +1676,11 @@ function(anElement) {
             if (TP.isValid(entry) && entry === nsURIVal) {
                 TP.elementRemoveNamespace(anElement, wholeName);
 
+                return;
+            }
+
+            //  We don't copy the default namespace.
+            if (wholeName === 'xmlns') {
                 return;
             }
 
@@ -1699,6 +1732,45 @@ function(anElement) {
         });
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementBubbleXMLNSAttributesOnDescendants',
+function(anElement) {
+
+    /**
+     * @method elementBubbleXMLNSAttributesOnDescendants
+     * @summary 'Bubbles' xmlns attributes from the descendant elements of the
+     *     supplied elements 'up' their ancestor chain in an attempt to
+     *     'de-clutter' the DOM tree. Note that care is taken to follow XML
+     *     Namespaces rules (i.e. the namespace will only be redefined further
+     *     up the chain if it has both the same prefix and same namespace URI
+     *     value).
+     * @param {Element} anElement The element to query for descendants to bubble
+     *     the namespaces up from.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     */
+
+    var allElems;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Bubble xmlns attributes from the supplied Element.
+    TP.elementBubbleXMLNSAttributes(anElement);
+
+    //  Get all descendants, as long as they're Elements.
+    allElems = TP.nodeGetDescendantElements(anElement);
+
+    allElems.forEach(
+        function(anElem) {
+            TP.elementBubbleXMLNSAttributes(anElem);
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3095,6 +3167,10 @@ function(anElement, ignoreSourcetag) {
         //  which case we 'fake' it by using 'html' as the prefix.
         if (TP.isHTMLNode(anElement) || TP.isXHTMLNode(anElement)) {
             prefix = 'html';
+        } else if (TP.isXMLNode(anElement) &&
+                    TP.isValid(TP.w3.Xmlns) &&
+                    TP.notEmpty(anElement.namespaceURI)) {
+            prefix = TP.w3.Xmlns.getCanonicalPrefix(anElement.namespaceURI);
         }
     }
 
@@ -3460,6 +3536,47 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementHasGeneratedID',
+function(anElement) {
+
+    /**
+     * @method elementHasGeneratedID
+     * @summary Returns true if the supplied element has a 'generated ID' - that
+     *     is, an ID that was generated by TIBET and not set by the markup
+     *     author or other code.
+     * @param {Element} anElement The element to test for the existence of a
+     *     generated ID.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     */
+
+    var id,
+
+        fullName,
+        generatedPrefix;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Grab the element's current ID - it's its empty, then it can't have been
+    //  generated ;-).
+    id = TP.elementGetAttribute(anElement, 'id', true);
+    if (TP.isEmpty(id)) {
+        return false;
+    }
+
+    //  The TIBET algorithm for generated IDs uses the full name and replaces
+    //  ':' with '_'. Return whether or not the element's ID starts with that
+    //  computed prefix.
+    fullName = TP.elementGetFullName(anElement);
+    generatedPrefix = fullName.replace(':', '_');
+
+    return id.startsWith(generatedPrefix);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementInsertContent',
 function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
@@ -3502,7 +3619,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -3736,7 +3854,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -3967,10 +4086,12 @@ function(anElement, aPrefix) {
     /**
      * @method elementRemoveNamespace
      * @summary Removes an 'xmlns:<aPrefix>' attribute from the element. Note
-     *     that 'aPrefix' *must* be valid (i.e. you cannot use this
-     *     mechanism to change the default namespace - no current DOM
-     *     environment supports that). Note also that namespaces can only be
-     *     remoed from elements in an XML document.
+     *     that 'aPrefix' *must* be valid (i.e. you can use this
+     *     mechanism to remove a default namespace attribute (i.e. a standalone
+     *     'xmlns' attribute), but this will *not* change the default namespace
+     *     of the supplied element - no current DOM environment supports that).
+     *     Note also that namespaces can only be removed from elements in an XML
+     *     document.
      * @param {Element} anElement The Element node to remove a namespace from.
      * @param {String} aPrefix The prefix of the namespace being removed. This
      *     can have the 'xmlns:' already prepended to it.
@@ -4008,9 +4129,10 @@ function(anElement, aPrefix) {
                         'Invalid or empty prefix or URI');
     }
 
-    //  If the prefix is just 'xmlns', we return - can't change the default
-    //  namespace.
+    //  If the prefix is just 'xmlns', we remove it and return - no need to
+    //  continue.
     if (aPrefix === 'xmlns') {
+        anElement.removeAttributeNS(TP.w3.Xmlns.XMLNS, aPrefix);
         return;
     }
 
@@ -4124,6 +4246,12 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
         return TP.raise(this, 'TP.sig.InvalidName');
     }
 
+    //  If the attribute name is 'id', then make sure to set the computed &
+    //  cached TP.GLOBAL_ID slot to null.
+    if (attributeName === 'id') {
+        anElement[TP.GLOBAL_ID] = null;
+    }
+
     //  If we're not strict about namespaces, check to see if we have a
     //  more-specific 'setter'.
     methodName = 'elementSet' + attributeName.asTitleCase();
@@ -4233,7 +4361,6 @@ function(anElement, attributeHash, checkAttrNSURI) {
     //  the value (the second item).
     attributeHash.perform(
             function(keyValuePair) {
-
                 TP.elementSetAttribute(anElement,
                                         keyValuePair.first(),
                                         keyValuePair.last(),
@@ -4279,7 +4406,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -4322,6 +4450,60 @@ function(anElement) {
         });
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('scriptElementGetType',
+function(anElement) {
+
+    /**
+     * @method scriptElementGetType
+     * @summary Returns a TIBET type, if one can be computed, from the supplied
+     *     script element.
+     * @description TIBET follows a naming convention whereby scripts that
+     *     contain TIBET types are named consistently. This method takes
+     *     advantage of that fact and tries to resolve an attribute on a script
+     *     element into a named TIBET type.
+     * @param {Element} anElement The script element to try to determine a TIBET
+     *     type from.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.meta.lang.RootObject|null} The type that can be determined
+     *     from the script element provided.
+     */
+
+    var loc,
+
+        typeName,
+        type;
+
+    //  Make sure we were handed a 'script' element.
+    if (!TP.isElement(anElement) ||
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'script') {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Grab the value of the 'source' attribute off of the script element.
+    loc = TP.elementGetAttribute(anElement, 'source', true);
+
+    if (TP.isEmpty(loc)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Slice off from the last '/' plus 1 to the end. That will be type name
+    //  plus extension.
+    loc = loc.slice(loc.lastIndexOf('/') + 1);
+
+    //  Slice off extension
+    typeName = loc.slice(0, loc.lastIndexOf('.'));
+
+    //  Try to get the type object by that name - if it exists.
+    type = TP.sys.getTypeByName(typeName);
+    if (TP.isType(type)) {
+        return type;
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -4383,6 +4565,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         thePosition,
 
         nodeContent,
+        str,
+
         returnNode,
 
         insertionNode;
@@ -4404,14 +4588,18 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
     } else if (TP.isString(theContent)) {
+        //  Convert any entities to literals, since the caller assumed that they
+        //  could pass entities, but this may create a Text node which will want
+        //  literals.
+        str = TP.xmlEntitiesToLiterals(theContent);
+
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
         //  errors). If we can't parse a valid Node from the content, we
         //  just create a Text node using the content and use that.
         if (TP.notValid(nodeContent =
-                        TP.nodeFromString(theContent, null, true))) {
-            nodeContent = TP.nodeGetDocument(anElement).createTextNode(
-                                                                theContent);
+                        TP.nodeFromString(str, null, true))) {
+            nodeContent = TP.nodeGetDocument(anElement).createTextNode(str);
         }
     } else {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
@@ -4489,12 +4677,12 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  If it's an element, bubble any namespaces we find to reduce clutter on
     //  the DOM tree
     if (TP.isElement(returnNode)) {
-        TP.elementBubbleXMLNSAttributes(returnNode);
+        TP.elementBubbleXMLNSAttributesOnDescendants(returnNode);
     }
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement.parentNode);
+        loadedFunction(anElement.parentNode, returnNode);
     }
 
     //  Final operation is to signal that we've done the work
@@ -4547,14 +4735,20 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
+        str,
+
         // elemGID,
+
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(anElement);
+    }
 
     //  If the content is an XML node, then we just make sure its an
     //  Element, and not a Document.
@@ -4565,14 +4759,19 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
     } else if (TP.isString(theContent)) {
+
+        //  Convert any entities to literals, since the caller assumed that they
+        //  could pass entities, but this may create a Text node which will want
+        //  literals.
+        str = TP.xmlEntitiesToLiterals(theContent);
+
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
         //  errors). If we can't parse a valid Node from the content, we
         //  just create a Text node using the content and use that.
         if (TP.notValid(nodeContent =
-                        TP.nodeFromString(theContent, null, true))) {
-            nodeContent = TP.nodeGetDocument(anElement).createTextNode(
-                                                                theContent);
+                        TP.nodeFromString(str, null, true))) {
+            nodeContent = TP.nodeGetDocument(anElement).createTextNode(str);
         }
     } else {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
@@ -4596,12 +4795,12 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     //  If it's an element, bubble any namespaces we find to reduce clutter on
     //  the DOM tree
     if (TP.isElement(returnNode)) {
-        TP.elementBubbleXMLNSAttributes(returnNode);
+        TP.elementBubbleXMLNSAttributesOnDescendants(returnNode);
     }
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, returnNode);
     }
 
     //  Final operation is to signal that we've done the work
@@ -4655,13 +4854,18 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
+        str,
+
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(anElement);
+    }
 
     //  If the content is an XML node, then we just make sure its an
     //  Element, and not a Document.
@@ -4672,14 +4876,19 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
     } else if (TP.isString(theContent)) {
+
+        //  Convert any entities to literals, since the caller assumed that they
+        //  could pass entities, but this may create a Text node which will want
+        //  literals.
+        str = TP.xmlEntitiesToLiterals(theContent);
+
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
         //  errors). If we can't parse a valid Node from the content, we
         //  just create a Text node using the content and use that.
         if (TP.notValid(nodeContent =
-                        TP.nodeFromString(theContent, null, true))) {
-            nodeContent = TP.nodeGetDocument(anElement).createTextNode(
-                                                                theContent);
+                        TP.nodeFromString(str, null, true))) {
+            nodeContent = TP.nodeGetDocument(anElement).createTextNode(str);
         }
     } else {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
@@ -4700,12 +4909,12 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     //  If it's an element, bubble any namespaces we find to reduce clutter on
     //  the DOM tree
     if (TP.isElement(returnNode)) {
-        TP.elementBubbleXMLNSAttributes(returnNode);
+        TP.elementBubbleXMLNSAttributesOnDescendants(returnNode);
     }
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, returnNode);
     }
 
     //  Final operation is to signal that we've done the work
@@ -4767,6 +4976,31 @@ function(anElement) {
         });
 
     return TP.isElement(ancestor);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeIsResponder',
+function(aNode) {
+
+    /**
+     * @method nodeIsResponder
+     * @summary Tests a node to determine if it's a valid responder element.
+     *     Responders have either a tibet:ctrl or tibet:tag attribute.
+     * @param {Node} aNode The node to check.
+     * @returns {Boolean} True for nodes which are elements having the proper
+     *     attribute or tag values to describe a responder.
+     */
+
+    if (TP.isElement(aNode)) {
+        if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
+                TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
+                !TP.w3.Xmlns.getXHTMLURIs().contains(
+                    TP.nodeGetNSURI(aNode))) {
+            return true;
+        }
+    }
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -5014,7 +5248,10 @@ function(aNodeList, aDocument, shouldClone) {
 
     //  default to the document provided, or the document of the first node
     firstNode = aNodeList.item(0);
-    doc = TP.ifInvalid(aDocument, TP.nodeGetDocument(firstNode));
+    doc = aDocument;
+    if (TP.notValid(doc)) {
+        doc = TP.nodeGetDocument(firstNode);
+    }
 
     //  create the fragment
     if (TP.notValid(fragment = TP.documentConstructFragment(doc))) {
@@ -5036,6 +5273,72 @@ function(aNodeList, aDocument, shouldClone) {
     }
 
     return fragment;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeListFilterNonRoots',
+function(aNodeList) {
+
+    /**
+     * @method nodeListFilterNonRoots
+     * @summary Filters any 'non-roots' out of the supplied NodeList.
+     * @description This method filters out any Nodes from the supplied node
+     *     list that are descendants of other nodes in the same list, thereby
+     *     returning an Array of only 'root' nodes.
+     * @param {NodeList|Array} aNodeList The node list
+     * @returns {Array} The supplied NodeList filtered for non-root nodes.
+     */
+
+    var allNodes,
+        rootNodes,
+        isDescendant,
+        testNode,
+        j;
+
+    if (!TP.isArray(aNodeList)) {
+        allNodes = TP.ac(aNodeList);
+    } else {
+        allNodes = TP.copy(aNodeList);
+    }
+
+    rootNodes = TP.ac();
+
+    //  Iterate over all of the nodes.
+    while (TP.notEmpty(allNodes)) {
+
+        isDescendant = false;
+
+        //  Shift off the head of the list.
+        testNode = allNodes.shift();
+
+        //  Iterate over all of the already plucked 'root' nodes to see if the
+        //  node is a descendant of any of them
+        for (j = 0; j < rootNodes.getSize(); j++) {
+            if (rootNodes.at(j).contains(testNode)) {
+                isDescendant = true;
+                break;
+            }
+        }
+
+        //  If it wasn't a descendant of one of the already plucked 'roots',
+        //  then check the rest of the nodes left in the 'all' list.
+        if (!isDescendant) {
+            for (j = 0; j < allNodes.getSize(); j++) {
+                if (allNodes.at(j).contains(testNode)) {
+                    isDescendant = true;
+                    break;
+                }
+            }
+        }
+
+        //  If it wasn't a descendant, then add it to the root list.
+        if (!isDescendant) {
+            rootNodes.push(testNode);
+        }
+    }
+
+    return rootNodes;
 });
 
 //  ------------------------------------------------------------------------
@@ -5281,9 +5584,7 @@ function(aNode, aDescendant) {
 
     //  Otherwise, we can use the built-in 'compareDocumentPosition' method
     //  here. Thanks to Peter-Paul Koch.
-    /* jshint bitwise:false */
-    return !!(root.compareDocumentPosition(aDescendant) & 16);
-    /* jshint bitwise:true */
+    return Boolean(root.compareDocumentPosition(aDescendant) & 16);
 });
 
 //  ------------------------------------------------------------------------
@@ -5438,7 +5739,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetDocumentPosition',
-function(aNode, joinChar) {
+function(aNode, joinChar, stopAncestor) {
 
     /**
      * @method nodeGetDocumentPosition
@@ -5448,6 +5749,9 @@ function(aNode, joinChar) {
      * @param {Node} aNode The Node to operate on.
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
+     * @param {Element} [stopAncestor] An element between aNode and aNode's
+     *     document node that the position computation will 'stop' at. This
+     *     parameter is optional.
      * @example Compute a document-level index for an XML node:
      *     <code>
      *          xmlDoc = TP.documentFromString('<foo><bar>Some text<goo>More
@@ -5490,6 +5794,7 @@ function(aNode, joinChar) {
     }
 
     while (TP.isElement(node) &&
+            node !== stopAncestor &&
             (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
         path.push(index);
         node = node.parentNode;
@@ -5590,7 +5895,14 @@ function(aNode, aSignal) {
 
     //  Native types may be responders but not have a tibet:tag or tibet:ctrl
     //  attribute so we need to query them by type.
-    type = TP.nodeGetConcreteType(aNode);
+
+    //  NB: Many times the node will already have it's node type, so we use a
+    //  fast way to get that here.
+    type = aNode[TP.NODE_TYPE];
+    if (TP.notValid(type)) {
+        type = TP.nodeGetConcreteType(aNode);
+    }
+
     if (TP.canInvoke(type, 'isResponderFor')) {
         if (type.isResponderFor(aNode, aSignal)) {
             return aNode;
@@ -5898,7 +6210,8 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -6837,7 +7150,10 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
     }
 
     //  If the path type wasn't supplied, compute it.
-    thePathType = TP.ifInvalid(aPathType, TP.getAccessPathType(aPath));
+    thePathType = aPathType;
+    if (TP.notValid(thePathType)) {
+        thePathType = TP.getAccessPathType(aPath);
+    }
 
     switch (thePathType) {
         case TP.XPATH_PATH_TYPE:
@@ -6984,6 +7300,8 @@ function(aNode, anXPath, resultType, logErrors) {
         firstItem,
         node,
 
+        i,
+
         msg;
 
     //  According to the DOM Level 3 XPath specification, aNode can only be
@@ -7039,7 +7357,9 @@ function(aNode, anXPath, resultType, logErrors) {
             //  it expects a Window(!) that will have a 'document' slot, but
             //  thankfully its good enough to hand it a POJO with a 'document'
             //  slot.
-            TP.extern.wgxpath.install({document: doc});
+            TP.extern.wgxpath.install({
+                document: doc
+            });
 
             //  Grab the 'evaluate' function that wgxpath installed and alias it
             //  to '$evaluate'.
@@ -7280,10 +7600,45 @@ function(aNode, anXPath, resultType, logErrors) {
             }
         }
     } catch (e) {
-        if (log || !TP.sys.hasLoaded()) {
-            msg = TP.join('Error evaluating XPath ', anXPath);
-            TP.ifError() ?
-                TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
+
+        //  If the caller wanted a TP.NODESET, then we can retry with a snapshot
+        //  result type, which is more resilient in face of DOM changes.
+        if (resultType === TP.NODESET) {
+
+            TP.ifInfo() ?
+                TP.info('Error occurred executing XPath.' +
+                        ' Retrying with snapshot result type') : 0;
+
+            try {
+                result = doc.evaluate(
+                                theXPath,
+                                aNode,
+                                TP.$$xpathResolverFunction,
+                                XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                                null);
+
+                resultArr = TP.ac();
+
+                //  Repackage from the XPathResult into an Array.
+                for (i = 0; i < result.snapshotLength; i++) {
+                    resultArr.push(result.snapshotItem(i));
+                }
+
+                return resultArr;
+            } catch (e2) {
+                //  An error occurred the second time through - report it.
+                if (log || !TP.sys.hasLoaded()) {
+                    msg = TP.join('Error evaluating XPath ', anXPath);
+                    TP.ifError() ?
+                        TP.error(TP.ec(e2, msg), TP.QUERY_LOG) : 0;
+                }
+            }
+        } else {
+            if (log || !TP.sys.hasLoaded()) {
+                msg = TP.join('Error evaluating XPath ', anXPath);
+                TP.ifError() ?
+                    TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
+            }
         }
     }
 
@@ -7477,6 +7832,94 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetAncestorsInNS',
+function(aNode, aNamespaceURI) {
+
+    /**
+     * @method nodeGetAncestorsInNS
+     * @summary Returns an array of ancestors of the current element which are
+     *     in the namespace provided. Note that this method only checks the
+     *     elements themselves, not the attributes. If you want to also return
+     *     elements that have attributes are in that namespace, use
+     *     nodeGetAncestorsWithNS.
+     * @param {Node} aNode The node to start traversal from.
+     * @param {String} aNamespaceURI The URI for the namespace to check.
+     * @return {Array.<Element>} An array of ancestors.
+     */
+
+    var arr,
+        ancestor;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'InvalidNode');
+    }
+
+    if (TP.isEmpty(aNamespaceURI)) {
+        return TP.raise(this, 'InvalidNamespace');
+    }
+
+    arr = TP.ac();
+
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor)) {
+        if (ancestor.namespaceURI === aNamespaceURI) {
+            arr.push(ancestor);
+        }
+        ancestor = ancestor.parentNode;
+    }
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetAncestorsWithNS',
+function(aNode, aNamespaceURI) {
+
+    /**
+     * @method nodeGetAncestorsWithNS
+     * @summary Returns an array of elements with either a namespaceURI or
+     *     that has one or more attributes which are part of the namespace
+     *     provided.
+     * @param {Node} aNode The node to start traversal from.
+     * @param {String} aNamespaceURI The URI for the namespace to check.
+     * @return {Array.<Element>} An array of ancestors.
+     */
+
+    var arr,
+        ancestor,
+        attrs;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'InvalidNode');
+    }
+
+    if (TP.isEmpty(aNamespaceURI)) {
+        return TP.raise(this, 'InvalidNamespace');
+    }
+
+    arr = TP.ac();
+
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor)) {
+        if (ancestor.namespaceURI === aNamespaceURI) {
+            arr.push(ancestor);
+        } else {
+            attrs = TP.elementGetAttributeNodesInNS(
+                            ancestor, null, aNamespaceURI);
+            if (TP.notEmpty(attrs)) {
+                arr.push(ancestor);
+            }
+        }
+
+        ancestor = ancestor.parentNode;
+    }
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetCommonAncestor',
 function(firstNode, varargs) {
 
@@ -7652,7 +8095,7 @@ function(aNode, anIndex) {
      *     provided to the method.
      */
 
-    var nodes,
+    var children,
         len,
 
         count,
@@ -7674,14 +8117,14 @@ function(aNode, anIndex) {
 
     //  trim out extra overhead on IE (and browsers that implement the
     //  ElementTraversal specification) by using children array if available
-    nodes = aNode.children || aNode.childNodes;
+    children = TP.nodeGetChildElements(aNode);
 
-    len = nodes.length;
+    len = children.length;
     count = 0;
 
     for (i = 0; i < len; i++) {
         ind = anIndex === TP.LAST ? len - i - 1 : i;
-        node = nodes[ind];
+        node = children[ind];
 
         try {
             if (TP.isElement(node)) {
@@ -7861,6 +8304,88 @@ function(aNode, breadthFirst) {
     }
 
     return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetDescendantAt',
+function(aNode, aPath) {
+
+    /**
+     * @method nodeGetDescendantAt
+     * @summary Returns a descendant Element given a '.' separated 'path' of
+     *     element indicies for each 'level'.
+     * @description No normalization of text node children is done in this
+     *     process since we're only looking for element nodes.
+     * @param {Node} aNode The DOM node to operate on.
+     * @example Get the descendant element node at address 0.1 (the 'baz'
+     *     element):
+     *     <code>
+     *          xmlDoc = TP.nodeGetDescendantElementAt(
+     *              TP.documentFromString('<foo><bar/>Some text<baz/></foo>'));
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeGetDescendantAt(xmlDoc.documentElement, '0.1');
+     *          <samp>[object Element]</samp>
+     *     </code>
+     * @returns {Element|null} The element at the address or null.
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method.
+     * @exception TP.sig.InvalidParameter Raised when an invalid or empty 'path'
+     *     is provided to the method.
+     */
+
+    var children,
+
+        node,
+
+        address,
+
+        len,
+
+        i,
+        index;
+
+    //  no child nodes for anything that isn't an element, document or
+    //  document fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode',
+                            'Node not a collection Node.');
+    }
+
+    //  make sure we have a non-empty path
+    if (TP.isEmpty(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    node = aNode;
+
+    //  Split the address and iterate.
+
+    address = aPath.split('.');
+
+    len = address.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Grab only the child *elements*
+        children = TP.nodeGetChildElements(node);
+
+        try {
+            index = parseInt(address.at(i), 10);
+            node = children[index];
+
+            if (!TP.isElement(node)) {
+                return null;
+            }
+
+        } catch (e) {
+            TP.ifError() ?
+                TP.error(
+                    TP.ec(
+                        e, 'Error retrieving child element at: ' + index)) : 0;
+        }
+    }
+
+    return node;
 });
 
 //  ------------------------------------------------------------------------
@@ -9551,7 +10076,7 @@ function(aNode, aTagName, aNamespaceURI) {
     }
 
     if (TP.notEmpty(aNamespaceURI) &&
-            TP.canInvoke(aNode.getElementsByTagNameNS)) {
+            TP.canInvoke(aNode, 'getElementsByTagNameNS')) {
         list = aNode.getElementsByTagNameNS(aNamespaceURI,
             tagName.split(':').first());
         return list[0];
@@ -9998,6 +10523,67 @@ function(firstNode, secondNode) {
     TP.nodeInsertBefore(parentNode, secondNode, insertionPoint, false);
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+//  NODE COLLECTIONS
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodesGetRoots',
+function(aNodeArray, shouldSort) {
+
+    /**
+     * @method nodesGetRoots
+     * @summary Returns an Array containing all of the roots of the provided
+     *     Array of nodes.
+     * @description This method finds all of the 'roots' in the supplied Array.
+     *     These are the nodes for which there is no ancestor *in the supplied
+     *     Array* (they very well may have an ancestor, but it's not included in
+     *     the Array.
+     * @param {Array} aNodeArray The DOM nodes to operate on.
+     * @param {Boolean} [shouldSort=false] Whether or not to sort the supplied
+     *     nodes into 'document order'. This flag is defaulted to false, since
+     *     most queries (XPath, CSS, etc.) will return 'document order' results
+     *     and those are then likely supplied to this method. If this flag is
+     *     true, then a sort is performed using the TP.sort.DOCUMENT_ORDER sort.
+     * @returns {Array} An Array of the root nodes of the supplied nodes
+     * @exception TP.sig.InvalidArray Raised when an invalid Array is provided
+     *     to the method.
+     */
+
+    var nodes,
+        arr;
+
+    if (!TP.isArray(aNodeArray)) {
+        return TP.raise(this, 'TP.sig.InvalidArray');
+    }
+
+    if (TP.isTrue(shouldSort)) {
+        nodes = aNodeArray.sort(TP.sort.DOCUMENT_ORDER);
+    } else {
+        nodes = aNodeArray;
+    }
+
+    arr = TP.ac();
+
+    nodes.forEach(
+        function(foundNode) {
+
+            var i,
+                len;
+
+            len = arr.getSize();
+            for (i = 0; i < len; i++) {
+                if (TP.nodeComparePosition(
+                            foundNode, arr.at(i), TP.CONTAINS_NODE)) {
+                    return;
+                }
+            }
+
+            arr.push(foundNode);
+        });
+
+    return arr;
 });
 
 //  ------------------------------------------------------------------------
@@ -10659,22 +11245,18 @@ types.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeAncestorsPerform',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeAncestorsPerform
      * @summary Executes aFunction with each ancestor of the node, working from
-     *     the node outward unless shouldReverse is true.
+     *     the node outward.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate up an XML node's ancestor chain and print each tag name:
      *     <code>
      *          xmlDoc = TP.documentFromString(
@@ -10710,10 +11292,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var reverse,
-        instrument,
-
-        count,
+    var count,
         ancestor;
 
     if (!TP.isNode(aNode)) {
@@ -10724,44 +11303,14 @@ function(aNode, aFunction, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  if we're going to reverse we might as well just work on the ancestor
-    //  array since we have to iterate to the top to get started anyway
-    if (reverse) {
-        return TP.nodeGetAncestors(aNode).perform(aFunction, true);
-    }
-
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    //  Test the interior of aFunction (*not* func in case it was bound)
-    //  to see if there are any calls to atStart() or atEnd().
-    instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-
     count = 0;
     ancestor = aNode.parentNode;
 
     while (TP.isElement(ancestor)) {
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection
-            aFunction.atStart(count === 0 ? true : false);
-
-            if (TP.isElement(ancestor.parentNode) &&
-                    !TP.isDocument(ancestor.parentNode)) {
-                aFunction.atEnd(false);
-            } else {
-                aFunction.atEnd(true);
-            }
-        }
-
         if (aFunction(ancestor, count++) === TP.BREAK) {
             break;
         }
 
-        //  after TP.BREAK may have been returned to skip, but before
-        //  true end of while loop we update our test object
         ancestor = ancestor.parentNode;
     }
 
@@ -10771,26 +11320,22 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeChildElementsPerform',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeChildElementsPerform
      * @summary Executes aFunction with each child element of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note the filter here for child nodes that are elements.
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note the filter here for child nodes that are elements.
      *     The index provided to aFunction is the index that would be used had
      *     you collected the elements first, then iterated on that array. This
      *     also means that, if the first or last node are not elements, the
-     *     iteration function will not be called and you should take that into
-     *     consideration when using atStart()/atEnd() functionality.
+     *     iteration function will not be called.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child *element* list (i.e. where
      *     each item to the iteration method is a Node.ELEMENT_NODE) and print
      *     each tag name:
@@ -10830,13 +11375,10 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var instrument,
-        children,
+    var children,
         len,
         i,
-        ind,
-        count,
-        reverse;
+        count;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -10849,15 +11391,6 @@ function(aNode, aFunction, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  when we reverse there's no way to know the number of elements
-    //  we'll find until we're done and we can't provide proper indexing
-    //  information without that count...so we just work from the array
-    if (reverse) {
-        return TP.nodeGetChildElements(aNode).perform(aFunction, true);
-    }
-
     if (TP.isElement(aNode)) {
         //  condense multiple text node children
         TP.nodeNormalize(aNode);
@@ -10866,41 +11399,18 @@ function(aNode, aFunction, shouldReverse) {
     children = aNode.childNodes;
     len = children.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     count = 0;
 
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection
-
-            //  NOTE: These very well might be invoked when the current item
-            //  isn't an Element, but that's ok since the semantic is still
-            //  'start' or 'end'.
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  skip non-element children
-        if (!TP.isElement(children[ind])) {
+        if (!TP.isElement(children[i])) {
             continue;
         }
 
         //  NOTE that we have to adjust the index so it's the index
         //  of child elements found...ie our count
-        if (aFunction(children[ind], count++) === TP.BREAK) {
+        if (aFunction(children[i], count++) === TP.BREAK) {
             break;
         }
     }
@@ -10911,7 +11421,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeChildNodesPerform',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeChildNodesPerform
@@ -10920,14 +11430,10 @@ function(aNode, aFunction, shouldReverse) {
      *     adjacent text nodes.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child list and print the string
      *     value of each node:
      *     <code>
@@ -10966,12 +11472,9 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var instrument,
-        children,
+    var children,
         len,
-        i,
-        ind,
-        reverse;
+        i;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -10984,8 +11487,6 @@ function(aNode, aFunction, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    reverse = TP.ifInvalid(shouldReverse, false);
-
     if (TP.isElement(aNode)) {
         //  condense multiple text node children
         TP.nodeNormalize(aNode);
@@ -10994,28 +11495,8 @@ function(aNode, aFunction, shouldReverse) {
     children = aNode.childNodes;
     len = children.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
-
-        if (aFunction(children[ind], ind) === TP.BREAK) {
+        if (aFunction(children[i], i) === TP.BREAK) {
             break;
         }
     }
@@ -11185,25 +11666,21 @@ function(aNode, aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSiblingsPerform',
-function(aNode, aFunction, aSubset, shouldReverse) {
+function(aNode, aFunction, aSubset) {
 
     /**
      * @method nodeSiblingsPerform
      * @summary Executes aFunction with each sibling of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note that the index provided to aFunction is the index
-     *     that would have been used had you collected the siblings in an array
-     *     first, then iterated.
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note that the index provided to aFunction is the index that would
+     *     have been used had you collected the siblings in an array first.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's sibling list and print each tag
      *     name:
      *     <code>
@@ -11282,18 +11759,13 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     provided to the method.
      */
 
-    var instrument,
-
-        count,
+    var count,
         node,
         subset,
 
         siblings,
         len,
-        ind,
-        i,
-
-        reverse;
+        i;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -11303,45 +11775,8 @@ function(aNode, aFunction, aSubset, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    //  Test the interior of aFunction (*not* func in case it was bound)
-    //  to see if there are any calls to atStart() or atEnd().
-    instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-
     count = 0;
-
-    //  based on forward/reverse we actually reverse the subset identifier.
-    //  ie. if we had a NEXT but reversed we'd be trying to iterate from the
-    //  end to the front collecting nodes until we found the original ...
-    //  which is what PREVIOUS does. likewise, if we had PREVIOUS but
-    //  reversed we'd be saying iterate until you find the node, then start
-    //  doing the real work ... which is what NEXT does. so the idea here is
-    //  that we swap the subset when reversing...but leave the iteration
-    //  indexing as you'd expect. as a result we get common logic in the
-    //  previous and next code below
-    if (reverse) {
-        switch (aSubset) {
-            case TP.NEXT:
-
-                subset = TP.PREVIOUS;
-                break;
-
-            case TP.PREVIOUS:
-
-                subset = TP.NEXT;
-                break;
-
-            default:
-                subset = aSubset;
-                break;
-        }
-    } else {
-        subset = aSubset;
-    }
+    subset = aSubset;
 
     //  note this is the adjusted subset type
     switch (subset) {
@@ -11349,11 +11784,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 
             node = aNode.previousSibling;
             while (node) {
-                if (instrument) {
-                    aFunction.atStart(count === 0 ? true : false);
-                    aFunction.atEnd(!node.previousSibling);
-                }
-
                 if (aFunction(node, count++) === TP.BREAK) {
                     break;
                 }
@@ -11367,11 +11797,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 
             node = aNode.nextSibling;
             while (node) {
-                if (instrument) {
-                    aFunction.atStart(count === 0 ? true : false);
-                    aFunction.atEnd(!node.nextSibling);
-                }
-
                 if (aFunction(node, count++) === TP.BREAK) {
                     break;
                 }
@@ -11387,19 +11812,10 @@ function(aNode, aFunction, aSubset, shouldReverse) {
             len = siblings.length;
 
             for (i = 0; i < len; i++) {
-                ind = reverse ? len - i - 1 : i;
 
-                node = siblings[ind];
+                node = siblings[i];
                 if (node === aNode) {
                     continue;
-                }
-
-                if (instrument) {
-                    aFunction.atStart(count === 0 ? true : false);
-
-                    /* eslint-disable no-extra-parens */
-                    aFunction.atEnd((i + 1 === len) ? true : false);
-                    /* eslint-enable no-extra-parens */
                 }
 
                 if (aFunction(node, count++) === TP.BREAK) {
@@ -11418,7 +11834,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectAncestor',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeDetectAncestor
@@ -11428,7 +11844,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate up an XML node's ancestor chain, finding the first
      *     element with a tag name of 'bar':
      *     <code>
@@ -11472,8 +11887,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var found,
-        reverse;
+    var found;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -11481,14 +11895,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetAncestors(aNode).detect(aFunction);
     }
 
     TP.nodeAncestorsPerform(
@@ -11507,7 +11913,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectChildElement',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeDetectChildElement
@@ -11516,7 +11922,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's child Element list, finding the first
      *     element with a tag name of 'baz':
      *     <code>
@@ -11558,8 +11963,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var found,
-        reverse;
+    var found;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -11567,14 +11971,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetChildElements(aNode).detect(aFunction);
     }
 
     TP.nodeChildElementsPerform(
@@ -11593,7 +11989,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectChildNode',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeDetectChildNode
@@ -11602,7 +11998,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's child list, finding the first node
      *     with a string value of 'More text':
      *     <code>
@@ -11660,8 +12055,6 @@ function(aNode, aFunction, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    //  children array can be iterated in reverse without additional
-    //  collection requirements
     TP.nodeChildNodesPerform(
         aNode,
         function(node, index) {
@@ -11671,8 +12064,7 @@ function(aNode, aFunction, shouldReverse) {
                 return TP.BREAK;
             }
         },
-        null,
-        shouldReverse);
+        null);
 
     return found;
 });
@@ -11884,7 +12276,7 @@ function(aNode, aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectSibling',
-function(aNode, aFunction, aSubset, shouldReverse) {
+function(aNode, aFunction, aSubset) {
 
     /**
      * @method nodeDetectSibling
@@ -11895,7 +12287,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's sibling list finding the first node
      *     starting at the 'bar' element that is both an Element and has a local
      *     name of 'goo':
@@ -12013,8 +12404,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
                 return TP.BREAK;
             }
         },
-        aSubset,
-        shouldReverse);
+        aSubset);
 
     return found;
 });
@@ -12024,7 +12414,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectAncestors',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeSelectAncestors
@@ -12034,7 +12424,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate up an XML node's ancestor chain and return only those
      *     that have a tag name of 'foo':
      *     <code>
@@ -12083,8 +12472,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var arr,
-        reverse;
+    var arr;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -12092,14 +12480,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetAncestors(aNode).select(aFunction);
     }
 
     arr = TP.ac();
@@ -12182,7 +12562,7 @@ function(aNode, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectChildElements',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeSelectChildElements
@@ -12191,7 +12571,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child *element* list (i.e. where
      *     each item to the iteration method is a Node.ELEMENT_NODE) and return
      *     only those that have a tag name of 'foo':
@@ -12237,8 +12616,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var arr,
-        reverse;
+    var arr;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -12249,14 +12627,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetChildElements(aNode).select(aFunction);
     }
 
     arr = TP.ac();
@@ -12276,7 +12646,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectChildNodes',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeSelectChildNodes
@@ -12285,7 +12655,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child list and return only those
      *     that have a string value of 'More text':
      *     <code>
@@ -12344,8 +12713,6 @@ function(aNode, aFunction, shouldReverse) {
 
     arr = TP.ac();
 
-    //  children array can be iterated in reverse without additional
-    //  collection requirements
     TP.nodeChildNodesPerform(
         aNode,
         function(node, index) {
@@ -12354,8 +12721,7 @@ function(aNode, aFunction, shouldReverse) {
                 arr.push(node);
             }
         },
-        null,
-        shouldReverse);
+        null);
 
     return arr;
 });
@@ -12552,7 +12918,7 @@ function(aNode, aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectSiblings',
-function(aNode, aFunction, aSubset, shouldReverse) {
+function(aNode, aFunction, aSubset) {
 
     /**
      * @method nodeSelectSiblings
@@ -12563,7 +12929,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's sibling list finding all nodes
      *     starting at the 'bar' element that is both an Element and has a local
      *     name of 'goo':
@@ -12681,8 +13046,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
                 arr.push(node);
             }
         },
-        aSubset,
-        shouldReverse);
+        aSubset);
 
     return arr;
 });
@@ -12963,8 +13327,6 @@ function(aNode, includeDescendants) {
 
         case Node.DOCUMENT_NODE:
 
-            /* jshint -W086 */
-
             //  NOTE fallthrough here so we work on documentElement
             node = node.documentElement;
 
@@ -13000,8 +13362,6 @@ function(aNode, includeDescendants) {
             }
 
             break;
-
-            /* jshint +W086 */
 
         default:
 
@@ -13729,7 +14089,8 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -13886,7 +14247,7 @@ function(aNode, anObject) {
 
     if (TP.canInvoke(anObject, 'getResource')) {
         resp = anObject.getResource(
-            TP.hc('async', false, 'resultType', TP.TEXT));
+                        TP.hc('async', false, 'resultType', TP.TEXT));
         content = resp.get('result');
     } else {
         content = TP.str(anObject);
@@ -14619,7 +14980,7 @@ function(anObject, defaultNS, shouldReport) {
     } else if (TP.isNode(anObject)) {
         doc = TP.nodeGetDocument(anObject);
         if (TP.isDocument(doc)) {
-            return TP.core.DocumentNode.construct(anObject);
+            return TP.core.DocumentNode.construct(doc);
         }
     } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
         return anObject.getDocument();

@@ -133,9 +133,9 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('audit',
     TP.tsh.audit.Type.getMethod('tshExecute'),
-    '',
+    'Scans unused document style rules.',
     ':audit [target]',
     '');
 

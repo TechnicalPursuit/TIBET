@@ -329,16 +329,22 @@ function(aNodeOrId) {
      *     type object.
      */
 
-    var type;
+    var typeName,
+        type;
 
     if (TP.isString(aNodeOrId)) {
         return TP.byId(aNodeOrId);
     }
 
-    type = TP.ietf.Mime.get('info').at(
-            TP.elementGetAttribute(aNodeOrId, 'type')).at('objectNodeType');
+    typeName = TP.ietf.Mime.get('info').at(
+                TP.elementGetAttribute(aNodeOrId, 'type')).at('objectNodeType');
 
-    return type.asType();
+    type = TP.sys.getTypeByName(typeName);
+    if (TP.isType(type) && !type.isAbstract()) {
+        return type;
+    }
+
+    return this;
 });
 
 //  ========================================================================

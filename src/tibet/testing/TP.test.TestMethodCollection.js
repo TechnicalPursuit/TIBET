@@ -1804,18 +1804,14 @@ function(anObject, aComment) {
 //  ------------------------------------------------------------------------
 
 TP.test.TestMethodCollection.defineAssertion('didSignal',
-function(aTarget, aSignal) {
+function(aTarget, aSignal, aComment) {
 
     var signalName,
         targetGID,
-
         originMatcher,
-
-        isSpecialSignal,
         signalMatcher,
-        eventMatcher,
-
-        hadMatch;
+        hadMatch,
+        any;
 
     if (!this.assertMinArguments(arguments, 2)) {
         return false;
@@ -1824,6 +1820,7 @@ function(aTarget, aSignal) {
     if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
         this.assert(
             false,
+            aComment,
             TP.sc('Can\'t check for signaling since',
                     ' we\'re not capturing signals.'));
     }
@@ -1839,6 +1836,8 @@ function(aTarget, aSignal) {
     } else if (TP.isValid(aSignal)) {
         signalName = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
     }
+
+    any = TP.extern.sinon.match.any;
 
     //  Note, how we test for truth and only set these flags then. Since these
     //  functions will be called once for each item in the set of all signal
@@ -1880,20 +1879,10 @@ function(aTarget, aSignal) {
                     return false;
                 });
     } else {
-        originMatcher = TP.extern.sinon.match.any;
+        originMatcher = any;
     }
 
-    //  A 'special signal' is one that is either a key or mouse event, but is
-    //  not a special TIBET manufactured 'event sequence' (denoted by the double
-    //  underscore - '__').
-    isSpecialSignal = (TP.regex.KEY_EVENT.test(signalName) ||
-                        TP.regex.MOUSE_EVENT.test(signalName)) &&
-                        !/__/.test(signalName);
-
-    //  If signalName is real and is not a "special signal", then we construct a
-    //  real matcher for signals. Otherwise, we use Sinon's 'any' matcher for
-    //  signals.
-    if (TP.isValid(signalName) && !isSpecialSignal) {
+    if (TP.isValid(signalName)) {
 
         //  Note that we have to use a custom matcher here, because signal
         //  types can either be a String representing a single name or a
@@ -1902,31 +1891,62 @@ function(aTarget, aSignal) {
         signalMatcher = TP.extern.sinon.match(
                 function(value) {
                     var sigType,
-                        sig,
-                        sigNames;
+                        signal,
+                        sigNames,
+                        expValueName,
+                        expSignalName;
+
+                    //  Some invocations will pass null as signal to support
+                    //  origin + TP.ANY. In those cases assume false.
+                    if (TP.notValid(value)) {
+                        return false;
+                    }
+
+                    expSignalName = TP.expandSignalName(signalName);
 
                     if (TP.isString(value)) {
-                        if (value === signalName) {
+
+                        //  work with fully expanded names for matching.
+                        expValueName = TP.expandSignalName(value);
+
+                        if (expValueName === expSignalName) {
                             return true;
                         }
 
-                        if (!TP.isType(
-                            sigType = TP.sys.getTypeByName(signalName))) {
-                            return false;
+                        //  Might have captured a subtype of the target type. We
+                        //  need to ask for its signal name list if we can get a
+                        //  type.
+                        if (!TP.isType(sigType = TP.sys.getTypeByName(
+                                expValueName))) {
+                            //  See if we can construct a proper instance with
+                            //  help from the notification system. NOTE that we
+                            //  do _not_ use the expanded name here to avoid
+                            //  tilting things too much one way or another.
+                            sigType = TP.sig.SignalMap.$getSignalType(value);
+                            if (!TP.isType(sigType)) {
+                                return false;
+                            }
                         }
 
-                        sig = sigType.construct();
-                    } else {
-                        sig = value;
+                        sigNames = sigType.getSignalNames();
+                    } else if (TP.isEvent(value)) {
+                        signal = TP.wrap(value);
+                        sigNames = signal.getSignalNames();
+                    } else if (TP.canInvoke(value, 'getSignalNames')) {
+                        sigNames = value.getSignalNames();
                     }
 
-                    if (TP.isKindOf(sig, TP.sig.Signal)) {
-                        sigNames = sig.getSignalNames();
-                    }
+                    //  One more special consideration is that when signals are
+                    //  spoofed they're not expanded. So to check thoroughly we
+                    //  need the sigNames list to contain expanded names.
+                    if (TP.notEmpty(sigNames)) {
+                        sigNames = sigNames.map(function(name) {
+                            return TP.expandSignalName(name);
+                        });
 
-                    if (TP.notEmpty(sigNames) &&
-                        sigNames.contains(signalName)) {
-                        return true;
+                        if (sigNames.contains(expSignalName)) {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -1935,38 +1955,22 @@ function(aTarget, aSignal) {
         signalMatcher = TP.extern.sinon.match.any;
     }
 
-    //  If signalName is real and is a "special signal", then we construct a
-    //  real matcher for events (which will be the 3rd argument to these kinds
-    //  of calls to TP.signal). Otherwise, we use Sinon's 'any' matcher for
-    //  events.
-    if (TP.isValid(signalName) && isSpecialSignal) {
+    //  Check for matches. We have a couple variants. originID, signalName,
+    //  originID, blah, 'payload' used for matching events/keyboard etc.,
+    //  and originID, blah, blah, blah, signalType used for spoofed signals.
+    hadMatch =
+        TP.signal.calledWith(originMatcher, signalMatcher) ||
+        TP.signal.calledWith(originMatcher, any, signalMatcher) ||
+        TP.signal.calledWith(originMatcher, any, any, any, signalMatcher);
 
-        eventMatcher = TP.extern.sinon.match(
-                    function(value) {
-                        var signal,
-                            sigNames;
-
-                        if (TP.isEvent(value)) {
-                            signal = TP.wrap(value);
-                            sigNames = signal.getSignalNames();
-                            if (sigNames.contains(signalName)) {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    });
-    } else {
-        eventMatcher = TP.extern.sinon.match.any;
-    }
-
-    //  Try the match.
-    hadMatch = TP.signal.calledWith(originMatcher, signalMatcher, eventMatcher);
-
-    return this.assert(
+    this.assert(
             hadMatch,
+            aComment,
             TP.sc('Expected ', TP.id(aTarget),
                     ' to have signaled ', signalName, '.'));
+
+
+    return hadMatch;
 });
 
 //  ------------------------------------------------------------------------
@@ -2070,9 +2074,9 @@ function(aFunction, aSignal) {
 
     //  Stub out signal so it doesn't actually invoke/throw etc.
     TP.signal = TP.signal.asStub(
-                    function() {
-                        signal = arguments[1];
-                    });
+    function() {
+        signal = arguments[1];
+    });
 
     //  TP.raise will have been installed as a spy by the test harness to track
     //  exceptions, etc., so we need to restore it here before installing it as
@@ -2088,7 +2092,7 @@ function(aFunction, aSignal) {
     try {
         aFunction();
     } finally {
-        //  Restore the core TP.signal() from the stub
+        //  Restore the core observer from the stub
         TP.signal.restore();
 
         //  Restore the core TP.raise() from the stub
@@ -2281,16 +2285,28 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDisabled',
 function(anObject, aComment) {
 
+    var obj,
+
+        isElem,
+        isDisabled;
+
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
 
-    //  this.assert(TP.isDisabled(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be disabled.');
+    //  Just in case we got handed a TP.core.ElementNode.
+    obj = TP.unwrap(anObject);
 
-    TP.todo();
+    isElem = TP.isElement(obj);
 
-    return;
+    isDisabled = this.assert(
+                    TP.elementIsDisabled(obj),
+                    aComment,
+                    TP.sc('Expected ', TP.id(anObject), ' to be disabled.'));
+
+    /* eslint-disable no-extra-parens */
+    return (isElem && isDisabled);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

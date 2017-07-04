@@ -77,7 +77,7 @@ function(matcherName, dataSet, cssClass) {
      * @param {String} matcherName
      * @param {Object} dataSet
      * @param {String} cssClass
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.core.Matcher} The receiver.
      */
 
     this.callNextMethod();
@@ -113,10 +113,12 @@ function(rawData, searchTerm, extract) {
 
     /* eslint-disable no-undef */
 
-    options = {pre: '<span class="match_result">',
-                post: '</span>',
-                caseSensitive: true,
-                extract: extract};
+    options = {
+        pre: '<span class="match_result">',
+        post: '</span>',
+        caseSensitive: true,
+        extract: extract
+    };
 
     matches = TP.extern.fuzzyLib.filter(searchTerm, rawData, options);
 
@@ -200,7 +202,7 @@ function(matcherName, dataSet, cssClass) {
      * @param {String} matcherName
      * @param {Object} dataSet
      * @param {String} cssClass
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.core.ListMatcher} The receiver.
      */
 
     this.callNextMethod();
@@ -235,7 +237,7 @@ function() {
     cssClass = TP.ifInvalid(this.get('$cssClass'), 'match_list');
 
     if (TP.isEmpty(searchTerm)) {
-        matches = [];
+        matches = TP.ac();
         dataSet.forEach(
                 function(anItem) {
                     matches.push(
@@ -368,7 +370,7 @@ function() {
     keySourceName = this.get('keySourceName');
 
     if (TP.isEmpty(searchTerm)) {
-        matches = [];
+        matches = TP.ac();
         dataSet.forEach(
                 function(aKey) {
                     matches.push(
@@ -409,19 +411,25 @@ function() {
         wantsProtoChain;
 
     keySource = this.get('keySource');
-    if (TP.canInvoke(keySource, 'getType')) {
-        if (TP.isNativeType(keySource.getType())) {
-            wantsProtoChain = true;
-        } else {
-            wantsProtoChain = false;
-        }
-    } else {
-        //  All TIBET objects respond to 'getType', so if it can't, it's a
-        //  native object that we definitely want all prototype properties of.
-        wantsProtoChain = true;
-    }
 
-    dataSet = TP.keys(this.get('keySource'), true, wantsProtoChain);
+    if (TP.isNativeType(keySource)) {
+        dataSet = TP.interface(keySource.prototype, TP.SLOT_FILTERS.attributes);
+    } else {
+        if (TP.canInvoke(keySource, 'getType')) {
+            if (TP.isNativeType(keySource.getType())) {
+                wantsProtoChain = true;
+            } else {
+                wantsProtoChain = false;
+            }
+        } else {
+            //  All TIBET objects respond to 'getType', so if it can't, it's a
+            //  native object that we definitely want all prototype properties
+            //  of.
+            wantsProtoChain = true;
+        }
+
+        dataSet = TP.keys(this.get('keySource'), true, wantsProtoChain);
+    }
 
     dataSet.sort();
 

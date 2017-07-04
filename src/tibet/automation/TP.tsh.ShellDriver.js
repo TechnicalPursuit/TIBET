@@ -36,8 +36,8 @@ function(test, shellInput, valueTestFunction) {
     /**
     */
 
-    this.get('promiseProvider').thenPromise(
-        function(resolver, rejector) {
+    this.get('promiseProvider').chainPromise(
+        TP.extern.Promise.construct(function(resolver, rejector) {
 
             //  Flip the flag on to ignore eval errors in the TSH. We'll test
             //  for undefined values here.
@@ -48,70 +48,73 @@ function(test, shellInput, valueTestFunction) {
                 'cmdEcho', false,
                 'cmdHistory', false,
                 'cmdSilent', false,
-                'success', function(aSignal, stdioResults) {
-                    var testResult;
+                TP.ONSUCCESS,
+                    function(aSignal, stdioResults) {
+                        var testResult;
 
-                    //  The shell request itself succeeded. See if it returned
-                    //  the correct value.
+                        //  The shell request itself succeeded. See if it
+                        //  returned the correct value.
 
-                    try {
-                        //  The correct value should be in the stdout that is
-                        //  made available to this method. Note how we skip any
-                        //  stdout values that are TP.TSH_NO_VALUEs.
-                        testResult = stdioResults.detect(
+                        try {
+                            //  The correct value should be in the stdout that
+                            //  is made available to this method. Note how we
+                            //  skip any stdout values that are
+                            //  TP.TSH_NO_VALUEs.
+                            testResult = stdioResults.detect(
                                         function(item) {
                                             return TP.isValid(item) &&
                                                 item.data !== TP.TSH_NO_VALUE &&
                                                 item.meta === 'stdout';
                                         });
-                        if (TP.isValid(testResult)) {
-                            testResult = testResult.data;
+                            if (TP.isValid(testResult)) {
+                                testResult = testResult.data;
+                            }
+
+                            //  Execute the supplied value test function.
+                            if (TP.isCallable(valueTestFunction)) {
+                                valueTestFunction(testResult);
+                            }
+
+                            //  The value test function succeeded.
+                            resolver(testResult);
+
+                        } catch (e) {
+
+                            //  There was an Error somewhere - call the rejector
+                            //  with the Error object.
+                            rejector(e);
                         }
 
-                        //  Execute the supplied value test function.
-                        if (TP.isCallable(valueTestFunction)) {
-                            valueTestFunction(testResult);
-                        }
+                        //  Make sure to put the flag back that caused the TSH
+                        //  to ignore eval errors.
+                        TP.sys.setcfg('tsh.ignore_eval_errors', false);
+                    },
+                TP.ONFAIL,
+                    function(aSignal, stdioResults) {
+                        var errMsg;
 
-                        //  The value test function succeeded.
-                        resolver(testResult);
+                        //  Make sure to put the flag back that caused the TSH
+                        //  to ignore eval errors.
+                        TP.sys.setcfg('tsh.ignore_eval_errors', false);
 
-                    } catch (e) {
+                        //  The shell couldn't complete the request - call the
+                        //  rejector with the content of whatever was placed
+                        //  into stderr.
 
-                        //  There was an Error somewhere - call the rejector
-                        //  with the Error object.
-                        rejector(e);
-                    }
+                        errMsg = stdioResults.select(function(item) {
+                            return TP.isValid(item) &&
+                                item.meta === 'stderr';
+                        });
+                        errMsg = errMsg.collect(function(item) {
+                            return item.data;
+                        }).join('\n');
 
-                    //  Make sure to put the flag back that caused the TSH to
-                    //  ignore eval errors.
-                    TP.sys.setcfg('tsh.ignore_eval_errors', false);
-                },
-                'failure', function(aSignal, stdioResults) {
-                    var errMsg;
+                        rejector(errMsg);
 
-                    //  Make sure to put the flag back that caused the TSH to
-                    //  ignore eval errors.
-                    TP.sys.setcfg('tsh.ignore_eval_errors', false);
-
-                    //  The shell couldn't complete the request - call the
-                    //  rejector with the content of whatever was placed into
-                    //  stderr.
-
-                    errMsg = stdioResults.select(function(item) {
-                        return TP.isValid(item) &&
-                            item.meta === 'stderr';
-                    });
-                    errMsg = errMsg.collect(function(item) {
-                        return item.data;
-                    }).join('\n');
-
-                    rejector(errMsg);
-
-                    //  Set the faultText to that content as well.
-                    test.set('faultText', errMsg || '');
-                }));
-        });
+                        //  Set the faultText to that content as well.
+                        test.set('faultText', errMsg || '');
+                    }));
+        }));
 
     return;
 });
@@ -226,10 +229,15 @@ function(test, inputVal, correctResults) {
                 });
         });
 
-    this.get('promiseProvider').then(
+    this.get('promiseProvider').chain(
         null,
         function(reason) {
             test.fail(reason);
+        }).chainCatch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error executing shell driver assertion: ' +
+                            TP.str(err)) : 0;
         });
 
     return;

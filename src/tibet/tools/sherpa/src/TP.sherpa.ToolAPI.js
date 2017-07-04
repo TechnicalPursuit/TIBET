@@ -1,5 +1,27 @@
+//  ========================================================================
+/**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
+ */
+//  ========================================================================
+
 //  ------------------------------------------------------------------------
 //  TP.* wrappers
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('canReuseContentForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'canReuseContentForTool')) {
+        return anObject.canReuseContentForTool(toolName, options);
+    }
+
+    return false;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('getConfigForTool',
@@ -31,6 +53,30 @@ function(anObject, toolName, options) {
 
     if (TP.canInvoke(anObject, 'getDataForTool')) {
         return anObject.getDataForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getFinalTargetForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getFinalTargetForTool')) {
+        return anObject.getFinalTargetForTool(toolName, options);
+    }
+
+    return anObject;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getPathPartsForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getPathPartsForTool')) {
+        return anObject.getPathPartsForTool(toolName, options);
     }
 
     return null;
@@ -81,6 +127,27 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.lang.Object.defineSubtype('sherpa.ToolAPI');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ToolAPI.Inst.defineMethod('canReuseContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method canReuseContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'canReuseContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return false;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -147,6 +214,48 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.ToolAPI.Inst.defineMethod('getFinalTargetForTool',
+function(toolName, options) {
+
+    /**
+     * @method getFinalTargetForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getFinalTargetFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ToolAPI.Inst.defineMethod('getPathPartsForTool',
+function(toolName, options) {
+
+    /**
+     * @method getPathPartsForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getPathPartsFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForTool',
 function(toolName, anID, options) {
 
@@ -167,43 +276,66 @@ function(toolName, anID, options) {
 });
 
 //  ------------------------------------------------------------------------
-//  Editor
+//  Inspector API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getContentForEditor',
+TP.sherpa.ToolAPI.Inst.defineMethod('canReuseContentForInspector',
 function(options) {
 
     /**
-     * @method getContentForEditor
-     * @summary
-     * @returns
+     * @method canReuseContentForInspector
+     * @summary Returns whether or not content hosted in an inspector bay can be
+     *     'reused', even though the underlying data will change. If this
+     *     returns true, then the underlying content needs to be able to respond
+     *     to its data changing underneath it. It can leverage the TIBET data
+     *     binding system to do this.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     check the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Boolean} Whether or not the current content can be reused even
+     *     though the underlying data is changing.
      */
 
-    var targetAspect,
-        contentElem;
+    var config,
+        bayInspectorItem,
 
-    targetAspect = options.at('targetAspect');
+        firstChildElem,
 
-    contentElem = TP.xhtmlnode(
-                '<div>' +
-                '<textarea><![CDATA[' + this.get(targetAspect) + ']]></textarea>' +
-                '</div>');
+        bayContentElementName;
 
-    if (!TP.isElement(contentElem)) {
+    config = this.getConfigForInspector(options);
 
-        contentElem = TP.xhtmlnode(
-                '<div>' +
-                    '<textarea>' +
-                        TP.xmlLiteralsToEntities(this.get(targetAspect)) +
-                    '</textarea>' +
-                '</div>');
+    bayInspectorItem = options.at('bayInspectorItem');
+
+    if (TP.notValid(bayInspectorItem)) {
+        return false;
     }
 
-    return contentElem;
+    firstChildElem = TP.nodeGetFirstChildElement(
+                                bayInspectorItem.getNativeNode());
+
+    if (!TP.isNode(firstChildElem)) {
+        return false;
+    }
+
+    bayContentElementName = TP.elementGetFullName(firstChildElem);
+
+    if (bayContentElementName === config.at('attr_contenttype')) {
+        return true;
+    }
+
+    return false;
 });
 
-//  ------------------------------------------------------------------------
-//  Inspector
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ToolAPI.Inst.defineMethod('getConfigForInspector',
@@ -211,11 +343,39 @@ function(options) {
 
     /**
      * @method getConfigForInspector
-     * @summary
-     * @returns
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
      */
 
-    return TP.hc();
+    var targetAspect;
+
+    targetAspect = options.at('targetAspect');
+
+    if (targetAspect === this.getID()) {
+        options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    } else {
+        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    }
+
+    return options;
 });
 
 //  ------------------------------------------------------------------------
@@ -225,13 +385,30 @@ function(options) {
 
     /**
      * @method getContentForInspector
-     * @summary
-     * @returns
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
      */
 
     var targetAspect,
+
         data,
-        dataURI;
+        dataURI,
+
+        contentElem;
 
     targetAspect = options.at('targetAspect');
 
@@ -243,10 +420,30 @@ function(options) {
         dataURI.setResource(data,
                             TP.request('signalChange', false));
 
-        return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+        contentElem = TP.elem('<xctrls:list bind:in="{data: ' +
+                                dataURI.asString() +
+                                '}"/>');
+    } else {
+
+        contentElem = TP.xhtmlnode(
+                    '<div>' +
+                        '<textarea>' +
+                            '<![CDATA[' + this.get(targetAspect) + ']]>' +
+                        '</textarea>' +
+                    '</div>');
+
+        if (!TP.isElement(contentElem)) {
+
+            contentElem = TP.xhtmlnode(
+                    '<div>' +
+                        '<textarea>' +
+                            TP.xmlLiteralsToEntities(this.get(targetAspect)) +
+                        '</textarea>' +
+                    '</div>');
+        }
     }
 
-    return this.getContentForEditor(options);
+    return contentElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -256,29 +453,62 @@ function(options) {
 
     /**
      * @method getDataForInspector
-     * @summary
-     * @returns
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
      */
 
-    return TP.keys(this);
+    var data;
+
+    data = TP.ac();
+    this.getKeys().sort().perform(
+        function(aKey) {
+            data.add(TP.ac(aKey, TP.id(this.get(aKey))));
+        });
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForInspector',
-function(anID, options) {
+function(anAspect, options) {
 
     /**
      * @method resolveAspectForInspector
-     * @summary
-     * @returns
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver. This common supertype returns null, since
+     *     that's the 'default' to not allow the inspector to browse further.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {null} This type returns null, stopping the inspector from
+     *     browsing further.
      */
 
-    return this;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
-//  Context Menu
+//  Context Menu API
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ToolAPI.Inst.defineMethod('getContentForContextMenu',
@@ -286,753 +516,49 @@ function(options) {
 
     /**
      * @method getContentForContextMenu
-     * @summary
-     * @returns
+     * @summary Returns the source's content that will be hosted in a Sherpa
+     *     context menu.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     context menu.
      */
 
-    return TP.elem('<sherpa:haloMenuContent/>');
+    return TP.elem('<sherpa:elementContextMenuContent/>');
 });
 
-//  ========================================================================
-//  Function Additions
-//  ========================================================================
+//  ------------------------------------------------------------------------
+//  Toolbar API
+//  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('getContentForEditor',
+TP.sherpa.ToolAPI.Inst.defineMethod('getContentForToolbar',
 function(options) {
 
     /**
-     * @method getContentForEditor
-     * @summary
-     * @returns
+     * @method getContentForToolbar
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     toolbar.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     toolbar.
      */
-
-    var dataURI,
-        methodEditorTPElem;
-
-    if (TP.isMethod(this)) {
-
-        dataURI = TP.uc(options.at('bindLoc'));
-        dataURI.setResource(options.at('target'),
-                            TP.request('signalChange', false));
-
-        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
-                                'template',
-                                TP.ietf.Mime.XHTML);
-        methodEditorTPElem = methodEditorTPElem.clone();
-
-        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
-
-        return TP.unwrap(methodEditorTPElem);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('getContentForInspector',
-function(options) {
-
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
-
-    return this.getContentForEditor(options);
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('getContentForTool',
-function(toolName, options) {
-
-    /**
-     * @method getContentForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getContentFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
-
-    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('getDataForBreadcrumb',
-function() {
-
-    var info,
-
-        owner,
-        superNames;
-
-    info = TP.ac();
-
-    if (TP.isMethod(this)) {
-
-        if (!TP.isNamespace(owner = this[TP.OWNER])) {
-            superNames = owner.getSupertypeNames().copy();
-            superNames.reverse().perform(
-                function(item) {
-                    info.push(TP.ac('type', item));
-                });
-        }
-
-        info.push(TP.ac('type', owner.getName()));
-        info.push(TP.ac('method', this[TP.DISPLAY]));
-    }
-
-    return info;
-});
-
-//  ========================================================================
-//  TP.lang.RootObject Additions
-//  ========================================================================
-
-TP.lang.RootObject.Type.defineMethod('getDataForBreadcrumb',
-function() {
-
-    var superNames,
-        info;
-
-    info = TP.ac();
-
-    superNames = this.getSupertypeNames().copy();
-    superNames.reverse().perform(
-        function(item) {
-            info.push(TP.ac('type', item));
-        });
-
-    info.push(TP.ac('type', this.getName()));
-
-    return info;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getContentForInspector',
-function(options) {
-
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
-
-    var data,
-        dataURI;
-
-    data = this;
-
-    dataURI = TP.uc(options.at('bindLoc'));
-    dataURI.setResource(data,
-                        TP.request('signalChange', false));
-
-    return TP.elem('<sherpa:typedisplay bind:in="' + dataURI.asString() + '"/>');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getContentForTool',
-function(toolName, options) {
-
-    /**
-     * @method getContentForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getContentFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
-
-    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getTypeInfoForInspector',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getTypeInfoForInspector')) {
-        return anObject.getTypeInfoForInspector();
-    }
-
-    return TP.ac();
-});
-
-//  ---
-
-TP.lang.RootObject.Type.defineMethod('getTypeInfoForInspector',
-function() {
-
-    var result,
-        data,
-
-        typeProto,
-        instProto,
-
-        superTypeProto,
-        superInstProto,
-
-        childrenData,
-        rawData;
-
-    result = TP.ac();
-
-    typeProto = this.getPrototype();
-    instProto = this.getInstPrototype();
-
-    superTypeProto = this.getSupertype().getPrototype();
-    superInstProto = this.getSupertype().getInstPrototype();
-
-    //  ---
-
-    data = TP.hc('name', 'Supertypes');
-
-    rawData = this.getSupertypeNames();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var childData;
-
-                childData = TP.hc('name', item);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Subtypes');
-
-    rawData = this.getSubtypeNames(true);
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var childData;
-
-                childData = TP.hc('name', item);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Introduced Methods (Type)');
-
-    rawData = typeProto.getInterface('known_introduced_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', typeProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Overridden Methods (Type)');
-
-    rawData = typeProto.getInterface('known_overridden_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                //  Note here how we get the owner from our supertype's version
-                //  of the method - we know we've overridden it, so we want the
-                //  owner we've overridden it from.
-                if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = superTypeProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', typeProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Inherited Methods (Type)');
-
-    rawData = typeProto.getInterface('known_inherited_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', typeProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Introduced Methods (Instance)');
-
-    rawData = instProto.getInterface('known_introduced_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = instProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', instProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Overridden Methods (Instance)');
-
-    rawData = instProto.getInterface('known_overridden_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                //  Note here how we get the owner from our supertype's version
-                //  of the method - we know we've overridden it, so we want the
-                //  owner we've overridden it from.
-                if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = superInstProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', instProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Inherited Methods (Instance)');
-
-    rawData = instProto.getInterface('known_inherited_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = instProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', instProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    return result;
-});
-
-//  ========================================================================
-//  TP.core.URI Additions
-//  ========================================================================
-
-TP.core.URI.Inst.defineMethod('getContentForEditor',
-function(options) {
-
-    /**
-     * @method getContentForEditor
-     * @summary
-     * @returns
-     */
-
-    var uriEditorTPElem;
-
-    uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
-
-    return TP.unwrap(uriEditorTPElem);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getContentForTool',
-function(toolName, options) {
-
-    /**
-     * @method getContentForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getContentFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
-
-    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getContentForInspector',
-function(options) {
-
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
-
-    return this.getContentForEditor(options);
-});
-
-//  ========================================================================
-//  TP.core.ElementNode Additions
-//  ========================================================================
-
-TP.core.ElementNode.addTraits(TP.sherpa.ToolAPI);
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getDataForBreadcrumb',
-function() {
-
-    var info;
-
-    info = TP.ac();
-
-    this.ancestorsPerform(
-            function(aNode) {
-                var tpElem;
-
-                if (TP.isElement(aNode)) {
-                    tpElem = TP.wrap(aNode);
-
-                    info.push(TP.ac('path', tpElem));
-                }
-            },
-            true);
-
-    info.push(TP.ac('path', this));
-
-    return info;
-});
-
-//  ========================================================================
-//  TP.core.CustomTag Additions
-//  ========================================================================
-
-TP.core.CustomTag.Inst.defineMethod('getContentForInspector',
-function(options) {
-
-    var targetAspect,
-        data,
-        dataURI,
-
-        inspector,
-        inspectorPath,
-        tileTPElem,
-
-        uriEditorTPElem;
-
-    targetAspect = options.at('targetAspect');
-
-    data = this.getDataForInspector(options);
-
-    dataURI = TP.uc(options.at('bindLoc'));
-    dataURI.setResource(data, TP.request('signalChange', false));
-
-    if (targetAspect === this.getID()) {
-
-        return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
-
-    } else if (targetAspect === 'Structure' || targetAspect === 'Style') {
-
-        inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
-
-        if (TP.isValid(inspector)) {
-            inspectorPath =
-                inspector.get('selectedItems').getValues().join(' :: ');
-
-            if (TP.notEmpty(inspectorPath)) {
-
-                tileTPElem =
-                    TP.byCSSPath('sherpa|tile[path="' + inspectorPath + '"]',
-                                    TP.win('UIROOT'),
-                                    true);
-
-                if (TP.isValid(tileTPElem)) {
-                    return TP.xhtmlnode(
-                    '<span>' + TP.sc('This content is open in a tile.') +
-                    ' <button onclick="' +
-                    'TP.byId(\'' + tileTPElem.getLocalID() + '\',' +
-                        ' TP.win(\'UIROOT\'), true).' +
-                    'setAttribute(\'hidden\', false)">' +
-                    'Open Tile' +
-                    '</button></span>');
-                }
-            }
-        }
-
-        uriEditorTPElem = TP.wrap(TP.getContentForTool(data, 'Inspector'));
-
-        uriEditorTPElem = uriEditorTPElem.clone();
-
-        uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
-
-        return TP.unwrap(uriEditorTPElem);
-    } else if (targetAspect === 'Type') {
-
-        return TP.elem('<sherpa:typedisplay bind:in="' +
-                        dataURI.asString() +
-                        '"/>');
-    }
-
-    return TP.xhtmlnode('<div>' +
-                        '<textarea>' + this.get(targetAspect) + '</textarea>' +
-                        '</div>');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Inst.defineMethod('getDataForInspector',
-function(options) {
-
-    /**
-     * @method getDataForInspector
-     * @summary
-     * @returns
-     */
-
-    var targetAspect;
-
-    if (TP.notEmpty(options)) {
-        targetAspect = options.at('targetAspect');
-    }
-
-    if (targetAspect === this.getID()) {
-
-        return TP.ac('Structure', 'Style', 'Tests', 'Type');
-
-    } else if (targetAspect === 'Type') {
-
-        return this.getType();
-
-    } else {
-
-        return this.getObjectForAspect(targetAspect);
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Inst.defineMethod('getDefaultEditingAspect',
-function(options) {
-
-    /**
-     * @method getDefaultEditingAspect
-     * @summary
-     * @returns
-     */
-
-    return 'Structure';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Inst.defineMethod('getObjectForAspect',
-function(anAspectName) {
-
-    /**
-     * @method
-     * @summary
-     * @returns
-     */
-
-    return null;
-});
-
-//  ========================================================================
-//  TP.core.TemplatedTag Additions
-//  ========================================================================
-
-TP.core.TemplatedTag.Inst.defineMethod('getObjectForAspect',
-function(anAspectName) {
-
-    /**
-     * @method
-     * @summary
-     * @returns
-     */
-
-    switch (anAspectName) {
-
-        case 'Structure':
-            //  NB: We're returning the TP.core.URI instance itself here.
-            return this.getType().getResourceURI('template', TP.ietf.Mime.XHTML);
-
-        case 'Style':
-            //  NB: We're returning the TP.core.URI instance itself here.
-            return this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
-
-        default:
-            break;
-    }
-
-    return null;
-});
-
-//  ========================================================================
-//  TP.core.CompiledTag Additions
-//  ========================================================================
-
-TP.core.CompiledTag.Inst.defineMethod('getDataForInspector',
-function(options) {
-
-    /**
-     * @method getDataForInspector
-     * @summary
-     * @returns
-     */
-
-    var targetAspect,
-        ourType;
-
-    if (TP.notEmpty(options)) {
-        targetAspect = options.at('targetAspect');
-    }
-
-    if (targetAspect === 'Structure') {
-
-        ourType = this.getType();
-
-        if (TP.owns(ourType, 'tagCompile')) {
-            return ourType.tagCompile;
-        }
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CompiledTag.Inst.defineMethod('getObjectForAspect',
-function(anAspectName) {
-
-    /**
-     * @method
-     * @summary
-     * @returns
-     */
-
-    var ourType;
-
-    switch (anAspectName) {
-
-        case 'Structure':
-
-            ourType = this.getType();
-
-            if (TP.owns(ourType, 'tagCompile')) {
-                return ourType.tagCompile;
-            }
-
-            break;
-
-        case 'Style':
-            return this.getType().getResourceURI('template', TP.ietf.Mime.CSS);
-
-        default:
-            break;
-    }
 
     return null;
 });

@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -28,7 +28,9 @@ sh = require('shelljs');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -56,6 +58,7 @@ Cmd.NAME = 'config';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
+        'boolean': ['users'],
         'string': ['env'],
         'default': {
             'env': 'development'
@@ -68,7 +71,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>]';
+Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>] [--users]';
 
 
 //  ---
@@ -95,6 +98,9 @@ Cmd.prototype.execute = function() {
     /* eslint-enable no-div-regex */
         return this.setConfig(option.slice(0, option.indexOf('=')),
             option.slice(option.indexOf('=') + 1));
+    } else if (this.options._.length > 2) {
+        return this.setConfig(this.options._[1],
+            this.options._[2]);
     } else if (option === '~') {
         cfg = CLI.getAppHead();
     } else if (option === '~app' || option === '~app_root') {
@@ -123,32 +129,42 @@ Cmd.prototype.execute = function() {
         cfg = CLI.getcfg(option);
     }
 
-    if (cfg === undefined) {
-        this.info('Config value not found: ' + option);
-        return;
+    //  Treat 'value' objects as simple results (string, number, boolean, null,
+    //  undefined, etc).
+    if (typeof cfg !== 'object' || CLI.notValid(cfg)) {
+        this.info(cfg);
+        return 0;
     }
 
     // Output arrays in array form rather than object form.
     if (Array.isArray(cfg)) {
         this.info(JSON.stringify(cfg));
-        return;
+        return 0;
+    }
+
+    //  getcfg can return empty object when no matching values are found.
+    if (cfg === undefined || Object.keys(cfg).length === 0) {
+        this.info('Config value not found: ' + option);
+        return 0;
     }
 
     // Filter TDS user keys...
-    try {
-        keys = Object.keys(cfg).filter(function(key) {
-            return key.indexOf('tds.users') !== 0;
-        });
-        newcfg = {};
-        keys.forEach(function(key) {
-            if (CLI.isValid(cfg[key])) {
-                newcfg[key] = cfg[key];
-            }
-        });
-        cfg = newcfg;
-    } catch (e) {
-        //  Ignore, probably not an object with keys.
-        void 0;
+    if (!this.options.users) {
+        try {
+            keys = Object.keys(cfg).filter(function(key) {
+                return key.indexOf('users') !== 0;
+            });
+            newcfg = {};
+            keys.forEach(function(key) {
+                if (CLI.isValid(cfg[key])) {
+                    newcfg[key] = cfg[key];
+                }
+            });
+            cfg = newcfg;
+        } catch (e) {
+            //  Ignore, probably not an object with keys.
+            void 0;
+        }
     }
 
     // Object.keys will throw for anything other than Object/Array...
@@ -179,7 +195,10 @@ Cmd.prototype.execute = function() {
     if (str.indexOf('~') === 0) {
         str += ' => ' + CLI.expandPath(str);
     }
+
     this.info(str);
+
+    return 0;
 };
 
 
@@ -242,8 +261,10 @@ Cmd.prototype.setConfig = function(path, value) {
             val = true;
         } else if (value === 'false') {
             val = false;
-        } else if (!isNaN(parseInt(value, 10))) {
-            val = parseInt(value, 10);
+        } else if (!isNaN(new Number(value))) {
+            //  NOTE we do not use parseInt since that can't deal with things
+            //  like IP addresses (it parses them "successfully" but wrong).
+            val = 0 + new Number(value);
         } else {
             val = value;
         }

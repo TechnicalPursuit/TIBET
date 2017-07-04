@@ -15,80 +15,17 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.TemplatedTag.defineSubtype('xctrls:checkitem');
-
-TP.xctrls.checkitem.addTraits(TP.core.TogglingUIElementNode);
+TP.xctrls.item.defineSubtype('xctrls:checkitem');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.checkitem.Inst.defineAttribute(
-    'valuePElem',
-    {value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))});
+TP.xctrls.checkitem.Inst.defineAttribute('valuePElem',
+    TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineMethod('getLabelText',
-function() {
-
-    /**
-     * @method getLabelText
-     * @summary Returns the text of the label of the receiver.
-     * @returns {String} The receiver's label text.
-     */
-
-    var labelValue;
-
-    //  Go after child text of 'xctrls:label'
-    labelValue = this.get('string(./xctrls:label)');
-
-    return labelValue;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineMethod('$getMarkupValue',
-function() {
-
-    /**
-     * @method $getMarkupValue
-     * @summary Returns the 'value' of the receiver as authored by user in the
-     *     markup. Many times this is represented as a 'value' attribute in the
-     *     markup and serves as the default.
-     * @returns {String} The markup value of the receiver.
-     */
-
-    var textValue;
-
-    //  Go after child text of 'xctrls:value'
-    textValue = this.get('string(./xctrls:value)');
-
-    return textValue;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineMethod('$getPrimitiveValue',
-function() {
-
-    /**
-     * @method $getPrimitiveValue
-     * @summary Returns the low-level primitive value stored by the receiver in
-     *     internal storage.
-     * @returns {String} The primitive value of the receiver.
-     */
-
-    var textValue;
-
-    //  Go after child text of 'xctrls:value'
-    textValue = this.get('string(./xctrls:value)');
-
-    return textValue;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.xctrls.checkitem.Inst.defineMethod('$getVisualToggle',
@@ -103,25 +40,6 @@ function() {
      */
 
     return this.$isInState('pclass:checked');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineMethod('isSingleValued',
-function(aspect) {
-
-    /**
-     * @method isSingleValued
-     * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
-     *     for more information.
-     * @param {String} [aspectName] An optional aspect name that is being used
-     *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
-     */
-
-    //  Checkitem (arrays) are not single valued.
-    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -169,23 +87,6 @@ function(aToggleValue) {
     this.$isInState('pclass:checked', aToggleValue);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineHandler('UIDidDeactivate',
-function(aSignal) {
-
-    /**
-     * @method handleUIDidDeactivate
-     * @summary This method is invoked as the checkitem is clicked
-     * @param {TP.sig.UIDidDeactivate} aSignal The signal that caused this
-     *     handler to trip.
-     */
-
-    this.toggleValue();
-
-    return;
 });
 
 //  ------------------------------------------------------------------------

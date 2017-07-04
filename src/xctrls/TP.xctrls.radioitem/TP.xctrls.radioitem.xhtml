@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<xctrls:radioitem class="item" tabindex="{{$SOURCE.(@tabindex) .|| 0}}">
-    {{$SOURCE.(./xctrls:label)}}
+<xctrls:radioitem class="item {{$SOURCE.(@class)}}">
+    {{$SOURCE.(./xctrls:label|./xctrls:value|./xctrls:hint)}}
     <span xmlns="http://www.w3.org/1999/xhtml" id="{{$SOURCE.(@id)}}_value" tibet:pelem="value">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g state="off"><path d="M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10c5.5,0,10-4.5,10-10S17.5,2,12,2z M12,20c-4.4,0-8-3.6-8-8s3.6-8,8-8c4.4,0,8,3.6,8,8S16.4,20,12,20z"></path></g>

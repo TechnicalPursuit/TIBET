@@ -11,8 +11,6 @@
 /*
 */
 
-/* JSHint checking */
-
 /* global $STATUS:true */
 
 //  ------------------------------------------------------------------------
@@ -141,16 +139,32 @@ Window.prototype[TP.OWNER] = Window;
 //  -----------------------------------------------------------------------
 
 //  Needed during boot
-TP.getID = function() {return TP[TP.ID]; };
-TP.sys.getID = function() {return TP.sys[TP.ID]; };
-TP.boot.getID = function() {return TP.boot[TP.ID]; };
-APP.getID = function() {return APP[TP.ID]; };
+TP.getID = function() {
+    return TP[TP.ID];
+};
+TP.sys.getID = function() {
+    return TP.sys[TP.ID];
+};
+TP.boot.getID = function() {
+    return TP.boot[TP.ID];
+};
+APP.getID = function() {
+    return APP[TP.ID];
+};
 
 //  Needed during boot
-TP.getName = function() {return TP[TP.NAME]; };
-TP.sys.getName = function() {return TP.sys[TP.NAME]; };
-TP.boot.getName = function() {return TP.boot[TP.NAME]; };
-APP.getName = function() {return APP[TP.NAME]; };
+TP.getName = function() {
+    return TP[TP.NAME];
+};
+TP.sys.getName = function() {
+    return TP.sys[TP.NAME];
+};
+TP.boot.getName = function() {
+    return TP.boot[TP.NAME];
+};
+APP.getName = function() {
+    return APP[TP.NAME];
+};
 
 //  ------------------------------------------------------------------------
 
@@ -203,6 +217,56 @@ TP.canInvoke = function(anObj, anInterface) {
 
     /**
      * @method canInvoke
+     * @summary Returns true if the object provided implements the method named
+     *     in the name provided.
+     * @description The Smalltalk method 'respondsTo' is replaced in TIBET with
+     *     this method, which allows you to check a method name against a
+     *     potentially null/undefined parameter or return value.
+     * @param {Object} anObj The object to check.
+     * @param {String} anInterface A method name to check.
+     * @example Testing to see if anObj implements 'getID':
+     *     <code>
+     *          TP.canInvoke(anObj, 'getID');
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} True if the object implements the method(s) of the
+     *     interface.
+     */
+
+    var obj;
+
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it. Note that we *must* compare anObj to both null and
+    //  undefined rather than '!' because it might get falsey things like a '0'
+    //  and the empty String.
+
+    if (anObj === undefined || anObj === null || !anInterface) {
+        return false;
+    }
+
+    obj = anObj[anInterface];
+
+    //  NOTE: On some platforms, if obj is a '[native code]' function,
+    //  'instanceof Function' will return false. This is the only consistent
+    //  test for whether something can truly respond.
+    /* eslint-disable no-extra-parens */
+    return (typeof obj === 'function' && !obj.$$dnu);
+    /* eslint-enable no-extra-parens */
+};
+
+//  Manual setup
+TP.canInvoke[TP.NAME] = 'canInvoke';
+TP.canInvoke[TP.OWNER] = TP;
+TP.canInvoke[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.canInvoke[TP.DISPLAY] = 'TP.canInvoke';
+TP.registerLoadInfo(TP.canInvoke);
+
+//  ------------------------------------------------------------------------
+
+TP.canInvokeInterface = function(anObj, anInterface) {
+
+    /**
+     * @method canInvokeInterface
      * @summary Returns true if the object provided implements the method or
      *     methods in the interface provided. The interface can be defined as
      *     either a single method name or an array of names which constitute the
@@ -215,7 +279,9 @@ TP.canInvoke = function(anObj, anInterface) {
      *     to check.
      * @example Testing to see if anObj implements 'getID':
      *     <code>
-     *          TP.canInvoke(anObj, 'getID');
+     *          TP.canInvokeInterface(anObj, 'getID');
+     *          <samp>true</samp>
+     *          TP.canInvokeInterface(anObj, ['at', 'atPut]);
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} True if the object implements the method(s) of the
@@ -226,11 +292,12 @@ TP.canInvoke = function(anObj, anInterface) {
         i,
         len;
 
-    if (anObj === undefined || anObj === null) {
-        return false;
-    }
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it. Note that we *must* compare anObj to both null and
+    //  undefined rather than '!' because it might get falsey things like a '0'
+    //  and the empty String.
 
-    if (anInterface === undefined || anInterface === null) {
+    if (anObj === undefined || anObj === null || !anInterface) {
         return false;
     }
 
@@ -259,11 +326,11 @@ TP.canInvoke = function(anObj, anInterface) {
 };
 
 //  Manual setup
-TP.canInvoke[TP.NAME] = 'canInvoke';
-TP.canInvoke[TP.OWNER] = TP;
-TP.canInvoke[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.canInvoke[TP.DISPLAY] = 'TP.canInvoke';
-TP.registerLoadInfo(TP.canInvoke);
+TP.canInvokeInterface[TP.NAME] = 'canInvokeInterface';
+TP.canInvokeInterface[TP.OWNER] = TP;
+TP.canInvokeInterface[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.canInvokeInterface[TP.DISPLAY] = 'TP.canInvokeInterface';
+TP.registerLoadInfo(TP.canInvokeInterface);
 
 //  ------------------------------------------------------------------------
 
@@ -276,7 +343,7 @@ TP.isValid = function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is valid:
      *     <code>
-     *          if (TP.isValid(anObj)) { TP.alert('its valid'); };
+     *          if (TP.isValid(anObj)) { TP.info('its valid'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not null *and* is not
      *     undefined.
@@ -302,7 +369,7 @@ TP.notValid = function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not valid:
      *     <code>
-     *          if (TP.notValid(anObj)) { TP.alert('its not valid'); };
+     *          if (TP.notValid(anObj)) { TP.info('its not valid'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not valid (that is, either
      *     null or undefined).
@@ -379,6 +446,32 @@ TP.registerLoadInfo(TP.isDNU);
 
 // TODO: Remove after cleansing old name.
 TP.$$isDNU = TP.isDNU;
+
+//  ------------------------------------------------------------------------
+
+TP.makeStartUpper = function(anObj) {
+
+    /**
+     * @method makeStartUpper
+     * @summary Returns a new string with the initial character in upper case.
+     *     No other transformation is performed.
+     * @param {String} anObj The object to upper case the initial character of.
+     * @returns {String} The supplied String with the initial character
+     *     uppercased.
+     */
+
+    return anObj[0].toUpperCase() + anObj.slice(1);
+};
+
+//  Manual setup
+TP.makeStartUpper[TP.NAME] = 'makeStartUpper';
+TP.makeStartUpper[TP.OWNER] = TP;
+TP.makeStartUpper[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.makeStartUpper[TP.DISPLAY] = 'TP.makeStartUpper';
+TP.registerLoadInfo(TP.makeStartUpper);
+
+// TODO: Remove after cleansing old name.
+TP.$$makeStartUpper = TP.makeStartUpper;
 
 //  ------------------------------------------------------------------------
 
@@ -857,11 +950,9 @@ TP.boot.PHash = function() {
         len;
 
     //  internal hash and list of true keys for the receiver
-    /* jshint -W010 */
     /* eslint-disable no-new-object */
     this.$$hash = new Object();
     /* eslint-enable no-new-object */
-    /* jshint +W010 */
     this[TP.ID] = TP.constructOID();
 
     //  no signaling until we're observed
@@ -873,7 +964,7 @@ TP.boot.PHash = function() {
     if (arguments.length === 1) {
         obj = arguments[0];
         for (i in obj) {    //  one of the few places we do this
-            if (TP.regex.INTERNAL_SLOT.test(i) &&
+            if (!TP.regex.INTERNAL_SLOT.test(i) &&
                 TP.owns(obj, i)) {
                 this.$$hash[i] = obj[i];
             }
@@ -1221,7 +1312,7 @@ TP.boot.PHash = function() {
             funcName,
             val;
 
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             return this[funcName]();
         }
@@ -1650,6 +1741,70 @@ TP.boot.PHash.prototype.$$prototype = TP.boot.PHash.prototype;
 
 //  ------------------------------------------------------------------------
 
+TP.isPlainObject = function(anObj) {
+
+    /**
+     * @method isPlainObject
+     * @summary Returns true if the object provided is a 'plain JavaScript
+     *     Object' - that is, created via 'new Object()' or '{}'.
+     * @param {Object} anObj The object to test.
+     * @example Test what's a type and what's not:
+     *     <code>
+     *          anObj = new Object();
+     *          TP.isPlainObject(anObj);
+     *          <samp>true</samp>
+     *          anObj = {};
+     *          TP.isPlainObject(anObj);
+     *          <samp>true</samp>
+     *          anObj = true;
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = 42;
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = '';
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = [];
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = TP.lang.Object.construct();
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a Type.
+     */
+
+    //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
+    //  objects.
+
+    if (anObj === null ||
+        anObj === undefined ||
+        anObj.$$type ||
+        typeof anObj !== 'object' ||
+        anObj.nodeType ||
+        anObj.moveBy) {
+        return false;
+    }
+
+    if (anObj.constructor && !TP.ObjectProto.hasOwnProperty.call(
+                                anObj.constructor.prototype,
+                                'isPrototypeOf')) {
+        return false;
+    }
+
+    return true;
+};
+
+//  Manual method registration.
+TP.isPlainObject[TP.NAME] = 'isPlainObject';
+TP.isPlainObject[TP.OWNER] = TP;
+TP.isPlainObject[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.isPlainObject[TP.DISPLAY] = 'TP.isPlainObject';
+TP.registerLoadInfo(TP.isPlainObject);
+
+//  ------------------------------------------------------------------------
+
 TP.hc = function() {
 
     /**
@@ -1674,6 +1829,8 @@ TP.hc = function() {
     // If we get invoked on a TP.boot.PHash just return it like a noop.
     if (arguments[0] instanceof TP.boot.PHash) {
         return arguments[0];
+    } else if (TP.isPlainObject(arguments[0])) {
+        return new TP.boot.PHash(arguments[0]);
     }
 
     dict = new TP.boot.PHash();
@@ -1708,7 +1865,8 @@ TP.CONSTANT_DESCRIPTOR = {
     configurable: false
 };
 
-TP.DEFAULT_DESCRIPTOR = {};
+TP.DEFAULT_DESCRIPTOR = {
+};
 
 TP.HIDDEN_DESCRIPTOR = {
     enumerable: false,
@@ -1728,7 +1886,7 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
     TP.sys.$$meta_types = TP.hc();
     TP.sys.$$meta_attributes = TP.hc();
-    TP.sys.$$meta_handlers = TP.hc();
+    TP.sys.$$meta_handlers = [];
     TP.sys.$$meta_methods = TP.hc();
     TP.sys.$$meta_owners = TP.hc();
     TP.sys.$$meta_namespaces = TP.hc();
@@ -1745,20 +1903,32 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
 //  ------------------------------------------------------------------------
 
-TP.objectGetMetadataName = function(anObject) {
+TP.objectGetMetadataName = function(anObject, kind) {
 
-    if (TP.notValid(anObject)) {
+    if (anObject === null || anObject === undefined) {
         return;
     }
 
-    if (TP.isType(anObject)) {
-        return anObject.getName();
+    switch (kind) {
+        case TP.METHOD:
+            return anObject[TP.OWNER].getName() + '_' +
+                anObject[TP.TRACK] + '_' +
+                anObject.getName();
+        case TP.TYPE:
+            return anObject.getName();
+        default:
+            break;
     }
 
+    //  Check method first...there are a lot more of them passing through here.
     if (TP.isMethod(anObject)) {
         return anObject[TP.OWNER].getName() + '_' +
             anObject[TP.TRACK] + '_' +
             anObject.getName();
+    }
+
+    if (TP.isType(anObject)) {
+        return anObject.getName();
     }
 
     return;
@@ -1838,7 +2008,8 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (/^handle/.test(iname)) {
-                TP.sys.$$meta_handlers.atPut(iname, iname);
+                TP.sys.$$meta_handlers.push(iname);
+                TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
             }
 
             TP.sys.$$meta_methods.atPut(gname, anItem);
@@ -2013,8 +2184,175 @@ TP.registerLoadInfo(TP.defineSlot);
 
 //  ------------------------------------------------------------------------
 
+TP.stringStripFunctionSource = function(str, name) {
+
+    var arr,
+        tokens,
+        len,
+        i,
+        token,
+        count,
+        result;
+
+    if (typeof TP.$tokenize !== 'function') {
+        return;
+    }
+
+    //  strip down to tokens that represent the block structure of functions
+    /* eslint-disable no-extra-parens */
+    tokens = TP.$tokenize(str).filter(
+            function(tok) {
+                return (tok.name === 'keyword' && tok.value === 'function') ||
+                        (tok.name === 'operator' && tok.value === '{') ||
+                        (tok.name === 'operator' && tok.value === '}');
+            });
+    /* eslint-enable no-extra-parens */
+
+    arr = [];
+
+    while (tokens) {
+        //  scan for initial function reference to start our process. once we
+        //  find it the next token in line is the opening brace for the function
+        token = tokens.shift();
+        while (token && token.value !== 'function') {
+            token = tokens.shift();
+        }
+
+        if (!token) {
+            break;
+        }
+
+        //  capture opening brace token. it will have the start index for dicing
+        token = tokens.shift();
+        arr.push(token.to);
+        count = 1;
+
+        //  scan through tokens until we find closing one...
+        while (token && count !== 0) {
+            token = tokens.shift();
+            if (token.value === '{') {
+                count++;
+            } else if (token.value === '}') {
+                count--;
+            }
+        }
+
+        if (count === 0) {
+            arr.push(token.to);
+        }
+    }
+
+    //  Didn't find anything...return the original source.
+    if (!arr) {
+        return str;
+    }
+
+    result = '';
+
+    //  first slice location is 0, last target is length.
+    arr.unshift(0);
+    arr.push(str.length);
+
+    len = arr.length;
+    for (i = 0; i < len; i += 2) {
+        result += str.slice(arr[i], arr[i + 1]);
+    }
+
+    return result;
+};
+
+TP.stringStripFunctionSource[TP.NAME] = 'stringStripFunctionSource';
+TP.stringStripFunctionSource[TP.OWNER] = TP;
+TP.stringStripFunctionSource[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.stringStripFunctionSource[TP.DISPLAY] = 'TP.stringStripFunctionSource';
+TP.registerLoadInfo(TP.stringStripFunctionSource);
+
+//  ------------------------------------------------------------------------
+
+TP.functionNeedsCallee = function(aFunction, aName) {
+
+    /**
+     * @method functionNeedsCallee
+     * @summary Returns true if the function provided has at least one call to
+     *     callNextMethod which requires the function to be proxied with a
+     *     wrapper to handle callee management.
+     * @param {Function} aFunction The function to test.
+     * @return {Boolean} True if the function should be patched.
+     */
+
+    var str,
+        callee,
+        func,
+        chunk,
+        result;
+
+    //  In case this Function is bound...
+    if (TP.isFunction(aFunction.$realFunc)) {
+        return TP.functionNeedsCallee(aFunction.$realFunc, aName);
+    }
+
+    str = '' + aFunction;
+
+    //  No mention of a callee-qualifying snippet? We're in the clear.
+    callee = TP.regex.NEEDS_CALLEE.exec(str);
+    if (!callee) {
+        return false;
+    }
+
+    //  Use multiline mode to strip lines starting with whitespace followed by
+    //  single-line comment prefix (//) or multi-line comment prefix (/*) or
+    //  multi-line comment body prefixing. This won't be perfect if multiline
+    //  comments don't have '*' in front of every line, it will leave tidbits of
+    //  their comment body in the text...and if a line were to start with '*' as
+    //  part of a multiplication that'd be potentially bad as well...except it's
+    //  highly unlikely the remainder of that line has 'function' or callNext*.
+    str = str.replace(/^\s*\/\/.*$/mg, '').replace(/^\s*(\/\*|\*).*$/mg, '');
+
+    //  slice out the method body so the function's boilerplate isn't in the way
+    str = str.slice(str.indexOf('{') + 1, str.lastIndexOf('}'));
+
+    //  After comments are gone no mention of a callee-qualifying snippet?
+    callee = TP.regex.NEEDS_CALLEE.exec(str);
+    if (!callee) {
+        return false;
+    }
+
+    //  find first mention of 'function' after the opening one. if that's after
+    //  the index to callee this one is before any possible embedded functions.
+    func = str.indexOf('function');
+    if (func === -1 || callee.index < func) {
+        return true;
+    }
+
+    //  if the last } (block) is followed by callee bits it must be in main
+    chunk = str.split('}').slice(-1);
+    if (chunk && chunk[0].match(TP.regex.NEEDS_CALLEE)) {
+        return true;
+    }
+
+    //  Have to do it the heavy-lifting way by using a more tokenized approach.
+    str = TP.stringStripFunctionSource(str, aName);
+
+    result = TP.regex.NEEDS_CALLEE.test(str);
+
+    //  Since tokenizing to find out the answer is heavy on startup we want to
+    //  help optimize by suggesting that an explicit flag be set.
+    TP.warn('Method ' + aName + ' should use explicit callee value of ' +
+        result);
+
+    return result;
+};
+
+TP.functionNeedsCallee[TP.NAME] = 'functionNeedsCallee';
+TP.functionNeedsCallee[TP.OWNER] = TP;
+TP.functionNeedsCallee[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.functionNeedsCallee[TP.DISPLAY] = 'TP.functionNeedsCallee';
+TP.registerLoadInfo(TP.functionNeedsCallee);
+
+//  ------------------------------------------------------------------------
+
 TP.defineMethodSlot =
-function(target, name, value, track, desc, display, owner, $handler) {
+function(target, name, value, track, desc, display, owner, $isHandler) {
 
     /**
      * @method defineMethodSlot
@@ -2030,22 +2368,21 @@ function(target, name, value, track, desc, display, owner, $handler) {
      * @param {String} display The method display name. Defaults to the owner
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
-     *     without errors for deprecated use of defineMethod for handlers.
+     * @param {Boolean} [$isHandler=false] True will cause the definition to
+     *     pass without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     var own,
         trk,
 
-        str,
         installCalleePatch,
 
         method,
         disp;
 
-    own = TP.ifInvalid(owner, target);
-    trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
+    own = owner || target;
+    trk = track || TP.LOCAL_TRACK;
 
     if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
 
@@ -2071,10 +2408,9 @@ function(target, name, value, track, desc, display, owner, $handler) {
 
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
-    if (!$handler && /^handle[0-9A-Z]/.test(name) &&
-            TP.canInvoke(TP, 'deprecated')) {
+    if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
         TP.deprecated('Use defineHandler for handler: ' +
-            TP.objectGetMetadataName(value));
+            TP.objectGetMetadataName(value, TP.METHOD));
     }
 
     //  If the body of the function has a reference to methods that need
@@ -2083,127 +2419,83 @@ function(target, name, value, track, desc, display, owner, $handler) {
     //  mode). What a pain!
     //  Note that we do allow the method definer to set either 'noCalleePatch'
     //  to true which means that the system will definitely not install a patch,
-    //  even if the RegExp passes or 'wantsCalleePatch' to true which forces the
+    //  even if the RegExp passes or 'patchCallee' to true which forces the
     //  system to install a patch, even if the RegExp fails.
-    if (TP.NEEDS_CALLEE.test(str = value.toString())) {
-
-        if (value.wantsCalleePatch === true) {
+    if (value.toString().match(TP.regex.NEEDS_CALLEE)) {
+        if (desc && desc.patchCallee === true) {
             installCalleePatch = true;
-        } else if (value.wantsCalleePatch === false) {
+        } else if (desc && desc.patchCallee === false) {
             installCalleePatch = false;
         } else {
+            installCalleePatch = TP.functionNeedsCallee(value, name);
+        }
+    }
 
-            //  The author hasn't directly specified whether to use the callee
-            //  patch or not, but it's not as simple as just using the RegExp
-            //  above. We only want the patch to be installed if a statement
-            //  that requires callee access (such as callNextMethod() or
-            //  callNextHandler()) is at the 'top-level' of the method itself -
-            //  not in any nested 'function() {...}' statements.
+    if (installCalleePatch) {
 
-            installCalleePatch = false;
+        method = function() {
+            var oldCallee,
+                oldArgs,
+                retVal;
 
-            //  Trim off any whitespace
-            str = str.trim();
+            //  Capture the current values of callee and args - we might
+            //  already be in a place where we're using them.
+            oldCallee = TP.$$currentCallee$$;
+            oldArgs = TP.$$currentArgs$$;
 
-            //  The overall Function's 'function' keyword should be within the
-            //  first few characters. Since we don't want to take it into
-            //  account when detecting nested functions, we skip 8 characters
-            //  into the source String.
-            if (str.indexOf('function', 8) !== TP.NOT_FOUND) {
-                //  We have nested functions - see if we can remove the bodies
-                //  of those functions and if we still have a callee match. If
-                //  so, then we need a callee patch.
-                if (value.stripNestedFunctionContent) {
-                    str = value.stripNestedFunctionContent();
-                    installCalleePatch = TP.NEEDS_CALLEE.test(str);
-                } else {
-                    //  Too early in the boot process to use the
-                    //  'stripNestedFunctionContent' method - install the patch
-                    //  anyway.
-                    installCalleePatch = true;
-                }
-            } else {
-                //  No nested functions - go ahead and install
-                installCalleePatch = true;
-            }
+            //  Set the value of the current callee.
+            TP.$$currentCallee$$ = value;
+
+            //  Set the value of the current args.
+            TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
+
+            //  Now, call the method
+            retVal = value.apply(this, TP.$$currentArgs$$);
+
+            //  Restore the old values for callee and args
+            TP.$$currentCallee$$ = oldCallee;
+            TP.$$currentArgs$$ = oldArgs;
+
+            return retVal;
+        };
+
+        //  Let's make sure we can get back to the original function here.
+        method.$realFunc = value;
+
+        //  And let's make sure we can get back to the wrapper from the original
+        //  function as well.
+        value.$wrapperFunc = method;
+
+        //  So this is a little tricky. We've defined a patch function to
+        //  'stand in' for (and wrap a call to) our method. We do want to
+        //  distinguish the real method from the ersatz for reflection
+        //  purposes, so we tell the patch function to instrument itself
+        //  with the name of the method it's standing in for but with a
+        //  '$$calleePatch' suffix.
+        method.asMethod(own, name + '$$calleePatch', trk, display);
+
+        //  If the original 'display' argument was provided, that means that
+        //  'asMethod()' won't have set the display name using the supplied
+        //  'name' - which means we need to append '$$calleePatch' to the
+        //  display name.
+        if (TP.notEmpty(display)) {
+            disp = method[TP.DISPLAY];
+            method[TP.DISPLAY] = disp + '$$calleePatch';
         }
 
-        if (installCalleePatch) {
-
-            method = function() {
-                var oldCallee,
-                    oldArgs,
-                    retVal;
-
-                //  Capture the current values of callee and args - we might
-                //  already be in a place where we're using them.
-                oldCallee = TP.$$currentCallee$$;
-                oldArgs = TP.$$currentArgs$$;
-
-                //  Set the value of callee.
-                TP.$$currentCallee$$ = value;
-
-                //  Set the value of args. Note the unique way we gather up the
-                //  arguments here - using very primitive Array constructs and
-                //  only touching the items in 'arguments', not the object
-                //  itself. This allows engines such as V8 in Chrome to
-                //  optimize.
-                /*
-                args = new Array(arguments.length);
-                for (i = 0; i < args.length; i++) {
-                    args[i] = arguments[i];
-                }
-                TP.$$currentArgs$$ = args;
-                */
-                TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
-
-                //  Now, call the method
-                retVal = value.apply(this, TP.$$currentArgs$$);
-
-                //  Restore the old values for callee and args
-                TP.$$currentCallee$$ = oldCallee;
-                TP.$$currentArgs$$ = oldArgs;
-
-                return retVal;
-            };
-
-            //  Let's make sure we can get back to the original function here.
-            method.$realFunc = value;
-
-            //  So this is a little tricky. We've defined a patch function to
-            //  'stand in' for (and wrap a call to) our method. We do want to
-            //  distinguish the real method from the ersatz for reflection
-            //  purposes, so we tell the patch function to instrument itself
-            //  with the name of the method it's standing in for but with a
-            //  '$$calleePatch' suffix.
-            method.asMethod(own, name + '$$calleePatch', trk, display);
-
-            //  If the original 'display' argument was provided, that means that
-            //  'asMethod()' won't have set the display name using the supplied
-            //  'name' - which means we need to append '$$calleePatch' to the
-            //  display name.
-            if (TP.notEmpty(display)) {
-                disp = method[TP.DISPLAY];
-                method[TP.DISPLAY] = disp + '$$calleePatch';
-            }
-
-            //  We then go ahead and register that on the receiving object under
-            //  that name as well. And then, NOTE BELOW: We will register this
-            //  patch function as the method *UNDER THE REGULAR NAME* on the
-            //  receiving object. Yes, that means that the patch function is
-            //  registered under both names, but reflection will be able to
-            //  distinguish between the two because it's instrumented itself
-            //  with it's "real name" (the method name with the '$$calleePatch'
-            //  suffix).
-            TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD,
-                            trk, TP.HIDDEN_DESCRIPTOR);
-        } else {
-            //  The logic above determined that we don't want/need a callee
-            //  patch.
-            method = value;
-        }
+        //  We then go ahead and register that on the receiving object under
+        //  that name as well. And then, NOTE BELOW: We will register this
+        //  patch function as the method *UNDER THE REGULAR NAME* on the
+        //  receiving object. Yes, that means that the patch function is
+        //  registered under both names, but reflection will be able to
+        //  distinguish between the two because it's instrumented itself
+        //  with it's "real name" (the method name with the '$$calleePatch'
+        //  suffix).
+        TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD,
+                        trk, TP.HIDDEN_DESCRIPTOR);
     } else {
-        //  The normal (non-needs-callee) case. Everything is straightforward.
+        //  The logic above determined that we don't want/need a callee
+        //  patch.
         method = value;
     }
 
@@ -2226,7 +2518,8 @@ function(target, name, value, track, desc, display, owner, $handler) {
         TP.sys.addMetadata(own, value, TP.METHOD, trk);
     } else if (name.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
-        TP.sys.$$meta_handlers.atPut(name, name);
+        TP.sys.$$meta_handlers.push(name);
+        TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
     }
 
     return method;
@@ -2332,7 +2625,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is defined:
      *     <code>
-     *          if (TP.isDefined(anObj)) { TP.alert('its defined'); };
+     *          if (TP.isDefined(anObj)) { TP.info('its defined'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is defined.
      */
@@ -2357,14 +2650,14 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is NaN:
      *     <code>
-     *          if (TP.isNaN(anObj)) { TP.alert('its NaN'); };
+     *          if (TP.isNaN(anObj)) { TP.info('its NaN'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is NaN.
      */
 
     if (TP.isValid(aValue) &&
-        isNaN(aValue) &&
-        aValue.constructor === Number) {
+        aValue.constructor === Number &&
+        isNaN(aValue)) {
         return true;
     }
 
@@ -2383,7 +2676,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is null:
      *     <code>
-     *          if (TP.isNull(anObj)) { TP.alert('its null'); };
+     *          if (TP.isNull(anObj)) { TP.info('its null'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is null.
      */
@@ -2402,7 +2695,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not defined:
      *     <code>
-     *          if (TP.notDefined(anObj)) { TP.alert('its not defined'); };
+     *          if (TP.notDefined(anObj)) { TP.info('its not defined'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is undefined.
      */
@@ -2421,7 +2714,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not NaN:
      *     <code>
-     *          if (TP.notNaN(anObj)) { TP.alert('its not NaN'); };
+     *          if (TP.notNaN(anObj)) { TP.info('its not NaN'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not NaN.
      */
@@ -2442,7 +2735,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not null:
      *     <code>
-     *          if (TP.notNull(anObj)) { TP.alert('its not null'); };
+     *          if (TP.notNull(anObj)) { TP.info('its not null'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not null.
      */
@@ -2581,8 +2874,12 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is a Node.
      */
 
-    return TP.isValid(anObj) && typeof anObj.nodeType === 'number';
-}, null, 'TP.ifNode');
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+    return anObj !== null &&
+            anObj !== undefined &&
+            anObj.nodeType !== undefined;
+}, null, 'TP.isNode');
 
 //  ------------------------------------------------------------------------
 
@@ -2599,7 +2896,15 @@ function(anObj) {
      *     constructor object.
      */
 
-    return TP.isValid(TP.getNonFunctionConstructorName(anObj));
+    var val;
+
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    val = TP.getNonFunctionConstructorName(anObj);
+
+    return val !== undefined && val !== null;
+
 }, null, 'TP.isNonFunctionConstructor');
 
 //  ------------------------------------------------------------------------
@@ -2618,97 +2923,93 @@ function(anObj) {
      *     object.
      */
 
-    var exclusionList,
-        list;
+    var list,
+        exclusionList;
+
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
 
     if (anObj === null || anObj === undefined) {
         return;
     }
 
-    if (TP.sys.$$nonFunctionConstructors) {
+    if (TP.sys.$$nonFunctionConstructors !== undefined) {
         return anObj.$$nonFunctionConstructorObjectName;
     }
 
-    //  The object is created by non Function constructors and has an object
-    //  name for us to use.
+    //  Build a list of the 'non Function' constructors in the system. This
+    //  will help significantly during type testing.
 
-    //  We keep a pre-built list for reflection & other purposes.
-    list = TP.sys.$$nonFunctionConstructors;
-    if (TP.notValid(list)) {
+    list = [];
 
-        //  This must be the first time through - the list isn't built yet.
+    //  These 4 objects will show up because of the algorithm we use to
+    //  determine non-Function constructors. We filter for them.
+    exclusionList = ['TP', 'APP', 'Infinity', 'NaN'];
 
-        list = [];
+    //  Define a silly slot on Function.prototype. This is how we'll test to see
+    //  if a constructor 'Function' is *really* a Function.
+    Function.prototype.fluffycat = 'fluffycat';
 
-        //  These 4 objects will show up because of the algorithm we use to
-        //  determine non-Function constructors. We filter for them.
-        exclusionList = ['TP', 'APP', 'Infinity', 'NaN'];
+    //  Loop over all of the globals that were found in our startup sequence.
+    //  Note that TP.sys.$nativeglobals gets redone as a TP.core.Hash during
+    //  system finalization, but at the point the first call to this method is
+    //  made, it is still an Array.
+    TP.sys.$nativeglobals.forEach(
+            function(aProp) {
+                var obj;
 
-        //  Define a silly slot on Function.prototype. This is how we'll test to
-        //  see if a constructor 'Function' is *really* a Function.
-        Function.prototype.fluffycat = 'fluffycat';
+                //  If the property name matches what we think should be a
+                //  'native type name', then test it for being a non-Function
+                //  constructor.
+                if (TP.regex.NATIVE_TYPENAME.test(aProp)) {
+                    obj = TP.global[aProp];
 
-        //  Loop over all of the globals that were found in our startup
-        //  sequence. Note that TP.sys.$nativeglobals gets redone as a
-        //  TP.core.Hash during system finalization, but at the point the first
-        //  call to this method is made, it is still an Array.
-        TP.sys.$nativeglobals.forEach(
-                function(aProp) {
-                    var obj;
+                    //  If the slot we defined on Function.prototype isn't
+                    //  there and the property is:
+                    //
+                    //  - not in our exclusion list above
+                    //  - it's not a slot corresponding to a Window (like
+                    //  iframe Windows are)
+                    //  - it's not a Number (believe it or not, on some
+                    //  platforms, it will be... Chrome...)
+                    //
+                    //  then add both the object and the property name to our
+                    //  list. This is how we get both the object reference and
+                    //  the name that goes along with it.
 
-                    //  If the property name matches what we think should be a
-                    //  'native type name', then test it for being a
-                    //  non-Function constructor.
-                    if (TP.regex.NATIVE_TYPENAME.test(aProp)) {
-                        obj = TP.global[aProp];
+                    //  Note that we put this in a try...catch to avoid problems
+                    //  with some environments wanting to throw an exception
+                    //  when accessing the slot that we placed on
+                    //  Function.prototype. In that case, it's very likely to be
+                    //  a non-Function constructor object, which means we should
+                    //  add it to our list.
+                    try {
+                        if (!obj.fluffycat &&
+                            exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
+                            !TP.isWindow(obj) &&
+                            !TP.isNumber(obj)) {
 
-                        //  If the slot we defined on Function.prototype isn't
-                        //  there and the property is:
-                        //
-                        //  - not in our exclusion list above
-                        //  - it's not a slot corresponding to a Window (like
-                        //  iframe Windows are)
-                        //  - it's not a Number (believe it or not, on some
-                        //  platforms, it will be... Chrome...)
-                        //
-                        //  then add both the object and the property name to
-                        //  our list. This is how we get both the object
-                        //  reference and the name that goes along with it.
-
-                        //  Note that we put this in a try...catch to avoid
-                        //  problems with some environments wanting to throw an
-                        //  exception when accessing the slot that we placed on
-                        //  Function.prototype. In that case, it's very likely
-                        //  to be a non-Function constructor object, which means
-                        //  we should add it to our list.
-                        try {
-                            if (!obj.fluffycat &&
-                                exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
-                                !TP.isWindow(obj) &&
-                                !TP.isNumber(obj)) {
-
-                                //  Add it to the list and also instrument the
-                                //  name onto the object so that we can use it
-                                //  above.
-                                list.push([obj, aProp]);
-                                obj.$$nonFunctionConstructorObjectName = aProp;
-                            }
-                        } catch (e) {
-                            //  Must've had a problem instrumenting the name
-                            //  onto the object so just add it to the list.
+                            //  Add it to the list and also instrument the name
+                            //  onto the object so that we can use it above.
                             list.push([obj, aProp]);
+                            obj.$$nonFunctionConstructorObjectName = aProp;
                         }
+                    } catch (e) {
+                        //  Must've had a problem instrumenting the name onto
+                        //  the object so just add it to the list.
+                        list.push([obj, aProp]);
                     }
-                });
+                }
+            });
 
-        //  Make sure to remove our silly slot ;-).
-        delete Function.prototype.fluffycat;
+    //  Make sure to remove our silly slot ;-).
+    delete Function.prototype.fluffycat;
 
-        //  Cache the list.
-        TP.sys.$$nonFunctionConstructors = list;
-    }
+    //  Cache the list.
+    TP.sys.$$nonFunctionConstructors = list;
 
     return;
+
 }, null, 'TP.getNonFunctionConstructorName');
 
 //  ------------------------------------------------------------------------
@@ -2743,64 +3044,6 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('isPlainObject',
-function(anObj) {
-
-    /**
-     * @method isPlainObject
-     * @summary Returns true if the object provided is a 'plain JavaScript
-     *     Object' - that is, created via 'new Object()' or '{}'.
-     * @param {Object} anObj The object to test.
-     * @example Test what's a type and what's not:
-     *     <code>
-     *          anObj = new Object();
-     *          TP.isPlainObject(anObj);
-     *          <samp>true</samp>
-     *          anObj = {};
-     *          TP.isPlainObject(anObj);
-     *          <samp>true</samp>
-     *          anObj = true;
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = 42;
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = '';
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = [];
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = TP.lang.Object.construct();
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *     </code>
-     * @returns {Boolean} Whether or not the supplied object is a Type.
-     */
-
-    //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
-    //  objects.
-
-    if (anObj === null ||
-        anObj === undefined ||
-        anObj.$$type ||
-        typeof anObj !== 'object' ||
-        anObj.nodeType ||
-        anObj.moveBy) {
-        return false;
-    }
-
-    if (anObj.constructor && !TP.ObjectProto.hasOwnProperty.call(
-                                anObj.constructor.prototype,
-                                'isPrototypeOf')) {
-        return false;
-    }
-
-    return true;
-}, null, 'TP.isPlainObject');
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('isThenable',
 function(anObj) {
 
@@ -2815,6 +3058,9 @@ function(anObj) {
      *          TP.isThenable(anObj);
      *          <samp>false</samp>
      *          anObj = TP.extern.Promise.resolve();
+     *          TP.isThenable(anObj);
+     *          <samp>true</samp>
+     *          anObj = obj.someMethodThatReturnsResponse();
      *          TP.isThenable(anObj);
      *          <samp>true</samp>
      *     </code>
@@ -2854,13 +3100,17 @@ function(anObj) {
     var name,
         tname;
 
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
     //  no type name? probably isn't a type... all TIBET types have this
     //  slot and all native JS types should at least see the one on Function.
     //  There is the problem of 'non Function' constructors... a few 'Host'
     //  constructors won't inherit from Function, so we check for those and
     //  return that value.
-    if (TP.notValid(anObj) ||
-        TP.notValid(tname = anObj[TP.TNAME]) ||
+
+    if (!anObj ||
+        !(tname = anObj.$$typename) ||
         tname === '') {
         return TP.isNonFunctionConstructor(anObj);
     }
@@ -2934,21 +3184,6 @@ function(anObj) {
 //  PROTOTYPE TESTING
 //  ------------------------------------------------------------------------
 
-//  configure the native prototype objects so they will respond properly to
-//  the TP.isPrototype() call
-
-//  NB: We do *not* put this slot on TP.ObjectProto (as we try to keep slots off
-//  of that object) and put a specific check for it in TP.isPrototype().
-TP.ArrayProto.$$prototype = TP.ArrayProto;
-TP.BooleanProto.$$prototype = TP.BooleanProto;
-TP.DateProto.$$prototype = TP.DateProto;
-TP.FunctionProto.$$prototype = TP.FunctionProto;
-TP.NumberProto.$$prototype = TP.NumberProto;
-TP.RegExpProto.$$prototype = TP.RegExpProto;
-TP.StringProto.$$prototype = TP.StringProto;
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('isPrototype',
 function(anObject) {
 
@@ -2958,9 +3193,15 @@ function(anObject) {
      *     instance within the constructor.prototype chain or within TIBET's
      *     inheritance mechanism.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean}
+     * @returns {Boolean} True if the supplied object is being used as a
+     *     prototype.
      */
 
+    var obj;
+
+    //  All TIBET prototype objects are 'marked' as prototype objects with the
+    //  '$$prototype' slot. Native objects used as prototypes are not. They
+    //  should be detected with the logic at the bottom of this method.
     if (TP.isValid(anObject) &&
         TP.owns(anObject, '$$prototype') &&
         anObject.$$prototype === anObject) {
@@ -2968,7 +3209,24 @@ function(anObject) {
         return true;
     }
 
-    return anObject === TP.ObjectProto;
+    if (TP.isType(anObject)) {
+        return false;
+    }
+
+    //  Starting at the receiver's constructor prototype, iterate up the
+    //  prototype chain. If you find an object that matches the supplied object,
+    //  then it's a prototype.
+    obj = anObject.constructor.prototype;
+    while (obj) {
+        if (anObject === obj) {
+            return true;
+        }
+
+        obj = Object.getPrototypeOf(obj);
+    }
+
+    return false;
+
 }, null, 'TP.isPrototype');
 
 //  ------------------------------------------------------------------------
@@ -3131,7 +3389,6 @@ function() {
      * @returns {String} An RFC4122 version 4 compliant UUID
      */
 
-    /* jshint bitwise:false */
     /* eslint-disable no-extra-parens */
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
             /[xy]/g,
@@ -3146,7 +3403,6 @@ function() {
                 return v.toString(16);
             });
     /* eslint-enable no-extra-parens */
-    /* jshint bitwise:true */
 }, null, 'TP.genUUID');
 
 //  ------------------------------------------------------------------------
@@ -3160,11 +3416,9 @@ TP.sys.$statistics collection holds the data collected.
 */
 
 if (TP.notValid(TP.sys.$statistics)) {
-    /* jshint -W010 */
     /* eslint-disable no-new-object */
     TP.sys.$statistics = new Object();
     /* eslint-enable no-new-object */
-    /* jshint +W010 */
 }
 
 //  ------------------------------------------------------------------------
@@ -3266,12 +3520,10 @@ function(aFlag, shouldSignal) {
 //  the global scope
 (function() {
 
-    /* jshint -W054 */
     var NativeTypeStub;
 
     NativeTypeStub = new Function();
     NativeTypeStub.prototype = {};
-    /* jshint +W054 */
 
     //  ---
 
@@ -3292,46 +3544,46 @@ function(aFlag, shouldSignal) {
     //  ---
 
     NativeTypeStub.prototype.defineAttribute =
-    function(attributeName, attributeValue) {
+    function(attributeName, attributeValue, attributeDescriptor) {
 
         /**
          * @method defineAttribute
          * @summary Adds the attribute with name and value provided as a type
          *     attribute.
          * @param {String} attributeName The attribute name.
-         * @param {Object} attributeValue The attribute value or a property
-         *     descriptor object.
+         * @param {Object} attributeValue The attribute value.
+         * @param {Object} [attributeDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined attribute value.
          */
 
         return TP.defineAttributeSlot(
                 this.$$target, attributeName, attributeValue,
-                TP.TYPE_TRACK, this[TP.OWNER]);
+                TP.TYPE_TRACK, attributeDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeTypeStub.prototype.defineConstant =
-    function(constantName, constantValue) {
+    function(constantName, constantValue, constantDescriptor) {
 
         /**
          * @method defineConstant
          * @summary Adds/defines a new type constant for the receiver.
          * @param {String} constantName The constant name.
-         * @param {Object} constantValue The constant value or a property
-         *     descriptor object.
+         * @param {Object} constantValue The constant value.
+         * @param {Object} [constantDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined constant value.
          */
 
         return TP.defineConstantSlot(
                 this.$$target, constantName, constantValue,
-                TP.TYPE_TRACK, this[TP.OWNER]);
+                TP.TYPE_TRACK, constantDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeTypeStub.prototype.defineMethod =
-    function(methodName, methodBody, desc) {
+    function(methodName, methodBody, methodDescriptor) {
 
         /**
          * @method defineMethod
@@ -3339,15 +3591,15 @@ function(aFlag, shouldSignal) {
          *     method.
          * @param {String} methodName The name of the new method.
          * @param {Function} methodBody The actual method implementation.
-         * @param {Object} desc An optional 'property descriptor'. If a 'value'
-         *     slot is supplied here, it is ignored in favor of the methodBody
-         *     parameter to this method.
+         * @param {Object} methodDescriptor An optional 'property descriptor'.
+         *     If a 'value' slot is supplied here, it is ignored in favor of the
+         *     methodBody parameter to this method.
          * @returns {Object} The receiver.
          */
 
         return TP.defineMethodSlot(
                 this.$$target, methodName, methodBody, TP.TYPE_TRACK,
-                desc, null, this[TP.OWNER]);
+                methodDescriptor, null, this[TP.OWNER]);
     };
 
     //  ---
@@ -3490,7 +3742,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.getSuites(params);
     };
@@ -3510,7 +3762,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.runSuites(params);
     };
@@ -3585,46 +3837,46 @@ function(aFlag, shouldSignal) {
     //  ---
 
     NativeInstStub.prototype.defineAttribute =
-    function(attributeName, attributeValue) {
+    function(attributeName, attributeValue, attributeDescriptor) {
 
         /**
          * @method defineAttribute
          * @summary Adds the attribute with name and value provided as an
          *     instance attribute.
          * @param {String} attributeName The attribute name.
-         * @param {Object} attributeValue The attribute value or a property
-         *     descriptor object.
+         * @param {Object} attributeValue The attribute value.
+         * @param {Object} [attributeDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined attribute value.
          */
 
         return TP.defineAttributeSlot(
                 this.$$target, attributeName, attributeValue,
-                TP.INST_TRACK, this[TP.OWNER]);
+                TP.INST_TRACK, attributeDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeInstStub.prototype.defineConstant =
-    function(constantName, constantValue) {
+    function(constantName, constantValue, constantDescriptor) {
 
         /**
          * @method defineConstant
          * @summary Adds/defines a new type constant for the receiver.
          * @param {String} constantName The constant name.
-         * @param {Object} constantValue The constant value or a property
-         *     descriptor object.
+         * @param {Object} constantValue The constant value.
+         * @param {Object} [constantDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined constant value.
          */
 
         return TP.defineConstantSlot(
                 this.$$target, constantName, constantValue,
-                TP.INST_TRACK, this[TP.OWNER]);
+                TP.INST_TRACK, constantDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeInstStub.prototype.defineMethod =
-    function(methodName, methodBody, desc) {
+    function(methodName, methodBody, methodDescriptor) {
 
         /**
          * @method defineMethod
@@ -3632,15 +3884,15 @@ function(aFlag, shouldSignal) {
          *     method.
          * @param {String} methodName The name of the new method.
          * @param {Function} methodBody The actual method implementation.
-         * @param {Object} desc An optional 'property descriptor'. If a 'value'
-         *     slot is supplied here, it is ignored in favor of the methodBody
-         *     parameter to this method.
+         * @param {Object} methodDescriptor An optional 'property descriptor'.
+         *     If a 'value' slot is supplied here, it is ignored in favor of the
+         *     methodBody parameter to this method.
          * @returns {Object} The receiver.
          */
 
         return TP.defineMethodSlot(
                 this.$$target, methodName, methodBody, TP.INST_TRACK,
-                desc, null, this[TP.OWNER]);
+                methodDescriptor, null, this[TP.OWNER]);
     };
 
     //  ---
@@ -3783,7 +4035,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.getSuites(params);
     };
@@ -3803,7 +4055,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.runSuites(params);
     };
@@ -3920,12 +4172,10 @@ main tree but notice that you can have other trees.
 */
 
 //  NB: We don't want closures here...
-/* jshint -W054 */
 /* eslint-disable no-new-func */
 TP.lang.RootObject$$Type = new Function();
 TP.lang.RootObject$$Inst = new Function();
 /* eslint-enable no-new-func */
-/* jshint +W054 */
 
 TP.lang.RootObject$$Type.prototype = Object.$constructPrototype();
 TP.lang.RootObject$$Inst.prototype = Object.$constructPrototype();
@@ -4179,14 +4429,15 @@ function(methodName, methodBody) {
 
     var i,
         target,
-
+        len,
         existingMethod;
 
     //  First, we register it with TP.META_INST_OWNER's 'common_methods'
     //  dictionary for easier reflection.
     TP.META_INST_OWNER.common_methods[methodName] = methodBody;
 
-    for (i = 0; i < TP.META_INST_TARGETS.length; i++) {
+    len = TP.META_INST_TARGETS.length;
+    for (i = 0; i < len; i++) {
         target = TP.META_INST_TARGETS[i];
 
         //  If the method already exists and it's owner is *not*
@@ -4231,7 +4482,7 @@ function(methodName, methodBody) {
 //  -----------------------------------------------------------------------
 
 TP.definePrimitive('defineAttributeSlot',
-function(target, name, value, track, owner) {
+function(target, name, value, track, desc, owner) {
 
     /**
      * @method defineAttributeSlot
@@ -4253,17 +4504,20 @@ function(target, name, value, track, owner) {
      * @param {Object} value The attribute value or a property descriptor
      *     object.
      * @param {String} track The attribute track (Inst, Type, Local).
+     * @param {Object} desc An optional 'property descriptor'.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined attribute value.
      */
 
-    var desc,
-
-        own,
+    var own,
         trk,
+        descriptor,
+        finalDesc,
         attribute,
 
         val;
+
+    descriptor = desc;
 
     //  Typically try to define only once. We test code change flag to avoid
     //  warning during source operations during development.
@@ -4272,8 +4526,8 @@ function(target, name, value, track, owner) {
         //  If the target has a property descriptor with an E5 getter and that
         //  getter has a 'finalVal' slot, then it's a TIBET traits getter. If
         //  the 'finalVal' is undefined, that means that it's ok to set it.
-        if ((desc = Object.getOwnPropertyDescriptor(target, name)) &&
-                desc.get && desc.get.finalVal === undefined) {
+        if ((finalDesc = Object.getOwnPropertyDescriptor(target, name)) &&
+                finalDesc.get && finalDesc.get.finalVal === undefined) {
             //  empty
         } else {
             // TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
@@ -4282,29 +4536,24 @@ function(target, name, value, track, owner) {
         }
     }
 
-    own = TP.ifInvalid(owner, target);
-    trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
-
-    if (TP.notValid(value)) {
-        desc = TP.DEFAULT_DESCRIPTOR;
-        val = undefined;
-    } else if (!TP.isPlainObject(value)) {
-        //  Not a descriptor, so create one.
-        desc = {value: value};
-        val = value;
-    } else {
-        //  Need to extract the value since we were handed a descriptor
-        desc = value;
-        val = desc.value;
+    own = owner === undefined ? target : owner;
+    trk = track === undefined ? TP.LOCAL_TRACK : track;
+    if (descriptor === undefined) {
+        descriptor = {};
+    }
+    val = value;
+    if (val === undefined || val === null) {
+        val = descriptor.value;
     }
 
-    attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, desc);
+    attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, descriptor);
 
-    desc[TP.NAME] = name;
+    descriptor[TP.NAME] = name;
+    descriptor.value = val;
 
     // Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
-        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+        TP.sys.addMetadata(own, descriptor, TP.ATTRIBUTE, trk);
     }
 
     return attribute;
@@ -4313,7 +4562,7 @@ function(target, name, value, track, owner) {
 //  -----------------------------------------------------------------------
 
 TP.definePrimitive('defineConstantSlot',
-function(target, name, value, track, owner) {
+function(target, name, value, track, desc, owner) {
 
     /**
      * @method defineConstantSlot
@@ -4323,15 +4572,15 @@ function(target, name, value, track, owner) {
      * @param {Object} value The constant value or a property descriptor object.
      * @param {String} track The constant track (Inst, Type, Local). Default is
      *     TP.TYPE_TRACK.
+     * @param {Object} desc An optional 'property descriptor'.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined constant value.
      */
 
     var own,
         trk,
+        descriptor,
         constant,
-
-        desc,
         val;
 
     // Typically try to define only once. We test code change flag to avoid
@@ -4343,30 +4592,25 @@ function(target, name, value, track, owner) {
         return target[name];
     }
 
-    own = TP.ifInvalid(owner, target);
-    trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
-
-    if (TP.notValid(value)) {
-        desc = TP.DEFAULT_DESCRIPTOR;
-        val = undefined;
-    } else if (!TP.isPlainObject(value)) {
-        //  Not a descriptor, so create one.
-        desc = {value: value};
-        val = value;
-    } else {
-        //  Need to extract the value since we were handed a descriptor
-        desc = value;
-        val = desc.value;
+    own = owner === undefined ? target : owner;
+    trk = track === undefined ? TP.LOCAL_TRACK : track;
+    if (TP.notValid(descriptor)) {
+        descriptor = {};
+    }
+    val = value;
+    if (val === undefined || val === null) {
+        val = descriptor.value;
     }
 
-    constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, desc);
+    constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, descriptor);
 
-    desc[TP.NAME] = name;
+    descriptor[TP.NAME] = name;
+    descriptor.value = val;
 
     // Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         //  NB: We register constants as 'TP.ATTRIBUTE's
-        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+        TP.sys.addMetadata(own, descriptor, TP.ATTRIBUTE, trk);
     }
 
     return constant;
@@ -4806,7 +5050,7 @@ function(aPrefix) {
      *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.dc().getID();
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          (function() {TP.alert('foo');}).getID();
+     *          (function() {TP.info('foo');}).getID();
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.lang.Object.construct().getID();
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -4902,7 +5146,7 @@ function(anID) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -4910,38 +5154,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            TP, attributeName, attributeValue, TP.LOCAL_TRACK);
+            TP, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            TP, constantName, constantValue, TP.LOCAL_TRACK);
+            TP, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -4951,19 +5197,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            TP, methodName, methodBody, TP.LOCAL_TRACK, methodDescriptor,
+            display, TP, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5047,7 +5293,7 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5055,38 +5301,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK);
+            TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            TP.sys, constantName, constantValue, TP.LOCAL_TRACK);
+            TP.sys, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5096,19 +5344,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP.sys, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            TP.sys, methodName, methodBody, TP.LOCAL_TRACK,
+            methodDescriptor, display, TP.sys, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5116,7 +5364,7 @@ function(methodName, methodBody, desc, display, $handler) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5124,38 +5372,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            TP.boot, attributeName, attributeValue, TP.LOCAL_TRACK);
+            TP.boot, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            TP.boot, constantName, constantValue, TP.LOCAL_TRACK);
+            TP.boot, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5165,19 +5415,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP.boot, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            TP.boot, methodName, methodBody, TP.LOCAL_TRACK,
+            methodDescriptor, display, TP.boot, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5185,7 +5435,7 @@ function(methodName, methodBody, desc, display, $handler) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5193,38 +5443,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            APP, attributeName, attributeValue, TP.LOCAL_TRACK);
+            APP, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            APP, constantName, constantValue, TP.LOCAL_TRACK);
+            APP, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5234,19 +5486,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            APP, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            APP, methodName, methodBody, TP.LOCAL_TRACK,
+            methodDescriptor, display, APP, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5284,7 +5536,7 @@ function(aName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5292,19 +5544,20 @@ function(attributeName, attributeValue) {
      *     attribute. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            this, attributeName, attributeValue, TP.LOCAL_TRACK, this);
+            this, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor, this);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
@@ -5312,19 +5565,20 @@ function(constantName, constantValue) {
      *     constant. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            this, constantName, constantValue, TP.LOCAL_TRACK, this);
+            this, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor, this);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5333,25 +5587,25 @@ function(methodName, methodBody, desc, display, $handler) {
      *     instrumented with meta instance methods will get.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-        this, methodName, methodBody, TP.LOCAL_TRACK, desc, display, this,
-        $handler);
+        this, methodName, methodBody, TP.LOCAL_TRACK,
+        methodDescriptor, display, this, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5360,14 +5614,16 @@ function(attributeName, attributeValue) {
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     var target,
         owner,
         track;
+
+    /* eslint-disable consistent-this */
 
     //  If we're being asked to add an attribute to TP.FunctionProto *directly*
     //  then we consider it an instance attribute of all Function objects.
@@ -5390,14 +5646,17 @@ function(attributeName, attributeValue) {
         track = TP.LOCAL_TRACK;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineAttributeSlot(
-            target, attributeName, attributeValue, track, owner);
+            target, attributeName, attributeValue, track,
+            attributeDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
@@ -5406,14 +5665,16 @@ function(constantName, constantValue) {
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     var target,
         owner,
         track;
+
+    /* eslint-disable consistent-this */
 
     //  If we're being asked to add a constant to TP.FunctionProto *directly*
     //  then we consider it an instance constant of all Function objects.
@@ -5436,14 +5697,17 @@ function(constantName, constantValue) {
         track = TP.LOCAL_TRACK;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineConstantSlot(
-            target, constantName, constantValue, track, owner);
+            target, constantName, constantValue, track,
+            constantDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineConstant');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5453,12 +5717,12 @@ function(methodName, methodBody, desc, display, $handler) {
      *     roles.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
@@ -5466,6 +5730,8 @@ function(methodName, methodBody, desc, display, $handler) {
     var target,
         owner,
         track;
+
+    /* eslint-disable consistent-this */
 
     //  If we're being asked to add a method to TP.FunctionProto *directly* then
     //  we consider it an instance method of all Function objects.
@@ -5488,9 +5754,11 @@ function(methodName, methodBody, desc, display, $handler) {
         track = TP.LOCAL_TRACK;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineMethodSlot(
-            target, methodName, methodBody, track, desc, display, owner,
-            $handler);
+            target, methodName, methodBody, track, methodDescriptor,
+            display, owner, $isHandler);
 
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod');
 
@@ -5499,21 +5767,23 @@ function(methodName, methodBody, desc, display, $handler) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
      * @summary Adds the attribute with name and value provided as a type or
      *     'type local' attribute.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
         owner = this[TP.OWNER];
@@ -5522,27 +5792,32 @@ function(attributeName, attributeValue) {
         owner = this;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineAttributeSlot(
-                this, attributeName, attributeValue, track, owner);
+                this, attributeName, attributeValue, track,
+                attributeDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a type or
      *     'type local' constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     var track,
         owner;
+
+    /* eslint-disable consistent-this */
 
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
@@ -5552,14 +5827,17 @@ function(constantName, constantValue) {
         owner = this;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineConstantSlot(
-                this, constantName, constantValue, track, owner);
+                this, constantName, constantValue, track,
+                constantDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineConstant');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5567,18 +5845,20 @@ function(methodName, methodBody, desc, display, $handler) {
      *     'type local' method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     var track,
         owner;
+
+    /* eslint-disable consistent-this */
 
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
@@ -5601,30 +5881,34 @@ function(methodName, methodBody, desc, display, $handler) {
         owner = this;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineMethodSlot(
-        this, methodName, methodBody, track, desc, display, owner,
-        $handler);
+        this, methodName, methodBody, track, methodDescriptor, display,
+        owner, $isHandler);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineMethod');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
      * @summary Adds the attribute with name and value provided as an instance
      *     or 'local' attribute.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
         owner = this[TP.OWNER];
@@ -5633,27 +5917,32 @@ function(attributeName, attributeValue) {
         owner = this;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineAttributeSlot(
-                this, attributeName, attributeValue, track, owner);
+                this, attributeName, attributeValue, track,
+                attributeDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as an instance
      *     or 'local' constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     var track,
         owner;
+
+    /* eslint-disable consistent-this */
 
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
@@ -5663,14 +5952,17 @@ function(constantName, constantValue) {
         owner = this;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineConstantSlot(
-                this, constantName, constantValue, track, owner);
+                this, constantName, constantValue, track,
+                constantDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineConstant');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5678,18 +5970,20 @@ function(methodName, methodBody, desc, display, $handler) {
      *     'local' method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     var track,
         owner;
+
+    /* eslint-disable consistent-this */
 
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
@@ -5712,9 +6006,11 @@ function(methodName, methodBody, desc, display, $handler) {
         owner = this;
     }
 
+    /* eslint-enable consistent-this */
+
     return TP.defineMethodSlot(
-        this, methodName, methodBody, track, desc, display, owner,
-        $handler);
+        this, methodName, methodBody, track, methodDescriptor, display,
+        owner, $isHandler);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
 
@@ -5738,7 +6034,7 @@ Window.getName = function() {
 
 //  ------------------------------------------------------------------------
 
-Window.Type.defineMethod = function(methodName, methodBody, desc) {
+Window.Type.defineMethod = function(methodName, methodBody, methodDescriptor) {
 
     /**
      * @method defineMethod
@@ -5747,9 +6043,9 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
      *     this one.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @returns {Function} The installed method.
      */
 
@@ -5758,7 +6054,8 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
     display = 'Window.Type.' + methodName;
 
     return TP.defineMethodSlot(
-            Window, methodName, methodBody, TP.TYPE_TRACK, desc, display);
+            Window, methodName, methodBody, TP.TYPE_TRACK,
+            methodDescriptor, display);
 };
 
 //  ------------------------------------------------------------------------
@@ -5973,7 +6270,7 @@ function(aVal) {
     }
 
     if (TP.regex.ANY_NUMBER.test(aVal)) {
-        return 1 * aVal;
+        return Number(aVal);
     }
 
     if (TP.regex.BOOLEAN_ID.test(aVal)) {
@@ -6147,22 +6444,32 @@ function(aMessage) {
      * @method alert
      * @summary Displays a message to the user. Advanced versions of this
      *     function make use of DHTML controls and a "curtain" to display the
-     *     message in a modal fashion, or act in a non-modal fashion, offering
-     *     usability improvements.
+     *     message in a modal fashion.
+     *     The initial version is a simple wrapper around the native JS alert()
+     *     function.
      * @param {String} aMessage The message for the user.
      * @example Notify the user of some event:
      *     <code>
      *          TP.alert('TIBET Rocks!');
      *     </code>
-     * @example Notify the user of a condition at the TP.INFO level.
-     *     <code>
-     *          TP.alert('TIBET Rocks!', TP.INFO);
-     *     </code>
+     * @returns {Promise} A Promise to be used as necessary. Since this is an
+     *     alert(), this Promise's resolver Function will be called with no
+     *     return value.
      */
 
-    /* eslint-disable no-alert */
-    return window.alert(TP.sc(aMessage));
-    /* eslint-enable no-alert */
+    var promise;
+
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            /* eslint-disable no-alert */
+            window.alert(TP.sc(aMessage));
+            /* eslint-enable no-alert */
+
+            resolver();
+        });
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -6174,25 +6481,34 @@ function(anAction) {
      * @method confirm
      * @summary Displays a prompt to the user asking for confirmation of an
      *     action. Advanced versions of this function make use of DHTML controls
-     *     and a "curtain" to display the prompt in a modal fashion, or act in a
-     *     non-modal fashion, offering usability improvements over the native
-     *     confirm function.
+     *     and a "curtain" to display the prompt in a modal fashion.
+     *     The initial version is a simple wrapper around the native JS
+     *     confirm() function.
      * @param {String} anAction The action for the user to confirm.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
      *     </code>
-     * @example Obtain an answer from the user on something important with the
-     *     message wrapped in a <div class="critical"> element.
-     *     <code>
-     *          TP.confirm('Perform Action?', 'critical');
-     *     </code>
-     * @returns {Boolean} True if the user has approved the action.
+     * @returns {Promise} A Promise to be used as necessary. Since this is a
+     *     confirm(), this Promise's resolver Function will be called with true
+     *     if the user confirmed the requested action and false if they did not.
      */
 
-    /* eslint-disable no-alert */
-    return window.confirm(TP.sc(anAction));
-    /* eslint-enable no-alert */
+    var promise;
+
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            var retVal;
+
+            /* eslint-disable no-alert */
+            retVal = window.confirm(TP.sc(anAction));
+            /* eslint-enable no-alert */
+
+            resolver(retVal);
+        });
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -6204,9 +6520,9 @@ function(aQuestion, aDefaultAnswer) {
      * @method prompt
      * @summary Displays a prompt to the user asking for data. Advanced
      *     versions of this function make use of DHTML controls and a "curtain"
-     *     to display the prompt. NOTE that the prompt can be non-modal in more
-     *     advanced versions. The initial version is a simple wrapper around the
-     *     native JS prompt() function.
+     *     to display the prompt in a modal fashion.
+     *     The initial version is a simple wrapper around the native JS prompt()
+     *     function.
      * @param {String} aQuestion The question for the user.
      * @param {String} aDefaultAnswer The default answer, provided in the input
      *     field.
@@ -6214,69 +6530,28 @@ function(aQuestion, aDefaultAnswer) {
      *     <code>
      *          TP.prompt('Favorite color', 'Black');
      *     </code>
-     * @example Obtain an answer from the user on something serious, where the
-     *     message is wrapped in a <div class="emphasis"> element.
-     *     <code>
-     *          TP.prompt('Favorite color', 'Black', 'emphasis');
-     *     </code>
-     * @returns {String} The user's answer.
+     * @returns {Promise} A Promise to be used as necessary. Since this is a
+     *     prompt(), this Promise's resolver Function will be called with the
+     *     value returned by the user.
      */
 
-    /* eslint-disable no-alert */
-    return window.prompt(TP.sc(aQuestion), TP.sc(aDefaultAnswer) || '');
-    /* eslint-enable no-alert */
-});
+    var promise;
 
-//  ------------------------------------------------------------------------
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
 
-TP.definePrimitive('status',
-function(aMessage, aTarget) {
+            var retVal;
 
-    /**
-     * @method status
-     * @summary Displays a message to the user in a window's status bar, or in
-     *     a targeted status "zone" such as those found in the standard TIBET
-     *     Application Platform (TAP) interface.
-     * @param {String} aMessage The message for the user.
-     * @param {Window|String|Number} aTarget A window, a window ID, or a status
-     *     "zone" number.
-     * @example Notify the user of some event:
-     *     <code>
-     *          TP.status('TIBET Rocks!');
-     *     </code>
-     */
+            /* eslint-disable no-alert */
+            retVal = window.prompt(
+                        TP.sc(aQuestion),
+                        TP.sc(aDefaultAnswer) || '');
+            /* eslint-enable no-alert */
 
-    var msg,
-        win,
-        elem;
+            resolver(retVal);
+        });
 
-    msg = aMessage;
-
-    if (TP.notValid(aTarget)) {
-        top.status = msg;
-
-        return;
-    }
-
-    if (TP.isString(aTarget)) {
-        //  acquire a window by that ID
-        win = TP.sys.getWindowById(aTarget);
-        if (TP.isWindow(win)) {
-            win.top.status = msg;
-        }
-    } else if (TP.isNumber(aTarget)) {
-        //  try to acquire the status zone with that identifier...
-        elem = TP.byId('status' + aTarget, TP.uidoc(true), false);
-        if (TP.isElement(elem)) {
-            //  Note how we pass 'null' here for the 'loaded function' and
-            //  'false' to not awaken the content.
-            TP.elementSetContent(elem, msg, null, false);
-        }
-    } else if (TP.isWindow(aTarget)) {
-        aTarget.top.status = msg;
-    }
-
-    return;
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -6319,11 +6594,9 @@ function(aFlagOrParam) {
     }
 
     try {
-        /* jshint -W087 */
         /* eslint-disable no-debugger */
         debugger;
         /* eslint-enable no-debugger */
-        /* jshint +W087 */
     } catch (e) {
         //  empty
     }
@@ -6381,11 +6654,9 @@ function() {
 
     //  NOTE that we don't use literal creation syntax since that can have
     //  differing behavior on IE based on current window export state.
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
     if (arguments.length === 0) {
         return arr;
     } else {
@@ -6699,11 +6970,9 @@ TP.boot.$$setupMetadata = function(aWindow) {
 
     //  Need to tell our machinery that NaN's *constructor* name is
     //  'Number'
-    /* jshint ignore:start */
     /* eslint-disable no-proto */
     win.NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
     /* eslint-enable no-proto */
-    /* jshint ignore:end */
 
     //  Browser-specific DOM 'types'
 
@@ -6861,15 +7130,12 @@ function(anObject) {
 
     var name;
 
-    name = TP.objectGetMetadataName(anObject);
-    if (TP.isEmpty(name)) {
-        return;
-    }
-
-    if (TP.isType(anObject)) {
-        return TP.sys.getMetadata('types').at(name);
-    } else if (TP.isMethod(anObject)) {
+    if (TP.isMethod(anObject)) {
+        name = TP.objectGetMetadataName(anObject, TP.METHOD);
         return TP.sys.getMetadata('methods').at(name);
+    } else if (TP.isType(anObject)) {
+        name = TP.objectGetMetadataName(anObject, TP.TYPE);
+        return TP.sys.getMetadata('types').at(name);
     }
 
     return;
@@ -7132,7 +7398,9 @@ function() {
 
     if (TP.isEmpty(TP.sys.$uiCanvas)) {
         name = TP.sys.cfg('tibet.uicanvas');
-        name = TP.ifInvalid(name, TP.sys.cfg('boot.canvas'));
+        if (TP.notValid(name)) {
+            name = TP.sys.cfg('boot.canvas');
+        }
 
         //  update the value to whatever we just defined as the value
         TP.sys.$uiCanvas = name;
@@ -7193,11 +7461,17 @@ function() {
 
     var name;
 
-    name = TP.ifInvalid(TP.sys.$uiRoot, TP.sys.cfg('tibet.uiroot'));
+    name = TP.sys.$uiRoot;
+
+    if (TP.notValid(name)) {
+        name = TP.sys.cfg('tibet.uiroot');
+    }
 
     //  If there is no 'ui root' defined, we go after the current
     //  'ui canvas'.
-    name = TP.ifInvalid(name, TP.sys.getUICanvasName());
+    if (TP.notValid(name)) {
+        name = TP.sys.getUICanvasName();
+    }
 
     TP.sys.$uiRoot = name;
 
@@ -7600,7 +7874,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is false:
      *     <code>
-     *          if (TP.isFalse(anObj)) { TP.alert('its false'); };
+     *          if (TP.isFalse(anObj)) { TP.info('its false'); };
      *     </code>
      * @returns {Boolean} True if aValue === false.
      */
@@ -7632,7 +7906,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is falsey:
      *     <code>
-     *          if (TP.isFalsey('')) { TP.alert('its false'); };
+     *          if (TP.isFalsey('')) { TP.info('its false'); };
      *     </code>
      * @returns {Boolean} True if aValue is a 'falsey' value.
      */
@@ -7663,7 +7937,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is true:
      *     <code>
-     *          if (TP.isTrue(anObj)) { TP.alert('its true'); };
+     *          if (TP.isTrue(anObj)) { TP.info('its true'); };
      *     </code>
      * @returns {Boolean} True if aValue === true.
      */
@@ -7695,7 +7969,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is truthy:
      *     <code>
-     *          if (TP.isTruthy('hi')) { TP.alert('its true'); };
+     *          if (TP.isTruthy('hi')) { TP.info('its true'); };
      *     </code>
      * @returns {Boolean} True if aValue is a 'truthy' value.
      */
@@ -7716,7 +7990,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is false:
      *     <code>
-     *          if (TP.notFalse(anObj)) { TP.alert('its not false'); };
+     *          if (TP.notFalse(anObj)) { TP.info('its not false'); };
      *     </code>
      * @returns {Boolean} True if aValue !== false.
      */
@@ -7745,7 +8019,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is false:
      *     <code>
-     *          if (TP.notTrue(anObj)) { TP.alert('its not true'); };
+     *          if (TP.notTrue(anObj)) { TP.info('its not true'); };
      *     </code>
      * @returns {Boolean} True if aValue !== true.
      */
@@ -7918,17 +8192,15 @@ function(anObj) {
      * @returns {Boolean}
      */
 
-    //  all dates report object as their primitive type (but so does null)
-    if (TP.notValid(anObj) || typeof anObj !== 'object') {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    //  all dates report 'object' as their primitive type (but so does null)
+    if (anObj === null || typeof anObj !== 'object') {
         return false;
     }
 
-    //  localizable check
-    if (typeof TP.isKindOf === 'function') {
-        return TP.isKindOf(anObj, TP.core.Hash);
-    }
-
-    return false;
+    return anObj.$$type === TP.core.Hash;
 });
 
 //  ------------------------------------------------------------------------
@@ -7971,17 +8243,13 @@ function(anObj) {
      *     Number.
      */
 
-    //  We have to check NaN first, since typeof NaN is considered to be
-    //  'number' and we kinda think NotANumber is Not a Number ;)
-    if (TP.isNaN(anObj)) {
-        return false;
-    }
-
-    if (typeof anObj === 'number') {
-        return true;
-    }
-
-    return TP.ObjectProto.toString.call(anObj) === '[object Number]';
+    /* eslint-disable no-extra-parens */
+    return (!isNaN(anObj) &&
+            !Array.isArray(anObj) &&
+            (anObj - parseFloat(anObj) + 1) >= 0) ||
+            anObj === Number.POSITIVE_INFINITY ||
+            anObj === Number.NEGATIVE_INFINITY;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8571,7 +8839,8 @@ function(anObj) {
         anObj[TP.IS_XHTML] = false;
         return false;
     }
-
+/*
+    (wje) see if there's a variation that works. detached nodes should work.
     //  If the document doesn't have a Window, then its not HTML, but go ahead
     //  and stamp the markers in anyway.
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
@@ -8580,7 +8849,7 @@ function(anObj) {
                                     'http://www.w3.org/1999/xhtml';
         return false;
     }
-
+*/
     if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
@@ -9027,7 +9296,8 @@ function(anObj) {
         anObj[TP.IS_XHTML] = false;
         return false;
     }
-
+/*
+    (wje) see if there's a variation that works. detached nodes should work.
     //  If the document doesn't have a Window, then we check to see if the
     //  document element is 'html' - in which case, we can still think of it
     //  as XHTML.
@@ -9038,7 +9308,7 @@ function(anObj) {
 
         return anObj[TP.IS_XHTML];
     }
-
+*/
     if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
@@ -9067,8 +9337,6 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an XHTML node.
      */
 
-    var doc;
-
     //  Make sure its a node first.
     if (TP.notValid(anObj) || typeof anObj.nodeType !== 'number') {
         return false;
@@ -9087,16 +9355,14 @@ function(anObj) {
     //  Node.ELEMENT_NODE), and if that tag name is one of the HTML ones. If
     //  so, we return true (since its really an HTML node - it may be an
     //  XHTML node, but we can't tell that here).
-    if (TP.notValid(doc = anObj.ownerDocument)) {
+    if (TP.notValid(anObj.ownerDocument)) {
         if (TP.isValid(anObj.tagName)) {
             return TP.isValid(
                         TP.HTML_401_TAGS[anObj.tagName.toLowerCase()]);
         }
-
-        return false;
     }
 
-    return TP.isXHTMLDocument(doc);
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -9302,7 +9568,10 @@ function(anObj) {
     var val,
         type;
 
-    if (TP.notValid(anObj)) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    if (anObj === undefined || anObj === null) {
         return true;
     }
 
@@ -9333,9 +9602,13 @@ function(anObj) {
     }
 
     //  If it has a 'length' slot and that contains a Number, use that. This
-    //  would include native Strings.
-    if (TP.isNumber(val = anObj.length)) {
-        return val === 0;
+    //  would include native Strings. Note that we're not interested in
+    //  Functions, since 'length' is an alias for 'arity'.
+    if (type !== 'function') {
+        val = anObj.length;
+        if (typeof val === 'number') {
+            return val === 0;
+        }
     }
 
     if (TP.isRegExp(anObj)) {
@@ -9747,7 +10020,7 @@ function(anObject, aKey) {
     /**
      * @method objectHasKey
      * @summary Returns true if the object has the key provided.
-     * @param {*} anObject The object to test.
+     * @param {Object} anObject The object to test.
      * @param {String} aKey The key name to check.
      * @returns {Boolean} True if the slot exists.
      */
@@ -9850,11 +10123,9 @@ function(verbose) {
         void 0;
     }
 
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
 
     try {
         keys = TP.keys(this);
@@ -10089,7 +10360,8 @@ function() {
      * @returns {String}
      */
 
-    return this[0].toUpperCase() + this.substring(1);
+    //  We have a primitive for this (used internally by TIBET for speed).
+    return TP.makeStartUpper(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -10112,15 +10384,16 @@ function() {
     TP.regex.TITLE_CASE.lastIndex = 0;
 
     if (!TP.regex.TITLE_CASE.test(str)) {
-        return str.asStartUpper();
+        return TP.makeStartUpper(str);
     }
 
-    return str.replace(
-            TP.regex.TITLE_CASE,
-            function(whole, part) {
+    return TP.makeStartUpper(
+                str.replace(
+                TP.regex.TITLE_CASE,
+                function(whole, part) {
 
-                return part.toUpperCase();
-            }).asStartUpper();
+                    return part.toUpperCase();
+                }));
 });
 
 //  ------------------------------------------------------------------------
@@ -12098,11 +12371,11 @@ function(release, meta) {
         data,
         semver;
 
-    // Default data to the current kernel's stored version info.
+    //  Default data to the current kernel's stored version info.
     data = TP.hc(TP.ifInvalid(release, TP.sys.$version));
 
-    // Build a semver-compliant string optionally including pre-release and meta
-    // information when that data is available. Not all releases have it.
+    //  Build a semver-compliant string optionally including pre-release and
+    //  meta information when that data is available. Not all releases have it.
     str = 'v';
     str += TP.ifEmpty(data.at('major'), '0');
     str += '.';
@@ -12157,6 +12430,14 @@ function(release, meta) {
     }
 
     return str;
+});
+
+/*
+ * Set up a getter for the libVersion used in certain templates.
+ */
+TP.sys.installSystemPropertyGetter(TP.env, 'libVersion',
+function() {
+    return TP.sys.getLibVersion();
 });
 
 //  ------------------------------------------------------------------------
@@ -12345,6 +12626,40 @@ function(aFlag) {
     }
 
     return TP.sys.cfg('tibet.offline');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('isTesting',
+function(aFlag) {
+
+    /**
+     * @method isTesting
+     * @summary Controls and returns the state of the testing flag, which is
+     *     set when the test harness has been invoked by the current
+     *     application. This allows certain test stubbing operations to function
+     *     properly.
+     * @param {Boolean} aFlag True to set exiting state to true.
+     * @returns {Boolean} True if TIBET is currently exiting.
+     */
+
+    var oldVal;
+
+    if (TP.isBoolean(aFlag)) {
+        oldVal = TP.sys.cfg('test.running');
+
+        if (oldVal !== aFlag) {
+
+            TP.sys.setcfg('test.running', aFlag);
+
+            TP.sys.changed('test.running',
+                            TP.UPDATE,
+                            TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, aFlag));
+        }
+    }
+
+    //  NOTE the default to false since this flag isn't always there
+    return TP.sys.cfg('test.running', false);
 });
 
 //  ------------------------------------------------------------------------

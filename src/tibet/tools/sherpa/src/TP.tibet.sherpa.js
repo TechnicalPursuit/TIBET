@@ -51,28 +51,38 @@ function(aRequest) {
 
     //  Set up an onload handler that will complete the construction process.
     request = TP.request();
-    request.atPut(TP.ONLOAD,
+    request.atPut(
+        TP.ONLOAD,
         function(aDocument) {
             var newSherpa;
 
-            //  This performs some initial setup. The first time the
-            //  Sherpa is triggered, it will complete this sequence.
+            //  This performs some initial setup. The first time the Sherpa is
+            //  triggered, it will complete this sequence.
             newSherpa = TP.core.Sherpa.construct();
             newSherpa.setID('Sherpa');
 
             TP.sys.registerObject(newSherpa);
+
+            //  Refresh controllers now that we have a registered Sherpa
+            //  instance.
+            TP.sys.getApplication().refreshControllers();
+
+            //  Register the new Sherpa instance to observe 'ToggleSherpa'. This
+            //  will be thrown by various objects in the system to toggle the
+            //  Sherpa in and out.
+            newSherpa.observe(TP.ANY, 'TP.sig.ToggleSherpa');
         });
 
-    //  NOTE: We fork here to allow the Mutation Observer machinery to settle
-    //  down, especially on IE11. Otherwise, strange things start happening
+    //  NOTE: We wait for the next repaint here to allow the Mutation Observer
+    //  machinery to settle down. Otherwise, strange things start happening
     //  around parentNodes, etc.
     /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         TP.wrap(elemWin).setContent(sherpaURI, request);
-    }).fork(250);
+    }).queueForNextRepaint(elemWin);
     /* eslint-enable no-wrap-func,no-extra-parens */
 
-    return this.callNextMethod();
+    return this;
 });
 
 //  ----------------------------------------------------------------------------

@@ -43,8 +43,10 @@ function(anEntry) {
         layout,
         results,
         content,
+        cmdID,
+        stdio,
 
-        stdio;
+        rootRequest;
 
     //  Try to find a matching console API method to our level name. If we find
     //  it we'll use that to output the message content.
@@ -54,7 +56,6 @@ function(anEntry) {
             stdio = 'stdout';
             break;
         case 'error':
-        case 'severe':
         case 'fatal':
             stdio = 'stderr';
             break;
@@ -75,10 +76,15 @@ function(anEntry) {
     results = layout.layout(anEntry);
     content = results.at('content').asEscapedXML();
 
+    rootRequest = TP.test.Suite.get('$rootRequest');
+    if (TP.isValid(rootRequest)) {
+        cmdID = rootRequest.getRootID();
+    }
+
     //  Set the 'cmdTAP' flage here indicating that the content is going to be
     //  in TAP (i.e. test) format and always set 'cmdAsIs' to be true, since we
     //  don't want any formatting via any pretty printer to format this content.
-    TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true));
+    TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true, 'cmdID', cmdID));
 
     return this;
 });

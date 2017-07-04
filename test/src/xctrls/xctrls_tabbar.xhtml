@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    #tabbar1 {
+        top: 30px;
+    }
+    #tabbar2 {
+        top: 60px;
+    }
+    #panelbox2 {
+        top: 100px;
+    }
+    ]]>
+    </style>
+
+    <!-- As a one dimensional Array, the item labels and values will be the same -->
+    <tibet:data name="urn:tibet:one_dim_array">
+        <![CDATA[
+            {
+            "names": [
+                "Smith",
+                "Johnson",
+                "Williams",
+                "Jones",
+                "Brown",
+                "Davis",
+                "Miller",
+                "Wilson",
+                "Moore",
+                "Taylor"]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a two dimensional Array, the item values will come from the values in the first 'column' and item labels will come from the values in the second 'column' -->
+    <tibet:data name="urn:tibet:two_dim_array">
+        <![CDATA[
+            {
+            "names": [
+                ["smith","Smith"],
+                ["johnson","Johnson"],
+                ["williams","Williams"],
+                ["jones","Jones"],
+                ["brown","Brown"],
+                ["davis","Davis"],
+                ["miller","Miller"],
+                ["wilson","Wilson"],
+                ["moore","Moore"],
+                ["taylor","Taylor"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a JS 'object' hash, the item values will come from the 'keys' in the hash and item labels will come from the values 'hash' -->
+    <tibet:data name="urn:tibet:object_hash">
+        <![CDATA[
+            {
+            "names": {
+                "smith":"Smith",
+                "johnson":"Johnson",
+                "williams":"Williams",
+                "jones":"Jones",
+                "brown":"Brown",
+                "davis":"Davis",
+                "miller":"Miller",
+                "wilson":"Wilson",
+                "moore":"Moore",
+                "taylor":"Taylor"
+                }
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for selection tests -->
+    <tibet:data name="urn:tibet:selection_test_data">
+        <![CDATA[
+            {
+            "data": [
+                ["foo","foo"],
+                ["bar","bar"],
+                ["baz","baz"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The selection scratch data -->
+    <tibet:data name="urn:tibet:selection_scratch_data">
+        <![CDATA[
+            {
+            "data": "johnson"
+            }
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+	<br/>
+
+	<br/>
+	tabbar #1:
+	<br/>
+	A standard XControls tabbar showing dynamic content of a single dimensional Array:
+    <xctrls:tabbar id="tabbar1" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}"/>
+
+	<br/>
+	<br/>
+
+    <xctrls:tabbar id="tabbar2" bind:io="{data: urn:tibet:two_dim_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}"/>
+
+    <xctrls:panelbox id="panelbox2" bind:in="urn:tibet:selection_scratch_data#tibet(data)">
+        <xctrls:panel>
+            <xctrls:value>smith</xctrls:value>
+            <div>
+                This is content for Smith.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>johnson</xctrls:value>
+            <div>
+                This is content for Johnson.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>williams</xctrls:value>
+            <div>
+                This is content for Williams.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>jones</xctrls:value>
+            <div>
+                This is content for Jones.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>brown</xctrls:value>
+            <div>
+                This is content for Brown.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>davis</xctrls:value>
+            <div>
+                This is content for Davis.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>miller</xctrls:value>
+            <div>
+                This is content for Miller.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>wilson</xctrls:value>
+            <div>
+                This is content for Wilson.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>moore</xctrls:value>
+            <div>
+                This is content for Moore.
+            </div>
+        </xctrls:panel>
+        <xctrls:panel>
+            <xctrls:value>taylor</xctrls:value>
+            <div>
+                This is content for Taylor.
+            </div>
+        </xctrls:panel>
+    </xctrls:panelbox>
+
+	<br/>
+	<br/>
+
+</body>
+</html>

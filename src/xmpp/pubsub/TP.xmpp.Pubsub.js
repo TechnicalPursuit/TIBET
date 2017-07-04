@@ -63,7 +63,8 @@ function(aNode) {
      *     type object.
      */
 
-    var pubsubTypePair;
+    var pubsubTypePair,
+        type;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode',
@@ -74,20 +75,22 @@ function(aNode) {
     //  return the XPath/type pair that matched the XPath test against the
     //  supplied node.
     pubsubTypePair = this.get('pubsubTypeRegistry').detect(
-            function(kvPair) {
+        function(kvPair) {
 
-                if (TP.isValid(TP.nodeEvaluateXPath(aNode,
-                                                    kvPair.first(),
-                                                    TP.FIRST_NODE))) {
-                    return true;
-                }
+            if (TP.isValid(
+                TP.nodeEvaluateXPath(aNode, kvPair.first(), TP.FIRST_NODE))) {
+                return true;
+            }
 
-                return false;
-            });
+            return false;
+        });
 
     //  If we successfully got one, return the type object.
     if (TP.isPair(pubsubTypePair)) {
-        return pubsubTypePair.last();
+        type = pubsubTypePair.last();
+        if (!type.isAbstract()) {
+            return type;
+        }
     }
 
     //  Couldn't determine a concrete type at this level. Just return the

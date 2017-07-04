@@ -22,27 +22,29 @@
         var app,
             logger;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
-
-        logger.debug('Integrating TDS server error handler.');
 
         //  ---
         //  Middleware
         //  ---
 
-        //  Internal server error handler. Just render the 500 template.
+        //  Internal server error handler. Just render the error template.
         app.use(function(err, req, res, next) {
-            console.error(err.stack);
-            res.status(500).render('500', {error: err});
+            var env,
+                stack;
+
+            env = app.get('env');
+            if (env === 'development') {
+                stack = err.stack || '';
+                logger.error(stack.replace(/\\n/g, '\n'));
+            }
+
+            res.status(err.status || 500).render(
+                'error',
+                {
+                    error: err
+                });
         });
     };
 

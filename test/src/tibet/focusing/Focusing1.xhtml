@@ -12,14 +12,27 @@
 
     <style type="text/css">
     <![CDATA[
+    @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
     @namespace pclass url(urn:tibet:pseudoclass);
 
-    input[pclass|active]
-    {
+    tibet|testElem {
+
+        display: block;
+        position: relative;
+
+        background-color: blue;
+
+        width: 10px;
+        height: 10px;
+    }
+
+    tibet|testElem[pclass|active] {
+
         border-color: red;
     }
-    input[pclass|focus]
-    {
+
+    tibet|testElem[pclass|focus] {
+
         background-color: yellow;
     }
     ]]>
@@ -27,12 +40,12 @@
 
 </head>
 
-<body>
+<body xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
     <h2>Focus Test #1</h2><br/>
     <br/>
     <br/>
-    This test sets up 4 'input' elements, all at the &lt;body&gt; element level.
+    This test sets up 4 focusable elements, all at the &lt;body&gt; element level.
     <br/>
     None of the fields has a 'tabindex' attribute greater than -1, meaning that they're all programmatically controlled.
     <br/>
@@ -48,13 +61,13 @@
     <br/>
     <br/>
 
-    Focus test field #1: <input type="text" id="focusTestField1"/>
+    Focus test field #1: <tibet:testElem id="focusTestElem1" tabindex="0"/>
     <br/>
-    Focus test field #2: <input type="text" id="focusTestField2"/>
+    Focus test field #2: <tibet:testElem id="focusTestElem2" tabindex="0"/>
     <br/>
-    Focus test field #3: <input type="text" id="focusTestField3"/>
+    Focus test field #3: <tibet:testElem id="focusTestElem3" tabindex="0"/>
     <br/>
-    Focus test field #4: <input type="text" id="focusTestField4"/>
+    Focus test field #4: <tibet:testElem id="focusTestElem4" tabindex="0"/>
 
 </body>
 </html>

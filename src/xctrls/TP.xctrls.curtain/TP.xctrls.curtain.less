@@ -1,26 +1,27 @@
 /*
-	CSS styles for the 'xctrls:curtain' control.
+    CSS styles for the 'xctrls:curtain' control.
 */
 
-@import (reference) url('../TP.xctrls_variables.less');
+@import (reference) url("../TP.xctrls_variables.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 xctrls|curtain {
-	position: absolute;
 
-    top: 0px;
-    left: 0px;
+    position: absolute;
 
-	width: 100%;
-	height: 100%;
+    top: 0;
+    left: 0;
 
-	background-color: @xctrls_curtain-color;
+    width: 100%;
+    height: 100%;
 
-	visibility: hidden;
+    background-color: @xctrls_curtain-background-color;
 
-	opacity: @xctrls_curtain-opacity;
+    visibility: hidden;
+
+    opacity: @xctrls_curtain-opacity;
 
     /* When the curtain is not hidden */
 

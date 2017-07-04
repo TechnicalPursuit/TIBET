@@ -69,7 +69,7 @@ function() {
         test.assert.isTrue(true);
 
         /* eslint-disable no-undef */
-        foo = thiswontwork;     // jshint ignore:line
+        foo = thiswontwork;
         /* eslint-enable */
     });
 });
@@ -77,7 +77,7 @@ function() {
 Array.Inst.describe('slice (syntax error in describe())',
 function() {
     /* eslint-disable no-undef */
-    foo = thiswontwork;     // jshint ignore:line
+    foo = thiswontwork;
     /* eslint-enable */
     this.it('slices and dices', function(test, options) {
         test.assert.isTrue(true);
@@ -90,7 +90,7 @@ function() {
         test.assert.isTrue(true);
 
         /* eslint-disable no-undef */
-        foo = thiswontwork;     // jshint ignore:line
+        foo = thiswontwork;
         /* eslint-enable */
     });
 });
@@ -285,6 +285,8 @@ function() {
     });
 });
 
+/* eslint-disable consistent-this */
+
 //  Test for suite timeout. There are 6 cases here with 2900ms timers which
 //  should run as each previous case finishes. As a result we should see 5 pass
 //  and #6 fail because there's not enough time yet with a 15second suite
@@ -377,6 +379,8 @@ function() {
         });
     });
 });
+
+/* eslint-enable consistent-this */
 
 //  ------------------------------------------------------------------------
 //  end

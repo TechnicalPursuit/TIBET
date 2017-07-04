@@ -31,7 +31,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @description This method work in conjunction with 'tsh:cmd' type's
+     * @description This method work in conjunction with 'tsh:eval' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'filter' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -53,7 +53,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description This method work in conjunction with 'tsh:cmd' type's
+     * @description This method work in conjunction with 'tsh:eval' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'transform' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -578,7 +578,10 @@ function(aRequest) {
             //  has templating syntax, we'll go with treating it like a
             //  template rather than a filter then...
 
-            params = TP.ifInvalid(aRequest.getPayload(), TP.hc());
+            params = aRequest.getPayload();
+            if (TP.notValid(params)) {
+                params = TP.hc();
+            }
 
             //  if we're splatted then the return/output variable is
             //  expected to be a collection rather than a single item
@@ -1077,8 +1080,6 @@ function(aRequest, cmdType) {
             }
         });
 
-    /* jshint -W086 */
-
     switch (cmdType) {
 
         case TP.TRANSFORM:
@@ -1159,7 +1160,7 @@ function(aRequest, cmdType) {
                 result = null;
                 subrequest.atPut('crud', crud);
                 if (subrequest.at('method') === TP.HTTP_DELETE) {
-                    obj.nuke(subrequest);
+                    obj.delete(subrequest);
                 } else {
                     obj.save(subrequest);
                 }
@@ -1250,7 +1251,7 @@ function(aRequest, cmdType) {
         default:
 
             if (subrequest.at('method') === TP.HTTP_DELETE) {
-                obj.nuke(subrequest);
+                obj.delete(subrequest);
                 break;
             }
 
@@ -1258,8 +1259,6 @@ function(aRequest, cmdType) {
             //  handlers to update the request appropriately.
             obj.getResource(subrequest);
             break;
-
-    /* jshint +W086 */
     }
 
     return;
@@ -1383,6 +1382,8 @@ function(aRequest) {
 
     if (TP.isKindOf(result, TP.core.XHTMLDocumentNode)) {
         maybeURI = result.get('uri');
+    } else if (TP.isKindOf(result, TP.core.Content)) {
+        maybeURI = result.get('sourceURI');
     } else {
         maybeURI = result;
     }

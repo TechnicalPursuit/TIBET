@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+</head>
+
+<body xmlns:ev="http://www.w3.org/2001/xml-events">
+
+    <h2>On Test #4</h2><br/>
+    <br/>
+    <br/>
+    <tibet:testElem id="testElem1"/>
+    <br/>
+    <br/>
+    A mapping of one custom signal type (full name) to another custom signal type that will invoke the handler on this instance of this custom element type.
+    <span id="triggerElem1" on:TP.sig.FooSignal="{signal: 'TP.sig.BarSignal', origin: testElem1, payload: {foo: 'bar', baz: 'goo'}}">Click me to send the event and dispatch the signal</span>
+
+    <br/>
+    <br/>
+    A mapping of one custom signal type (short name) to another custom signal type that will invoke the handler on this instance of this custom element type.
+    <span id="triggerElem2" on:FooSignal="{signal: 'TP.sig.BarSignal', origin: testElem1, payload: {foo: 'bar', baz: 'goo'}}">Click me to send the event and dispatch the signal</span>
+
+</body>
+</html>

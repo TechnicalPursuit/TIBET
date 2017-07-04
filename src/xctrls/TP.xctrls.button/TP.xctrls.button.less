@@ -1,22 +1,24 @@
 /*
-	CSS styles for 'xctrls:button' controls.
+    CSS styles for 'xctrls:button' controls.
 */
 
-@import (reference) url('../TP.xctrls_common.css');
-@import (reference) url('../TP.xctrls_mixins.less');
+@import url("@{xctrls_src}/TP.xctrls_mixins.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 /* The button */
 
 xctrls|button {
 
-	display: inline-flex;
+    display: inline-flex;
+
+    box-sizing: border-box;
+
     justify-content: center;
     align-items: center;
 
-    .user-select(none);
+    user-select: none;
 
     /* Hovering over the button */
 
@@ -50,6 +52,8 @@ xctrls|button {
     /* The button label */
 
     & > xctrls|label {
+
+        flex: 1;
     }
 
     /* Hovering over the button, label must highlight */

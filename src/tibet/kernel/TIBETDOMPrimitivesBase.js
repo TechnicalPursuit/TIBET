@@ -104,6 +104,36 @@ function(anElement, expandVirtuals) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementComputeTIBETTypeKey',
+function(anElement) {
+
+    /**
+     * @method elementComputeTIBETTypeKey
+     * @summary Returns a unique key that will identify the TIBET type that
+     *     matches the supplied Element.
+     * @param {Element} anElement The Element to compute the unique key for.
+     * @returns {String} A unique key that identifiers the TIBET type.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  If the element is an XHTML 'input' type, we further qualify by the
+    //  'type' property.
+    if (anElement.namespaceURI === TP.w3.Xmlns.XHTML &&
+        anElement.localName === 'input') {
+
+        return TP.elementGetFullName(anElement) +
+                    '[type="' + anElement.type + '"]';
+    }
+
+    return TP.elementGetFullName(anElement);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementResolveXMLBase',
 function(anElement, uriAttrNames, aPrefix, aSuffix) {
 
@@ -317,9 +347,7 @@ function(aNode, otherNode, aPosition) {
                     0;
     /* eslint-enable no-nested-ternary */
 
-    /* jshint bitwise:false */
-    return !!(position & aPosition);
-    /* jshint bitwise:true */
+    return Boolean(position & aPosition);
 });
 
 //  ------------------------------------------------------------------------

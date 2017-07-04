@@ -124,13 +124,19 @@ TP.hc(
             result,
 
             inlineBindingAttrs,
+
             node,
+
+            bindAttrLocalName,
 
             i,
 
             srcAttr,
 
             ownerElem,
+            ownerType,
+            ioAttrs,
+
             j,
 
             ownerElemAttr,
@@ -171,24 +177,35 @@ TP.hc(
             //  Grab the Element node that owns this Attribute node.
             ownerElem = srcAttr.ownerElement;
 
+            //  Grab the owner Element node's concrete type here and see if the
+            //  attribute local name is in the list of bidirectional attributes.
+            //  If it is, use 'io' as the binding attribute local name. If not,
+            //  use 'in'.
+            ownerType = TP.core.ElementNode.getConcreteType(ownerElem);
+            ioAttrs = ownerType.get('bidiAttrs');
+            bindAttrLocalName =
+                        ioAttrs.indexOf(srcAttr.localName) !== TP.NOT_FOUND ?
+                        'io' :
+                        'in';
+
             //  Initally set the bindAttr to null
             bindAttr = null;
 
-            //  Loop over all of the attributes of the owner Element,
-            //  looking to see if they're named 'bind:io' or if they're
-            //  named 'io' with a namespaceURI of TP.w3.Xmlns.BIND. This
-            //  means that we have an existing bind:io attribute that we
-            //  should just add to.
+            //  Loop over all of the attributes of the owner Element, looking to
+            //  see if they're named 'bind:in'/'bind:io' or if they're named
+            //  'in'/'io' with a namespaceURI of TP.w3.Xmlns.BIND. This means
+            //  that we have an existing bind:io attribute that we should just
+            //  add to.
             for (j = 0; j < ownerElem.attributes.length; j++) {
                 ownerElemAttr = ownerElem.attributes[j];
 
-                if (ownerElemAttr.localname === 'io' &&
+                if (ownerElemAttr.localname === bindAttrLocalName &&
                      ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
                     bindAttr = ownerElemAttr;
                 }
             }
 
-            //  Make sure that we don't (re)process bind:io attributes
+            //  Make sure that we don't (re)process bind:in/bind:io attributes
             if (bindAttr === srcAttr) {
                 continue;
             }
@@ -221,12 +238,12 @@ TP.hc(
                 isSingleValued = true;
             }
 
-            //  There was no existing bind:io attribute - build one and set
-            //  it's value.
+            //  There was no existing bind:in/bind:io attribute - build one and
+            //  set it's value.
             if (!TP.isAttributeNode(bindAttr)) {
                 ownerElem.setAttributeNS(
                         TP.w3.Xmlns.BIND,
-                        'bind:io',
+                        'bind:' + bindAttrLocalName,
                         '{' + srcAttr.name + ': ' + val + '}');
 
                 if (isSingleValued) {
@@ -236,7 +253,7 @@ TP.hc(
                             srcAttr.name);
                 }
             } else {
-                //  Already have a bind:io attribute - add to it.
+                //  Already have a bind:in/bind:io attribute - add to it.
                 bindAttr.nodeValue =
                     bindAttr.nodeValue.slice(
                         0, bindAttr.nodeValue.lastIndexOf('}')) +
@@ -469,7 +486,9 @@ TP.hc(
         report = TP.ifInvalid(shouldReport, false);
 
         //  force to true when TIBET is configured for parse debugging
-        report = TP.ifInvalid(report, TP.sys.shouldReportParseErrors());
+        if (TP.notValid(report)) {
+            report = TP.sys.shouldReportParseErrors();
+        }
 
         //  NB: Do *not* change these to 'TIBET primitives' (like
         //  TP.isEmpty()) as this method gets used early in the booting
@@ -505,8 +524,11 @@ TP.hc(
         }
 
         //  Detect things like binding expressions here and massage the DOM to
-        //  create (or add to an existing) bind:io attribute.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+        //  create (or add to an existing) bind:io attribute. Note here how we
+        //  also check to make sure it's not a JSON String - we don't want long
+        //  Strings of JSON data in our binding attributes.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
+            !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
@@ -647,7 +669,9 @@ TP.hc(
         report = TP.ifInvalid(shouldReport, false);
 
         //  force to true when TIBET is configured for parse debugging
-        report = TP.ifInvalid(report, TP.sys.shouldReportParseErrors());
+        if (TP.notValid(report)) {
+            report = TP.sys.shouldReportParseErrors();
+        }
 
         //  NB: Do *not* change these to 'TIBET primitives' (like
         //  TP.isEmpty())
@@ -686,8 +710,11 @@ TP.hc(
         //  allowing certain constructs (like binding expressions) in certain
         //  attributes (like 'style') if we're parsing XHTML. Therefore, we
         //  detect things like binding expressions here and massage the DOM to
-        //  create (or add to an existing) bind:io attribute.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+        //  create (or add to an existing) bind:io attribute. Note here how we
+        //  also check to make sure it's not a JSON String - we don't want long
+        //  Strings of JSON data in our binding attributes.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
+            !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
@@ -810,7 +837,9 @@ TP.hc(
         report = TP.ifInvalid(shouldReport, false);
 
         //  force to true when TIBET is configured for parse debugging
-        report = TP.ifInvalid(report, TP.sys.shouldReportParseErrors());
+        if (TP.notValid(report)) {
+            report = TP.sys.shouldReportParseErrors();
+        }
 
         //  NB: Do *not* change these to 'TIBET primitives' (like
         //  TP.isEmpty())
@@ -846,8 +875,11 @@ TP.hc(
         }
 
         //  Detect things like binding expressions here and massage the DOM to
-        //  create (or add to an existing) bind:io attribute.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+        //  create (or add to an existing) bind:io attribute. Note here how we
+        //  also check to make sure it's not a JSON String - we don't want long
+        //  Strings of JSON data in our binding attributes.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
+            !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
@@ -1665,8 +1697,6 @@ TP.hc(
 
             case Node.DOCUMENT_NODE:
 
-                /* jshint -W086 */
-
                 //  No document element? Return the empty string.
                 if (TP.notValid(node.documentElement)) {
                     return '';
@@ -1725,8 +1755,6 @@ TP.hc(
                         str = 'Serialization failed.';
                     }
                 }
-
-                /* jshint +W086 */
 
                 //  IE's XMLSerializer insists on putting a space before the
                 //  close of an 'empty' tag: <foo />. We don't want that and we
@@ -1942,8 +1970,6 @@ TP.hc(
 
             case Node.DOCUMENT_NODE:
 
-                /* jshint -W086 */
-
                 //  No document element? Return the empty string.
                 if (TP.notValid(node.documentElement)) {
                     return '';
@@ -2006,8 +2032,6 @@ TP.hc(
                         str = 'Serialization failed.';
                     }
                 }
-
-                /* jshint +W086 */
 
                 //  If the node was originally an HTML node, then we need to
                 //  make sure its return value is HTML
@@ -2222,8 +2246,6 @@ TP.hc(
 
             case Node.DOCUMENT_NODE:
 
-                /* jshint -W086 */
-
                 //  No document element? Return the empty string.
                 if (TP.notValid(node.documentElement)) {
                     return '';
@@ -2288,8 +2310,6 @@ TP.hc(
                         str = 'Serialization failed.';
                     }
                 }
-
-                /* jshint +W086 */
 
                 //  If the node was originally an HTML node, then we need to
                 //  make sure its return value is HTML

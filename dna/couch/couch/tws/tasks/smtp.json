@@ -1,0 +1,17 @@
+{
+    "type": "task",
+    "name": "smtp",
+    "owner": "Team TIBET",
+    "plugin": "mail-smtp",
+    "params": {
+        "smtp": {
+            "service": "gmail",
+            "auth": {
+                "user": "your_smtp_service_username_after_tibet_encrypt",
+                "pass": "your_smtp_password_after_tibet_encrypt"
+            }
+        },
+        "from": "your@fromaddress",
+        "html": "your_html_template_\{{with_param_blocks}}_as_needed"
+    }
+}

@@ -10,9 +10,9 @@
 
 /**
  * @overview Provides the TIBET-side integrations required to report TIBET
- *     test output to the Karma test controller environment. The components here are
- *     all elements of the TIBET Logging subsystem, a filter, a layout, and an
- *     appender, which work together to transmit data flowing into the TIBET
+ *     test output to the Karma test controller environment. The components here
+ *     are all elements of the TIBET Logging subsystem, a filter, a layout, and
+ *     an appender, which work together to transmit data flowing into the TIBET
  *     test log to the Karma environment. NOTE that overall start/stop data
  *     is provided via the tsh:test command used to invoke the overall tests.
  */
@@ -56,6 +56,8 @@ function(anEntry) {
     //  Only pass along entries that are ok/not ok.
     if (TP.isHash(entry)) {
         text = entry.at('statusText');
+    } else if (TP.isError(entry)) {
+        text = TP.str(entry.stack);
     } else {
         text = entry.get('statusText');
     }
@@ -84,11 +86,11 @@ function(anEntry) {
  * most common example is a karma result object which should appear as follows:
  *
  * karma.result({
- *     description: 'test karma-tibet',    // used even if undefined
- *     suite: ['karma-tibet adapter'],     // required even if empty
- *     log: [],                            // required even if empty
- *     success: true,                      // defaults to false
- *     skipped: false,                     // defaults to false
+ *     description: 'test karma-tibet',    //   used even if undefined
+ *     suite: ['karma-tibet adapter'],     //   required even if empty
+ *     log: [],                            //   required even if empty
+ *     success: true,                      //   defaults to false
+ *     skipped: false,                     //   defaults to false
  *
  *     time: 10,
  *     id: 'sometest',
@@ -177,7 +179,6 @@ function(anEntry) {
         } else {
 
             //  A regular per-test-case log message.
-            obj.log = TP.ac(text);
             obj.skipped = /# SKIP/.test(text);
 
             if (/^ok/.test(text)) {
@@ -187,11 +188,18 @@ function(anEntry) {
                 //  If it matches 'error:', then we need to mark it as 'info'
                 //  only - it's already been logged as a failure.
                 if (/error:/i.test(text)) {
+
+                    //  Replace the 'error: Error:' text here with 'ERROR:' to
+                    //  really call out the fact that it's an error.
+                    text = text.replace('error: Error:', 'ERROR:');
+
                     obj.isError = true;
                 }
 
                 obj.success = false;
             }
+
+            obj.log = TP.ac(text);
         }
     } else {
         return;
@@ -202,8 +210,12 @@ function(anEntry) {
     if (!obj.isInfo) {
         obj.success = TP.ifInvalid(obj.success, false);
         obj.description = TP.ifInvalid(obj.description, '');
-        obj.suite = TP.ifInvalid(obj.suite, TP.ac());
-        obj.log = TP.ifInvalid(obj.log, TP.ac());
+        if (TP.notValid(obj.suite)) {
+            obj.suite = TP.ac();
+        }
+        if (TP.notValid(obj.log)) {
+            obj.log = TP.ac();
+        }
     }
 
     return obj;
@@ -322,9 +334,8 @@ function(anEntry) {
         delete results.isInfo;
         karma.info(results);
     } else if (results.isError) {
-        /* eslint-disable no-console */
-        console.log(TP.sc('ERROR: ') + results.log[0]);
-        /* eslint-enable no-console */
+        delete results.isError;
+        karma.result(results);
     } else {
         //  If we don't pass a valid number karma will NaN the net time calc.
         if (!TP.isNumber(results.time)) {

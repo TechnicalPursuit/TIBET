@@ -72,14 +72,14 @@ function(aRequest) {
         aRequest.stdout(typesKeys.sort());
     }
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('types',
     TP.tsh.types.Type.getMethod('tshExecute'),
     'Outputs a list of available system types.',
     ':types',

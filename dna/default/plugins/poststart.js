@@ -20,24 +20,21 @@
      */
     module.exports = function(options) {
         var app,
+            TDS,
             logger;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
+        TDS = app.TDS;
 
-        logger.debug('Executing TDS post-start hook.');
-
-        //  ---
-        //  Middleware
-        //  ---
+        //  run any prolog hooks that were registered along the way.
+        TDS._prologs.forEach(function(hook) {
+            try {
+                hook(options);
+            } catch (e) {
+                logger.error(e);
+            }
+        });
 
         //  Put your post-start logic here.
     };

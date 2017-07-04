@@ -177,8 +177,14 @@ function(aRequest) {
     booleanVal = true;
     //  Instance of Date
     dateVal = new Date('Aug 23 1995');
+
+    //  NB: Do *not* reformat this in any way. Some of the representation tests
+    //  expect to see this in *exactly* this format.
     //  Instance of Function
+    /* eslint-disable brace-style,max-statements-per-line */
     functionVal = function() {return 'fluffy'; };
+    /* eslint-enable brace-style,max-statements-per-line */
+
     //  invalid Date
     invalidDateVal = new Date('fluffy');
     //  NaN
@@ -186,7 +192,8 @@ function(aRequest) {
     //  Instance of Number
     numberVal = 42;
     //  Instance of Object
-    objectVal = {};
+    objectVal = {
+    };
     objectVal.foo = 'bar';
     //  Instance of RegExp
     regexpVal = /foo/g;
@@ -203,10 +210,17 @@ function(aRequest) {
     //  iframe Window
     iframeWindowVal = topLevelWindow.UIROOT;
 
-    //  HTML Document
-    htmlDocumentVal = topLevelWindow.document;
-    //  HTML Element
-    htmlElementVal = topLevelWindow.document.body;
+    //  HTML Document / HTML Element
+    if (TP.isHTMLDocument(topLevelWindow.document)) {
+        htmlDocumentVal = topLevelWindow.document;
+        htmlElementVal = htmlDocumentVal.body;
+    } else {
+        htmlDocumentVal =
+            topLevelWindow.document.implementation.createHTMLDocument('');
+        htmlElementVal = htmlDocumentVal.createElement('body');
+        htmlElementVal.setAttribute('id', 'body');
+        htmlElementVal.innerHTML = 'hello world';
+    }
 
     //  XML Document
     xmlDocumentVal = TP.constructDocument();

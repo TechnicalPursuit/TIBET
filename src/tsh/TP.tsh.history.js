@@ -86,14 +86,23 @@ function(aRequest) {
                             var id;
 
                             id = aShellReq.at('cmdHistoryID');
-                            output += '<dt>' +
-                                '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\'!' +
-                                id + '\'); return false;">!' +
-                                id + '</a>' +
-                            '</dt>' +
-                            '<dd><![CDATA[' +
-                                aShellReq.at('cmd') +
-                            ']]></dd>';
+                            output +=
+                                '<dt>' +
+                                    '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\':snippet hid=' + id + '\'); return false;">' +
+                                    '+' +
+                                    '</a>' +
+                                    '&#160;&#160;' +
+                                    '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\'!' + id + '\'); return false;">' +
+                                    '!' + id +
+                                    '</a>' +
+                                '</dt>' +
+                                '<dd>' +
+                //  We don't use a CDATA section here because we can't copy and
+                //  paste entries from history on Chrome when we do:
+                //  https://bugs.chromium.org/p/chromium/issues/detail?id=696551
+                                    TP.xmlLiteralsToEntities(
+                                                    aShellReq.at('cmd')) +
+                                '</dd>';
                         });
 
         aRequest.atPut('cmdAsIs', true);
@@ -141,7 +150,7 @@ function(aRequest) {
         //  content...
         origReq.getResponse().atPut('cmdInput', true);
 
-        return aRequest.complete(TP.TSH_NO_INPUT);
+        return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     //  Construct a new request that can process the history event and
@@ -505,9 +514,9 @@ function(aString, aRequest, aShell, expand) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('history',
     TP.tsh.history.Type.getMethod('cmdRunContent'),
-    '',
+    'Displays a list of recent commands.',
     ':history',
     '');
 

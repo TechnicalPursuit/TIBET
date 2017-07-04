@@ -17,20 +17,18 @@
 TP.sherpa.TemplatedTag.defineSubtype('searcher');
 
 TP.sherpa.searcher.addTraits(TP.core.SelectingUIElementNode);
-TP.sherpa.searcher.addTraits(TP.core.D3ScrollingList);
+TP.sherpa.searcher.addTraits(TP.core.D3VirtualList);
 
 TP.sherpa.searcher.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 
 //  Is the command line current in search mode?
 TP.sherpa.searcher.Inst.defineAttribute('searchMode');
 
-TP.sherpa.searcher.Inst.defineAttribute(
-    'scroller',
-    {value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))});
+TP.sherpa.searcher.Inst.defineAttribute('scroller',
+    TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.searcher.Inst.defineAttribute(
-    'listcontent',
-    {value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))});
+TP.sherpa.searcher.Inst.defineAttribute('listcontent',
+    TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -118,14 +116,18 @@ function() {
     keyboardSM = consoleService.get('keyboardStateMachine');
 
     keyboardSM.defineState(
-            'normal',
-            'search',
-            {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_QuestionMark_Up')});
+        'normal',
+        'search',
+        {
+            trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_QuestionMark_Up')
+        });
 
     keyboardSM.defineState(
-            'search',
-            'normal',
-            {trigger: TP.ac(TP.ANY, 'TP.sig.EndSearchMode')});
+        'search',
+        'normal',
+        {
+            trigger: TP.ac(TP.ANY, 'TP.sig.EndSearchMode')
+        });
 
     keyboardSM.defineMethod('acceptSearch', function(aSignal) {
 
@@ -345,19 +347,20 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.searcher.Inst.defineMethod('select',
-function(aValue) {
+function(aValue, anIndex) {
 
     /**
      * @method select
-     * @summary Selects the element which has the provided value (if found).
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
      *     Note that this method is roughly identical to setDisplayValue() with
-     *     the exception that this method does not clear existing selections
-     *     when processing the value(s) provided. When no specific values are
-     *     provided this method will selectAll.
-     * @param {Object} aValue The value to select. Note that this can be an
-     *     array.
-     * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aValue] The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -447,7 +450,8 @@ function(enterSelection) {
      *     content into the supplied d3.js 'enter selection'.
      * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
      *     that new content should be appended to.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
      */
 
     var attrSelectionInfo,
@@ -482,7 +486,7 @@ function(enterSelection) {
                     return d.text;
                 });
 
-    return this;
+    return newContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -513,7 +517,11 @@ function() {
     theData.forEach(
             function(aPair) {
                 aPair.atPut(
-                        0, {displayText: aPair.at(0), className: 'category'});
+                    0,
+                    {
+                        displayText: aPair.at(0),
+                        className: 'category'
+                    });
             });
 
     return theData.flatten();
@@ -550,21 +558,6 @@ function() {
     };
 
     return keyFunc;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.searcher.Inst.defineMethod('getRootUpdateSelection',
-function(rootSelection) {
-
-    /**
-     * @method getRootUpdateSelection
-     * @summary Creates the 'root' update selection that will be used as the
-     *     starting point to begin d3.js drawing operations.
-     * @returns {d3.Selection} The receiver.
-     */
-
-    return rootSelection.selectAll('li');
 });
 
 //  ------------------------------------------------------------------------
@@ -627,14 +620,10 @@ function(updateSelection) {
      *     content in the supplied d3.js 'update selection'.
      * @param {TP.extern.d3.selection} updateSelection The d3.js update
      *     selection that existing content should be altered in.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var newContent;
-
-    newContent = updateSelection.select('li');
-
-    newContent.html(
+    updateSelection.html(
                 function(d) {
                     return d.displayText;
                 }).
@@ -649,7 +638,7 @@ function(updateSelection) {
                     return d.text;
                 });
 
-    return this;
+    return updateSelection;
 });
 
 //  ========================================================================
@@ -684,7 +673,7 @@ function(aSignal) {
     searcherDrawer = TP.byId('northeast', win);
     searcherDrawer.setAttribute('closed', false);
 
-    this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    // this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
 
     return this;
 });
@@ -698,19 +687,20 @@ function(aSignal) {
      * @method searchExit
      */
 
+    /*
     var win;
 
     win = this.get('$consoleGUI').getNativeWindow();
 
     this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    */
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineHandler(
-{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
+TP.sherpa.SearchKeyResponder.Inst.defineHandler('DrawerClosedDidChange',
 function(aSignal) {
 
     /**
@@ -736,6 +726,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ========================================================================
@@ -773,8 +765,8 @@ function() {
 
     this.callNextMethod();
 
-    this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
-                    'DrawerClosedDidChange');
+    // this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+     //               'DrawerClosedDidChange');
 
     this.set('$tshHistoryMatcher',
                 TP.core.TSHHistoryMatcher.construct(
@@ -819,7 +811,7 @@ function() {
                         'sleep',
                         'cli',
                         'listChangedRemotes',
-                        'forceRemoteRefresh',
+                        'processChangedRemotes',
                         'toggleRemoteWatch',
                         'toggleReportChangedRemotes',
                         //  Loaded TSH commands
@@ -830,7 +822,7 @@ function() {
 
     this.set('$keywordsMatcher',
                 TP.core.ListMatcher.construct(
-                    'JS_COMMANDS',
+                    'JS_WORDS',
                     TP.boot.$keywords.concat(TP.boot.$futurereservedwords),
                     'match_keyword'));
 
@@ -917,7 +909,9 @@ function(inputContent) {
             return null;
         }
 
-        return pathObj;
+        if (TP.isValid(pathObj)) {
+            return pathObj;
+        }
     };
 
     completions = TP.ac();
@@ -937,7 +931,10 @@ function(inputContent) {
 
                 topLevelObjects = TP.ac(
                     TP.global,
-                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                    TP.core.TSH.getDefaultInstance().getExecutionInstance(),
+                    TP,
+                    APP,
+                    CSS
                 );
 
                 resolutionChunks = info.at('resolutionChunks');
@@ -952,26 +949,25 @@ function(inputContent) {
                     }
                 }
 
-                //  If we couldn't get a resolved object and there were no
-                //  further resolution chunks found after the original tokenized
-                //  fragment, then we just set the resolved object to TP.global
-                //  and use a keyed source matcher on that object. Since we're
-                //  at the global context, we also add the keywords matcher.
-                if (TP.notValid(resolvedObj) &&
-                    TP.isEmpty(info.at('resolutionChunks'))) {
+                //  If we couldn't get a resolved object then we just use
+                //  keyed source matchers for all of the top level objects.
+                if (TP.notValid(resolvedObj)) {
 
-                    resolvedObj = TP.global;
+                    for (i = 0; i < topLevelObjects.getSize(); i++) {
 
-                    matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
-                            set('input', tokenizedFragment),
-                        this.get('$keywordsMatcher').
-                            set('input', inputContent));
+                        matchers.push(
+                            TP.core.KeyedSourceMatcher.construct(
+                                        TP.name(topLevelObjects.at(i)),
+                                            topLevelObjects.at(i)).
+                                set('input', tokenizedFragment));
+                    }
+
+                    matchers.push(this.get('$keywordsMatcher').
+                                    set('input', inputContent));
                 } else {
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
+                                            TP.name(resolvedObj), resolvedObj).
                             set('input', tokenizedFragment));
                 }
 
@@ -1019,6 +1015,10 @@ function(inputContent) {
                 function(matcher) {
 
                     var matchInput,
+
+                        keySource,
+                        keySourceIsNativeType,
+                        keySourceProto,
                         keySourceName;
 
                     matcher.prepareForMatch();
@@ -1028,24 +1028,65 @@ function(inputContent) {
 
                     if (TP.notEmpty(matches)) {
 
-                        if (TP.isValid(matcher.get('keySource'))) {
-                            keySourceName = TP.id(matcher.get('keySource')) + '.';
+                        keySource = matcher.get('keySource');
+
+                        if (TP.isValid(keySource) && TP.isNativeType(keySource)) {
+                            keySourceIsNativeType = true;
+                            keySourceProto = keySource.prototype;
+                        } else {
+                            keySourceIsNativeType = false;
+                        }
+
+                        if (TP.isValid(keySource) && keySource !== TP.global) {
+                            keySourceName =
+                                TP.name(matcher.get('keySource')) + '.';
                         } else {
                             keySourceName = '';
                         }
 
                         matches.forEach(
                             function(anItem, anIndex) {
-                                var itemEntry;
+                                var itemEntry,
+                                    text;
 
                                 if (TP.isArray(itemEntry = anItem.original)) {
                                     itemEntry = itemEntry.at(2);
                                 }
 
+                                try {
+                                    if (keySourceIsNativeType) {
+                                        if (TP.isValid(
+                                            Object.getOwnPropertyDescriptor(
+                                                keySource, anItem.original))) {
+                                            text = keySourceName +
+                                                    'Type.' +
+                                                    itemEntry;
+                                        } else if (
+                                            TP.isValid(
+                                            Object.getOwnPropertyDescriptor(
+                                                keySourceProto, anItem.original))) {
+                                            text = keySourceName +
+                                                    'Inst.' +
+                                                    itemEntry;
+                                        } else {
+                                            text = keySourceName + itemEntry;
+                                        }
+
+                                        text = '\'' +
+                                                '__NATIVE__' +
+                                                text +
+                                                '\'';
+                                    } else {
+                                        text = keySourceName + itemEntry;
+                                    }
+                                } catch (e) {
+                                    text = keySourceName + itemEntry;
+                                }
+
                                 completions.push({
                                     matcherName: anItem.matcherName,
                                     input: matchInput,
-                                    text: keySourceName + itemEntry,
+                                    text: text,
                                     score: anItem.score,
                                     displayText:
                                         keySourceName + anItem.string,
@@ -1072,8 +1113,11 @@ function(inputContent) {
                                     completionB.score,
                                     completionA.score) ||
                                 TP.sort.COMPARE(
-                                    completionB.text,
-                                    completionA.text);
+                                    completionA.text.length,
+                                    completionB.text.length) ||
+                                TP.sort.COMPARE(
+                                    completionA.text,
+                                    completionB.text);
                     });
 
                 closestMatchIndex = TP.NOT_FOUND;
@@ -1135,30 +1179,44 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchEngine.Inst.defineHandler(
-{signal: 'DOMKeyUp', origin: 'searchPanelInput'},
+TP.sherpa.SearchEngine.Inst.defineHandler('DOMKeyUp',
 function(aSignal) {
 
     /**
      * @method handleDOMKeyUp
      */
 
-    var val,
+    var origin,
+        sigOriginTPElem,
+
+        val,
 
         matches,
         groupings,
 
         searcher;
 
+    //  Moving down or up in the list or cancelling / accepting a match
+    //  shouldn't proceed further here.
     if (aSignal.getKeyName() === 'DOM_Down_Up' ||
-        aSignal.getKeyName() === 'DOM_Up_Up') {
+        aSignal.getKeyName() === 'DOM_Up_Up' ||
+        aSignal.getKeyName() === 'DOM_Esc_Up' ||
+        aSignal.getKeyName() === 'DOM_Enter_Up') {
         return this;
+    }
+
+    origin = aSignal.getOrigin();
+
+    if (TP.isString(origin)) {
+        sigOriginTPElem = TP.bySystemId(origin);
+    } else {
+        sigOriginTPElem = TP.wrap(origin);
     }
 
     //  NB: val might be empty, but that's ok - if the user has Backspaced all
     //  of the way and wiped out the entries, we need to clear all of the
     //  results.
-    val = TP.bySystemId(aSignal.getSignalOrigin()).getDisplayValue();
+    val = sigOriginTPElem.getDisplayValue();
 
     matches = this.computeMatches(val);
 
@@ -1179,6 +1237,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'searchPanelInput'
 });
 
 //  ----------------------------------------------------------------------------
@@ -1223,9 +1283,14 @@ function(aSignal) {
     currentValue = this.get('searcher').get('$currentValue');
 
     if (TP.notEmpty(currentValue)) {
-        consoleExecValue = ':reflect ' + currentValue;
-        TP.bySystemId('SherpaConsoleService').sendConsoleRequest(
-                                                        consoleExecValue);
+        if (/__NATIVE__/.test(currentValue)) {
+            consoleExecValue = ':reflect --docsonly \'' + currentValue.slice(11);
+        } else {
+            consoleExecValue = ':reflect ' + currentValue;
+        }
+
+        TP.bySystemId('SherpaConsoleService').sendShellRequest(
+                                                    consoleExecValue);
     }
 
     win = TP.win('UIROOT');
@@ -1249,8 +1314,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchEngine.Inst.defineHandler(
-{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
+TP.sherpa.SearchEngine.Inst.defineHandler('DrawerClosedDidChange',
 function(aSignal) {
 
     /**
@@ -1278,6 +1342,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ------------------------------------------------------------------------

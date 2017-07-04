@@ -13,7 +13,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 /*
  * STANDARD OPTIONS:
@@ -34,7 +34,7 @@
  * OTHER OPTIONS:
  *
  *      Note that other options are passed through to the Package instance which
- *      does the actual expand/list processing. See tibet-package.js for more
+ *      does the actual expand/list processing. See tibet_package.js for more
  *      info on the options available through that component.
  */
 
@@ -44,6 +44,7 @@
 
 var CLI,
     path,
+    find,
     dom,
     serializer,
     Cmd;
@@ -51,6 +52,7 @@ var CLI,
 
 CLI = require('./_cli');
 path = require('path');
+find = require('findit');
 dom = require('xmldom');
 serializer = new dom.XMLSerializer();
 
@@ -59,7 +61,9 @@ serializer = new dom.XMLSerializer();
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -149,14 +153,22 @@ Cmd.prototype.configurePackageOptions = function(options) {
     // override/assign values to the other parameters to ensure we get a full
     // list of known assets from the package being scanned.
     if (this.options.missing || this.options.unlisted) {
-        this.warn('scanning for missing/unlisted files...');
-        this.options.all = true;
+        this.info('scanning for missing/unlisted files...');
         this.options.images = true;
         this.options.scripts = true;
         this.options.resources = true;
         this.options.phase = 'all';
         this.options.include = null;
         this.options.exclude = null;
+
+        //  When working with a specific config focus on that config, otherwise
+        //  when only looking at a package we try to find everything in the
+        //  package that might be missing.
+        if (CLI.isEmpty(this.options.config)) {
+            this.options.all = true;
+        } else {
+            this.options.all = false;
+        }
     }
 
     // If silent isn't explicitly set but we're doing a full expansion turn
@@ -179,7 +191,6 @@ Cmd.prototype.configurePackageOptions = function(options) {
         this.pkgOpts.phase = this.pkgOpts.context;
     }
 
-
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
     this.pkgOpts.boot = this.pkgOpts.boot || {};
@@ -199,7 +210,10 @@ Cmd.prototype.configurePackageOptions = function(options) {
             this.pkgOpts.boot.phase_two = true;
             break;
     }
-    this.pkgOpts.boot.resourced = this.options.inlined || false;
+
+    if (CLI.notValid(this.pkgOpts.boot.inlined)) {
+        this.pkgOpts.boot.inlined = this.options.inlined || false;
+    }
 
     // Give subtypes a hook to make any specific adjustments to
     // the package options they need.
@@ -223,7 +237,6 @@ Cmd.prototype.execute = function() {
 
     list = this.getPackageAssetList();
 
-    // TODO: try/catch for errors? need a result code from the overall loop.
     this.executeForEach(list);
 
     return 0;
@@ -240,17 +253,22 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.executeForEach = function(list) {
     var cmd,
-        sh,
+        finder,
+        code,
         root,
-        buildDir,
-        dirs,
-        attrs,
+        excludeDirs,
+        excludeFiles,
         pouch,
+        attrs,
         files,
         missing,
         unlisted;
 
     cmd = this;
+
+    //  ---
+    //  standard listing
+    //  ---
 
     if (!this.options.unlisted && !this.options.missing) {
         list.forEach(function(item) {
@@ -269,95 +287,192 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     //  ---
-    //  Physical Files
-    //  ---
-
-    // Capture value for where the TDS may have put pouchdb files.
-    pouch = CLI.cfg('tds.pouch') || 'pouch';
-
-    // If we're doing an missing/unlisted file check we need to compare the
-    // content of our list with the list of all known files in the application's
-    // various source directories.
-    sh = require('shelljs');
-    buildDir = CLI.expandPath('~app_build').replace(process.cwd() + path.sep, '');
-
-    //  Search from ~app (public) since only those files can be vended to
-    //  client.
-    root = CLI.expandPath('~app');
-    dirs = sh.find(root).filter(function(file) {
-        return sh.test('-d', file) &&
-            file !== root &&                    // remove dir itself
-            !file.match(/^\./) &&               // remove hidden dir content
-            !file.match(/node_modules/) &&      // remove npm dir
-            !file.match(/TIBET-INF/) &&         // remove tibet dir
-            file !== pouch &&                   // remove TDS pouch dir
-            file !== buildDir;                  // remove build dir
-    });
-
-    files = sh.find(dirs).filter(function(file) {
-        return !sh.test('-d', file) &&
-            !file.match(/media\/boot/);
-    });
-
-    // Package files are provided in fully expanded form to avoid problems
-    // with potentially different virtual path prefixing etc. We need to
-    // adapt the local file references accordingly.
-    files = files.map(function(file) {
-        return CLI.expandPath(file);
-    });
-
-    //  ---
-    //  Unlisted (found in files but not in list)
-    //  ---
-
-    if (this.options.unlisted) {
-        unlisted = files.filter(function(item) {
-            return list.indexOf(item) === -1;
-        });
-
-        if (unlisted.length > 0) {
-
-            if (this.options.verbose) {
-                unlisted.forEach(function(item) {
-                    cmd.log('Unlisted file found: ' + item);
-                });
-            } else {
-                this.info('' + unlisted.length +
-                    ' files not referenced in package.');
-            }
-        } else {
-            this.info(
-                'All files referenced at least once in package.');
-        }
-    }
-
-    //  ---
-    //  Missing (found in list but not in files)
+    //  missing file check
     //  ---
 
     if (this.options.missing) {
+
+        //  Simple...just verify every path is real...
         missing = list.filter(function(item) {
-            return files.indexOf(item) === -1;
+            return !CLI.sh.test('-e', item);
         });
 
         if (missing.length > 0) {
-            if (this.options.verbose) {
-                missing.forEach(function(item) {
-                    cmd.warn('Package entry not found: ' + item);
-                });
-            } else {
-                this.info('' + missing.length +
-                    ' package referenced files missing.');
-            }
+            missing.forEach(function(item) {
+                cmd.warn('Package entry not found: ' + item);
+            });
 
-            throw new Error();
+            this.error('' + missing.length +
+                ' package referenced files missing.');
         } else {
             this.info(
                 'All package-referenced files found in project.');
         }
     }
 
-    return 0;
+    //  Are we done? No need to scan file system if we're just running a missing
+    //  check.
+    if (!this.options.unlisted) {
+        if (missing.length > 0) {
+            throw new Error();
+        } else {
+            return 0;
+        }
+    }
+
+    //  ---
+    //  unlisted
+    //  ---
+
+    /*
+     * A bit more complicated. We need to scan the file system to come up with a
+     * list of files that seem like they should be listed in the application
+     * package for it to boot/roll up properly. Then we compare that to the list
+     * of actual entries in the package.
+     */
+
+    excludeDirs = [];
+    excludeDirs.push(/\/\..*/);
+    excludeDirs.push(/node_modules/);
+
+    excludeFiles = [];
+    excludeFiles.push(/\/\..*/);
+    excludeFiles.push(/\.css$/);
+    excludeFiles.push(/\.less$/);
+    excludeFiles.push(/\.sass$/);
+    excludeFiles.push(/\.xhtml$/);
+
+    if (CLI.inProject()) {
+        root = CLI.expandPath('~app');
+
+        excludeDirs.push(/~app_build/);
+        excludeDirs.push(/~lib/);
+        excludeDirs.push(/~app_boot/);
+        excludeDirs.push(/~app_cfg/);
+        excludeDirs.push(/~app_cmd/);
+        excludeDirs.push(/~app_log/);
+
+        pouch = CLI.cfg('tds.pouch') || 'pouch';
+        excludeDirs.push(new RegExp(pouch));
+
+    } else {
+        root = CLI.expandPath('~lib');
+
+        excludeDirs.push(/~lib_boot/);
+        excludeDirs.push(/~lib_cli/);
+        excludeDirs.push(/~lib_cmd/);
+        excludeDirs.push(/~lib_dna/);
+        excludeDirs.push(/~lib_cfg/);
+        excludeDirs.push(/~lib_etc/);
+        excludeDirs.push(/~lib_deps/);
+    }
+
+    code = 0;
+    files = [];
+
+    finder = find(root);
+
+    finder.on('error', function(e) {
+        cmd.error('Error processing project files: ' + e);
+        code = 1;
+    });
+
+    // Ignore links. (There shouldn't be any...but just in case.).
+    finder.on('link', function(link) {
+        cmd.warn('Ignoring link: ' + link);
+    });
+
+    // Ignore hidden directories and the node_modules directory.
+    finder.on('directory', function(dir, stat, stop) {
+        var base,
+            virtual;
+
+        base = path.basename(dir);
+        if (base.charAt(0) === '.' || base === 'node_modules') {
+            stop();
+            return;
+        }
+
+        if (CLI.notEmpty(excludeDirs)) {
+            virtual = CLI.getVirtualPath(dir);
+            excludeDirs.forEach(function(exclusion) {
+                if (exclusion.test(dir) || exclusion.test(virtual)) {
+                    stop();
+                }
+            });
+        }
+    });
+
+    finder.on('file', function(file) {
+        var virtual,
+            stop;
+
+        if (!file.match(/\.(js|jscript)$/)) {
+            return;
+        }
+
+        stop = false;
+
+        if (CLI.notEmpty(excludeFiles)) {
+            virtual = CLI.getVirtualPath(file);
+            excludeFiles.forEach(function(exclusion) {
+                if (exclusion.test(file) || exclusion.test(virtual)) {
+                    stop = true;
+                }
+            });
+        }
+
+        if (stop) {
+            return;
+        }
+
+        files.push(file);
+    });
+
+    finder.on('end', function() {
+        var packaged;
+
+        if (code !== 0) {
+            throw new Error();
+        }
+
+        //  File lists and package entries come in fully-expanded form but that
+        //  makes comparisons harder from a filtering perspective (easier to
+        //  filter out ~lib_build than some hard-coded root path).
+        files = files.map(function(file) {
+            return CLI.getVirtualPath(file);
+        });
+
+        packaged = list.map(function(file) {
+            return CLI.getVirtualPath(file);
+        });
+
+        unlisted = files.filter(function(item) {
+            return packaged.indexOf(item) === -1;
+        });
+
+        if (unlisted.length > 0) {
+
+            if (cmd.options.verbose) {
+                unlisted.forEach(function(item) {
+                    cmd.log('Unlisted file found: ' + item);
+                });
+            }
+
+            cmd.info('' + unlisted.length + ' files not referenced in package.');
+        } else {
+            cmd.info(
+                'All files referenced at least once in package.');
+        }
+
+        //  In case we had missing check as well we won't have exited with error
+        //  state since we held off to do the unlisted check. Deal with that.
+        if (missing.length > 0) {
+            throw new Error();
+        } else {
+            return 0;
+        }
+    });
 };
 
 
@@ -393,10 +508,10 @@ Cmd.prototype.finalizePackageOptions = function() {
  */
 Cmd.prototype.getPackageAssetList = function() {
 
-    var Package,    // The tibet-package.js export.
+    var Package,    // The tibet_package.js export.
         list;       // The result list of asset references.
 
-    Package = require('../../../etc/cli/tibet-package.js');
+    Package = require('../../../etc/common/tibet_package.js');
     this.package = new Package(this.pkgOpts);
 
     if (this.pkgOpts.all) {

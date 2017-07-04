@@ -10,7 +10,9 @@
  *     Yahoo! portions Licensed under the BSD License.
  */
 
-@namespace tsh url(http://www.technicalpursuit.com/1999/tshell);
+@namespace tsh url("http://www.technicalpursuit.com/1999/tshell");
+
+/* stylelint-disable */
 
 /* =======================================================================
  * YUI CSS Baseline(s)
@@ -165,6 +167,8 @@ input[type=text],input[type=password],textarea {
 width: 12.25em;
 }
 
+/* stylelint-enable */
+
 /*
 For pixels (px) Declare this percent (%)
 10   77
@@ -194,42 +198,71 @@ For pixels (px) Declare this percent (%)
  *
  * ----------------------------------------------------------------------- */
 
+.select {
+
+    -webkit-touch-callout: default;
+
+    -webkit-user-select: auto;
+    -khtml-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    -o-user-select: auto;
+
+    cursor: auto;
+}
+
 .noselect {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  cursor: default;
+
+    -webkit-touch-callout: none;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+
+    cursor: default;
 }
 
 /* =======================================================================
  * TIBET CSS Baseline Additions
  * ----------------------------------------------------------------------- */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+
     display: block;
 }
 
 * ul li {
-    list-style: none
+
+    list-style: none;
 }
 
 a {
+
     cursor: pointer;
 }
 
-table, pre {
+table,
+pre {
+
     margin: 0;
 }
 
 html {
+
     margin: 0;
     padding: 0;
 }
 
-html, body {
+html,
+body {
+
     position: absolute;
 
     top: 0;

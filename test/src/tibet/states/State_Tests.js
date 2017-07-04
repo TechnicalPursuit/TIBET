@@ -562,10 +562,14 @@ function() {
 
         machine.defineState(null, 'start');
         machine.defineState('start', 'left',
-            {trigger: TP.ac('Special', 'Left'),
-                guard: 'checkIt'});
+            {
+                trigger: TP.ac('Special', 'Left'),
+                guard: 'checkIt'
+            });
         machine.defineState('start', 'right',
-            {trigger: 'Right'});
+            {
+                trigger: 'Right'
+            });
         machine.defineState('finish');
 
         machine.defineMethod('checkIt', function() {
@@ -627,11 +631,12 @@ function() {
         });
 
         //  Add state-specific handler method for input processing.
-        machine.defineHandler(
-            {signal: 'StateInput', state: 'Start'},
-            function(details) {
-                called = true;
-            });
+        machine.defineHandler('StateInput',
+        function(details) {
+            called = true;
+        }, {
+            state: 'Start'
+        });
 
         machine.activate();
 
@@ -721,12 +726,13 @@ function() {
         //  Define a simple observation for call check.
         //  Define a simple observation for call check.
         controller.addStateMachine(machine);
-        controller.defineHandler(
-            {signal: 'StateExit', state: 'Start'},
+        controller.defineHandler('StateExit',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
+        }, {
+            state: 'Start'
         });
 
         machine.activate();
@@ -790,12 +796,13 @@ function() {
 
         //  Define a simple observation for call check.
         controller.addStateMachine(machine);
-        controller.defineHandler(
-            {signal: 'FinishTransition', state: 'Start'},
+        controller.defineHandler('FinishTransition',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
+        }, {
+            state: 'Start'
         });
 
         machine.activate();
@@ -859,12 +866,13 @@ function() {
 
         //  Define a simple observation for call check.
         controller.addStateMachine(machine);
-        controller.defineHandler(
-            {signal: 'StateEnter', state: 'Finish'},
+        controller.defineHandler('StateEnter',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
+        }, {
+            state: 'Finish'
         });
 
         machine.activate();
@@ -1000,10 +1008,11 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineHandler(
-            {signal: 'Fluffy', state: 'Childstart'},
+        machine.defineHandler('Fluffy',
         function() {
             called = true;
+        }, {
+            state: 'Childstart'
         });
 
         machine.activate();
@@ -1042,10 +1051,11 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineHandler(
-            {signal: 'Fluffy', state: 'Start'},
+        machine.defineHandler('Fluffy',
         function() {
             called = true;
+        }, {
+            state: 'Start'
         });
 
         machine.activate();
@@ -1265,7 +1275,12 @@ function() {
         var details;
 
         machine.defineState(null, 'start');
-        machine.defineState('start', 'finish', {test: 'yay'});
+        machine.defineState(
+            'start',
+            'finish',
+            {
+                test: 'yay'
+            });
         machine.defineState('finish');
 
         details = machine.get('byInitial').at('Start');
@@ -1278,8 +1293,12 @@ function() {
         var called;
 
         machine.defineState(null, 'start');
-        machine.defineState('start', 'finish', {
-            trigger: TP.ac(TP.ANY, 'Fluffy')});
+        machine.defineState(
+            'start',
+            'finish',
+            {
+                trigger: TP.ac(TP.ANY, 'Fluffy')
+            });
         machine.defineState('finish');
 
         TP.sys.getApplication().defineHandler('FinishEnter',
@@ -1328,7 +1347,11 @@ function() {
 
         machine.defineState(null, 'start');
         machine.defineState(
-                'start', 'finish', {guard: 'checkItOut'});
+            'start',
+            'finish',
+            {
+                guard: 'checkItOut'
+            });
         machine.defineState('finish');
 
         machine.defineMethod('checkItOut', function(trigger) {
@@ -1381,10 +1404,18 @@ function() {
             called2;
 
         machine.defineState(null, 'start');
-        machine.defineState('start', 'option1', {
-            trigger: TP.ac(TP.ANY, 'Fluffy')});
-        machine.defineState('start', 'option2', {
-            trigger: TP.ac(TP.ANY, 'Foofy')});
+        machine.defineState(
+            'start',
+            'option1',
+            {
+                trigger: TP.ac(TP.ANY, 'Fluffy')
+            });
+        machine.defineState(
+            'start',
+            'option2',
+            {
+                trigger: TP.ac(TP.ANY, 'Foofy')
+            });
         machine.defineState('option1', 'finish');
         machine.defineState('option2', 'finish');
         machine.defineState('finish');
@@ -1452,10 +1483,14 @@ function() {
 
         //  Define an intermediate state we can use to test input filtering for
         //  both cases (filters it out, passes it through).
-        machine.defineState('start', 'xyz', {
-            guard: function() {
-                return false;
-            }});
+        machine.defineState(
+            'start',
+            'xyz',
+            {
+                guard: function() {
+                    return false;
+                }
+            });
         machine.defineState('finish', 'xyz');
         machine.defineState('xyz', 'finish');
 

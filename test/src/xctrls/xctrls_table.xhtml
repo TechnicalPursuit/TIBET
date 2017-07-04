@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    #table1 {
+        height: 250px;
+    }
+    ]]>
+    </style>
+
+    <tibet:data name="urn:tibet:column_names">
+        <![CDATA[
+            ["last_name", "first_name", "age"]
+        ]]>
+    </tibet:data>
+
+    <!-- As a two dimensional Array, the column order is important here. The columns will be categorized either by the supplied column names or by 'column_0', 'column_1', etc. -->
+    <tibet:data name="urn:tibet:two_dim_array">
+        <![CDATA[
+            {
+            "test_data": [
+                ["Smith", "Joe", 42],
+                ["Johnson", "Sam", 23],
+                ["Williams", "Monica", 51],
+                ["Jones", "Jeff", 41],
+                ["Brown", "Nathan", 31],
+                ["Davis", "Lou", 62],
+                ["Miller", "Scott", 44],
+                ["Wilson", "Tom", 21],
+                ["Moore", "Suzie", 41],
+                ["Taylor", "Frank", 71]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As an Array of Hashes, the columns are provided by the keys. -->
+    <tibet:data name="urn:tibet:array_of_hashes">
+        <![CDATA[
+            {
+            "test_data": [
+                {"last_name":"Smith", "first_name":"Joe", "age":42},
+                {"last_name":"Johnson", "first_name":"Sam", "age":23},
+                {"last_name":"Williams", "first_name":"Monica", "age":51},
+                {"last_name":"Jones", "first_name":"Jeff", "age":41},
+                {"last_name":"Brown", "first_name":"Nathan", "age":31},
+                {"last_name":"Davis", "first_name":"Lou", "age":62},
+                {"last_name":"Miller", "first_name":"Scott", "age":44},
+                {"last_name":"Wilson", "first_name":"Tom", "age":21},
+                {"last_name":"Moore", "first_name":"Suzie", "age":41},
+                {"last_name":"Taylor", "first_name":"Frank", "age":71}
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for selection tests -->
+    <tibet:data name="urn:tibet:selection_test_data">
+        <![CDATA[
+            {
+            "data": [
+                ["foo","foo", 1],
+                ["bar","bar", 2],
+                ["baz","baz", 3]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for value bound selection tests -->
+    <tibet:data name="urn:tibet:bound_selection_test_data">
+        <![CDATA[
+        {"selection_set_1": ["bar", "bar", 2], "selection_set_2": [["foo", "foo", 1], ["baz", "baz", 3]]}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+    <br/>
+
+    <br/>
+    table #1:
+    <br/>
+    A standard XControls list showing dynamic content of a two dimensional Array (without supplied column names):
+    <xctrls:table id="table1" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #2:
+    <br/>
+    A standard XControls list showing dynamic content of an Array of Hashes (without supplied column names):
+    <xctrls:table id="table2" bind:in="{data: urn:tibet:array_of_hashes#tibet(test_data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #3:
+    <br/>
+    A standard XControls list showing dynamic content of a two dimensional Array (with supplied column names):
+    <xctrls:table id="table3" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #4:
+    <br/>
+    A standard XControls list showing dynamic content of an Array of Hashes (with supplied column names):
+    <xctrls:table id="table4" bind:in="{data: urn:tibet:array_of_hashes#tibet(test_data), columns: urn:tibet:column_names}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #5:
+    <br/>
+    A standard XControls list showing dynamic content of a two dimensional Array (with supplied column names) and multiple selection:
+    <xctrls:table id="table5" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}" multiple="true"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #6:
+    <br/>
+    A standard XControls list showing dynamic content of a two dimensional Array (with supplied column names):
+    <xctrls:table id="table6" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}">
+        <xctrls:checkitem>
+            <xctrls:label>[[value.0]]</xctrls:label>
+            <xctrls:value>[[value.0]]</xctrls:value>
+        </xctrls:checkitem>
+        <xctrls:textitem>
+            <xctrls:label>[[value.1]]</xctrls:label>
+            <xctrls:value>[[value.1]]</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem>
+            <xctrls:label>[[value.2]]</xctrls:label>
+            <xctrls:value>[[value.2]]</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:table>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #7:
+    <br/>
+    A standard XControls table (with supplied column names) and single selection enabled:
+    <xctrls:table id="table7" bind:in="{data: urn:tibet:selection_test_data#tibet(data), columns: urn:tibet:column_names}"/>
+
+    <br/>
+    <br/>
+
+	<br/>
+	table #8:
+	<br/>
+	A standard XControls table with single selection enabled showing dynamic content and value bound to a selection model:
+    <xctrls:table id="table8" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	table #9:
+	<br/>
+	A standard XControls table with multiple selection enabled showing dynamic content and value bound to a selection model:
+    <xctrls:table id="table9" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}" multiple="true"/>
+
+	<br/>
+	<br/>
+
+	<div class="controlBox">
+		<button onclick="TP.byId('table1').signal('UIDisabled');">Disable table #1</button>
+		<button onclick="TP.byId('table1').signal('UIEnabled');">Enable table #1</button>
+
+		<br/>
+
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('table1').signal('UIFocused');}, 100)">Focus table #1</button>
+	</div>
+
+</body>
+</html>

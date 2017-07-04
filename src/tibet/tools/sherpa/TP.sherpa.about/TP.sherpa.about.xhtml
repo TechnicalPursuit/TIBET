@@ -4,17 +4,29 @@
     <div class="content">
         <img src="~lib_media/tibet_logo.svg" alt="TIBET Logo"/>
         <div class="product">TIBET<span class="trade">&#x2122;</span></div>
+        <div class="version">{{TP.env.libVersion}}</div>
         <div class="tagline">The sum of the parts, not some of the parts.&#x2122;</div>
-        <div class="version">TIBET {{TP.sherpa.about.LIB_VERSION}}</div>
         <div class="actions">
-            <button title="Offer Feedback">Offer Feedback</button>
-            <button title="Get Help">Get Help</button>
-            <button title="Report Issue">Report Issue</button>
+            <button on:click="Feedback">
+                Feedback
+                <xctrls:hint>Click here to send feedback</xctrls:hint>
+            </button>
+            <button on:click="Help">
+                Support
+                <xctrls:hint>Click here to send a support request</xctrls:hint>
+            </button>
+            <button on:click="Issue">
+                Issue
+                <xctrls:hint>Click here to file an issue</xctrls:hint>
+            </button>
         </div>
         <div class="copyright">Copyright &#xa9; 1999-2016 Technical Pursuit Inc, All Rights Reserved.</div>
     </div>
-    <div class="footer" on:click="Toggle">
-        <img hidefocus="true" src="~lib_media/tibet_logo.svg" alt="TIBET Logo" tabindex="-1" title="About"/>
+    <div class="footer">
+        <div class="appinfo">{{TP.cfg.project.name}} v{{TP.cfg.project.version}}</div>
+        <div on:click="Toggle" class="trigger button" alt="TIBET Logo">
+            <xctrls:hint>About</xctrls:hint>
+        </div>
     </div>
 </sherpa:about>
 

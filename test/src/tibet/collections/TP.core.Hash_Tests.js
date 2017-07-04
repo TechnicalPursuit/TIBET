@@ -84,7 +84,11 @@ function() {
         var h1,
             obj;
 
-        obj = {a: 1, b: 2, c: 3};
+        obj = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
         h1 = TP.hc(obj);
 
         test.assert.isEqualTo(h1.getKeys().length, 3);
@@ -95,14 +99,51 @@ function() {
             obj1,
             obj2;
 
-        obj1 = {a: 1, b: 2, c: 3};
-        obj2 = {nested: obj1, fluffy: true};
+        obj1 = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
+        obj2 = {
+            nested: obj1,
+            fluffy: true
+        };
 
         h1 = TP.hc(obj2);
 
         test.assert.isEqualTo(h1.getKeys().length, 2);
         test.assert.isKindOf(h1.at('nested'), TP.core.Hash);
         test.assert.isEqualTo(h1.at('nested').at('b'), 2);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.describe('asQueryString',
+function() {
+    this.it('builds the right default string for full pairs',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', 'bar', 'blah', 'blahblah');
+        test.assert.isEqualTo(hash.asQueryString(), 'foo=bar&blah=blahblah');
+    });
+
+    this.it('builds solo keys as boolean flag',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', 'bar', 'blah', 'blahblah', 'stuff');
+        test.assert.isEqualTo(hash.asQueryString(), 'foo=bar&blah=blahblah&stuff');
+    });
+
+    this.it('builds solo keys as undef value provided',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', 'bar', 'blah', 'blahblah', 'stuff');
+        test.assert.isEqualTo(hash.asQueryString(null, 'ansuch'),
+            'foo=bar&blah=blahblah&stuff=ansuch');
     });
 });
 

@@ -31,15 +31,15 @@ function(targetUrl) {
     xhr = new XMLHttpRequest();
 
     if (TP.notValid(xhr)) {
-        return TP.httpError(
-                targetUrl, 'HTTPConstructException',
-                        TP.hc('message',
-                                'Unable to instantiate XHR object.'));
+        TP.httpError(targetUrl, 'HTTPConstructException',
+            TP.hc('message', 'Unable to instantiate XHR object.'));
+        return;
     }
 
     //  URL instances which make use of "comm objects" support API to access the
     //  last used object and its data provided we keep that reference updated.
-    if (TP.isValid(targetUrl) && TP.isValid(TP.sys.getTypeByName('TP.core.URI'))) {
+    if (TP.isValid(targetUrl) &&
+            TP.isValid(TP.sys.getTypeByName('TP.core.URI'))) {
         url = TP.uc(targetUrl);
         url.$set('commObject', xhr);
     }
@@ -720,9 +720,9 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
 
     /**
      * @method httpError
-     * @summary Low-level error handler for httpCall processing. This function
-     *     will cause both the IO log and Error log to be updated to reflect the
-     *     error condition.
+     * @summary Low-level error handler for TP.httpCall processing. This
+     *     function will cause both the IO log and Error log to be updated to
+     *     reflect the error condition.
      * @description aRequest could contain 1 or more of the following keys:
      *
      *     'uri' - the targetUrl
@@ -730,7 +730,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
      *     'headers' - call headers
      *     'method' - the command method
      *     'body' - string content
-     *     'xhr' - xml http request
+     *     'commObj' - xml http request
      *     'response' - TP.sig.Response
      *     'object' - any error object
      *     'message' - error string
@@ -753,11 +753,10 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
         error,
         type,
         sig,
-        id,
-        logRaise;
+        id;
 
-    //  make sure we've got at least a basic TP.core.Request to work with
-    args = TP.ifInvalid(aRequest, TP.request());
+    //  make sure we've got at least a basic TP.sig.Request to work with
+    args = aRequest || TP.request();
 
     //  make sure we tuck away the url if there's no prior value
     args.atPutIfAbsent('uri', targetUrl);
@@ -766,10 +765,10 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     signal = TP.ifInvalid(aSignal, 'HTTPException');
 
     //  if we didn't get an error we can relay a new one
-    error = args.atIfInvalid('object',
-                                new Error(
-                                    TP.ifEmpty(args.at('message'),
-                                                signal)));
+    error = args.at('object');
+    if (TP.notValid(error)) {
+        error = new Error(TP.ifEmpty(args.at('message'), signal));
+    }
     args.atPut('error', error);
 
     //  make sure the IO log contains this data to show a complete record
@@ -812,23 +811,12 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     if (args && TP.notTrue(args.get('logged'))) {
         if (TP.ifError()) {
             args.set('logged', true);
-            TP.error(TP.IO_LOG, args);
+            try {
+                TP.error(TP.IO_LOG, args);
+            } catch (e) {
+                void 0;
+            }
         }
-    }
-
-    //  If we're already logging errors, then configure raising to not log -
-    //  otherwise, we see things twice.
-    logRaise = TP.sys.shouldLogRaise();
-    if (args.get('logged') === true) {
-        TP.sys.shouldLogRaise(false);
-    }
-
-    try {
-        TP.raise(targetUrl, signal, args);
-    } catch (e) {
-        throw e;
-    } finally {
-        TP.sys.shouldLogRaise(logRaise);
     }
 
     return;
@@ -905,7 +893,8 @@ function(targetUrl, aRequest, httpObj) {
 
         method;
 
-    request = TP.ifInvalid(aRequest, TP.request());
+    request = aRequest || TP.request();
+
     headers = TP.ifKeyInvalid(request, 'headers',
                                 TP.httpGetDefaultHeaders());
     request.atPut('headers', headers);
@@ -1023,7 +1012,7 @@ function(targetUrl, aRequest, httpObj) {
      * @method $httpTimeout
      * @summary Notifies the proper callback handlers and provides common
      *     signaling upon timeout of an HTTP request. This method is invoked
-     *     automatically by the TP.httpCall() method when an asynchronous
+     *     automatically by the TP.httpCall method when an asynchronous
      *     request times out.
      * @param {String} targetUrl The full target URI in string form.
      * @param {TP.sig.Request} aRequest The request object holding parameter
@@ -1043,7 +1032,7 @@ function(targetUrl, aRequest, httpObj) {
     request = TP.request(aRequest);
 
     //  make sure the request has access to the native http request object
-    request.atPut('xhr', httpObj);
+    request.atPut('commObj', httpObj);
 
     //  configure the request's final output parameters to record the error
     request.atPut('direction', TP.RECV);
@@ -1110,8 +1099,12 @@ function(targetUrl, aRequest, httpObj) {
         sig,
         id;
 
-    request = TP.request(aRequest);
-    url = TP.ifInvalid(targetUrl, request.at('uri'));
+    request = aRequest || TP.request();
+
+    url = targetUrl;
+    if (TP.notValid(url)) {
+        url = request.at('uri');
+    }
 
     //  typically we'll allow redirects, but TP.httpDelete and others may
     //  set this to false to avoid potential problems
@@ -1134,16 +1127,15 @@ function(targetUrl, aRequest, httpObj) {
         }
 
         try {
-            xhr = TP.httpCall(url, request);
+            //  NOTE that httpCall will store 'commObj' for us.
+            TP.httpCall(url, request);
         } finally {
             request.atPut('async', async);
         }
     } else {
         xhr = httpObj;
+        request.atPut('commObj', xhr);
     }
-
-    //  make sure the request has access to the native http request object
-    request.atPut('xhr', xhr);
 
     //  create a signal that will carry the request to any callbacks in a
     //  fashion that allows it to treat it like a proper response object
@@ -1160,7 +1152,11 @@ function(targetUrl, aRequest, httpObj) {
     sig = type.construct(request);
     id = request.getRequestID();
 
-    //  TODO:   do we want to signal something like an IORedirect ?
+    //  Make sure the signal we'll be sending is also mapped as the response for
+    //  the original request.
+    request.setResponse(sig);
+
+    //  TODO:   do we want to signal something like an IORedirect as needed?
 
     //  with/without redirect, did we succeed?
     if (!TP.httpDidSucceed(xhr)) {

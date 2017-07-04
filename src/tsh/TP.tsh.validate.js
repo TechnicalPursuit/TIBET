@@ -58,18 +58,18 @@ function(aRequest) {
 
     aRequest.stdout('Coming soon.');
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('validate',
     TP.tsh.validate.Type.getMethod('tshExecute'),
     'Runs the W3C validation service on a URL.',
     ':validate',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

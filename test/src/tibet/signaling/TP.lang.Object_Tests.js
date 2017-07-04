@@ -280,9 +280,7 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                                                 'level1_ANY_FALSE_ANY_ANY');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
-                {
-                },
+            TP.test.HandlerTestLevel1.defineHandler(TP.ANY,
                 level1_ANY_FALSE_ANY_ANY);
 
             //  --- Level 1 ANY_FALSE_SignalTestOrigin_ANY
@@ -292,11 +290,11 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                                     'level1_ANY_FALSE_SignalTestOrigin_ANY');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
+            TP.test.HandlerTestLevel1.defineHandler(TP.ANY,
+                level1_ANY_FALSE_SignalTestOrigin_ANY,
                 {
                     origin: sigOrigin
-                },
-                level1_ANY_FALSE_SignalTestOrigin_ANY);
+                });
 
             //  --- Level 1 TP_Test_SignalTestFull_FALSE_ANY_ANY
 
@@ -305,10 +303,7 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                                     'level1_TP_Test_SignalTestFull_FALSE_ANY_ANY');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
-                {
-                    signal: TP.test.SignalTestFull
-                },
+            TP.test.HandlerTestLevel1.defineHandler(TP.test.SignalTestFull,
                 level1_TP_Test_SignalTestFull_FALSE_ANY_ANY);
 
             //  --- Level 1 TestState_FALSE_ANY_ANY
@@ -318,11 +313,11 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                                     'level1_TestState_FALSE_ANY_ANY');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
+            TP.test.HandlerTestLevel1.defineHandler(TP.ANY,
+                level1_TestState_FALSE_ANY_ANY,
                 {
                     state: 'TestState'
-                },
-                level1_TestState_FALSE_ANY_ANY);
+                });
 
             //  --- Level 1 TP_test_SignalTestFull_FALSE_SignalTestOrigin_ANY
 
@@ -331,12 +326,12 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                         'level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_ANY');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
+            TP.test.HandlerTestLevel1.defineHandler(TP.test.SignalTestFull,
+                level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_ANY,
                 {
-                    origin: sigOrigin,
-                    signal: TP.test.SignalTestFull
-                },
-                level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_ANY);
+                    origin: sigOrigin
+                });
+
 
             //  --- Level 1 TestState_FALSE_SignalTestOrigin_ANY
 
@@ -345,12 +340,12 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                                     'level1_TestState_FALSE_SignalTestOrigin_ANY');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
+            TP.test.HandlerTestLevel1.defineHandler(TP.ANY,
+                level1_TestState_FALSE_SignalTestOrigin_ANY,
                 {
                     origin: sigOrigin,
                     state: 'TestState'
-                },
-                level1_TestState_FALSE_SignalTestOrigin_ANY);
+                });
 
             //  --- Level 1 TP_test_SignalTestFull_FALSE_ANY_TestState
 
@@ -359,12 +354,11 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                                 'level1_TP_test_SignalTestFull_FALSE_ANY_TestState');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
+            TP.test.HandlerTestLevel1.defineHandler(TP.test.SignalTestFull,
+                level1_TP_test_SignalTestFull_FALSE_ANY_TestState,
                 {
-                    signal: TP.test.SignalTestFull,
                     state: 'TestState'
-                },
-                level1_TP_test_SignalTestFull_FALSE_ANY_TestState);
+                });
 
             //  --- Level 1 TP_test_SignalTestFull_FALSE_SignalTestOrigin_TestState
 
@@ -373,13 +367,12 @@ function() {
                     TP.test.SignalingTester.incrementCount(
                     'level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_TestState');
                 };
-            TP.test.HandlerTestLevel1.defineHandler(
+            TP.test.HandlerTestLevel1.defineHandler(TP.test.SignalTestFull,
+                level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_TestState,
                 {
                     origin: sigOrigin,
-                    signal: TP.test.SignalTestFull,
                     state: 'TestState'
-                },
-                level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_TestState);
+                });
         });
 
     this.it('getBestHandler - Level 1 - ANY signal / FALSE capturing / ANY origin / ANY state', function(test, options) {
@@ -581,6 +574,54 @@ function() {
         TP.sys.getApplication().removeStateMachine(machine);
     });
 });
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.describe('Signaling - URN-registered object handler reference',
+function() {
+
+    this.it('URN-registered object handler', function(test, options) {
+
+        var receiverObj,
+            receiverObjID,
+            senderObj,
+
+            obj;
+
+        //  Construct a TP.lang.Object
+        receiverObj = TP.lang.Object.construct();
+
+        receiverObjID = 'URNTestObj1';
+        receiverObj.setID(receiverObjID);
+
+
+        senderObj = TP.lang.Object.construct();
+
+        senderObj.defineAttribute('lastName');
+        senderObj.defineAttribute('firstName');
+        senderObj.shouldSignalChange(true);
+
+        receiverObj.observe(senderObj, 'LastNameChange');
+        receiverObj.observe(senderObj, 'FirstNameChange');
+
+        //  Two observations, this should be valid
+        obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
+
+        test.assert.isValid(obj, 'After initial observes');
+
+        //  Remove one observation - this should still be valid
+        receiverObj.ignore(senderObj, 'LastNameChange');
+        obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
+
+        test.assert.isValid(obj, 'After first ignore.');
+
+        //  Remove second observation - this should now be invalid
+        receiverObj.ignore(senderObj, 'FirstNameChange');
+        obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
+
+        test.refute.isValid(obj, 'After second ignore.');
+    });
+}).skip();  // TODO: review. This test is a) weird, b) probably obsolete.
 
 //  ------------------------------------------------------------------------
 //  end

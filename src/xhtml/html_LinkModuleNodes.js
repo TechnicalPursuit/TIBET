@@ -36,6 +36,39 @@ TP.html.link.Inst.resolveTraits(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.html.link.Type.defineMethod('mutationUpdatedStyle',
+function(aTargetElem) {
+
+    /**
+     * @method mutationUpdatedStyle
+     * @summary Handles a remote resource change against the supplied native
+     *     element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node because of changes to the remote resource that
+     *     caused this element to be created in the first place
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.html.link} The receiver.
+     */
+
+    var tpElem;
+
+    if (!TP.isElement(aTargetElem)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    tpElem = TP.wrap(aTargetElem);
+
+    //  Signal from our (wrapped) target element that we attached more nodes due
+    //  to a mutation.
+    TP.signal(TP.tpdoc(aTargetElem),
+                'TP.sig.MutationStyleChange',
+                TP.hc('mutationTarget', tpElem));
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
@@ -91,13 +124,39 @@ function(aRequest) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  Register a handler function that will dispatch a TP.sig.DOMReady when
-    //  the stylesheet has finished loading.
+    //  Register a handler function that will process @import'ed URIs and
+    //  dispatch a TP.sig.DOMReady when the stylesheet has finished loading.
     handlerFunc =
         function() {
 
+            var stylesheet,
+                importHrefs;
+
             //  Remove this handler to avoid memory leaks.
             elem.removeEventListener('load', handlerFunc, false);
+
+            //  Grab the stylesheet from the element.
+            stylesheet = TP.cssElementGetStyleSheet(elem);
+
+            //  If we have a valid CSSStyleSheet object
+            if (TP.isValid(stylesheet)) {
+
+                //  Intern the stylesheet's href as a TP.core.URI. Note that we
+                //  don't care about the return value here - we're simply
+                //  interested in having a URI object matching the href here.
+                TP.uc(stylesheet.href);
+
+                //  Grab any hrefs from @import statements in the stylesheet and
+                //  create instances of TP.core.URIs from them as well. Again,
+                //  we're not interested in the return values here. Note that
+                //  this method, by default, will recursively retrieve @import
+                //  hrefs.
+                importHrefs = TP.styleSheetGetImportHrefs(stylesheet);
+                importHrefs.forEach(
+                    function(anHref) {
+                        TP.uc(anHref);
+                    });
+            }
 
             //  Dispatch 'TP.sig.DOMReady' for consistency with other elements
             //  that dispatch this when their 'dynamic content' is resolved.
@@ -138,7 +197,8 @@ function(anHref) {
         TP.documentReloadCSSLinkElementHref(doc, anHref);
 
         //  Work around Chrome (and possibly others) stupidity.
-        TP.windowForceRepaint(TP.nodeGetWindow(doc));
+        //  TODO: Commented out for now - doesn't seem to need it.
+        // TP.windowForceRepaint(TP.nodeGetWindow(doc));
     }
 
     return this;

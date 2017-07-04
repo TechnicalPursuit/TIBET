@@ -2,22 +2,18 @@
  * @overview 'APP.{{appname}}.app' styles.
  */
 
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace {{appname}} url(urn:tibet:{{appname}});
-
-/**
- * If your template/compile process transforms <{{appname}}:app/> tags
- * from namespaced XML into XHTML with a tibet:tag attribute so they render
- * in the page similar to <div tibet:tag="{{appname}}:app"/> place your
- * style in rules with the following root form:
- */
-*[tibet|tag="{{appname}}:app"] {
-    /* style here for xhtml converted tags */
-}
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace {{appname}} url("urn:app:{{appname}}");
 
 /**
  * If you don't transform from XML form (tags in the page remain in their
  * <{{appname}}:app/> form) use rules of this form:
  */
 {{appname}}|app {
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }

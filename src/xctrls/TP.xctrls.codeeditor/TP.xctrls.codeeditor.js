@@ -41,6 +41,9 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.codeeditor.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
 //  ------------------------------------------------------------------------
@@ -116,6 +119,41 @@ TP.xctrls.codeeditor.Inst.defineAttribute('$oldSelectionLength');
 TP.xctrls.codeeditor.Inst.defineAttribute('$currentKeyHandler');
 
 TP.xctrls.codeeditor.Inst.defineAttribute('$editorObj');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Type.defineMethod('tagResolve',
+function(aRequest) {
+
+    /**
+     * @method tagResolve
+     * @summary Resolves the receiver's content. This includes resolving XML
+     *     Base URIs and virtual URIs that may occur on the receiver's
+     *     attributes.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    //  Set the attribute to not trap dragging in the TIBET D&D system, but
+    //  allow targets of this type to do their natural drag operation (which, in
+    //  this case, is selecting text).
+    TP.elementSetAttribute(elem, 'tibet:nodragtrapping', 'true', true);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -203,9 +241,11 @@ function(line, ch) {
 
     /**
      * @method createPos
-     * @param
-     * @param
-     * @returns {TP.xctrls.codeeditor} The receiver.
+     * @summary Creates a CodeMirror 'position' object from the supplied line
+     *     and character position. See the CodeMirror manual for more details.
+     * @param {Number} line The line number to create the position at.
+     * @param {Number} ch The character number to create the position at.
+     * @returns {TP.extern.CodeMirror.Pos} A CodeMirror 'position' object.
      */
 
     /* eslint-disable new-cap */
@@ -239,6 +279,60 @@ function(aText, aMode, tokenizeCallback) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('findAndScrollTo',
+function(aStringOrRegExp) {
+
+    /**
+     * @method findAndScrollTo
+     * @summary Finds the text using the supplied String or RegExp in the
+     *     receiver, scrolls to it and centers its scroll in the receiver's
+     *     visible area.
+     * @param {String|RegExp} aStringOrRegExp The String or RegExp to use to
+     *     find the text to scroll to.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editor,
+
+        cursor,
+        result,
+
+        foundPosition,
+        scrollInfo,
+        editorHeight;
+
+    editor = this.$get('$editorObj');
+
+    //  Grab a search cursor. We supply the search criteria (String or RegExp)
+    //  here.
+    cursor = editor.getSearchCursor(aStringOrRegExp);
+
+    //  Find the next occurrence of the text, if it exists.
+    result = cursor.findNext();
+
+    //  The return value could either be a Boolean or a structure detailing
+    //  match characteristics - either way, it's truthy.
+    if (TP.isTruthy(result)) {
+
+        //  Grab the position and the scrolling information from the editor and
+        //  scroll the text into view, dividing the overall height into 2
+        //  because the second parameter to 'scrollIntoView' wants a
+        //  'margining buffer' both top and bottom.
+
+        foundPosition = cursor.from();
+
+        scrollInfo = editor.getScrollInfo();
+
+        editorHeight = scrollInfo.clientHeight;
+
+        editor.scrollIntoView(foundPosition, editorHeight / 2);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('focus',
 function(moveAction) {
 
@@ -256,11 +350,24 @@ function(moveAction) {
      *          TP.FIRST_IN_NEXT_GROUP
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
-     *          TP.PRECEDING.
+     *          TP.PRECEDING
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    var nativeTA;
+
+    //  Here we reach down into the private parts of CodeMirror and grab the
+    //  textarea that serves as the focusable element for CodeMirror and
+    //  temporarily swap that out for a TIBET-wrapped version so that focusing
+    //  it will cause the TIBET-related focus machinery to be invoked.
+    nativeTA = this.$get('$editorObj').display.input.textarea;
+    this.$get('$editorObj').display.input.textarea = TP.wrap(nativeTA);
+
+    //  Go ahead and 'focus' the editor.
     this.$get('$editorObj').focus();
+
+    //  Put the original native textarea back.
+    this.$get('$editorObj').display.input.textarea = nativeTA;
 
     return this;
 });
@@ -272,8 +379,11 @@ function(start) {
 
     /**
      * @method getCursor
-     * @param
-     * @returns
+     * @summary Returns the current position of the cursor.
+     * @param {String} start A value indicating where to measure the cursor at.
+     *     This should be one of the following values: 'from', 'to', 'head',
+     *     'anchor'. See the CodeMirror manual for more details.
+     * @returns {TP.extern.CodeMirror.Pos} A CodeMirror 'position' object.
      */
 
     return this.$get('$editorObj').getCursor(start);
@@ -342,9 +452,13 @@ function() {
 
     /**
      * @method render
-     * @summary
+     * @summary Renders the receiver. At this type level, this method does
+     *     nothing.
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
+
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
 
     return this;
 });
@@ -385,9 +499,14 @@ function() {
         return this;
     }
 
-    editor.setSelection({line: 0, ch: 0},
-                        {line: lastLineInfo.line,
-                            ch: lastLineInfo.text.length});
+    editor.setSelection(
+        {
+            line: 0, ch: 0
+        },
+        {
+            line: lastLineInfo.line,
+            ch: lastLineInfo.text.length
+        });
 
     this.focus();
 
@@ -426,7 +545,7 @@ function(aValue) {
     /* eslint-disable no-extra-parens */
     (function() {
         editorObj.refresh();
-    }).afterUnwind();
+    }).queueForNextRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;
@@ -914,8 +1033,10 @@ function() {
         return this;
     }
 
-    editor.setCursor({line: lastLineInfo.line,
-                        ch: lastLineInfo.text.length});
+    editor.setCursor({
+        line: lastLineInfo.line,
+        ch: lastLineInfo.text.length
+    });
 
     return this;
 });
@@ -931,7 +1052,10 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').setCursor({line: 0, ch: 0});
+    this.$get('$editorObj').setCursor(
+        {
+            line: 0, ch: 0
+        });
 
     return this;
 });

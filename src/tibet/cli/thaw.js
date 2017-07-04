@@ -27,7 +27,9 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -85,6 +87,9 @@ Cmd.prototype.execute = function() {
         app_inf,
         infroot,
 
+        lnflags,
+        lnerr,
+
         file,
         json,
         list;
@@ -97,15 +102,23 @@ Cmd.prototype.execute = function() {
     // Verify our intended target directory exists.
     if (!sh.test('-e', app_inf)) {
         this.error('Cannot find app_inf: ' + app_inf);
-        return;
+        return -1;
     }
 
+    //  Verify target subdir/link exists.
     infroot = path.join(app_inf, 'tibet');
     if (!sh.test('-e', infroot)) {
         this.warn('Application not frozen.');
-        return;
+        return 0;
     }
 
+    //  If it's a link we're in a thawed state already.
+    if (sh.test('-L', infroot)) {
+        this.info('Project library resources already thawed.');
+        return 0;
+    }
+
+    //  Exists and not a link...need force to remove it...
     if (!this.options.force) {
         this.warn('Use --force to confirm destruction of ~app_inf/tibet.');
         return 1;
@@ -115,6 +128,21 @@ Cmd.prototype.execute = function() {
     if (err) {
         this.error('Error removing target directory: ' + err);
         return 1;
+    }
+
+    //  Replace link to library resources common to all projects.
+    lnflags = '-s';
+    if (this.options.force) {
+        lnflags += 'f';
+    }
+    this.log('relinking development library resources...');
+    sh.ln(lnflags, path.join(
+        CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
+        path.join(
+        CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
+    lnerr = sh.error();
+    if (lnerr) {
+        this.error('Error relinking library resources: ' + lnerr);
     }
 
     this.log('updating embedded lib_root references...');
@@ -146,6 +174,8 @@ Cmd.prototype.execute = function() {
     CLI.beautify(JSON.stringify(json)).to(file);
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
+
+    return 0;
 };
 
 module.exports = Cmd;

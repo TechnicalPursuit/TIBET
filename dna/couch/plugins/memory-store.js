@@ -12,43 +12,17 @@
     'use strict';
 
     /**
-     * Creates an empty Express MemoryStore instance for use in temporary
+     * Creates an empty memory-based store instance for use in temporary
      * session management. Not intended for production use!
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var app,
-            logger,
-            MemoryStore,
-            session;
+        var sessionstore;
 
-        //  ---
-        //  Config Check
-        //  ---
+        sessionstore = require('sessionstore');
 
-        app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
-
-        logger.debug('Integrating TDS session store (memory).');
-
-        //  ---
-        //  Requires
-        //  ---
-
-        session = require('express-session');
-
-        //  ---
-        //  Initialization
-        //  ---
-
-        MemoryStore = session.MemoryStore;
-
-        return new MemoryStore();
+        return sessionstore.createSessionStore();
     };
 
 }(this));

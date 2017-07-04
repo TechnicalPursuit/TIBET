@@ -16,8 +16,6 @@
  *     localization, which causes major recursion problems.
  */
 
-/* JSHint checking */
-
 /* global Components:false
 */
 
@@ -81,7 +79,6 @@ TP.hc(
 
                         retMsg.push('Security state: ');
 
-                        /* jshint bitwise:false */
                         //  Check security state flags
                         if ((securityInfo.securityState &
                             compInf.nsIWebProgressListener.STATE_IS_SECURE) ===
@@ -96,7 +93,6 @@ TP.hc(
                         compInf.nsIWebProgressListener.STATE_IS_BROKEN) {
                             retMsg.push('unknown\n');
                         }
-                        /* jshint bitwise:true */
 
                         retMsg.push('\tSecurity description: ',
                                     securityInfo.shortSecurityDescription,
@@ -229,8 +225,7 @@ TP.hc(
          * @exception TP.sig.HTTPHeaderException
          * @exception TP.sig.HTTPSendException
          * @throws Error Various HTTP-related errors.
-         * @returns {XMLHttpRequest} The result object. On success this object's
-         *     status property will be TP.core.HTTP.OK.
+         * @returns {TP.sig.Response} The response object for the request used.
          */
 
         var request,
@@ -253,19 +248,19 @@ TP.hc(
 
         //  ensure we've got a default request object to avoid problems
         //  below
-        request = TP.ifInvalid(aRequest, TP.request());
+        request = TP.request(aRequest);
 
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
         if (TP.isEmpty(url)) {
-            return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
-                                request);
+            TP.httpError(targetUrl, 'TP.sig.InvalidURI', request);
+            return;
         }
 
         if (!TP.isURIString(url)) {
-            return TP.httpError(url, 'TP.sig.InvalidParameter',
-                                request);
+            TP.httpError(url, 'TP.sig.InvalidParameter', request);
+            return;
         }
 
         //  expand the url as needed using any query data in the request.
@@ -310,7 +305,7 @@ TP.hc(
         //  set up the actual request
         try {
             httpObj = TP.httpConstruct(url);
-            request.atPut('xhr', httpObj);
+            request.atPut('commObj', httpObj);
 
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
@@ -328,8 +323,13 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPException', request);
+            return;
+        }
+
+        if (TP.isValid(request.at('withCredentials')) &&
+            'withCredentials' in httpObj) {
+            httpObj.withCredentials = request.at('withCredentials');
         }
 
         //  configure headers based on URI and header collection
@@ -339,8 +339,8 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPHeaderException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPHeaderException', request);
+            return;
         }
 
         //  configure for async processing as needed
@@ -457,8 +457,8 @@ TP.hc(
             request.atPut('message', 'HTTP request failed: ' +
                                         TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPSendException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPSendException', request);
+            return;
         }
 
         //  NOTE:   appears to be a Moz bug here when the connection
@@ -470,11 +470,11 @@ TP.hc(
                                     'connection. Is the URI a valid ' +
                                     'target?');
 
-            return TP.httpError(targetUrl, 'HTTPException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPException', request);
+            return;
         }
 
-        return httpObj;
+        return request.getResponse();
     },
     'trident',
     function(targetUrl, aRequest) {
@@ -494,8 +494,7 @@ TP.hc(
          * @exception TP.sig.HTTPException
          * @exception TP.sig.HTTPHeaderException
          * @exception TP.sig.HTTPSendException
-         * @returns {XMLHttpRequest} The result object. On success this object's
-         *     status property will be TP.core.HTTP.OK.
+         * @returns {TP.sig.Response} The response object for the request used.
          */
 
         var request,
@@ -516,19 +515,19 @@ TP.hc(
 
         //  ensure we've got a default request object to avoid problems
         //  below
-        request = TP.ifInvalid(aRequest, TP.request());
+        request = TP.request(aRequest);
 
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
         if (TP.isEmpty(url)) {
-            return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
-                                request);
+            TP.httpError(targetUrl, 'TP.sig.InvalidURI', request);
+            return;
         }
 
         if (!TP.isURIString(url)) {
-            return TP.httpError(url, 'TP.sig.InvalidParameter',
-                                request);
+            TP.httpError(url, 'TP.sig.InvalidParameter', request);
+            return;
         }
 
         //  expand the url as needed using any query data in the request.
@@ -573,7 +572,7 @@ TP.hc(
         //  set up the actual request
         try {
             httpObj = TP.httpConstruct(url);
-            request.atPut('xhr', httpObj);
+            request.atPut('commObj', httpObj);
 
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
@@ -591,8 +590,13 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPException', request);
+            return;
+        }
+
+        if (TP.isValid(request.at('withCredentials')) &&
+            'withCredentials' in httpObj) {
+            httpObj.withCredentials = request.at('withCredentials');
         }
 
         //  configure headers based on URI and header collection
@@ -602,8 +606,8 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPHeaderException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPHeaderException', request);
+            return;
         }
 
         //  configure for async processing as needed
@@ -690,11 +694,11 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', 'HTTP request failed: ' + TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPSendException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPSendException', request);
+            return;
         }
 
-        return httpObj;
+        return request.getResponse();
     },
     'webkit',
     function(targetUrl, aRequest) {
@@ -714,8 +718,7 @@ TP.hc(
          * @exception TP.sig.HTTPException
          * @exception TP.sig.HTTPHeaderException
          * @exception TP.sig.HTTPSendException
-         * @returns {XMLHttpRequest} The result object. On success this object's
-         *     status property will be TP.core.HTTP.OK.
+         * @returns {TP.sig.Response} The response object for the request used.
          */
 
         var request,
@@ -736,19 +739,19 @@ TP.hc(
 
         //  ensure we've got a default request object to avoid problems
         //  below
-        request = TP.ifInvalid(aRequest, TP.request());
+        request = TP.request(aRequest);
 
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
         if (TP.isEmpty(url)) {
-            return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
-                                request);
+            TP.httpError(targetUrl, 'TP.sig.InvalidURI', request);
+            return;
         }
 
         if (!TP.isURIString(url)) {
-            return TP.httpError(url, 'TP.sig.InvalidParameter',
-                                request);
+            TP.httpError(url, 'TP.sig.InvalidParameter', request);
+            return;
         }
 
         //  On Webkit, if we launched over HTTP and do *not* have CORS support,
@@ -761,8 +764,8 @@ TP.hc(
             request.atPut('message', 'Permission not available to ' +
                                         'make cross-domain HTTP call');
 
-            return TP.httpError(targetUrl, 'TP.sig.PrivilegeViolation',
-                                request);
+            TP.httpError(targetUrl, 'TP.sig.PrivilegeViolation', request);
+            return;
         }
 
         //  expand the url as needed using any query data in the request.
@@ -807,7 +810,7 @@ TP.hc(
         //  set up the actual request
         try {
             httpObj = TP.httpConstruct(url);
-            request.atPut('xhr', httpObj);
+            request.atPut('commObj', httpObj);
 
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
@@ -825,8 +828,13 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPException', request);
+            return;
+        }
+
+        if (TP.isValid(request.at('withCredentials')) &&
+            'withCredentials' in httpObj) {
+            httpObj.withCredentials = request.at('withCredentials');
         }
 
         //  configure headers based on URI and header collection
@@ -836,8 +844,8 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPHeaderException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPHeaderException', request);
+            return;
         }
 
         //  configure for async processing as needed
@@ -919,11 +927,11 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', 'HTTP request failed: ' + TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPSendException',
-                                request);
+            TP.httpError(targetUrl, 'HTTPSendException', request);
+            return;
         }
 
-        return httpObj;
+        return request.getResponse();
     }
 ));
 

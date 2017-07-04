@@ -2,7 +2,7 @@
 
 _tibet_complete() {
   local completions
-  completions="$(tibet --complete "$words")"
+  completions="$(tibet --completion "$words")"
   reply=( "${(ps:\n:)completions}" )
 }
 

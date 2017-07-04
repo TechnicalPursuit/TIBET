@@ -72,7 +72,11 @@ function() {
             //  Register these for our test - we probably aren't running the
             //  German locale.
             TP.core.DELocale.registerStrings(
-                    {false: 'falsch', Hello: 'Hallo', yes: 'ja'});
+                {
+                    false: 'falsch',
+                    Hello: 'Hallo',
+                    yes: 'ja'
+                });
 
             //  ---
 
@@ -147,7 +151,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -311,7 +315,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -380,7 +384,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -427,7 +431,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var elem;
@@ -613,7 +617,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var textField,
                     textArea,
@@ -633,15 +637,15 @@ function() {
 
                 textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textField.clearValue();
                     }).
                     sendKeys('jones', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textField.get('value'),
@@ -652,15 +656,15 @@ function() {
 
                 textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textArea.clearValue();
                     }).
                     sendKeys(TP.str(TP.dc()), textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),
@@ -672,11 +676,11 @@ function() {
                 selectSingle = TP.byId('select_single', windowContext);
                 optionToSelect = selectSingle.getValueElements().at(1);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(optionToSelect).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             selectSingle.get('value'),
@@ -688,11 +692,11 @@ function() {
                 selectMultiple = TP.byId('select_multiple', windowContext);
                 optionToSelect = selectMultiple.getValueElements().at(1);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(optionToSelect).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             selectMultiple.get('value'),
@@ -707,11 +711,11 @@ function() {
                 inputRadio2 = TP.byId('input_radio_2', windowContext);
                 test.assert.isElement(inputRadio2);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputRadio2).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputRadio2.getValue(),
@@ -723,11 +727,11 @@ function() {
                 inputRadio3 = TP.byId('input_radio_3', windowContext);
                 test.assert.isElement(inputRadio3);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputRadio3).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputRadio3.getValue(),
@@ -743,11 +747,11 @@ function() {
                 inputCheckbox2 = TP.byId('input_checkbox_2', windowContext);
                 test.assert.isElement(inputCheckbox2);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputCheckbox2).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputCheckbox2.getValue(),
@@ -759,11 +763,11 @@ function() {
                 inputCheckbox3 = TP.byId('input_checkbox_3', windowContext);
                 test.assert.isElement(inputCheckbox3);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputCheckbox3).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             inputCheckbox3.getValue(),
@@ -786,7 +790,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var textField,
                     textArea;
@@ -795,15 +799,15 @@ function() {
 
                 textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textField.clearValue();
                     }).
                     sendKeys('foo', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textField.get('value'),
@@ -814,15 +818,15 @@ function() {
 
                 textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textArea.clearValue();
                     }).
                     sendKeys('bill', textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),
@@ -843,7 +847,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function() {
                 var textField,
                     textArea;
@@ -852,15 +856,15 @@ function() {
 
                 textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textField.clearValue();
                     }).
                     sendKeys('Bill', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textField.get('value'),
@@ -871,15 +875,15 @@ function() {
 
                 textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textArea.clearValue();
                     }).
                     sendKeys('foo,bar,baz', textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
-                    perform();
+                    run();
 
-                test.then(
+                test.chain(
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),

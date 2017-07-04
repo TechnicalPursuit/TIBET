@@ -65,10 +65,14 @@ function() {
 
     //  Introduce type method
     animalType.Type.defineMethod('breathes',
-                                    function() {return true; });
+                                    function() {
+                                        return true;
+                                    });
     //  Introduce type method
     animalType.Type.defineMethod('makesNoise',
-                                    function() {return false; });
+                                    function() {
+                                        return false;
+                                    });
 
     //  Introduce instance attribute
     animalType.Inst.defineAttribute('lifeTicks');
@@ -79,9 +83,15 @@ function() {
     });
 
     //  Introduce instance method
-    animalType.Inst.defineMethod('generateNoise', function() {return ''; });
+    animalType.Inst.defineMethod('generateNoise',
+                                    function() {
+                                        return '';
+                                    });
     //  Introduce instance method
-    animalType.Inst.defineMethod('die', function() {return '10 years'; });
+    animalType.Inst.defineMethod('die',
+                                    function() {
+                                        return '10 years';
+                                    });
 
 
     //  --- Domesticated object (abstract)
@@ -91,11 +101,15 @@ function() {
 
     //  Introduce type method
     domesticatedType.Type.defineMethod('needsLeash',
-                                        function() {return false; });
+                                        function() {
+                                            return false;
+                                        });
 
     //  Overrides type method
     domesticatedType.Type.defineMethod('makesNoise',
-                                        function() {return true; });
+                                        function() {
+                                            return true;
+                                        });
 
     //  Introduce instance attribute
     domesticatedType.Inst.defineAttribute('petName');
@@ -131,17 +145,26 @@ function() {
 
     //  Introduce type method
     dogType.Type.defineMethod('catChaseProbability',
-                                function() {return 'high'; });
+                                function() {
+                                    return 'high';
+                                });
     //  Override type method
     dogType.Type.defineMethod('needsLeash',
-                                function() {return true; });
+                                function() {
+                                    return true;
+                                });
 
     //  Override instance method
     dogType.Inst.defineMethod('generateNoise',
-                                function() {return this.bark(); });
+                                function() {
+                                    return this.bark();
+                                });
 
     //  Introduce instance method
-    dogType.Inst.defineMethod('bark', function() {return 'ruff ruff'; });
+    dogType.Inst.defineMethod('bark',
+                                function() {
+                                    return 'ruff ruff';
+                                });
 
     //  ---
 
@@ -194,7 +217,9 @@ function() {
     TP.test.Circle.Inst.defineAttribute('doesDiffer', true);
 
     TP.test.Circle.Inst.defineMethod('area',
-            function() {return Math.PI * this.radius * this.radius; });
+            function() {
+                return Math.PI * this.radius * this.radius;
+            });
 
     //  Satisfies 'equals' from TP.test.Equality
     TP.test.Circle.Inst.defineMethod('equals', function() {
@@ -376,7 +401,9 @@ function() {
 
         var typeName;
 
-        typeName = function() {return; }.getTypeName();
+        typeName = function() {
+            return;
+        }.getTypeName();
 
         test.assert.isEqualTo(
             typeName,
@@ -546,7 +573,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = Object;
 
         test.assert.isIdenticalTo(
@@ -700,7 +729,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = 'Object';
 
         test.assert.isEqualTo(
@@ -844,7 +875,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = TP.ac(Object);
 
         test.assert.isEqualTo(
@@ -1001,7 +1034,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = TP.ac('Object');
 
         test.assert.isEqualTo(
@@ -1260,7 +1295,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1272,7 +1309,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1543,7 +1582,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1555,7 +1596,9 @@ function() {
 
         //  ---
 
-        obj = function() {return true; };
+        obj = function() {
+            return true;
+        };
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -2251,7 +2294,11 @@ function() {
         //  Type side method - inherited from super-super-type and locally
         //  overridden
         obj = TP.test.Dog;
-        obj.defineMethod('breathes', function() {return 'always'; });
+        obj.defineMethod(
+            'breathes',
+            function() {
+                return 'always';
+            });
 
         propName = 'breathes';
         correctVal = TP.LOCAL;
@@ -2266,7 +2313,11 @@ function() {
 
         //  Type side method - inherited from super-type and locally overridden
         obj = TP.test.Dog;
-        obj.defineMethod('needsLeash', function() {return true; });
+        obj.defineMethod(
+            'needsLeash',
+            function() {
+                return true;
+            });
 
         propName = 'needsLeash';
         correctVal = TP.LOCAL;
@@ -2282,7 +2333,9 @@ function() {
         //  Type side method - introduced on type and locally overridden
         obj = TP.test.Dog;
         obj.defineMethod('chaseCatProbability',
-                function() {return this.ifInterested(); });
+                function() {
+                    return this.ifInterested();
+                });
 
         propName = 'chaseCatProbability';
         correctVal = TP.LOCAL;
@@ -2297,7 +2350,10 @@ function() {
 
         //  Local method - introduced on just this object
         obj = TP.test.Dog;
-        obj.defineMethod('dance', function() {return 'Dogtrot'; });
+        obj.defineMethod('dance',
+                function() {
+                    return 'Dogtrot';
+                });
 
         propName = 'dance';
         correctVal = TP.LOCAL;
@@ -2324,7 +2380,11 @@ function() {
         //  Instance side method - inherited from super-super-type and locally
         //  overridden
         obj = TP.test.Dog.construct();
-        obj.defineMethod('die', function() {return 'never'; });
+        obj.defineMethod(
+            'die',
+            function() {
+                return 'never';
+            });
 
         propName = 'die';
         correctVal = TP.LOCAL;
@@ -2360,7 +2420,11 @@ function() {
 
         //  Instance side method - introduced on type and locally overridden
         obj = TP.test.Dog.construct();
-        obj.defineMethod('bark', function() {return 'rooo rooo'; });
+        obj.defineMethod(
+            'bark',
+            function() {
+                return 'rooo rooo';
+            });
 
         propName = 'bark';
         correctVal = TP.LOCAL;
@@ -2375,7 +2439,11 @@ function() {
 
         //  Local method - introduced on just this object
         obj = TP.test.Dog.construct();
-        obj.defineMethod('dance', function() {return 'Foxtrot'; });
+        obj.defineMethod(
+            'dance',
+            function() {
+                return 'Foxtrot';
+            });
 
         propName = 'dance';
         correctVal = TP.LOCAL;
@@ -2549,13 +2617,18 @@ function() {
         //  Make sure and stub out some test methods to avoid changing real
         //  methods on built-in objects while we're running tests.
         TP.FunctionProto.defineMethod('test7TypeMethod',
-                                        function() {return true; });
+                                        function() {
+                                            return true;
+                                        });
 
         //  ---
 
         //  Type side method - inherited from super-type and locally overridden
         obj = Object;
-        obj.defineMethod('test7TypeMethod', function() {return false; });
+        obj.defineMethod('test7TypeMethod',
+                            function() {
+                                return false;
+                            });
 
         propName = 'test7TypeMethod';
         correctVal = TP.OVERRIDDEN;
@@ -2568,7 +2641,10 @@ function() {
 
         //  Type side method - inherited from super-type and locally overridden
         obj = Array;
-        obj.defineMethod('test7TypeMethod', function() {return false; });
+        obj.defineMethod('test7TypeMethod',
+                            function() {
+                                return false;
+                            });
 
         propName = 'test7TypeMethod';
         correctVal = TP.OVERRIDDEN;
@@ -2588,12 +2664,16 @@ function() {
         //  Make sure and stub out some test methods to avoid changing real
         //  methods on built-in objects while we're running tests.
         Object.Type.defineMethod('test7TypeMethod2',
-                                    function() {return true; });
+                                    function() {
+                                        return true;
+                                    });
 
         //  Type side method - introduced on type and locally overridden
         obj = Object;
         obj.defineMethod('test7TypeMethod2',
-                function() {return this.ifInterested(); });
+                function() {
+                    return this.ifInterested();
+                });
 
         propName = 'test7TypeMethod2';
         correctVal = TP.LOCAL;
@@ -2608,12 +2688,17 @@ function() {
 
         //  Make sure and stub out some test methods to avoid changing real
         //  methods on built-in objects while we're running tests.
-        Array.Type.defineMethod('test7TypeMethod2', function() {return true; });
+        Array.Type.defineMethod('test7TypeMethod2',
+                                function() {
+                                    return true;
+                                });
 
         //  Type side method - introduced on type and locally overridden
         obj = Array;
         obj.defineMethod('test7TypeMethod2',
-                function() {return this.ifInterested(); });
+                function() {
+                    return this.ifInterested();
+                });
 
         propName = 'test7TypeMethod2';
         correctVal = TP.LOCAL;
@@ -2628,7 +2713,10 @@ function() {
 
         //  Local method - introduced on just this object
         obj = Object;
-        obj.defineMethod('test7LocalMethod', function() {return true; });
+        obj.defineMethod('test7LocalMethod',
+                            function() {
+                                return true;
+                            });
 
         propName = 'test7LocalMethod';
         correctVal = TP.LOCAL;
@@ -2643,7 +2731,10 @@ function() {
 
         //  Local method - introduced on just this object
         obj = Array;
-        obj.defineMethod('test7LocalMethod', function() {return true; });
+        obj.defineMethod('test7LocalMethod',
+                            function() {
+                                return true;
+                            });
 
         propName = 'test7LocalMethod';
         correctVal = TP.LOCAL;
@@ -2669,7 +2760,10 @@ function() {
 
         //  Instance side method - introduced on type and locally overridden
         obj = [];
-        obj.defineMethod('unshift', function() {return 'unshiften'; });
+        obj.defineMethod('unshift',
+                            function() {
+                                return 'unshiften';
+                            });
 
         propName = 'unshift';
         correctVal = TP.LOCAL;
@@ -2684,7 +2778,10 @@ function() {
 
         //  Local method - introduced on just this object
         obj = [];
-        obj.defineMethod('doThis', function() {return 'doneIt'; });
+        obj.defineMethod('doThis',
+                            function() {
+                                return 'doneIt';
+                            });
 
         propName = 'doThis';
         correctVal = TP.LOCAL;
@@ -3387,7 +3484,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
 
@@ -3405,7 +3502,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3422,7 +3519,7 @@ function() {
 
         //  scope: INTRODUCED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_introduced';
+        filter = TP.SLOT_FILTERS.known_introduced;
 
         keys = obj.getInterface(filter);
         val = testIntroducedProperties;
@@ -3439,7 +3536,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3456,7 +3553,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -3573,7 +3670,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
 
@@ -3591,7 +3688,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3608,7 +3705,7 @@ function() {
 
         //  scope: INTRODUCED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_introduced';
+        filter = TP.SLOT_FILTERS.known_introduced;
 
         keys = obj.getInterface(filter);
         val = testIntroducedProperties;
@@ -3625,7 +3722,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3642,7 +3739,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -3751,7 +3848,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties.concat(
@@ -3770,7 +3867,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3787,7 +3884,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3804,7 +3901,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -3903,7 +4000,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
         val = nonLocalProperties.concat(testLocalProperties);
@@ -3920,7 +4017,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3937,7 +4034,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3954,7 +4051,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -4288,8 +4385,11 @@ function() {
 
         //  ---
 
-        TP.core.Node.Type.defineMethod('testTypeMethod1',
-                                        function() {return true; });
+        TP.core.Node.Type.defineMethod(
+            'testTypeMethod1',
+            function() {
+                return true;
+            });
         obj = TP.core.Node.testTypeMethod1;
 
         val = obj[TP.OWNER];
@@ -4324,8 +4424,11 @@ function() {
 
         //  ---
 
-        TP.core.Node.defineMethod('testTypeLocalMethod1',
-                                        function() {return true; });
+        TP.core.Node.defineMethod(
+            'testTypeLocalMethod1',
+            function() {
+                return true;
+            });
         obj = TP.core.Node.testTypeLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4372,8 +4475,11 @@ function() {
 
         //  ---
 
-        TP.core.Point.Inst.defineMethod('testInstMethod1',
-                                        function() {return true; });
+        TP.core.Point.Inst.defineMethod(
+            'testInstMethod1',
+            function() {
+                return true;
+            });
         obj = TP.core.Point.getInstPrototype().testInstMethod1;
 
         val = obj[TP.OWNER];
@@ -4411,7 +4517,9 @@ function() {
         inst = TP.core.Point.construct(20, 30);
 
         inst.defineMethod('testLocalMethod1',
-                                        function() {return true; });
+                            function() {
+                                return true;
+                            });
         obj = inst.testLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4459,7 +4567,9 @@ function() {
         //  ---
 
         Array.Type.defineMethod('testTypeMethod1',
-                                        function() {return true; });
+                                function() {
+                                    return true;
+                                });
         obj = Array.testTypeMethod1;
 
         val = obj[TP.OWNER];
@@ -4495,7 +4605,9 @@ function() {
         //  ---
 
         Array.defineMethod('testTypeLocalMethod1',
-                                        function() {return true; });
+                            function() {
+                                return true;
+                            });
         obj = Array.testTypeLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4533,8 +4645,11 @@ function() {
         //  When we want a method to show up on all *instances* of Functions, we
         //  message TP.FunctionProto directly.
 
-        TP.FunctionProto.defineMethod('testInstMethod1',
-                                        function() {return true; });
+        TP.FunctionProto.defineMethod(
+            'testInstMethod1',
+            function() {
+                return true;
+            });
         obj = TP.FunctionProto.testInstMethod1;
 
         val = obj[TP.OWNER];
@@ -4572,10 +4687,15 @@ function() {
         //  When we want a method to show up on a *particular* instance of a
         //  Function, we message it directly.
 
-        inst = function() {return false; };
+        inst = function() {
+            return false;
+        };
 
-        inst.defineMethod('testLocalMethod1',
-                                function() {return true; });
+        inst.defineMethod(
+            'testLocalMethod1',
+            function() {
+                return true;
+            });
         obj = inst.testLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4622,8 +4742,11 @@ function() {
 
         //  ---
 
-        Array.Inst.defineMethod('testInstMethod1',
-                                        function() {return true; });
+        Array.Inst.defineMethod(
+            'testInstMethod1',
+            function() {
+                return true;
+            });
         obj = Array.getInstPrototype().testInstMethod1;
 
         val = obj[TP.OWNER];
@@ -4661,7 +4784,9 @@ function() {
         inst = TP.ac('hi', 'there');
 
         inst.defineMethod('testInstLocalMethod1',
-                                        function() {return true; });
+                            function() {
+                                return true;
+                            });
         obj = inst.testInstLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4967,7 +5092,11 @@ function() {
         //  ---
 
         //  Now we add an implementation of 'equals' to TP.test.Triangle
-        TP.test.Triangle.Inst.defineMethod('equals', function() {return true; });
+        TP.test.Triangle.Inst.defineMethod(
+            'equals',
+            function() {
+                return true;
+            });
 
         //  Test again. Because we now supply an implementation of 'equals' the
         //  slot should return a method object.
@@ -5093,7 +5222,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Square.Inst.defineMethod('smaller', function() {});
+        TP.test.Square.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  If an instance is made at this point, there will be no
         //  implementation for 'getRgb' since it is conflicted between
@@ -5153,7 +5286,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Rectangle.Inst.defineMethod('smaller', function() {});
+        TP.test.Rectangle.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  If an instance is made at this point, there will be no
         //  implementation for 'getRgb' since it is conflicted between
@@ -5244,7 +5381,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Octogon.Inst.defineMethod('smaller', function() {});
+        TP.test.Octogon.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  If an instance is made at this point, there will be no
         //  implementation for 'getRgb' since it is conflicted between
@@ -5310,7 +5451,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Hexagon.Inst.defineMethod('smaller', function() {});
+        TP.test.Hexagon.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  This is TP.test.Hexagon's own implementation of 'getRgb'
         TP.test.Hexagon.Inst.defineMethod('getRgb',
@@ -5422,7 +5567,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Pentagon.Inst.defineMethod('smaller', function() {});
+        TP.test.Pentagon.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  This is TP.test.Pentagon's own implementation of 'getRgb'
         TP.test.Pentagon.Inst.defineMethod('getRgb',
@@ -5531,7 +5680,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Heptagon.Inst.defineMethod('smaller', function() {});
+        TP.test.Heptagon.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  If an instance is made at this point, there will be no
         //  implementation for 'getRgb' since it is conflicted between
@@ -5606,7 +5759,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Diamond.Inst.defineMethod('smaller', function() {});
+        TP.test.Diamond.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  Auto resolution will automatically resolve any conflicts at this
         //  point. This should've resolved the conflict in favor of the
@@ -5699,7 +5856,11 @@ function() {
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.TP.test.DimensionedRectangle.Inst.defineMethod('smaller', function() {});
+        TP.test.TP.test.DimensionedRectangle.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         obj = TP.test.TP.test.DimensionedRectangle.construct();
 
@@ -5741,15 +5902,21 @@ function() {
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.DimensionedSquare.Inst.defineMethod('smaller', function() {});
+        TP.test.DimensionedSquare.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  Define an 'equals' method on it - calling 'up' to the traited type
-        TP.test.DimensionedSquare.Inst.defineMethod('equals', function() {
+        TP.test.DimensionedSquare.Inst.defineMethod(
+            'equals',
+            function() {
 
-            this.callNextMethod();
+                this.callNextMethod();
 
-            dimensionedSquareEqualsCount = 1;
-        });
+                dimensionedSquareEqualsCount = 1;
+            });
 
         obj = TP.test.DimensionedSquare.construct();
 
@@ -5809,7 +5976,11 @@ function() {
                                             'equalsCircle');
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.DimensionedCircle.Inst.defineMethod('smaller', function() {});
+        TP.test.DimensionedCircle.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  Define an 'equals' method on it - calling 'up' to the traited type
         TP.test.DimensionedCircle.Inst.defineMethod('equalsCircle', function() {
@@ -5887,7 +6058,11 @@ function() {
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.DimensionedTriangle.Inst.defineMethod('smaller', function() {});
+        TP.test.DimensionedTriangle.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  Define an 'equals' method on it - calling 'up' to the traited type
         TP.test.DimensionedTriangle.Inst.resolveTrait('equals', function() {
@@ -5948,7 +6123,11 @@ function() {
                 TP.test.AnotherMagnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.DimensionedQuadrangle.Inst.defineMethod('smaller', function() {});
+        TP.test.DimensionedQuadrangle.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  Define an 'equals' method on it - calling 'up' to the traited type
         TP.test.DimensionedQuadrangle.Inst.defineMethod('equals', function() {
@@ -6036,7 +6215,11 @@ function() {
         TP.test.Rhombus.addTraits(TP.test.Magnitude, TP.test.Color);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Rhombus.Inst.defineMethod('smaller', function() {});
+        TP.test.Rhombus.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         obj = TP.test.Rhombus.construct();
 
@@ -6147,7 +6330,11 @@ function() {
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Nonagon.Inst.defineMethod('smaller', function() {});
+        TP.test.Nonagon.Inst.defineMethod(
+            'smaller',
+            function() {
+                //  empty
+            });
 
         //  If an instance is made at this point, there will be no
         //  implementation for 'getRgb' since it is conflicted between

@@ -4,8 +4,11 @@
     <div class="content"/>
 
     <div class="footer">
-        <div class="circle" on:click="Toggle">
-            <span class="icon" title="Search">&#x2206;</span>
+        <div class="trigger circle" on:click="Toggle">
+            <span class="icon">
+                &#x2206;
+                <xctrls:hint>Search</xctrls:hint>
+            </span>
         </div>
         <div class="fieldwrap">
             <input type="text" id="searchPanelInput" placeholder="Enter your search query here"/>

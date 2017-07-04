@@ -25,7 +25,7 @@
  *     types which want to use common process/job status functionality.
  * @description The most prevalent consumers of TP.core.JobStatus are
  *     TP.core.Job, TP.core.JobGroup, and TP.core.WorkflowSignal (which provides
- *     the common supertype for TP.core.Requests and TP.core.Responses). By
+ *     the common supertype for TP.sig.Requests and TP.sig.Responses). By
  *     traiting in this type those types are able to work with a common set of
  *     job control operations that help define or query job status.
  */
@@ -48,63 +48,6 @@ TP.core.JobStatus.Inst.defineAttribute('faultInfo');
 
 TP.core.JobStatus.Inst.defineAttribute('statusCode');
 TP.core.JobStatus.Inst.defineAttribute('statusText');
-
-//  ------------------------------------------------------------------------
-
-TP.core.JobStatus.Inst.defineMethod('checkFaultArguments',
-function(aFaultString, aFaultCode, aFaultInfo) {
-
-    /**
-     * @method checkFaultArguments
-     * @summary Checks the arguments and returns a hash containing updated and
-     *     properly defaulted fault code and fault string values.
-     * @param {String} aFaultString A string description of the fault.
-     * @param {Object|Error} aFaultCode A code providing additional information
-     *     on the reason for the cancellation or failure.
-     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
-     *     additional information about the failure.
-     * @returns {TP.core.Hash} A hash containing 'code' and 'text' keys.
-     */
-
-    var hash,
-
-        info;
-
-    hash = TP.hc();
-
-    info = TP.hc(aFaultInfo);
-    hash.atPut('info', info);
-
-    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
-        hash.atPut('code', TP.ifInvalid(aFaultCode, TP.ERRORED));
-        hash.atPut('text', aFaultString.getMessage());
-        info.atPut('error', aFaultString.getError());
-    } else if (TP.isError(aFaultCode)) {
-        hash.atPut('code', TP.ERRORED);
-        if (TP.isEmpty(aFaultString)) {
-            hash.atPut('text', aFaultCode.message);
-        } else {
-            hash.atPut('text', aFaultString);
-        }
-        info.atPut('error', aFaultCode);
-    } else if (TP.isNumber(aFaultCode)) {
-        hash.atPut('code', aFaultCode);
-        hash.atPut('text', aFaultString);
-    } else if (TP.isString(aFaultCode)) {
-        if (TP.isEmpty(aFaultString)) {
-            hash.atPut('code', TP.FAILED);
-            hash.atPut('text', aFaultCode);
-        } else {
-            hash.atPut('code', aFaultCode);
-            hash.atPut('text', aFaultString);
-        }
-    } else {
-        hash.atPut('code', TP.ifInvalid(aFaultCode, TP.FAILED));
-        hash.atPut('text', aFaultString);
-    }
-
-    return hash;
-});
 
 //  ------------------------------------------------------------------------
 
@@ -431,9 +374,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var hash,
-
-        code,
+    var code,
         text,
         info;
 
@@ -447,14 +388,38 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
-    hash = this.checkFaultArguments(
-                    aFaultString,
-                    TP.ifUndefined(aFaultCode, TP.CANCELLED),
-                    aFaultInfo);
+    //  NB: This logic is duplicated in the 'cancel', 'error' and 'fail' methods
+    //  because of problems with PhantomJS when factoring it into a common
+    //  method.
 
-    code = hash.at('code');
-    text = hash.at('text');
-    info = hash.at('info');
+    info = TP.hc(aFaultInfo);
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        code = TP.ifInvalid(aFaultCode, TP.CANCELLED);
+        text = aFaultString.getMessage();
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
+        code = TP.CANCELLED;
+        if (TP.isEmpty(aFaultString)) {
+            text = aFaultCode.message;
+        } else {
+            text = aFaultString;
+        }
+        info.atPut('error', aFaultCode);
+    } else if (TP.isNumber(aFaultCode)) {
+        code = aFaultCode;
+        text = aFaultString;
+    } else if (TP.isString(aFaultCode)) {
+        if (TP.isEmpty(aFaultString)) {
+            code = TP.CANCELLED;
+            text = aFaultCode;
+        } else {
+            code = aFaultCode;
+            text = aFaultString;
+        }
+    } else {
+        code = TP.ifInvalid(aFaultCode, TP.CANCELLED);
+        text = aFaultString;
+    }
 
     this.set('faultCode', code);
     this.set('faultText', text);
@@ -578,28 +543,54 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var hash,
-
-        code,
+    var code,
         text,
         info;
 
-    //  avoid issues with perhaps calling this more than once
+    //  avoid issues with perhaps calling this more than once...but allow a
+    //  failure that comes in async after the job may believe it finished to
+    //  override a "success" status.
     if (this.isCompleting() || this.didComplete()) {
-        return this;
+        if (!this.isSucceeding() && !this.didSucceed()) {
+            return this;
+        }
     }
 
     this.set('result', undefined);
     this.set('statusCode', TP.ERRORING);
 
-    hash = this.checkFaultArguments(
-                    aFaultString,
-                    TP.ifUndefined(aFaultCode, TP.ERRORED),
-                    aFaultInfo);
+    //  NB: This logic is duplicated in the 'cancel', 'error' and 'fail' methods
+    //  because of problems with PhantomJS when factoring it into a common
+    //  method.
 
-    code = hash.at('code');
-    text = hash.at('text');
-    info = hash.at('info');
+    info = TP.hc(aFaultInfo);
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        code = TP.ifInvalid(aFaultCode, TP.ERRORED);
+        text = aFaultString.getMessage();
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
+        code = TP.ERRORED;
+        if (TP.isEmpty(aFaultString)) {
+            text = aFaultCode.message;
+        } else {
+            text = aFaultString;
+        }
+        info.atPut('error', aFaultCode);
+    } else if (TP.isNumber(aFaultCode)) {
+        code = aFaultCode;
+        text = aFaultString;
+    } else if (TP.isString(aFaultCode)) {
+        if (TP.isEmpty(aFaultString)) {
+            code = TP.ERRORED;
+            text = aFaultCode;
+        } else {
+            code = aFaultCode;
+            text = aFaultString;
+        }
+    } else {
+        code = TP.ifInvalid(aFaultCode, TP.ERRORED);
+        text = aFaultString;
+    }
 
     this.set('faultCode', code);
     this.set('faultText', text);
@@ -646,7 +637,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @method fail
      * @summary Tells the receiver to fail, meaning it failed due to some form
      *     of exception. If the receiver has specific behavior to implement it
-     *     should override the failJob() method invoked as part of this method's
+     *     should override the failJob method invoked as part of this method's
      *     operation.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
@@ -656,40 +647,52 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var hash,
-
-        code,
+    var code,
         text,
+        info;
 
-        info,
-
-        error;
-
-    //  avoid issues with perhaps calling this more than once
+    //  failure that comes in async after the job may believe it finished to
+    //  override a "success" status.
     if (this.isCompleting() || this.didComplete()) {
-        return this;
+        if (!this.isSucceeding() && !this.didSucceed()) {
+            return this;
+        }
     }
 
     this.set('result', undefined);
     this.set('statusCode', TP.FAILING);
 
-    hash = this.checkFaultArguments(
-                    aFaultString,
-                    TP.ifUndefined(aFaultCode, TP.FAILED),
-                    aFaultInfo);
+    //  NB: This logic is duplicated in the 'cancel', 'error' and 'fail' methods
+    //  because of problems with PhantomJS when factoring it into a common
+    //  method.
 
-    code = hash.at('code');
-    text = hash.at('text');
-    info = hash.at('info');
-
-    if (!TP.isError(error = info.at('error'))) {
-        try {
-            throw new Error();
-        } catch (e) {
-            error = e;
+    info = TP.hc(aFaultInfo);
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        code = TP.ifInvalid(aFaultCode, TP.FAILED);
+        text = aFaultString.getMessage();
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
+        code = TP.FAILED;
+        if (TP.isEmpty(aFaultString)) {
+            text = aFaultCode.message;
+        } else {
+            text = aFaultString;
         }
-
-        info.atPut('error', error);
+        info.atPut('error', aFaultCode);
+    } else if (TP.isNumber(aFaultCode)) {
+        code = aFaultCode;
+        text = aFaultString;
+    } else if (TP.isString(aFaultCode)) {
+        if (TP.isEmpty(aFaultString)) {
+            code = TP.FAILED;
+            text = aFaultCode;
+        } else {
+            code = aFaultCode;
+            text = aFaultString;
+        }
+    } else {
+        code = TP.ifInvalid(aFaultCode, TP.FAILED);
+        text = aFaultString;
     }
 
     this.set('faultCode', code);
@@ -1388,7 +1391,10 @@ function(anObjectArray, aMethodArray, aParamArray) {
         return this.raise('TP.sig.InvalidArray');
     }
 
-    params = TP.ifInvalid(aParamArray, TP.ac());
+    params = aParamArray;
+    if (TP.notValid(params)) {
+        params = TP.ac();
+    }
 
     //  Construct an 'invoker function' that will invoke one method per one
     //  object for each run of the invocation.
@@ -1712,7 +1718,9 @@ function(controlParams) {
 
     //  build a function we can use repeatedly for queueing the work
     thisref = this;
-    this.$timedWork = function() {thisref.$work(); };
+    this.$timedWork = function() {
+        thisref.$work();
+    };
 
     return this;
 });
@@ -1952,12 +1960,10 @@ function() {
             percent = this.iteration / this.limit;
             break;
 
-        /* jshint -W086 */
         case 'function':
         default:
             //  no way to know
             return null;
-        /* jshint +W086 */
     }
 
     //  normalize to something between 0 and 1 so we don't overflow
@@ -2281,7 +2287,7 @@ function() {
     if (TP.isNumber(delay) && delay > 0) {
         //  if we're using requestAnimationFrame, set it up
         if (this.$get('$useRAF')) {
-            timer = window.requestAnimFrame(this.$timedWork);
+            timer = window.requestAnimationFrame(this.$timedWork);
         } else {
             //  do the work when the timeout expires...i.e. a delay is our
             //  first interval so when the delay is over we work immediately and
@@ -2834,7 +2840,7 @@ function() {
 
     //  if we're using requestAnimationFrame, set it up
     if (this.$get('$useRAF')) {
-        timer = window.requestAnimFrame(this.$timedWork);
+        timer = window.requestAnimationFrame(this.$timedWork);
     } else {
         timer = setTimeout(this.$timedWork, next);
     }
@@ -3262,6 +3268,8 @@ function() {
 
         exit = true;
     } finally {
+        /* eslint-disable no-unsafe-finally */
+
         //  if catch block triggered don't bother
         if (exit) {
             return this;
@@ -3296,6 +3304,7 @@ function() {
             //  re-queue via the iterate call for the next interval
             this.$iterate();
         }
+        /* eslint-enable no-unsafe-finally */
     }
 
     return this;

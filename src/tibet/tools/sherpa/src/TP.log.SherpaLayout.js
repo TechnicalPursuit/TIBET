@@ -31,12 +31,25 @@ function(anEntry) {
      * @returns {Object} The formatted output. Can be String, Node, etc.
      */
 
-    var arglist;
+    var arglist,
+        str;
 
-    //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
 
-    return TP.hc('content', arglist.at(0), 'cmdAsIs', false);
+    if (anEntry.isError()) {
+        str = TP.dump(arglist);
+    } else {
+        str = arglist.collect(
+                function(item) {
+                    return TP.str(item);
+                }).join(' ');
+    }
+
+    //  Make sure to convert any embedded markup to entities before generating
+    //  log entry.
+    str = TP.xmlLiteralsToEntities(str);
+
+    return TP.hc('content', str, 'cmdAsIs', false);
 });
 
 //  ----------------------------------------------------------------------------

@@ -8,9 +8,6 @@
             "compact": true
         }
     },
-    "tds": {
-        "port": 1111
-    },
     "cli": {
         "help": {
             "viewer": "man"

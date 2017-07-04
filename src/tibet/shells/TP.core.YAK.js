@@ -268,6 +268,8 @@ function(aRequest) {
         return;
     }
 
+    /* eslint-disable consistent-this */
+
     shell = this;
 
     uis = TP.sig.UserInputSeries.construct();
@@ -410,6 +412,8 @@ function(aRequest) {
 
             return;
         });
+
+    /* eslint-enable consistent-this */
 
     //  now initiate the input series
     uis.fire(shell);
@@ -595,6 +599,8 @@ function(aRequest) {
         return;
     }
 
+    /* eslint-disable consistent-this */
+
     shell = this;
 
     uis = TP.sig.UserInputSeries.construct();
@@ -757,6 +763,8 @@ function(aRequest) {
             return;
         });
 
+    /* eslint-enable consistent-this */
+
     //  now initiate the input series
     uis.fire(shell);
 
@@ -784,6 +792,8 @@ function(aRegistrationNode) {
         yakService,
 
         regFields;
+
+    /* eslint-disable consistent-this */
 
     shell = this;
     uis = TP.sig.UserInputSeries.construct();
@@ -940,6 +950,8 @@ function(aRegistrationNode) {
             return;
         });
 
+    /* eslint-enable consistent-this */
+
     uis.fire(shell);
 
     return this;
@@ -965,6 +977,8 @@ function(aRequest) {
     if (this.isRunning()) {
         return;
     }
+
+    /* eslint-disable consistent-this */
 
     shell = this;
 
@@ -1016,6 +1030,8 @@ function(aRequest) {
                 shell.register(aRequest);
             }
         });
+
+    /* eslint-enable consistent-this */
 
     req.fire(shell);
 

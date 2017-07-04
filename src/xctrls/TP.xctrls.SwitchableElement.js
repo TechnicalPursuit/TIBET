@@ -118,8 +118,21 @@ function(aValue) {
      * @returns {TP.xctrls.switchable} The receiver.
      */
 
-    this.toggleSelectedItem(this.get('selectedItem'),
-                            this.get('itemWithValue', aValue));
+    var oldItem,
+        newItem;
+
+    //  these could be an Array - if it's empty, set it to null
+    oldItem = this.get('selectedItem');
+    if (TP.isArray(oldItem) && TP.isEmpty(oldItem)) {
+        oldItem = null;
+    }
+
+    newItem = this.get('itemWithValue', aValue);
+    if (TP.isArray(newItem) && TP.isEmpty(newItem)) {
+        newItem = null;
+    }
+
+    this.toggleSelectedItem(oldItem, newItem);
 
     return this;
 });
@@ -146,6 +159,8 @@ function(aValue, shouldSignal) {
     var oldValue,
         newValue,
 
+        newItem,
+
         flag;
 
     oldValue = this.getValue();
@@ -154,6 +169,17 @@ function(aValue, shouldSignal) {
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
+    //  If the item that matches the new value is disabled, then bail out.
+    newItem = this.get('itemWithValue', newValue);
+
+    if (TP.notValid(newItem) || TP.isEmpty(newItem)) {
+        return this;
+    }
+
+    if (newItem.isDisabled()) {
         return this;
     }
 

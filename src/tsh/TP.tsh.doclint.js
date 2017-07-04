@@ -142,7 +142,7 @@ function(aRequest) {
 
     //  Context determines whether we care about app, lib, or both. It is always
     //  in effect and defaults to app.
-    context = shell.getArgument(aRequest, 'tsh:context');
+    context = shell.getArgument(aRequest, 'tsh:context', 'app');
     if (TP.isEmpty(context)) {
         if (/^APP/.test(target)) {
             context = 'app';
@@ -204,7 +204,11 @@ function(aRequest) {
 
             lines = func.getCommentLines();
             source = func.getSourceText();
-            error = {file: file, name: name, errors: TP.ac()};
+            error = {
+                file: file,
+                name: name,
+                errors: TP.ac()
+            };
 
             //  Context can be either app, lib, or both. We use that to
             //  determine if a particular component should be checked at a very
@@ -957,7 +961,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('doclint',
     TP.tsh.doclint.Type.getMethod('tshExecute'),
     'Run a lint check on all method comments.',
     ':doclint',

@@ -33,37 +33,74 @@ TP.core.UIElementNode.isAbstract(true);
 //  The map of keys to signals for any keybindings for this type.
 TP.core.UIElementNode.Type.defineAttribute('keybindings');
 
+//  Whether or not resources like style are inlined
+TP.core.UIElementNode.Type.defineAttribute('resourcesInlined');
+
+//  The Array of loaded stylesheet element GIDs
+TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
+
+//  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
+//  bubble outside of themselves. This prevents whole chunks of GUI from being
+//  inadvertently disabled such that they can never be enabled again.
+TP.core.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac('TP.sig.UIDisabled', 'TP.sig.UIEnabled'));
+
+//  Note how these properties are TYPE_LOCAL, by design.
+
 //  The TP.core.UIElementNode that focus is moving to, based on TIBET
 //  calculations.
-TP.core.UIElementNode.Type.defineAttribute('$calculatedFocusingTPElem');
+TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
 
-//  The Element that the system is trying to move the focus to, but which TIBET
-//  will do its best to prevent in favor of the TIBET-calculated element (i.e.
-//  focus/blur events are not cancellable - sigh).
-TP.core.UIElementNode.Type.defineAttribute('$systemFocusingElement');
+//  The Element that the system is trying to move the focus to because we're
+//  manually focusing on an Element, but which TIBET will do its best to prevent
+//  in favor of the TIBET-calculated element (i.e. focus/blur events are not
+//  cancellable - sigh).
+TP.core.UIElementNode.defineAttribute('$manuallyFocusingElement');
+TP.core.UIElementNode.defineAttribute('$manuallyBlurringElement');
+
+//  The currently calculated focus context
+TP.core.UIElementNode.defineAttribute('$calculatedFocusContext');
+
+//  Whether or not focus is shifting because of a mouse click/down/up
+TP.core.UIElementNode.defineAttribute('$focusingViaMouseEvent');
+
+//  The element that was the last activated.
+TP.core.UIElementNode.defineAttribute('$lastActiveElement');
+
+//  Whether or not we're switching focus contexts in an asynchronous fashion.
+TP.core.UIElementNode.defineAttribute('$asyncSwitchingContexts');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('addStylesheetTo',
-function(aDocument) {
+TP.core.UIElementNode.Type.defineMethod('$addStylesheetResource',
+function(aDocument, ourID, sheetElemID, resource, themeName) {
 
     /**
-     * @method addStylesheetTo
-     * @summary Adds the element node's stylesheet to the supplied document. If
-     *     the stylesheet is already present, this method will *not* add another
-     *     instance.
-     * @param {The} aDocument document to add the stylesheet to.
+     * @method $addStylesheetResource
+     * @summary Finds the receiver's stylesheet resource and adds to the
+     *     supplied document. If the stylesheet is already present, this method
+     *     will *not* add another instance.
+     * @param {Document} aDocument Document to add the stylesheet resource to.
+     * @param {String} ourID The unique identifier of the receiver. This is used
+     *     as the stylesheet element ID as well, if a theme was specified but
+     *     the corresponding stylesheet for that theme for the receiver can't be
+     *     found.
+     * @param {String} sheetElemID The ID to use as the stylesheet element ID.
+     * @param {String} resource The resource name. If there is no theme, this
+     *     should be 'style'. Otherwise, it should be the word 'style_' with
+     *     the theme name appended.
+     * @param {String} themeName The name of the theme currently in force for
+     *     this document (i.e. the return value of TP.documentGetTheme).
+     * @returns {Element|null} The newly inserted style element containing the
+     *     stylesheet resource or null if no new style element was added because
+     *     an existing one was found.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
      */
 
-    var ourID,
-        themeName,
-        sheetID,
-
-        resource,
+    var sheetID,
 
         styleURI,
         styleLoc,
@@ -78,34 +115,15 @@ function(aDocument) {
 
         inlinedStyleElem,
         fetchOptions,
-        inlineStyleContent;
+        inlineStyleContent,
+
+        insertedStyleElem;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  We compute an 'id' by taking our *resource* type name and escaping
-    //  it. The resource type name is usually the type name, but can be
-    //  overridden for special types that need to supply a different name
-    //  here for use in resource location computations.
-    ourID = TP.escapeTypeName(this.getResourceTypeName());
-
-    //  Add any theme name we might be using. The presumption is that a theme
-    //  sheet that isn't standalone will @import what it requires.
-
-    //  Note that we try to see if the document already has a theme, which will
-    //  override any application-level them.
-    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
-        themeName = TP.sys.getApplication().getTheme();
-    }
-
-    if (TP.notEmpty(themeName)) {
-        sheetID = ourID + '_' + themeName;
-        resource = 'style_' + themeName;
-    } else {
-        sheetID = ourID;
-        resource = 'style';
-    }
+    sheetID = sheetElemID;
 
     //  First, see if another occurrence of this UI element node (and which
     //  uses this same stylesheet) has already been processed and has placed
@@ -121,8 +139,30 @@ function(aDocument) {
     //  computation here will automatically adjust for theme.
     styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
     if (TP.notValid(styleURI)) {
-        return;
+
+        //  If we were trying to get the theme URI and failed, then try to see
+        //  if the regular 'style' element is available. If so, just return.
+        if (TP.notEmpty(themeName)) {
+
+            sheetID = ourID;
+
+            styleElem = TP.byId(sheetID, aDocument, false);
+            if (TP.isElement(styleElem)) {
+                return;
+            }
+
+            styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
+            if (TP.notValid(styleURI)) {
+                return;
+            }
+        } else {
+
+            //  Otherwise, we were trying the regular 'style' URI and couldn't
+            //  find it.
+            return;
+        }
     }
+
     styleLoc = styleURI.getLocation();
 
     //  Make sure we have a 'head' element and query it for existing 'style'
@@ -165,13 +205,7 @@ function(aDocument) {
 
     //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
-    if (TP.uriIsLibResource(styleLoc)) {
-        inlined = !TP.sys.cfg('boot.teamtibet');
-    } else if (TP.uriIsAppResource(styleLoc)) {
-        inlined = TP.sys.cfg('boot.resourced');
-    } else {
-        inlined = false;
-    }
+    inlined = TP.uriIsInlined(styleLoc);
 
     //  If we're inlined and pointed at LESS files redirect to their CSS
     //  counterpart. Part of inlining is that we serve compiled/cached CSS.
@@ -186,6 +220,9 @@ function(aDocument) {
     if (styleURI.getMIMEType() !== TP.CSS_TEXT_ENCODED) {
         inlined = false;
     }
+
+    //  We track whether our resources are inlined or not.
+    this.set('resourcesInlined', inlined);
 
     if (inlined) {
 
@@ -233,6 +270,8 @@ function(aDocument) {
                                     true);
         }
 
+        insertedStyleElem = inlinedStyleElem;
+
     } else {
 
         //  Otherwise, since it very well may have TIBET-ism (i.e. be a 'TIBET
@@ -243,8 +282,8 @@ function(aDocument) {
                         'tibet:style',
                         TP.w3.Xmlns.TIBET);
 
-        TP.elementSetAttribute(styleElem, 'href', styleLoc);
-        TP.elementSetAttribute(styleElem, 'type', TP.ietf.Mime.TIBET_CSS);
+        TP.elementSetAttribute(styleElem, 'href', styleLoc, true);
+        TP.elementSetAttribute(styleElem, 'type', TP.ietf.Mime.TIBET_CSS, true);
 
         //  Make sure also to set the style element's 'id' attribute, so that
         //  the above 'uniquing' logic will work for future occurrences of this
@@ -269,12 +308,14 @@ function(aDocument) {
         //  already part of an awaken cycle or not. But, because of our check
         //  above to determine whether we already exist, we don't have to worry
         //  about multiple awakenings.
-        TP.nodeInsertBefore(docHead,
-                            styleElem,
-                            insertionPoint,
-                            true);
+        styleElem = TP.nodeInsertBefore(docHead,
+                                        styleElem,
+                                        insertionPoint,
+                                        true);
 
         if (TP.isElement(styleElem)) {
+
+            insertedStyleElem = styleElem;
 
             //  Track the original source from the URI - this is what the author
             //  originally typed and might be a virtual URI. We'd like to track
@@ -286,7 +327,210 @@ function(aDocument) {
         }
     }
 
+    //  Stamp our TIBET type name onto the newly created style element.
+    TP.elementSetAttribute(
+        insertedStyleElem, 'tibet:type', TP.name(this), true);
+
+    return insertedStyleElem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('addStylesheetTo',
+function(aDocument) {
+
+    /**
+     * @method addStylesheetTo
+     * @summary Adds the receiver's stylesheet to the supplied document. If the
+     *     stylesheet is already present, this method will *not* add another
+     *     instance.
+     * @param {Document} aDocument Document to add the stylesheet to.
+     * @exception TP.sig.InvalidDocument Raised when an invalid Document is
+     *     provided to the method.
+     */
+
+    var computeObservationID,
+
+        ourID,
+        themeName,
+
+        themeNewStyleElem,
+        newStyleElem,
+
+        observeID,
+
+        doc,
+
+        styleElemToObserve,
+        inlined;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    computeObservationID = function(aStyleElem) {
+
+        var tagName;
+
+        //  If a 'tibet:style' element is being inserted, then that means that
+        //  we're executing in a non-inlined environment that will allow
+        //  alternate style content (like LESS) to be brought in directly.
+        tagName = TP.elementGetFullName(aStyleElem);
+        if (tagName === 'tibet:style') {
+            //  The *real* stylesheet that will eventually come in when the LESS
+            //  or whatever is finished processing will be the ID with the word
+            //  '_generated' appended to it.
+            return TP.elementGetAttribute(aStyleElem, 'id', true) +
+                    '_generated';
+        }
+
+        return TP.elementGetAttribute(aStyleElem, 'id', true);
+    };
+
+    //  We compute an 'id' by taking our *resource* type name and escaping
+    //  it. The resource type name is usually the type name, but can be
+    //  overridden for special types that need to supply a different name
+    //  here for use in resource location computations.
+    ourID = TP.escapeTypeName(this.getResourceTypeName());
+
+    //  Add any theme name we might be using. The presumption is that a theme
+    //  sheet that isn't standalone will @import what it requires.
+
+    //  Note that we try to see if the document already has a theme, which will
+    //  override any application-level theme.
+    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
+        themeName = TP.sys.getApplication().getTheme();
+    }
+
+    //  Add the core stylesheet for the receiver. Note that we supply ourID for
+    //  both the unique identifier for the receiver and as the element ID to use
+    //  for this stylesheet.
+    newStyleElem = this.$addStylesheetResource(
+                            aDocument, ourID, ourID, 'style', null);
+
+    observeID = null;
+
+    //  If there is a theme, add the corresponding them stylesheet for the
+    //  receiver.
+    if (TP.notEmpty(themeName)) {
+
+        themeNewStyleElem = this.$addStylesheetResource(
+                                aDocument,
+                                ourID,
+                                ourID + '_' + themeName,
+                                'style_' + themeName,
+                                themeName);
+
+        if (TP.isElement(themeNewStyleElem)) {
+            //  if we inserted a new style element for the theme stylesheet, set
+            //  the new style element to be that style element.
+            newStyleElem = themeNewStyleElem;
+        }
+    }
+
+    //  if we inserted a new style element for either the core or theme
+    //  stylesheet, set the observation ID using the style element inserted for
+    //  the core sheet
+    if (TP.isElement(newStyleElem)) {
+        observeID = computeObservationID(newStyleElem);
+    }
+
+    //  If we computed a valid observation ID, then set up the necessary
+    //  observations.
+    if (TP.isValid(observeID)) {
+
+        doc = TP.nodeGetDocument(newStyleElem);
+
+        //  If we can't find the style element that matches the observation ID,
+        //  then we set up a subtree query to notify us when that element is
+        //  created.
+        styleElemToObserve = TP.byId(observeID, doc, false);
+
+        inlined = TP.isTrue(this.get('resourcesInlined'));
+
+        if (!TP.isElement(styleElemToObserve)) {
+
+            //  We register a query that, if any subtree mutations occur under
+            //  the new style element's document element, to notify any
+            //  instances of this type know that the stylesheet (one that they
+            //  probably rely on to render) is available.
+
+            //  Note that this calls our 'mutationAddedFilteredNodes' method
+            //  below with just the nodes that got added or removed.
+            TP.sig.MutationSignalSource.addSubtreeQuery(
+                                                this,
+                                                TP.cpc('#' + observeID),
+                                                doc);
+        } else if (inlined) {
+
+            //  If the resources are inlined, then we notify any existing
+            //  instances of this type that the stylesheet has already been
+            //  loaded (since loading inlined resources is a synchronous
+            //  operation).
+            this.$notifyInstancesThatStylesheetLoaded(
+                                        TP.wrap(styleElemToObserve));
+        } else {
+
+            //  Set up a notification that will let any instances of this type
+            //  know that the stylesheet (one that they probably rely on to
+            //  render) is available.
+            this.$notifyInstancesWhenStylesheetLoaded(
+                                        TP.wrap(styleElemToObserve));
+        }
+    }
+
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('canHandleKey',
+function(aSignal) {
+
+    /**
+     * @method canHandleKey
+     * @summary Whether or not the receiver can be handle the key that
+     *     generated the supplied event.
+     * @param {aSignal} aSignal A signal containing key information or an actual
+     *     key name.
+     * @returns {Boolean} Whether or not the receiver can handle the key.
+     */
+
+    var sigNames,
+
+        keyname,
+
+        len,
+        i;
+
+    sigNames = aSignal.getSignalNames();
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Compute the key name by slicing off everything up through the last
+        //  period ('.'). I.e. the 'TP.sig.'.
+        keyname = sigNames.at(i).slice(sigNames.at(i).lastIndexOf('.') + 1);
+
+        switch (keyname) {
+
+            //  These are the standard keys used for activating.
+
+            case 'DOM_Enter_Down':
+            case 'DOM_Enter_Up':
+
+                return true;
+
+            default:
+                //  Look in the keybindings map. If there's an entry there,
+                //  then we handle the key.
+                if (TP.notEmpty(this.getKeybinding(keyname))) {
+                    return true;
+                }
+        }
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -394,6 +638,66 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('isOpaqueCapturerFor',
+function(anElement, aSignal) {
+
+    /**
+     * @method isOpaqueCapturerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque capturer' for the supplied signal (i.e. it won't let the
+     *     signal 'descend' further into its descendant hierarchy). This means
+     *     that they will handle the signal themselves and not allow targeted
+     *     descendants underneath them to handle it.
+     * @description At this level, the supplied element is checked to see if it
+     *     can handle a particular key signal. If so, it is considered to be an
+     *     opaque capturer.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque_capturing' attribute.
+     * @param {String} aSignalName The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     capture phase for the signal.
+     */
+
+    //  If it's a keyboard signal, we test to see if it can handle the key. If
+    //  so, then this type can be considered an 'opaque capturer' for the
+    //  supplied key signal.
+    if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
+        if (this.canHandleKey(aSignal)) {
+            return true;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('getLoadedStylesheetDocumentGIDs',
+function() {
+
+    /**
+     * @method getLoadedStylesheetDocumentGIDs
+     * @summary Returns an Array of Document global IDs where the 'main'
+     *     stylesheet of this type (either it's core stylesheet or it's themed
+     *     stylesheet if the receiver is executing in a themed environment) is
+     *     currently installed.
+     * @returns {Array} The Array of Document global IDs.
+     */
+
+    var gids;
+
+    gids = this.$get('loadedStylesheetDocumentGIDs');
+
+    if (TP.notValid(gids)) {
+        gids = TP.ac();
+        this.$set('loadedStylesheetDocumentGIDs', gids, false);
+    }
+
+    return gids;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
@@ -434,6 +738,145 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('mutationAddedFilteredNodes',
+function(addedNodes, queryInfo) {
+
+    /**
+     * @method mutationAddedFilteredNodes
+     * @summary Handles when nodes got added to the DOM we're in, filtered by
+     *     the query that we registered with the MutationSignalSource.
+     * @param {Array} addedNodes The Array of nodes that got added to the DOM,
+     *     then filtered by our query.
+     * @param {TP.core.Hash} queryInfo Information that was registered for this
+     *     query when it was originally set up.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var queryStr,
+        queryID,
+
+        len,
+        i,
+
+        addedNodeID;
+
+    //  The query will be a CSS 'ID query' path object.
+    queryStr = queryInfo.at('path').asString();
+
+    //  Slice off the '#'.
+    queryID = queryStr.slice(1);
+
+    //  Iterate over all of the added nodes.
+    len = addedNodes.getSize();
+    for (i = 0; i < len; i++) {
+        if (TP.isElement(addedNodes.at(i))) {
+
+            //  Iterate over all of the added nodes. If the Node is an Element
+            //  and it's ID matches that of the queryID, then set up a
+            //  notification that will let any instances of this type know that
+            //  the stylesheet (one that they probably rely on to render) is
+            //  available.
+            addedNodeID = TP.elementGetAttribute(addedNodes.at(i), 'id', true);
+            if (addedNodeID === queryID) {
+
+                this.$notifyInstancesWhenStylesheetLoaded(
+                                                TP.wrap(addedNodes.at(i)));
+            }
+        }
+    }
+
+    TP.sig.MutationSignalSource.removeSubtreeQuery(this);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('$notifyInstancesThatStylesheetLoaded',
+function(styleTPElem) {
+
+    /**
+     * @method $notifyInstancesThatStylesheetLoaded
+     * @summary Notifies instances of the receiver that the stylesheet that they
+     *     (probably) rely on to render is available.
+     * @param {TP.html.style} styleTPElem The stylesheet element that got
+     *     loaded.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var gids,
+        existingInstances;
+
+    //  Add the Document global ID of the stylesheet Element to our list of
+    //  where the stylesheet has been successfully installed.
+    gids = this.get('loadedStylesheetDocumentGIDs');
+    gids.push(styleTPElem.getDocument().getGlobalID());
+    gids.unique();
+
+    //  Grab all of the existing instances in that document and then iterate
+    //  and notify them.
+    existingInstances = TP.byCSSPath(
+                            this.getQueryPath(true, true),
+                            styleTPElem.getNativeDocument(),
+                            false,
+                            true);
+
+    existingInstances.forEach(
+        function(aTPElem) {
+            aTPElem.stylesheetReady(styleTPElem);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('$notifyInstancesWhenStylesheetLoaded',
+function(styleTPElemToObserve) {
+
+    /**
+     * @method $notifyInstancesWhenStylesheetLoaded
+     * @summary Sets up an observation on the supplied style element that will
+     *     notify instances of the receiver that the stylesheet that they
+     *     (probably) rely on to render is available.
+     * @param {TP.html.style} styleTPElemToObserve The stylesheet element to
+     *     observe for when it is loaded.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var loadedHandler;
+
+    //  Create a loaded handler (bound to the receiver) that will notify all
+    //  instances that the stylesheet has loaded.
+    loadedHandler = function(aSignal) {
+
+        var origin;
+
+        //  Make sure to ignore() the signal once we've been notified.
+        origin = aSignal.getOrigin();
+        loadedHandler.ignore(origin, 'TP.sig.DOMReady');
+
+        //  Make sure we have a real TP.xhtml.style element
+        if (TP.isString(origin)) {
+            origin = TP.bySystemId(origin);
+        }
+
+        //  Notify any existing instances of this type that the stylesheet has
+        //  been loaded.
+        this.$notifyInstancesThatStylesheetLoaded(origin);
+
+    }.bind(this);
+
+    //  Observe TP.sig.DOMReady, which is what an XHTML style element will
+    //  signal when it is loaded, it's style has been parsed and that style has
+    //  been applied.
+    loadedHandler.observe(styleTPElemToObserve, 'TP.sig.DOMReady');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('onblur',
 function(aTargetElem, anEvent) {
 
@@ -448,33 +891,56 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
+    var manuallyBlurringElement,
+
+        evtTargetTPElem,
         focusIDs,
 
-        systemFocuser;
+        manuallyFocusingElement;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  If the 'system focusing element' that we're tracking as the one that the
-    //  system will try to focus is the same as the target element *and it
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "onblur" event handler. The event target is: \n' +
+        TP.gid(aTargetElem));
+    */
+
+    manuallyBlurringElement =
+        TP.core.UIElementNode.get('$manuallyBlurringElement');
+
+    if (TP.isElement(manuallyBlurringElement)) {
+
+        //  Reset this to null for the next pass.
+        TP.core.UIElementNode.set('$manuallyBlurringElement', null);
+
+        return this;
+    }
+
+    //  If the 'manually focusing element' that we're tracking as the one that
+    //  the system will try to focus is the same as the target element *and it
     //  doesn't exist somewhere in our focusing stack* (we might be trying to
     //  focus elements ourselves from our focus stack, which is perfectly ok and
     //  isn't considered to "be the system focusing outside of our control"),
     //  then we prevent any signaling of UI* signals.
+
     //  See the 'onfocus' and other focus calculation machinery methods for more
     //  information.
-    if (TP.isValid(systemFocuser = this.get('$systemFocusingElement'))) {
+    manuallyFocusingElement =
+        TP.core.UIElementNode.get('$manuallyFocusingElement');
 
-        if (systemFocuser === aTargetElem) {
+    if (TP.isValid(manuallyFocusingElement)) {
+
+        if (manuallyFocusingElement === aTargetElem) {
 
             focusIDs = TP.$focus_stack.collect(
                             function(item) {
                                 return item.getLocalID();
                             });
 
-            if (!focusIDs.contains(TP.lid(systemFocuser))) {
+            if (!focusIDs.contains(TP.lid(manuallyFocusingElement))) {
                 return this;
             }
         }
@@ -483,16 +949,15 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  Try to make the event target element not be the focused element.
-    //  Note that this does *not* blur this element - the normal browser
-    //  machinery will do that if we don't prevent the default behavior
-    //  here.
-    evtTargetTPElem.signal('TP.sig.UIBlur');
-
-    //  It doesn't matter if the system cancelled the TIBET signal here - the
-    //  low-level blur signals are not cancelable anyway... although, against
-    //  the spec, Firefox tries. We don't support that here for consistency
-    //  across browsers.
+    //  NB: This only is triggered for non-XHTML element if a 'blur' event is
+    //  thrown directly at it via a manual trigger.
+    if (!TP.isXHTMLNode(aTargetElem)) {
+        evtTargetTPElem = TP.wrap(aTargetElem);
+        evtTargetTPElem.blur();
+    } else {
+        evtTargetTPElem.signal('TP.sig.UIBlur',
+                                TP.hc('trigger', TP.wrap(anEvent)));
+    }
 
     return this;
 });
@@ -513,63 +978,101 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
-        focusingTPElem;
+    var focusedElem,
+
+        evtTargetTPElem,
+        focusingTPElem,
+
+        oldMFE;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  If there is a system focusing element, that means that the system is
-    //  trying to focus an element against TIBET's calculated focus element
+    if (TP.elementIsDisabled(aTargetElem)) {
+        return this;
+    }
+
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "onfocus" event handler. The event target is: \n' +
+        TP.gid(aTargetElem));
+    */
+
+    //  If there is a manually focusing element, that means that the system is
+    //  trying to focus an element.
     //  Because focus/blur events are not cancellable, this will be called even
     //  though we don't want it, but we can prevent having any TIBET-level UI*
     //  signals from being dispatched.
-    if (TP.isValid(this.get('$systemFocusingElement'))) {
+    if (TP.isValid(TP.core.UIElementNode.get('$manuallyFocusingElement'))) {
         //  Reset this to null for the next pass.
-        this.set('$systemFocusingElement', null);
+        TP.core.UIElementNode.set('$manuallyFocusingElement', null);
 
         return this;
     }
 
     //  If there is a calculated TIBET focusing TP.core.ElementNode, and its
-    //  native node isn't the target element, then configure 'system focusing
+    //  native node isn't the target element, then configure 'manually focusing
     //  element' to be the target element, and force the calculated one to
     //  focus. Note that we return here. That will avoid any extraneous TIBET
     //  signaling of UI* signals. These will be signaled when the 'focus()' call
     //  here comes back through this mechanism and the calculated one *will* be
     //  the same as the target.
-    if (TP.isValid(focusingTPElem = this.get('$calculatedFocusingTPElem'))) {
+    focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+
+    if (TP.isValid(focusingTPElem)) {
 
         if (focusingTPElem.getNativeNode() !== aTargetElem) {
-            this.set('$systemFocusingElement', aTargetElem);
+
+            oldMFE = TP.core.UIElementNode.get('$manuallyFocusingElement');
+            TP.core.UIElementNode.set('$manuallyFocusingElement', aTargetElem);
 
             focusingTPElem.focus();
-            focusingTPElem.signal('TP.sig.UIFocus');
-        } else {
-            //  It was the same as the target, so reset this to null for the
-            //  next pass.
-            this.set('$calculatedFocusingTPElem', null);
+
+            TP.core.UIElementNode.set('$manuallyFocusingElement', oldMFE);
         }
+
+        //  Reset this to null for the next pass.
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
 
         //  Whether or not this was the calculated element, we return here - the
         //  rest of the machinery will take care of things.
         return this;
     }
 
+    //  See if there's a focused element (without considering the
+    //  '.activeElement' property)
+    focusedElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(aTargetElem), false);
+
+    //  If it's the same as the target element, then the browser is being stupid
+    //  and is trying to focus the same element. This will screw up our focus
+    //  stack semantics, so we exit here.
+    if (focusedElem === aTargetElem) {
+        return this;
+    }
+
+    //  If the target element is the same as the current active element (which
+    //  we access directly here) and we *weren't* focusing via a mouse event of
+    //  some sort, then we just return. Otherwise, the focusing machinery gets
+    //  invoked all over again.
+    if (aTargetElem === TP.nodeGetDocument(aTargetElem).activeElement &&
+        TP.notTrue(TP.core.UIElementNode.get('$focusingViaMouseEvent'))) {
+        return this;
+    }
+
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  Try to make the event target element become the focused element.
-    //  Note that this does *not* focus this element - the normal browser
-    //  machinery will do that if we don't prevent the default behavior
-    //  here.
-    evtTargetTPElem.signal('TP.sig.UIFocus');
-
-    //  It doesn't matter if the system cancelled the TIBET signal here - the
-    //  low-level focus signals are not cancelable anyway... although, against
-    //  the spec, Firefox tries. We don't support that here for consistency
-    //  across browsers.
+    //  NB: This only is triggered for non-XHTML element if a 'focus' event is
+    //  thrown directly at it via a manual trigger.
+    if (!TP.isXHTMLNode(aTargetElem)) {
+        evtTargetTPElem = TP.wrap(aTargetElem);
+        evtTargetTPElem.focus();
+    } else {
+        evtTargetTPElem.signal('TP.sig.UIFocus',
+                                TP.hc('trigger', TP.wrap(anEvent)));
+    }
 
     return this;
 });
@@ -590,12 +1093,18 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
+    var focusedTPElem,
+
+        evtTargetTPElem,
+
+        signal,
+
         keyname,
         activateSignal,
         bindingsType,
+
         sigName,
-        focusedTPElem;
+        sigType;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -604,15 +1113,36 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  If the event target element can handle the key indicated by the
-    //  event
-    if (evtTargetTPElem.canHandleKey(anEvent)) {
+    //  If the event target element is the same as the documentElement (i.e. the
+    //  HTML element) that means that the browser might be being stupid and
+    //  refusing to dispatch key events to the focused element because the
+    //  focused element is a non-XHTML element. Grab the focused element and set
+    //  the target to be that element anyway.
+    if (aTargetElem === TP.nodeGetDocument(aTargetElem).documentElement) {
+        focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+        evtTargetTPElem = focusedTPElem;
+
+        //  Note here how we have to reset the resolvedTarget on the Event as
+        //  well.
+        anEvent.$$_resolvedTarget = focusedTPElem.getNativeNode();
+    }
+
+    signal = TP.wrap(anEvent);
+
+    //  If the event target element can handle the key indicated by the signal
+    if (evtTargetTPElem.getType().canHandleKey(signal)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
         if (keyname === 'DOM_Enter_Down') {
             //  Try to activate the event target element
-            activateSignal = evtTargetTPElem.signal('TP.sig.UIActivate');
+            activateSignal = evtTargetTPElem.signal(
+                                'TP.sig.UIActivate',
+                                TP.hc('trigger', signal));
+
+            //  Cache a reference to the target element that we sent the
+            //  'TP.sig.UIActivate' signal from.
+            TP.core.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
 
             if (activateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
@@ -651,18 +1181,24 @@ function(aTargetElem, anEvent) {
                 return this;
             }
 
-            //  If the signal name is a real TIBET type, then go ahead
-            //  and signal using the name, using the currently focused
+            //  If the signal name is a real TIBET type, then go ahead and
+            //  signal using the name, using the currently focused
             //  TP.core.Element as the 'target' of this signal.
-            if (TP.isType(TP.sys.getTypeByName(sigName))) {
-                focusedTPElem = evtTargetTPElem.getFocusedElement(true);
-                focusedTPElem.signal(sigName);
+            sigType = TP.sys.getTypeByName(sigName);
+            if (TP.isType(sigType)) {
+                if (TP.notValid(focusedTPElem)) {
+                    focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                }
+                focusedTPElem.signal(sigName,
+                                        TP.hc('trigger', TP.wrap(anEvent)));
+                if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
+                    TP.eventPreventDefault(anEvent);
+                }
             } else {
-                //  Otherwise, it should just be sent as a keyboard
-                //  event. We found a map entry for it, but there was no
-                //  real type.
+                //  Otherwise, it should just be sent as a keyboard event. We
+                //  found a map entry for it, but there was no real type.
                 evtTargetTPElem.signal(sigName,
-                                        null,
+                                        TP.hc('trigger', TP.wrap(anEvent)),
                                         TP.DOM_FIRING,
                                         'TP.sig.' + keyname);
             }
@@ -690,11 +1226,15 @@ function(aTargetElem, anEvent) {
 
     var evtTargetTPElem,
 
+        signal,
+
         keyname,
-
         deactivateSignal,
-
-        incrementalVal;
+        bindingsType,
+        sigName,
+        sigType,
+        incrementalVal,
+        focusedTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -703,21 +1243,89 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  If the event target element can handle the key indicated by the
-    //  event
-    if (evtTargetTPElem.canHandleKey(anEvent)) {
+    //  If the event target element is the same as the documentElement (i.e. the
+    //  HTML element) that means that the browser might be being stupid and
+    //  refusing to dispatch key events to the focused element because the
+    //  focused element is a non-XHTML element. Grab the focused element and set
+    //  the target to be that element anyway.
+    if (aTargetElem === TP.nodeGetDocument(aTargetElem).documentElement) {
+        focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+        evtTargetTPElem = focusedTPElem;
+
+        //  Note here how we have to reset the resolvedTarget on the Event as
+        //  well.
+        anEvent.$$_resolvedTarget = focusedTPElem.getNativeNode();
+    }
+
+    //  Compute the target to send the 'TP.sig.UIDeactivate' signal from. We
+    //  look at (in order):
+    //      - the last active element
+    //      - the currently focused element
+    //      - the target element supplied to this method
+    evtTargetTPElem = TP.ifInvalid(
+                        TP.core.UIElementNode.get('$lastActiveElement'),
+                        focusedTPElem);
+    if (TP.notValid(evtTargetTPElem)) {
+        evtTargetTPElem = TP.wrap(aTargetElem);
+    }
+
+    signal = TP.wrap(anEvent);
+
+    //  If the event target element can handle the key indicated by the signal
+    if (evtTargetTPElem.getType().canHandleKey(signal)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
         if (keyname === 'DOM_Enter_Up') {
             //  Try to deactivate the event target element
-            deactivateSignal =
-                    evtTargetTPElem.signal('TP.sig.UIDeactivate');
+            deactivateSignal = evtTargetTPElem.signal(
+                                'TP.sig.UIDeactivate',
+                                TP.hc('trigger', signal));
 
             if (deactivateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
                 //  native event
                 anEvent.preventDefault();
+            }
+
+            return this;
+        }
+
+        //  Look in the external keybindings map. If there's an entry there,
+        //  then we get the signal name from there.
+
+        //  We compute the 'bindings' type (where we might find key bindings)
+        //  from the target TP.core.Element.
+        if (TP.isType(bindingsType = evtTargetTPElem.getType())) {
+
+            //  Query for a signal name via the getKeybinding method. This call
+            //  will look up through the supertype chain for the first match.
+            sigName = bindingsType.getKeybinding(keyname);
+            if (TP.isEmpty(sigName)) {
+                return this;
+            }
+
+            //  If the signal name is a real TIBET type, then go ahead
+            //  and signal using the name, using the currently focused
+            //  TP.core.Element as the 'target' of this signal.
+            sigType = TP.sys.getTypeByName(sigName);
+            if (TP.isType(sigType)) {
+                if (TP.notValid(focusedTPElem)) {
+                    focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                }
+                focusedTPElem.signal(sigName,
+                                        TP.hc('trigger', TP.wrap(anEvent)));
+                if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
+                    TP.eventPreventDefault(anEvent);
+                }
+            } else {
+                //  Otherwise, it should just be sent as a keyboard
+                //  event. We found a map entry for it, but there was no
+                //  real type.
+                evtTargetTPElem.signal(sigName,
+                                        TP.hc('trigger', TP.wrap(anEvent)),
+                                        TP.DOM_FIRING,
+                                        'TP.sig.' + keyname);
             }
         }
     } else if (evtTargetTPElem.isBoundElement()) {
@@ -731,6 +1339,9 @@ function(aTargetElem, anEvent) {
             evtTargetTPElem.setBoundValue(evtTargetTPElem.getDisplayValue());
         }
     }
+
+    //  Make sure to null out the last active element for the 'next run'.
+    TP.core.UIElementNode.set('$lastActiveElement', null);
 
     return this;
 });
@@ -759,11 +1370,24 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    //  We will only signal UIActivate and focus if the button that was
+    //  depressed was TP.LEFT.
+    if (TP.eventGetButton(anEvent) !== TP.LEFT) {
+        return this;
+    }
+
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
     //  Try to activate the event target element
-    activateSignal = evtTargetTPElem.signal('TP.sig.UIActivate');
+    activateSignal = evtTargetTPElem.signal(
+                            'TP.sig.UIActivate',
+                            TP.hc('trigger', TP.wrap(anEvent)));
+
+    //  Cache a reference to the target element that we sent the
+    //  'TP.sig.UIActivate' signal from.
+    TP.core.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
+
     if (activateSignal.shouldPrevent()) {
         //  Since the activation signal was cancelled, we cancel the native
         //  event
@@ -774,8 +1398,12 @@ function(aTargetElem, anEvent) {
     //  does after it computes a 'successor element to focus' - in this case,
     //  that successor element is the element that is our target.
     if (evtTargetTPElem.canFocus()) {
-        this.set('$calculatedFocusingTPElem', evtTargetTPElem);
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem', evtTargetTPElem);
     }
+
+    //  Set the flag to let the rest of the focusing machinery know that this is
+    //  happening due to a mouse event.
+    TP.core.UIElementNode.set('$focusingViaMouseEvent', true);
 
     return this;
 });
@@ -804,217 +1432,127 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  Grab the event target element and wrap it
-    evtTargetTPElem = TP.wrap(aTargetElem);
+    //  We will only signal UIDeactivate and focus if the button that was
+    //  depressed was TP.LEFT.
+    if (TP.eventGetButton(anEvent) !== TP.LEFT) {
+        return this;
+    }
+
+    //  Compute the target to send the 'TP.sig.UIDeactivate' signal from. We
+    //  look at (in order):
+    //      - the last active element
+    //      - the target element supplied to this method
+    evtTargetTPElem = TP.core.UIElementNode.get('$lastActiveElement');
+    if (TP.notValid(evtTargetTPElem)) {
+        evtTargetTPElem = TP.wrap(aTargetElem);
+    }
 
     //  Try to deactivate the event target element
-    deactivateSignal = evtTargetTPElem.signal('TP.sig.UIDeactivate');
+    deactivateSignal = evtTargetTPElem.signal(
+                            'TP.sig.UIDeactivate',
+                            TP.hc('trigger', TP.wrap(anEvent)));
+
     if (deactivateSignal.shouldPrevent()) {
         //  Since the deactivation signal was cancelled, we cancel the
         //  native event
         anEvent.preventDefault();
     }
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Type.defineMethod('mutationAddedNodes',
-function(aTargetElem, nodesAdded) {
-
-    /**
-     * @method mutationAddedNodes
-     * @summary Handles a 'nodes added' synthetic 'event' that was dispatched
-     *     against the supplied native element.
-     * @description This method is usually activated as the result of a 'DOM
-     *     Mutation' of this node whereby a descendant is being added. Note that
-     *     the 'nodesAdded' parameter here contains a list of *roots* that will
-     *     have been added to the receiver. Any descendants of these roots will
-     *     not be in this list.
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Array} nodesAdded The nodes added to the receiver.
-     * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
-     */
-
-    var processor,
-
-        mutatedGIDs,
-
-        len,
-        i,
-
-        node;
-
-    if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement');
+    if (evtTargetTPElem.canFocus() && !TP.isXHTMLNode(aTargetElem)) {
+        evtTargetTPElem.focus();
     }
 
-    //  Allocate a tag processor and initialize it with the ATTACH_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.ATTACH_PHASES);
+    //  Make sure to null out the last active element for the 'next run'.
+    TP.core.UIElementNode.set('$lastActiveElement', null);
 
-    mutatedGIDs = TP.ac();
+    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
 
-    //  Now, process each *root* that we have gotten as an added node
-    len = nodesAdded.getSize();
-    for (i = 0; i < len; i++) {
-        node = nodesAdded.at(i);
-
-        mutatedGIDs.push(TP.gid(node));
-
-        //  Check to make sure we haven't already awakened this content. If so
-        //  we want to exit.
-        if (node.$$awakened) {
-            continue;
-        }
-
-        //  It seems weird that the node might be detached since it was 'added',
-        //  but the way that mutation observers work (they trigger this code) is
-        //  that the node might have been added and then removed all before the
-        //  'mutation records' are processed. We need to make sure the DOM node
-        //  is still attached.
-        if (TP.nodeIsDetached(node)) {
-            continue;
-        }
-
-        //  If the node is an Element and it has an attribute of
-        //  'tibet:noawaken', then skip processing it.
-        if (TP.isElement(node) &&
-            TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
-            continue;
-        }
-
-        //  If the node has an ancestor Element that has an attribute of
-        //  'tibet:noawaken', then skip processing it.
-        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
-                                        node, 'tibet:noawaken', null, true))) {
-            continue;
-        }
-
-        processor.processTree(node);
-    }
-
-    //  Signal from our (wrapped) target element that attach processing is
-    //  complete.
-    TP.signal(TP.wrap(aTargetElem),
-                'TP.sig.AttachComplete',
-                TP.hc('mutatedNodeIDs', mutatedGIDs));
+    //  Reset the flag that let's the rest of the focusing machinery know that
+    //  this is happening due to a mouse event to false.
+    TP.core.UIElementNode.set('$focusingViaMouseEvent', false);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('mutationRemovedNodes',
-function(aTargetElem, nodesRemoved) {
+TP.core.UIElementNode.Type.defineMethod('popOffFocusStack',
+function() {
 
     /**
-     * @method mutationRemovedNodes
-     * @summary Handles a 'nodes removed' synthetic 'event' that was dispatched
-     *     against the supplied native element.
-     * @description This method is usually activated as the result of a 'DOM
-     *     Mutation' of this node whereby a descendant is being removed. Note
-     *     that the 'nodesRemoved' parameter here contains a list of *roots*
-     *     that will have been removed from the receiver. Any descendants of
-     *     these roots will not be in this list.
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Array} nodesRemoved  The nodes removed from the receiver.
-     * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @method popOffFocusStack
+     * @summary Pops the last entry (which should be a TP.core.Element) from
+     *     the focus stack and returns it.
+     * @returns {TP.core.Element} The last entry from the focus stack.
      */
 
-    var processor,
+    var focusStack,
+        retVal;
 
-        mutatedGIDs,
+    focusStack = TP.$focus_stack;
 
-        focusStackCheckElems,
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'getting ready to pop. Stack is currently: \n' +
+        TP.$focus_stack.collect(
+            function(aTPElem) {
+                return TP.gid(aTPElem);
+            }).join('\n'));
+    */
 
-        len,
-        i,
+    retVal = focusStack.pop();
 
-        shouldProcess,
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'we popped. Stack is currently: \n' +
+        TP.$focus_stack.collect(
+            function(aTPElem) {
+                return TP.gid(aTPElem);
+            }).join('\n'));
+    */
 
-        node;
+    return retVal;
+});
 
-    if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement');
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('pushOnFocusStack',
+function(aTPElem) {
+
+    /**
+     * @method pushOnFocusStack
+     * @summary Pushes the supplied TP.core.Element onto the focus stack.
+     * @param {String} aTPElem The TP.core.Element to push onto the focus stack.
+     */
+
+    var focusStack;
+
+    focusStack = TP.$focus_stack;
+
+    if (focusStack.last() === aTPElem) {
+        TP.ifWarn() ?
+            TP.warn('Element at top of focus stack is the same.') : 0;
     }
 
-    //  Allocate a tag processor and initialize it with the DETACH_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.DETACH_PHASES);
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'getting ready to push. Stack is currently: \n' +
+        TP.$focus_stack.collect(
+            function(fooTPElem) {
+                return TP.gid(fooTPElem);
+            }).join('\n'));
+    */
 
-    mutatedGIDs = TP.ac();
+    focusStack.push(aTPElem);
 
-    focusStackCheckElems = TP.ac();
-
-    //  Now, process each *root* that we have gotten as a removed node
-    len = nodesRemoved.getSize();
-    for (i = 0; i < len; i++) {
-
-        node = nodesRemoved.at(i);
-
-        mutatedGIDs.push(TP.gid(node));
-
-        //  If the node is already detached, then just move on here.
-        if (TP.nodeIsDetached(node)) {
-            continue;
-        }
-
-        //  Initially we're set to process this markup.
-        shouldProcess = true;
-
-        //  But if the node is an Element and it has an attribute of
-        //  'tibet:noawaken', then skip processing it.
-        if (TP.isElement(node) &&
-            TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
-            shouldProcess = false;
-        }
-
-        //  And if the node has an ancestor Element that has an attribute of
-        //  'tibet:noawaken', then skip processing it.
-        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
-                                        node, 'tibet:noawaken', null, true))) {
-            shouldProcess = false;
-        }
-
-        if (shouldProcess) {
-            processor.processTree(node);
-        }
-
-        if (TP.isElement(node)) {
-            focusStackCheckElems.push(node);
-
-            focusStackCheckElems = focusStackCheckElems.concat(
-                                TP.nodeGetDescendantElements(node, '*'));
-        }
-    }
-
-    //  Signal from our (wrapped) target element that detach processing is
-    //  complete.
-    TP.signal(TP.wrap(aTargetElem),
-                'TP.sig.DetachComplete',
-                TP.hc('mutatedNodeIDs', mutatedGIDs));
-
-    //  Filter any elements that are in the document of the nodes we are
-    //  removing out of the $focus_stack.
-
-    if (TP.notEmpty(focusStackCheckElems)) {
-        TP.$focus_stack = TP.$focus_stack.reject(
-                            function(aTPElem) {
-                                if (focusStackCheckElems.contains(
-                                        aTPElem.getNativeNode(),
-                                        TP.IDENTITY)) {
-                                    return true;
-                                }
-
-                                return false;
-                            });
-    }
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'we pushed. Stack is currently: \n' +
+        TP.$focus_stack.collect(
+            function(fooTPElem) {
+                return TP.gid(fooTPElem);
+            }).join('\n'));
+    */
 
     return this;
 });
@@ -1209,7 +1747,7 @@ function() {
     //  than the one we're processing focused responder status for. So we reject
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
-    focusTPElem = this.getType().get('$calculatedFocusingTPElem');
+    focusTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
 
     if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
         !focusTPElem.identicalTo(this)) {
@@ -1232,7 +1770,7 @@ function() {
      */
 
     //  Push ourself and signal 'TP.sig.UIDidPushFocus'
-    TP.$focus_stack.push(this);
+    this.getType().pushOnFocusStack(this);
     this.signal('TP.sig.UIDidPushFocus');
 
     return this;
@@ -1256,52 +1794,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('canHandleKey',
-function(anEventOrKeyname) {
-
-    /**
-     * @method canHandleKey
-     * @summary Whether or not the receiver can be handle the key that
-     *     generated the supplied event.
-     * @param {Event|String} anEventOrKeyname The native event containing the
-     *     key information or an actual key name.
-     * @returns {Boolean} Whether or not the receiver can handle the key.
-     */
-
-    var keyname,
-        bindingsType;
-
-    if (TP.isString(anEventOrKeyname)) {
-        keyname = anEventOrKeyname;
-    } else {
-        keyname = TP.eventGetDOMSignalName(anEventOrKeyname);
-    }
-
-    switch (keyname) {
-
-        //  These are the standard keys used for activating.
-
-        case 'DOM_Enter_Down':
-        case 'DOM_Enter_Up':
-
-            return true;
-
-        default:
-            //  Look in the keybindings map. If there's an entry there,
-            //  then we handle the key.
-
-            //  We compute the 'bindings' type (where we might find key
-            //  bindings) from the receiver.
-            if (TP.isType(bindingsType = this.getType())) {
-                return TP.notEmpty(bindingsType.getKeybinding(keyname));
-            }
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.UIElementNode.Inst.defineMethod('computeSuccessorFocusElement',
 function(focusedTPElem, moveAction) {
 
@@ -1312,9 +1804,17 @@ function(focusedTPElem, moveAction) {
      * @param {TP.core.ElementNode} focusedTPElem The currently focused element.
      *     This may be null if no element is currently focused.
      * @param {Constant} moveAction The type of 'move' that the user requested.
-     *     This can be one of the following: TP.FIRST TP.LAST TP.NEXT
-     *     TP.PREVIOUS TP.FIRST_IN_GROUP TP.LAST_IN_GROUP TP.FIRST_IN_NEXT_GROUP
-     *     TP.FIRST_IN_PREVIOUS_GROUP TP.FOLLOWING TP.PRECEDING.
+     *     This can be one of the following:
+     *         TP.FIRST
+     *         TP.LAST
+     *         TP.NEXT
+     *         TP.PREVIOUS
+     *         TP.FIRST_IN_GROUP
+     *         TP.LAST_IN_GROUP
+     *         TP.FIRST_IN_NEXT_GROUP
+     *         TP.FIRST_IN_PREVIOUS_GROUP
+     *         TP.FOLLOWING
+     *         TP.PRECEDING
      * @returns {TP.core.ElementNode} The element that is the successor focus
      *     element.
      */
@@ -1323,19 +1823,17 @@ function(focusedTPElem, moveAction) {
 
         win,
 
-        wrappedBody,
+        bodyTPElem,
 
         currentGroupName,
         currentGroup,
 
-        unwrappedBody,
+        bodyElem,
         focusedElem,
 
         theMoveAction,
 
         currentGroupWraps,
-
-        usingParentGroup,
 
         computedGroup,
 
@@ -1344,10 +1842,14 @@ function(focusedTPElem, moveAction) {
         nextGroupName,
         prevGroupName,
 
-        resultElem,
+        resultTPElem,
+
+        currentGroupResults,
+        computedGroupResults,
+
         focusableQuery,
 
-        wantGroups;
+        noGroupResults;
 
     currentIsInGroup = false;
 
@@ -1356,7 +1858,7 @@ function(focusedTPElem, moveAction) {
     //  If there is a current element, find the closest group to it - this
     //  dictates the 'context' of the search.
     if (TP.isValid(focusedTPElem)) {
-        wrappedBody = focusedTPElem.getDocument().getBody();
+        bodyTPElem = focusedTPElem.getDocument().getBody();
 
         //  If the current element has a group, then we use it.
         if (TP.notEmpty(currentGroupName = focusedTPElem.getGroupName())) {
@@ -1364,16 +1866,16 @@ function(focusedTPElem, moveAction) {
             currentIsInGroup = true;
         } else {
             //  Otherwise, the 'context' is the body element.
-            currentGroup = wrappedBody;
+            currentGroup = bodyTPElem;
         }
     } else {
-        wrappedBody = this.getDocument().getBody();
+        bodyTPElem = this.getDocument().getBody();
 
         //  Otherwise, the 'context' is the body element.
-        currentGroup = wrappedBody;
+        currentGroup = bodyTPElem;
     }
 
-    unwrappedBody = TP.unwrap(wrappedBody);
+    bodyElem = TP.unwrap(bodyTPElem);
     focusedElem = TP.unwrap(focusedTPElem);
 
     theMoveAction = moveAction;
@@ -1398,9 +1900,6 @@ function(focusedTPElem, moveAction) {
     //  If we're moving between groups, then we need to query for them and
     //  set the computed group element appropriately.
 
-    //  Initially, we're not using the parent group.
-    usingParentGroup = false;
-
     switch (theMoveAction) {
         case TP.FIRST:
         case TP.LAST:
@@ -1417,21 +1916,29 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'next
             //  group' is going to be the first group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
+                if (TP.notEmpty(results = bodyTPElem.get(
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
+
                     //  There was no group found, so the 'next group' is
-                    //  going to be the first group.
-                    computedGroup = TP.wrap(results.first());
+                    //  going to be the first group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.first());
+                    } else {
+                        computedGroup = results;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Grab the next group name from the current group (which
                 //  may be nested, and we are interested in wrapping)
                 nextGroupName =
                         this.getNextGroupName(currentGroupName, true, true);
-                computedGroup = TP.byId(nextGroupName, win);
+                if (TP.isValid(nextGroupName)) {
+                    computedGroup = TP.byId(nextGroupName, win);
+                }
             }
 
             break;
@@ -1441,21 +1948,29 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'previous
             //  group' is going to be the last group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
+                if (TP.notEmpty(results = bodyTPElem.get(
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
+
                     //  There was no group found, so the 'next group' is
-                    //  going to be the last group.
-                    computedGroup = TP.wrap(results.last());
+                    //  going to be the last group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.last());
+                    } else {
+                        computedGroup = results;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Grab the previous group name from the current group
                 //  (which may be nested, and we are interested in wrapping)
                 prevGroupName =
                         this.getPreviousGroupName(currentGroupName, true, true);
-                computedGroup = TP.byId(prevGroupName, win);
+                if (TP.isValid(prevGroupName)) {
+                    computedGroup = TP.byId(prevGroupName, win);
+                }
             }
 
             break;
@@ -1465,14 +1980,31 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'next
             //  group' is going to be the first group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
-                    //  There was no group found, so the 'next group' is
-                    //  going to be the first group.
-                    computedGroup = TP.wrap(results.first());
+                if (TP.notEmpty(results = bodyTPElem.get(
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
+
+                    //  There was more than 1 group found, so the 'next group'
+                    //  is going to be the first group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.first());
+                    } else {
+                        computedGroup = results;
+                    }
+
+                    //  If we're not wrapping, then we need to make sure that
+                    //  the 'next group' falls *after* this element - otherwise,
+                    //  we're not interested in it.
+                    if (!currentGroupWraps &&
+                        !TP.nodeComparePosition(
+                            this.getNativeNode(),
+                            computedGroup.getNativeNode(),
+                            TP.FOLLOWING_NODE)) {
+                        computedGroup = null;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Try to grab the next group name, which may be nested, but we
@@ -1500,8 +2032,8 @@ function(focusedTPElem, moveAction) {
                     TP.notValid(this.getParentGroupName(currentGroupName))) {
                     //  Check to see if the body has focusable elements - if so,
                     //  then set the computedGroup to be the wrapped body.
-                    if (TP.notEmpty(wrappedBody.findFocusableElements())) {
-                        computedGroup = wrappedBody;
+                    if (TP.notEmpty(bodyTPElem.findFocusableElements())) {
+                        computedGroup = bodyTPElem;
                     }
                 }
 
@@ -1521,13 +2053,6 @@ function(focusedTPElem, moveAction) {
                                 this.getParentGroupName(currentGroupName);
                     }
 
-                    //  Set the usingParentGroup flag if we're using the parent
-                    //  group, however that got computed.
-                    if (nextGroupName === this.getParentGroupName(
-                                                    currentGroupName)) {
-                        usingParentGroup = true;
-                    }
-
                     computedGroup = TP.byId(nextGroupName, win);
                 }
             }
@@ -1539,14 +2064,32 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'previous
             //  group' is going to be the last group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
-                    //  There was no group found, so the 'previous group' is
-                    //  going to be the last group.
-                    computedGroup = TP.wrap(results.last());
+                if (TP.notEmpty(results = bodyTPElem.get(
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
+
+                    //  There was more than 1 group found, so the 'previous
+                    //  group' is going to be the last group (or the only
+                    //  group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.last());
+                    } else {
+                        computedGroup = results;
+                    }
+
+                    //  If we're not wrapping, then we need to make sure that
+                    //  the 'previous group' falls *before* this element -
+                    //  otherwise, we're not interested in it.
+                    if (!currentGroupWraps &&
+                        !TP.nodeComparePosition(
+                            this.getNativeNode(),
+                            computedGroup.getNativeNode(),
+                            TP.PRECEDING_NODE)) {
+                        computedGroup = null;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Try to grab the previous group name, which may be nested,
@@ -1560,10 +2103,11 @@ function(focusedTPElem, moveAction) {
                 //  we're not interested in it.
                 if (TP.notEmpty(prevGroupName) &&
                     !currentGroupWraps &&
-                    !TP.nodeComparePosition(this.getNativeNode(),
-                    TP.byId(prevGroupName, this.getNativeDocument(), false),
-                    TP.PRECEDING_NODE)) {
-                    nextGroupName = null;
+                    !TP.nodeComparePosition(
+                        this.getNativeNode(),
+                        TP.byId(prevGroupName, this.getNativeDocument(), false),
+                        TP.PRECEDING_NODE)) {
+                    prevGroupName = null;
                 }
 
                 //  If there was no previous group without wrapping and the
@@ -1573,8 +2117,8 @@ function(focusedTPElem, moveAction) {
                     TP.notValid(this.getParentGroupName(currentGroupName))) {
                     //  Check to see if the body has focusable elements - if so,
                     //  then set the computedGroup to be the wrapped body.
-                    if (TP.notEmpty(wrappedBody.findFocusableElements())) {
-                        computedGroup = wrappedBody;
+                    if (TP.notEmpty(bodyTPElem.findFocusableElements())) {
+                        computedGroup = bodyTPElem;
                     }
                 }
 
@@ -1594,13 +2138,6 @@ function(focusedTPElem, moveAction) {
                                 this.getParentGroupName(currentGroupName);
                     }
 
-                    //  Set the usingParentGroup flag if we're using the parent
-                    //  group, however that got computed.
-                    if (prevGroupName === this.getParentGroupName(
-                                                    currentGroupName)) {
-                        usingParentGroup = true;
-                    }
-
                     computedGroup = TP.byId(prevGroupName, win);
                 }
             }
@@ -1612,7 +2149,7 @@ function(focusedTPElem, moveAction) {
             return null;
     }
 
-    resultElem = null;
+    resultTPElem = null;
 
     //  Based on the move action, grab the first, last, next or previous
     //  focusable element (using the current element for next and previous)
@@ -1623,21 +2160,21 @@ function(focusedTPElem, moveAction) {
             //  currentGroup is.
 
             if (TP.notEmpty(
-                    TP.byCSSPath('tibet|group', unwrappedBody, false, false))) {
+                    TP.byCSSPath('tibet|group', bodyElem, false, false))) {
                 focusableQuery = TP.computeFocusableQuery(
                                     'tibet|group:first > ', ':first');
 
-                results = TP.byCSSPath(focusableQuery, unwrappedBody);
+                results = TP.byCSSPath(focusableQuery, bodyElem);
                 results = TP.wrap(results);
             } else {
-                results = wrappedBody.findFocusableElements();
+                results = bodyTPElem.findFocusableElements();
             }
 
             if (TP.isEmpty(results)) {
                 return null;
             }
 
-            resultElem = results.first();
+            resultTPElem = results.first();
 
             break;
 
@@ -1647,32 +2184,33 @@ function(focusedTPElem, moveAction) {
             //  currentGroup is.
 
             if (TP.notEmpty(
-                    TP.byCSSPath('tibet|group', unwrappedBody, false, false))) {
+                    TP.byCSSPath('tibet|group', bodyElem, false, false))) {
                 focusableQuery = TP.computeFocusableQuery(
                                     'tibet|group:last > ', ':last');
 
-                results = TP.byCSSPath(focusableQuery, unwrappedBody, false);
+                results = TP.byCSSPath(focusableQuery, bodyElem, false);
             } else {
-                results = wrappedBody.findFocusableElements();
+                results = bodyTPElem.findFocusableElements();
             }
 
             if (TP.isEmpty(results)) {
                 return null;
             }
 
-            resultElem = results.last();
+            resultTPElem = results.last();
 
             break;
 
         case TP.NEXT:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements(true))) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
             if (TP.notValid(focusedTPElem) ||
-                TP.notValid(resultElem = results.after(
+                TP.notValid(resultTPElem = currentGroupResults.after(
                                             focusedTPElem.getNativeNode(),
                                             TP.EQUALITY,
                                             true))) {
@@ -1681,20 +2219,21 @@ function(focusedTPElem, moveAction) {
                 //  then this operation got converted into a 'TP.FOLLOWING'
                 //  above.
 
-                resultElem = results.first();
+                resultTPElem = currentGroupResults.first();
             }
 
             break;
 
         case TP.PREVIOUS:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements(true))) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
             if (TP.notValid(focusedTPElem) ||
-                TP.notValid(resultElem = results.before(
+                TP.notValid(resultTPElem = currentGroupResults.before(
                                             focusedTPElem.getNativeNode(),
                                             TP.EQUALITY,
                                             true))) {
@@ -1703,30 +2242,32 @@ function(focusedTPElem, moveAction) {
                 //  then this operation got converted into a 'TP.PRECEDING'
                 //  above.
 
-                resultElem = results.last();
+                resultTPElem = currentGroupResults.last();
             }
 
             break;
 
         case TP.FIRST_IN_GROUP:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements())) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements())) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
-            resultElem = results.first();
+            resultTPElem = currentGroupResults.first();
 
             break;
 
         case TP.LAST_IN_GROUP:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements())) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements())) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
-            resultElem = results.last();
+            resultTPElem = currentGroupResults.last();
 
             break;
 
@@ -1734,18 +2275,19 @@ function(focusedTPElem, moveAction) {
         case TP.FIRST_IN_PREVIOUS_GROUP:
 
             if (!TP.isValid(computedGroup) ||
-                TP.isEmpty(results = computedGroup.findFocusableElements())) {
+                TP.isEmpty(computedGroupResults =
+                            computedGroup.findFocusableElements())) {
                 //  The computed group had no focusable elements.
                 return null;
             }
 
-            resultElem = results.first();
+            resultTPElem = computedGroupResults.first();
 
             break;
 
         case TP.FOLLOWING:
 
-            if (TP.isEmpty(results =
+            if (TP.isEmpty(currentGroupResults =
                             currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
@@ -1755,50 +2297,56 @@ function(focusedTPElem, moveAction) {
             //  body. If so, we just return the first result (which will have
             //  been properly sorted by tabindex by the 'findFocusableElements'
             //  call above)
-            if (focusedElem === unwrappedBody) {
+            if (focusedElem === bodyElem) {
 
                 //  The focused element was the body itself (which means that
                 //  current group is as well), which means we should just use
                 //  the first result element that got returned.
-                resultElem = results.first();
-            } else if (currentGroup.equalTo(wrappedBody) &&
-                        !computedGroup.equalTo(wrappedBody)) {
-                if (TP.notEmpty(
-                        results = computedGroup.findFocusableElements())) {
-                    resultElem = results.first();
-                }
+                resultTPElem = currentGroupResults.first();
             } else {
-                resultElem = results.after(focusedTPElem, TP.EQUALITY, true);
 
                 //  We try to see if the current group has a focusable field
                 //  following the current one.
-                if (TP.notValid(focusedTPElem) || TP.notValid(resultElem)) {
+                resultTPElem = currentGroupResults.after(
+                                            focusedTPElem, TP.EQUALITY, true);
 
-                    //  If it doesn't, then we try to get the first focusable
-                    //  field of the computed group (which will be the 'next
-                    //  group' according to the group computation which occurred
-                    //  above).
+                if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
 
-                    wantGroups = !computedGroup.equalTo(wrappedBody);
+                    if (!TP.isValid(computedGroup)) {
+                        if (currentGroupResults.last() === focusedTPElem) {
+                            return currentGroupResults.first();
+                        }
 
-                    if (!TP.isValid(computedGroup) ||
-                        TP.isEmpty(
-                            results =
-                            computedGroup.findFocusableElements(wantGroups))) {
-
-                        //  The computed group had no focusable elements.
                         return null;
                     }
 
-                    if (usingParentGroup) {
-                        if (TP.notValid(resultElem = results.after(
-                                            currentGroup,
-                                            TP.EQUALITY,
-                                            true))) {
-                            resultElem = results.first();
+                    //  Try to get the first focusable field of the computed
+                    //  group (which will be the 'next group' according to the
+                    //  group computation which occurred above).
+
+                    //  First, we query with wanting groups, to see if there are
+                    //  any focusable items after our current group.
+                    computedGroupResults =
+                                computedGroup.findFocusableElements(true);
+
+                    if (TP.isEmpty(computedGroupResults)) {
+                        return null;
+                    }
+
+                    resultTPElem = computedGroupResults.after(
+                                    currentGroup, TP.EQUALITY, true);
+
+                    //  If there are no focusable items after our current group,
+                    //  then we re-query, but this time with no groups.
+                    if (TP.notValid(resultTPElem)) {
+                        noGroupResults =
+                            computedGroup.findFocusableElements(false);
+
+                        if (TP.notEmpty(noGroupResults)) {
+                            resultTPElem = noGroupResults.first();
+                        } else {
+                            resultTPElem = computedGroupResults.first();
                         }
-                    } else {
-                        resultElem = results.first();
                     }
                 }
             }
@@ -1807,7 +2355,7 @@ function(focusedTPElem, moveAction) {
 
         case TP.PRECEDING:
 
-            if (TP.isEmpty(results =
+            if (TP.isEmpty(currentGroupResults =
                             currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
@@ -1817,50 +2365,55 @@ function(focusedTPElem, moveAction) {
             //  body. If so, we just return the first result (which will have
             //  been properly sorted by tabindex by the 'findFocusableElements'
             //  call above)
-            if (focusedElem === unwrappedBody) {
+            if (focusedElem === bodyElem) {
 
                 //  The focused element was the body itself (which means that
                 //  current group is as well), which means we should just use
                 //  the last result element that got returned.
-                resultElem = results.last();
-            } else if (currentGroup.equalTo(wrappedBody) &&
-                        !computedGroup.equalTo(wrappedBody)) {
-                if (TP.notEmpty(
-                        results = computedGroup.findFocusableElements())) {
-                    resultElem = results.last();
-                }
+                resultTPElem = currentGroupResults.last();
             } else {
-                resultElem = results.before(focusedTPElem, TP.EQUALITY, true);
-
                 //  We try to see if the current group has a focusable field
                 //  preceding the current one.
-                if (TP.notValid(focusedTPElem) || TP.notValid(resultElem)) {
+                resultTPElem = currentGroupResults.before(
+                                            focusedTPElem, TP.EQUALITY, true);
 
-                    //  If it doesn't, then we try to get the last focusable
-                    //  field of the computed group (which will be the 'last
-                    //  group' according to the group computation which occurred
-                    //  above).
+                if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
 
-                    wantGroups = !computedGroup.equalTo(wrappedBody);
+                    if (!TP.isValid(computedGroup)) {
+                        if (currentGroupResults.first() === focusedTPElem) {
+                            return currentGroupResults.last();
+                        }
 
-                    if (!TP.isValid(computedGroup) ||
-                        TP.isEmpty(
-                            results =
-                            computedGroup.findFocusableElements(wantGroups))) {
-
-                        //  The computed group had no focusable elements.
                         return null;
                     }
 
-                    if (usingParentGroup) {
-                        if (TP.notValid(resultElem = results.before(
-                                            currentGroup,
-                                            TP.EQUALITY,
-                                            true))) {
-                            resultElem = results.last();
+                    //  Try to get the last focusable field of the computed
+                    //  group (which will be the 'last group' according to the
+                    //  group computation which occurred above).
+
+                    //  First, we query with wanting groups, to see if there are
+                    //  any focusable items after our current group.
+                    computedGroupResults =
+                                computedGroup.findFocusableElements(true);
+
+                    if (TP.isEmpty(computedGroupResults)) {
+                        return null;
+                    }
+
+                    resultTPElem = computedGroupResults.before(
+                                    currentGroup, TP.EQUALITY, true);
+
+                    //  If there are no focusable items after our current group,
+                    //  then we re-query, but this time with no groups.
+                    if (TP.notValid(resultTPElem)) {
+                        noGroupResults =
+                            computedGroup.findFocusableElements(false);
+
+                        if (TP.notEmpty(noGroupResults)) {
+                            resultTPElem = noGroupResults.last();
+                        } else {
+                            resultTPElem = computedGroupResults.last();
                         }
-                    } else {
-                        resultElem = results.last();
                     }
                 }
             }
@@ -1874,11 +2427,62 @@ function(focusedTPElem, moveAction) {
 
     //  If there's a real result element, then return it. Otherwise return
     //  null.
-    if (TP.isValid(resultElem)) {
-        return resultElem;
+    if (TP.isValid(resultTPElem)) {
+        return resultTPElem;
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('dispatchResponderSignalFromAttr',
+function(aSignalName, aTriggerSignal) {
+
+    /**
+     * @method dispatchResponderSignalFromAttr
+     * @summary Dispatches a signal with the supplied name that uses
+     *     RESPONDER_FIRING and should have a corresponding 'on:' attribute on
+     *     the receiver (i.e. 'on:UIActivate') that contains configuration and
+     *     firing information.
+     * @param {String} aSignalName The name of the signal that has a
+     *     RESPONDER_FIRING policy. This is the name that will be used to look
+     *     for an attribute of the same name (or shortened signal name, if
+     *     applicable).
+     * @param {TP.sig.Signal} aTriggerSignal The signal that triggered the
+     *     machinery to get to this point. This is usually some kind of signal
+     *     wrapping a native GUI Event.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var originElem,
+
+        sigName,
+        sigData;
+
+    originElem = this.getNativeNode();
+
+    //  First, try the full signal name.
+    sigName = 'on:' + TP.expandSignalName(aSignalName);
+    if (TP.elementHasAttribute(originElem, sigName, true)) {
+        sigData = TP.elementGetAttribute(originElem, sigName, true);
+    } else {
+        //  Next, try the shortened version of that name.
+        sigName = 'on:' + TP.contractSignalName(aSignalName);
+        sigData = TP.elementGetAttribute(originElem, sigName, true);
+    }
+
+    //  If we were able to successfully extract signal data, then queue up a
+    //  signal that will fire based on this data.
+    if (TP.notEmpty(sigData)) {
+        TP.queueSignalFromData(
+                    sigData,
+                    originElem,
+                    aTriggerSignal,
+                    TP.sig.ResponderSignal);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1897,8 +2501,13 @@ function(includesGroups) {
      *     can be focused.
      */
 
-    var selExpr,
-        results;
+    var elem,
+
+        results,
+
+        queryStr,
+
+        noIntermediateGroups;
 
     //  Query for any elements under the context element that are focusable.
 
@@ -1910,23 +2519,60 @@ function(includesGroups) {
     //  This allows us to filter out elements that are focusable but nested
     //  under another tibet:group that is in the receiver (we don't want
     //  these elements).
-    selExpr = TP.computeFocusableQuery('> ') +
-                ', ' +
-                TP.computeFocusableQuery('*:not(tibet|group) ');
 
-    //  If we should include 'tibet:group' elements, then include them in
-    //  the CSS selector (but only shallowly - not under any other group).
+    elem = this.getNativeNode();
+
+    //  NOTE: Because of how these queries are structured, they have to be
+    //  executed separately and their results combined.
+    results = TP.ac();
+
+    //  Query for any immediate children that have a 'tibet:group' attribute
+    //  that matches our group ID.
+    queryStr = TP.computeFocusableQuery('> ');
+
+    results.push(
+        TP.byCSSPath(queryStr,
+                        elem,
+                        false,
+                        false));
+
+    queryStr = TP.computeFocusableQuery('*:not(tibet|group) ');
+
+    //  Query for any descendants that have a 'tibet:group' attribute that
+    //  matches our group ID.
+    noIntermediateGroups = TP.byCSSPath(queryStr,
+                                        elem,
+                                        false,
+                                        false);
+    //  Now, filter that result set to make sure that there are no 'tibet:group'
+    //  elements between each result node and our own element.
+    noIntermediateGroups = noIntermediateGroups.filter(
+                            function(focusableElem) {
+                                return !TP.isElement(
+                                            TP.nodeAncestorMatchingCSS(
+                                                focusableElem,
+                                                'tibet|group',
+                                                elem));
+                            });
+
+    results.push(noIntermediateGroups);
+
     if (includesGroups) {
-        selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
+        results.push(
+            TP.byCSSPath('> tibet|group, *:not(tibet|group) tibet|group',
+                            elem,
+                            false,
+                            false));
     }
 
-    results = TP.byCSSPath(selExpr, this.getNativeNode(), false, false);
+    //  Flatten out the results and unique them.
+    results = results.flatten();
+    results.unique();
 
     //  Iterate over them and see if they're displayed (not hidden by CSS -
     //  although they could currently not be visible to the user).
     results = results.select(
                     function(anElem) {
-
                         return TP.elementIsDisplayed(anElem);
                     });
 
@@ -1941,18 +2587,33 @@ function(includesGroups) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('getComputedStyleProperty',
-function(aProperty) {
+function(aProperty, inPixels) {
 
     /**
      * @method getComputedStyleProperty
      * @summary Returns the receiver's *computed* style property named by the
      *     supplied property name.
      * @param {String} aProperty The name of the style property to retrieve.
+     * @param {Boolean} [inPixels=false] Whether or not we want this value back
+     *     as a Number of pixels. Obviously this will only work with values of
+     *     properties that contain some sort of size. The default is false.
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
      */
 
-    return TP.elementGetComputedStyleProperty(this.getNativeNode(), aProperty);
+    var elem,
+        val;
+
+    elem = this.getNativeNode();
+
+    if (TP.isTrue(inPixels)) {
+        val = TP.elementGetComputedStyleValueInPixels(
+                                                elem, aProperty.asDOMName());
+    } else {
+        val = TP.elementGetComputedStyleProperty(elem, aProperty);
+    }
+
+    return val;
 });
 
 //  ------------------------------------------------------------------------
@@ -2197,7 +2858,7 @@ function() {
         tpGroupElem = TP.byId(groupID, this.getDocument(), true);
 
         if (TP.isValid(tpGroupElem) && !TP.isArray(tpGroupElem)) {
-            return tpGroupElem.getMembers();
+            return tpGroupElem.getMemberElements();
         }
     }
 
@@ -2220,7 +2881,8 @@ function(startGroupName, alwaysWrap, wantsNested) {
      *     and 'always wrap' around. Defaults to false.
      * @param {Boolean} wantsNested Whether or not to consider nested groups as
      *     part of this query. Defaults to false.
-     * @returns {String} The name of the 'next' group.
+     * @returns {String|null} The name of the 'next' group or null if one can't
+     *     be computed (or it would be the same group).
      */
 
     var ourGroupName,
@@ -2264,7 +2926,14 @@ function(startGroupName, alwaysWrap, wantsNested) {
         //  Can't find the parent group - check the body by obtaining all of
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
-                        'tibet:group'.asType().getQueryPath(wantsNested)))) {
+                        'tibet:group'.asType().getQueryPath(
+                                                wantsNested, false, false)))) {
+
+            //  If there is only one group and it's the same group as the one
+            //  we're coming from, then just return null
+            if (!TP.isArray(allGroups) && allGroups === fromGroupTPElem) {
+                return null;
+            }
 
             //  Wrap all of them.
             memberGroupTPElems = TP.wrap(allGroups);
@@ -2493,7 +3162,8 @@ function(startGroupName, alwaysWrap, wantsNested) {
      *     and 'always wrap' around. Defaults to false.
      * @param {Boolean} wantsNested Whether or not to consider nested groups as
      *     part of this query. Defaults to false.
-     * @returns {String} The name of the 'previous' group.
+     * @returns {String|null} The name of the 'previous' group or null if one
+     *     can't be computed (or it would be the same group).
      */
 
     var ourGroupName,
@@ -2538,7 +3208,14 @@ function(startGroupName, alwaysWrap, wantsNested) {
         //  Can't find the parent group - check the body by obtaining all of
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
-                        'tibet:group'.asType().getQueryPath(wantsNested)))) {
+                        'tibet:group'.asType().getQueryPath(
+                                                wantsNested, false, false)))) {
+
+            //  If there is only one group and it's the same group as the one
+            //  we're coming from, then just return null
+            if (!TP.isArray(allGroups) && allGroups === fromGroupTPElem) {
+                return null;
+            }
 
             //  Wrap all of them.
             memberGroupTPElems = TP.wrap(allGroups);
@@ -2595,6 +3272,25 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getScrollOffsetPoint',
+function() {
+
+    /**
+     * @method getScrollOffsetPoint
+     * @summary Returns the receiver's scroll offset position (i.e. scrollLeft &
+     *     scrollTop) as a TP.core.Point.
+     * @returns {TP.core.Point} The receiver's scroll offset position.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    return TP.pc(elem.scrollLeft, elem.scrollTop);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getSubmitName',
 function() {
 
@@ -2613,6 +3309,61 @@ function() {
     //  ID is our first choice, followed by Name
     return TP.elementGetAttribute(node, 'id') ||
             TP.elementGetAttribute(node, 'name');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getStylesheetForStyleResource',
+function() {
+
+    /**
+     * @method getStylesheetForStyleResource
+     * @summary Returns a native CSSStylesheet object for the receiver's style
+     *     resource (i.e. the stylesheet that would've been added via the
+     *     'addStylesheetTo' method).
+     * @returns {CSSStylesheet} The native CSSStyleSheet object.
+     */
+
+    var cssElementID,
+        cssElement,
+
+        stylesheet;
+
+    //  We compute an 'id' by taking our *resource* type name and escaping
+    //  it. The resource type name is usually the type name, but can be
+    //  overridden for special types that need to supply a different name
+    //  here for use in resource location computations.
+    cssElementID = TP.escapeTypeName(this.getType().getResourceTypeName());
+
+    //  Try to find the style element in our document given the computed ID.
+    cssElement = TP.byId(cssElementID, this.getNativeDocument(), false);
+    if (!TP.isElement(cssElement)) {
+        return null;
+    }
+
+    //  If a 'tibet:style' element was found, then that means that we're
+    //  executing in a non-inlined environment that will allow alternate style
+    //  content (like LESS) to be brought in directly. But we're not interested
+    //  in that element - we're only interested in native CSS elements that are
+    //  generated from those.
+    if (TP.elementGetFullName(cssElement) === 'tibet:style') {
+        //  The *real* stylesheet is the one created when the LESS or whatever
+        //  is finished processing will be the ID with the word '_generated'
+        //  appended to it.
+        cssElement = TP.byId(cssElementID + '_generated',
+                                this.getNativeDocument(),
+                                false);
+    }
+
+    //  If we couldn't find it, then exit.
+    if (!TP.isElement(cssElement)) {
+        return null;
+    }
+
+    //  Obtain the CSSStyleSheet object associated with that style element.
+    stylesheet = TP.cssElementGetStyleSheet(cssElement);
+
+    return stylesheet;
 });
 
 //  ------------------------------------------------------------------------
@@ -2647,17 +3398,131 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('hide',
-function() {
+function(preserveSpace) {
 
     /**
      * @method hide
      * @summary Hides the receiver's node.
+     * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
+     *     taken up by the element in its document. The default is false.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    TP.elementHide(this.getNativeNode());
+    TP.elementHide(this.getNativeNode(), preserveSpace);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('ignoreKeybindingsDirectly',
+function() {
+
+    /**
+     * @method ignoreKeybindingsDirectly
+     * @summary Ignore any handler that's been installed to observe signals
+     *     (normally those that use OBSERVER_FIRING) that are thrown from keys
+     *     that are bound using the receiver's key bindings. This is normally
+     *     used in a 'temporary mode' for a GUI element.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var keySignalHandler;
+
+    //  Grab the private, instance-level key handler that would've gotten
+    //  installed when the observation was made in the
+    //  'observeKeybindingsDirectly' method.
+    keySignalHandler = this.$get('$$keybindingSignalHandler');
+
+    if (TP.isCallable(keySignalHandler)) {
+        this.ignore(TP.core.Keyboard.getCurrentKeyboard(),
+                    'TP.sig.DOMKeySignal',
+                    keySignalHandler);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('isDisabled',
+function() {
+
+    /**
+     * @method isDisabled
+     * @summary Returns whether or not the receiver is *really* disabled. This
+     *     includes whether any of the receiver's parent nodes are disabled,
+     *     which means that the receiver is disabled.
+     * @returns {Boolean} Whether or not anElement is disabled.
+     */
+
+    return TP.elementIsDisabled(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
+function(direction) {
+
+    /**
+     * @method isOverflowing
+     * @summary Returns whether or not the receiver is overflowing its
+     *     containing block.
+     * @param {String} [direction] The direction to test overflowing. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
+     * @returns {Boolean} Whether or not the receiver is overflowing its
+     *     containing block.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    switch (direction) {
+
+        case TP.VERTICAL:
+            if (elem.offsetHeight === 0) {
+                return false;
+            }
+            return elem.scrollHeight > elem.offsetHeight;
+
+        case TP.HORIZONTAL:
+            if (elem.offsetWidth === 0) {
+                return false;
+            }
+            return elem.scrollWidth > elem.offsetWidth;
+
+        default:
+            if (elem.offsetWidth === 0 && elem.offsetHeight === 0) {
+                return false;
+            }
+            return elem.scrollHeight > elem.offsetHeight ||
+                    elem.scrollWidth > elem.offsetWidth;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('isReadyToRender',
+function() {
+
+    /**
+     * @method isReadyToRender
+     * @summary Whether or not the receiver is 'ready to render'. Normally, this
+     *     means that all of the resources that the receiver relies on to render
+     *     have been loaded.
+     * @returns {Boolean} Whether or not the receiver is ready to render.
+     */
+
+    var gids;
+
+    //  Check with the set of global IDs that our type is keeping and see if
+    //  that contains our document's global ID. If so, then that means that our
+    //  style sheets have been loaded into our document.
+    gids = this.getType().get('loadedStylesheetDocumentGIDs');
+
+    return gids.indexOf(this.getDocument().getGlobalID()) !== TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
@@ -2667,7 +3532,7 @@ function() {
 
     /**
      * @method isVisible
-     * @summary Returns whether or not anElement is *really* visible to the
+     * @summary Returns whether or not the receiver is *really* visible to the
            user, no matter what its CSS setting is.
      * @description In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
@@ -2676,6 +3541,68 @@ function() {
      */
 
     return TP.elementIsVisible(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('observeKeybindingsDirectly',
+function() {
+
+    /**
+     * @method observeKeybindingsDirectly
+     * @summary Installed a handler to observe signals (normally those that use
+     *     OBSERVER_FIRING) that are thrown from keys that are bound using the
+     *     receiver's key bindings. This is normally used in a 'temporary mode'
+     *     for a GUI element.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var keySignalHandler;
+
+    //  Define a handler that will trigger a signal based on a mapping in a
+    //  keybindings map.
+
+    keySignalHandler = function(aSignal) {
+
+        var evt,
+            keyname,
+
+            sigName,
+            sigType;
+
+        //  Look in the external keybindings map. If there's an entry there,
+        //  then we get the signal name from there.
+
+        evt = aSignal.getPayload();
+        keyname = TP.eventGetDOMSignalName(evt);
+
+        //  Query for a signal name via the getKeybinding method. This call will
+        //  look up through the supertype chain for the first match.
+        sigName = this.getType().getKeybinding(keyname);
+        if (TP.isEmpty(sigName)) {
+            return this;
+        }
+
+        //  If the signal name is a real TIBET type, then go ahead and signal
+        //  using the name, using the currently focused TP.core.Element as the
+        //  'target' of this signal.
+        sigType = TP.sys.getTypeByName(sigName);
+        if (TP.isType(sigType)) {
+            this.signal(sigName, TP.hc('trigger', TP.wrap(evt)));
+        }
+
+        return this;
+    }.bind(this);
+
+    //  Set up the observation.
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(),
+                    'TP.sig.DOMKeySignal',
+                    keySignalHandler);
+
+    this.defineAttribute('$$keybindingSignalHandler');
+    this.$set('$$keybindingSignalHandler', keySignalHandler);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2698,7 +3625,7 @@ function(moveAction) {
      *          TP.FIRST_IN_NEXT_GROUP
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
-     *          TP.PRECEDING.
+     *          TP.PRECEDING
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -2731,7 +3658,7 @@ function(moveAction) {
     //  UIFocus/UIDidFocus to be signaled, etc. etc.
     if (TP.isKindOf(successorTPElem, TP.core.UIElementNode)) {
 
-        this.getType().set('$calculatedFocusingTPElem', successorTPElem);
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem', successorTPElem);
 
         //  We do this to match the native focusing behavior that haven't been
         //  sent through this computation routine (i.e. clicks, etc.)
@@ -2746,25 +3673,34 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('removeAttribute',
-function(attributeName) {
+TP.core.UIElementNode.Inst.defineMethod('removeAttrDisabled',
+function() {
 
     /**
-     * @method removeAttribute
-     * @summary Removes the named attribute. This version overrides the one
-     *     inherited from TP.core.ElementNode to not bother with snapshotting
-     *     changes to a transactionally consistent DOM, since this object's
-     *     native node is an on-screen control.
-     * @param {String} attributeName The attribute name to remove.
-     * @returns {null} Null according to the spec for DOM 'removeAttribute'.
+     * @method removeAttrDisabled
+     * @summary The remover for the receiver's disabled state.
+     * @returns {Boolean} false
      */
 
-    TP.elementRemoveAttribute(this.getNativeNode(), attributeName, true);
+    this.$removeAttribute('disabled');
 
-    this.changed('@' + attributeName, TP.DELETE);
+    return this.$isInState('pclass:disabled', false);
+});
 
-    //  removeAttribute returns void according to the spec
-    return;
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('removeTransform',
+function() {
+
+    /**
+     * @method removeTransform
+     * @summary Removes any CSS transform set on the receiver.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.elementRemoveTransform(this.getNativeNode());
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2784,19 +3720,30 @@ function() {
 
         currentFocusContext,
 
+        foundPreviousContext,
+
         foundContext,
         tpElementToFocus;
 
     //  The element that the focus is moving to. This might be null if we aren't
     //  being told to resign focus because of the TIBET focus manager.
-    newFocusTPElem = this.getType().get('$calculatedFocusingTPElem');
+    newFocusTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
 
     //  Now, we should clear the $calculatedFocusingTPElem property so that
     //  focusing on the new element will succeed. We'll adjust this below as
     //  necessary in case we don't want the focusing to happen on the 'current
     //  new element' that the system thinks it wants to focus on, but another
     //  element of our own choosing.
-    this.getType().set('$calculatedFocusingTPElem', null);
+    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+
+    //  If the system has this flag on, that must mean that a component with a
+    //  different focus context will be taking focus, but in an asynchronous
+    //  fashion. Therefore, we do *not* want to proceed with manipulating the
+    //  focus stack. We want to leave the current element on there.
+    if (TP.core.UIElementNode.get('$asyncSwitchingContexts')) {
+        TP.core.UIElementNode.set('$asyncSwitchingContexts', false);
+        return this;
+    }
 
     //  If the focus stack is empty, exit here - the 'becomeFocusedResponder'
     //  routine will take care of pushing the new element on the stack.
@@ -2807,13 +3754,30 @@ function() {
     //  We are the currently focused element, get our focus context
     currentFocusContext = this.getFocusContextElement();
 
-    //  Grab the 'focusing element's' focus context. Since the focusing element
-    //  is becoming the focused responder, this context will be considered to be
-    //  the 'new' context.
-    if (TP.isKindOf(newFocusTPElem, TP.core.UIElementNode)) {
-        newFocusContext = newFocusTPElem.getFocusContextElement();
-    } else {
-        newFocusContext = null;
+    //  Grab the new focus context. This will either be the calculated focus
+    //  context or a focus context that can be computed from the element that
+    //  TIBET wants us to focus. Since the focusing element is becoming the
+    //  focused responder, this context will be considered to be the 'new'
+    //  context.
+    newFocusContext = TP.core.UIElementNode.get('$calculatedFocusContext');
+    if (TP.notValid(newFocusContext)) {
+        if (TP.isKindOf(newFocusTPElem, TP.core.UIElementNode)) {
+            newFocusContext = newFocusTPElem.getFocusContextElement();
+        }
+    }
+
+    //  If we haven't been able to calculate a new focus context and the focus
+    //  stack has at least 2 elements on it, then use the focus context of the
+    //  element that is the *second to the last* (because the element that we're
+    //  resigning is the last element).
+    foundPreviousContext = false;
+    if (TP.notValid(newFocusContext) && TP.$focus_stack.getSize() > 1) {
+        newFocusContext = TP.$focus_stack.at(-2).getFocusContextElement();
+        if (TP.isValid(newFocusContext)) {
+
+            //  Track whether or not we found a previous context.
+            foundPreviousContext = true;
+        }
     }
 
     //  If the two focus contexts are the same, then we pop the old focused
@@ -2822,7 +3786,8 @@ function() {
     if (TP.notValid(newFocusContext) ||
         newFocusContext.identicalTo(currentFocusContext)) {
 
-        TP.$focus_stack.pop();
+        this.getType().popOffFocusStack();
+
         this.signal('TP.sig.UIDidPopFocus');
 
         return this;
@@ -2842,22 +3807,32 @@ function() {
     //  the 'new' element.
     if (TP.isValid(foundContext)) {
         //  Pop the stack once to get back to the previously focused element.
-        TP.$focus_stack.pop();
+        this.getType().popOffFocusStack();
+
         this.signal('TP.sig.UIDidPopFocus');
 
         //  Pop it again (and capture the value because this will be the element
         //  that we want to refocus) to get back to the element *before* the
         //  previously focused element. We're gonna re-push the previously
         //  focused element when we focus it below.
-        tpElementToFocus = TP.$focus_stack.pop();
+        tpElementToFocus = this.getType().popOffFocusStack();
 
-        //  Reset the 'focusing element' to be the previously focused element.
-        //  The presence of this element will cause the currently focusing
-        //  element to *not* be focused (the event will be cancelled) and then
-        //  the 'focus' call below will try to focus this element *after it is
-        //  forked* (allowing the stack to unwind).
-        //  See 'acceptFocusedResponder' for more information.
-        this.getType().set('$calculatedFocusingTPElem', tpElementToFocus);
+        //  If we found a previous context, then we go ahead and focus what was
+        //  previously the *second to last* (but is now the last) element on the
+        //  focus stack.
+        if (foundPreviousContext) {
+            tpElementToFocus.focus();
+        } else {
+
+            //  Otherwise, reset the 'focusing element' to be the previously
+            //  focused element. The presence of this element will cause the
+            //  currently focusing element to *not* be focused (the event will
+            //  be cancelled) and then the 'focus' call below will try to focus
+            //  this element *after it is forked* (allowing the stack to
+            //  unwind). See 'acceptFocusedResponder' for more information.
+            TP.core.UIElementNode.set(
+                    '$calculatedFocusingTPElem', tpElementToFocus);
+        }
     }
 
     //  The new element's focusing context has never been encountered before -
@@ -2874,9 +3849,9 @@ function(direction, incrementValue, cssProperty) {
     /**
      * @method scrollBy
      * @summary Scrolls the receiver (which should be clipped in some fashion)
-     *     by the supplied incrementValue. Note that this increment value can be
-     *     provided as a non-pixel value ('1em' or '30%') and this will be
-     *     converted to a pixel value.
+     *     in the supplied direction by the supplied incrementValue. Note that
+     *     this increment value can be provided as a non-pixel value ('1em' or
+     *     '30%') and this will be converted to a pixel value.
      * @param {String} direction A named direction to scroll the element. Any
      *     one of:
      *          TP.UP
@@ -2940,6 +3915,74 @@ function(direction, incrementValue, cssProperty) {
             break;
         case TP.LEFT:
             elem.scrollLeft -= computedIncrement;
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('scrollTo',
+function(direction, scrollValue, cssProperty) {
+
+    /**
+     * @method scrollTo
+     * @summary Scrolls the receiver (which should be clipped in some fashion)
+     *     to either a side (TP.TOP, TP.RIGHT, TP.BOTTOM, TP.LEFT) directly or
+     *     to a value of a particular direction (TP.HORIZONTAL or TP.VERTICAL).
+     * @param {String} direction A named direction to scroll the element. Any
+     *     one of:
+     *          TP.TOP
+     *          TP.RIGHT
+     *          TP.BOTTOM
+     *          TP.LEFT
+     *
+     *          TP.HORIZONTAL
+     *          TP.VERTICAL
+     * @param {String|Number} scrollValue The value to scroll to. If this is
+     *     a Number, it will be assumed to be a number of pixels. Otherwise, it
+     *     will be used as a CSS value that a number of pixels will be computed
+     *     from. This parameter will not be used unless TP.HORIZONTAL or
+     *     TP.VERTICAL is used.
+     * @param {String} [cssProperty] The name of the property being used to
+     *     compute a pixel value from the supplied incrementValue. This is only
+     *     required if a percentage value is given, but is desired to produce
+     *     the most accurate results. This parameter will not be used unless
+     *     TP.HORIZONTAL or TP.VERTICAL is used.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem,
+        computedValue;
+
+    elem = this.getNativeNode();
+
+    if (direction === TP.HORIZONTAL || direction === TP.VERTICAL) {
+        computedValue = TP.elementGetPixelValue(
+                                    elem, scrollValue, cssProperty);
+    }
+
+    switch (direction) {
+        case TP.TOP:
+            elem.scrollTop = 0;
+            break;
+        case TP.RIGHT:
+            elem.scrollLeft = elem.scrollWidth;
+            break;
+        case TP.BOTTOM:
+            elem.scrollTop = elem.scrollHeight;
+            break;
+        case TP.LEFT:
+            elem.scrollLeft = 0;
+            break;
+        case TP.HORIZONTAL:
+            elem.scrollLeft = computedValue;
+            break;
+        case TP.VERTICAL:
+            elem.scrollTop = computedValue;
             break;
         default:
             break;
@@ -3032,10 +4075,10 @@ function(attributeName, attributeValue, shouldSignal) {
         } else {
             //  no known prefix, just set it as an attribute whose name
             //  happens to include a colon
-            TP.elementSetAttribute(node, attributeName, attributeValue);
+            TP.elementSetAttribute(node, attributeName, attributeValue, true);
         }
     } else {
-        TP.elementSetAttribute(node, attributeName, attributeValue);
+        TP.elementSetAttribute(node, attributeName, attributeValue, true);
     }
 
     if (flag) {
@@ -3124,22 +4167,25 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         //  e.g. 'foo:bar' -> 'FooBar'
         if (/:/.test(attrName = aspectName)) {
             parts = attrName.split(/:/);
-            attrName = parts.first().asStartUpper() +
-                        parts.last().asStartUpper();
+            attrName = TP.makeStartUpper(parts.first()) +
+                        TP.makeStartUpper(parts.last());
         } else {
             //  Otherwise, we just 'start upper' the whole piece
             //  'foo' -> 'Foo'
-            attrName = attrName.asStartUpper();
+            attrName = TP.makeStartUpper(attrName);
         }
 
         funcName = 'setAttr' + attrName;
         if (TP.canInvoke(this, funcName)) {
             this[funcName](facetValue);
+        } else {
+
+            //  NB: This will signal the standard TP.sig.ValueChange (where
+            //  'value' is the facet that changed).
+            this.set(aspectName, facetValue, shouldSignal);
         }
 
-        //  NB: This will signal the standard TP.sig.ValueChange (where 'value'
-        //  is the facet that changed).
-        return this.set(aspectName, facetValue, shouldSignal);
+        return this;
     }
 
     //  This will signal with the facet name as the facet that changed.
@@ -3157,17 +4203,17 @@ function(aTPElem) {
      * @method setGroupElement
      * @summary Sets the supplied tibet:group element as a grouping element for
      *     the receiver.
-     * @param {tibet:group} aTPElem The element to use as the grouping element
-     *     for the receiver.
-     * @exception TP.sig.InvalidElement
+     * @param {tibet:group|null} aTPElem The element to use as the grouping
+     *     element for the receiver. If this parameter is null, then the
+     *     receiver will be disassociated from any group.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    if (TP.notValid(aTPElem)) {
-        return this.raise('TP.sig.InvalidElement', aTPElem);
+    if (TP.isValid(aTPElem)) {
+        this.setAttribute('tibet:group', aTPElem.getLocalID());
+    } else {
+        this.removeAttribute('tibet:group');
     }
-
-    this.setAttribute('tibet:group', aTPElem.getLocalID());
 
     return this;
 });
@@ -3540,6 +4586,26 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('setStyleProperty',
+function(aProperty, aPropertyValue) {
+
+    /**
+     * @method setStyleProperty
+     * @summary Sets the receiver's style property named by the supplied
+     *     property name.
+     * @param {String} aProperty The name of the style property to set.
+     * @param {String|Number} aPropertyValue The value to set the style property
+     *     to.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.elementSetStyleProperty(this.getNativeNode(), aProperty, aPropertyValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('setTransform',
 function(aTransformStr) {
 
@@ -3554,6 +4620,33 @@ function(aTransformStr) {
      */
 
     TP.elementSetTransform(this.getNativeNode(), aTransformStr);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setTransformOrigin',
+function(xValue, yValue, zValue) {
+
+    /**
+     * @method setTransformOrigin
+     * @summary Sets the transformation origin of the receiver using the
+     *     supplied X and Y and (possibly) Z values.
+     * @description The X and Y values supplied to this method can be any CSS
+     *     'length' value (i.e. a number with a unit or a percentage) or one of
+     *     the approved CSS keywords. If a Number is supplied, 'px' is assumed.
+     *     The Z value must be a length, not keyword or percentage.
+     * @param {Number|String} xValue The 'X value' to set the transformation
+     *     origin to.
+     * @param {Number|String} yValue The 'Y value' to set the transformation
+     *     origin to.
+     * @param {Number|String} [zValue] The 'Z value' to set the transformation
+     *     origin to. Note that this *cannot* be a keyword or percentage.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.elementSetTransformOrigin(this.getNativeNode(), xValue, yValue, zValue);
 
     return this;
 });
@@ -3737,6 +4830,29 @@ function(direction, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @description Typically, the supplied stylesheet Element is the one that
+     *     the receiver is waiting for so that it can finalized style
+     *     computations. This could be either the receiver's 'core' stylesheet
+     *     or it's current 'theme' stylesheet, if the receiver is executing in a
+     *     themed environment.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('yieldFocusedResponder',
 function(focusingElement) {
 
@@ -3795,20 +4911,27 @@ function() {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var computedStyle,
-        elem;
+    var elem,
+
+        styleObj,
+        computedStyle;
 
     elem = this.getNativeNode();
 
-    //  Grab the computed style for the element
+    //  Grab the style object for the element
+    if (TP.notValid(styleObj = TP.elementGetStyleObj(elem))) {
+        return this.raise('TP.sig.InvalidStyle');
+    }
+
+    //  Grab the computed style object for the element
     if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(elem))) {
         return this.raise('TP.sig.InvalidStyle');
     }
 
     if (computedStyle.visibility === 'visible') {
-        elem.style.visibility = 'hidden';
+        styleObj.visibility = 'hidden';
     } else {
-        elem.style.visibility = 'visible';
+        styleObj.visibility = 'visible';
     }
 
     return this;
@@ -4554,9 +5677,9 @@ function(beActive) {
     this.$isInState('pclass:active', beActive);
 
     if (TP.isTrue(beActive)) {
-        this.signalAfterUnwind('TP.sig.UIDidActivate');
+        this.signalAfterRepaint('TP.sig.UIDidActivate');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidDeactivate');
+        this.signalAfterRepaint('TP.sig.UIDidDeactivate');
     }
 
     return this.$isInState('pclass:active');
@@ -4580,11 +5703,11 @@ function(beBusy, busyMsg) {
     if (TP.isTrue(beBusy)) {
         this.displayBusy(busyMsg);
 
-        this.signalAfterUnwind('TP.sig.UIDidBusy');
+        this.signalAfterRepaint('TP.sig.UIDidBusy');
     } else {
         this.hideBusy();
 
-        this.signalAfterUnwind('TP.sig.UIDidIdle');
+        this.signalAfterRepaint('TP.sig.UIDidIdle');
     }
 
     return this.$isInState('pclass:busy');
@@ -4606,9 +5729,9 @@ function(beClosed) {
     this.$isInState('pclass:closed', beClosed);
 
     if (TP.isTrue(beClosed)) {
-        this.signalAfterUnwind('TP.sig.UIDidClose');
+        this.signalAfterRepaint('TP.sig.UIDidClose');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidOpen');
+        this.signalAfterRepaint('TP.sig.UIDidOpen');
     }
 
     return this.$isInState('pclass:closed');
@@ -4630,9 +5753,9 @@ function(beCollapsed) {
     this.$isInState('pclass:collapsed', beCollapsed);
 
     if (TP.isTrue(beCollapsed)) {
-        this.signalAfterUnwind('TP.sig.UIDidCollapse');
+        this.signalAfterRepaint('TP.sig.UIDidCollapse');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidExpand');
+        this.signalAfterRepaint('TP.sig.UIDidExpand');
     }
 
     return this.$isInState('pclass:collapsed');
@@ -4701,9 +5824,9 @@ function(beHidden) {
     this.$isInState('pclass:hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
-        this.signalAfterUnwind('TP.sig.UIDidHide');
+        this.signalAfterRepaint('TP.sig.UIDidHide');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidShow');
+        this.signalAfterRepaint('TP.sig.UIDidShow');
     }
 
     return this.$isInState('pclass:hidden');
@@ -4815,6 +5938,25 @@ function(stateName) {
 //  DISPLAY SUPPORT
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('asyncActivatingFocusContext',
+function() {
+
+    /**
+     * @method asyncActivatingFocusContext
+     * @summary Prepares the system for a situation where a component with a
+     *     different focus context than the currently focused element will want
+     *     to focus, but do so in an asynchronous fashion. Therefore, we need to
+     *     manage the focus stack in a slightly different fashion.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.core.UIElementNode.set('$asyncSwitchingContexts', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('blur',
 function() {
 
@@ -4824,24 +5966,51 @@ function() {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var node;
+    var node,
+        oldMBE;
 
     node = this.getNativeNode();
+
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "blur" method. The receiver is: \n' +
+        TP.gid(node));
+    */
 
     //  Note that we do not need to set our 'focused' attribute to 'false'
     //  here, since our event handler defined on our type does that whenever
     //  this node is focused, whether by this mechanism or some other user
     //  interaction.
 
-    //  This will invoke the entire chain of events of blurring. See the
-    //  'onblur' method as the starting point.
-    if (TP.canInvoke(node, 'blur')) {
-        node.blur();
-    } else {
-        //  This is an element that cannot respond to blur calls (a non
-        //  HTMLELement). So just signal manually here.
-        this.signal('TP.sig.UIBlur');
-    }
+    oldMBE = TP.core.UIElementNode.get('$manuallyBlurringElement');
+    TP.core.UIElementNode.set('$manuallyBlurringElement', node);
+
+    node.blur();
+
+    TP.core.UIElementNode.set('$manuallyBlurringElement', oldMBE);
+
+    this.signal('TP.sig.UIBlur');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('blurFocusedDescendantElement',
+function() {
+
+    /**
+     * @method blurFocusedDescendantElement
+     * @summary Blurs the currently focused element if it is a descendant of the
+     *     receiver.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    TP.elementBlurFocusedDescendantElement(node);
 
     return this;
 });
@@ -4869,23 +6038,115 @@ function(moveAction) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var node;
+    var node,
+
+        focusedElem,
+
+        calculatedTPElem,
+        calculatedFocusContext,
+
+        oldMFE;
 
     node = this.getNativeNode();
 
-    //  Note that we do not need to set our 'focused' attribute to 'true'
-    //  here, since the signal handler for 'TP.sig.UIFocus' does that
-    //  whenever this node is focused, whether by this mechanism or some
-    //  other user interaction.
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "focus" method. The receiver is: \n' +
+        TP.gid(node));
+    */
 
-    //  This will invoke the entire chain of events of focusing. See the
-    //  'onfocus' method as the starting point.
-    if (TP.canInvoke(node, 'focus')) {
-        node.focus();
-    } else {
-        //  This is an element that cannot respond to focus calls (a non
-        //  HTMLELement). So just signal manually here.
-        this.signal('TP.sig.UIFocus');
+    if (TP.elementIsDisabled(node)) {
+        return this;
+    }
+
+    //  First, see if there's a focused element (without considering the
+    //  '.activeElement' property)
+    focusedElem = TP.documentGetFocusedElement(node.ownerDocument, false);
+
+    //  If so and it's identical to our native node, then just return.
+    if (focusedElem === node) {
+        return this;
+    }
+
+    //  Then, see if there's a focused element (including considering the
+    //  '.activeElement')
+    focusedElem = TP.documentGetFocusedElement(node.ownerDocument);
+
+    //  If that's not identical to our native node, then calculate a focusing
+    //  context (either from any set calculated focusing TP.core.ElementNode or
+    //  from ourself) and blur the currently focused element. This will cause
+    //  focus stack management to occur.
+    if (focusedElem !== node) {
+
+        calculatedTPElem =
+            TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+        if (TP.isValid(calculatedTPElem)) {
+            calculatedFocusContext = calculatedTPElem.getFocusContextElement();
+        } else {
+            calculatedFocusContext = this.getFocusContextElement();
+        }
+
+        TP.core.UIElementNode.set('$calculatedFocusContext',
+                                    calculatedFocusContext);
+
+        TP.wrap(focusedElem).blur();
+        TP.core.UIElementNode.set('$calculatedFocusContext', null);
+    }
+
+    //  Grab whatever TIBET is trying to focus. If it's real, set 'node' to it.
+    calculatedTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    if (TP.isValid(calculatedTPElem)) {
+        node = calculatedTPElem.getNativeNode();
+    }
+
+    //  Go ahead and call the native 'focus' routine (and set the 'manually
+    //  focusing element' trap to avoid recursion).
+    oldMFE = TP.core.UIElementNode.get('$manuallyFocusingElement');
+    TP.core.UIElementNode.set('$manuallyFocusingElement', node);
+
+    node.focus();
+
+    TP.core.UIElementNode.set('$manuallyFocusingElement', oldMFE);
+
+    //  Signal that the node focused.
+    TP.wrap(node).signal('TP.sig.UIFocus');
+
+    //  We've done what TIBET asked and we've focused the element - set this to
+    //  null.
+    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod(
+'focusAutofocusedOrFirstFocusableDescendant',
+function() {
+
+    /**
+     * @method focusAutofocusedOrFirstFocusableDescendant.
+     * @summary Focuses either any descendant that has an 'autofocus' attribute
+     *     or the first focusable descendant if an autofocusable descendant
+     *     cannot be found.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var focusedAutofocus,
+        focusables;
+
+    //  Try to focus any descendant that has an 'autofocus' attribute.
+    focusedAutofocus = TP.elementFocusAutofocusedElement(this.getNativeNode());
+
+    //  Couldn't find one - focus the first focusable descendant.
+    if (!focusedAutofocus) {
+
+        //  Note here that we supply true to return 'tibet:group' elements as
+        //  well - groups can be focused :-).
+        focusables = this.findFocusableElements(true);
+        if (TP.notEmpty(focusables)) {
+            focusables.first().focus();
+        }
     }
 
     return this;
@@ -5001,8 +6262,7 @@ function(content) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('alert: ' + content) : 0;
+    //  At this level, we do nothing. Override this method to take action.
 
     return this;
 });
@@ -5015,7 +6275,7 @@ function(content) {
     /**
      * @method displayBusy
      * @summary Displays busy content for the receiver, if any.
-     * @param {String} content The busy content to be displayed.
+     * @param {String} [content=""] The busy content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -5036,8 +6296,7 @@ function(content) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('help: ' + content) : 0;
+    //  At this level, we do nothing. Override this method to take action.
 
     return this;
 });
@@ -5054,8 +6313,7 @@ function(content) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('hint: ' + content) : 0;
+    //  At this level, we do nothing. Override this method to take action.
 
     return this;
 });
@@ -5341,11 +6599,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrActive(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIActivate'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIActivate', aSignal.at('trigger'));
 
     return;
 });
@@ -5366,12 +6625,17 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayAlert(aSignal.getPayload().at('msg'));
 
-        this.signalAfterUnwind('TP.sig.UIDidAlert');
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
+        this.signalAfterRepaint('TP.sig.UIDidAlert');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIAlert'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIAlert', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've already handled
+    //  the alert signal.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -5391,37 +6655,63 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    //  We only became the focused responder if we were in the UICANVAS.
-    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
+    //  The receiver is the currently focused element, but TIBET's focus
+    //  navigation machinery stashes a reference to the element we're going to
+    //  next. If we're blurring but not coming through the TIBET focus manager,
+    //  this will be null.
 
-        //  The receiver is the currently focused element, but TIBET's focus
-        //  navigation machinery stashes a reference to the element we're going
-        //  to next. If we're blurring but not coming through the TIBET focus
-        //  manager, this will be null.
+    focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
 
-        focusingTPElem = this.getType().get('$calculatedFocusingTPElem');
+    if (!this.shouldPerformUIHandler(aSignal) ||
+        !this.yieldFocusedResponder(focusingTPElem)) {
 
-        if (!this.shouldPerformUIHandler(aSignal) ||
-            !this.yieldFocusedResponder(focusingTPElem)) {
+        aSignal.preventDefault();
 
-            aSignal.preventDefault();
-
-            return;
-        }
-
-        //  Go ahead and tell ourself to resign from being the focused responder
-        this.resignFocusedResponder();
+        return;
     }
 
-    //  We're blurring... set 'focused' and 'selected' to false
+    //  Go ahead and tell ourself to resign from being the focused responder
+    this.resignFocusedResponder();
+
+    //  We're blurring... set 'focused' to false
     this.setAttrFocused(false);
-    this.setAttrSelected(false);
 
-    this.signalAfterUnwind('TP.sig.UIDidBlur');
+    this.signalAfterRepaint('TP.sig.UIDidBlur');
 
-    //  Make sure that we stop propagation here so that we don't get any more
-    //  responders further up in the chain processing this.
-    aSignal.shouldStop(true);
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIBlur'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIBlur', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've now blurred.
+    aSignal.stopPropagation();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineHandler('UIBlurred',
+function(aSignal) {
+
+    /**
+     * @method handleUIBlurred
+     * @summary Causes the receiver to be put into its 'blurred state'.
+     * @param {TP.sig.UIBlurred} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        if (this.getType().isResponderForUIFocusChange(
+                                    this.getNativeNode(), aSignal)) {
+            this.blur();
+        }
+
+        //  Make sure to stop the signal propagation here - we've already moved
+        //  the focus.
+        aSignal.stopPropagation();
+    }
 
     return;
 });
@@ -5442,11 +6732,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrBusy(true, aSignal.getPayload().at('msg'));
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIBusy'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIBusy', aSignal.at('trigger'));
 
     return;
 });
@@ -5465,11 +6756,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrClosed(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIClose'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIClose', aSignal.at('trigger'));
 
     return;
 });
@@ -5488,11 +6780,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrCollapsed(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UICollapse'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UICollapse', aSignal.at('trigger'));
 
     return;
 });
@@ -5510,11 +6803,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrActive(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDeactivate'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDeactivate', aSignal.at('trigger'));
 
     return;
 });
@@ -5529,6 +6823,11 @@ function(aSignal) {
      * @param {TP.sig.UIDelete} aSignal The signal that caused this handler to
      *     trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDelete'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDelete', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -5559,12 +6858,13 @@ function(aSignal) {
 
         this.removeAttribute('selected');
 
-        this.signalAfterUnwind('TP.sig.UIDidDeselect');
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
+        this.signalAfterRepaint('TP.sig.UIDidDeselect');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDeselect'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDeselect', aSignal.at('trigger'));
 
     return;
 });
@@ -5583,10 +6883,6 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did blur');
         void 0;
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
 
     return;
@@ -5606,10 +6902,6 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did focus');
         void 0;
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
 
     return;
@@ -5660,10 +6952,6 @@ function(aSignal) {
                  $focus_stack.collect(
                      function (item) {return item.asString()}).join('\n')) : 0;
         */
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
 
     return;
@@ -5683,11 +6971,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrDisabled(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDisabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
 
     return;
 });
@@ -5702,6 +6991,11 @@ function(aSignal) {
      * @param {TP.sig.UIDuplicate} aSignal The signal that caused this handler
      *     to trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDuplicate'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDuplicate', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -5720,11 +7014,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrDisabled(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIEnabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
 
     return;
 });
@@ -5743,11 +7038,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrCollapsed(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIExpand'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIExpand', aSignal.at('trigger'));
 
     return;
 });
@@ -5772,21 +7068,21 @@ function(aSignal) {
         return;
     }
 
-    //  We can only become the focused responder if we're in the UICANVAS.
-    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
-
-        //  Go ahead and tell ourself to become the focused responder
-        this.becomeFocusedResponder();
-    }
+    //  Go ahead and tell ourself to become the focused responder
+    this.becomeFocusedResponder();
 
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);
 
-    this.signalAfterUnwind('TP.sig.UIDidFocus');
+    this.signalAfterRepaint('TP.sig.UIDidFocus');
 
-    //  Make sure that we stop propagation here so that we don't get any more
-    //  responders further up in the chain processing this.
-    aSignal.shouldStop(true);
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIFocus'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIFocus', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've now focused.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -5812,9 +7108,36 @@ function(aSignal) {
             this.select();
         }
 
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
+        //  Make sure to stop the signal propagation here - we've already moved
+        //  the focus.
+        aSignal.stopPropagation();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineHandler('UIFocused',
+function(aSignal) {
+
+    /**
+     * @method handleUIFocused
+     * @summary Causes the receiver to be put into its 'focused state'.
+     * @param {TP.sig.UIFocused} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        if (this.getType().isResponderForUIFocusChange(
+                                    this.getNativeNode(), aSignal)) {
+            this.focus();
+        }
+
+        //  Make sure to stop the signal propagation here - we've already moved
+        //  the focus.
+        aSignal.stopPropagation();
     }
 
     return;
@@ -5836,8 +7159,17 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHelp(aSignal.getPayload().at('msg'));
 
-        this.signalAfterUnwind('TP.sig.UIDidHelp');
+        this.signalAfterRepaint('TP.sig.UIDidHelp');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIHelp'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIHelp', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've already handled
+    //  the help signal.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -5856,11 +7188,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrHidden(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIHide'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIHide', aSignal.at('trigger'));
 
     return;
 });
@@ -5881,8 +7214,17 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHint(aSignal.getPayload().at('msg'));
 
-        this.signalAfterUnwind('TP.sig.UIDidHint');
+        this.signalAfterRepaint('TP.sig.UIDidHint');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIHint'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIHint', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've already handled
+    //  the hint signal.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -5901,11 +7243,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrBusy(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIIdle'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIIdle', aSignal.at('trigger'));
 
     return;
 });
@@ -5924,11 +7267,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrOfOutRange(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInRange'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInRange', aSignal.at('trigger'));
 
     return;
 });
@@ -5943,6 +7287,11 @@ function(aSignal) {
      * @param {TP.sig.UIInsert} aSignal The signal that caused this handler to
      *     trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInsert'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInsert', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -5961,11 +7310,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrInvalid(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInvalid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInvalid', aSignal.at('trigger'));
 
     return;
 });
@@ -5984,11 +7334,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrClosed(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOpen'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOpen', aSignal.at('trigger'));
 
     return;
 });
@@ -6007,11 +7358,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrRequired(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOptional'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOptional', aSignal.at('trigger'));
 
     return;
 });
@@ -6030,11 +7382,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrOfOutRange(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOutOfRange'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOutOfRange', aSignal.at('trigger'));
 
     return;
 });
@@ -6053,11 +7406,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrReadonly(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadonly'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadonly', aSignal.at('trigger'));
 
     return;
 });
@@ -6076,11 +7430,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrReadonly(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadwrite'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadwrite', aSignal.at('trigger'));
 
     return;
 });
@@ -6099,11 +7454,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrRequired(true);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIRequired'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIRequired', aSignal.at('trigger'));
 
     return;
 });
@@ -6119,6 +7475,11 @@ function(aSignal) {
      *     trip.
      */
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIScroll'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIScroll', aSignal.at('trigger'));
+
     return TP.todo();
 });
 
@@ -6129,7 +7490,7 @@ function(aSignal) {
 
     /**
      * @method handleUISelect
-     * @summary Deselects the receiver's native data.
+     * @summary Selects the receiver's native data.
      * @param {TP.sig.UISelect} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -6148,12 +7509,13 @@ function(aSignal) {
 
         this.setAttribute('selected', 'true');
 
-        this.signalAfterUnwind('TP.sig.UIDidSelect');
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
+        this.signalAfterRepaint('TP.sig.UIDidSelect');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UISelect'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UISelect', aSignal.at('trigger'));
 
     return;
 });
@@ -6172,11 +7534,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrHidden(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIShow'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIShow', aSignal.at('trigger'));
 
     return;
 });
@@ -6195,11 +7558,12 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrInvalid(false);
-
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIValid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIValid', aSignal.at('trigger'));
 
     return;
 });
@@ -6214,6 +7578,12 @@ function(aSignal) {
      * @param {TP.sig.UIValueChange} aSignal The signal that caused this
      *     handler to trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIValueChange'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIValueChange',
+                                            aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -6443,15 +7813,15 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('signalAfterUnwind',
+TP.core.UIElementNode.Inst.defineMethod('signalAfterRepaint',
 function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
-     * @method signalAfterUnwind
-     * @summary Signals activity to registered observers, but does so after the
-     *     stack is unwound. This is useful when the signaler doesn't care about
-     *     the possibility that the signal could be cancelled and wants the UI
-     *     to update before the signal is fired.
+     * @method signalAfterRepaint
+     * @summary Signals activity to registered observers, but does so just
+     *     after the browser has repainted. This is useful when the signaler
+     *     doesn't care about the possibility that the signal could be cancelled
+     *     and wants the UI to update before the signal is fired.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object (unused in this
      *     override).
@@ -6467,15 +7837,21 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
      * @returns {TP.sig.Signal}
      */
 
-    (function() {
+    var elem;
 
-        return this.dispatch(
-                        aSignal,
-                        aPayload,
-                        aPolicy,
-                        isCancelable,
-                        isBubbling);
-    }.bind(this)).afterUnwind();
+    elem = this.getNativeNode();
+
+    setTimeout(function() {
+        //  do the actual dispatch work here using TIBET's standard
+        //  TP.dispatch() call (this can handle keyboard events etc)
+        return TP.dispatch(null, //  'V' will be computed from our native node
+                            aSignal,
+                            elem,
+                            aPayload,
+                            aPolicy,
+                            isCancelable,
+                            isBubbling);
+    }, TP.sys.cfg('fork.delay'));
 });
 
 //  ========================================================================

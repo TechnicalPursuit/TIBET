@@ -50,7 +50,7 @@ function(attributeName) {
         tags;
 
     //  first try default naming of getAttributeName (typical use)
-    funcName = 'get' + attributeName.asStartUpper();
+    funcName = 'get' + TP.makeStartUpper(attributeName);
     if (TP.canInvoke(this, funcName)) {
         return this[funcName]();
     }
@@ -87,7 +87,7 @@ function(attributeName, attributeValue) {
         elem;
 
     //  first try default naming of setAttributeName (typical use)
-    funcName = 'set' + attributeName.asStartUpper();
+    funcName = 'set' + TP.makeStartUpper(attributeName);
     if (TP.canInvoke(this, funcName)) {
         return this[funcName](attributeValue);
     }

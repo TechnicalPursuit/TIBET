@@ -51,32 +51,28 @@ TP.lang.Object.defineSubtype('test.SimpleTestType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'lastName',
+TP.test.SimpleTestType.Inst.defineAttribute('lastName', null,
     {
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'firstName',
+TP.test.SimpleTestType.Inst.defineAttribute('firstName', null,
     {
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'age',
+TP.test.SimpleTestType.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: Number
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleTestType.Inst.defineAttribute('SSN', null,
     {
         valid: {
             dataType: 'TP.test.SSN'
@@ -91,8 +87,7 @@ TP.test.SimpleTestType.Inst.defineAttribute(
 TP.test.SimpleTestType.defineSubtype('test.ComplexTestType');
 
 //  Redefinition from its supertype
-TP.test.ComplexTestType.Inst.defineAttribute(
-    'age',
+TP.test.ComplexTestType.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: Number,
@@ -103,8 +98,7 @@ TP.test.ComplexTestType.Inst.defineAttribute(
         }
     });
 
-TP.test.ComplexTestType.Inst.defineAttribute(
-    'gender',
+TP.test.ComplexTestType.Inst.defineAttribute('gender', null,
     {
         valid: {
             dataType: String,
@@ -155,7 +149,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -378,37 +372,18 @@ TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'lastName',
-    {
-        value: TP.tpc('lastName'),
-        valid: {
-            dataType: String
-        }
-    });
+TP.test.SimpleJSONContentType.Inst.defineAttribute('lastName',
+    TP.tpc('lastName'), {valid: {dataType: String}});
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'firstName',
-    {
-        value: TP.tpc('firstName'),
-        valid: {
-            dataType: String
-        }
-    });
+TP.test.SimpleJSONContentType.Inst.defineAttribute('firstName',
+    TP.tpc('firstName'), {valid: {dataType: String}});
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'age',
-    {
-        value: TP.tpc('age'),
-        valid: {
-            dataType: Number
-        }
-    });
+TP.test.SimpleJSONContentType.Inst.defineAttribute('age',
+    TP.tpc('age'), {valid: {dataType: Number}});
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleJSONContentType.Inst.defineAttribute('SSN',
+    TP.tpc('SSN'),
     {
-        value: TP.tpc('SSN'),
         valid: {
             dataType: 'TP.test.SSN'
         },
@@ -436,7 +411,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -586,46 +561,38 @@ TP.core.XMLContent.defineSubtype('test.SimpleXMLContentType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'lastName',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('lastName',
+    TP.xpc('/emp/lastName',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
     {
-        value: TP.xpc('/emp/lastName',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value')),
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'firstName',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('firstName',
+    TP.xpc('/emp/firstName',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
     {
-        value: TP.xpc('/emp/firstName',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value')),
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'age',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('age',
+    TP.xpc('/emp/age',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
     {
-        value: TP.xpc('/emp/age',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value')),
         valid: {
             dataType: Number
         }
     });
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('SSN',
+    TP.xpc('/emp/SSN',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value',
+                'shouldMakeStructures', true)),
     {
-        value: TP.xpc('/emp/SSN',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value',
-                            'shouldMakeStructures', true)),
         valid: {
             dataType: 'TP.test.SSN'
         },
@@ -653,7 +620,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -804,8 +771,7 @@ TP.lang.Object.defineSubtype('test.Employee');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.Employee.Inst.defineAttribute(
-    'lastname',
+TP.test.Employee.Inst.defineAttribute('lastname', null,
     {
         valid: {
             dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
@@ -813,8 +779,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'firstname',
+TP.test.Employee.Inst.defineAttribute('firstname', null,
     {
         valid: {
             dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
@@ -822,8 +787,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'age',
+TP.test.Employee.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: 'xs:decimal'
@@ -831,8 +795,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'address',
+TP.test.Employee.Inst.defineAttribute('address', null,
     {
         valid: {
             dataType: 'TP.tibet.address'  //  Defined as JSON Schema type
@@ -840,8 +803,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'gender',
+TP.test.Employee.Inst.defineAttribute('gender', null,
     {
         valid: {
             dataType: 'TP.tibet.gender'   //  Defined as JSON Schema type
@@ -849,8 +811,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'SSN',
+TP.test.Employee.Inst.defineAttribute('SSN', null,
     {
         valid: {
             dataType: 'TP.test.SSN'
@@ -884,19 +845,19 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
             TP.raise.$suspended = true;
 
             resp = TP.uc('~lib_schema/tibet_common_types.xsd').
-                                            getResource(TP.hc('async', false));
+                getResource(TP.hc('async', false, 'resultType', TP.WRAP));
             xmlSchemaTPDoc = resp.get('result');
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
             resp = TP.uc('~lib_schema/tibet_common_types.json').
-                                            getResource(TP.hc('async', false));
+                getResource(TP.hc('async', false));
             jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
         });
@@ -968,89 +929,80 @@ TP.core.XMLContent.defineSubtype('test.BaseMarkupEmployee');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'lastname',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('lastname',
+    TP.xpc('string(./person/lastname/text())'),
     {
-        value: TP.xpc('string(./person/lastname/text())'),
         valid: {
             dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'firstname',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('firstname',
+    TP.xpc('string(./person/firstname/text())'),
     {
-        value: TP.xpc('string(./person/firstname/text())'),
         valid: {
             dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'age',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('age',
+    TP.xpc('number(./person/age/text())'),
     {
-        value: TP.xpc('number(./person/age/text())'),
         valid: {
             dataType: 'xs:decimal'
         }
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'address',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('address',
+    TP.xpc('./person/address',
+        TP.hc('packageWith', 'object')),
     {
-        value: TP.xpc('./person/address',
-                        TP.hc('packageWith', 'object')),
         valid: {
             dataType: 'TP.tibet.address'    //  Defined as JSON Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'city',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('city',
+    TP.xpc('string(./person/address/city/text())'),
     {
-        value: TP.xpc('string(./person/address/city/text())'),
         valid: {
             dataType: String
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'state',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('state',
+    TP.xpc('string(./person/address/state/text())'),
     {
-        value: TP.xpc('string(./person/address/state/text())'),
         valid: {
             dataType: 'TP.tibet.usstatecodes' //  Defined as XML Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'gender',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('gender',
+    TP.xpc('string(./person/gender/text())'),
     {
-        value: TP.xpc('string(./person/gender/text())'),
         valid: {
             dataType: 'TP.tibet.gender'     //  Defined as JSON Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'uscitizen',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('uscitizen',
+    TP.xpc('boolean(./person/uscitizen/text())'),
     {
-        value: TP.xpc('boolean(./person/uscitizen/text())'),
         valid: {
             dataType: Boolean
         }
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'SSN',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('SSN',
+    TP.xpc('string(./person/SSN/text())'),
     {
-        value: TP.xpc('string(./person/SSN/text())'),
         relevant: TP.xpc('boolean(./person/uscitizen/text())'),
         valid: {
             dataType: 'TP.test.SSN'
@@ -1086,7 +1038,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -1095,12 +1047,12 @@ function() {
             //  ---
 
             resp = TP.uc('~lib_schema/tibet_common_types.xsd').
-                                            getResource(TP.hc('async', false));
+                    getResource(TP.hc('async', false, 'resultType', TP.WRAP));
             xmlSchemaTPDoc = resp.get('result');
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
             resp = TP.uc('~lib_schema/tibet_common_types.json').
-                                            getResource(TP.hc('async', false));
+                    getResource(TP.hc('async', false, 'resultType', TP.WRAP));
             jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
 
@@ -1150,7 +1102,7 @@ function() {
             //  ---
 
             //  Reset the metrics we're tracking.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -1166,7 +1118,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1191,7 +1143,6 @@ function() {
                 //  'valid' change
                 test.assert.didSignal(ageURI, 'AgeValidChange');
                 test.assert.didSignal(ageField, 'TP.sig.UIValid');
-                test.assert.didSignal(ageField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'AgeValidChange');
 
@@ -1202,23 +1153,23 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ageField.clearValue();
                     }).
                     sendKeys('Not A Number', ageField).
                     sendEvent(TP.hc('type', 'change'), ageField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  'age' change - age URI
@@ -1230,32 +1181,31 @@ function() {
                         //  'valid' change
                         test.assert.didSignal(ageURI, 'AgeValidChange');
                         test.assert.didSignal(ageField, 'TP.sig.UIInvalid');
-                        test.assert.didSignal(ageField, 'InvalidChange');
 
                         test.assert.didSignal(srcURI, 'AgeValidChange');
                     });
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ageField.clearValue();
                     }).
                     sendKeys('25', ageField).
                     sendEvent(TP.hc('type', 'change'), ageField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  'age' change - age URI
@@ -1267,7 +1217,6 @@ function() {
                         //  'valid' change
                         test.assert.didSignal(ageURI, 'AgeValidChange');
                         test.assert.didSignal(ageField, 'TP.sig.UIValid');
-                        test.assert.didSignal(ageField, 'InvalidChange');
 
                         test.assert.didSignal(srcURI, 'AgeValidChange');
                     });
@@ -1291,7 +1240,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1322,7 +1271,6 @@ function() {
                 //  'valid' change - citizen
                 test.assert.didSignal(citURI, 'UscitizenValidChange');
                 test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
-                test.assert.didSignal(citCheckbox, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'UscitizenValidChange');
@@ -1337,14 +1285,12 @@ function() {
                 //  'relevant' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-                test.assert.didSignal(ssnField, 'DisabledChange');
 
                 test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
                 //  'valid' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNValidChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(ssnField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1356,27 +1302,26 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                     click(citCheckbox).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  'relevant' change - SSN
                         test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                         test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
-                        test.assert.didSignal(ssnField, 'DisabledChange');
 
                         test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
@@ -1406,7 +1351,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1445,7 +1390,6 @@ function() {
                 //  value - so this constraint is satisfied)
                 test.assert.didSignal(gendURI, 'GenderRequiredChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIOptional');
-                test.assert.didSignal(gendField, 'RequiredChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'GenderRequiredChange');
@@ -1453,7 +1397,6 @@ function() {
                 //  'valid' change - gender
                 test.assert.didSignal(gendURI, 'GenderValidChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIValid');
-                test.assert.didSignal(gendField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'GenderValidChange');
@@ -1469,7 +1412,6 @@ function() {
                 //  uscitizen, but it's empty)
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-                test.assert.didSignal(ssnField, 'DisabledChange');
 
                 //  'relevant' change - source URI
                 test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1477,7 +1419,6 @@ function() {
                 //  'valid' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNValidChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(ssnField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1494,21 +1435,21 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                     click(citCheckbox).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  'relevant' change - source URI
                         test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1516,25 +1457,25 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ssnField.clearValue();
                     }).
                     sendKeys('333-33-3333', ssnField).
                     sendEvent(TP.hc('type', 'change'), ssnField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  SSN
@@ -1548,13 +1489,12 @@ function() {
                         //  'valid' change - SSN
                         test.assert.didSignal(ssnURI, 'SSNValidChange');
                         test.assert.didSignal(ssnField, 'TP.sig.UIValid');
-                        test.assert.didSignal(ssnField, 'InvalidChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'SSNValidChange');
 
                         //  'valid' change - Employee Group field
-                        test.assert.didSignal(empGroup, 'InvalidChange');
+                        test.assert.didSignal(empGroup, 'TP.sig.UIValid');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
             },
@@ -1577,7 +1517,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1625,7 +1565,6 @@ function() {
                 //  value - so this constraint is satisfied)
                 test.assert.didSignal(gendURI, 'GenderRequiredChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIOptional');
-                test.assert.didSignal(gendField, 'RequiredChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'GenderRequiredChange');
@@ -1633,7 +1572,6 @@ function() {
                 //  'valid' change - gender
                 test.assert.didSignal(gendURI, 'GenderValidChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIValid');
-                test.assert.didSignal(gendField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'GenderValidChange');
@@ -1648,7 +1586,6 @@ function() {
                 //  'relevant' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-                test.assert.didSignal(ssnField, 'DisabledChange');
 
                 //  'relevant' change - source URI
                 test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1656,7 +1593,6 @@ function() {
                 //  'valid' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNValidChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(ssnField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1671,7 +1607,6 @@ function() {
                 //  'required' change - city
                 test.assert.didSignal(cityURI, 'CityRequiredChange');
                 test.assert.didSignal(cityField, 'TP.sig.UIOptional');
-                test.assert.didSignal(cityField, 'InvalidChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'CityRequiredChange');
@@ -1682,7 +1617,6 @@ function() {
                 //  'valid' change - city
                 test.assert.didSignal(cityURI, 'CityValidChange');
                 test.assert.didSignal(cityField, 'TP.sig.UIValid');
-                test.assert.didSignal(cityField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'CityValidChange');
@@ -1697,7 +1631,6 @@ function() {
                 //  'required' change - state
                 test.assert.didSignal(stateURI, 'StateRequiredChange');
                 test.assert.didSignal(stateField, 'TP.sig.UIOptional');
-                test.assert.didSignal(stateField, 'RequiredChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'StateRequiredChange');
@@ -1705,7 +1638,6 @@ function() {
                 //  'valid' change - state
                 test.assert.didSignal(stateURI, 'StateValidChange');
                 test.assert.didSignal(stateField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(stateField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'StateValidChange');
@@ -1717,7 +1649,6 @@ function() {
                 //  'valid' change - Employee Group field (invalid because SSN
                 //  is invalid)
                 test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
-                test.assert.didSignal(empGroup, 'InvalidChange');
                 test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
                 //  ---
@@ -1727,30 +1658,29 @@ function() {
                 //  'required' change - Address Group field (invalid because
                 //  State is invalid)
                 test.assert.didSignal(addrGroup, 'TP.sig.UIInvalid');
-                test.assert.didSignal(addrGroup, 'InvalidChange');
                 test.assert.hasAttribute(addrGroup, 'pclass:invalid');
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         stateField.clearValue();
                     }).
                     sendKeys('CA', stateField).
                     sendEvent(TP.hc('type', 'change'), stateField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  State
@@ -1764,38 +1694,45 @@ function() {
                         //  'valid' change - state
                         test.assert.didSignal(stateURI, 'StateValidChange');
                         test.assert.didSignal(stateField, 'TP.sig.UIValid');
-                        test.assert.didSignal(stateField, 'InvalidChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'StateValidChange');
+
+                        //  Employee Group
+
+                        //  'valid' change - Employee Group field (invalid
+                        //  because SSN is still invalid). Note that, because
+                        //  it's state didn't change, no signal will have been
+                        //  thrown.
+                        test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
                         //  ---
 
                         //  Address Group
 
-                        //  'valid' change - Address Group field
+                        //  'valid' change - Address Group field (valid because
+                        //  State is now valid)
                         test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
-                        test.assert.didSignal(addrGroup, 'InvalidChange');
                         test.refute.hasAttribute(addrGroup, 'pclass:invalid');
                     });
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                     click(citCheckbox).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  'relevant' change - source URI
                         test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1803,25 +1740,25 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ssnField.clearValue();
                     }).
                     sendKeys('333-33-3333', ssnField).
                     sendEvent(TP.hc('type', 'change'), ssnField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  SSN
@@ -1835,7 +1772,6 @@ function() {
                         //  'valid' change - SSN
                         test.assert.didSignal(ssnURI, 'SSNValidChange');
                         test.assert.didSignal(ssnField, 'TP.sig.UIValid');
-                        test.assert.didSignal(ssnField, 'InvalidChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1844,9 +1780,9 @@ function() {
 
                         //  Employee Group
 
-                        //  'valid' change - Employee Group field
+                        //  'valid' change - Employee Group field (valid
+                        //  because SSN is now valid)
                         test.assert.didSignal(empGroup, 'TP.sig.UIValid');
-                        test.assert.didSignal(empGroup, 'InvalidChange');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
             },
@@ -1869,7 +1805,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -1896,14 +1832,12 @@ function() {
                 //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -1914,23 +1848,23 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         codeNumField.clearValue();
                     }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -1944,15 +1878,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -1977,7 +1908,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -2004,14 +1935,12 @@ function() {
                 //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -2022,23 +1951,23 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         codeNumField.clearValue();
                     }).
                     sendKeys('4', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -2052,15 +1981,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -2085,7 +2011,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -2112,14 +2038,12 @@ function() {
                 //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -2130,23 +2054,23 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         codeNumField.clearValue();
                     }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -2160,15 +2084,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -2193,7 +2114,7 @@ function() {
 
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
 
                 var srcURI,
@@ -2220,14 +2141,12 @@ function() {
                 //  'required' change (the model value is empty)
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -2238,20 +2157,20 @@ function() {
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  Code Number
@@ -2265,15 +2184,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');

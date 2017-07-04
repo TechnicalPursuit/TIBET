@@ -15,28 +15,43 @@
     @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
     @namespace pclass url(urn:tibet:pseudoclass);
 
-    tibet|group[id="fooGroup"]
-    {
+    tibet|testElem {
+
+        display: block;
+        position: relative;
+
+        background-color: blue;
+
+        width: 10px;
+        height: 10px;
+    }
+
+    tibet|testElem[pclass|active] {
+
+        border-color: red;
+    }
+
+    tibet|testElem[pclass|focus] {
+
+        background-color: yellow;
+    }
+
+    tibet|group[id="fooGroup"] {
+
         display: block;
         border: solid 1px black;
     }
+
     tibet|group[id="gooGroup"]
     {
         display: block;
         border: solid 1px blue;
     }
-    tibet|group[id="booGroup"]
-    {
+
+    tibet|group[id="booGroup"] {
+
         display: block;
         border: solid 1px red;
-    }
-    input[pclass|active]
-    {
-        border-color: red;
-    }
-    input[pclass|focus]
-    {
-        background-color: yellow;
     }
     ]]>
     </style>
@@ -48,7 +63,7 @@
     <h2>Focus Test #7</h2><br/>
     <br/>
     <br/>
-    This test sets up 4 'input' elements in multiple nested groups.
+    This test sets up 4 focusable elements in multiple nested groups.
     <br/>
     The 'goo' group has a 'wrapWhen' attribute.
     <br/>
@@ -72,34 +87,34 @@
     These fields are in the 'foo' group:
     <br/>
     <tibet:group id="fooGroup">
-        Focus test field #1: <input type="text" id="focusTestField1"/>
+        Focus test field #1: <tibet:testElem id="focusTestElem1" tabindex="0"/>
         <br/>
-        Focus test field #2: <input type="text" id="focusTestField2"/>
+        Focus test field #2: <tibet:testElem id="focusTestElem2" tabindex="0"/>
         <br/>
     </tibet:group>
     <br/>
     This field is not in any group:
     <br/>
-    Focus test field #3: <input type="text" id="focusTestField3"/>
+    Focus test field #3: <tibet:testElem id="focusTestElem3" tabindex="0"/>
     <br/>
     <br/>
     These fields are in the 'goo' group:
     <br/>
     <tibet:group id="gooGroup" wrapWhen="true">
-        Focus test field #4: <input type="text" id="focusTestField4"/>
+        Focus test field #4: <tibet:testElem id="focusTestElem4" tabindex="0"/>
         <br/>
-        Focus test field #5: <input type="text" id="focusTestField5"/>
+        Focus test field #5: <tibet:testElem id="focusTestElem5" tabindex="0"/>
         <br/>
         <br/>
         These fields are in the 'boo' group:
         <br/>
         <tibet:group id="booGroup">
-            Focus test field #6: <input type="text" id="focusTestField6"/>
+            Focus test field #6: <tibet:testElem id="focusTestElem6" tabindex="0"/>
             <br/>
-            Focus test field #7: <input type="text" id="focusTestField7"/>
+            Focus test field #7: <tibet:testElem id="focusTestElem7" tabindex="0"/>
         </tibet:group>
         <br/>
-        Focus test field #8: <input type="text" id="focusTestField8"/>
+        Focus test field #8: <tibet:testElem id="focusTestElem8" tabindex="0"/>
     </tibet:group>
 
 </body>

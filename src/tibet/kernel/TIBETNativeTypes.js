@@ -17,11 +17,6 @@ and supports a variety of collection API methods on them as a result. See
 the TIBETCollections.js file for more information.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true
-*/
-
 //  ========================================================================
 //  Object
 //  ========================================================================
@@ -714,11 +709,17 @@ function(aMonth, aYear) {
     var month,
         year;
 
-    month = TP.ifInvalid(aMonth, TP.dc().getISOMonth());
+    month = aMonth;
+    if (TP.notValid(month)) {
+        month = TP.dc().getISOMonth();
+    }
 
     //  if month is feb, adjust for leap years as needed
     if (month === 2) {
-        year = TP.ifInvalid(aYear, TP.dc().getFullYear());
+        year = aYear;
+        if (TP.notValid(year)) {
+            year = TP.dc().getFullYear();
+        }
         return this.daysInFebruary(year);
     }
 
@@ -1439,7 +1440,7 @@ function() {
     ms = this.getTime();
     sunday = ms - offset;
 
-    /* eslint-disable no-extra-parens */
+    /* eslint-disable no-extra-parens,no-implicit-coercion */
 
     //  construct array of ms values for that week
     weekdays = TP.ac();
@@ -1451,7 +1452,7 @@ function() {
     weekdays.add(sunday + (5 * Date.MSPERDAY));
     weekdays.add(sunday + (6 * Date.MSPERDAY));
 
-    /* eslint-enable no-extra-parens */
+    /* eslint-enable no-extra-parens,no-implicit-coercion */
 
     //  convert ms values into date instances
     weekdays.convert(
@@ -1977,7 +1978,7 @@ function() {
     ms = this.getTime();
     sunday = ms - offset;
 
-    /* eslint-disable no-extra-parens */
+    /* eslint-disable no-extra-parens,no-implicit-coercion */
 
     //  construct array of ms values for that week
     weekdays = TP.ac();
@@ -1989,7 +1990,7 @@ function() {
     weekdays.add(sunday + (5 * Date.MSPERDAY));
     weekdays.add(sunday + (6 * Date.MSPERDAY));
 
-    /* eslint-enable no-extra-parens */
+    /* eslint-enable no-extra-parens,no-implicit-coercion */
 
     //  convert ms values into date instances
     weekdays.convert(
@@ -3779,7 +3780,9 @@ function(varargs) {
         i,
         check;
 
+    /* eslint-disable consistent-this */
     result = this;
+    /* eslint-enable consistent-this */
 
     for (i = 0; i < arguments.length; i++) {
         check = arguments[i];
@@ -3812,7 +3815,9 @@ function(varargs) {
         i,
         check;
 
+    /* eslint-disable consistent-this */
     result = this;
+    /* eslint-enable consistent-this */
 
     for (i = 0; i < arguments.length; i++) {
         check = arguments[i];
@@ -4333,7 +4338,6 @@ function() {
      * @returns {Number} The receiver as a hashed number.
      */
 
-    /* jshint bitwise:false */
     /* eslint-disable no-extra-parens */
     return this.split('').reduce(
                 function(a, b) {
@@ -4344,13 +4348,60 @@ function() {
                 },
                 0);
     /* eslint-enable no-extra-parens */
-    /* jshint bitwise:true */
 });
 
 //  ------------------------------------------------------------------------
 
 //  Alias this over for the convenience of the as()/format() calls
 String.Inst.defineMethod('asLowerCase', TP.StringProto.toLowerCase);
+
+//  ------------------------------------------------------------------------
+
+String.Inst.defineMethod('asMD5',
+function(formatParams) {
+
+    /**
+     * @method asMD5
+     * @summary Returns the receiver as hashed by the MD5 hash.
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
+     *     parameters. These are parameters to a hashing result format and
+     *     should contain a key of 'hashFormat' that has one of the following
+     *     values:
+     *          TP.HASH_B64
+     *          TP.HASH_LATIN1
+     *          TP.HASH_HEX
+     *      The default is TP.HASH_HEX
+     * @returns {String} The receiver as an MD5 hash.
+     */
+
+    return TP.hash(this.asString(),
+                    TP.HASH_MD5,
+                    formatParams.at('hashFormat'));
+});
+
+//  ------------------------------------------------------------------------
+
+String.Inst.defineMethod('asSHA1',
+function(formatParams) {
+
+    /**
+     * @method asSHA1
+     * @summary Returns the receiver as hashed by the SHA-1 hash.
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
+     *     parameters. These are parameters to a hashing result format and
+     *     should contain a key of 'hashFormat' that has one of the following
+     *     values:
+     *          TP.HASH_B64
+     *          TP.HASH_LATIN1
+     *          TP.HASH_HEX
+     *      The default is TP.HASH_HEX
+     * @returns {String} The receiver as an SHA-1 hash.
+     */
+
+    return TP.hash(this.asString(),
+                    TP.HASH_SHA1,
+                    formatParams.at('hashFormat'));
+});
 
 //  ------------------------------------------------------------------------
 
@@ -4761,7 +4812,6 @@ function(aHash) {
 
     TP.keys(aHash).perform(
         function(aKey) {
-
             str = str.replace(TP.rc(aKey, 'g'), aHash.at(aKey));
         });
 
@@ -5023,7 +5073,9 @@ function(aSource, aSide) {
 
     hasThousands = false;
 
+    /* eslint-disable consistent-this */
     patStr = this;
+    /* eslint-enable consistent-this */
     patStrLength = patStr.getSize();
 
     //  If we're formatting a number so that it can go on the left-hand
@@ -5403,7 +5455,9 @@ function(startDelim, endDelim, aFunction) {
     arr = TP.ac();
     lastLastIndex = 0;
 
+    /* eslint-disable consistent-this */
     theString = this;
+    /* eslint-enable consistent-this */
 
     //  While the results that get returned from processing theString
     //  continue to be valid, run the replacement function over the chunk
@@ -5700,36 +5754,26 @@ function(aWidth, justified, forRendering, joinChar, splitMark) {
             for (j = 0; j < arr.length; j++) {
                 it = arr.at(j);
                 if (TP.notEmpty(it)) {
-                    // TP.alert('it: ' + it);
-
                     if (it.first() === '<' && it.last() === '>') {
-                        // TP.alert('ignoring markup: ' + it);
                         resarr[resarr.length - 1] += it;
                     } else {
-                        // TP.alert('checking string: ' + it);
 
                         size = it.replace(/&.+?;/g, ' ').getSize();
 
                         if (len + size <= width) {
-                            // TP.alert('appending: ' + it.getSize());
 
                             len += size;
                             resarr[resarr.length - 1] += it;
 
-                            // TP.alert('chunk is: ' + resarr[resarr.length-1]);
                         } else {
-                            // TP.alert('inserting: ' + it.getSize());
 
                             len = size;
                             resarr.push(it);
 
-                            // TP.alert('chunk is: ' + resarr[resarr.length-1]);
                         }
                     }
                 }
             }
-
-            // TP.alert('resarr:\n' + resarr.join('\n'));
 
             tmparr[i] = resarr.join(ch);
             // tmparr[i] = arr.join('');
@@ -6101,7 +6145,10 @@ function(aDataSource, aKeySource, aScope) {
     }
 
     theDataSource = TP.ifInvalid(aDataSource, '');
-    theKeySource = TP.ifInvalid(aKeySource, TP.hc());
+    theKeySource = aKeySource;
+    if (TP.notValid(theKeySource)) {
+        theKeySource = TP.hc();
+    }
 
     str = this.toString();
 
@@ -6165,9 +6212,14 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
     }
 
     data = TP.ifInvalid(aDataSource, '');
-    keys = TP.ifInvalid(aKeySource, TP.hc());
+    keys = aKeySource;
+    if (TP.notValid(keys)) {
+        keys = TP.hc();
+    }
 
+    /* eslint-disable consistent-this */
     thePattern = this;
+    /* eslint-enable consistent-this */
 
     arr = TP.ac();
     counter = 0;

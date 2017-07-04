@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-encrypt</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-encrypt</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-encrypt-1-encrypt-a-string-using-the-tds-encrypt-approach">tibet-encrypt(1) -- encrypt a string using the TDS.encrypt approach</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p>tibet encrypt &lt;string&gt;</p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Encrypts a string using the same approach used by the TDS. This command is<br>provided as a convenience allowing you to set a TDS_CRYPTO_KEY environment value<br>and then encrypt passwords or API keys prior to storing them.</p>
+<p>The TIBET Workflow System (TWS) tasks expect passwords/keys to be provided in<br>encrypted form as output by this command. This allows you to store task-specific<br>passwords or API keys as part of your task definitions or parameters.</p>
+<h2 id="examples">EXAMPLES</h2>
+<pre><code>$ export TDS_CRYPTO_KEY=&#39;TOPsecretKEY&#39;
+$ tibet encrypt &#39;myrestserviceapikey&#39;
+f92d28cf96fb590cf92a206a9b4c3af4
+</code></pre>
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.12 - Copyright (C) 2017 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

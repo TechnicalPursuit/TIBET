@@ -58,18 +58,18 @@ function(aRequest) {
 
     aRequest.stdout('Coming soon.');
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('xpath',
     TP.tsh.xpath.Type.getMethod('tshExecute'),
     'Executes an XPath expression against a node.',
     ':xpath',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

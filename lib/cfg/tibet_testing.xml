@@ -22,6 +22,7 @@
     <script src="testing/TP.test.Root.js"/>
     <script src="testing/TP.test.Suite.js"/>
     <script src="testing/TP.test.Case.js"/>
+    <script src="testing/TP.log.TestLayout.js"/>
     <script src="testing/TP.log.TestAppender.js"/>
 </config>
 
@@ -50,6 +51,7 @@
 
     <config ref="bind"/>
     <config ref="collections"/>
+    <config ref="content"/>
     <config ref="data"/>
     <config ref="databinding"/>
     <config ref="dom"/>
@@ -61,6 +63,7 @@
     <config ref="lifecycle"/>
     <config ref="localization"/>
     <config ref="logging"/>
+    <config ref="on"/>
     <config ref="oo"/>
     <config ref="permissions"/>
     <config ref="representations"/>
@@ -90,6 +93,10 @@
 <config id="collections">
     <script src="~lib_test/src/tibet/collections/Array_Tests.js" />
     <script src="~lib_test/src/tibet/collections/TP.core.Hash_Tests.js" />
+</config>
+
+<config id="content">
+    <script src="~lib_test/src/tibet/content/TP.core.Content_Tests.js" />
 </config>
 
 <config id="commonvalues">
@@ -127,7 +134,7 @@
 
 <config id="databinding">
     <script src="~lib_test/src/tibet/databinding/TP.core.DataPath_Tests.js" />
-    <script src="~lib_test/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
+    <script src="~lib_test/src/tibet/databinding/DataObservation_Tests.js" />
 </config>
 
 <config id="dom">
@@ -136,6 +143,7 @@
 
 <config id="focusing">
     <script src="~lib_test/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+    <script src="~lib_test/src/tibet/focusing/TP.html.Element_Tests.js" />
 </config>
 
 <config id="localization">
@@ -156,6 +164,10 @@
     <script src="~lib_test/src/tibet/formatting/TP.core.ElementNode_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/TP.templateParser_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/XML_JSON_Conversion_Tests.js" />
+</config>
+
+<config id="on">
+    <script src="~lib_test/src/on/TP.on_Tests.js" />
 </config>
 
 <config id="oo">
@@ -227,9 +239,16 @@
 
 <config id="xctrls">
     <script src="~lib_test/src/xctrls/TP.xctrls_button_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_buttonitem_Tests.js" />
     <script src="~lib_test/src/xctrls/TP.xctrls_checkitem_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_dialog_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_list_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_notifier_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_popup_Tests.js" />
     <script src="~lib_test/src/xctrls/TP.xctrls_radioitem_Tests.js" />
     <script src="~lib_test/src/xctrls/TP.xctrls_textitem_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_table_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_tooltip_Tests.js" />
 </config>
 
 <config id="xs">

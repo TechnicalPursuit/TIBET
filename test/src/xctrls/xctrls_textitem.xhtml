@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-		xmlns:ev="http://www.w3.org/2001/xml-events"
-		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-		xmlns:pclass="urn:tibet:pseudoclass">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 	<title></title>
@@ -14,6 +10,12 @@
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
     <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <tibet:data name="urn:tibet:test_data">
+        <![CDATA[
+        {"selection_set_1": "bar", "selection_set_2": ["foo", "baz"]}
+        ]]>
+    </tibet:data>
 
 </head>
 
@@ -54,27 +56,14 @@
 				</td>
 			</tr>
 			<tr>
-				<td>:focus</td>
-				<td>
-					<xctrls:textitem pclass:focus="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:textitem>
-				</td>
-				<td>
-					<xctrls:textitem pclass:focus="true" pclass:selected="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:textitem>
-				</td>
-			</tr>
-			<tr>
 				<td>:disabled</td>
 				<td>
-					<xctrls:textitem pclass:disabled="true">
+					<xctrls:textitem pclass:disabled="true" disabled="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:textitem>
 				</td>
 				<td>
-					<xctrls:textitem pclass:disabled="true" pclass:selected="true">
+					<xctrls:textitem pclass:disabled="true" disabled="true" pclass:selected="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:textitem>
 				</td>
@@ -93,8 +82,13 @@
 	<br/>
 	<br/>
 
-    A set of checkboxes to set value setting and data binding.
-    <tibet:group id="testGroup">
+    <br/>
+    <br/>
+
+    A set of textitems to check value setting. This item group does not allow multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup1">
         <xctrls:textitem id="datatextitem1">
             <xctrls:label>data textitem #1</xctrls:label>
             <xctrls:value>foo</xctrls:value>
@@ -107,10 +101,79 @@
             <xctrls:label>data textitem #3</xctrls:label>
             <xctrls:value>baz</xctrls:value>
         </xctrls:textitem>
-    </tibet:group>
+    </xctrls:itemgroup>
 
 	<br/>
 	<br/>
+
+    A set of textitems to check value setting. This item group allows multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup2" multiple="true">
+        <xctrls:textitem id="datatextitem4">
+            <xctrls:label>data textitem #4</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem5">
+            <xctrls:label>data textitem #5</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem6">
+            <xctrls:label>data textitem #6</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:itemgroup>
+
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+
+    A set of textitems to check data binding. This item group does not allow multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup3" bind:io="{value: urn:tibet:test_data#tibet(selection_set_1)}">
+        <xctrls:textitem id="datatextitem7">
+            <xctrls:label>data textitem #7</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem8">
+            <xctrls:label>data textitem #8</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem9">
+            <xctrls:label>data textitem #9</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:itemgroup>
+
+	<br/>
+	<br/>
+
+    A set of textitems to check data binding. This item group allows multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup4" multiple="true" bind:io="{value: urn:tibet:test_data#tibet(selection_set_2)}">
+        <xctrls:textitem id="datatextitem10">
+            <xctrls:label>data textitem #10</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem11">
+            <xctrls:label>data textitem #11</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem12">
+            <xctrls:label>data textitem #12</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:itemgroup>
+
+	<br/>
+	<br/>
+
+    <br/>
+    <br/>
 
 	<div class="controlBox">
 		<button onclick="TP.byId('textitem1').signal('UIDisabled');">Disable textitem #1</button>
@@ -118,7 +181,8 @@
 
 		<br/>
 
-		<button onclick="TP.byId('textitem1').signal('UIFocus');">Focus textitem #1</button>
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('textitem1').signal('UIFocused');}, 100)">Focus textitem #1</button>
 	</div>
 
 </body>

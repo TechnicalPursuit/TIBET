@@ -3,26 +3,10 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="base" basedir="~app_src">
 
-<config id="scripts">
-    <!-- put your source scripts here -->
-    <script src="~app_src/APP.{{appname}}.js" />
-    <script src="~app_src/APP.{{appname}}.Application.js" />
-    <script src="~app_src/tags/APP.{{appname}}.app.js" />
-</config>
-
-<config id="resources" if="boot.resourced">
-    <!-- maintained by tibet resources command -->
-</config>
-
-<config id="tests">
-    <!-- put your test scripts here -->
-    <script src="~app_test/APP_test.js" />
-    <script src="~app_src/tags/APP.{{appname}}.app_test.js" />
-</config>
-
 <config id="base" if="boot.phase_two">
     <config ref="scripts"/>
     <config ref="resources"/>
+    <config ref="inlined"/>
 </config>
 
 <config id="full" if="boot.phase_two">
@@ -36,6 +20,29 @@
 
 <config id="testing" if="boot.phase_two">
     <config ref="developer"/>
+</config>
+
+<config id="scripts">
+    <!-- put your source script references here -->
+    <script src="~app_src/APP.{{appname}}.js" />
+    <script src="~app_src/APP.{{appname}}.Object.js" />
+    <script src="~app_src/APP.{{appname}}.Application.js" />
+    <script src="~app_src/tags/APP.{{appname}}.app.js" />
+</config>
+
+<config id="tests">
+    <!-- put your test scripts here -->
+    <script src="~app_test/APP_test.js" />
+    <script src="~app_src/tags/APP.{{appname}}.app_test.js" />
+</config>
+
+<config id="resources">
+    <!-- put your explicit resource entries here -->
+    <resource href="~app/styles"/>
+</config>
+
+<config id="inlined" if="boot.phase_two boot.inlined">
+    <!-- maintained by tibet resources command -->
 </config>
 
 </package>

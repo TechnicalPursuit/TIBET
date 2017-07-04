@@ -11,7 +11,7 @@
 /* eslint-disable no-script-url */
 
 //  ========================================================================
-//  URI
+//  TIBETURL
 //  ========================================================================
 
 TP.core.TIBETURL.Inst.describe('construct',
@@ -1074,7 +1074,9 @@ function() {
         });
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TIBETURN
+//  ========================================================================
 
 TP.core.TIBETURN.Inst.describe('getResource',
 function() {
@@ -1118,559 +1120,6 @@ function() {
             foo,
             TP.sc('urn:tibet:FOO should refer to the FOO object in the code frame.'));
     });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.HTTPURL.Inst.describe('getResource',
-function() {
-
-    var params,
-        locStr,
-        resultElem,
-
-        server;
-
-    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
-    locStr = '/TIBET_endpoints/HTTP_GET_TEST';
-    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
-
-    this.beforeEach(
-        function() {
-            server = TP.test.fakeServer.create();
-        });
-
-    //  ---
-
-    this.afterEach(
-        function() {
-            server.restore();
-        });
-
-    //  ---
-
-    this.it('HTTPURL: Retrieve resource asynchronously', function(test, options) {
-        var url,
-            request;
-
-        server.respondWith(
-            TP.HTTP_GET,
-            locStr,
-            [
-                200,
-                {
-                    'Content-Type': TP.XML_ENCODED
-                },
-                resultElem.asString()
-            ]);
-
-        url = TP.uc(locStr);
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        request = TP.request(params);
-        request.defineMethod('complete',
-            function(aResult) {
-                var result;
-
-                result = TP.ifInvalid(aResult, request.get('result'));
-                test.assert.isEqualTo(
-                        result.get('html|body'),
-                        resultElem.get('html|body'));
-
-                TP.uc(locStr).unregister();
-            });
-
-        url.getResource(request);
-
-        server.respond();
-    });
-
-    //  ---
-
-    this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
-    }).todo();
-
-}).skip(!TP.sys.isHTTPBased());
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONPURL.Inst.describe('getResource',
-function() {
-
-    var params,
-        locStr,
-
-        stub;
-
-    params = TP.request('refresh', true, 'async', true);
-    locStr = 'jsonp://ajax.googleapis.com/ajax/services/search/web?' +
-                'v=1.0&q=football&start=10';
-
-    this.before(
-        function() {
-            stub = TP.jsonpCall.asStub();
-        });
-
-    //  ---
-
-    this.it('JSONPURL: Retrieve resource asynchronously', function(test, options) {
-        var url,
-            request;
-
-        stub.callsArgWith(1, '{"foo":"bar"}');
-
-        url = TP.uc(locStr);
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        request = TP.request(params);
-        request.defineMethod('complete',
-            function(aResult) {
-                var result;
-
-                result = TP.ifInvalid(aResult, request.get('result'));
-                test.assert.isValid(
-                    result,
-                    TP.sc('Expected valid result but got none.'));
-
-                TP.uc(locStr).unregister();
-            });
-
-        url.getResource(request);
-    });
-
-    //  ---
-
-    this.after(
-        function() {
-            stub.restore();
-        });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.LocalDBURL.Inst.describe('getResource',
-function() {
-
-    var storage;
-
-    //  Make sure there's an entry for 'localdb://' URL testing
-    storage = TP.core.LocalStorage.construct();
-
-    this.before(
-        function() {
-            var storageStr;
-
-            storageStr = TP.js2json(
-                {
-                    local_test: {
-                        author_info: {
-                            _id: 'author_info',
-                            _date_created: TP.dc(),
-                            _date_modified: TP.dc(),
-                            _body: {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
-                        }
-                    }
-                });
-
-            storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
-        });
-
-    //  ---
-
-    this.it('LocalDBURL: Retrieve resource', function(test, options) {
-
-        var url,
-            obj;
-
-        //  A GET request here using the ID causes a RETRIEVE
-
-        url = TP.uc('localdb://local_test/author_info');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        //  Implied method here is TP.HTTP_GET. Also, by default, localdb://
-        //  URLs are synchronous and configure their request to 'refresh'
-        //  automatically.
-        obj = url.getResource().get('result').at('_body');
-
-        test.assert.isTrue(
-            obj.hasKey('firstName'),
-            TP.sc('Expected that result would have a key of \'firstName\' and',
-                    ' it doesn\'t'));
-
-        test.assert.isEqualTo(
-                obj.at('firstName'),
-                'Bill',
-                TP.sc('Expected: ', '"Bill"',
-                        ' and got instead: ', obj.at('firstName'), '.'));
-
-        test.assert.isTrue(
-            obj.hasKey('lastName'),
-            TP.sc('Expected that result would have a key of \'lastName\' and',
-                    ' it doesn\'t'));
-
-        test.assert.isEqualTo(
-                obj.at('lastName'),
-                'Edney',
-                TP.sc('Expected: ', '"Edney"',
-                        ' and got instead: ', obj.at('lastName'), '.'));
-
-        url.unregister();
-    });
-
-    //  ---
-
-    this.it('LocalDBURL: Retrieve resource info', function(test, options) {
-
-        var url,
-            obj;
-
-        //  A HEAD request here causes a RETRIEVE of '_date_created' and
-        //  '_date_modified'.
-
-        url = TP.uc('localdb://local_test/author_info');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        //  By default, localdb:// URLs are synchronous and configure their
-        //  request to 'refresh' automatically.
-        obj = url.getResource(TP.hc('method', TP.HTTP_HEAD)).get('result');
-
-        test.assert.isTrue(
-            obj.hasKey('_date_created'),
-            TP.sc('Expected that result would have a key of \'_date_created\'',
-                    ' and it doesn\'t'));
-
-        test.assert.isTrue(
-            obj.hasKey('_date_modified'),
-            TP.sc('Expected that result would have a key of \'_date_modified\'',
-                    ' and it doesn\'t'));
-
-        url.unregister();
-    });
-
-    //  ---
-
-    this.it('LocalDBURL: Retrieve listing of all documents in db', function(test, options) {
-
-        var url,
-            obj;
-
-        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE of
-        //  all documents in the DB
-
-        url = TP.uc('localdb://local_test/_all_docs');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
-        url.isLoaded(false);
-
-        //  Implied method here is TP.HTTP_GET. Also, by default, localdb://
-        //  URLs are synchronous and configure their request to 'refresh'
-        //  automatically.
-        obj = url.getResource().get('result');
-
-        test.assert.isTrue(
-            obj.hasKey('total_rows'),
-            TP.sc('Expected that result would have a key of \'total_rows\' and',
-                    ' it doesn\'t'));
-
-        test.assert.isEqualTo(
-            obj.at('total_rows'),
-            1,
-            TP.sc('Expected: ', '1',
-                    ' and got instead: ', obj.at('total_rows'), '.'));
-
-        test.assert.isTrue(
-            obj.hasKey('rows'),
-            TP.sc('Expected that result would have a key of \'rows\' and',
-                    ' it doesn\'t'));
-
-        url.unregister();
-    });
-
-    //  ---
-
-    this.after(
-        function() {
-            storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
-        });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.PouchDBURL.Inst.describe('getResource',
-function() {
-
-    var testDb;
-
-    this.before(
-        function(suite, options) {
-
-            //  'this' refers to the suite here.
-            suite.then(
-                function() {
-                    var now,
-
-                        pouchPromise,
-                        promise;
-
-                    now = Date.now();
-
-                    testDb = new TP.extern.PouchDB('pouch_test');
-
-                    pouchPromise = testDb.put(
-                        {
-                            _id: 'author_info',
-                            date_created: now,
-                            date_modified: now,
-                            body: {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
-                        });
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
-                });
-        });
-
-    //  ---
-
-    this.it('PouchDBURL: Retrieve resource', function(test, options) {
-
-        var url;
-
-        //  A GET request here using the ID causes a RETRIEVE
-        url = TP.uc('pouchdb://pouch_test/author_info');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try
-        //  to reload from the underlying source.
-        url.isLoaded(false);
-
-        test.thenPromise(
-            function(resolver, rejector) {
-                var pouchRequest;
-
-                //  Implied method here is TP.HTTP_GET. Also, pouchdb://
-                //  URLs are asynchronous and configure their request to
-                //  'refresh' automatically.
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'async', true));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data').at('body');
-
-                        test.assert.isTrue(
-                            result.hasKey('firstName'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'firstName\' and it doesn\'t'));
-
-                        test.assert.isEqualTo(
-                                result.at('firstName'),
-                                'Bill',
-                                TP.sc('Expected: ', '"Bill"',
-                                        ' and got instead: ',
-                                        result.at('firstName'), '.'));
-
-                        test.assert.isTrue(
-                            result.hasKey('lastName'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'lastName\' and it doesn\'t'));
-
-                        test.assert.isEqualTo(
-                                result.at('lastName'),
-                                'Edney',
-                                TP.sc('Expected: ', '"Edney"',
-                                        ' and got instead: ',
-                                        result.at('lastName'), '.'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.getResource(pouchRequest);
-            });
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
-
-        var url;
-
-        //  A GET request here using the ID causes a RETRIEVE
-        url = TP.uc('pouchdb://pouch_test/author_info');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try
-        //  to reload from the underlying source.
-        url.isLoaded(false);
-
-        test.thenPromise(
-            function(resolver, rejector) {
-                var pouchRequest;
-
-                //  Implied method here is TP.HTTP_GET, which means we need to
-                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
-                //  URLs are asynchronous and configure their request to
-                //  'refresh' automatically.
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'method', TP.HTTP_HEAD,
-                                                'async', true));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isTrue(
-                            result.hasKey('date_created'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'date_created\' and it doesn\'t'));
-
-                        test.assert.isTrue(
-                            result.hasKey('date_modified'),
-                            TP.sc('Expected that result would have a key of',
-                                    ' \'date_modified\' and it doesn\'t'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.getResource(pouchRequest);
-            });
-    });
-
-    //  ---
-
-    this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
-
-        var url;
-
-        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
-        //  of all documents in the DB
-        url = TP.uc('pouchdb://pouch_test/_all_docs');
-
-        //  Mark the URL as 'not loaded' to ensure that it will try
-        //  to reload from the underlying source.
-        url.isLoaded(false);
-
-        test.thenPromise(
-            function(resolver, rejector) {
-                var pouchRequest;
-
-                //  Implied method here is TP.HTTP_GET, which means we need to
-                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
-                //  URLs are asynchronous and configure their request to
-                //  'refresh' automatically.
-                pouchRequest = TP.request(TP.hc('uri', url,
-                                                'async', true));
-
-                pouchRequest.defineHandler('RequestSucceeded',
-                    function(aResponse) {
-
-                        var result;
-
-                        //  The result is a TP.core.JSONContent object.
-                        result = aResponse.getResult().get('data');
-
-                        test.assert.isTrue(
-                            result.hasKey('total_rows'),
-                            TP.sc('Expected that result would have a key of \'total_rows\' and',
-                                    ' it doesn\'t'));
-
-                        test.assert.isEqualTo(
-                                result.at('total_rows'),
-                                1,
-                                TP.sc('Expected: ', '1',
-                                        ' and got instead: ', result.at('total_rows'), '.'));
-
-                        test.assert.isTrue(
-                            result.hasKey('rows'),
-                            TP.sc('Expected that result would have a key of \'rows\' and',
-                                    ' it doesn\'t'));
-
-                        resolver();
-                    });
-
-                pouchRequest.defineHandler('RequestFailed',
-                    function(aResponse) {
-                        test.failUsingResponse(aResponse);
-
-                        rejector();
-                    });
-
-                pouchRequest.defineHandler('RequestCompleted',
-                    function(aResponse) {
-                        url.unregister();
-                    });
-
-                url.getResource(pouchRequest);
-            });
-    });
-
-    //  ---
-
-    this.after(
-        function(suite, options) {
-
-            //  'this' refers to the suite here.
-            suite.then(
-                function() {
-                    var pouchPromise,
-                        promise;
-
-                    pouchPromise = testDb.destroy();
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
-                });
-        });
 });
 
 //  ------------------------------------------------------------------------
@@ -1748,6 +1197,1517 @@ function() {
                         ' and got instead: ', val, '.'));
     });
 });
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('observe JS objects',
+function() {
+
+    var modelObj,
+        objValueObsFunction,
+        objStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        setResourceParams,
+
+        objURI1,
+        objURI2,
+        objURI3,
+        objURI4,
+        objURI5,
+        objURI6,
+        objURI7;
+
+    this.before(function() {
+
+        //  This returns a TP.lang.Hash
+        modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
+        TP.sys.registerObject(modelObj, 'objData');
+
+        //  Set up this path just to observe
+        objURI1 = TP.uc('urn:tibet:objData');
+        objURI1.set('shouldCreateContent', true);
+
+        setResourceParams = TP.hc('observeResource', true);
+        objURI1.setResource(modelObj, setResourceParams);
+        setResourceParams.atPut('signalChange', true);
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        objValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        objValueObsFunction.observe(objURI1, 'ValueChange');
+
+        objStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        objStructureObsFunction.observe(objURI1, 'StructureChange');
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        objValueObsFunction.ignore(objURI1, 'ValueChange');
+        objStructureObsFunction.ignore(objURI1, 'StructureChange');
+
+        objURI1.unregister();
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
+        objURI2.setResource('goo', setResourceParams);
+
+        //  The value path results should have the path for objURI2
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr(),
+            'value path results');
+
+        //  The structure path results should have the path for objURI2
+        test.assert.contains(structurePathResults, objURI2.getFragmentExpr(),
+            'structure path results');
+
+        //  But *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr(),
+            'refute value path');
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr(),
+            'refute structure path');
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        objURI3 = TP.uc('urn:tibet:objData#tibet(foo.3[bar,moo,too].roo)');
+        objURI3.set('shouldCreateContent', true);
+
+        objURI3.setResource(TP.ac(), setResourceParams);
+
+        //  The value path results should have the path for objURI3
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr(),
+            'objURI3 value path results');
+
+        //  The structure path results should have the path for objURI3
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr(),
+            'objURI3 structure path results');
+
+        //  And the value path results for objURI2 (because we replaced the
+        //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr(),
+            'objURI2 value path results');
+
+        //  But not the structure path results for objURI2 (we created no new
+        //  structure there).
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr(),
+            'objURI2 structure path results');
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr(),
+            'refute objURI1 value path results');
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr(),
+            'refute objURI1 structure path results');
+    });
+
+    this.it('change of an end aspect of a branching path', function(test, options) {
+
+        objURI4 = TP.uc('urn:tibet:objData#tibet(foo.3.bar.roo)');
+        objURI4.getResource();
+
+        objURI5 = TP.uc('urn:tibet:objData#tibet(foo.3.moo.roo)');
+        objURI5.set('shouldCreateContent', true);
+
+        objURI5.setResource(42, setResourceParams);
+
+        //  The value path results should have the path for objURI5
+        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI5
+        test.assert.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And *not* for objURI4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  The value path results should have the path for objURI3
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI3
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And *not* for objURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change of a parent aspect of a branching path', function(test, options) {
+
+        objURI6 = TP.uc('urn:tibet:objData#tibet(foo.3)');
+        objURI6.set('shouldCreateContent', true);
+
+        objURI6.setResource('fluffy', setResourceParams);
+
+        //  The value path results should have the path for objURI6
+        test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI6 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI6.getFragmentExpr());
+
+        //  And for objURI5 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI5 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And for objURI4 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI4 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  And for objURI3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI3 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And for objURI2 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI2 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change of another parent aspect of a branching path', function(test, options) {
+
+        objURI7 = TP.uc('urn:tibet:objData#tibet(foo.2)');
+        objURI7.set('shouldCreateContent', true);
+
+        objURI7.setResource(TP.ac(), setResourceParams);
+
+        //  The value path results should have the path for objURI7
+        test.assert.contains(valuePathResults, objURI7.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI7
+        test.assert.contains(structurePathResults, objURI7.getFragmentExpr());
+
+        //  But *not* for objURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI6.getFragmentExpr());
+
+        //  And *not* for objURI5 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI5.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And *not* for objURI4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  And *not* for objURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And *not* for objURI2 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+
+        objURI1.set('shouldCreateContent', true);
+
+        //  Set everything under 'foo' to a new data structure
+        objURI1.setResource(TP.json2js('["A","B","C","D"]'),
+                setResourceParams);
+
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
+        test.assert.contains(valuePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
+
+        objURI1.setResource(modelObj, setResourceParams);
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+
+        objURI6.setResource('goofy', setResourceParams);
+
+        //  The path has should *not* have the path for objURI7 (it's at a
+        //  similar level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, objURI7.getFragmentExpr());
+
+        //  The value path results should have the path for objURI6
+        test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, objURI6.getFragmentExpr());
+
+        //  And for objURI5
+        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And for objURI4
+        test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  And for objURI3
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And for objURI2
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, 'value');
+
+        //  And not for the structural path result
+        test.refute.contains(structurePathResults, 'value');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('observe plain XML',
+function() {
+
+    var modelObj,
+        xmlValueObsFunction,
+        xmlStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        setResourceParams,
+
+        xmlURI1,
+        xmlURI2,
+        xmlURI3,
+        xmlURI4,
+        xmlURI5,
+        xmlURI6,
+        xmlURI7,
+        xmlURI8;
+
+    this.before(function() {
+        modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
+        TP.sys.registerObject(modelObj, 'xmlData');
+
+        setResourceParams = TP.hc('observeResource', true);
+        xmlURI1 = TP.uc('urn:tibet:xmlData');
+        xmlURI1.setResource(modelObj, setResourceParams);
+        setResourceParams.atPut('signalChange', true);
+
+        //  Set up this path just to observe
+        xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp)');
+        xmlURI2.getResource();
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        xmlValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
+
+        xmlStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        xmlStructureObsFunction.observe(xmlURI1, 'StructureChange');
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
+        xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
+
+        xmlURI1.unregister();
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
+        xmlURI3.set('shouldCreateContent', true);
+
+        xmlURI3.setResource('Jones', setResourceParams);
+
+        //  The value path should have the path for xmlURI3
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+
+        //  But not the structure path results for xmlURI3 (we created no new
+        //  structure there).
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a single attribute path', function(test, options) {
+
+        xmlURI4 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname/@valid)');
+        xmlURI4.set('shouldCreateContent', true);
+
+        xmlURI4.setResource(false, setResourceParams);
+
+        //  The value path should have the path for xmlURI4
+        test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
+
+        //  But not the structure path results for xmlURI4 (we created no
+        //  new structure there).
+        test.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a single attribute path with creation', function(test, options) {
+
+        xmlURI5 = TP.uc('urn:tibet:xmlData#xpath1(/emp/age/@valid)');
+        xmlURI5.set('shouldCreateContent', true);
+
+        xmlURI5.setResource(false, setResourceParams);
+
+        //  The value path should have the path for xmlURI5
+        test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
+
+        //  And the structure path results for xmlURI5 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI5.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
+        xmlURI6.set('shouldCreateContent', true);
+
+        xmlURI6.setResource('November', setResourceParams);
+
+        //  The value path should have the path for xmlURI6
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+
+        //  And the structure path results for xmlURI6 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  But *not* for xmlURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along another branching path', function(test, options) {
+
+        xmlURI7 = TP.uc('urn:tibet:xmlData#xpath1(/emp/ssn)');
+        xmlURI7.set('shouldCreateContent', true);
+
+        xmlURI7.setResource('555-55-5555', setResourceParams);
+
+        //  The value path should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+
+        //  And the structure path results for xmlURI7 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  But *not* for xmlURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
+        //  a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change at the top level', function(test, options) {
+
+        xmlURI2.set('shouldCreateContent', true);
+
+        //  Set everything under '/emp' to a new data structure
+        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'),
+            setResourceParams);
+
+        //  All paths will have changed
+
+        //  Both results should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  And for xmlURI6 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And for xmlURI3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And for xmlURI2 (because it's the same path as xmlURI2)
+        test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change all of the elements individually', function(test, options) {
+
+        //  Set up this path just to observe
+        xmlURI8 = TP.uc('urn:tibet:xmlData#xpath1(//*)');
+        xmlURI8.getResource();
+
+        //  But set using xmlURI6
+        xmlURI6.setResource('November', setResourceParams);
+
+        //  Both results should have the path for xmlURI8 (it's for all
+        //  elements)
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
+
+        //  But *not* for xmlURI7 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  Both results should have the path for xmlURI6 (we created new
+        //  structure there).
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  But *not* for xmlURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+
+        xmlURI1.set('shouldCreateContent', true);
+
+        //  Set everything under 'foo' to a new data structure
+        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'),
+            setResourceParams);
+
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
+        test.assert.contains(valuePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
+
+        xmlURI1.setResource(modelObj, setResourceParams);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('observe JSON content',
+function() {
+
+    var modelObj,
+        jsonValueObsFunction,
+        jsonStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        setResourceParams,
+
+        jsonURI1,
+        jsonURI2,
+        jsonURI3,
+        jsonURI4,
+        jsonURI5,
+        jsonURI6,
+        jsonURI7;
+
+    this.before(function() {
+
+        modelObj = TP.core.JSONContent.construct(
+                    '{"foo":["1st","2nd",{"hi":"there"}]}');
+        TP.sys.registerObject(modelObj, 'jsonData');
+
+        //  Set up this path just to observe
+        jsonURI1 = TP.uc('urn:tibet:jsonData');
+        jsonURI1.set('shouldCreateContent', true);
+
+        setResourceParams = TP.hc('observeResource', true);
+        jsonURI1.setResource(modelObj, setResourceParams);
+        setResourceParams.atPut('signalChange', true);
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        jsonValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        jsonValueObsFunction.observe(jsonURI1, 'ValueChange');
+
+        jsonStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        jsonStructureObsFunction.observe(jsonURI1, 'StructureChange');
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        jsonValueObsFunction.ignore(jsonURI1, 'ValueChange');
+        jsonStructureObsFunction.ignore(jsonURI1, 'StructureChange');
+
+        jsonURI1.unregister();
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        jsonURI2 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].bar)');
+        jsonURI2.set('shouldCreateContent', true);
+
+        jsonURI2.setResource('goo', setResourceParams);
+
+        //  The value path results should have the path for jsonURI2
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
+
+        //  The structure path results should have the path for jsonURI2
+        test.assert.contains(structurePathResults, jsonURI2.getFragmentExpr());
+
+        //  But *not* for jsonURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        jsonURI3 = TP.uc('urn:tibet:jsonData#jpath($.foo[3][bar,moo,too].roo)');
+        jsonURI3.set('shouldCreateContent', true);
+
+        jsonURI3.setResource(TP.ac(), setResourceParams);
+
+        //  The value path results should have the path for jsonURI3
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
+
+        //  The structure path results should have the path for jsonURI3
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
+
+        //  And the value path results for jsonURI2 (because and we replaced the
+        //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
+
+        //  But not the structure path results for jsonURI2 (we created no new
+        //  structure there).
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+
+        //  And *not* for jsonURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+    });
+
+    this.it('change of an end aspect of a branching path', function(test, options) {
+
+        jsonURI4 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].bar.roo)');
+        jsonURI4.getResource();
+
+        jsonURI5 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].moo.roo)');
+        jsonURI5.set('shouldCreateContent', true);
+
+        jsonURI5.setResource(42, setResourceParams);
+
+        //  The value path results should have the path for jsonURI5
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI5
+        test.assert.contains(structurePathResults, jsonURI5.getFragmentExpr());
+
+        //  And *not* for jsonURI4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
+
+        //  The value path results should have the path for jsonURI3
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI3
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
+
+        //  And *not* for jsonURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+
+        //  And *not* for jsonURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+    });
+
+    this.it('change of a parent aspect of a branching path', function(test, options) {
+
+        jsonURI6 = TP.uc('urn:tibet:jsonData#jpath($.foo[3])');
+        jsonURI6.set('shouldCreateContent', true);
+
+        jsonURI6.setResource('fluffy', setResourceParams);
+
+        //  The value path results should have the path for jsonURI6
+        test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI6 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonURI6.getFragmentExpr());
+
+        //  And for jsonURI5 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI5 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonURI5.getFragmentExpr());
+
+        //  And for jsonURI4 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI4 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonURI4.getFragmentExpr());
+
+        //  And for jsonURI3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI3 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
+
+        //  And for jsonURI2 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI2 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonURI2.getFragmentExpr());
+
+        //  And *not* for jsonURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+    });
+
+    this.it('change of another parent aspect of a branching path', function(test, options) {
+
+        jsonURI7 = TP.uc('urn:tibet:jsonData#jpath($.foo[2])');
+        jsonURI7.set('shouldCreateContent', true);
+
+        jsonURI7.setResource(TP.ac(), setResourceParams);
+
+        //  The value path results should have the path for jsonURI7
+        test.assert.contains(valuePathResults, jsonURI7.getFragmentExpr());
+
+        //  And the structure path results should have the path for jsonURI7
+        test.assert.contains(structurePathResults, jsonURI7.getFragmentExpr());
+
+        //  But *not* for jsonURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
+
+        //  And *not* for jsonURI5 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI5.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
+
+        //  And *not* for jsonURI4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
+
+        //  And *not* for jsonURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
+
+        //  And *not* for jsonURI2 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+
+        //  And *not* for jsonURI1 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+
+        jsonURI1.set('shouldCreateContent', true);
+
+        //  Set everything under 'foo' to a new data structure
+        jsonURI1.setResource(TP.core.JSONContent.construct('["A","B","C","D"]'),
+            setResourceParams);
+
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
+        test.assert.contains(valuePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
+
+        //  Restore it to the old model object
+        jsonURI1.setResource(modelObj, setResourceParams);
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+        jsonURI6.setResource('goofy', setResourceParams);
+
+        //  The path has should *not* have the path for jsonURI7 (it's at a
+        //  similar level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonURI7.getFragmentExpr());
+
+        //  The value path results should have the path for jsonURI6
+        test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
+
+        //  And for jsonURI5
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
+
+        //  And for jsonURI4
+        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
+
+        //  And for jsonURI3
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
+
+        //  And for jsonURI2
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+
+        //  And *not* for jsonURI1 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, 'value');
+
+        //  And not for the structural path result
+        test.refute.contains(structurePathResults, 'value');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('observe XML content',
+function() {
+
+    var modelObj,
+        xmlValueObsFunction,
+        xmlStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        setResourceParams,
+
+        xmlURI1,
+        xmlURI2,
+        xmlURI3,
+        xmlURI4,
+        xmlURI5,
+        xmlURI6,
+        xmlURI7,
+        xmlURI8;
+
+    this.before(function() {
+        modelObj = TP.core.XMLContent.construct(
+            '<emp><lname valid="true">Edney</lname><age>47</age></emp>');
+        TP.sys.registerObject(modelObj, 'xmlData');
+
+        setResourceParams = TP.hc('observeResource', true);
+        xmlURI1 = TP.uc('urn:tibet:xmlData');
+        xmlURI1.setResource(modelObj, setResourceParams);
+        setResourceParams.atPut('signalChange', true);
+
+        //  Set up this path just to observe
+        xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp)');
+        xmlURI2.getResource();
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        xmlValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
+
+        xmlStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        xmlStructureObsFunction.observe(xmlURI1, 'StructureChange');
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
+        xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
+
+        xmlURI1.unregister();
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
+        xmlURI3.set('shouldCreateContent', true);
+
+        xmlURI3.setResource('Jones', setResourceParams);
+
+        //  The value path should have the path for xmlURI3
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+
+        //  But not the structure path results for xmlURI3 (we created no new
+        //  structure there).
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a single attribute path', function(test, options) {
+
+        xmlURI4 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname/@valid)');
+        xmlURI4.set('shouldCreateContent', true);
+
+        xmlURI4.setResource(false, setResourceParams);
+
+        //  The value path should have the path for xmlURI4
+        test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
+
+        //  But not the structure path results for xmlURI4 (we created no
+        //  new structure there).
+        test.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a single attribute path with creation', function(test, options) {
+
+        xmlURI5 = TP.uc('urn:tibet:xmlData#xpath1(/emp/age/@valid)');
+        xmlURI5.set('shouldCreateContent', true);
+
+        xmlURI5.setResource(false, setResourceParams);
+
+        //  The value path should have the path for xmlURI5
+        test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
+
+        //  And the structure path results for xmlURI5 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI5.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
+        xmlURI6.set('shouldCreateContent', true);
+
+        xmlURI6.setResource('November', setResourceParams);
+
+        //  The value path should have the path for xmlURI6
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+
+        //  And the structure path results for xmlURI6 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  But *not* for xmlURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along another branching path', function(test, options) {
+
+        xmlURI7 = TP.uc('urn:tibet:xmlData#xpath1(/emp/ssn)');
+        xmlURI7.set('shouldCreateContent', true);
+
+        xmlURI7.setResource('555-55-5555', setResourceParams);
+
+        //  The value path should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+
+        //  And the structure path results for xmlURI7 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  But *not* for xmlURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
+        //  a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change at the top level', function(test, options) {
+
+        xmlURI2.set('shouldCreateContent', true);
+
+        //  Set everything under '/emp' to a new data structure
+        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'),
+            setResourceParams);
+
+        //  All paths will have changed
+
+        //  Both results should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  And for xmlURI6 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And for xmlURI3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And for xmlURI2 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change all of the elements individually', function(test, options) {
+
+        //  Set up this path just to observe
+        xmlURI8 = TP.uc('urn:tibet:xmlData#xpath1(//*)');
+        xmlURI8.getResource();
+
+        //  But set using xmlURI6
+        xmlURI6.setResource('November',
+            setResourceParams);
+
+        //  Both results should have the path for xmlURI8 (it's for all
+        //  elements)
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
+
+        //  But *not* for xmlURI7 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  Both results should have the path for xmlURI6 (we created new
+        //  structure there).
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  But *not* for xmlURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+
+        xmlURI1.set('shouldCreateContent', true);
+
+        //  Set everything under 'foo' to a new data structure
+        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'),
+            setResourceParams);
+
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
+        test.assert.contains(valuePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
+
+        //  Restore it to the old model object
+        xmlURI1.setResource(modelObj, setResourceParams);
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+
+        xmlURI7.setResource('111-11-1111', setResourceParams);
+
+        //  Both results should have the path for xmlURI8 (it's for all
+        //  elements)
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
+
+        //  Both results should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  But *not* for xmlURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
+        //  a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+
+        //  And *not* for XMLURI1 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, 'value');
+
+        //  And not for the structural path result
+        test.refute.contains(structurePathResults, 'value');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('loaded and dirty checking',
+function() {
+
+    var modelObj1,
+        modelObj2,
+
+        objURI1,
+        objURI2;
+
+    this.before(function() {
+
+        //  Note that TP.json2js returns a TP.lang.Hash.
+        modelObj1 = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
+        modelObj2 = TP.json2js('{"moo":["3rd","4th",{"hi":"folks"}]}');
+
+        TP.sys.registerObject(modelObj1, 'objData1');
+        TP.sys.registerObject(modelObj2, 'objData2');
+
+        this.startTrackingSignals();
+    });
+
+    this.after(function() {
+
+        this.stopTrackingSignals();
+
+        TP.sys.unregisterObject(modelObj1, 'objData1');
+        TP.sys.unregisterObject(modelObj2, 'objData2');
+    });
+
+    //  ---
+
+    this.beforeEach(function() {
+
+        objURI1 = TP.uc('urn:tibet:objData');
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+    });
+
+    this.afterEach(function() {
+
+        TP.core.URI.removeInstance(objURI1);
+        TP.core.URI.removeInstance(objURI2);
+
+        //  Reset the metrics we're tracking.
+        this.getSuite().resetSignalTracking();
+    });
+
+    //  ---
+
+    this.it('set URI to its initial value', function(test, options) {
+
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        //  Always signals change when value shifts, even on startup.
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI1.isLoaded(), 'loaded');
+
+        //  The URI should *not* consider itself dirty - not until we set it to
+        //  another value.
+        test.assert.isFalse(objURI1.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('set URI to its initial value with signaling', function(test, options) {
+
+        objURI1.setResource(modelObj1,
+            TP.hc('observeResource', true, 'signalChange', true));
+
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI1.isLoaded(), 'loaded');
+
+        //  The URI should *not* consider itself dirty - not until we set it to
+        //  another value.
+        test.assert.isFalse(objURI1.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('set URI to a different value', function(test, options) {
+
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        //  Always signals change when value shifts, even on startup.
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        objURI1.setResource(modelObj2, TP.hc('observeResource', true));
+
+        //  should signal second value
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI1.isLoaded(), 'loaded');
+
+        //  The URI should also consider itself dirty.
+        test.assert.isTrue(objURI1.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('clear the URI value', function(test, options) {
+
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        //  NOTE we reset here since even initial setup will trigger change.
+        this.getSuite().resetSignalTracking();
+
+        objURI1.clearCaches();
+
+        //  Change is _NOT_ signaled just because the local cache was emptied.
+        test.refute.didSignal(objURI1, 'ValueChange');
+
+        //  The URI should consider itself not loaded.
+        test.assert.isFalse(objURI1.isLoaded(), 'loaded');
+
+        //  The URI should also consider itself not dirty.
+        test.assert.isFalse(objURI1.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('set URI to its initial value (again)', function(test, options) {
+
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        objURI1.clearCaches();
+
+        objURI1.setResource(modelObj2, TP.hc('observeResource', true));
+
+        //  Should recognize it was loaded at some point and just got a new
+        //  value set after clearing the local cache.
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI1.isLoaded(), 'loaded');
+
+        //  The URI should *not* consider itself dirty - not until we set it to
+        //  another value.
+        test.assert.isFalse(objURI1.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('set a "sub" URI to another value', function(test, options) {
+
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
+        objURI2.setResource('goo', TP.hc('observeResource', true));
+
+        //  outer URI should signal change...
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        //  Always signals change when value shifts, even on startup.
+        test.assert.didSignal(objURI2, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI2.isLoaded(), 'loaded');
+
+        //  The URI should *not* consider itself dirty - not until we set it to
+        //  another value.
+        test.assert.isFalse(objURI2.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('set a "sub" URI to a different value', function(test, options) {
+
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
+        objURI2.setResource('goo', TP.hc('observeResource', true));
+
+        //  TODO
+        objURI2.setResource('moo', TP.hc('observeResource', true));
+
+        //  And it should've signaled that fact.
+        test.assert.didSignal(objURI2, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI2.isLoaded(), 'loaded');
+
+        //  The URI should also consider itself dirty.
+        test.assert.isTrue(objURI2.isDirty(), 'dirty');
+    });
+
+    //  ---
+
+    this.it('clear the URI value (again)', function(test, options) {
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
+        //  This will clear the primary URI's (objURI1) value.
+        objURI2.clearCaches();
+
+        //  The primary URI should consider itself not loaded.
+        test.assert.isFalse(objURI1.isLoaded(), 'loaded');
+
+        //  The sub URI should consider itself not loaded.
+        test.assert.isFalse(objURI2.isLoaded(), 'loaded');
+
+        //  The primary URI should also consider itself not dirty.
+        test.assert.isFalse(objURI1.isDirty(), 'dirty');
+
+        //  The sub URI should also consider itself not dirty.
+        test.assert.isFalse(objURI2.isDirty(), 'dirty');
+
+        test.refute.didSignal(objURI1, 'ValueChange');
+
+        test.refute.didSignal(objURI2, 'ValueChange');
+    });
+});
+
+//  ========================================================================
+//  HTTPURL
+//  ========================================================================
+
+TP.core.HTTPURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+        resultElem,
+
+        server;
+
+    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
+    locStr = '/TIBET_endpoints/HTTP_GET_TEST';
+    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+    this.beforeEach(
+        function() {
+            server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
+        });
+
+    //  ---
+
+    this.it('HTTPURL: Retrieve resource asynchronously', function(test, options) {
+        var url,
+            request;
+
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
+
+        url = TP.uc(locStr);
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        request = TP.request(params);
+        request.defineMethod('complete',
+            function(aResult) {
+                var result;
+
+                result = aResult;
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
+                test.assert.isEqualTo(
+                        result.get('html|body'),
+                        resultElem.get('html|body'));
+
+                TP.uc(locStr).unregister();
+            });
+
+        url.getResource(request);
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
+        //  empty
+    }).todo();
+
+}).skip(!TP.sys.isHTTPBased());
 
 //  ------------------------------------------------------------------------
 
@@ -1838,8 +2798,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var putParams,
                     putRequest;
 
@@ -1871,7 +2831,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(putRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -1905,8 +2865,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postRequest;
 
                 postRequest = url.constructRequest(params);
@@ -1936,7 +2896,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -1970,8 +2930,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -2003,7 +2963,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -2038,8 +2998,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -2072,7 +3032,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -2111,8 +3071,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -2145,7 +3105,7 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            });
+            }));
 
         server.respond();
     });
@@ -2175,8 +3135,8 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 var deleteRequest;
 
                 deleteRequest = url.constructRequest(params);
@@ -2204,8 +3164,8 @@ function() {
                         url.unregister();
                     });
 
-                url.nuke(deleteRequest);
-            });
+                url.delete(deleteRequest);
+            }));
 
         server.respond();
     });
@@ -2214,183 +3174,413 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Inst.describe('setResource',
+TP.core.HTTPURL.Inst.describe('getResource matrix',
 function() {
 
-    this.it('LocalDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+    var params,
+        locStr,
+        resultElem,
+        server;
 
+    locStr = TP.uriExpandPath('http://127.0.0.1:1407/TIBET_endpoints/HTTP_GET_TEST');
+
+    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
+    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+    this.before(function() {
+        this.startTrackingSignals();
+    });
+
+    this.after(function() {
+        this.stopTrackingSignals();
+    });
+
+    this.beforeEach(
+        function() {
+            var url;
+
+            server = TP.test.fakeServer.create();
+
+            //  Make sure our URI does _not_ exist before we start each test.
+            url = TP.core.URI.getInstanceById(locStr);
+            if (TP.isValid(url)) {
+                TP.core.URI.removeInstance(url);
+            }
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
+            this.getSuite().resetSignalTracking();
+        });
+
+    //  ---
+
+    /*
+     * getResource success when not loaded should:
+     *      signal change (provided new value differs from null/undefined)
+     *      set loaded flag to true
+     *      set dirty flag to false
+     */
+    this.it('HTTPURL: getResource !loaded success', function(test, options) {
         var url,
+            request;
 
-            saveResult,
+        //  Configure server to return success and real data.
+        server.respondWith(TP.HTTP_GET, locStr, [200, {
+            'Content-Type': TP.XML_ENCODED
+        }, resultElem.asString()]);
 
-            obj;
+        url = TP.uc(locStr);
 
-        //  A PUT request here using the ID causes an UPDATE
+        //  Verify initial state, not loaded, not dirty.
+        test.assert.isFalse(url.isLoaded());
+        test.assert.isFalse(url.isDirty());
 
-        url = TP.uc('localdb://local_test/author_info');
+        request = TP.request(params);
 
-        //  By default, localdb:// URLs are synchronous and configure their
-        //  request to 'refresh' automatically.
+        url.getResource(request).then(function(result) {
+            test.assert.didSignal(url, 'ValueChange');
+            test.assert.isTrue(url.isLoaded(), 'loaded');
+            test.assert.isFalse(url.isDirty(), 'dirty');
+        },
+        function(err) {
+            test.fail(err);
+        }).catch(function(err) {
+            test.fail(err);
+        });
 
-        url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
-        saveResult = url.save(TP.hc('method', TP.HTTP_PUT)).get('result');
+        server.respond();
+    });
+});// .skip(!TP.sys.isHTTPBased());
 
-        test.assert.isValid(
-            saveResult.at('ok'),
-            TP.sc('Expected a result with an \'ok\' property'));
+//  ========================================================================
+//  JSONPURL
+//  ========================================================================
+
+TP.core.JSONPURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+
+        stub;
+
+    params = TP.request('refresh', true, 'async', true);
+    locStr = 'jsonp://ajax.googleapis.com/ajax/services/search/web?' +
+                'v=1.0&q=football&start=10';
+
+    this.before(
+        function() {
+            stub = TP.jsonpCall.asStub();
+        });
+
+    //  ---
+
+    this.it('JSONPURL: Retrieve resource asynchronously', function(test, options) {
+        var url,
+            request;
+
+        stub.callsArgWith(1, '{"foo":"bar"}');
+
+        url = TP.uc(locStr);
 
         //  Mark the URL as 'not loaded' to ensure that it will try to reload
         //  from the underlying source.
         url.isLoaded(false);
 
-        obj = url.getResource().get('result').at('_body');
+        request = TP.request(params);
+        request.defineMethod('complete',
+            function(aResult) {
+                var result;
 
-        test.assert.isTrue(
-            obj.hasKey('firstName'),
-            TP.sc('Expected that result would have a key of \'firstName\' and',
-                    ' it doesn\'t'));
+                result = aResult;
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
+                test.assert.isValid(
+                    result,
+                    TP.sc('Expected valid result but got none.'));
 
-        test.assert.isEqualTo(
-                obj.at('firstName'),
-                'November',
-                TP.sc('Expected: ', '"November"',
-                        ' and got instead: ', obj.at('firstName'), '.'));
+                TP.uc(locStr).unregister();
+            });
 
-        test.assert.isTrue(
-            obj.hasKey('lastName'),
-            TP.sc('Expected that result would have a key of \'lastName\' and',
-                    ' it doesn\'t'));
-
-        test.assert.isEqualTo(
-                obj.at('lastName'),
-                'Jones',
-                TP.sc('Expected: ', '"Jones"',
-                        ' and got instead: ', obj.at('lastName'), '.'));
-
-        url.unregister();
+        url.getResource(request);
     });
 
-    this.it('LocalDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
+    //  ---
 
-        var url,
-            saveResult,
-            obj;
+    this.after(
+        function() {
+            stub.restore();
+        });
+});
 
-        //  A POST request here without the ID causes a CREATE and an
-        //  auto-generated ID
+//  ========================================================================
+//  PouchDBURL
+//  ========================================================================
 
-        url = TP.uc('localdb://local_test/');
+TP.core.PouchDBURL.Inst.describe('getResource',
+function() {
 
-        //  Implied method here is TP.HTTP_POST. Also, by default, localdb://
-        //  URLs are synchronous and configure their request to 'refresh'
-        //  automatically.
+    var testDb;
 
-        url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
-        saveResult = url.save().get('result');
+    this.before(
+        function(suite, options) {
 
-        test.assert.isValid(
-            saveResult.at('ok'),
-            TP.sc('Expected a result with an \'ok\' property'));
+            //  'this' refers to the suite here.
+            suite.chain(
+                function() {
+                    var now,
 
-        //  Compute a URL using the '_id' that was generated
-        url = TP.uc('localdb://local_test/' + saveResult.at('_id'));
+                        pouchPromise,
+                        promise;
 
-        obj = url.getResource().get('result').at('_body');
+                    now = Date.now();
 
-        test.assert.isTrue(
-            obj.hasKey('firstName'),
-            TP.sc('Expected that result would have a key of \'firstName\' and',
-                    ' it doesn\'t'));
+                    testDb = new TP.extern.PouchDB('pouch_test');
 
-        test.assert.isEqualTo(
-                obj.at('firstName'),
-                'John',
-                TP.sc('Expected: ', '"John"',
-                        ' and got instead: ', obj.at('firstName'), '.'));
+                    pouchPromise = testDb.put(
+                        {
+                            _id: 'author_info',
+                            date_created: now,
+                            date_modified: now,
+                            body: {
+                                firstName: 'Bill',
+                                lastName: 'Edney'
+                            }
+                        });
 
-        test.assert.isTrue(
-            obj.hasKey('lastName'),
-            TP.sc('Expected that result would have a key of \'lastName\' and',
-                    ' it doesn\'t'));
+                    promise = TP.extern.Promise.resolve(pouchPromise);
 
-        test.assert.isEqualTo(
-                obj.at('lastName'),
-                'Smith',
-                TP.sc('Expected: ', '"Smith"',
-                        ' and got instead: ', obj.at('lastName'), '.'));
+                    return promise;
+                });
+        });
 
-        url.unregister();
-    });
+    //  ---
 
-    this.it('LocalDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+    this.it('PouchDBURL: Retrieve resource', function(test, options) {
 
-        var url,
+        var url;
 
-            nukeResult,
+        //  A GET request here using the ID causes a RETRIEVE
+        url = TP.uc('pouchdb://pouch_test/author_info');
 
-            obj;
-
-        //  A DELETE request here with the ID causes a DELETE
-
-        url = TP.uc('localdb://local_test/author_info');
-
-        //  By default, localdb:// URLs are synchronous and configure their
-        //  request to 'refresh'.
-
-        url.setResource(null);
-        nukeResult = url.nuke(TP.hc('method', TP.HTTP_DELETE)).get('result');
-
-        test.assert.isValid(
-            nukeResult.at('ok'),
-            TP.sc('Expected a result with an \'ok\' property'));
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
         url.isLoaded(false);
 
-        obj = url.getResource().get('result');
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var pouchRequest;
 
-        test.refute.isValid(
-            obj,
-            TP.sc('Expected that result would not be valid'));
+                //  Implied method here is TP.HTTP_GET. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'async', true));
 
-        url.unregister();
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data').at('body');
+
+                        test.assert.isTrue(
+                            result.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'firstName\' and it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                result.at('firstName'),
+                                'Bill',
+                                TP.sc('Expected: ', '"Bill"',
+                                        ' and got instead: ',
+                                        result.at('firstName'), '.'));
+
+                        test.assert.isTrue(
+                            result.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'lastName\' and it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                result.at('lastName'),
+                                'Edney',
+                                TP.sc('Expected: ', '"Edney"',
+                                        ' and got instead: ',
+                                        result.at('lastName'), '.'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.getResource(pouchRequest);
+            }));
     });
 
-    this.it('LocalDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
-        var url,
+    //  ---
 
-            nukeResult,
+    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
-            obj;
+        var url;
 
-        //  A DELETE request here without the ID causes a DELETE (of the whole
-        //  DB)
+        //  A GET request here using the ID causes a RETRIEVE
+        url = TP.uc('pouchdb://pouch_test/author_info');
 
-        url = TP.uc('localdb://local_test');
-
-        //  By default, localdb:// URLs are synchronous and configure their
-        //  request to 'refresh'.
-
-        url.setResource(null);
-        nukeResult = url.nuke(TP.hc('method', TP.HTTP_DELETE)).get('result');
-
-        test.assert.isValid(
-            nukeResult.at('ok'),
-            TP.sc('Expected a result with an \'ok\' property'));
-
-        //  Mark the URL as 'not loaded' to ensure that it will try to reload
-        //  from the underlying source.
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
         url.isLoaded(false);
 
-        obj = url.getResource().get('result');
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var pouchRequest;
 
-        test.refute.isValid(
-            obj,
-            TP.sc('Expected that result would not be valid'));
+                //  Implied method here is TP.HTTP_GET, which means we need to
+                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'method', TP.HTTP_HEAD,
+                                                'async', true));
 
-        url.unregister();
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isTrue(
+                            result.hasKey('date_created'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'date_created\' and it doesn\'t'));
+
+                        test.assert.isTrue(
+                            result.hasKey('date_modified'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'date_modified\' and it doesn\'t'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.getResource(pouchRequest);
+            }));
     });
+
+    //  ---
+
+    this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
+
+        var url;
+
+        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
+        //  of all documents in the DB
+        url = TP.uc('pouchdb://pouch_test/_all_docs');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
+
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
+                var pouchRequest;
+
+                //  Implied method here is TP.HTTP_GET, which means we need to
+                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'async', true));
+
+                pouchRequest.defineHandler('RequestSucceeded',
+                    function(aResponse) {
+
+                        var result;
+
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
+
+                        test.assert.isTrue(
+                            result.hasKey('total_rows'),
+                            TP.sc('Expected that result would have a key of \'total_rows\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                result.at('total_rows'),
+                                1,
+                                TP.sc('Expected: ', '1',
+                                        ' and got instead: ', result.at('total_rows'), '.'));
+
+                        test.assert.isTrue(
+                            result.hasKey('rows'),
+                            TP.sc('Expected that result would have a key of \'rows\' and',
+                                    ' it doesn\'t'));
+
+                        resolver();
+                    });
+
+                pouchRequest.defineHandler('RequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineHandler('RequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.getResource(pouchRequest);
+            }));
+    });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  'this' refers to the suite here.
+            suite.chain(
+                function() {
+                    var pouchPromise,
+                        promise;
+
+                    pouchPromise = testDb.destroy();
+
+                    promise = TP.extern.Promise.resolve(pouchPromise);
+
+                    return promise;
+                });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -2411,7 +3601,7 @@ function() {
             destroySucceeded = false;
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var now,
 
@@ -2450,8 +3640,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_PUT,
@@ -2487,7 +3677,7 @@ function() {
                     });
 
                 url.save(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -2502,8 +3692,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_POST,
@@ -2539,7 +3729,7 @@ function() {
                     });
 
                 url.save(pouchRequest);
-            });
+            }));
     });
 
     //  ---
@@ -2553,8 +3743,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -2589,8 +3779,8 @@ function() {
                         url.unregister();
                     });
 
-                url.nuke(pouchRequest);
-            });
+                url.delete(pouchRequest);
+            }));
     });
 
     //  ---
@@ -2605,8 +3795,8 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        test.thenPromise(
-            function(resolver, rejector) {
+        test.chainPromise(
+            TP.extern.Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -2645,8 +3835,8 @@ function() {
                         url.unregister();
                     });
 
-                url.nuke(pouchRequest);
-            });
+                url.delete(pouchRequest);
+            }));
     });
 
     //  ---
@@ -2655,7 +3845,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var pouchPromise,
                         promise;
@@ -2671,1176 +3861,85 @@ function() {
         });
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  StorageURL
+//  ========================================================================
 
-TP.core.TIBETURN.Inst.describe('observe JS objects',
+TP.core.StorageURL.Inst.describe('local storage',
 function() {
 
-    var modelObj,
-        objValueObsFunction,
-        objStructureObsFunction,
-
-        valuePathResults,
-        structurePathResults,
-
-        objURI1,
-        objURI2,
-        objURI3,
-        objURI4,
-        objURI5,
-        objURI6,
-        objURI7;
+    var localURI,
+        sessionURI;
 
     this.before(function() {
-
-        //  This returns a TP.lang.Hash
-        modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
-        TP.sys.registerObject(modelObj, 'objData');
-
-        //  Set up this path just to observe
-        objURI1 = TP.uc('urn:tibet:objData');
-        objURI1.set('shouldCreateContent', true);
-
-        objURI1.setResource(modelObj, TP.hc('observeResource', true));
-
-        valuePathResults = TP.ac();
-        structurePathResults = TP.ac();
-
-        objValueObsFunction =
-                function(aSignal) {
-                    valuePathResults.push(aSignal.at('aspect'));
-                };
-
-        objValueObsFunction.observe(objURI1, 'ValueChange');
-
-        objStructureObsFunction =
-                function(aSignal) {
-                    structurePathResults.push(aSignal.at('aspect'));
-                };
-
-        objStructureObsFunction.observe(objURI1, 'StructureChange');
+        localStorage.removeItem('foo');
+        sessionStorage.removeItem('foo');
     });
-
-    //  ---
-
-    this.afterEach(function() {
-        valuePathResults.empty();
-        structurePathResults.empty();
-    });
-
-    //  ---
 
     this.after(function() {
-        objValueObsFunction.ignore(objURI1, 'ValueChange');
-        objStructureObsFunction.ignore(objURI1, 'StructureChange');
-
-        objURI1.unregister();
+        localStorage.removeItem('foo');
+        sessionStorage.removeItem('foo');
     });
 
     //  ---
 
-    this.it('change along a single path', function(test, options) {
-
-        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
-        objURI2.set('shouldCreateContent', true);
-
-        objURI2.setResource('goo', TP.hc('observeResource', true));
-
-        //  The value path results should have the path for objURI2
-        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
-
-        //  The structure path results should have the path for objURI2
-        test.assert.contains(structurePathResults, objURI2.getFragmentExpr());
-
-        //  But *not* for objURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    this.beforeEach(function() {
+        localURI = TP.uc('storage://local/foo');
+        sessionURI = TP.uc('storage://session/foo');
     });
-
-    this.it('change along a branching path', function(test, options) {
-
-        objURI3 = TP.uc('urn:tibet:objData#tibet(foo.3[bar,moo,too].roo)');
-        objURI3.set('shouldCreateContent', true);
-
-        objURI3.setResource(TP.ac(), TP.hc('observeResource', true));
-
-        //  The value path results should have the path for objURI3
-        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
-
-        //  The structure path results should have the path for objURI3
-        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
-
-        //  And the value path results for objURI2 (because and we replaced the
-        //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
-
-        //  But not the structure path results for objURI2 (we created no new
-        //  structure there).
-        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
-
-        //  And *not* for objURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
-    });
-
-    this.it('change of an end aspect of a branching path', function(test, options) {
-
-        objURI4 = TP.uc('urn:tibet:objData#tibet(foo.3.bar.roo)');
-        objURI4.getResource();
-
-        objURI5 = TP.uc('urn:tibet:objData#tibet(foo.3.moo.roo)');
-        objURI5.set('shouldCreateContent', true);
-
-        objURI5.setResource(42, TP.hc('observeResource', true));
-
-        //  The value path results should have the path for objURI5
-        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI5
-        test.assert.contains(structurePathResults, objURI5.getFragmentExpr());
-
-        //  And *not* for objURI4 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI4.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
-
-        //  The value path results should have the path for objURI3
-        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI3
-        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
-
-        //  And *not* for objURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, objURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
-
-        //  And *not* for objURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
-    });
-
-    this.it('change of a parent aspect of a branching path', function(test, options) {
-
-        objURI6 = TP.uc('urn:tibet:objData#tibet(foo.3)');
-        objURI6.set('shouldCreateContent', true);
-
-        objURI6.setResource('fluffy', TP.hc('observeResource', true));
-
-        //  The value path results should have the path for objURI6
-        test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI6 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, objURI6.getFragmentExpr());
-
-        //  And for objURI5 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI5 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, objURI5.getFragmentExpr());
-
-        //  And for objURI4 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI4 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, objURI4.getFragmentExpr());
-
-        //  And for objURI3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI3 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
-
-        //  And for objURI2 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI2 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, objURI2.getFragmentExpr());
-
-        //  And *not* for objURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
-    });
-
-    this.it('change of another parent aspect of a branching path', function(test, options) {
-
-        objURI7 = TP.uc('urn:tibet:objData#tibet(foo.2)');
-        objURI7.set('shouldCreateContent', true);
-
-        objURI7.setResource(TP.ac(), TP.hc('observeResource', true));
-
-        //  The value path results should have the path for objURI7
-        test.assert.contains(valuePathResults, objURI7.getFragmentExpr());
-
-        //  And the structure path results should have the path for objURI7
-        test.assert.contains(structurePathResults, objURI7.getFragmentExpr());
-
-        //  But *not* for objURI6 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI6.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI6.getFragmentExpr());
-
-        //  And *not* for objURI5 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI5.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI5.getFragmentExpr());
-
-        //  And *not* for objURI4 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI4.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
-
-        //  And *not* for objURI3 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI3.getFragmentExpr());
-
-        //  And *not* for objURI2 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
-
-        //  And *not* for objURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
-    });
-
-    this.it('change model to a whole new object', function(test, options) {
-
-        objURI1.set('shouldCreateContent', true);
-
-        //  Set everything under 'foo' to a new data structure
-        objURI1.setResource(TP.json2js('["A","B","C","D"]'), TP.hc('observeResource', true));
-
-        //  In this case, we only get an aspect of 'value' in only the value
-        //  path results, not the structure path results. The individual
-        //  fragment URIs will have been told of a 'structure' change to their
-        //  individual values.
-        test.assert.contains(valuePathResults, 'value');
-        test.refute.contains(structurePathResults, 'value');
-
-        objURI1.setResource(modelObj, TP.hc('observeResource', true));
-    });
-
-    this.it('change along a single path for the new object', function(test, options) {
-
-        objURI6.setResource('goofy', TP.hc('observeResource', true));
-
-        //  The path has should *not* have the path for objURI7 (it's at a
-        //  similar level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, objURI7.getFragmentExpr());
-
-        //  The value path results should have the path for objURI6
-        test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, objURI6.getFragmentExpr());
-
-        //  And for objURI5
-        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, objURI5.getFragmentExpr());
-
-        //  And for objURI4
-        test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
-
-        //  And for objURI3
-        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, objURI3.getFragmentExpr());
-
-        //  And for objURI2
-        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
-
-        //  And *not* for objURI1 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, 'value');
-
-        //  And not for the structural path result
-        test.refute.contains(structurePathResults, 'value');
-    });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TIBETURN.Inst.describe('observe plain XML',
-function() {
-
-    var modelObj,
-        xmlValueObsFunction,
-        xmlStructureObsFunction,
-
-        valuePathResults,
-        structurePathResults,
-
-        xmlURI1,
-        xmlURI2,
-        xmlURI3,
-        xmlURI4,
-        xmlURI5,
-        xmlURI6,
-        xmlURI7,
-        xmlURI8;
-
-    this.before(function() {
-        modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
-        TP.sys.registerObject(modelObj, 'xmlData');
-
-        xmlURI1 = TP.uc('urn:tibet:xmlData');
-        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
-
-        //  Set up this path just to observe
-        xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp)');
-        xmlURI2.getResource();
-
-        valuePathResults = TP.ac();
-        structurePathResults = TP.ac();
-
-        xmlValueObsFunction =
-                function(aSignal) {
-                    valuePathResults.push(aSignal.at('aspect'));
-                };
-
-        xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
-
-        xmlStructureObsFunction =
-                function(aSignal) {
-                    structurePathResults.push(aSignal.at('aspect'));
-                };
-
-        xmlStructureObsFunction.observe(xmlURI1, 'StructureChange');
-    });
-
-    //  ---
 
     this.afterEach(function() {
-        valuePathResults.empty();
-        structurePathResults.empty();
+        TP.core.URI.removeInstance(localURI);
+        TP.core.URI.removeInstance(sessionURI);
     });
 
     //  ---
 
-    this.after(function() {
-        xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
-        xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
-
-        xmlURI1.unregister();
+    this.it('constructs valid uri instances', function(test, options) {
+        this.assert.isURI(localURI);
+        this.assert.isURI(sessionURI);
     });
 
-    //  ---
-
-    this.it('change along a single path', function(test, options) {
-
-        xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
-        xmlURI3.set('shouldCreateContent', true);
-
-        xmlURI3.setResource('Jones', TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI3
-        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
-
-        //  But not the structure path results for xmlURI3 (we created no new
-        //  structure there).
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    this.it('sets content persistently', function(test, options) {
+        localURI.setContent('fluffy');
+        this.assert.isEqualTo(localStorage.getItem('foo'),
+            TP.js2json('fluffy'));
     });
 
-    this.it('change along a single attribute path', function(test, options) {
-
-        xmlURI4 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname/@valid)');
-        xmlURI4.set('shouldCreateContent', true);
-
-        xmlURI4.setResource(false, TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI4
-        test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
-
-        //  But not the structure path results for xmlURI4 (we created no
-        //  new structure there).
-        test.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    this.it('sets resources persistently', function(test, options) {
+        localURI.setResource('zippy');
+        this.assert.isEqualTo(localStorage.getItem('foo'),
+            TP.js2json('zippy'));
     });
 
-    this.it('change along a single attribute path with creation', function(test, options) {
-
-        xmlURI5 = TP.uc('urn:tibet:xmlData#xpath1(/emp/age/@valid)');
-        xmlURI5.set('shouldCreateContent', true);
-
-        xmlURI5.setResource(false, TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI5
-        test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
-
-        //  And the structure path results for xmlURI5 (we created new
-        //  structure there).
-        test.assert.contains(structurePathResults, xmlURI5.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    this.it('sets values persistently', function(test, options) {
+        localURI.setValue('blahblah');
+        this.assert.isEqualTo(localStorage.getItem('foo'),
+            TP.js2json('blahblah'));
     });
 
-    this.it('change along a branching path', function(test, options) {
+    this.it('gets content persistently', function(test, options) {
+        var content;
 
-        xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
-        xmlURI6.set('shouldCreateContent', true);
+        localURI.setContent('fluffy');
+        content = localURI.getContent();
 
-        xmlURI6.setResource('November', TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI6
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
-
-        //  And the structure path results for xmlURI6 (we created new
-        //  structure there).
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  But *not* for xmlURI3 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        this.assert.isEqualTo(content.getValue(), 'fluffy');
     });
 
-    this.it('change along another branching path', function(test, options) {
+    this.it('sets resources persistently', function(test, options) {
+        var response;
 
-        xmlURI7 = TP.uc('urn:tibet:xmlData#xpath1(/emp/ssn)');
-        xmlURI7.set('shouldCreateContent', true);
-
-        xmlURI7.setResource('555-55-5555', TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
-
-        //  And the structure path results for xmlURI7 (we created new
-        //  structure there).
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  But *not* for xmlURI6 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
-        //  a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        localURI.setResource('zippy');
+        response = localURI.getResource();
+        this.assert.isEqualTo(response.get('result'), 'zippy');
     });
 
-    this.it('change at the top level', function(test, options) {
-
-        xmlURI2.set('shouldCreateContent', true);
-
-        //  Set everything under '/emp' to a new data structure
-        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'), TP.hc('observeResource', true));
-
-        //  All paths will have changed
-
-        //  Both results should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  And for xmlURI6 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  And for xmlURI3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And for xmlURI2 (because it's the same path as xmlURI2)
-        test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    this.it('sets values persistently', function(test, options) {
+        localURI.setValue('blahblah');
+        this.assert.isEqualTo(localURI.getValue(), 'blahblah');
     });
 
-    this.it('change all of the elements individually', function(test, options) {
-
-        //  Set up this path just to observe
-        xmlURI8 = TP.uc('urn:tibet:xmlData#xpath1(//*)');
-        xmlURI8.getResource();
-
-        //  But set using xmlURI6
-        xmlURI6.setResource('November', TP.hc('observeResource', true));
-
-        //  Both results should have the path for xmlURI8 (it's for all
-        //  elements)
-        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
-
-        //  But *not* for xmlURI7 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  Both results should have the path for xmlURI6 (we created new
-        //  structure there).
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  But *not* for xmlURI3 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change model to a whole new object', function(test, options) {
-
-        xmlURI1.set('shouldCreateContent', true);
-
-        //  Set everything under 'foo' to a new data structure
-        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'), TP.hc('observeResource', true));
-
-        //  In this case, we only get an aspect of 'value' in only the value
-        //  path results, not the structure path results. The individual
-        //  fragment URIs will have been told of a 'structure' change to their
-        //  individual values.
-        test.assert.contains(valuePathResults, 'value');
-        test.refute.contains(structurePathResults, 'value');
-
-        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
-    });
-});
-
-
-//  ------------------------------------------------------------------------
-
-TP.core.TIBETURN.Inst.describe('observe JSON content',
-function() {
-
-    var modelObj,
-        jsonValueObsFunction,
-        jsonStructureObsFunction,
-
-        valuePathResults,
-        structurePathResults,
-
-        jsonURI1,
-        jsonURI2,
-        jsonURI3,
-        jsonURI4,
-        jsonURI5,
-        jsonURI6,
-        jsonURI7;
-
-    this.before(function() {
-
-        modelObj = TP.core.JSONContent.construct(
-                    '{"foo":["1st","2nd",{"hi":"there"}]}');
-        TP.sys.registerObject(modelObj, 'jsonData');
-
-        //  Set up this path just to observe
-        jsonURI1 = TP.uc('urn:tibet:jsonData');
-        jsonURI1.set('shouldCreateContent', true);
-
-        jsonURI1.setResource(modelObj, TP.hc('observeResource', true));
-
-        valuePathResults = TP.ac();
-        structurePathResults = TP.ac();
-
-        jsonValueObsFunction =
-                function(aSignal) {
-                    valuePathResults.push(aSignal.at('aspect'));
-                };
-
-        jsonValueObsFunction.observe(jsonURI1, 'ValueChange');
-
-        jsonStructureObsFunction =
-                function(aSignal) {
-                    structurePathResults.push(aSignal.at('aspect'));
-                };
-
-        jsonStructureObsFunction.observe(jsonURI1, 'StructureChange');
-    });
-
-    //  ---
-
-    this.afterEach(function() {
-        valuePathResults.empty();
-        structurePathResults.empty();
-    });
-
-    //  ---
-
-    this.after(function() {
-        jsonValueObsFunction.ignore(jsonURI1, 'ValueChange');
-        jsonStructureObsFunction.ignore(jsonURI1, 'StructureChange');
-
-        jsonURI1.unregister();
-    });
-
-    //  ---
-
-    this.it('change along a single path', function(test, options) {
-
-        jsonURI2 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].bar)');
-        jsonURI2.set('shouldCreateContent', true);
-
-        jsonURI2.setResource('goo', TP.hc('observeResource', true));
-
-        //  The value path results should have the path for jsonURI2
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
-
-        //  The structure path results should have the path for jsonURI2
-        test.assert.contains(structurePathResults, jsonURI2.getFragmentExpr());
-
-        //  But *not* for jsonURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
-    });
-
-    this.it('change along a branching path', function(test, options) {
-
-        jsonURI3 = TP.uc('urn:tibet:jsonData#jpath($.foo[3][bar,moo,too].roo)');
-        jsonURI3.set('shouldCreateContent', true);
-
-        jsonURI3.setResource(TP.ac(), TP.hc('observeResource', true));
-
-        //  The value path results should have the path for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
-
-        //  The structure path results should have the path for jsonURI3
-        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
-
-        //  And the value path results for jsonURI2 (because and we replaced the
-        //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
-
-        //  But not the structure path results for jsonURI2 (we created no new
-        //  structure there).
-        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
-
-        //  And *not* for jsonURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
-    });
-
-    this.it('change of an end aspect of a branching path', function(test, options) {
-
-        jsonURI4 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].bar.roo)');
-        jsonURI4.getResource();
-
-        jsonURI5 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].moo.roo)');
-        jsonURI5.set('shouldCreateContent', true);
-
-        jsonURI5.setResource(42, TP.hc('observeResource', true));
-
-        //  The value path results should have the path for jsonURI5
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI5
-        test.assert.contains(structurePathResults, jsonURI5.getFragmentExpr());
-
-        //  And *not* for jsonURI4 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
-
-        //  The value path results should have the path for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI3
-        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
-
-        //  And *not* for jsonURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
-
-        //  And *not* for jsonURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
-    });
-
-    this.it('change of a parent aspect of a branching path', function(test, options) {
-
-        jsonURI6 = TP.uc('urn:tibet:jsonData#jpath($.foo[3])');
-        jsonURI6.set('shouldCreateContent', true);
-
-        jsonURI6.setResource('fluffy', TP.hc('observeResource', true));
-
-        //  The value path results should have the path for jsonURI6
-        test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI6 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI6.getFragmentExpr());
-
-        //  And for jsonURI5 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI5 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI5.getFragmentExpr());
-
-        //  And for jsonURI4 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI4 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI4.getFragmentExpr());
-
-        //  And for jsonURI3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI3 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
-
-        //  And for jsonURI2 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI2 as
-        //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI2.getFragmentExpr());
-
-        //  And *not* for jsonURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
-    });
-
-    this.it('change of another parent aspect of a branching path', function(test, options) {
-
-        jsonURI7 = TP.uc('urn:tibet:jsonData#jpath($.foo[2])');
-        jsonURI7.set('shouldCreateContent', true);
-
-        jsonURI7.setResource(TP.ac(), TP.hc('observeResource', true));
-
-        //  The value path results should have the path for jsonURI7
-        test.assert.contains(valuePathResults, jsonURI7.getFragmentExpr());
-
-        //  And the structure path results should have the path for jsonURI7
-        test.assert.contains(structurePathResults, jsonURI7.getFragmentExpr());
-
-        //  But *not* for jsonURI6 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI6.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
-
-        //  And *not* for jsonURI5 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI5.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
-
-        //  And *not* for jsonURI4 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
-
-        //  And *not* for jsonURI3 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
-
-        //  And *not* for jsonURI2 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
-
-        //  And *not* for jsonURI1 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
-    });
-
-    this.it('change model to a whole new object', function(test, options) {
-
-        jsonURI1.set('shouldCreateContent', true);
-
-        //  Set everything under 'foo' to a new data structure
-        jsonURI1.setResource(TP.core.JSONContent.construct('["A","B","C","D"]'), TP.hc('observeResource', true));
-
-        //  In this case, we only get an aspect of 'value' in only the value
-        //  path results, not the structure path results. The individual
-        //  fragment URIs will have been told of a 'structure' change to their
-        //  individual values.
-        test.assert.contains(valuePathResults, 'value');
-        test.refute.contains(structurePathResults, 'value');
-
-        //  Restore it to the old model object
-        jsonURI1.setResource(modelObj, TP.hc('observeResource', true));
-    });
-
-    this.it('change along a single path for the new object', function(test, options) {
-        jsonURI6.setResource('goofy', TP.hc('observeResource', true));
-
-        //  The path has should *not* have the path for jsonURI7 (it's at a
-        //  similar level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonURI7.getFragmentExpr());
-
-        //  The value path results should have the path for jsonURI6
-        test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
-
-        //  And for jsonURI5
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
-
-        //  And for jsonURI4
-        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
-
-        //  And for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
-
-        //  And for jsonURI2
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
-
-        //  And *not* for jsonURI1 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, 'value');
-
-        //  And not for the structural path result
-        test.refute.contains(structurePathResults, 'value');
-    });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TIBETURN.Inst.describe('observe XML content',
-function() {
-
-    var modelObj,
-        xmlValueObsFunction,
-        xmlStructureObsFunction,
-
-        valuePathResults,
-        structurePathResults,
-
-        xmlURI1,
-        xmlURI2,
-        xmlURI3,
-        xmlURI4,
-        xmlURI5,
-        xmlURI6,
-        xmlURI7,
-        xmlURI8;
-
-    this.before(function() {
-        modelObj = TP.core.XMLContent.construct(
-            '<emp><lname valid="true">Edney</lname><age>47</age></emp>');
-        TP.sys.registerObject(modelObj, 'xmlData');
-
-        xmlURI1 = TP.uc('urn:tibet:xmlData');
-        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
-
-        //  Set up this path just to observe
-        xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp)');
-        xmlURI2.getResource();
-
-        valuePathResults = TP.ac();
-        structurePathResults = TP.ac();
-
-        xmlValueObsFunction =
-                function(aSignal) {
-                    valuePathResults.push(aSignal.at('aspect'));
-                };
-
-        xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
-
-        xmlStructureObsFunction =
-                function(aSignal) {
-                    structurePathResults.push(aSignal.at('aspect'));
-                };
-
-        xmlStructureObsFunction.observe(xmlURI1, 'StructureChange');
-    });
-
-    //  ---
-
-    this.afterEach(function() {
-        valuePathResults.empty();
-        structurePathResults.empty();
-    });
-
-    //  ---
-
-    this.after(function() {
-        xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
-        xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
-
-        xmlURI1.unregister();
-    });
-
-    //  ---
-
-    this.it('change along a single path', function(test, options) {
-
-        xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
-        xmlURI3.set('shouldCreateContent', true);
-
-        xmlURI3.setResource('Jones', TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI3
-        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
-
-        //  But not the structure path results for xmlURI3 (we created no new
-        //  structure there).
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change along a single attribute path', function(test, options) {
-
-        xmlURI4 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname/@valid)');
-        xmlURI4.set('shouldCreateContent', true);
-
-        xmlURI4.setResource(false, TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI4
-        test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
-
-        //  But not the structure path results for xmlURI4 (we created no
-        //  new structure there).
-        test.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change along a single attribute path with creation', function(test, options) {
-
-        xmlURI5 = TP.uc('urn:tibet:xmlData#xpath1(/emp/age/@valid)');
-        xmlURI5.set('shouldCreateContent', true);
-
-        xmlURI5.setResource(false, TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI5
-        test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
-
-        //  And the structure path results for xmlURI5 (we created new
-        //  structure there).
-        test.assert.contains(structurePathResults, xmlURI5.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change along a branching path', function(test, options) {
-
-        xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
-        xmlURI6.set('shouldCreateContent', true);
-
-        xmlURI6.setResource('November', TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI6
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
-
-        //  And the structure path results for xmlURI6 (we created new
-        //  structure there).
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  But *not* for xmlURI3 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change along another branching path', function(test, options) {
-
-        xmlURI7 = TP.uc('urn:tibet:xmlData#xpath1(/emp/ssn)');
-        xmlURI7.set('shouldCreateContent', true);
-
-        xmlURI7.setResource('555-55-5555', TP.hc('observeResource', true));
-
-        //  The value path should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
-
-        //  And the structure path results for xmlURI7 (we created new
-        //  structure there).
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  But *not* for xmlURI6 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
-        //  a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change at the top level', function(test, options) {
-
-        xmlURI2.set('shouldCreateContent', true);
-
-        //  Set everything under '/emp' to a new data structure
-        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'), TP.hc('observeResource', true));
-
-        //  All paths will have changed
-
-        //  Both results should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  And for xmlURI6 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  And for xmlURI3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And for xmlURI2 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change all of the elements individually', function(test, options) {
-
-        //  Set up this path just to observe
-        xmlURI8 = TP.uc('urn:tibet:xmlData#xpath1(//*)');
-        xmlURI8.getResource();
-
-        //  But set using xmlURI6
-        xmlURI6.setResource('November', TP.hc('observeResource', true));
-
-        //  Both results should have the path for xmlURI8 (it's for all
-        //  elements)
-        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
-
-        //  But *not* for xmlURI7 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  Both results should have the path for xmlURI6 (we created new
-        //  structure there).
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  But *not* for xmlURI3 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 for either set of results (it's too high up
-        //  in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-    });
-
-    this.it('change model to a whole new object', function(test, options) {
-
-        xmlURI1.set('shouldCreateContent', true);
-
-        //  Set everything under 'foo' to a new data structure
-        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'), TP.hc('observeResource', true));
-
-        //  In this case, we only get an aspect of 'value' in only the value
-        //  path results, not the structure path results. The individual
-        //  fragment URIs will have been told of a 'structure' change to their
-        //  individual values.
-        test.assert.contains(valuePathResults, 'value');
-        test.refute.contains(structurePathResults, 'value');
-
-        //  Restore it to the old model object
-        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
-    });
-
-    this.it('change along a single path for the new object', function(test, options) {
-        xmlURI7.setResource('111-11-1111', TP.hc('observeResource', true));
-
-        //  Both results should have the path for xmlURI8 (it's for all
-        //  elements)
-        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
-
-        //  Both results should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
-
-        //  But *not* for xmlURI6 for either set of results (it's at a similar
-        //  level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
-
-        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
-        //  a different branch)
-        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
-
-        //  And *not* for xmlURI2 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
-
-        //  And *not* for XMLURI1 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, 'value');
-
-        //  And not for the structural path result
-        test.refute.contains(structurePathResults, 'value');
-    });
 });
 
 //  ------------------------------------------------------------------------

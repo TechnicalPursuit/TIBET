@@ -36,7 +36,7 @@ function(aRequest) {
         initialScreenWidth,
         initialScreenHeight,
 
-        allIFrames,
+        firstScreenIFrame,
         homeURL,
 
         defaultURL,
@@ -55,18 +55,16 @@ function(aRequest) {
 
     //  TODO: This should match the actual width & height of the entry in the
     //  'sherpa|screen' rule.
-    initialScreenWidth =
-        TP.ifInvalid(1024, TP.sys.cfg('sherpa.initial_screen_height'));
-    initialScreenHeight =
-        TP.ifInvalid(768, TP.sys.cfg('sherpa.initial_screen_width'));
+    initialScreenWidth = TP.sys.cfg('sherpa.initial_screen_height', 1024);
+    initialScreenHeight = TP.sys.cfg('sherpa.initial_screen_width', 768);
 
     tpElem.set('screenWidth', initialScreenWidth);
     tpElem.set('screenHeight', initialScreenHeight);
 
-    allIFrames = TP.byCSSPath('sherpa|screen > iframe',
-                            tpElem.getNativeWindow(),
-                            false,
-                            false);
+    firstScreenIFrame = TP.byCSSPath('sherpa|screen > iframe',
+                                        tpElem.getNativeWindow(),
+                                        true,
+                                        true);
 
     //  Check for startup home page override if possible. Note that because this
     //  is a startup sequence we need to consider session-level settings for
@@ -97,20 +95,15 @@ function(aRequest) {
 
         //  We *MUST* use this technique to load up the iframes - just setting
         //  the '.src' of the iframe won't do what we want (at least on Chrome).
-        TP.wrap(allIFrames.first().contentWindow).setLocation(
-                defaultURL, loadRequest);
-
-        //  Hide all of the other iframes (1...N)
-        allIFrames.slice(1).perform(
-                            function(anIFrameElem) {
-                                // TP.elementHide(anIFrameElem);
-                                TP.elementHide(anIFrameElem.parentNode);
-                            });
+        firstScreenIFrame.getContentWindow().setLocation(
+                                                defaultURL, loadRequest);
 
         //  Set the ui canvas to be the first screen
         //  TODO: Should this be made into a variable, cfg or otherwise?
         TP.sys.setUICanvas('UIROOT.SCREEN_0');
     }
+
+    tpElem.observe(TP.ANY, TP.ac('TP.sig.ToggleScreen', 'TP.sig.FocusScreen'));
 
     /*
      * TODO: BILL
@@ -133,54 +126,335 @@ TP.sherpa.world.Inst.defineAttribute('screenHeight');
 TP.sherpa.world.Inst.defineAttribute('viewRect');
 TP.sherpa.world.Inst.defineAttribute('currentFocus');
 
+TP.sherpa.world.Inst.defineAttribute('screens',
+    TP.cpc('> div.screens > sherpa|screen', TP.hc('shouldCollapse', false)));
+
+TP.sherpa.world.Inst.defineAttribute('infos',
+    TP.cpc('> div.infos > div.info', TP.hc('shouldCollapse', false)));
+
+TP.sherpa.world.Inst.defineAttribute('selectedScreen',
+    TP.cpc('> div.screens > sherpa|screen[pclass|selected]',
+        TP.hc('shouldCollapse', true)));
+
+TP.sherpa.world.Inst.defineAttribute('selectedInfo',
+    TP.cpc('> div.infos > div.info[pclass|selected]',
+        TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Type.defineMethod('$buildScreenFromIFrame',
+function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
+         infoHolderElement) {
+
+    var doc,
+        infoDiv,
+        insertionElem,
+        infoTabDiv,
+        screen;
+
+    doc = TP.nodeGetDocument(iFrameElement);
+
+    infoDiv = TP.documentConstructElement(
+                                doc, 'div', TP.w3.Xmlns.XHTML);
+    if (TP.isNumber(insertionIndex)) {
+        insertionElem = TP.nodeGetChildElementAt(infoHolderElement,
+                                                    insertionIndex);
+    }
+
+    infoDiv = TP.nodeAppendChild(infoHolderElement, infoDiv, false);
+    TP.elementAddClass(infoDiv, 'info');
+
+    //  Create a 'tab' for the info block to hold identifiying information.
+    infoTabDiv = TP.documentConstructElement(
+                                doc, 'div', TP.w3.Xmlns.XHTML);
+    infoTabDiv = TP.nodeAppendChild(infoDiv, infoTabDiv, false);
+    TP.elementAddClass(infoTabDiv, 'infotab');
+    TP.elementSetAttribute(
+        infoTabDiv,
+        'on:click',
+        '{signal: FocusScreen, payload: {screenIndex: ' + screenIndex + '}}',
+        true);
+
+    TP.nodeSetTextContent(infoTabDiv, 'Screen ' + (screenIndex + 1));
+
+    //  Wrap each iframe inside of a 'sherpa:screen' element
+    screen = TP.documentConstructElement(
+                                doc, 'sherpa:screen', TP.w3.Xmlns.SHERPA);
+    TP.nodeAppendChild(screen, iFrameElement, false);
+
+    //  Now, calculate an insertion point for the screen (if applicable) and
+    //  insert it.
+    if (TP.isNumber(insertionIndex)) {
+        insertionElem = TP.nodeGetChildElementAt(screenHolderElement,
+                                                    insertionIndex);
+    }
+    screen = TP.nodeInsertBefore(screenHolderElement,
+                                    screen,
+                                    insertionElem,
+                                    false);
+
+    return screen;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('createScreenElement',
-function(anID, position) {
+function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
     /**
      * @method createScreenElement
+     * @summary Creates a new screen element and inserts it before the supplied
+     *     beforeIndex (or appends it if beforeIndex isn't supplied).
+     * @param {String} iframeID The ID of the *iframe* that will be created
+     *     under the new sherpa:screen element.
+     * @param {?Number} beforeIndex The index of the existing screen that the
+     *     new sherpa:screen will be inserted before. If null, the new screen
+     *     will be appended to the end of the list of screens.
+     * @param {?TP.core.URI} loadURL The URL to load into the screen iframe.
+     * @param {?Function} creationCompleteFunc The Function to call when the
+     *     content of the iframe (if supplied by the loadURL) is finished
+     *     loading.
+     * @returns {TP.sherpa.screen} The newly created sherpa:screen.
      */
 
-    var newScreenElem;
+    var screenCount,
 
-    newScreenElem = TP.documentConstructElement(this.getNativeDocument(),
-                                            'screen',
-                                            TP.w3.Xmlns.SHERPA);
-    TP.elementSetAttribute(newScreenElem, 'id', anID);
+        screenHolderTPElem,
+        screenHolderElem,
+        infoHolderElem,
 
-    newScreenElem = TP.nodeInsertBefore(this.getNativeNode(),
-                        newScreenElem,
-                        TP.unwrap(this.getChildElementAt(position)));
+        newScreenElem,
+        newIFrameElem,
 
-    return TP.wrap(newScreenElem);
+        loadRequest,
+
+        newScreenTPElem;
+
+    //  Grab the screen count before we start messing with the DOM
+    screenCount = this.get('screens').getSize();
+
+    screenHolderTPElem = this.getChildElementAt(0);
+    screenHolderElem = TP.unwrap(screenHolderTPElem);
+
+    infoHolderElem = TP.byCSSPath('div.infos', this, true, false);
+
+    //  Create a new 'iframe' element, set it's ID to the supplied ID, and its
+    //  frameborder to 0.
+    newIFrameElem = TP.documentConstructElement(this.getNativeDocument(),
+                                                'iframe',
+                                                TP.w3.Xmlns.XHTML);
+    TP.elementSetAttribute(newIFrameElem, 'id', iFrameID);
+    TP.elementSetAttribute(newIFrameElem, 'frameborder', '0');
+
+    newScreenElem = this.getType().$buildScreenFromIFrame(
+                            newIFrameElem,
+                            screenCount,
+                            beforeIndex,
+                            screenHolderElem,
+                            infoHolderElem);
+
+    if (TP.isURI(loadURL)) {
+
+        loadRequest = TP.request();
+
+        loadRequest.atPut(
+            TP.ONLOAD,
+            function(evt) {
+
+                if (TP.isCallable(creationCompleteFunc)) {
+                    creationCompleteFunc();
+                }
+            });
+
+        TP.wrap(newIFrameElem.contentWindow).setLocation(loadURL, loadRequest);
+    }
+
+    newScreenTPElem = TP.wrap(newScreenElem);
+
+    return newScreenTPElem;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaHUD'},
+TP.sherpa.world.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handleClosedChange
      */
 
     /*
-    var isHidden;
+    var isClosed;
 
-    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+    isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (isHidden) {
-        console.log('hud is now hidden');
+    if (isClosed) {
+        console.log('hud is now closed');
     } else {
         console.log('hud is now showing');
     }
     */
 
     this.refocus();
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineHandler('FocusScreen',
+function(aSignal) {
+
+    this.setAttribute('mode', 'normal');
+
+    this.signal('ToggleScreen', aSignal.getPayload());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    var consoleService,
+
+        oldScreen,
+        oldInfo,
+
+        newScreen,
+        newInfo;
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
+    oldScreen = this.get('selectedScreen');
+    oldInfo = this.get('selectedInfo');
+
+    newScreen = this.get('screens').at(aSignal.at('screenIndex'));
+    newInfo = this.get('infos').at(aSignal.at('screenIndex'));
+
+    if (newScreen.identicalTo(oldScreen)) {
+        return this;
+    }
+
+    if (TP.isValid(oldScreen)) {
+        oldScreen.setSelected(false);
+        oldInfo.setSelected(false);
+
+        consoleService.get('model').setVariable(
+                    'UICANVAS', null);
+    }
+
+    if (TP.isValid(newScreen)) {
+        newScreen.setSelected(true);
+        newInfo.setSelected(true);
+
+        consoleService.get('model').setVariable(
+                    'UICANVAS', newScreen.getContentWindow());
+
+        this.scrollSelectedScreenIntoView();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('getScreenLocations',
+function() {
+
+    /**
+     * @method getScreenLocations
+     */
+
+    var screens,
+        locs;
+
+    screens = this.get('screens');
+
+    locs = TP.ac();
+
+    screens.forEach(
+            function(aScreen) {
+                var uri;
+
+                uri = TP.uc(aScreen.getLocation());
+                locs.push(uri.getVirtualLocation());
+            });
+
+    return locs;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('setScreenLocations',
+function(locations) {
+
+    /**
+     * @method setScreenLocations
+     */
+
+    var locationCount,
+
+        screens,
+        screenCount,
+
+        i,
+
+        counter,
+        loadFunc;
+
+    locationCount = locations.getSize();
+
+    screens = this.get('screens');
+    screenCount = screens.getSize();
+
+    if (locationCount > screenCount) {
+        for (i = 0; i < locationCount - screenCount; i++) {
+            this.createScreenElement('SCREEN_' + (i + screenCount));
+        }
+
+        //  Refetch the list of screens since we created more.
+        screens = this.get('screens');
+    }
+
+    counter = 0;
+    loadFunc = function() {
+
+        var loadURL,
+            loadRequest;
+
+        if (TP.notEmpty(locations)) {
+
+            loadURL = locations.shift();
+            loadRequest = TP.request();
+
+            loadRequest.atPut(
+                    TP.ONLOAD,
+                    function() {
+                        counter++;
+                        loadFunc();
+                    });
+            screens.at(counter).setLocation(TP.uc(loadURL), loadRequest);
+        } else {
+            /*
+            worldThumbnails = TP.byId('SherpaWorldThumbnails',
+                                        this.getNativeWindow());
+
+            setTimeout(function() {
+                worldThumbnails.render();
+            }, 1000);
+            */
+        }
+    };
+
+    loadFunc();
 
     return this;
 });
@@ -204,6 +478,62 @@ function() {
         this.fitToElement(currentFocus);
     } else if (currentFocus === TP.SELF) {
         this.fitToSelf();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('removeScreenElement',
+function(anIndex) {
+
+    /**
+     * @method removeScreenElement
+     * @summary Removes the screen element at the supplied index.
+     * @param {Number} anIndex The index of the existing screen to be removed.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var screenHolderTPElem,
+        infoHolderTPElem;
+
+    screenHolderTPElem = TP.byCSSPath('div.screens', this, true);
+    infoHolderTPElem = TP.byCSSPath('div.infos', this, true);
+
+    screenHolderTPElem.removeChildElementAt(anIndex);
+    infoHolderTPElem.removeChildElementAt(anIndex);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('scrollSelectedScreenIntoView',
+function() {
+
+    var selectedScreen,
+        selectedRect,
+
+        // elem,
+
+        selectedScreenElem;
+
+    selectedScreen = this.get('selectedScreen');
+
+    if (TP.isValid(selectedScreen)) {
+        selectedRect = selectedScreen.getOffsetRect();
+        selectedScreenElem = selectedScreen.getNativeNode();
+
+        this.scrollTo(
+                TP.HORIZONTAL,
+                selectedRect.getX() -
+                TP.elementGetMarginInPixels(selectedScreenElem).last());
+
+        this.scrollTo(
+                TP.VERTICAL,
+                selectedRect.getY() -
+                TP.elementGetMarginInPixels(selectedScreenElem).first());
     }
 
     return this;
@@ -304,7 +634,7 @@ function(screenRowNum, screenColNum) {
     /* eslint-enable no-extra-parens */
 
     if (TP.isValid(hud = TP.byId('SherpaHUD', this.getNativeWindow())) &&
-        TP.notTrue(hud.get('hidden'))) {
+        TP.notTrue(hud.get('closed'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;
         width += hudHorizOffset * 2;
@@ -328,30 +658,33 @@ function() {
      * @returns {TP.sherpa.world} The receiver.
      */
 
+    this.removeTransform();
+
     return this;
-/*
+
+    /*
     var worldSize,
         worldWidth,
-        worldHeight;
+        worldHeight,
 
-    worldSize = this.getComputedWidthAndHeight();
-    worldWidth = worldSize.first();
-    worldHeight = worldSize.last();
-
-    var hud,
+        hud,
         hudHorizOffset,
         hudVertOffset,
         translateX,
         translateY;
 
-    hudHorizOffset = (30 + 5);
-    hudVertOffset = (50 + 5);
+    worldSize = this.getComputedWidthAndHeight();
+    worldWidth = worldSize.first();
+    worldHeight = worldSize.last();
+
+    hudHorizOffset = 30 + 5;
+    hudVertOffset = 50 + 5;
 
     translateX = 0;
     translateY = 0;
 
     if (TP.isValid(hud = TP.byId('SherpaHUD', this.getNativeWindow())) &&
-        TP.notTrue(hud.get('hidden'))) {
+        TP.notTrue(hud.get('closed'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;
         worldWidth += hudHorizOffset * 2;
@@ -363,7 +696,7 @@ function() {
     this.set('currentFocus', TP.SELF);
 
     return this;
-*/
+    */
 });
 
 //  ------------------------------------------------------------------------
@@ -377,7 +710,8 @@ function() {
      */
 
     return this;
-/*
+
+    /*
     var nativeDoc,
         windowWidth,
         windowHeight;
@@ -390,7 +724,7 @@ function() {
     this.setView(TP.rtc(0, 0, windowWidth, windowHeight));
 
     return this;
-*/
+    */
 });
 
 //  ------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 //  ========================================================================
 
 TP.sys.defineMethod('importPackage',
-function(packageName, configName) {
+function(packageName, configName, shouldSignal) {
 
     /**
      * @method importPackage
@@ -19,7 +19,9 @@ function(packageName, configName) {
      * @param {String} packageName The package name to locate and import.
      * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
-     * @returns {TP.extern.Promise} A promise which resolved based on success.
+     * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
+     *     they've completed their import process?
+     * @returns {Promise} A promise which resolved based on success.
      */
 
     var uri,
@@ -69,7 +71,17 @@ function(packageName, configName) {
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
     promises = missingScripts.map(function(path) {
-        return TP.sys.importScript(path);
+        return TP.sys.importScript(path,
+            TP.request('callback', function() {
+                var url;
+
+                loadedScripts.push(path);
+
+                if (shouldSignal) {
+                    url = TP.uc(path);
+                    url.$changed();
+                }
+            }));
     });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
@@ -93,7 +105,7 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
-     * @returns {TP.extern.Promise} A promise which resolved based on success.
+     * @returns {Promise} A promise which resolved based on success.
      */
 
     var url,
@@ -132,6 +144,8 @@ function(aURI, aRequest) {
             req.atPut('node', scriptNode);
             TP.html.script.tagAttachDOM(req);
 
+            TP.signal(TP.sys, 'TP.sig.ScriptImported', TP.hc('node', scriptNode));
+
             return scriptNode;
         }
     ).then(function(result) {
@@ -151,14 +165,15 @@ function(aURI, aRequest) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.defineMethod('importSource', function(targetUrl) {
+TP.sys.defineMethod('importSource',
+function(targetUrl) {
 
     /**
      * @method importSource
      * @summary Imports a target script which loads and integrates JS with the
      *     currently running "image".
      * @param {String} targetUrl URL of the target resource.
-     * @returns {TP.extern.Promise} A promise which resolved based on success.
+     * @returns {Promise} A promise which resolved based on success.
      */
 
     var request;
@@ -167,34 +182,35 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
         return TP.extern.Promise.reject(new Error('InvalidURI'));
     }
 
-    request = TP.request('async', true, 'refresh', true, 'resultType',  TP.TEXT);
+    request = TP.request('async', true, 'refresh', true, 'resultType', TP.TEXT);
 
-    return TP.uc(targetUrl).getResource(request).then(function(result) {
-        var node;
+    return TP.uc(targetUrl).getResource(request).then(
+        function(result) {
+            var node;
 
-        node = TP.boot.$sourceImport(result, null, targetUrl);
-        if (TP.notValid(node) || TP.isError(node)) {
-            throw new Error('Error importing source: ' + targetUrl);
-        }
+            node = TP.boot.$sourceImport(result, null, targetUrl);
+            if (TP.notValid(node) || TP.isError(node)) {
+                throw new Error('Error importing source: ' + targetUrl);
+            }
 
-        return node;
+            return node;
 
-    }).catch(function(err) {
+        }).catch(
+        function(err) {
+            //  Make sure to fail our request in case it didn't get properly
+            //  failed. If it's already completed this will be a no-op.
+            if (TP.isValid(request)) {
+                request.fail(err);
+            }
 
-        //  Make sure to fail our request in case it didn't get properly failed.
-        //  If it's already completed this will be a no-op.
-        if (TP.isValid(request)) {
-            request.fail(err);
-        }
-
-        //  Be sure to throw here or invoking items like importPackage won't
-        //  see the error, it's being caught here.
-        if (TP.isValid(err)) {
-            throw err;
-        } else {
-            throw new Error('ImportSourceError');
-        }
-    });
+            //  Be sure to throw here or invoking items like importPackage won't
+            //  see the error, it's being caught here.
+            if (TP.isValid(err)) {
+                throw err;
+            } else {
+                throw new Error('ImportSourceError');
+            }
+        });
 });
 
 //  ------------------------------------------------------------------------

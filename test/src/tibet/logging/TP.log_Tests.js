@@ -374,31 +374,35 @@ function() {
 
 TP.log.Manager.describe('filters',
 function() {
+    //  empty
 });
 
 //  ------------------------------------------------------------------------
 
 TP.log.Manager.describe('appenders',
 function() {
-
+    //  empty
 });
 
 //  ------------------------------------------------------------------------
 
 TP.log.Manager.describe('layouts',
 function() {
+    //  empty
 });
 
 //  ------------------------------------------------------------------------
 
 TP.log.Manager.describe('entries',
 function() {
+    //  empty
 });
 
 //  ------------------------------------------------------------------------
 
 TP.log.Manager.describe('markers',
 function() {
+    //  empty
 });
 
 //  ------------------------------------------------------------------------

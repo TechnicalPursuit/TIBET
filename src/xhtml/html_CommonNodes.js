@@ -23,6 +23,10 @@
 
 //  can't construct concrete instances of any of these types
 
+//  ========================================================================
+//  TP.html.CoreAttrs
+//  ========================================================================
+
 TP.core.UIElementNode.defineSubtype('html.CoreAttrs');
 
 //  A subtype of TP.core.UIElement that has 4 common attributes:
@@ -38,6 +42,10 @@ TP.html.CoreAttrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
+//  ========================================================================
+//  TP.html.Attrs
+//  ========================================================================
+
 TP.core.UIElementNode.defineSubtype('html.Attrs');
 TP.html.Attrs.isAbstract(true);
 
@@ -49,11 +57,43 @@ TP.html.Attrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
+//  ========================================================================
+//  TP.html.Aligned
+//  ========================================================================
+
 TP.html.Attrs.defineSubtype('Aligned');
 TP.html.Aligned.isAbstract(true);
 
+//  ========================================================================
+//  TP.html.Focused
+//  ========================================================================
+
 TP.html.Attrs.defineSubtype('Focused');
 TP.html.Focused.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.html.Focused.Type.defineAttribute('opaqueCapturingSignalNames',
+        TP.ac(
+            'TP.sig.DOMClick',
+            'TP.sig.DOMDblClick',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+
+            'TP.sig.DOMMouseDown',
+            'TP.sig.DOMMouseEnter',
+            'TP.sig.DOMMouseLeave',
+            'TP.sig.DOMMouseOut',
+            'TP.sig.DOMMouseOver',
+            'TP.sig.DOMMouseUp',
+
+            'TP.sig.DOMFocus',
+            'TP.sig.DOMBlur'
+        ));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -95,19 +135,27 @@ function(aNode, aSignal) {
     return !TP.elementHasAttribute(aNode, 'disabled', true);
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TP.html.Citation
+//  ========================================================================
 
 TP.html.Attrs.defineSubtype('Citation');
 TP.html.Citation.isAbstract(true);
+
+//  ========================================================================
+//  TP.html.List
+//  ========================================================================
 
 TP.html.Attrs.defineSubtype('List');
 TP.html.List.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
 TP.html.List.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
-theRequest) {
+         theRequest) {
 
     /**
      * @method generateMarkup
@@ -134,6 +182,9 @@ theRequest) {
     var tagName,
         template,
         str;
+
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
 
     //  If the object is an Array, then just skip to the bottom of the
     //  method.
@@ -173,7 +224,8 @@ function() {
     /**
      * @method getItemTagName
      * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
+     *     fromArray()/fromObject() methods. Note that this should return the
+     *     receiver's *canonical* name.
      * @returns {String} The ID of the observer.
      */
 

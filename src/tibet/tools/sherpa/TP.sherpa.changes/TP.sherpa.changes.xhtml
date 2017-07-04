@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<sherpa:changes>
+    <div class="header">
+        <div class="trigger button" on:click="Toggle">
+        </div>
+            <sherpa:count name="server" on:click="ShowServerChanges">0</sherpa:count>
+            <sherpa:sync on:click="SyncAllChanges"/>
+            <sherpa:count name="client" on:click="ShowClientChanges">0</sherpa:count>
+    </div>
+    <div class="content">
+        <span>Changed URIs (server &amp; client)</span>
+        <xctrls:list/>
+    </div>
+</sherpa:changes>

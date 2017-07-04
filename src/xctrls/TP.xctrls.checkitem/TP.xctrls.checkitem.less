@@ -1,27 +1,26 @@
 /*
-	CSS styles for the 'xctrls:checkitem' control.
+    CSS styles for the 'xctrls:checkitem' control.
 */
 
-@import (reference) url('../TP.xctrls_common.css');
-@import (reference) url('../TP.xctrls_mixins.less');
+@import url("@{xctrls_src}/TP.xctrls_mixins.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace svg url(http://www.w3.org/2000/svg);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 /* The checkitem */
 
 xctrls|checkitem {
 
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 
     /* Order check image before label */
     flex-direction: row-reverse;
 
-    .user-select(none);
+    user-select: none;
 
     /* The checkitem's value (the checkmark) */
 
@@ -38,7 +37,7 @@ xctrls|checkitem {
 
                 fill: none;
                 stroke: black;
-                stroke-width: 2px;
+                stroke-width: 1px;
             }
 
             svg|polygon {
@@ -130,6 +129,8 @@ xctrls|checkitem {
     /* The checkitem label */
 
     & > xctrls|label {
+
+        flex: 1;
     }
 
     /* Clicking down on the checkitem, label must highlight */

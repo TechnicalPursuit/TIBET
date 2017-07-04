@@ -26,6 +26,9 @@ TP.sig.StateSignal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
 
 TP.sig.StateSignal.Inst.defineAttribute('$shouldScanSupers', true);
 
+TP.sig.StateSignal.Type.isControllerSignal(true);
+TP.sig.StateSignal.isControllerRoot(true);
+
 // ---
 
 TP.sig.StateSignal.defineSubtype('StateInput');
@@ -62,7 +65,8 @@ TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
 //  Local Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StateMachine.defineMethod('normalizeState', function(aState) {
+TP.core.StateMachine.defineMethod('normalizeState',
+function(aState) {
 
     if (!TP.isString(aState)) {
         if (TP.notValid(aState)) {
@@ -246,7 +250,7 @@ function(force) {
      * @summary Shuts down the state machine, returning it to an indeterminate
      *     state. This is typically called as part of the final state transition
      *     processing when the state machine transitions to its final state.
-     * @raises {TP.sig.InvalidFinalState} If the state machine isn't in its
+     * @exception {TP.sig.InvalidFinalState} If the state machine isn't in its
      *     final state when this method is called.
      * @param {Boolean} [force=false] True to force deactivation regardless of
      *     whether the receiver is in a final state.
@@ -365,17 +369,21 @@ function(initialState, targetState, transitionDetails) {
         return;
     }
 
+    /* eslint-disable consistent-this */
+
     machine = this;
 
     initial = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-    initial = initial.map(function(state) {
-        return machine.getStateName(state);
-    });
+    initial = initial.map(
+                function(state) {
+                    return machine.getStateName(state);
+                });
 
     target = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-    target = target.map(function(state) {
-        return machine.getStateName(state);
-    });
+    target = target.map(
+                function(state) {
+                    return machine.getStateName(state);
+                });
 
     initials = this.get('byInitial');
     parents = this.get('byParent');
@@ -385,7 +393,10 @@ function(initialState, targetState, transitionDetails) {
     nested = options.at('nested');
 
     //  Normalize singular/multiple triggers into a single set.
-    triggers = TP.ifInvalid(options.at('triggers'), TP.ac());
+    triggers = options.at('triggers');
+    if (TP.notValid(triggers)) {
+        triggers = TP.ac();
+    }
 
     trigger = options.at('trigger');
     if (TP.isValid(trigger)) {
@@ -603,6 +614,8 @@ function(initialState, targetState, transitionDetails) {
                 parents.atPut(machine.getStateName(key), nested);
             }
         });
+
+    /* eslint-enable consistent-this */
 
     return this;
 });
@@ -1361,7 +1374,7 @@ function(aState, signalOrParams, childExit) {
     }
 
     //  Capture the time that the last trigger signal fired.
-    this.set('$lastTriggerTime', triggerTime);
+    this.set('$lastTriggerTime', triggerTime, false);
 
     return;
 });
@@ -1395,11 +1408,16 @@ function(signalOrParams, childExit) {
         targetState,
         stateName;
 
+    /* eslint-disable consistent-this */
+
     machine = this;
 
     //  Check the various state test functions and determine what our state
     //  should be.
-    oldState = this.getCurrentState(childExit); // this.getStateName(this.get('state'));
+
+    oldState = this.getCurrentState(childExit);
+                // this.getStateName(this.get('state'));
+
     newState = oldState;
 
     // TP.info('TP.core.StateMachine :: updateCurrentState -' +
@@ -1465,6 +1483,8 @@ function(signalOrParams, childExit) {
     //  with both true transitions and with "internal" transitions/stateInput.
     this.transition(newState, signalOrParams, childExit);
 
+    /* eslint-enable consistent-this */
+
     return newState;
 });
 
@@ -1501,7 +1521,8 @@ TP.core.StateResponder.Inst.defineAttribute('stateMachines');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('addInputState', function(aState) {
+TP.core.StateResponder.Inst.defineMethod('addInputState',
+function(aState) {
 
     /**
      * @method addInputState
@@ -1516,7 +1537,10 @@ TP.core.StateResponder.Inst.defineMethod('addInputState', function(aState) {
 
     state = TP.core.StateMachine.normalizeState(aState);
 
-    inputs = TP.ifInvalid(this.$get('inputStates'), TP.ac());
+    inputs = this.$get('inputStates');
+    if (TP.notValid(inputs)) {
+        inputs = TP.ac();
+    }
     inputs.push(state);
     this.$set('inputStates', inputs, false);
 
@@ -1601,7 +1625,8 @@ function(aStateMachine) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('setInputStates', function(anArray) {
+TP.core.StateResponder.Inst.defineMethod('setInputStates',
+function(anArray) {
 
     /**
      * @method setInputStates
@@ -1628,15 +1653,15 @@ function() {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var responder,
+    var thisref,
         machines;
 
-    responder = this;
+    thisref = this;
 
     machines = this.getStateMachines();
     machines.forEach(
             function(aStateMachine) {
-                responder.ignore(aStateMachine, TP.sig.StateSignal);
+                thisref.ignore(aStateMachine, TP.sig.StateSignal);
             });
     machines.empty();
 

@@ -2,15 +2,14 @@
 	CSS styles for the 'xctrls:radioitem' control.
 */
 
-@import (reference) url('TP.xctrls_variables_tpi.less');
+@import (reference) url("TP.xctrls_variables_tpi.less");
 
-@import (reference) url('../TP.xctrls.radioitem_all.less');
-@import (reference) url('TP.xctrls_common_tpi.less');
+@import url("../TP.xctrls.radioitem_all.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace svg url(http://www.w3.org/2000/svg);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 /* The radioitem */
 
@@ -171,6 +170,7 @@
             font-family: @xctrls_radioitem-font-family;
             color: @xctrls_radioitem-font-color-normal;
 
+            background-color: @xctrls_radioitem-background-color-normal;
         }
 
         /* Hovering over the radioitem, label must highlight */
@@ -178,6 +178,8 @@
         &:hover > xctrls|label {
 
             color: @xctrls_radioitem-font-color-hover;
+
+            background-color: @xctrls_radioitem-background-color-hover;
         }
 
         /* Focusing on the radioitem, label must highlight */
@@ -190,6 +192,8 @@
             > xctrls|label {
 
                 color: @xctrls_radioitem-font-color-focus;
+
+                background-color: @xctrls_radioitem-background-color-focus;
             }
 
             &[pclass|checked] > xctrls|label {
@@ -206,9 +210,11 @@
             > xctrls|label {
 
                 color: @xctrls_radioitem-font-color-active;
+
+                background-color: @xctrls_radioitem-background-color-active;
             }
 
-            &[pclass|checked]> xctrls|label {
+            &[pclass|checked] > xctrls|label {
             }
         }
 
@@ -220,6 +226,8 @@
         &[pclass|disabled] > xctrls|label {
 
             color: @xctrls_radioitem-font-color-disabled;
+
+            background-color: @xctrls_radioitem-background-color-disabled;
         }
     }
 }

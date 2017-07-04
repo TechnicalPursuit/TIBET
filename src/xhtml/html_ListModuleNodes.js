@@ -58,6 +58,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     tagName = this.getCanonicalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     if (TP.isTrue(shouldAutoWrap) && TP.isTrue(theRequest.at('repeat'))) {
         if (TP.isArray(anObject)) {
             //  The object that handed to the iteration mechanism is an
@@ -103,7 +106,8 @@ function() {
     /**
      * @method getItemTagName
      * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
+     *     fromArray()/fromObject() methods. Note that this should return the
+     *     receiver's *canonical* name.
      * @returns {String} The ID of the observer.
      */
 
@@ -199,7 +203,7 @@ TP.html.ul.Type.set('booleanAttrs', TP.ac('compact'));
 
 TP.html.ul.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
-theRequest) {
+         theRequest) {
 
     /**
      * @method generateMarkup
@@ -226,6 +230,9 @@ theRequest) {
     var tagName,
         template,
         str;
+
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
 
     //  If the object is an Array, then just skip to the bottom of the
     //  method.

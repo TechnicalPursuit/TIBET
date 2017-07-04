@@ -328,11 +328,11 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
-    this.getContentDocument().setContent(aContentObject, aRequest);
-
-    return;
+    return this.getContentDocument().setContent(aContentObject, aRequest);
 });
 
 //  ========================================================================
@@ -430,314 +430,6 @@ TP.core.Window.Type.defineAttribute('windowRegistry', TP.hc());
 //  a slot used by various system files to tell if the window's document is
 //  currently being written into.
 TP.core.Window.Type.defineAttribute('$isDocumentWriting');
-
-//  a TP.core.Hash containing either media queries or a geo query used for
-//  signaling either media query or geo signals, keyed by the 'origin' used to
-//  observe
-TP.core.Window.Type.defineAttribute('$queries', TP.hc());
-
-//  a TP.core.Hash containing media query handler Functions, used to signal
-//  media query changes, keyed by the 'origin' used to observe
-TP.core.Window.Type.defineAttribute('$mqEntries', TP.hc());
-
-//  a Number containing the unique identifier for the currently active
-//  'geolocation watcher'
-TP.core.Window.Type.defineAttribute('$geoWatch');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Window.Type.defineMethod('addObserver',
-function(anOrigin, aSignal, aHandler, aPolicy) {
-
-    /**
-     * @method addObserver
-     * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
-     *     origin(s).
-     * @param {Function} aHandler The specific handler to turn on observations
-     *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
-     * @returns {Boolean} True if the observer wants the main notification
-     *     engine to add the observation, false otherwise.
-     */
-
-    var map,
-
-        originStr,
-
-        queryCount,
-
-        originParts,
-        winID,
-        queryStr,
-        win,
-
-        geoWatch,
-        mediaQuery,
-
-        mqHandler;
-
-    map = this.get('$queries');
-
-    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  Make sure that the origin matches one of the kinds of queries we can
-    //  process.
-    originStr = TP.str(anOrigin);
-    if (!/@media |@geo/.test(originStr)) {
-        return this.raise('TP.sig.InvalidOrigin');
-    }
-
-    //  If our 'queries' map does not already have an entry
-    if (TP.notValid(queryCount = map.at(originStr))) {
-
-        //  The origin should be something like 'window_0@geo' or
-        //  'window@media screen and (max-width:800px)'
-        originParts = originStr.split(/@media |@geo/);
-        if (originParts.getSize() !== 2) {
-            return this.raise('TP.sig.InvalidQuery');
-        }
-
-        winID = originParts.first();
-        queryStr = originParts.last();
-
-        //  Can't find a Window? Bail out.
-        if (!TP.isWindow(win = TP.sys.getWindowById(winID))) {
-            return this.raise('TP.sig.InvalidWindow');
-        }
-
-        //  If the caller is interested in Geolocation stuff, make sure we're on
-        //  a platform that supports it.
-        if (/@geo/.test(originStr)) {
-
-            if (TP.isValid(win.navigator.geolocation)) {
-
-                //  Set up the 'watch' with a success callback that signals a
-                //  GeoPositionChange and an error callback that signals a
-                //  GeoPositionError
-                geoWatch = win.navigator.geolocation.watchPosition(
-                    function(position) {
-                        var coords,
-                            data;
-
-                        coords = position.coords;
-
-                        //  Break up the returned data into a well structured
-                        //  hash data structure.
-                        data = TP.hc(
-                                'latitude', coords.latitude,
-                                'longitude', coords.longitude,
-                                'altitude', coords.altitude,
-                                'accuracy', coords.accuracy,
-                                'altitudeAccuracy', coords.altitudeAccuracy,
-                                'heading', coords.heading,
-                                'speed', coords.speed,
-                                'timestamp', position.timestamp
-                                );
-
-                        TP.signal(originStr,
-                                    'TP.sig.GeoPositionChange',
-                                    data);
-                    },
-                    function(error) {
-                        var errorMsg;
-
-                        errorMsg = '';
-
-                        //  Check for known errors
-                        switch (error.code) {
-
-                            case error.PERMISSION_DENIED:
-                                errorMsg = TP.sc('This website does not have ',
-                                                    'permission to use ',
-                                                    'the Geolocation API');
-                                break;
-
-                            case error.POSITION_UNAVAILABLE:
-                                errorMsg = TP.sc('The current position could ',
-                                                    'not be determined.');
-                                break;
-
-                            case error.PERMISSION_DENIED_TIMEOUT:
-                                errorMsg = TP.sc('The current position could ',
-                                                    'not be determined ',
-                                                    'within the specified ',
-                                                    'timeout period.');
-                                break;
-
-                            default:
-                                break;
-                        }
-
-                        //  If it's an unknown error, build a errorMsg that
-                        //  includes information that helps identify the
-                        //  situation so that the error handler can be updated.
-                        if (errorMsg === '') {
-                            errorMsg = TP.sc('The position could not be ',
-                                                'determined due to an unknown ',
-                                                'error (Code: ') +
-                                                error.code.toString() +
-                                                ').';
-                        }
-
-                        TP.signal(originStr,
-                                    'TP.sig.GeoPositionError',
-                                    errorMsg);
-                    });
-
-                this.set('$geoWatch', geoWatch);
-            }
-        } else if (/@media /.test(originStr)) {
-
-            //  Otherwise, it was a media query, so define a handler that will
-            //  signal CSSMediaActive or CSSMediaInactive depending on whether
-            //  the query matches or not.
-            mqHandler =
-                function(aQuery) {
-                    if (aQuery.matches) {
-                        TP.signal(originStr,
-                                    'TP.sig.CSSMediaActive',
-                                    aQuery.media);
-                    } else {
-                        TP.signal(originStr,
-                                    'TP.sig.CSSMediaInactive',
-                                    aQuery.media);
-                    }
-                };
-
-            //  Perform the query and get the MediaQueryList back. Note that
-            //  this will also register the handler so that the callback fires
-            //  when the environment changes such that the query succeeds or
-            //  fails.
-            mediaQuery = TP.windowQueryCSSMedia(win, queryStr, mqHandler);
-
-            //  Store off a pair of the MediaQueryList and the handler with the
-            //  query string as a key. This will allow us to unregister the
-            //  query and handler in the removeObserver() call below
-            this.get('$mqEntries').atPut(
-                queryStr, TP.ac(mediaQuery, mqHandler));
-        }
-
-        //  Kick off the map count with a 1. Subsequent queries using the same
-        //  query string will just kick the counter.
-        map.atPut(originStr, 1);
-    } else {
-
-        //  Otherwise, just kick the query count in the map
-        map.atPut(originStr, queryCount + 1);
-    }
-
-    //  Always tell the notification to register our handler, etc.
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Window.Type.defineMethod('removeObserver',
-function(anOrigin, aSignal, aHandler, aPolicy) {
-
-    /**
-     * @method removeObserver
-     * @summary Removes a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
-     *     origin(s).
-     * @param {Function} aHandler The specific handler to turn off observations
-     *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
-     * @returns {Boolean} True if the observer wants the main notification
-     *     engine to remove the observation, false otherwise.
-     */
-
-    var map,
-
-        originStr,
-
-        queryCount,
-
-        originParts,
-        win,
-
-        handlers,
-        mqEntry;
-
-    map = this.get('$queries');
-
-    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  Make sure that the origin matches one of the kinds of queries we can
-    //  process.
-    originStr = TP.str(anOrigin);
-    if (!/@media |@geo/.test(originStr)) {
-        return this.raise('TP.sig.InvalidOrigin');
-    }
-
-    //  If our 'queries' map has an entry for the query, then it's a
-    //  registration that we care about.
-    if (TP.isValid(queryCount = map.at(originStr))) {
-
-        //  The origin should be something like 'window_0@geo' or
-        //  'window@media screen and (max-width:800px)'
-        originParts = originStr.split(/@media |@geo/);
-        if (originParts.getSize() !== 2) {
-            return this.raise('TP.sig.InvalidQuery');
-        }
-
-        //  If we're the last handler interested in this query, then go to
-        //  the trouble of unregistering it, etc.
-        if (queryCount === 1) {
-
-            if (/@geo/.test(originStr)) {
-
-                if (TP.isValid(win.navigator.geolocation)) {
-
-                    //  Make sure to both clear the watch and set our internal
-                    //  variable to null
-                    win.navigator.geolocation.clearWatch(this.get('$geoWatch'));
-                    this.set('$geoWatch', null);
-                }
-            } else if (/@media /.test(originStr)) {
-
-                if (TP.notEmpty(handlers = this.get('$mqEntries')) &&
-                        TP.isValid(mqEntry = handlers.at(originStr))) {
-
-                    if (TP.isMediaQueryList(mqEntry.first())) {
-                        mqEntry.first().removeListener(mqEntry.last());
-                    }
-
-                    handlers.removeKey(originStr);
-                }
-            }
-
-            map.removeKey(originStr);
-
-        } else {
-            //  Otherwise, there are multiple handlers interested in this query,
-            //  so just reduce the counter by one.
-            map.atPut(originStr, queryCount - 1);
-        }
-    }
-
-    //  Always tell the notification to remove our handler, etc.
-    return true;
-});
 
 //  ------------------------------------------------------------------------
 
@@ -1450,7 +1142,7 @@ function(aURL, aRequest) {
         blank,
         blankURI,
         frame,
-        thisArg,
+        thisref,
         handler;
 
     //  Default URL to the blank page when empty or null/undefined.
@@ -1485,12 +1177,12 @@ function(aURL, aRequest) {
 
         //  Capture variable binding references.
         frame = win.frameElement;
-        thisArg = this;
+        thisref = this;
 
         handler = function() {
             frame.removeEventListener('load', handler, false);
             if (!blank) {
-                thisArg.setContent(url, aRequest);
+                thisref.setContent(url, aRequest);
             } else if (TP.isValid(aRequest)) {
                 aRequest.complete();
             }
@@ -1541,18 +1233,22 @@ function(themeName) {
 //  ------------------------------------------------------------------------
 
 TP.core.Window.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
 
     var marker,
-        str;
+        str,
+        $depth,
+        $level;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1563,8 +1259,16 @@ function() {
 
     str = '[' + TP.tname(this) + ' :: ';
 
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     try {
-        str += '(' + TP.dump(this.getNativeWindow()) + ')' + ']';
+        if ($level > $depth) {
+            str += '@' + TP.id(this) + ']';
+        } else {
+            str += '(' + TP.dump(this.getNativeWindow(), $depth, $level + 1) +
+                ')' + ']';
+        }
     } catch (e) {
         str += '(' + TP.str(this.getNativeWindow()) + ')' + ']';
     } finally {
@@ -1972,6 +1676,8 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
     var req,
@@ -2011,8 +1717,9 @@ function(aProvider) {
 
     var natWin;
 
-    if (!TP.canInvoke(aProvider,
-                        TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
+    if (!TP.canInvokeInterface(
+                    aProvider,
+                    TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         return this.raise(
             'TP.sig.InvalidProvider',
             'STDIO provider must implement stdin, stdout, and stderr');

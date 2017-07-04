@@ -21,136 +21,42 @@
 //  ------------------------------------------------------------------------
 //  Global variables
 //  ------------------------------------------------------------------------
-TP.CSS_ALL_PROPERTIES = TP.ac('azimuth',
-                                'background',
-                                'backgroundAttachment',
-                                'backgroundColor',
-                                'backgroundImage',
-                                'backgroundPosition',
-                                'backgroundRepeat',
-                                'border',
-                                'borderCollapse',
-                                'borderColor',
-                                'borderSpacing',
-                                'borderStyle',
-                                'borderTop',
-                                'borderRight',
-                                'borderBottom',
-                                'borderLeft',
-                                'borderTopColor',
-                                'borderRightColor',
-                                'borderBottomColor',
-                                'borderLeftColor',
-                                'borderTopStyle',
-                                'borderRightStyle',
-                                'borderBottomStyle',
-                                'borderLeftStyle',
-                                'borderTopWidth',
-                                'borderRightWidth',
-                                'borderBottomWidth',
-                                'borderLeftWidth',
-                                'borderWidth',
-                                'bottom',
-                                'captionSide',
-                                'clear',
-                                'clip',
-                                'color',
-                                'content',
-                                'counterIncrement',
-                                'counterReset',
-                                'cssFloat',
-                                'cue',
-                                'cueAfter',
-                                'cueBefore',
-                                'cursor',
-                                'direction',
-                                'display',
-                                'elevation',
-                                'emptyCells',
-                                'font',
-                                'fontFamily',
-                                'fontSize',
-                                'fontSizeAdjust',
-                                'fontStretch',
-                                'fontStyle',
-                                'fontVariant',
-                                'fontWeight',
-                                'height',
-                                'imeMode',
-                                'length',
-                                'left',
-                                'letterSpacing',
-                                'lineHeight',
-                                'listStyle',
-                                'listStyleImage',
-                                'listStylePosition',
-                                'listStyleType',
-                                'margin',
-                                'marginTop',
-                                'marginRight',
-                                'marginBottom',
-                                'marginLeft',
-                                'markerOffset',
-                                'marks',
-                                'maxHeight',
-                                'maxWidth',
-                                'minHeight',
-                                'minWidth',
-                                'opacity',
-                                'orphans',
-                                'outline',
-                                'outlineColor',
-                                'outlineOffset',
-                                'outlineStyle',
-                                'outlineWidth',
-                                'overflow',
-                                'overflowX',
-                                'overflowY',
-                                'padding',
-                                'paddingTop',
-                                'paddingRight',
-                                'paddingBottom',
-                                'paddingLeft',
-                                'page',
-                                'pageBreakAfter',
-                                'pageBreakBefore',
-                                'pageBreakInside',
-                                'parentRule',
-                                'pause',
-                                'pauseAfter',
-                                'pauseBefore',
-                                'pitch',
-                                'pitchRange',
-                                'pointerEvents',
-                                'position',
-                                'quotes',
-                                'richness',
-                                'right',
-                                'size',
-                                'speak',
-                                'speakHeader',
-                                'speakNumeral',
-                                'speakPunctuation',
-                                'speechRate',
-                                'stress',
-                                'tableLayout',
-                                'textAlign',
-                                'textDecoration',
-                                'textIndent',
-                                'textShadow',
-                                'textTransform',
-                                'top',
-                                'unicodeBidi',
-                                'verticalAlign',
-                                'visibility',
-                                'voiceFamily',
-                                'volume',
-                                'whiteSpace',
-                                'width',
-                                'widows',
-                                'wordSpacing',
-                                'wordWrap',
-                                'zIndex');
+
+(function() {
+    var cssKeys;
+
+    //  Strange that Gecko does this in a different way, but we obtain a similar
+    //  result. Note that we have to filter out keys containing a '-' (which
+    //  curiously are duplicates of the camel case DOM versions of the property
+    //  names).
+    if (TP.sys.isUA('GECKO')) {
+        cssKeys = Object.getOwnPropertyNames(
+                    Object.getPrototypeOf(document.documentElement.style));
+        cssKeys = cssKeys.filter(
+                    function(aKey) {
+                        return aKey.indexOf('-') === TP.NOT_FOUND;
+                    });
+    } else {
+        cssKeys = Object.getOwnPropertyNames(document.documentElement.style);
+    }
+
+    cssKeys.sort();
+
+    TP.CSS_ALL_PROPERTIES = cssKeys;
+
+    if (TP.notValid(window.CSS)) {
+        window.CSS = {};
+    }
+
+    if (TP.notValid(window.CSS.prototype)) {
+        window.CSS.prototype = {};
+    }
+
+    cssKeys.forEach(
+            function(aKey) {
+                CSS.prototype[aKey] = aKey.asCSSName();
+            });
+}());
 
 TP.CSS_COLOR_PROPERTIES = TP.ac('backgroundColor',
                                 'borderColor',
@@ -198,6 +104,7 @@ TP.CSS_UNITLESS_PROPERTIES = TP.ac('opacity',
                                     'orphans',
                                     'widows',
                                     'zIndex');
+
 TP.CSS_DISALLOW_NEGATIVE_VALUES = TP.ac('borderWidth',
                                         'borderBottomWidth',
                                         'borderLeftWidth',
@@ -826,13 +733,11 @@ function(aLongNumber) {
     hexChars = '0123456789ABCDEF';
     str = '#';
 
-    /* jshint bitwise:false */
     /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
     for (i = 24; (i -= 4) >= 0;) {
         str += hexChars.charAt((aLongNumber >> i) & 0xF);
     }
     /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
-    /* jshint bitwise:true */
 
     return str;
 });
@@ -874,7 +779,6 @@ function(color1, color2, aPercentage) {
 
     n = 0;
 
-    /* jshint bitwise:false */
     /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
     for (i = 24; (i -= 8) >= 0;) {
         ca = (color1 >> i) & 0xFF;
@@ -883,7 +787,6 @@ function(color1, color2, aPercentage) {
         n |= cc << i;
     }
     /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
-    /* jshint bitwise:true */
 
     return n;
 });
@@ -977,7 +880,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             if (TP.notValid(targetElement = anElement.parentNode)) {
                 return 0;
             }
-            theValue = TP.elementGetStyleValueInPixels(targetElement,
+            theValue = TP.elementGetComputedStyleValueInPixels(
+                                                        targetElement,
                                                         'fontSize');
 
             break;
@@ -987,7 +891,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             //  When lineHeight is a percentage, it is computed from the
             //  element's fontSize.
             targetElement = anElement;
-            theValue = TP.elementGetStyleValueInPixels(targetElement,
+            theValue = TP.elementGetComputedStyleValueInPixels(
+                                                        targetElement,
                                                         'fontSize');
 
             break;
@@ -997,7 +902,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             //  When verticalAlign is a percentage, it is computed from the
             //  element's lineHeight.
             targetElement = anElement;
-            theValue = TP.elementGetStyleValueInPixels(targetElement,
+            theValue = TP.elementGetComputedStyleValueInPixels(
+                                                        targetElement,
                                                         'lineHeight');
             break;
 
@@ -1251,6 +1157,65 @@ function(anElement, aProperty, aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetAppliedNativeStyleRules',
+function(anElement) {
+
+    /**
+     * @method elementGetAppliedNativeStyleRules
+     * @summary Returns an Array of CSSRule objects that apply to the
+     *     supplied element.
+     * @param {Element} anElement The element to retrieve the CSS style
+     *     rules for.
+     * @exception TP.sig.InvalidElement
+     * @returns {Array} An Array of CSSRule objects.
+     */
+
+    var ruleArray,
+
+        i,
+        parentSS;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    ruleArray = TP.ac();
+
+    //  We check to see if the element has a 'TP.APPLIED_RULES' Array. If not,
+    //  we have to run the refresh call (which can be slow).
+    if (TP.notValid(anElement[TP.APPLIED_RULES])) {
+        TP.$documentRefreshAppliedRulesCaches(TP.nodeGetDocument(anElement));
+    }
+
+    //  Grab the 'applied rules' cache on the element.
+    ruleArray = anElement[TP.APPLIED_RULES];
+
+    //  Make sure that any rules that are associated with stale style sheets get
+    //  pruned. NB: We fetch the ruleArray's size *each time* through the loop,
+    //  since we could be shortening the Array as we go.
+    for (i = 0; i < ruleArray.getSize(); i++) {
+
+        //  Find the style sheet associated with the element that inserted the
+        //  rule's stylsheet (because of @import, it might not be the sheet in
+        //  the 'parentStyleSheet' slot of the rule itself).
+        parentSS = ruleArray.at(i).parentStyleSheet;
+        while (parentSS.parentStyleSheet) {
+            parentSS = parentSS.parentStyleSheet;
+        }
+
+        //  Make sure that stylesheet still has an owner node. If not, prune it.
+        if (TP.notValid(parentSS.ownerNode)) {
+
+            //  If it has, remove the rule from the rule Array
+            ruleArray.splice(i, 1);
+        }
+    }
+
+    return ruleArray;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetComputedStyleString',
 function(anElement, aProperty) {
 
@@ -1299,7 +1264,6 @@ function(anElement, aProperty) {
 
     properties.perform(
         function(propName) {
-
             var value;
 
             value = compStyleObj[propName.asDOMName()];
@@ -1345,7 +1309,13 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
-    value = compStyleObj[aProperty.asDOMName()];
+    //  If the property is a CSS custom property, then use the
+    //  getPropertyValue() API
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(aProperty)) {
+        value = compStyleObj.getPropertyValue(aProperty);
+    } else {
+        value = compStyleObj[aProperty.asDOMName()];
+    }
 
     return value;
 });
@@ -1403,7 +1373,6 @@ function(anElement, aProperty) {
 
     properties.perform(
         function(propName) {
-
             var value;
 
             value = styleHash.at(propName.asDOMName());
@@ -1879,8 +1848,7 @@ function(anElement, aProperty, aPropertyValue) {
      * @exception TP.sig.InvalidParameter
      */
 
-    var style,
-        styleHash;
+    var styleObj;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -1890,19 +1858,17 @@ function(anElement, aProperty, aPropertyValue) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    style = TP.elementGetStyleObj(anElement).cssText.toLowerCase();
-    styleHash = TP.styleStringAsHash(style);
-
-    //  If the property value is empty (i.e. it's either not valid or is the
-    //  empty string), then we remove it's key from the styleHash. When the
-    //  CSS text string is formed, it will simply be missing.
-    if (TP.isEmpty(aPropertyValue)) {
-        styleHash.removeKey(aProperty.asDOMName());
-    } else {
-        styleHash.atPut(aProperty.asDOMName(), aPropertyValue);
+    if (TP.notValid(styleObj = TP.elementGetStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
-    TP.elementSetStyleString(anElement, styleHash);
+    //  If the property is a CSS custom property, then use the setProperty()
+    //  API.
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(aProperty)) {
+        styleObj.setProperty(aProperty, aPropertyValue);
+    } else {
+        styleObj[aProperty.asDOMName()] = aPropertyValue;
+    }
 
     return;
 });

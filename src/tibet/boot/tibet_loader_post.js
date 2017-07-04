@@ -13,10 +13,6 @@
  *     reference if they will be calling on TIBET code from within the page.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          maxerr:999
-*/
 /* global TP:true,
           Document:false
 */
@@ -29,9 +25,9 @@
 
 //  For Safari only...
 if (!self.Window) {
-    /* eslint-disable no-undef,no-native-reassign */
-    Window = self.constructor; /* jshint ignore:line */
-    /* eslint-enable no-undef,no-native-reassign */
+    /* eslint-disable no-undef,no-global-assign */
+    Window = self.constructor;
+    /* eslint-enable no-undef,no-global-assign */
 }
 
 //  ------------------------------------------------------------------------
@@ -478,7 +474,6 @@ TP.boot.installPatches = function(aWindow) {
                 f = arr[ndx++].charCodeAt(0);
                 i = btoaData[f];
 
-                /* jshint bitwise:false */
                 /* eslint-disable no-extra-parens */
                 if (f >= 0 && f < 128 && i !== -1) {
                     if (n % 4 === 0) {
@@ -493,7 +488,6 @@ TP.boot.installPatches = function(aWindow) {
                         e = e | i;
                     }
                 /* eslint-enable no-extra-parens */
-                /* jshint bitwise:true */
 
                     n++;
 
@@ -764,7 +758,7 @@ TP.boot.installPatches = function(aWindow) {
                 var resolvedTarget;
 
                 if (TP.boot.$isValid(resolvedTarget =
-                                            this._resolvedTarget)) {
+                                            this.$$_resolvedTarget)) {
                     return resolvedTarget;
                 }
 
@@ -773,7 +767,7 @@ TP.boot.installPatches = function(aWindow) {
                     return null;
                 }
 
-                this._resolvedTarget = resolvedTarget;
+                this.$$_resolvedTarget = resolvedTarget;
 
                 return resolvedTarget;
             }
@@ -915,7 +909,11 @@ TP.boot.installPatches = function(aWindow) {
         aWindow.Object.defineProperty(
             aWindow.MozNamedAttrMap,
             '$$name',
-            {get: function() {return 'NamedNodeMap'; }});
+            {
+                get: function() {
+                    return 'NamedNodeMap';
+                }
+            });
     }
 
     //  --------------------------------------------------------------------
@@ -928,6 +926,41 @@ TP.boot.installPatches = function(aWindow) {
         $$msg = 'TIBET hook updated JavaScript metadata.';
         TP.boot.$stdout($$msg, TP.INFO);
     }
+
+    //  --------------------------------------------------------------------
+    //  focus & blur Patch
+    //  --------------------------------------------------------------------
+
+    //  All browsers need 'focus' and 'blur' at the *Element* level (which will
+    //  be overridden at the HTMLElement level, which is fine).
+
+    aWindow.Element.prototype.focus = function() {
+        var doc,
+            currentlyFocusedElem;
+
+        if (TP.elementIsDisabled(this)) {
+            return;
+        }
+
+        doc = this.ownerDocument;
+
+        currentlyFocusedElem = TP.documentGetFocusedElement(doc);
+
+        if (TP.isElement(currentlyFocusedElem)) {
+            TP.elementRemoveAttribute(
+                        currentlyFocusedElem, 'pclass:focus', true);
+        }
+
+        TP.elementSetAttribute(this, 'pclass:focus', 'true', true);
+    };
+
+    aWindow.Element.prototype.blur = function() {
+        if (TP.elementIsDisabled(this)) {
+            return;
+        }
+
+        TP.elementRemoveAttribute(this, 'pclass:focus', true);
+    };
 
     //  --------------------------------------------------------------------
     //  getKeys Patch
@@ -1007,7 +1040,7 @@ TP.windowIsInstrumented = function(aWindow) {
 //  EVENT HANDLER INSTALLATION
 //  ------------------------------------------------------------------------
 
-TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
+TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc, alternateHandlerName) {
 
     /**
      * @method $$addUIHandler
@@ -1019,18 +1052,22 @@ TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
      * @param {String} eventName The name of the event that the handler will
      *     be installed for.
      * @param {Function} handlerFunc The handler function to use.
+     * @param {String} [alternateHandlerName] An optional handler name that the
+     *     handler Function will be registered under.
      * @returns {null}
      */
 
     var theEventName;
 
-    theEventName = eventName;
+    theEventName = TP.boot.$isValid(alternateHandlerName) ?
+                                    alternateHandlerName :
+                                    eventName;
 
     if (TP.boot.$$isMoz() && eventName === 'mousewheel') {
         theEventName = 'DOMMouseScroll';
     }
 
-    anObject.addEventListener(theEventName, handlerFunc, true);
+    anObject.addEventListener(eventName, handlerFunc, true);
 
     //  Cache the handler function on the TP.boot object using the event
     //  name so that we can use it later when we remove the handler.
@@ -1041,7 +1078,7 @@ TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.boot.$$removeUIHandler = function(anObject, eventName) {
+TP.boot.$$removeUIHandler = function(anObject, eventName, alternateHandlerName) {
 
     /**
      * @method TP.boot.$$removeUIHandler
@@ -1051,13 +1088,17 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
      *     installed on.
      * @param {String} eventName The name of the event that the handler was
      *     installed for.
+     * @param {String} [alternateHandlerName] An optional handler name that the
+     *     handler Function might have been registered under.
      * @returns {null}
      */
 
     var handlerFunc,
         theEventName;
 
-    theEventName = eventName;
+    theEventName = TP.boot.$isValid(alternateHandlerName) ?
+                                    alternateHandlerName :
+                                    eventName;
 
     //  Make sure that we can find a valid 'special UI handler'. This was
     //  cached on a slot on the TP.boot object when we registered the
@@ -1072,7 +1113,7 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
         theEventName = 'DOMMouseScroll';
     }
 
-    anObject.removeEventListener(theEventName, handlerFunc, true);
+    anObject.removeEventListener(eventName, handlerFunc, true);
 
     //  Clear the slot on the TP.boot object, so that we don't leave little
     //  bits, like unused Functions, around.
@@ -1086,13 +1127,13 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
 //  ------------------------------------------------------------------------
 
 TP.boot.$$addMutationSource = function(aDocument) {
-    TP.core.MutationSignalSource.watchDocument(aDocument);
+    TP.sig.MutationSignalSource.watchDocument(aDocument);
 };
 
 //  ------------------------------------------------------------------------
 
 TP.boot.$$removeMutationSource = function(aDocument) {
-    TP.core.MutationSignalSource.unwatchDocument(aDocument);
+    TP.sig.MutationSignalSource.unwatchDocument(aDocument);
 };
 
 //  ------------------------------------------------------------------------
@@ -1119,6 +1160,9 @@ TP.boot.$$documentSetup = function(aDocument) {
      *     advanced event management event handlers.
      * @returns {null}
      */
+
+    var installedHook,
+        beforeUnloadInstallHandler;
 
     TP.boot.$$addUIHandler(aDocument,
                             'click',
@@ -1161,10 +1205,6 @@ TP.boot.$$documentSetup = function(aDocument) {
                             TP.core.Mouse.$$handleMouseEvent);
 
     TP.boot.$$addUIHandler(aDocument,
-                            'keyup',
-                            TP.core.Keyboard.$$handleKeyEvent);
-
-    TP.boot.$$addUIHandler(aDocument,
                             'cut',
                             TP.$$handleCut);
     TP.boot.$$addUIHandler(aDocument,
@@ -1187,6 +1227,10 @@ TP.boot.$$documentSetup = function(aDocument) {
 
     TP.boot.$$addUIHandler(aDocument,
                             'keypress',
+                            TP.core.Keyboard.$$handleKeyEvent);
+
+    TP.boot.$$addUIHandler(aDocument,
+                            'keyup',
                             TP.core.Keyboard.$$handleKeyEvent);
 
     TP.boot.$$addUIHandler(aDocument,
@@ -1216,6 +1260,58 @@ TP.boot.$$documentSetup = function(aDocument) {
 
     //  Add a mutation signal source for mutations to this document
     TP.boot.$$addMutationSource(aDocument);
+
+    //  Because of a desire to not show the 'onbeforeunload' dialog before the
+    //  user has interacted with the page by using this subset of events, we
+    //  install a handler that will install the 'onbeforeunload' hook handler
+    //  only after one of these events has taken place.
+
+    installedHook = false;
+
+    beforeUnloadInstallHandler = function(evt) {
+
+        //  First, uninstall the handler for this event. Note here how we use
+        //  'evt.type' here because this handler is shared by all of the events.
+        aDocument.removeEventListener(evt.type,
+                                        beforeUnloadInstallHandler,
+                                        true);
+
+        //  Then, we make sure that we haven't already installed the hook by
+        //  having this handler invoked with another event type. We do this by
+        //  using the closured variable.
+        if (!installedHook) {
+
+            //  Install the hook and flip the flag.
+            TP.windowInstallOnBeforeUnloadHook(window);
+            installedHook = true;
+        }
+    };
+
+    //  NB: We install this as a *capturing* handler so that we make sure it
+    //  gets processed first and isn't canceled, etc.
+
+    //  For now, these events are the ones that will trigger the browsers to
+    //  show the onbeforeunload dialog:
+
+    //      click
+    //      dblclick
+    //      contextmenu
+
+    //      cut
+    //      paste
+
+    //      keydown
+    //      keypress
+    //      keyup
+
+    aDocument.addEventListener('click', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('dblclick', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('contextmenu', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('cut', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('paste', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('keydown', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('keypress', beforeUnloadInstallHandler, true);
+    aDocument.addEventListener('keyup', beforeUnloadInstallHandler, true);
 
     return;
 };

@@ -60,6 +60,26 @@ function(aSignal) {
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      */
 
+    var origin,
+        aspect;
+
+    //  Grab the signal origin - for changes to observed URI resources (see the
+    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
+    //  changed.
+    origin = aSignal.getSignalOrigin();
+
+    //  If it was a URL, then check to see if it's one of URL's 'special
+    //  aspects'.
+    if (TP.isKindOf(origin, TP.core.URL)) {
+
+        //  If the aspect is one of URI's 'special aspects', then we just return
+        //  here.
+        aspect = aSignal.at('aspect');
+        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            return;
+        }
+    }
+
     if (TP.canInvoke(this, 'refreshInstances')) {
         this.refreshInstances();
     }
@@ -93,21 +113,30 @@ function(aRequest) {
      * @returns {Element} The new element.
      */
 
-    var elem,
+    var str,
+        elem,
         newElem;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
-    //  NOTE that we produce output which prompts for overriding and providing a
-    //  proper implementation here.
-    newElem = TP.xhtmlnode(
-        '<a onclick="alert(\'Update the ' + this.getID() +
-            '.Type tagCompile method.\')" href="#" tibet:tag="' +
+    if (TP.sys.hasFeature('sherpa')) {
+        str = '<a onclick="TP.bySystemId(\'SherpaConsoleService\')' +
+            '.sendConsoleRequest(\':inspect ' +
+            this.getID().replace(':', '.') + '.Type.tagCompile' +
+            '\'); return false;">' +
+            '&lt;' + this.getCanonicalName() + '/&gt;' +
+            '</a>';
+    } else {
+        str = '<a onclick="alert(\'Edit ' + this.getID() +
+            '.Type.tagCompile.\')" href="#" tibet:tag="' +
             this.getCanonicalName() + '">' +
             '&lt;' + this.getCanonicalName() + '/&gt;' +
-            '</a>');
+            '</a>';
+    }
+
+    newElem = TP.xhtmlnode(str);
 
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
@@ -134,6 +163,9 @@ TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
+
+//  Whether or not we're currently in the process of being serialized.
+TP.core.TemplatedTag.Inst.defineAttribute('$areSerializing');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -186,6 +218,153 @@ function(nodeSpec, varargs) {
     return retVal;
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Inst.defineMethod('serializeCloseTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeCloseTag
+     * @summary Serializes the closing tag for the receiver.
+     * @description At this type level, this method, in conjunction with the
+     *     'serializeOpenTag' method, will always produce the 'XML version' of
+     *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the closing tag of the receiver.
+     */
+
+    var str;
+
+    //  If we're serializing, then we just do what our supertype does and
+    //  descend into our child nodes.
+    if (this.get('$areSerializing')) {
+        str = this.callNextMethod();
+        return TP.ac(str, TP.DESCEND);
+    }
+
+    return TP.CONTINUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Inst.defineMethod('serializeOpenTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeOpenTag
+     * @summary Serializes the opening tag for the receiver.
+     * @description At this type level, this method performs a variety of
+     *     transformations and filtering of various attributes. See the code
+     *     below for more details. One notable transformation is that this
+     *     method, in conjunction with the 'serializeCloseTag' method,  will
+     *     always produce the 'XML version' of an empty tag (i.e. '<foo/>'
+     *     rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the opening tag of the receiver.
+     */
+
+    var str,
+
+        currentStore,
+        currentResult,
+
+        resourceURI,
+
+        loc;
+
+    //  If we're serializing, then we just do what our supertype does and
+    //  descend into our child nodes.
+    if (this.get('$areSerializing')) {
+        str = this.callNextMethod();
+        return TP.ac(str, TP.DESCEND);
+    }
+
+    //  Turn the serializing flag on.
+    this.set('$areSerializing', true);
+
+    //  Grab our template's resource URI - we'll use this as our 'store' key.
+    resourceURI = this.getType().getResourceURI(
+                        'template',
+                        TP.elementGetAttribute(
+                            this.getNativeNode(), 'tibet:mime', true));
+
+    loc = resourceURI.getLocation();
+
+    currentStore = storageInfo.at('store');
+
+    //  If we're not actually serializing our own template, then store off the
+    //  current result - we'll need it below.
+    if (currentStore !== loc) {
+        currentResult = storageInfo.at('result');
+    }
+
+    //  Set our template resource URI as the current 'store' key and create a
+    //  new result Array.
+    storageInfo.atPut('store', loc);
+    storageInfo.atPut('result', TP.ac());
+
+    //  Serialize ourself - this will loop back around to this method, hence the
+    //  '$areSerializing' flag. This will also place any generated results
+    //  'under' us into the 'stores' hash under our store key.
+    this.serializeForStorage(storageInfo);
+
+    //  If we're not actually serializing our own template, then restore the
+    //  current 'store' (i.e. location) and result.
+    if (currentStore !== loc) {
+        //  Restore the previous 'store' key and result.
+        storageInfo.atPut('store', currentStore);
+        storageInfo.atPut('result', currentResult);
+    }
+
+    //  Turn the serializing flag off.
+    this.set('$areSerializing', false);
+
+    //  If we're not actually serializing our own template, then return an empty
+    //  version of ourself as the placeholder in the 'higher level' markup that
+    //  we're being serialized as a part of.
+    if (currentStore !== loc) {
+        //  Return an Array containing our full name (as opposed to our actual
+        //  rendered tag name) as an empty tag and continue on to our next
+        //  sibling, thereby treating our child content as opaque.
+        return TP.ac('<' + this.getFullName() + '/>', TP.CONTINUE);
+    }
+
+    //  We were serializing our own template and we included the results of that
+    //  above - just hand back the empty String and continue on to the next
+    //  sibling.
+    return TP.ac('', TP.CONTINUE);
+});
+
 //  ========================================================================
 //  TP.tibet.app
 //  ========================================================================
@@ -210,7 +389,7 @@ TP.core.CompiledTag.defineSubtype('tibet:app');
 TP.tibet.app.defineAttribute('styleURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.app.Type.defineMethod('tagAttachDOM',
@@ -321,7 +500,7 @@ TP.core.CompiledTag.defineSubtype('tibet:root');
 TP.tibet.root.defineAttribute('styleURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.root.Type.defineMethod('computeAppTagTypeName',
@@ -451,13 +630,7 @@ function(aRequest) {
                     TP.signal('TP.sys', 'AppStart');
                 });
 
-    //  NOTE that on older versions of Safari this could trigger crashes due to
-    //  bugs in the MutationObserver implementation. It seems to work fine now.
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        TP.wrap(elemWin).setContent(homeURL, request);
-    }).afterUnwind();
-    /* eslint-enable no-wrap-func,no-extra-parens */
+    TP.wrap(elemWin).setContent(homeURL, request);
 
     return;
 });

@@ -22,12 +22,6 @@ TIBET's types are true instances, inheriting state and behavior from their
 supertype type definitions, while also supporting local specialization.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true,
-          newcap:false
-*/
-
 //  ------------------------------------------------------------------------
 //  TP.lang.RootObject - SUBTYPE CREATION SUPPORT
 //  ------------------------------------------------------------------------
@@ -74,7 +68,9 @@ function(ensureUniqueness) {
         return this;
     }
 
+    /* eslint-disable consistent-this */
     str = this;
+    /* eslint-enable consistent-this */
 
     //  if first char is illegal push a $ on the front
     if (!TP.regex.JS_FIRST_CHAR.test(this)) {
@@ -97,7 +93,8 @@ function(ensureUniqueness) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('definingTypename', function(typename) {
+TP.sys.defineMethod('definingTypename',
+function(typename) {
 
     /**
      * @method definingTypename
@@ -394,7 +391,7 @@ function(name) {
     if (TP.regex.HAS_PERIOD.test(nsName)) {
         // Have to iterate our way down.
         parts = nsName.split('.');
-        root = self[root].meta;
+        root = TP.global[root].meta;
 
         parts.forEach(
                 function(part) {
@@ -403,7 +400,7 @@ function(name) {
 
         root[subtypeName] = typeConstructor;
     } else {
-        self[root].meta[nsName][subtypeName] = typeConstructor;
+        TP.global[root].meta[nsName][subtypeName] = typeConstructor;
     }
 
     //  hand back the new subtype so it can be captured by caller if needed
@@ -533,16 +530,20 @@ function() {
     }
 
     arr = TP.ac();
+
+    /* eslint-disable consistent-this */
+
     type = this;
-    /* jshint boss:true */
     /* eslint-disable no-cond-assign */
     while (type = type[TP.SUPER]) {
         arr.push(type);
     }
     /* eslint-enable no-cond-assign */
-    /* jshint boss:false */
 
     this[TP.ANCESTORS] = arr;
+
+    /* eslint-enable consistent-this */
+
     return arr;
 });
 
@@ -1269,7 +1270,7 @@ function(typeOrFormat, formatParams) {
     //  try to jump quickly to asString() when it's clearly not a type name
     if (TP.isString(typeOrFormat)) {
         //  certain names map to 'as' methods that are native here
-        funcName = 'as' + typeOrFormat.asStartUpper();
+        funcName = 'as' + TP.makeStartUpper(typeOrFormat);
         if (TP.canInvoke(this, funcName)) {
             return this[funcName](formatParams);
         }
@@ -1395,7 +1396,7 @@ function(aFormat, formatParams) {
      *     This method will also pass the optional formatParams parameter on to
      *     the 'transform' call.
      * @param {String} aFormat The format specification to format the receiver.
-     * @param {TP.core.Hash|TP.core.Request} formatParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
      *     parameters. These are parameters to a template transform.
      * @returns {String} The formatted output.
      */
@@ -1417,7 +1418,7 @@ function(aDate, transformParams) {
      * @summary Transforms the supplied Date using the formats provided by the
      *     'substitute' call.
      * @param {Date} aDate The Date object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1490,7 +1491,7 @@ function(aNumber, transformParams) {
      *     the 'substitute()' call. Note: This method does not use the
      *     'transformParams' parameter.
      * @param {Number} aNumber The Number object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1519,7 +1520,7 @@ function(anObject, transformParams) {
      *     receiver, this call will perform the following substitutions (and
      *     expect the following types for anObject):
      * @param {Object} anObject The object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} A formatted string representation of the object.
@@ -1529,7 +1530,11 @@ function(anObject, transformParams) {
      */
 
     var obj,
-        str;
+        str,
+        transform,
+
+        num,
+        date;
 
     str = this.toString();
     if (/#{/.test(str)) {
@@ -1540,11 +1545,30 @@ function(anObject, transformParams) {
     } else if (/%{/.test(str)) {
         //  NOTE that we default to using the object's type as the key
         //  source for performing any lookups that might be appropriate
-        return str.substitute(anObject,
-                                TP.ifInvalid(transformParams,
-                                                TP.type(anObject)));
+        transform = transformParams || TP.type(anObject);
+        return str.substitute(anObject, transform);
     } else if (TP.regex.FORMAT_SUBSTITUTION.test(str)) {
         return str.substitute(anObject);
+    } else {
+
+        //  Otherwise, we special case to see if we can create a Number from the
+        //  supplied object.
+        num = parseFloat(anObject);
+
+        //  If so, see if we can create a Data
+        if (TP.isNumber(num)) {
+
+            date = TP.dc(num);
+            if (TP.isDate(date)) {
+
+                //  Got a real Date - run our transformation on it.
+                return this.transform(date);
+            }
+
+            //  Didn't get a Date, but have a real Number - run our
+            //  transformation on it.
+            return this.transform(num);
+        }
     }
 
     //  return bad format string, not data, for debugging
@@ -1562,7 +1586,7 @@ function(aString, transformParams) {
      *     substitution' format provided by the internal 'substitute()' call.
      *     Note: This method does not use the 'transformParams' parameter.
      * @param {String} aString The String object to format.
-     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.sig.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1728,41 +1752,25 @@ function(aSignal, flags) {
      */
 
     var handlerNames,
-        len,
-        i,
-        name;
+        handlerFlags;
 
-    handlerNames = this.getBestHandlerNames(
-                        aSignal,
-                        TP.ifInvalid(flags, {}));
+    handlerFlags = flags || {};
 
-    len = handlerNames.getSize();
-    switch (len) {
-        case 0:
-            //  TODO:   add cfg flag check here
-            TP.ifTrace() ? TP.trace('Handlers: none') : 0;
-            return;
-        case 1:
-            //  A lot of signals end up resolving to
-            //  'handleSignalFromANYWhenANY'
-            name = handlerNames[0];
-            //  TODO:   add cfg flag check here
-            TP.ifTrace() ? TP.trace('Handlers: ' + name) : 0;
-            if (TP.canInvoke(this, name)) {
-                return this[name];
-            }
-            return;
-        default:
-            //  TODO:   add cfg flag check here
-            TP.ifTrace() ? TP.trace('Handlers: ' + handlerNames.join(', ')) : 0;
-            for (i = 0; i < len; i++) {
-                name = handlerNames[i];
-                if (TP.canInvoke(this, name)) {
-                    return this[name];
-                }
-            }
-            return;
+    //  NOTE this is a string or number (NOT_FOUND) value, not an array. Also
+    //  note it's already filtered by canInvoke, no additional tests needed.
+    handlerNames = this.getBestHandlerNames(aSignal, handlerFlags);
+
+    if (handlerNames === TP.NOT_FOUND) {
+        return;
     }
+
+    //  No pipe symbol means it's a single handler name, use as is.
+    if (!TP.regex.HAS_PIPE.test(handlerNames)) {
+        return this[handlerNames];
+    }
+
+    //  They're sorted in order, the best one is the first one.
+    return this[handlerNames.slice(0, handlerNames.indexOf('|'))];
 });
 
 //  ------------------------------------------------------------------------
@@ -1772,7 +1780,7 @@ function(aSignal, flags) {
 
     /**
      * @method getBestHandlerNames
-     * @summary Scans handler metadata and returns a sorted array of handler
+     * @summary Scans handler metadata and returns a sorted string of handler
      *     names which are viable for the signal and conditions provided.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
      * @param {Object} flags The 'flags' parameter is a method parameter set.
@@ -1793,7 +1801,7 @@ function(aSignal, flags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
-     * @returns {Array.<String>} An array of viable signal handler names.
+     * @returns {String|Number} TP.NOT_FOUND or a set of names joined by '|'.
      */
 
     var orgid,
@@ -1804,7 +1812,9 @@ function(aSignal, flags) {
         index,
         regex,
         names,
-        obj;
+        sigName,
+        thisref,
+        cache;
 
     if (TP.notValid(aSignal)) {
         return;
@@ -1823,7 +1833,8 @@ function(aSignal, flags) {
     //  not traversing for spoofed instances it's a single signal check.
     if (TP.isTrue(flags.dontTraverseHierarchy) ||
         TP.isTrue(flags.dontTraverseSpoofs) && aSignal.isSpoofed()) {
-        signalNames = TP.ac(aSignal.getSignalName());
+        //  NOTE we do _NOT_ create an array here, just set single string.
+        signalNames = aSignal.getSignalName();
     } else {
         signalNames = aSignal.getTypeSignalNames();
         if (aSignal.isSpoofed()) {
@@ -1839,22 +1850,33 @@ function(aSignal, flags) {
         }
     }
 
-    signalNames = signalNames.map(
-                    function(name) {
-                        return TP.contractSignalName(name);
-                    });
+    if (TP.isArray(signalNames)) {
+        signalNames = signalNames.map(
+                        function(name) {
+                            return TP.contractSignalName(name);
+                        });
 
-    if (TP.notEmpty(flags.skipName)) {
-        signalNames.removeValue(TP.contractSignalName(flags.skipName));
+        if (TP.notEmpty(flags.skipName)) {
+            signalNames.removeValue(TP.contractSignalName(flags.skipName));
+        }
+
+        expression += '(' + signalNames.join('|') + ')';
+    } else {
+
+        signalNames = TP.contractSignalName(signalNames);
+
+        expression += '(' + signalNames + ')';
     }
-
-    expression += '(' + signalNames.join('|') + ')';
 
     //  ---
     //  Phase
     //  ---
 
-    phase = TP.ifInvalid(flags.phase, aSignal.getPhase());
+    phase = flags.phase;
+    if (TP.notValid(phase)) {
+        phase = aSignal.getPhase();
+    }
+
     switch (phase) {
         case '*':
             //  The expression here should match TP.CAPTURING OR TP.AT_TARGET OR
@@ -1883,19 +1905,26 @@ function(aSignal, flags) {
 
     //  Process the origin.
     orgid = TP.ifInvalid(aSignal.getOrigin(), '');
-    orgid = TP.gid(orgid).split('#').last();
+    if (orgid !== TP.ANY) {
+        orgid = TP.gid(orgid).split('#').last();
 
-    //  Origins that are "generated" such as TIBET DOM paths aren't observable
-    //  so they're not relevant for handler names.
-    if (TP.regex.HAS_SLASH.test(orgid)) {
-        orgid = '';
-    }
+        //  Origins that are "generated" such as TIBET DOM paths aren't
+        //  observable so they're not relevant for handler name scans. They'd
+        //  also cause our name caches to essentially leak since we'd get
+        //  an ever evolving list of keys.
+        if (TP.regex.HAS_SLASH.test(orgid) ||
+                TP.regex.HAS_OID_SUFFIX.test(orgid)) {
+            orgid = '';
+        }
 
-    if (TP.isEmpty(orgid)) {
-        expression += 'From(' + TP.ANY + ')';
+        if (TP.isEmpty(orgid)) {
+            expression += 'From(' + TP.ANY + ')';
+        } else {
+            expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
+                            TP.ANY + ')';
+        }
     } else {
-        expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
-                        TP.ANY + ')';
+        expression += 'From(' + TP.ANY + ')';
     }
 
     //  ---
@@ -1920,29 +1949,63 @@ function(aSignal, flags) {
     }
 
     //  ---
+    //  Check Cache
+    //  ---
+
+    //  Local, but we reuse a lot of instances so it should be effective. NOTE
+    //  we use direct slot access for this internal cache property for speed.
+    if (!this.hasOwnProperty('$$handlerNameCache')) {
+        this.$$handlerNameCache = TP.hc();
+    }
+    cache = this.$$handlerNameCache;
+
+    //  Only use cache if the handler list hasn't been updated since, otherwise
+    //  reset it with a fresh dictionary.
+    if (cache[TP.REVISED] !== undefined) {
+        if (cache[TP.REVISED] > TP.sys.$$meta_handlers[TP.REVISED]) {
+            //  Already did this particular signal check once. Yay!
+            if (cache.hasKey(expression)) {
+                return cache.at(expression);
+            }
+        } else {
+            this.$$handlerNameCache = TP.hc();
+            cache = this.$$handlerNameCache;
+        }
+    }
+
+    //  ---
     //  Scan Handler Metadata
     //  ---
 
-    regex = RegExp.construct(expression);
-    if (!TP.isRegExp(regex)) {
-        //  TODO:   expression problems...
+    regex = TP.getHandlerRegExp(expression);
+    if (regex === undefined) {
         return;
     }
 
-    //  TODO: make this "official". but BEWARE!!! you can't log these to the DOM
-    //  or things go to hell in a hurry.
-    /*
-    if (!expression.match(/DOMMouse/)) {
-    top.console.log('getBestHandlerNames: ' + expression);
-    }
-    */
+    //  Scan possible list of all handlers for matching routines. Obviously we
+    //  don't want to do this too often...it's a big list.
+    thisref = this;
+    names = TP.sys.$$meta_handlers.filter(
+            function(key) {
+                return regex.test(key) && TP.canInvoke(thisref, key);
+            }).unique();
 
-    //  This is where the magic happens ;)
-    obj = this;
-    names = TP.sys.$$meta_handlers.getKeys().filter(
-                function(key) {
-                    return regex.test(key) && TP.canInvoke(obj, key);
-                });
+    //  No reason to sort unless there are at least two results. And no reason
+    //  to store an array for all the empty or single-option keys.
+    switch (names.getSize()) {
+        case 0:
+            cache.atPut(expression, TP.NOT_FOUND);
+            cache[TP.REVISED] = Date.now();
+            return TP.NOT_FOUND;
+        case 1:
+            sigName = names.at(0);
+            cache.atPut(expression, sigName);
+            cache[TP.REVISED] = Date.now();
+            return sigName;
+        default:
+            //  Continue on, we need to sort them...
+            break;
+    }
 
     //  ---
     //  Sort
@@ -1958,8 +2021,13 @@ function(aSignal, flags) {
             aMatch = TP.regex.SPLIT_HANDLER_NAME.match(a);
             bMatch = TP.regex.SPLIT_HANDLER_NAME.match(b);
 
-            aIndex = signalNames.indexOf(aMatch[1]);
-            bIndex = signalNames.indexOf(bMatch[1]);
+            if (Array.isArray(signalNames)) {
+                aIndex = signalNames.indexOf(aMatch[1]);
+                bIndex = signalNames.indexOf(bMatch[1]);
+            } else {
+                aIndex = signalNames === aMatch[1] ? 0 : -1;
+                bIndex = signalNames === bMatch[1] ? 0 : -1;
+            }
 
             if (aIndex === -1 || bIndex === -1) {
                 //  TODO:   log a nice warning/error here. shouldn't happen.
@@ -1996,7 +2064,39 @@ function(aSignal, flags) {
             return 1;
         });
 
+    //  Avoid storing arrays...use string values instead.
+    names = names.join('|');
+    cache.atPut(expression, names);
+    cache[TP.REVISED] = Date.now();
+
     return names;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getHandlerRegExp',
+function(expression) {
+
+    /**
+     * @method getHandlerRegExp
+     * @summary Returns a viable regular expression built from the string source
+     *     provided. If the regexp has previously been assembled it is reused.
+     * @param {String} expression The regular expression source value.
+     * @return {RegExp} The handler name scanning regexp.
+     */
+
+    var regex;
+
+    //  NOTE we use an internal slot here for speed in caching/lookup.
+    TP.regex.$$handlerScanners = TP.regex.$$handlerScanners || TP.hc();
+
+    regex = TP.regex.$$handlerScanners.at(expression);
+    if (!TP.isRegExp(regex)) {
+        regex = RegExp.construct(expression);
+        TP.regex.$$handlerScanners.atPut(expression, regex);
+    }
+
+    return regex;
 });
 
 //  ------------------------------------------------------------------------
@@ -2038,15 +2138,29 @@ function(aSignal, flags) {
      * @returns {Object} The handler function's results.
      */
 
-    var handlerFunc;
+    var handlerFunc,
+        oldHandler,
+        retVal;
 
     handlerFunc = this.getBestHandler(aSignal, flags);
 
     if (TP.isCallable(handlerFunc)) {
-        return handlerFunc.call(this, aSignal);
+
+        if (!aSignal.hasNotified(handlerFunc, this)) {
+            try {
+                oldHandler = aSignal.$get('currentHandler');
+                aSignal.$set('currentHandler', handlerFunc, false);
+                retVal = handlerFunc.call(this, aSignal);
+            } finally {
+                aSignal.trackHandler(handlerFunc, this);
+                aSignal.$set('currentHandler', oldHandler, false);
+            }
+        }
+    } else {
+        retVal = TP.NOT_FOUND;
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -2127,7 +2241,9 @@ function(aRequest) {
 
     request = TP.request(aRequest);
     if (TP.notValid(result = request.get('result'))) {
+        /* eslint-disable consistent-this */
         result = this;
+        /* eslint-enable consistent-this */
     }
 
     response = request.getResponse(result);
@@ -2740,11 +2856,9 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                             //  our from* call. Watch out for this array
                             //  since it's an arguments array.
 
-                            /* jshint -W009 */
                             /* eslint-disable no-array-constructor */
                             arr = new Array();
                             /* eslint-enable no-array-constructor */
-                            /* jshint +W009 */
                             arr.push(anOrigin);
 
                             return targetType['from' + superName].apply(
@@ -3097,13 +3211,17 @@ function() {
      * @returns {Object}
      */
 
+    var name,
+        Constructor;
+
+    name = this.$getName();
+    Constructor = TP[name] || TP.global[name];
+
     /* eslint-disable new-cap */
-    if (TP.notValid(TP.ifInvalid(TP[this.$getName()],
-                                    TP.global[this.$getName()]))) {
-        return new TP.global[this.$getName()]();
+    if (TP.notValid(Constructor)) {
+        return new TP.global[name]();
     } else {
-        return new TP.ifInvalid(TP[this.$getName()],
-                                    TP.global[this.$getName()])();
+        return new Constructor();
     }
     /* eslint-enable new-cap */
 });
@@ -3188,6 +3306,46 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaTypeMethod('$construct',
+function() {
+
+    /**
+     * @method $construct
+     * @summary Returns a new instance of the receiving constructor. This
+     *     variant is here to support a common api that includes the native
+     *     classes. This primitive $construct call is provided largely so types
+     *     which override construct can access the low-level alloc/init.
+     * @returns {Object}
+     */
+
+    var newinst,
+        optinst;
+
+    //  use metadata link (to instance constructor) for primitive call
+    newinst = this.$alloc();
+
+    newinst[TP.TYPE] = this[TP.TYPE];
+
+    //  initialize the new instance. Notice that the object passed back
+    //  does NOT have to be the object passed in. This is critical because
+    //  in TIBET's collection classes we often local program an Array or
+    //  Object to stand in for what you think is a collection type. Also note
+    //  that the $init is a shared internal initializer useful for hidden
+    //  initialization that can be leveraged by all instances.
+    newinst = newinst.$init.apply(newinst, arguments);
+    optinst = newinst.init.apply(newinst, arguments);
+
+    //  if init() returns a non-null object that's our return value.
+    //  this lets init() cheat and return an object of its choice
+    if (TP.isValid(optinst)) {
+        return optinst;
+    } else {
+        return newinst;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaTypeMethod('construct',
 function() {
 
@@ -3208,11 +3366,9 @@ function() {
     var newinst,
         optinst;
 
-    //  alternative view of 'abstract' in which we do a 'clustering'
-    //  approach and look for subtypes etc. if the receiver is an abstract
-    //  type we'll defer creation to the viaSubtype variant. this allows the
-    //  remainder of this method to be inherited and reused by the subtypes
-    //  themselves.
+    //  if the receiver is an abstract type we'll defer creation to the
+    //  viaSubtype variant. this allows the remainder of this method to be
+    //  inherited and reused by the subtypes themselves.
     if (this.isAbstract()) {
         return this.constructViaSubtype.apply(this, arguments);
     }
@@ -3220,9 +3376,6 @@ function() {
     //  use metadata link (to instance constructor) for primitive call
     newinst = this.$alloc();
 
-    //  TODO:   figure out why the constructor isn't adequate here
-    //  set the type...for some reason we can't get this back from the
-    //  constructor consistently so we just set it explicitly
     newinst[TP.TYPE] = this[TP.TYPE];
 
     //  initialize the new instance. Notice that the object passed back
@@ -3852,6 +4005,10 @@ function(varargs) {
             !traitList.contains(traitType, TP.IDENTITY)) {
 
             traitList.push(traitType);
+        } else if (!TP.isType(traitType) && i === arguments.length - 1) {
+            //  Otherwise, if it's not a Type and it's the last argument, then
+            //  we need to raise an exception
+            return this.raise('Invalid trait type: ', traitType);
         }
     }
 
@@ -3896,7 +4053,7 @@ function(varargs) {
         //  POJO, make an entry for it by asking the trait type's 'type' side
         //  for its interface and stashing that away.
         if (!(traitProps = TP.$$trait_interface_store[traitTypeTarget.$$id])) {
-            traitProps = traitTypeTarget.getInterface('known');
+            traitProps = traitTypeTarget.getInterface(TP.SLOT_FILTERS.known);
             TP.$$trait_interface_store[traitTypeTarget.$$id] = traitProps;
         }
 
@@ -3984,7 +4141,7 @@ function(varargs) {
         //  reference POJO, make an entry for it by asking the trait type's
         //  'instance' side for its interface and stashing that away.
         if (!(traitProps = TP.$$trait_interface_store[traitTypeTarget.$$id])) {
-            traitProps = traitTypeTarget.getInterface('known');
+            traitProps = traitTypeTarget.getInterface(TP.SLOT_FILTERS.known);
             TP.$$trait_interface_store[traitTypeTarget.$$id] = traitProps;
         }
 
@@ -4143,7 +4300,7 @@ function(propName, sources, track) {
                             ' ON TARGET: ' + TP.name(this) +
                             ' TO TYPE: ' + TP.name(resolvedType) +
                             ' (CONFLICTED BETWEEN: ' +
-                                    sources.collect(
+                                    sources.map(
                                         function(aType) {
                                             return aType.getName();
                                         }).join(', ') + ')');
@@ -4169,7 +4326,7 @@ function(propName, sources, track) {
         //  If it's an Array, then we assume it's an Array of Type objects.
         if (TP.isArray(sources)) {
             errStr += 'conflicted between: ' +
-                sources.collect(
+                sources.map(
                     function(aType) {
                         var proto,
                             val;
@@ -4396,7 +4553,9 @@ function(traitType, propName, track) {
     } else {
 
         //  Might have a real entry that had a 'definedValue' slot
-        entry = TP.ifInvalid(entry, TP.hc());
+        if (TP.notValid(entry)) {
+            entry = TP.hc();
+        }
 
         //  If the property is defined on the main type, then populate the
         //  'sourceTypes' with the type objects computed from the main type
@@ -4455,17 +4614,18 @@ function() {
     //  It has been reformatted and altered for clarity and to conform to TIBET
     //  coding guidelines.
 
-    var c3,
+    var C3,
+        c3,
 
         resolver,
 
         finalResult;
 
-    function C3(name) {
+    C3 = function(name) {
         this.name = name;
         this.typeMap = {};
         this.typeMap[name] = [];
-    }
+    };
 
     c3 = function(name) {
         return new C3(name);
@@ -4509,7 +4669,7 @@ function() {
 
     C3.prototype.compute = function() {
 
-        var thisArg,
+        var thisref,
             processMap,
 
             notHead,
@@ -4519,12 +4679,12 @@ function() {
 
             runResult;
 
-        thisArg = this;
+        thisref = this;
         processMap = {};
 
-        TP.objectGetKeys(thisArg.typeMap).forEach(
+        TP.objectGetKeys(thisref.typeMap).forEach(
                 function(n) {
-                    processMap[n] = thisArg.typeMap[n].slice();
+                    processMap[n] = thisref.typeMap[n].slice();
                 });
 
         notHead = function(l, c) {
@@ -4757,7 +4917,9 @@ function(entry, installName, targetObject, track) {
 
     propName = entry.at('propName');
 
+    /* eslint-disable consistent-this */
     mainType = this;
+    /* eslint-enable consistent-this */
 
     if (entry.hasKey('definedValue')) {
 
@@ -6770,7 +6932,7 @@ function(verbose) {
     }
 
     try {
-        joinArr = this.collect(
+        joinArr = this.map(
             function(item, index) {
 
                 return TP.str(item, false);
@@ -7000,11 +7162,9 @@ function(aString, sourceLocale) {
 
     //  kernel isn't loaded completely? use native call
     if (!TP.sys.hasKernel()) {
-        /* jshint -W053 */
         /* eslint-disable no-new-wrappers */
         return new Boolean(aString);
         /* eslint-enable no-new-wrappers */
-        /* jshint +W053 */
     }
 
     return this.parse(aString, sourceLocale);
@@ -7269,11 +7429,9 @@ function(aString, sourceLocale) {
     //  kernel isn't loaded completely? use native call
     if (!TP.sys.hasKernel()) {
         //  number only takes one argument (at most)
-        /* jshint -W053 */
         /* eslint-disable no-new-wrappers */
         return new Number(aString);
         /* eslint-enable no-new-wrappers */
-        /* jshint +W053 */
     }
 
     return this.parse(aString, sourceLocale);
@@ -7458,10 +7616,11 @@ function(splitChar) {
 
     var delim;
 
-    delim = TP.ifInvalid(splitChar,
-                        TP.isString(this.$get('delimiter')) ?
-                            this.$get('delimiter') :
-                            '');
+    delim = splitChar;
+    if (TP.notValid(delim)) {
+        delim = TP.isString(this.$get('delimiter')) ?
+            this.$get('delimiter') : '';
+    }
 
     return this.split(delim);
 });
@@ -7669,7 +7828,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.INSTC].prototype;
 
-    Object.defineProperty(proto, propertyName, {get: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            get: methodBody
+        });
 
     return this;
 });
@@ -7693,7 +7857,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.INSTC].prototype;
 
-    Object.defineProperty(proto, propertyName, {set: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            set: methodBody
+        });
 
     return this;
 });
@@ -7717,7 +7886,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.TYPEC].prototype;
 
-    Object.defineProperty(proto, propertyName, {get: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            get: methodBody
+        });
 
     return this;
 });
@@ -7741,7 +7915,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.TYPEC].prototype;
 
-    Object.defineProperty(proto, propertyName, {set: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            set: methodBody
+        });
 
     return this;
 });
@@ -7766,7 +7945,11 @@ function(aPath, includeSupertypes) {
      *     null.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_pathinfo.at(this.getName() + '_Type');
 
@@ -7779,13 +7962,15 @@ function(aPath, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on path aliases from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
-                                    aTypeName + '_Type'))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+                            tname + '_Type'))) {
+                break;
+            }
+        }
     }
 
     if (TP.isValid(entry)) {
@@ -7815,7 +8000,11 @@ function(aPath, includeSupertypes) {
      *     null.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_pathinfo.at(this.getTypeName() + '_Inst');
 
@@ -7828,13 +8017,15 @@ function(aPath, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on path aliases from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
-                                    aTypeName + '_Inst'))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+                            tname + '_Inst'))) {
+                break;
+            }
+        }
     }
 
     if (TP.isValid(entry)) {
@@ -7867,7 +8058,11 @@ function(attributeName, includeSupertypes) {
      *     receiver.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_attributes.at(
                         this.getName() + '_Type_' + attributeName);
@@ -7881,13 +8076,15 @@ function(attributeName, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on descriptors from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                                    aTypeName + '_Type_' + attributeName))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                            tname + '_Type_' + attributeName))) {
+                break;
+            }
+        }
     }
 
     return entry;
@@ -7912,7 +8109,11 @@ function(attributeName, includeSupertypes) {
      *     receiver.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_attributes.at(
                         this.getName() + '_Inst_' + attributeName);
@@ -7926,13 +8127,15 @@ function(attributeName, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on descriptors from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                                    aTypeName + '_Inst_' + attributeName))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                            tname + '_Inst_' + attributeName))) {
+                break;
+            }
+        }
     }
 
     return entry;
@@ -8163,11 +8366,13 @@ function(anAspect, aFacet, aDescription) {
 
     //  In this case, the base signal name will be something like
     //  'TP.sig.RelevantChange'.
-    baseSig = 'TP.sig.' + aFacet.asStartUpper() + 'Change';
+    baseSig = 'TP.sig.' + TP.makeStartUpper(aFacet) + 'Change';
 
     //  The signal name will be the spoofed ('unreal') signal name. In this
     //  case, it might be something like 'SSNRelevantChange'
-    sig = asp.toString().asStartUpper() + aFacet.asStartUpper() + 'Change';
+    sig = TP.makeStartUpper(asp.toString()) +
+            TP.makeStartUpper(aFacet) +
+            'Change';
 
     //  Build up a standard form for the description hash.
     desc = TP.isValid(aDescription) ? aDescription : TP.hc();
@@ -8511,7 +8716,9 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  First, check to see if the receiver provides a 'custom setter'
     //  method for this facet/aspect combination. Something like
     //  'setSSNRequired'.
-    funcName = 'set' + aspectName.asStartUpper() + facetName.asStartUpper();
+    funcName = 'set' +
+                TP.makeStartUpper(aspectName) +
+                TP.makeStartUpper(facetName);
 
     if (TP.canInvoke(this, funcName)) {
         this[funcName](facetValue);
@@ -8675,7 +8882,6 @@ function() {
     if (TP.notEmpty(facetFunctions = this.$get('$facetFunctions'))) {
         facetFunctions.perform(
             function(kvPair) {
-
                 var func;
 
                 func = kvPair.last();
@@ -8751,6 +8957,53 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('$construct',
+function() {
+
+    /**
+     * @method $construct
+     * @summary Makes a new instance of the receiver by calling the most
+     *     primitive constructor and then executing init() on the new instance.
+     *     The init() call is then allowed to pass back an optional instance
+     *     which, if valid, will be returned to the caller. If not, then the
+     *     new instance constructed here will be returned. No abstract check is
+     *     done by this method.
+     * @returns {Object} A new instance.
+     */
+
+    var newinst,
+        optinst;
+
+    //  If we can respond to 'initializeLazily', do it.
+    if (TP.canInvoke(this, 'initializeLazily')) {
+        this.initializeLazily();
+    }
+
+    //  use metadata link (to instance constructor) for primitive call
+    newinst = this.$alloc();
+
+    newinst[TP.TYPE] = this[TP.TYPE];
+
+    //  initialize the new instance. Notice that the object passed back
+    //  does NOT have to be the object passed in. This is critical because
+    //  in TIBET's collection classes we often local program an Array or
+    //  Object to stand in for what you think is a collection type. Also note
+    //  that the $init is a shared internal initializer useful for hidden
+    //  initialization that can be leveraged by all instances.
+    newinst = newinst.$init.apply(newinst, arguments);
+    optinst = newinst.init.apply(newinst, arguments);
+
+    //  if init() returns a non-null object that's our return value.
+    //  this lets init() cheat and return an object of its choice
+    if (TP.isValid(optinst)) {
+        return optinst;
+    } else {
+        return newinst;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('construct',
 function() {
 
@@ -8769,19 +9022,9 @@ function() {
     var newinst,
         optinst;
 
-    //  see if we're abstract. interesting concept that if we were to know
-    //  our needs and we didn't have them all met we are by definition
-    //  abstract since we would be "incomplete"
-            //  if (TP.isArray(this.$needs) && (this.$needs.length > 0))
-            //  {
-            //    return this.raise('TP.sig.InvalidInstantiation');
-            //  };
-
-    //  alternative view of "abstract" in which we do a "clustering"
-    //  approach and look for subtypes etc. if the receiver is an abstract
-    //  type we'll defer creation to the viaSubtype variant. this allows the
-    //  remainder of this method to be inherited and reused by the subtypes
-    //  themselves.
+    //  if the receiver is an abstract type we'll defer creation to the
+    //  viaSubtype variant. this allows the remainder of this method to be
+    //  inherited and reused by the subtypes themselves.
     if (this.isAbstract()) {
         return this.constructViaSubtype.apply(this, arguments);
     }
@@ -8794,9 +9037,6 @@ function() {
     //  use metadata link (to instance constructor) for primitive call
     newinst = this.$alloc();
 
-    //  TODO:   figure out why the constructor isn't adequate here
-    //  set the type...for some reason we can't get this back from the
-    //  constructor so we just set it explicitly...
     newinst[TP.TYPE] = this[TP.TYPE];
 
     //  initialize the new instance. Notice that the object passed back
@@ -8808,8 +9048,12 @@ function() {
     newinst = newinst.$init.apply(newinst, arguments);
     optinst = newinst.init.apply(newinst, arguments);
 
+    //  if init() returns a non-null object that's our return value.
+    //  this lets init() cheat and return an object of its choice
     if (TP.isValid(optinst)) {
         return optinst;
+    } else {
+        return newinst;
     }
 });
 
@@ -9051,6 +9295,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getCurrentCallee',
+function() {
+
+    /**
+     * @method getCurrentCallee
+     * @summary Returns the current callee. The current callee will be the
+     *     Function that is currently executing.
+     * @returns {Function} The Function that is currently executing.
+     */
+
+    //  The current callee can be found on the magic property.
+    return TP.$$currentCallee$$;
+});
+
+//  ------------------------------------------------------------------------
+
 //  make it available at the instance level as well
 TP.lang.RootObject.Inst.defineMethod('callNextMethod',
                         TP.lang.RootObject[TP.TYPEC].prototype.callNextMethod);
@@ -9133,6 +9393,22 @@ function() {
     }
 
     return nextfunc.apply(this, theArgs);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getCurrentCallee',
+function() {
+
+    /**
+     * @method getCurrentCallee
+     * @summary Returns the current callee. The current callee will be the
+     *     Function that is currently executing.
+     * @returns {Function} The Function that is currently executing.
+     */
+
+    //  The current callee can be found on the magic property.
+    return TP.$$currentCallee$$;
 });
 
 //  ------------------------------------------------------------------------
@@ -9492,16 +9768,20 @@ function() {
     }
 
     arr = TP.ac();
+
+    /* eslint-disable consistent-this */
+
     type = this;
-    /* jshint boss:true */
     /* eslint-disable no-cond-assign */
     while (type = type[TP.SUPER]) {
         arr.push(type.getName());
     }
     /* eslint-enable no-cond-assign */
-    /* jshint boss:false */
 
     this[TP.ANCESTOR_NAMES] = arr;
+
+    /* eslint-enable consistent-this */
+
     return arr;
 });
 
@@ -9749,7 +10029,7 @@ function() {
         //  Loop over each one of those owners (each of which should be a
         //  type), and if it hasn't already been initialized, send it an
         //  initialize message and set its initialized flag to true.
-        return own.collect(
+        return own.map(
 
             function(item, index) {
 
@@ -9865,7 +10145,9 @@ function() {
         return protos;
     }
 
+    /* eslint-disable consistent-this */
     proto = this;
+    /* eslint-enable consistent-this */
 
     //  watch for circularities on the native types
     while (proto !== TP.ObjectProto &&
@@ -9943,7 +10225,7 @@ function(aTarget, aTrack) {
     //  prototype chain.
     names = TP.interface(target, 'known_methods');
 
-    methods = names.collect(
+    methods = names.map(
                 function(name) {
 
                     var method;
@@ -9953,7 +10235,7 @@ function(aTarget, aTrack) {
                         return method;
                     }
 
-                    return;
+                    return null;
                 });
 
     return methods.compact();
@@ -9978,7 +10260,9 @@ function(aName, aTrack) {
 
         owner;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If this is a type, then we check the track to determine the target
@@ -10032,7 +10316,9 @@ function(aTrack) {
 
         owner;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If this is a type, then we check the track to determine the target
@@ -10087,7 +10373,9 @@ function(aName, aTrack) {
 
         method;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
@@ -10143,7 +10431,9 @@ function(aTrack) {
         track,
         methods;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
@@ -10212,10 +10502,11 @@ function(aName, aTrack) {
         name,
         display;
 
+    /* eslint-disable consistent-this */
     target = this;
-    track = aTrack;
-
     owner = this;
+    /* eslint-enable consistent-this */
+    track = aTrack;
 
     //  If this is a type, then we check the track to determine the target
     if (TP.isType(target)) {
@@ -10288,10 +10579,11 @@ function(aName, aTrack) {
         name,
         display;
 
+    /* eslint-disable consistent-this */
     target = this;
-    track = aTrack;
-
     owner = this;
+    /* eslint-enable consistent-this */
+    track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
@@ -10456,7 +10748,7 @@ function(anObj) {
 
     //  If the object we're converting from is a POJO, then copy over all of its
     //  values as attributes on the new object.
-    if (TP.isMemberOf(anObj, Object)) {
+    if (TP.isPlainObject(anObj)) {
         keys = TP.keys(anObj);
 
         len = keys.getSize();
@@ -10562,7 +10854,10 @@ function(keyArray, forceInvalid) {
     shouldUseInvalid = TP.ifInvalid(forceInvalid, false);
 
     //  Keys are either supplied or we call 'TP.keys()'
-    keys = TP.ifInvalid(keyArray, TP.keys(this));
+    keys = keyArray;
+    if (TP.notValid(keys)) {
+        keys = TP.keys(this);
+    }
     len = keys.getSize();
 
     joinArr = TP.ac();
@@ -10630,8 +10925,9 @@ function() {
     //  The 'inst interface' call will retrieve all of the 'instance
     //  attributes', hidden or not, and the 'local interface' call will retrieve
     //  all of the 'local attributes', hidden or not.
-    keys = this.getInstInterface('known_attributes').concat(
-                this.getLocalInterface('known_local_attributes'));
+    keys = this.getInstInterface(
+                    TP.SLOT_FILTERS.known_attributes).concat(
+            this.getLocalInterface(TP.SLOT_FILTERS.known_local_attributes));
 
     //  Make sure that we unique this list. Otherwise, attributes that have
     //  local values will show up twice.
@@ -10659,14 +10955,57 @@ function() {
     //  Here we ask the object *at a local level* for any attributes that are
     //  'overridden' (that is, have a unique value distinct from their
     //  prototype) whether they are hidden or not.
-    keys = this.getLocalInterface('known_overridden_attributes').concat(
-                this.getLocalInterface('known_local_attributes'));
+    keys = this.getLocalInterface(
+                    TP.SLOT_FILTERS.known_overridden_attributes).concat(
+            this.getLocalInterface(TP.SLOT_FILTERS.known_local_attributes));
 
     return keys;
 });
 
 //  ------------------------------------------------------------------------
 //  Function Replacement
+//  ------------------------------------------------------------------------
+
+TP.FunctionProto.defineMethod('getRefreshedInstance',
+function() {
+
+    /**
+     * @method getRefreshedInstance
+     * @summary Returns the Function instance that is *really* installed on the
+     *     receiver's target object under the receiver's target track and name.
+     * @description Sometimes, we have a stale method reference that isn't
+     *     really what is installed on the method's target object. This can
+     *     happen when code is reloaded. This method allows a reference to the
+     *     real Function instance, given the receiver's name, target object and
+     *     track.
+     * @returns {Function} The instance of the Function that is really
+     *     installed.
+     */
+
+    var track,
+        owner;
+
+    track = this[TP.TRACK];
+
+    //  If the track is not either 'Type' or 'Inst', then we just use the owner.
+    if (track === TP.GLOBAL_TRACK ||
+        track === TP.PRIMITIVE_TRACK ||
+        track === TP.META_TYPE_TRACK ||
+        track === TP.META_INST_TRACK ||
+        track === TP.TYPE_LOCAL_TRACK ||
+        track === TP.LOCAL_TRACK) {
+
+        owner = this[TP.OWNER];
+    } else {
+        //  Otherwise, we qualify the owner with the 'Type' or 'Inst' prototype
+        //  object.
+        owner = this[TP.OWNER][this[TP.TRACK]];
+    }
+
+    //  Return what's really installed.
+    return owner[this.getName()];
+});
+
 //  ------------------------------------------------------------------------
 
 TP.FunctionProto.defineMethod('replaceWith',
@@ -10974,7 +11313,7 @@ function(namespaceName, forceDefinition, populateMetadata) {
     names = namespaceName.split('.');
     root = names.shift();
 
-    currentObj = self[root];
+    currentObj = TP.global[root];
 
     if (TP.isEmpty(names)) {
 
@@ -11096,7 +11435,9 @@ function(namespaceName, forceDefinition, populateMetadata) {
         if (newNamespace[TP.NAME] === 'TP' ||
             newNamespace[TP.NAME] === 'APP') {
 
-            newNamespace.getTypeNames = function() {return []; };
+            newNamespace.getTypeNames = function() {
+                return [];
+            };
 
             propertyDescriptor = Object.getOwnPropertyDescriptor(self, root);
             propertyDescriptor.value = newNamespace;
@@ -11114,7 +11455,9 @@ function(namespaceName, forceDefinition, populateMetadata) {
             newNamespace[TP.NAME] === 'TP.extern' ||
             newNamespace[TP.NAME] === 'TP.boot') {
 
-            newNamespace.getTypeNames = function() {return []; };
+            newNamespace.getTypeNames = function() {
+                return [];
+            };
 
             propertyDescriptor = Object.getOwnPropertyDescriptor(TP, name);
             propertyDescriptor.value = newNamespace;

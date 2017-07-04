@@ -212,12 +212,14 @@ function(options) {
     var target,
         suites,
         count,
-
+        request,
+        opts,
         params,
         onlysExist,
-
+        logRaise,
         throwExceptions,
         throwHandlers,
+        clickDelay,
         shouldLogSetting,
         promise,
         summarize,
@@ -227,11 +229,25 @@ function(options) {
         currentSuite,
         handler;
 
-    TP.sys.setcfg('test.running', true);
+    TP.sys.isTesting(true);
+
+    opts = options;
+    if (TP.notValid(opts)) {
+        opts = TP.hc();
+    }
+    request = opts.at('request');
+    if (TP.notValid(request)) {
+        request = TP.request();
+    }
+
+    if (TP.notValid(TP.test.Suite.get('$rootRequest'))) {
+        TP.test.Suite.set('$rootRequest', request.getRootRequest());
+    }
+
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
     //  Get filtered list of test suites that apply to our test criteria.
-    suites = TP.test.getSuites(options);
+    suites = TP.test.getSuites(opts);
 
     if (TP.isEmpty(suites)) {
 
@@ -246,7 +262,7 @@ function(options) {
     TP.test.Suite.before();
 
     //  Prep the inbound options for use by the reporting functions below.
-    params = TP.hc(options);
+    params = TP.hc(opts);
 
     target = params.at('target');
 
@@ -292,8 +308,6 @@ function(options) {
             errored,
             exclusives,
 
-            cases,
-
             prefix;
 
         passed = 0;
@@ -303,8 +317,6 @@ function(options) {
         errored = 0;
         exclusives = 0;
 
-        cases = 0;
-
         suites.perform(
                 function(suite) {
                     var caselist,
@@ -312,8 +324,6 @@ function(options) {
 
                     caselist = suite.getCaseList(params);
                     stats = suite.get('statistics');
-
-                    cases += caselist.getSize();
 
                     if (TP.notValid(stats)) {
                         //  Could be skipped, or there may have been 'only'
@@ -350,7 +360,7 @@ function(options) {
             ignored + ' todo, ' +
             exclusives + ' only.');
 
-        TP.sys.setcfg('test.running', false);
+        TP.sys.isTesting(false);
     };
 
     msg = '# ' + suites.getSize() +
@@ -385,6 +395,15 @@ function(options) {
     //      shouldThrowHandlers: when event handlers throw an Error, should the
     //      Error be thrown 'up' to callers higher in the stack.
 
+    //  Also, we capture the value of 'mouse.click_delay' and set the value to
+    //  0. This is so that GUI tests will run properly with async behavior.
+    //  Otherwise, by delaying the sending of click events, various tests will
+    //  timeout and fail. NOTE: This precludes writing tests that generate and
+    //  test for dblclick events.
+
+    logRaise = TP.sys.shouldLogRaise();
+    TP.sys.shouldLogRaise(false);
+
     throwExceptions = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
 
@@ -393,6 +412,9 @@ function(options) {
 
     throwHandlers = TP.sys.shouldThrowHandlers();
     TP.sys.shouldThrowHandlers(true);
+
+    clickDelay = TP.sys.cfg('mouse.click_delay');
+    TP.sys.setcfg('mouse.click_delay', 0);
 
     /* eslint-disable handle-callback-err */
 
@@ -429,15 +451,18 @@ function(options) {
             }, TP.extern.Promise.resolve());
 
     handler = function(reason, unhandledPromise) {
+        var test;
 
-        var currentCase;
+        test = currentSuite.get('currentTestCase');
 
-        currentCase = currentSuite.get('currentTestCase');
+        if (TP.notValid(test)) {
+            test = currentSuite;
+        }
 
         if (reason instanceof Error) {
-            currentCase.error(reason);
+            test.error(reason);
         } else {
-            currentCase.fail(reason);
+            test.fail(reason);
         }
     };
 
@@ -449,9 +474,12 @@ function(options) {
             function(obj) {
 
                 //  Restore settings of system error condition flags.
+                TP.sys.shouldLogRaise(logRaise);
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
+
+                TP.sys.setcfg('mouse.click_delay', clickDelay);
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
@@ -467,9 +495,12 @@ function(options) {
             function(err) {
 
                 //  Restore settings of system error condition flags.
+                TP.sys.shouldLogRaise(logRaise);
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
+
+                TP.sys.setcfg('mouse.click_delay', clickDelay);
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);

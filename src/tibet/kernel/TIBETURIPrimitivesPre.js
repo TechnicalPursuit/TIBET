@@ -43,10 +43,13 @@ function(anObject, schemeOptional) {
     }
 
     if (schemeOptional) {
-        return TP.regex.URI_STRICT.test(anObject);
+        return TP.regex.URI_STRICT.test(anObject) &&
+            !TP.regex.HAS_LINEBREAK.test(anObject);
     }
 
-    return TP.regex.SCHEME.test(anObject) && TP.regex.URI_STRICT.test(anObject);
+    return TP.regex.SCHEME.test(anObject) &&
+        !TP.regex.HAS_LINEBREAK.test(anObject) &&
+        TP.regex.URI_STRICT.test(anObject);
 });
 
 //  ------------------------------------------------------------------------
@@ -1074,7 +1077,7 @@ function(aPath) {
      * @method uriIsAppResource
      * @summary Returns true if the path provided appears to be an application
      *     resource (it's rooted below ~app).
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is an application resource path.
      */
 
@@ -1091,6 +1094,39 @@ function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
+TP.definePrimitive('uriIsInlined',
+function(aPath) {
+
+    /**
+     * @method uriIsInlined
+     * @summary Returns true if the path provided is an 'inlined' resource. This
+     *     will be different depending on whether the supplied path points to a
+     *     'lib' resource or an 'app' resource.
+     * @param {String} aPath The path to be tested.
+     * @returns {Boolean} True if the path points to an inlined resource.
+     */
+
+    var inlined;
+
+    if (TP.isEmpty(aPath)) {
+        return false;
+    }
+
+    //  If the system is running with inlined resources we create 'style'
+    //  elements rather than 'link' elements for CSS files.
+    if (TP.uriIsLibResource(aPath)) {
+        inlined = !TP.sys.cfg('boot.teamtibet');
+    } else if (TP.uriIsAppResource(aPath)) {
+        inlined = TP.sys.cfg('boot.inlined');
+    } else {
+        inlined = false;
+    }
+
+    return inlined;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.definePrimitive('uriIsLibResource',
 function(aPath) {
 
@@ -1098,7 +1134,7 @@ function(aPath) {
      * @method uriIsLibResource
      * @summary Returns true if the path provided appears to be a TIBET library
      *     resource (it's rooted below ~lib).
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is a library resource path.
      */
 
@@ -1121,7 +1157,7 @@ function(aPath) {
     /**
      * @method uriIsVirtual
      * @summary Returns true if the path provided appears to be a virtual path.
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is virtual.
      */
 
@@ -2147,8 +2183,8 @@ function(text, type, report) {
      * @summary Returns the proper result format given the result text and
      *     result type, typically from an XMLHttpRequest's responseText.
      * @param {String} text The response text to process.
-     * @param {TP.DOM|TP.TEXT|TP.BEST|null} type The result type desired. The
-     *     default is TP.BEST.
+     * @param {TP.DOM|TP.TEXT|null} type The result type desired. If no value is
+     *     provided this method tries to return DOM if possible, otherwise TEXT.
      * @param {Boolean} report True if errors during document creation should be
      *     reported.
      * @returns {String|Document|Array} An XML document, response text, or an
@@ -2537,7 +2573,10 @@ function(targetUrl, aRoot) {
     if (TP.uriIsAbsolute(targetUrl)) {
         url = TP.uriResolvePaths(targetUrl);
     } else {
-        root = TP.ifInvalid(aRoot, TP.sys.getLaunchRoot());
+        root = aRoot;
+        if (TP.notValid(root)) {
+            root = TP.sys.getLaunchRoot();
+        }
         url = TP.uriResolvePaths(root, targetUrl);
     }
 

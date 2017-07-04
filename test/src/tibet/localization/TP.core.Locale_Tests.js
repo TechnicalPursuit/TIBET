@@ -61,7 +61,10 @@ function() {
 
     this.it('Can register strings incrementally', function(test, options) {
         TP.sys.getLocale('en').registerStrings(strings.en);
-        TP.sys.getLocale('en').registerStrings({THANKS: 'Thanks'});
+        TP.sys.getLocale('en').registerStrings(
+            {
+                THANKS: 'Thanks'
+            });
 
         this.assert.isEqualTo(TP.sys.getLocale('en').localizeString('HELLO'),
             'Hello');
@@ -71,7 +74,10 @@ function() {
 
     this.it('Can redefine string mappings', function(test, options) {
         TP.sys.getLocale('en').registerStrings(strings.en);
-        TP.sys.getLocale('en').registerStrings({HELLO: 'ello'});
+        TP.sys.getLocale('en').registerStrings(
+            {
+                HELLO: 'ello'
+            });
 
         this.assert.isEqualTo(TP.sys.getLocale('en').localizeString('HELLO'),
             'ello');

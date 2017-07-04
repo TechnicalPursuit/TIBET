@@ -3561,6 +3561,7 @@ function() {
     });
 
     this.it('slicing results set with creation', function(test, options) {
+        //  empty
     }).todo();
 });
 
@@ -4673,17 +4674,30 @@ function() {
     this.it('tail results set', function(test, options) {
         var val;
 
-        tailResultsPath.executeSet(tailResultsModel, {roo: 'coo'}, true);
+        tailResultsPath.executeSet(
+            tailResultsModel,
+            {
+                roo: 'coo'
+            },
+            true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = tailResultsModel.get('data').foo.hi.boo;
 
-        test.assert.isEqualTo(val, {roo: 'coo'});
+        test.assert.isEqualTo(
+            val,
+            {
+                roo: 'coo'
+            });
 
         val = tailResultsModel.get('data').foo.hi.moo;
 
-        test.assert.isEqualTo(val, {roo: 'coo'});
+        test.assert.isEqualTo(
+            val,
+            {
+                roo: 'coo'
+            });
     });
 
     this.it('middle results get', function(test, options) {
@@ -5312,6 +5326,7 @@ function() {
     });
 
     this.it('slicing results set with creation', function(test, options) {
+        //  empty
     }).todo();
 });
 
@@ -5611,9 +5626,9 @@ function() {
         queryPath = TP.apc('$.store.*');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac(TP.ac({"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99}, {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}), {"color": "red", "price": 19.95}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('specific path to named items followed by recursive descent', function(test, options) {
@@ -5633,9 +5648,9 @@ function() {
         queryPath = TP.apc('$.store..price.^');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99}, {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}, {"color": "red", "price": 19.95}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to indexed item', function(test, options) {
@@ -5645,9 +5660,9 @@ function() {
         queryPath = TP.apc('$..book[2]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.hc({"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to predicate tested item', function(test, options) {
@@ -5657,9 +5672,9 @@ function() {
         queryPath = TP.apc('$..book[(@.length-1)]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.hc({"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to negative end sliced item', function(test, options) {
@@ -5669,9 +5684,9 @@ function() {
         queryPath = TP.apc('$..book[:-1]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99}, {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to positive end sliced item', function(test, options) {
@@ -5681,9 +5696,9 @@ function() {
         queryPath = TP.apc('$..book[:2]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to positive start and end sliced item', function(test, options) {
@@ -5693,9 +5708,9 @@ function() {
         queryPath = TP.apc('$..book[1:2]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.hc({"category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to negative start sliced item', function(test, options) {
@@ -5705,9 +5720,9 @@ function() {
         queryPath = TP.apc('$..book[-2:]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent to positive start sliced item', function(test, options) {
@@ -5717,9 +5732,9 @@ function() {
         queryPath = TP.apc('$..book[2:]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent with existence predicate', function(test, options) {
@@ -5729,9 +5744,9 @@ function() {
         queryPath = TP.apc('$..book[?(@.isbn)]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent with comparison predicate', function(test, options) {
@@ -5741,9 +5756,9 @@ function() {
         queryPath = TP.apc('$..book[?(@.price < 10)]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent with existence predicate ANDed with comparison predicate', function(test, options) {
@@ -5753,9 +5768,9 @@ function() {
         queryPath = TP.apc('$..book[?(@.isbn && @.price < 10)]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.hc({"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent with existence predicate ORed with comparison predicate', function(test, options) {
@@ -5765,9 +5780,9 @@ function() {
         queryPath = TP.apc('$..book[?(@.isbn || @.price < 10)]');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.ac({"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 
     this.it('recursive descent returning all items', function(test, options) {
@@ -5801,9 +5816,9 @@ function() {
         queryPath = TP.apc('$.store');
         val = queryPath.executeGet(jsonContent);
 
-        /* eslint-disable quote-props,quotes */
+        /* eslint-disable quote-props,quotes,object-curly-newline */
         test.assert.isEqualTo(val, TP.hc({"book": [{"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95}, {"category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99}, {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}, {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}], "bicycle": {"color": "red", "price": 19.95}}));
-        /* eslint-enable quote-props,quotes */
+        /* eslint-enable quote-props,quotes,object-curly-newline */
     });
 });
 

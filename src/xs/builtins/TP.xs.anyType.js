@@ -81,7 +81,7 @@ function(aValue, aFacet) {
     //  grab the non-prefixed name of the facet so we can build a method
     //  name from it
     name = aFacet.nodeName.split(':').last();
-    fname = 'validateFacet' + name.asStartUpper();
+    fname = 'validateFacet' + TP.makeStartUpper(name);
 
     //  dispatch to that method if possible
     if (TP.isMethod(this[fname])) {

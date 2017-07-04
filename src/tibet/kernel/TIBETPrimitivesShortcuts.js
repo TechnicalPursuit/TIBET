@@ -346,7 +346,10 @@ function(anID, nodeContext, shouldWrap) {
     }
 
     id = TP.str(anID);
-    node = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
+    node = TP.context(nodeContext);
+    if (TP.notValid(node)) {
+        node = TP.sys.getUICanvas();
+    }
 
     //  allow either string or array as ID definition, but turn into an
     //  array of 1 or more IDs to locate
@@ -406,7 +409,10 @@ function(anID, nodeContext) {
         i;
 
     id = TP.str(anID);
-    context = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
+    context = TP.context(nodeContext);
+    if (TP.notValid(context)) {
+        context = TP.sys.getUICanvas();
+    }
 
     list = TP.isString(id) ? id.split(' ') : id;
     len = list.getSize();
@@ -1315,13 +1321,13 @@ function(anElement, effectName, effectParams, nodeContext) {
 
     //  The effect type name is computed by doing an initial caps to the
     //  supplied name and appending 'Effect'.
-    effectTypeName = effectName.asStartUpper() + 'Effect';
+    effectTypeName = TP.makeStartUpper(effectName) + 'Effect';
 
     //  Make sure that we have a real type here.
 
     if (TP.notValid(effectType = effectTypeName.asType())) {
         //  Try again with the 'TP.core.' prefix.
-        effectTypeName = 'TP.core.' + effectName.asStartUpper() + 'Effect';
+        effectTypeName = 'TP.core.' + TP.makeStartUpper(effectName) + 'Effect';
 
         //  Still didn't find it? Bail out and raise an exception.
         if (TP.notValid(effectType = effectTypeName.asType())) {
@@ -2024,7 +2030,7 @@ function(elemOrId, nodeContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('dump',
-function(anObject) {
+function(anObject, depth, level) {
 
     /**
      * @method dump
@@ -2032,6 +2038,7 @@ function(anObject) {
      *     non-markup string.
      * @param {The} anObject object whose properties and simple dump/logging
      *     string should be returned.
+     * @param {Number} [depth=1] The depth to dump the object to.
      * @returns {String} A simple logging string for the object.
      */
 
@@ -2040,53 +2047,63 @@ function(anObject) {
         arr,
         len,
         i,
-
+        $depth,
+        $level,
         rules;
 
     str = '[' + TP.tname(anObject) + ' :: ';
 
     if (anObject === null) {
-        return str += 'null' + ']';
+        str += 'null' + ']';
+        return str;
     } else if (anObject === undefined) {
-        return str += 'undefined' + ']';
+        str += 'undefined' + ']';
+        return str;
     }
 
     //  XMLHttpRequest can have permission issues, so check early
     if (TP.isXHR(anObject)) {
-        return str += '(' + anObject.status + ' : ' + anObject.responseText + ')' + ']';
+        str += '(' + anObject.status + ' : ' + anObject.responseText + ')' + ']';
+        return str;
     }
 
     //  native nodes are the next-most likely object being passed to this
     //  routine, so we'll try to build up a proper string here
     if (TP.isNode(anObject)) {
-        return str += TP.nodeAsString(anObject) + ']';
+        str += TP.nodeAsString(anObject) + ']';
+        return str;
     }
 
     //  got to check Errors next... they freak out if handed to TP.isString().
     if (TP.isError(anObject)) {
-        return str += TP.errorAsString(anObject) + ']';
+        str += TP.errorAsString(anObject) + ']';
+        return str;
     }
 
     if (TP.isString(anObject)) {
-        return str += anObject + ']';
+        str += anObject + ']';
+        return str;
     }
 
     if (!TP.isMutable(anObject)) {
         //  TODO:   does this really deal with all the special constants
         //  like NaN, Number.POSITIVE_INFINITY, etc.?
-        return str += TP.objectToString(anObject) + ']';
+        str += TP.objectToString(anObject) + ']';
+        return str;
     }
 
     //  The top-level Window has TIBET loaded into it, so it will respond to
     //  'asString' properly, but other iframes, etc. won't so we have to handle
     //  Windows in a special manner here.
     if (TP.isWindow(anObject)) {
-        return str += TP.windowAsString(anObject) + ']';
+        str += TP.windowAsString(anObject) + ']';
+        return str;
     }
 
     //  Event objects
     if (TP.isEvent(anObject)) {
-        return str += TP.eventAsString(anObject) + ']';
+        str += TP.eventAsString(anObject) + ']';
+        return str;
     }
 
     //  NodeList objects
@@ -2098,7 +2115,8 @@ function(anObject) {
             arr.push(TP.str(anObject[i]));
         }
 
-        return str += '(' + arr.join(', ') + ')' + ']';
+        str += '(' + arr.join(', ') + ')' + ']';
+        return str;
     }
 
     //  NamedNodeMap objects
@@ -2111,7 +2129,8 @@ function(anObject) {
                          TP.val(anObject.item(i)));
         }
 
-        return str += '(' + arr.join(', ') + ')' + ']';
+        str += '(' + arr.join(', ') + ')' + ']';
+        return str;
     }
 
     //  Stylesheet objects
@@ -2124,21 +2143,28 @@ function(anObject) {
         for (i = 0; i < len; i++) {
             arr.push(rules[i].cssText);
         }
-        return str += '(' + arr.join(' ') + ')' + ']';
+        str += '(' + arr.join(' ') + ')' + ']';
+        return str;
     }
 
     //  Style rule objects
     if (TP.isStyleRule(anObject)) {
-        return str += anObject.cssText + ']';
+        str += anObject.cssText + ']';
+        return str;
     }
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
-        return str += anObject.cssText + ']';
+        str += anObject.cssText + ']';
+        return str;
     }
 
     if (TP.canInvoke(anObject, 'asDumpString')) {
-        str = anObject.asDumpString();
+
+        $depth = TP.ifInvalid(depth, 1);
+        $level = TP.ifInvalid(level, 0);
+
+        str = anObject.asDumpString($depth, $level);
         if (TP.regex.NATIVE_CODE.test(str)) {
             str = '[' + TP.tname(anObject) + ' :: ' + 'native code' + ']';
         }
@@ -2147,7 +2173,9 @@ function(anObject) {
     }
 
     //  worst case we just produce our best source-code representation
-    return str += TP.boot.$stringify(anObject) + ']';
+    str += TP.boot.$stringify(anObject) + ']';
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -2168,29 +2196,145 @@ function(anObject, aFilter, aDiscriminator) {
      * @returns {Array} An array of filtered property keys.
      */
 
-    var arr,
-        obj;
+    var filter,
+
+        arr,
+        obj,
+
+        attributesOnly,
+        methodsOnly,
+
+        includeHidden,
+
+        dontTraverse,
+        inheritedOnly,
+        overriddenOnly,
+
+        keys,
+
+        proto;
 
     if (TP.notValid(anObject)) {
         return TP.ac();
     }
 
-    if (TP.canInvoke(anObject, 'getInterface')) {
-        arr = anObject.getInterface(aFilter);
+    if (TP.isString(aFilter)) {
+        filter = TP.SLOT_FILTERS[aFilter];
+    } else if (TP.notValid(aFilter)) {
+        filter = TP.SLOT_FILTERS.unique_methods;
     } else {
-        arr = TP.ac();
-        obj = anObject;
+        filter = aFilter;
+    }
 
+    if (TP.canInvoke(anObject, 'getInterface')) {
+        arr = anObject.getInterface(filter);
+    } else {
+
+        if (TP.isValid(filter)) {
+
+            attributesOnly = filter.attributes;
+            methodsOnly = filter.methods;
+
+            includeHidden = filter.hidden;
+
+            dontTraverse = filter.scope === TP.INTRODUCED ||
+                            filter.scope === TP.LOCAL;
+
+            inheritedOnly = filter.scope === TP.INHERITED;
+            overriddenOnly = filter.scope === TP.OVERRIDDEN;
+        }
+
+        arr = TP.ac();
+
+        if (inheritedOnly || overriddenOnly) {
+            obj = Object.getPrototypeOf(anObject);
+        } else {
+            obj = anObject;
+        }
+
+        /* eslint-disable no-loop-func */
         do {
-            arr.push(TP.objectGetKeys(obj));
-            obj = Object.getPrototypeOf(obj);
+            keys = TP.objectGetKeys(obj);
+
+            //  We always filter by the INTERNAL_SLOT regex
+            keys = keys.filter(
+                    function(aKey) {
+                        return !TP.regex.INTERNAL_SLOT.test(aKey);
+                    });
+
+            //  If we're not including hidden slots, then we also filter by
+            //  the PRIVATE_SLOT regex
+            if (!includeHidden) {
+                keys = keys.filter(
+                        function(aKey) {
+                            return !TP.regex.PRIVATE_SLOT.test(aKey);
+                        });
+            }
+
+            if (attributesOnly) {
+
+                //  This filter for methods avoids touching the slot or its
+                //  contents, but uses its property descriptor to test whether
+                //  it contains a Function. This is necessary on some browsers
+                //  because those slots can throw Errors if we try to touch
+                //  them.
+                keys = keys.filter(
+                        function(testSlot) {
+                            var desc;
+
+                            desc = Object.getOwnPropertyDescriptor(
+                                                            obj, testSlot);
+                            if (!desc.value || TP.isCallable(desc.value)) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+            } else if (methodsOnly) {
+
+                //  This filter for methods avoids touching the slot or its
+                //  contents, but uses its property descriptor to test whether
+                //  it contains a Function. This is necessary on some browsers
+                //  because those slots can throw Errors if we try to touch
+                //  them.
+                keys = keys.filter(
+                        function(testSlot) {
+                            var desc;
+
+                            desc = Object.getOwnPropertyDescriptor(
+                                                            obj, testSlot);
+                            if (desc.value && TP.isCallable(desc.value)) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+            }
+
+            proto = Object.getPrototypeOf(obj);
+
+            if (overriddenOnly) {
+                keys = keys.filter(
+                        function(aKey) {
+
+                            try {
+                                return obj[aKey] === proto[aKey];
+                            } catch (e) {
+                                return false;
+                            }
+                        });
+            }
+
+            arr.push(keys);
+            if (dontTraverse) {
+                break;
+            }
+
+            obj = proto;
         } while (obj);
+        /* eslint-enable no-loop-func */
 
         arr = Array.prototype.concat.apply([], arr);
-        arr = arr.filter(
-            function(aKey) {
-                return !TP.regex.INTERNAL_SLOT.test(aKey);
-            });
     }
 
     if (TP.isFunction(aDiscriminator)) {
@@ -2543,7 +2687,9 @@ function(aURIOrRoute, linkContext) {
      * @summary A general wrapper function used during processing of link
      *     elements to give TIBET control over the link traversal process. The
      *     go2 call ultimately results in either a route change or page change
-     *     depending on the content of the original href value.
+     *     depending on the content of the original href value. To define a
+     *     route you must provide a value with a leading '#' to force this call
+     *     to recognize the path as a 'client path' rather than a server path.
      * @param {TP.core.URI|String} aURIOrRoute The URI or route to go to.
      * @param {Window} linkContext The window with the original link element.
      * @exception TP.sig.InvalidURI
@@ -2641,7 +2787,11 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
      */
 
     var ignore,
-        handlerName;
+        handlerName,
+
+        oldHandler,
+
+        retVal;
 
     handlerName = TP.ifEmpty(aHandlerName, 'handle');
     ignore = TP.ifInvalid(ignoreMisses, false);
@@ -2666,8 +2816,8 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
 
     //  preserve 'ignore semantics' so even direct invocations through this
     //  mechanism can't override a decision by a handler to be ignored.
-    if (aSignal.isIgnoring(anObject) ||
-        aSignal.isIgnoring(anObject[handlerName])) {
+    if (aSignal.hasNotified(anObject, anObject) ||
+        aSignal.hasNotified(anObject[handlerName], anObject)) {
         return;
     }
 
@@ -2676,42 +2826,22 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     TP.$signal_stack.push(aSignal);
 
     try {
-        return anObject[handlerName](aSignal);
+        oldHandler = aSignal.$get('currentHandler');
+        aSignal.$set('currentHandler', anObject[handlerName], false);
+        retVal = anObject[handlerName](aSignal);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Handler invocation error.')) : 0;
     } finally {
         TP.$signal_stack.pop();
+
+        aSignal.trackHandler(anObject, anObject);
+        aSignal.trackHandler(anObject[handlerName], anObject);
+
+        aSignal.$set('currentHandler', oldHandler, false);
     }
 
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('xhr',
-function(varargs) {
-
-    /**
-     * @method xhr
-     * @summary Constructs a viable TP.sig.RESTRequest for making
-     *     XMLHttpRequest calls to a server. The returned instance can be
-     *     locally programmed via defineMethod to add callbacks as needed.
-     * @param {Array} varargs A variable argument list much like
-     *     TP.request() and TP.hc() would accept: TP.xhr(key, value, ...);.
-     * @returns {TP.sig.RESTRequest} The constructed request.
-     */
-
-    var hash,
-        request;
-
-    //  make sure the request will find at least one possible service
-    TP.sys.getTypeByName('TP.core.RESTService');
-
-    hash = TP.core.Hash.construct.apply(TP.core.Hash, arguments);
-    request = TP.sys.getTypeByName('TP.sig.RESTRequest').construct(hash);
-
-    return request;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------

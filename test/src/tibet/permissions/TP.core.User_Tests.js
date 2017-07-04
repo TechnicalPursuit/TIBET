@@ -26,7 +26,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            suite.then(
+            suite.chain(
                 function() {
                     var loadPromise;
 
@@ -57,6 +57,8 @@ function() {
                                 'Test fullname');
         test.assert.isEqualTo(testCard.get('shortname'),
                                 'Test shortname');
+        test.assert.isEqualTo(testCard.get('nickname'),
+                                'Test nickname');
         test.assert.isEqualTo(testCard.get('jid'),
                                 'Test@testsite.com');
         test.assert.isEqualTo(testCard.get('role'),
@@ -80,6 +82,8 @@ function() {
                                 'Test fullname');
         test.assert.isEqualTo(testCard.get('shortname'),
                                 'Test shortname');
+        test.assert.isEqualTo(testCard.get('nickname'),
+                                'Test nickname');
         test.assert.isEqualTo(testCard.get('jid'),
                                 'Test@testsite.com');
         test.assert.isEqualTo(testCard.get('role'),

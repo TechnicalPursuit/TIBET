@@ -17,35 +17,28 @@
 
     /**
      * Runs any pre-load logic defined for the server. The default
-     * implementation defines a logger_filter routine for trimming log output.
+     * implementation defines a log_filter routine for trimming log output.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
-            level,
-            TDS;
-
-        //  ---
-        //  Config Check
-        //  ---
+            meta,
+            TDS,
+            watchurl;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         TDS = app.TDS;
 
-        //  NOTE this plugin loads prior to the logger so our only option is to
-        //  use the console for output meaning we must level check ourselves. We
-        //  check arg list for level as needed and normalize on lowercase.
-        level = options.argv.level || TDS.cfg('tds.log.level') || 'info';
-        level = level.toLowerCase();
-        TDS.setcfg('tds.log.level', level);
-        if (level === 'debug') {
-            console.log('debug: Executing TDS preload hook.');
-        }
+        //  NOTE this plugin loads prior to the logger so our best option here
+        //  is to use the prelog function to queue logging output.
+        meta = {
+            type: 'plugin',
+            name: 'preload'
+        };
+        TDS.prelog('system', 'executing hook function', meta);
+
+        watchurl = TDS.getcfg('tds.watch.uri');
 
         //  ---
         //  TDS Logger Options
@@ -57,13 +50,9 @@
          * the TDS is being accessed.
          * @returns {Boolean} true to skip logging the current request.
          */
-        TDS.logger_filter = function(req, res) {
-            var url;
-
-            url = TDS.getcfg('tds.watch.uri');
-
+        TDS.log_filter = function(req, res) {
             // Don't log repeated calls to the watcher URL.
-            if (req.path.indexOf(url) !== -1) {
+            if (req.path.indexOf(watchurl) !== -1) {
                 return true;
             }
         };
@@ -73,7 +62,7 @@
         //  ---
 
         /**
-         * Sample tds-couch feed.filter update to eliminate all filtering.
+         * Sample TDS couch feed.filter update to eliminate all filtering.
          */
         /*
         options.tds_couch = options.tds_couch || {};

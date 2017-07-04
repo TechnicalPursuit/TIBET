@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|about {
 
@@ -23,33 +23,58 @@ sherpa|about > .footer {
 
     border-top: 1px solid white;
 
-    background: #eee;
+    background-color: #eee;
 }
 
-sherpa|about > .footer img {
+.framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
+
+    display: none;
+}
+
+.edge-west-open .framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
+
+    display: block;
+}
+
+sherpa|about > .footer > .appinfo {
+
+    position: absolute;
+
+    left: 0;
+    right: 49px;
+
+    height: 100%;
+
+    margin: 8px;
+
+    font-family: "Inconsolata";
+    font-size: 100%;
+
+    line-height: 100%;
+    text-align: center;
+}
+
+sherpa|about > .footer > .trigger.button {
 
     position: absolute;
 
     top: 0;
-    right: 12px;
-    height: 19px;
-    width: 21px;
+    right: 0;
+    width: 48px;
+    height: 30px;
 
-    margin: 4px auto;
+    background-size: 24px;
+    background-position: 12px;
+    background-repeat: no-repeat;
 
-    border: 1px solid #666;
-
-    padding-left: 1px;
-    padding-right: 1px;
-
-    background: white;
+    background-image: url("~lib_media/tibet_logo.svg");
 
     cursor: pointer;
 }
 
-sherpa|about > .footer img:hover {
+sherpa|about > .footer > .trigger.button:hover {
 
-    background: gold;
+    background-color: rgba(255, 215, 0, 0.5);
 
     color: #333;
 }
@@ -60,11 +85,13 @@ sherpa|about > .content {
 
     top: 0;
     bottom: 31px;
+    left: 0;
+    right: 0;
 
     min-width: 0;
     max-width: none;
 
-    background: #eee;
+    background-color: #eee;
 
     border-bottom: 1px solid #aaa;
 }
@@ -124,10 +151,12 @@ sherpa|about > .content > .product > .trade {
 sherpa|about > .content > .tagline {
 
     float: left;
+    clear: left;
 
     margin-left: 12px;
+    margin-top: 12px;
 
-    font-size: 14px;
+    font-size: 16px;
     color: #910;
 }
 
@@ -135,14 +164,14 @@ sherpa|about > .content > .version {
 
     float: left;
 
-    margin-top: 12px;
+    margin-top: 48px;
     margin-left: 12px;
 
     text-align: left;
 
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 12px;
     color: #000;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 }
 
 sherpa|about > .content > .copyright {
@@ -158,3 +187,16 @@ sherpa|about > .content > .copyright {
     font-size: 12px;
     color: black;
 }
+
+/* Rules that trigger when the corner is closed */
+
+.framing.north.west.corner[pclass|closed] sherpa|about > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.north.west.corner[pclass|closed] sherpa|about > .content {
+
+    display: none;
+}
+

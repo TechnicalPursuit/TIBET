@@ -157,7 +157,7 @@ function(methodInfoDict) {
      */
 
     var proto,
-        thisArg,
+        thisref,
 
         endNames,
         endName,
@@ -166,7 +166,7 @@ function(methodInfoDict) {
 
     proto = this[TP.INSTC].prototype;
 
-    thisArg = this;
+    thisref = this;
 
     endNames = methodInfoDict.getKeys();
 
@@ -207,7 +207,7 @@ function(methodInfoDict) {
             };
 
             //  Add the new, wrapper, end method.
-            thisArg.Inst.defineMethod(endName, endMethod);
+            thisref.Inst.defineMethod(endName, endMethod);
         }());
     }
     /* eslint-enable no-loop-func */
@@ -638,7 +638,7 @@ function() {
         } else {
             this.set('faultStr',
                 TP.sc('Expected ', TP.id(testVal),
-                        ' to be an Arguments object'));
+                        ' to be an Arguments object.'));
         }
     }
 

@@ -11,11 +11,6 @@
 /**
  */
 
-/* JSHint checking */
-
-/* jshint evil:true
-*/
-
 //  ========================================================================
 //  TP.core.Node
 //  ========================================================================
@@ -79,7 +74,7 @@ function(nodeSpec, varargs) {
      *     this method.
      *
      *     - If nodeSpec is a non-markup String that can be resolved into a
-     *     TIBET type name, then 'construct' is invoked against that type, with
+     *     TIBET type name, then construct is invoked against that type, with
      *     a null as the first parameter and the other parameters supplied to
      *     this method. That type can then decide the best course of action for
      *     making instances of itself.
@@ -141,13 +136,13 @@ function(nodeSpec, varargs) {
     //  as input, or by working with the input in some fashion
     if (TP.isNode(node)) {
 
-        //  If we got a real element that is either not in a document or was
-        //  created in a document, but not appended to it (as will happen with
-        //  the TP.XML_FACTORY_DOCUMENT), then create a document and hang the
-        //  node off of it.
+        //  If we got a real element that is detached and was created in a
+        //  document, but not appended to it (as will happen with the
+        //  TP.XML_FACTORY_DOCUMENT), then create a document and hang the node
+        //  off of it.
         if (TP.isElement(node) &&
-                (TP.notValid(node.ownerDocument) ||
-                 !TP.nodeContainsNode(node.ownerDocument, node))) {
+            !TP.nodeIsDetached(node) &&
+            !TP.nodeContainsNode(node.ownerDocument, node)) {
 
             newDoc = TP.constructDocument();
 
@@ -252,7 +247,7 @@ function(nodeSpec, varargs) {
 
                 retVal = node;
             } else if (TP.isType(retType = TP.sys.getTypeByName(str))) {
-                //  Set retVal to null, so that when we invoke 'construct'
+                //  Set retVal to null, so that when we invoke construct
                 //  against the retType (set above), it will be as if it was
                 //  actually invoked with no nodeSpec and the machinery
                 //  above will take over.
@@ -260,9 +255,11 @@ function(nodeSpec, varargs) {
             }
         }
 
+        /* eslint-disable consistent-this */
         if (!TP.isType(retType)) {
             retType = this;
         }
+        /* eslint-enable consistent-this */
 
         switch (arguments.length) {
             case 0:
@@ -315,13 +312,16 @@ function(nodeSpec, varargs) {
         TP.isKindOf(inst, 'TP.core.ElementNode')) {
         varargs.perform(
             function(kvPair) {
-
                 inst.setAttribute(kvPair.first(), kvPair.last());
             });
     }
 
     //  Go ahead and put a reference to the wrapper onto the native node.
     node[TP.WRAPPER] = inst;
+
+    //  Grab the *actual* type (the computed type above could've been a type
+    //  cluster, etc.) and cache it on the node for fast access.
+    node[TP.NODE_TYPE] = inst.getType();
 
     return inst;
 });
@@ -440,7 +440,7 @@ function(aNode) {
      * @method fromTP.core.Node
      * @summary Returns the TP.core.Node wrapper provided.
      * @param {TP.core.Node} aNode A wrapped node.
-     * @returns {TP.core.Node} The receiver itself.
+     * @returns {TP.core.Node} The supplied object.
      */
 
     return aNode;
@@ -508,7 +508,7 @@ function(aURI, shouldReport) {
 
     //  this will return a TP.core.Node if at all possible
     resp = aURI.getResource(
-        TP.hc('async', false, 'resultType', TP.DOM));
+                TP.hc('async', false, 'resultType', TP.DOM));
     content = TP.wrap(resp.get('result'));
 
     if (TP.isKindOf(content, TP.core.Node)) {
@@ -907,8 +907,8 @@ function(aRequest) {
      * @description This method populates the following variables into a hash
      *     that it returns, useful for executing substitutions.
      *
-     *          TP         ->  The TP root.
-     *          APP        ->  The APP root.
+     *          TP          ->  The TP root.
+     *          APP         ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
      *          $TAG        ->  The TP.core.ElementNode that contains this text
      *                          node.
@@ -996,6 +996,23 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Type.defineMethod('shouldWrapACPOutput',
+function() {
+
+    /**
+     * @method shouldWrapACPOutput
+     * @summary Whether or not we should wrap ACP expression output in an XHTML
+     *     span element. The default is true, but some subtypes that allow ACP
+     *     in their embedded templates might choose to not generate these
+     *     wrapper spans.
+     * @returns {Boolean} Whether or not to wrap it.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Type.defineMethod('tagPrecompile',
 function(aRequest) {
 
@@ -1004,14 +1021,13 @@ function(aRequest) {
      * @summary Precompiles the content by running any substitution expressions
      *     in it.
      * @description At this level, this method runs substitutions against the
-     *     text content of the node and supplies the following variables to the
-     *     substitutions expressions:
+     *     text content of the node (and the text content of any attributes) and
+     *     supplies the following variables to the substitutions expressions:
      *
      *          TP         ->  The TP root.
      *          APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
-     *          $TAG        ->  The TP.core.ElementNode that contains this text
-     *                          node.
+     *          $TAG        ->  The TP.core.ElementNode that is being processed.
      *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
      *                          the result of this processing will be rendered
      *                          into.
@@ -1036,7 +1052,12 @@ function(aRequest) {
         str,
 
         result,
-        frag;
+        elem,
+        frag,
+
+        attrs,
+        len,
+        j;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
@@ -1050,38 +1071,61 @@ function(aRequest) {
     //  Populate the substitution information with various variables, etc.
     info = this.populateSubstitutionInfo(aRequest);
 
+    //  The $TAG will have been set to our parent node (the default behavior of
+    //  the call above), so we need to set it to the wrapper currently
+    //  processing node.
+    info.atPut('$TAG', tpNode);
+
     info.atPut('shouldEcho', false);
+    info.atPut('annotateMarkup', this.shouldWrapACPOutput());
 
     //  Grab the best representation text. This may contain ACP templating
     //  expressions.
-    str = tpNode.getTextContent();
+    str = tpNode.getContent();
 
-    //  If it contains ACP expressions, then process them.
-    if (TP.regex.HAS_ACP.test(str)) {
+    //  Run a transform on it.
+    result = str.transform(tpNode, info);
 
-        //  Run a transform on it.
-        result = str.transform(tpNode, info);
+    //  If the result contains 'element' markup (and does *not* contain more
+    //  ACP expressions), then try to create a Fragment from it and use that
+    //  to replace the node.
+    if (!TP.regex.HAS_ACP.test(result) &&
+        TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
-        //  If the result contains 'element' markup (and does *not* contain more
-        //  ACP expressions), then try to create an Element from it and use that
-        //  to replace the node.
-        if (!TP.regex.HAS_ACP.test(result) &&
-            TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
+        elem = TP.elem('<root>' + result + '</root>',
+                        TP.w3.Xmlns.XHTML,
+                        false);
 
-            //  Note that we convert into a DocumentFragment here since the
-            //  transformed String may contain multiple peer nodes.
-            frag = TP.frag(result);
+        //  Note that we convert into a DocumentFragment here since the
+        //  transformed String may contain multiple peer nodes (although we were
+        //  able to parse it due to wrapping it into Element markup above -- but
+        //  that's not the 'real' markup).
+        frag = TP.nodeListAsFragment(elem.childNodes);
 
-            //  This will check for either Elements or DocumentFragments (and
-            //  Documents, too, which is invalid here but highly unlikely).
-            if (TP.isCollectionNode(frag)) {
-                TP.nodeReplaceChild(node.parentNode, frag, node, false);
-            }
-        } else {
-            //  Otherwise, it was just a straight templated value (or it
-            //  contained further ACP templating expressions) - just set the
-            //  original node's text content.
-            tpNode.setTextContent(result);
+        //  This will check for either Elements or DocumentFragments (and
+        //  Documents, too, which is invalid here but highly unlikely).
+        if (TP.isCollectionNode(frag)) {
+            TP.elementSetContent(node, frag, null, false);
+        }
+    } else if (TP.notEmpty(result)) {
+        //  Otherwise, it was just a straight templated value (or it
+        //  contained further ACP templating expressions) - just set the
+        //  original node's text content.
+        tpNode.setTextContent(result);
+    }
+
+    //  Process the attribute text.
+    attrs = TP.elementGetAttributeNodes(node);
+
+    len = attrs.getSize();
+    for (j = 0; j < len; j++) {
+        //  Grab the text content of the Attribute node.
+        str = TP.nodeGetTextContent(attrs.at(j));
+        if (TP.regex.HAS_ACP.test(str)) {
+            //  Run a transform on it.
+            TP.nodeSetTextContent(
+                attrs.at(j),
+                str.transform(TP.wrap(attrs.at(j)), info));
         }
     }
 
@@ -1118,8 +1162,9 @@ function(aRequest) {
         TP.core.URI.removeInstance(uri);
     }
 
-    //  Setting this to null is better for many VMs than using 'delete'.
+    //  Setting these to null is better for many VMs than using 'delete'.
     node[TP.WRAPPER] = null;
+    node[TP.NODE_TYPE] = null;
 
     return;
 });
@@ -1127,12 +1172,6 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
-
-//  current checkpoint index, used by back/forward and getNativeNode to
-//  manage which version of a transactional node is current. NOTE THAT WE
-//  LEAVE THIS NULL, NOT 0, so we can tell the difference between indexed
-//  receivers and those that just have a single node reference
-TP.core.Node.Inst.defineAttribute('currentIndex');
 
 //  should the receiver flag changes, i.e. mark elements with 'crud'
 //  metadata in addition to or in lieu of actually altering markup
@@ -1144,22 +1183,12 @@ TP.core.Node.Inst.defineAttribute('dirty', false);
 //  the wrapped node when only one node is being managed
 TP.core.Node.Inst.defineAttribute('node');
 
-//  the wrapped native node stack when the receiver is using transactions
-TP.core.Node.Inst.defineAttribute('nodes');
-
-//  the checkpoint hash, used when the receiver is checkpointing
-TP.core.Node.Inst.defineAttribute('points');
-
 //  flag for whether this instance can be reused. typically yes.
 TP.core.Node.Inst.defineAttribute('recyclable', true);
 
 //  what phase is the node at in terms of content processing? we start at
 //  'UNPROCESSED' for new nodes
 TP.core.Node.Inst.defineAttribute('phase', 'UNPROCESSED');
-TP.core.Node.Inst.defineAttribute('commitPhase', 'UNPROCESSED');
-
-//  does this node act transactionally?
-TP.core.Node.Inst.defineAttribute('transactional', false);
 
 //  when loaded via a TP.core.URI this will hold the URI's 'uri' string as a
 //  backlink the node can use to get to the original URI instance.
@@ -1223,12 +1252,14 @@ function(aContentObject, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns a "dump string", which is typically what is used by the
      *     TIBET logs when writing out an object.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A String suitable for log output.
      */
 
@@ -1324,6 +1355,10 @@ function() {
      *     to one or more JavaScript objects.
      * @returns {Object} The receiver as a plain JavaScript object.
      */
+
+    if (TP.isPrototype(this)) {
+        return;
+    }
 
     return TP.xml2js(this.getNativeNode());
 });
@@ -1867,6 +1902,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('getIndexInParent',
+function() {
+
+    /**
+     * @method getIndexInParent
+     * @summary Returns the index in this node's *parent node's* childNodes
+     *     array for the receiver.
+     * @returns {Number} The index number, or TP.NOT_FOUND.
+     */
+
+    var node,
+        parentNode;
+
+    node = this.getNativeNode();
+    parentNode = node.parentNode;
+
+    return TP.nodeGetChildIndex(parentNode, node);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('getLocalID',
 function(assignIfAbsent) {
 
@@ -2007,99 +2063,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('$$getNativeNodeFast',
-function() {
-
-    /**
-     * @method $$getNativeNodeFast
-     * @summary Returns the receiver's native DOM node object.
-     * @returns {Node} The receiver's native DOM node.
-     */
-
-    return this.$get('node');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('$$getNativeNodeSlow',
-function(preserveDeletes, preserveCrud) {
-
-    /**
-     * @method $$getNativeNodeSlow
-     * @summary Returns the receiver's native DOM node object.
-     * @param {Boolean} preserveDeletes True will cause nodes with
-     *     tibet:crud="delete" attributes to be preserved rather than filtered.
-     *     This defaults to false so that consumers see the node as if deleted
-     *     elements had actually been removed. Note that this is only relevant
-     *     when the receiver's shouldFlagChanges value is true.
-     * @param {Boolean} preserveCrud True will cause tibet:crud attributes to be
-     *     kept on the output, the default is false, meaning the document
-     *     normally appears as if it hasn't been flagged, even when flagging is
-     *     being used. This helps avoid problems with style sheets and other
-     *     processes finding tibet:crud attributes as part of their queries.
-     * @returns {Node} The receiver's native DOM node.
-     */
-
-    var ndx,
-        node,
-        nodes,
-
-        url,
-        resp,
-        styleNode;
-
-    //  NOTE:   we use $get here since we don't want to recurse over
-    //          getProperty() calls that use getNativeNode
-    if (TP.isValid(ndx = this.$get('currentIndex'))) {
-        node = this.$get('nodes').at(ndx);
-    } else {
-        if (TP.isArray(nodes = this.$get('nodes'))) {
-            node = nodes.last();
-        } else {
-            node = this.$get('node');
-        }
-    }
-
-    //  if we've been flagging changes then we need to at least remove the
-    //  deleted nodes so other methods don't attempt to modify them...
-    if (this.shouldFlagChanges()) {
-        if (TP.notTrue(preserveCrud)) {
-            url = TP.uc('~lib_xsl/tp_removecrud.xsl');
-        } else if (TP.notTrue(preserveDeletes)) {
-            url = TP.uc('~lib_xsl/tp_removedeletes.xsl');
-        }
-
-        if (TP.isURI(url)) {
-            resp = url.getNativeNode(TP.hc('async', false));
-            styleNode = resp.get('result');
-
-            if (TP.isNode(styleNode)) {
-                return TP.documentTransformNode(styleNode, node);
-            } else {
-                TP.ifError() ?
-                    TP.error(
-                        'Unable to load node filtering transform: \'' +
-                        url.getLocation()) : 0;
-            }
-        }
-    }
-
-    return node;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Node.Inst.defineMethod('getNativeNode',
 function() {
 
     /**
      * @method getNativeNode
      * @summary Returns the receiver's native DOM node object.
-     * @description There are actually two variants of this method, which are
-     *     manipulated based on whether the node is transactional/flagging
-     *     changes. If either of those are true then a "slow" version is put in
-     *     place that manages that overhead, otherwise the default
-     *     implementation simply returns the ivar containing the internal node.
      * @returns {Node} The receiver's native DOM node.
      */
 
@@ -2479,65 +2448,6 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('isTransactional',
-function(aFlag) {
-
-    /**
-     * @method isTransactional
-     * @summary Combined setter/getter for whether the receiver has been told
-     *     to support transactional behavior via checkpoint, commit, and
-     *     rollback.
-     * @param {Boolean} aFlag The state of the node's transaction flag, which
-     *     will be set when provided.
-     * @returns {Boolean} The current transaction state, after any optional
-     *     set() operation has occurred.
-     */
-
-    if (TP.isBoolean(aFlag)) {
-        if (TP.isTrue(this.$get('transactional'))) {
-            if (!aFlag) {
-                //  was transactional, clearing it now...
-
-                //  TODO: check for unsaved changes etc...
-
-                this.$set('nodes', null, false);
-                this.$set('points', null, false);
-                this.$set('currentIndex', null, false);
-
-                //  as long as we're not flagging changes we can go back to
-                //  the fast node accessor
-                if (TP.notTrue(this.shouldFlagChanges())) {
-                    this.$set('getNativeNode', this.$$getNativeNodeFast,
-                                false);
-                }
-            }
-        } else {
-            if (aFlag) {
-                //  wasn't transactional, turning it on...
-
-                //  have to use a slower approach to returning the native
-                //  node since we have to check indexes etc.
-                this.$set('getNativeNode', this.$$getNativeNodeSlow, false);
-
-                this.$set('transactional', aFlag, false);
-                this.checkpoint();
-            }
-        }
-
-        this.$set('transactional', aFlag, false);
-
-        if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
-            TP.ifWarn() ?
-                TP.warn('Node transactions have been activated but ' +
-                            'content is not being checkpointed.') : 0;
-        }
-    }
-
-    return this.$get('transactional');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Node.Inst.defineMethod('produceContent',
 function(aContentObject, aRequest) {
 
@@ -2633,7 +2543,7 @@ function(aspectName, aContentObject, aRequest) {
                 result.atPut(keys.at(i), TP.val(input.at(keys.at(i))));
             }
             value = result;
-        } else if (TP.isMemberOf(input, Object)) {
+        } else if (TP.isPlainObject(input)) {
             result = {};
             keys = TP.keys(input);
             len = keys.getSize();
@@ -2694,7 +2604,7 @@ function(theContent, anIndex) {
         return theContent;
     }
 
-    if (!TP.isCollection(theContent) && !TP.isMemberOf(theContent, Object)) {
+    if (!TP.isCollection(theContent) && !TP.isPlainObject(theContent)) {
         return theContent;
     }
 
@@ -2725,7 +2635,10 @@ function(theContent, anIndex) {
     } else {
         //  This handles TP.core.Hash, Objects and NamedNodeMaps
 
-        index = TP.ifInvalid(anIndex, TP.keys(result).first());
+        index = anIndex;
+        if (TP.notValid(index)) {
+            index = TP.keys(result).first();
+        }
 
         if (TP.isHash(result)) {
             result = result.at(index);
@@ -2795,36 +2708,13 @@ function(aNode, shouldSignal) {
 
     var oldNode,
 
-        nodes,
-        ndx,
-
         flag;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode', aNode);
     }
 
-    //  Notice here how we use the 'fast' native node get method to avoid any
-    //  sorts of recursion issues.
-    oldNode = this.$$getNativeNodeFast();
-
-    //  what we do here varies by whether we're checkpointing or not...
-    if (TP.isArray(nodes = this.get('nodes'))) {
-        ndx = this.get('currentIndex');
-        if (TP.isValid(ndx)) {
-            //  working in the middle of the list, have to truncate
-            nodes.length = ndx;
-            nodes.add(aNode);
-
-            //  clear the index since we're basically defining the end of
-            //  the list now
-            this.$set('currentIndex', null, false);
-        } else {
-            nodes.atPut(nodes.getSize() - 1, aNode);
-        }
-    } else {
-        this.$set('node', aNode, false);
-    }
+    this.$set('node', aNode, false);
 
     //  NB: Use this construct this way for better performance
     if (TP.notValid(flag = shouldSignal)) {
@@ -3325,227 +3215,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  NODE "TRANSACTIONS"
-//  ------------------------------------------------------------------------
-
-/*
-Operations which form the core of the TP.core.Node "transaction" support
-which allows node content to serve as a model supporting undo/redo
-operations via back/forward (temporary) and commit/rollback (permanent)
-methods.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('back',
-function(aName) {
-
-    /**
-     * @method back
-     * @summary Moves the receiver's current node index back to the named
-     *     checkpoint index, or by one checkpoint such that requests for
-     *     information about the receiver resolve to that state. No checkpoints
-     *     are removed and a forward() will undo the effect of this call --
-     *     unless you alter the state of the node after calling back().
-     * @param {String} aName The name of a specific checkpoint to index to.
-     *     Defaults to the prior checkpoint location.
-     * @exception TP.sig.InvalidCheckpoint
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        points,
-        ndx;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    if (TP.notEmpty(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'No active checkpoints have been named.');
-        }
-
-        ndx = points.at(aName);
-        if (TP.notValid(ndx)) {
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'Checkpoint ' + aName + ' not found.');
-        }
-
-        //  if the value changes here a change notice will fire...
-        this.set('currentIndex', ndx.max(0));
-    } else {
-        //  decrement the index, but don't let it go below 0
-        ndx = this.get('currentIndex');
-        if (TP.notValid(ndx)) {
-            //  note that nodes.getSize() - 1 points to the last element,
-            //  and back should be backing up one slot from that so we
-            //  remove 2 here
-            ndx = nodes.getSize() - 2;
-        } else {
-            //  remove one from current index
-            ndx = ndx - 1;
-        }
-
-        //  note we dont' bother setting it if we're simply trying to
-        //  back up on a single node list and we're at the end anyway..and
-        //  we want to make sure we're not below zero
-        ndx = ndx.max(0);
-        if (ndx !== nodes.getSize() - 1) {
-            this.set('currentIndex', ndx);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('changed',
-function(anAspect, anAction, aDescription) {
-
-    /**
-     * @method changed
-     * @summary Notifies observers that some aspect of the receiver has
-     *     changed. The fundamental data-driven dependency method.
-     * @description If 'anAspect' is provided then the signal fired will be
-     *     'aspectChange' where 'aspect' is replaced with the title-case aspect
-     *     value. For example, if the aspect is 'lastname' the signal will be:
-     *
-     *     LastnameChange
-     *
-     *     This allows observers to be very discriminating in their
-     *     observations...down to a specific slot on an object rather than the
-     *     entire object. When the aspect is a number the signal name is
-     *     prefixed with 'Index' so an aspect of 1 would result in an
-     *     Index1Change signal.
-     *
-     *     NOTE: if the receiver's shouldSignalChange() method returns false
-     *     this method won't fire a signal. This helps to avoid signaling when
-     *     no listeners are present. See the shouldSignalChange() method for
-     *     more information.
-     * @param {String} anAspect The aspect of the receiver that changed. This is
-     *     usually an attribute name.
-     * @param {String} anAction The action which caused the change. This is
-     *     usually 'add', 'remove', etc.
-     * @param {TP.core.Hash} aDescription A hash describing details of the
-     *     change.
-     * @returns {TP.core.Node} The receiver.
-     * @fires Change
-     */
-
-    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
-    //  We don't normally do this in TIBET, but this method is used heavily and
-    //  is a hotspot.
-    if (!this.shouldSignalChange()) {
-        return;
-    }
-
-    //  when a change has happened we need to adjust to the current index so
-    //  things like a combination of a back() and a set() will throw away
-    //  the nodes after the current node, but when the aspect is current
-    //  index itself we skip this since what's happening is just a forward
-    //  or back call shifting the current "visible" node data
-    if (TP.isEmpty(anAspect) || anAspect !== 'currentIndex') {
-        this.discardCheckpointNodes();
-    }
-
-    //  with possible node list adjustments we now need to update the name
-    //  to index hash entries
-    this.discardCheckpointNames();
-
-    //  during early operations this can be called and we don't want to
-    //  trigger an exception in getDocument below
-    if (!TP.isNode(this.getNativeNode())) {
-        return this.callNextMethod();
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('checkpoint',
-function(aName) {
-
-    /**
-     * @method checkpoint
-     * @summary Checkpoints the current node content, making it available for
-     *     future rollback operations via either name or position.
-     * @param {String} aName An optional name to assign to the checkpoint which
-     *     can be supplied to rollback() calls.
-     * @returns {Number} The number of checkpoints after the new checkpoint has
-     *     been added.
-     */
-
-    var node,
-        nodes,
-        ndx,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    node = this.getNativeNode();
-
-    //  if no node list yet then construct one so we can store the data
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        nodes = TP.ac();
-        this.$set('nodes', nodes, false);
-    }
-
-    //  here's a bit of a twist, if we checkpoint while looking at an
-    //  indexed location we have to clear the rest of the list and remove
-    //  any checkpoint name references to points later in the list
-    if (TP.isNumber(ndx = this.get('currentIndex'))) {
-        //  set length to trim off elements past the current index location,
-        //  discarding their changes, this will cause the discardCheckpoint
-        //  routine to consider checkpoints referencing indexes past that
-        //  point to be invalid so they get removed
-        nodes.length = ndx + 1;
-
-        //  since we've adjusted the node list length we need to update the
-        //  index reference data
-        this.discardCheckpointNames();
-    }
-
-    //  are we naming this one?
-    if (TP.notEmpty(aName)) {
-        //  construct a hash for named checkpoint references
-        if (TP.notValid(points = this.get('points'))) {
-            points = TP.hc();
-            this.$set('points', points, false);
-        }
-
-        //  correlate name with current 'end of list' index which points to
-        //  the node just prior to cloning it to save state at the "old"
-        //  location
-        points.atPut(aName, nodes.getSize() - 1);
-    }
-
-    //  with the node list in shape we can now add the new data, but note
-    //  that we use a string-based clone process here to avoid document
-    //  issues in mozilla
-    nodes.add(TP.nodeCloneNode(node, true, true));
-
-    //  clear the current index since we're essentially saying we want to
-    //  operate at the current location and start to float with checkpoint
-    //  state again
-    this.set('currentIndex', null);
-
-    return nodes.getSize();
-});
-
-//  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('clone',
 function(deep, viaString) {
@@ -3562,328 +3231,6 @@ function(deep, viaString) {
      */
 
     return TP.wrap(TP.nodeCloneNode(this.getNativeNode(), deep, viaString));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('commit',
-function() {
-
-    /**
-     * @method commit
-     * @summary Collapses the list of available nodes into a single committed
-     *     copy of the node containing all changes made.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var node;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    node = this.getNativeNode();
-
-    //  the "origin" copy is kept in the single node slot for reference, but
-    //  notice we don't signal change since the "visible state" won't
-    //  actually alter, just the storage location...
-    this.$set('node', node, false);
-
-    //  clear the nodes and checkpoints until we get told to do a checkpoint
-    //  again...
-    this.$set('nodes', null, false);
-    this.$set('points', null, false);
-    this.$set('currentIndex', null, false);
-
-    //  we need to hold the processing phase for the commit to avoid
-    //  overhead when we subsequently rollback and need to reset the phase
-    this.$set('commitPhase', this.get('phase'));
-
-    //  re-establish original state in the nodes() array
-    this.checkpoint();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('discardCheckpointNames',
-function() {
-
-    /**
-     * @method discardCheckpointNames
-     * @summary Flushes any stored checkpoint names which come after the
-     *     current node list length.
-     * @description When using back() and forward() along with checkpoint,
-     *     rollback, or any mutation operations this method will be called to
-     *     clear name references to indexes into the node list which no longer
-     *     exist.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    if (TP.isEmpty(nodes)) {
-        //  when there are no nodes all points are invalid...
-        this.set('points', null);
-    } else if (TP.isArray(points = this.get('points'))) {
-        //  clear out point references to non-existent entries
-        points.perform(
-            function(item) {
-
-                if (item.last() > nodes.getSize() - 1) {
-                    this.removeKey(item.first());
-                }
-            }.bind(points));
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('discardCheckpointNodes',
-function() {
-
-    /**
-     * @method discardCheckpointNodes
-     * @summary Flushes any stored checkpoint data after the current node
-     *     index. When using back() and forward() along with checkpoint,
-     *     rollback, or any mutation operations this method will be called to
-     *     clear the obsolete data itself.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var ndx,
-        nodes;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    //  when there's no index set there have been no back calls and so we're
-    //  at the end, or a previous forward cleared it because we reached the
-    //  end...
-    if (TP.notValid(ndx = this.get('currentIndex'))) {
-        return this;
-    }
-
-    //  we've got a valid index, which indicates where we're currently
-    //  looking. we want to discard everything from that point on...
-    nodes.length = ndx + 1;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('forward',
-function(aName) {
-
-    /**
-     * @method forward
-     * @summary Moves the receiver's current node index forward to the named
-     *     checkpoint index, or by one checkpoint such that requests for
-     *     information about the receiver resolve to that state.
-     * @param {String} aName The name of a specific checkpoint to index to.
-     *     Defaults to the next checkpoint location available.
-     * @exception TP.sig.InvalidCheckpoint
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        ndx,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    //  when there's no index set there have been no back calls and so we're
-    //  at the end, or a previous forward cleared it because we reached the
-    //  end...
-    if (TP.notValid(ndx = this.get('currentIndex'))) {
-        return this;
-    }
-
-    if (TP.notEmpty(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'No active checkpoints have been named.');
-        }
-
-        ndx = points.at(aName);
-        if (TP.notValid(ndx)) {
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'Checkpoint ' + aName + ' not found.');
-        }
-
-        //  this will trigger a change notice so observers can update
-        this.set('currentIndex', ndx);
-    } else {
-        //  increment the index, but don't let it go off the end
-        ndx = this.get('currentIndex') + 1;
-        if (ndx < nodes.getSize() - 1) {
-            this.set('currentIndex', ndx);
-        } else {
-            //  if forward would go off then end then we'll reset so we
-            //  start to float again
-            this.set('currentIndex', null);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('hasCheckpoint',
-function(aName) {
-
-    /**
-     * @method hasCheckpoint
-     * @summary Looks up the named checkpoint and returns true if it exists.
-     * @param {String} aName An optional name to look up.
-     * @returns {Boolean} True if the receiver has the named checkpoint.
-     */
-
-    var points;
-
-    if (!TP.isString(aName)) {
-        return false;
-    }
-
-    if (TP.notValid(points = this.get('points'))) {
-        return false;
-    }
-
-    return TP.isValid(points.at(aName));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('rollback',
-function(aName) {
-
-    /**
-     * @method rollback
-     * @summary Rolls back changes made since the named checkpoint provided in
-     *     the first parameter, or all changes if no checkpoint name is
-     *     provided.
-     * @param {String} aName An optional name provided when a checkpoint call
-     *     was made, identifying the specific point to roll back to.
-     * @exception TP.sig.InvalidRollback
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        point,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    //  if we don't have nodes then we don't have anything to roll back to
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no prior checkpoints, nothing to roll back
-        if (TP.isString(aName)) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback',
-                                'No active checkpoints have been made.');
-        } else {
-            //  if no name provided we can consider this a no-op
-            return this;
-        }
-    }
-
-    //  we have nodes, now the question is do we have a named point to roll
-    //  back to or are we just decrementing our list?
-    if (TP.isString(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback',
-                                'No active checkpoints have been named.');
-        }
-
-        if (TP.notValid(point = points.at(aName))) {
-            return this.raise('TP.sig.InvalidRollback',
-                            'Checkpoint ' + aName + ' not found.');
-        }
-
-        //  discard nodes up to that point
-        nodes.length = point + 1;
-
-        //  watch for rollbacks that should update the processing phase
-        if (TP.core.TSH.CACHE_PHASES.containsString(aName)) {
-            this.set('phase', aName);
-        }
-    } else {
-        //  flush all checkpoint data
-        nodes.empty();
-        nodes.add(TP.nodeCloneNode(this.$get('node'), true));
-
-        this.$set('points', null, false);
-
-        //  all the way back? then we're at the same phase as the last
-        //  commit (or if no commit then we must be unprocessed)
-        this.set('phase', this.get('commitPhase'));
-    }
-
-    //  in all cases we presume that the current state of the node should
-    //  reflect the state at the rollback point now so we clear the index
-    this.$set('currentIndex', null, false);
-
-    //  rolling back means a change in visible state
-    this.changed('value', TP.UPDATE);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('toEnd',
-function() {
-
-    /**
-     * @method toEnd
-     * @summary Moves the receiver's current node index to the end of any
-     *     checkpoints which have been made, returning you to the last state of
-     *     the node.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    this.set('currentIndex', null);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3915,7 +3262,7 @@ function(aFlag) {
 
     //  Notice here how we use the 'fast' native node get method to avoid any
     //  sorts of recursion issues.
-    natNode = this.$$getNativeNodeFast();
+    natNode = this.getNativeNode();
 
     if (TP.notValid(natNode)) {
         return;
@@ -4082,26 +3429,40 @@ function(aDocument) {
 
     //  Default the document to the uicanvas's document. Note the 'true' here to
     //  get the native document.
-    doc = TP.ifInvalid(aDocument, TP.sys.uidoc(true));
+    doc = aDocument;
+    if (TP.notValid(doc)) {
+        doc = TP.sys.uidoc(true);
+    }
 
     //  Find any instances that are currently drawn on the document.
     instances = TP.byCSSPath(cssQuery, doc);
 
     //  Iterate over the instances that were found.
     instances.forEach(
-                function(aTPNode) {
-                    var authoredNode;
+                function(aTPElem) {
+                    var authoredElem;
 
                     //  Grab the originally authored representation of the node.
-                    authoredNode = originals.at(aTPNode.getLocalID());
+                    authoredElem = originals.at(aTPElem.getLocalID());
 
-                    if (TP.isNode(authoredNode)) {
-                        authoredNode = TP.nodeCloneNode(authoredNode);
+                    if (TP.isNode(authoredElem)) {
+                        authoredElem = TP.nodeCloneNode(authoredElem);
+
+                        //  Note here how we set the 'tibet:refreshing'
+                        //  attribute to let the system know that we're
+                        //  refreshing the current, in place, element. This flag
+                        //  will be removed by the 'mutation added' method.
 
                         //  Compile and awaken the content, supplying the
                         //  authored node as the 'alternate element' to compile.
-                        aTPNode.compile(null, true, authoredNode);
-                        aTPNode.awaken();
+                        aTPElem.setAttribute('tibet:refreshing', true);
+                        aTPElem.compile(null, true, authoredElem);
+
+                        //  The native node might have changed under the covers
+                        //  during compilation, so we need to set the attribute
+                        //  again.
+                        aTPElem.setAttribute('tibet:refreshing', true);
+                        aTPElem.awaken();
                     }
                 });
 
@@ -4142,8 +3503,10 @@ function(aRequest) {
     //  We didn't get a valid Node or Array back - log an Error
     if (!TP.isNode(result) && !TP.isArray(result)) {
         TP.ifError() ?
-            TP.error(this.getTypeName() +
-                ' compile returned invalid replacement for: ' + TP.str(elem)) : 0;
+            TP.error(
+                this.getTypeName() +
+                ' compile returned invalid replacement for: ' +
+                TP.str(elem)) : 0;
     }
 
     //  If we got a collection node back, register a reference to a clone of the
@@ -4216,7 +3579,7 @@ function(aURI, force) {
     var node,
         url;
 
-    node = this.getNativeNode();
+    node = TP.nodeGetDocument(this.getNativeNode());
 
     url = aURI || this.get('uri');
     if (TP.notValid(url)) {
@@ -4384,97 +3747,6 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('$getAttribute',
-function(attributeName) {
-
-    /**
-     * @method $getAttribute
-     * @summary Returns the value of the attribute provided.
-     * @description The typical operation is to retrieve the attribute from the
-     *     receiver's native node. When the attribute is prefixed this method
-     *     will attempt to find the matching attribute value for that prefix
-     *     based on the document's prefixes and TIBET's canonical prefixing
-     *     information regarding namespaces. Note that this call is only valid
-     *     for Element nodes; when invoked on a document the documentElement is
-     *     targeted.
-     * @param {String} attributeName The attribute to find.
-     * @returns {String} The attribute value, if found.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    return TP.elementGetAttribute(node, attributeName, true);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('getAttribute',
-function(attributeName) {
-
-    /**
-     * @method getAttribute
-     * @summary Returns the value of the attribute provided.
-     * @description The typical operation is to retrieve the attribute from the
-     *     receiver's native node. When the attribute is prefixed this method
-     *     will attempt to find the matching attribute value for that prefix
-     *     based on the document's prefixes and TIBET's canonical prefixing
-     *     information regarding namespaces. Note that this call is only valid
-     *     for Element nodes; when invoked on a document the documentElement is
-     *     targeted.
-     * @param {String} attributeName The attribute to find.
-     * @returns {String} The attribute value, if found.
-     */
-
-    var methodName;
-
-    //  try attribute manipulation naming convention first
-    methodName = this.computeAttrMethodName('getAttr', attributeName);
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName]();
-    }
-
-    return this.$getAttribute(attributeName);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('getAttributes',
-function(attributeName, stripPrefixes) {
-
-    /**
-     * @method getAttributes
-     * @summary Returns a hash of zero to N attribute name/value pairs,
-     *     potentially matching the attribute name provided. For document nodes
-     *     this operation effectively operates on the document's
-     *     documentElement.
-     * @param {String|RegExp} attributeName An attributeName "search" criteria
-     *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
-     *     This is optional.
-     * @param {Boolean} stripPrefixes Whether or not to strip any namespace
-     *     prefixes from the attribute names as they are populated into the
-     *     return value.
-     * @returns {TP.core.Hash} A collection of name/value pairs.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    return TP.elementGetAttributes(node, attributeName, stripPrefixes);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CollectionNode.Inst.defineMethod('getContent',
 function(aRequest) {
 
@@ -4532,31 +3804,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getTemplateName',
-function() {
-
-    /**
-     * @method getTemplateName
-     * @summary Returns the name of any associated template for the receiver.
-     * @returns {String} The template name.
-     */
-
-    var urn;
-
-    urn = this.getAttribute('tsh:template_name');
-    if (TP.notEmpty(urn)) {
-        urn = urn.startsWith(TP.TIBET_URN_PREFIX) ?
-                    urn :
-                    TP.TIBET_URN_PREFIX + urn;
-
-        return urn;
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CollectionNode.Inst.defineMethod('getValue',
 function() {
 
@@ -4569,38 +3816,6 @@ function() {
      */
 
     return this.getContent();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('hasAttribute',
-function(attributeName) {
-
-    /**
-     * @method hasAttribute
-     * @summary Returns whether or not the receiver has the named attribute
-     *     provided. This method essentially emulates the native node
-     *     hasAttribute call. Note that this call is only valid for Element
-     *     nodes; when invoked on a document wrapper the documentElement is
-     *     targeted.
-     * @param {String} attributeName The attribute to test.
-     * @exception TP.sig.InvalidOperation
-     * @returns {Boolean} Whether or not the receiver has the named attribute.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    if (!TP.isElement(node)) {
-        return this.raise('TP.sig.InvalidOperation', this);
-    }
-
-    return TP.elementHasAttribute(node, attributeName, true);
 });
 
 //  ------------------------------------------------------------------------
@@ -4635,319 +3850,6 @@ function() {
     }
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('$removeAttribute',
-function(attributeName, shouldSignal) {
-
-    /**
-     * @method removeAttribute
-     * @summary Removes the named attribute. This version is a wrapper around
-     *     the native element node removeAttribute call which attempts to handle
-     *     standard change notification semantics for native nodes as well as
-     *     proper namespace management.
-     * @param {String} attributeName The attribute name to remove.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     */
-
-    var attr,
-        node,
-
-        flag;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    //  work from the attribute node so we can be more accurate. this helps
-    //  ensure that environments which don't preserve the concept of a
-    //  namespace URI consistently (html) won't end up with two attributes
-    //  of the same name but different namespace URIs
-
-    if (TP.regex.HAS_COLON.test(attributeName)) {
-        //  Note here the usage of our own call which will attempt to divine
-        //  the namespace URI if the checkAttrNSURIs flag is true.
-        attr = TP.$elementGetPrefixedAttributeNode(node,
-                                                    attributeName,
-                                                    true);
-    } else {
-        attr = node.getAttributeNode(attributeName);
-    }
-
-    //  no node? nothing to remove then
-    if (TP.notValid(attr)) {
-        return;
-    }
-
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
-
-    //  NB: We don't flag changes for internal 'tibet:' attributes
-    //  (presuming change flagging is on)
-    if (this.shouldFlagChanges() &&
-        !TP.regex.TIBET_SCHEME.test(attributeName)) {
-        TP.elementFlagChange(node, TP.ATTR + attributeName, TP.DELETE);
-    }
-
-    //  rip out the attribute itself
-    TP.elementRemoveAttribute(node, attributeName, true);
-
-    if (flag) {
-        this.changed('@' + attributeName, TP.DELETE);
-    }
-
-    //  removeAttribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('removeAttribute',
-function(attributeName) {
-
-    /**
-     * @method removeAttribute
-     * @summary Removes the named attribute. This version is a wrapper around
-     *     the native element node removeAttribute call which attempts to handle
-     *     standard change notification semantics for native nodes as well as
-     *     proper namespace management.
-     * @param {String} attributeName The attribute name to remove.
-     */
-
-    var methodName;
-
-    //  try attribute manipulation naming convention first
-    methodName = this.computeAttrMethodName('removeAttr', attributeName);
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName]();
-    }
-
-    return this.$removeAttribute(attributeName);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('$setAttribute',
-function(attributeName, attributeValue, shouldSignal) {
-
-    /**
-     * @method setAttribute
-     * @summary Sets the value of the named attribute. This version is a
-     *     wrapper around the native element node setAttribute call which
-     *     attempts to handle standard change notification semantics for native
-     *     nodes as well as proper namespace management.
-     * @param {String} attributeName The attribute name to set.
-     * @param {Object} attributeValue The value to set.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     * @returns {null} Null according to the spec for DOM 'setAttribute'.
-     */
-
-    var boolAttrs,
-
-        node,
-
-        hadAttribute,
-
-        oldValue,
-
-        attr,
-
-        flag,
-
-        nameParts,
-        prefix,
-        name,
-        url;
-
-    if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
-        boolAttrs.containsString(attributeName) &&
-        TP.isFalsey(attributeValue)) {
-
-        return this.removeAttribute(attributeName);
-    }
-
-    node = this.getNativeNode();
-
-    hadAttribute = TP.elementHasAttribute(node, attributeName, true);
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    //  work from the attribute node so we can be more accurate. this helps
-    //  ensure that environments which don't preserve the concept of a
-    //  namespace URI consistently (html) won't end up with two attributes
-    //  of the same name but different namespace URIs
-
-    if (TP.regex.HAS_COLON.test(attributeName)) {
-        //  Note here the usage of our own call which will attempt to divine
-        //  the namespace URI if the checkAttrNSURIs flag is true.
-        attr = TP.$elementGetPrefixedAttributeNode(node,
-                                                    attributeName,
-                                                    true);
-    } else {
-        attr = node.getAttributeNode(attributeName);
-    }
-
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
-
-    if (TP.isAttributeNode(attr)) {
-        //  Capture the current value
-        oldValue = attr.value;
-
-        if (attr.value === attributeValue) {
-            return;
-        } else {
-            //  NB: We don't flag changes for internal 'tibet:' attributes
-            //  (presuming change flagging is on)
-            if (this.shouldFlagChanges() &&
-                !TP.regex.TIBET_SCHEME.test(attributeName)) {
-                TP.elementFlagChange(node, TP.ATTR + attributeName, TP.UPDATE);
-            }
-
-            attr.value = attributeValue;
-
-            if (flag) {
-                this.changed('@' + attributeName,
-                                hadAttribute ? TP.UPDATE : TP.CREATE,
-                                TP.hc(TP.OLDVAL, oldValue,
-                                        TP.NEWVAL, attributeValue));
-            }
-
-            return;
-        }
-    }
-
-    //  if this is a prefixed attribute then we'll attempt to "do the right
-    //  thing" by finding the registered namespace and placing the attribute
-    //  in that namespace
-    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
-        nameParts = attributeName.match(TP.regex.NS_QUALIFIED);
-        prefix = nameParts.at(1);
-        name = nameParts.at(2);
-
-        if (attributeName.startsWith('xmlns')) {
-            //  If the caller was trying to add an 'xmlns' attribute, then
-            //  first check to make sure that they weren't trying to set the
-            //  default namespace - can't do that :-(.
-            if (attributeName === 'xmlns') {
-                //  TODO: Throw an error - you cannot reset the default
-                //  namespace :-(.
-                return;
-            }
-
-            //  Otherwise, they're trying to add a prefixed namespace
-            //  definition.
-            TP.elementAddNamespace(node,
-                                    prefix + ':' + name,
-                                    attributeValue);
-
-            //  NB: We don't 'flag changes' for setting an 'xmlns:*' attribute
-
-            if (flag) {
-                this.changed('@' + attributeName, TP.CREATE);
-            }
-
-            return;
-        }
-
-        //  if we made it here we're not setting an xmlns attribute so the
-        //  only other reason not to flag the element is if we're setting a
-        //  tibet: internal attribute (presuming change flagging is on)
-        if (this.shouldFlagChanges() &&
-            !TP.regex.TIBET_SCHEME.test(attributeName)) {
-            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
-        }
-
-        //  seems like we're dealing with a prefixed attribute that isn't an
-        //  xmlns attribute, so the question is do we know a URI so we can
-        //  map it properly?
-        if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
-            TP.elementSetAttributeInNS(node,
-                                        prefix + ':' + name,
-                                        attributeValue,
-                                        url);
-        } else {
-            //  no known prefix, just set it as an attribute whose name
-            //  happens to include a colon
-            TP.elementSetAttribute(node, attributeName, attributeValue);
-        }
-    } else {
-        //  not a prefixed attribute so we just need to ensure that we've
-        //  updated the element crud flags as needed and set the value
-        if (this.shouldFlagChanges()) {
-            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
-        }
-
-        TP.elementSetAttribute(node, attributeName, attributeValue);
-    }
-
-    if (flag) {
-        this.changed('@' + attributeName,
-                        TP.CREATE,
-                        TP.hc('oldValue', oldValue,
-                                'newValue', attributeValue));
-    }
-
-    //  setAttribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('setAttribute',
-function(attributeName, attributeValue) {
-
-    /**
-     * @method setAttribute
-     * @summary Sets the value of the named attribute. This version is a
-     *     wrapper around the native element node setAttribute call which
-     *     attempts to handle standard change notification semantics for native
-     *     nodes as well as proper namespace management.
-     * @param {String} attributeName The attribute name to set.
-     * @param {Object} attributeValue The value to set.
-     */
-
-    var methodName;
-
-    //  try attribute manipulation naming convention first
-    methodName = this.computeAttrMethodName('setAttr', attributeName);
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](attributeValue);
-    }
-
-    //  Otherwise, there was no specific setter, so just use $setAttribute()
-    return this.$setAttribute(attributeName, attributeValue);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('setAttributes',
-function(attributeHash) {
-
-    /**
-     * @method setAttributes
-     * @summary Sets the value of the attributes provided using the supplied
-     *     TP.core.Hash. For document nodes this operation effectively operates
-     *     on the document's documentElement.
-     * @param {TP.core.Hash} attributeHash The attributes to set.
-     */
-
-    attributeHash.perform(
-        function(kvPair) {
-            this.setAttribute(kvPair.first(), kvPair.last());
-        }.bind(this));
 });
 
 //  ------------------------------------------------------------------------
@@ -5034,6 +3936,196 @@ function(aNode, shouldSignal) {
 
     if (flag) {
         this.changed('content', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('serializeForStorage',
+function(storageInfo) {
+
+    /**
+     * @method serializeForStorage
+     * @summary Serialize the receiver in a manner appropriate for storage.
+     * @description This method provides a serialized representation of the
+     *     receiver that can be used to store it in a persistent storage. The
+     *     supplied storageInfo hash should contain a storage key under the
+     *     'store' key that will be used to uniquely identify the content
+     *     produced for this receiver. Note that nested nodes might produce
+     *     their own 'serialization stores'. All of the stores can be found
+     *     under the 'stores' key in the storageInfo after the serialization
+     *     process is complete.
+     *     For this type, serialization means writing an opening tag for the
+     *     element by calling 'serializeOpenTag', then whatever non-Element
+     *     content (i.e. text nodes, comment nodes, etc) and then the closing
+     *     tag for the element by calling 'serializeCloseTag'.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {TP.core.CollectionNode} The receiver.
+     */
+
+    var node,
+
+        str,
+
+        storeKey,
+        stores,
+
+        result;
+
+    node = this.getNativeNode();
+
+    if (TP.isDocument(node)) {
+        node = node.documentElement;
+    }
+
+    //  Make sure that we have a result that we can concatentate results to.
+    storageInfo.atPutIfAbsent('result', TP.ac());
+
+    //  NB: We do *NOT* capture the above 'result' into a closured local
+    //  variable and use it below, because steps in the processing process might
+    //  decide to clear out the results and we need to respect that.
+
+    //  Traverse in a depth-wise manner, starting at the receiver's native node.
+    TP.nodeDepthTraversal(
+        node,
+        function(anElem) {
+
+            //  This function gets called when the start tag of an element is
+            //  encountered.
+
+            var tpElem,
+                serializationResult;
+
+            //  Wrap the element and serialize its open tag.
+            tpElem = TP.wrap(anElem);
+            serializationResult = tpElem.serializeOpenTag(storageInfo);
+
+            //  If we got a String back, there are no special control constants
+            //  (i.e. TP.CONTINUE, TP.DESCEND or TP.BREAK), so we just push the
+            //  result and continue with the 'default' behavior (which will be
+            //  to descend if the receiver has child nodes)
+            if (TP.isString(serializationResult)) {
+                storageInfo.at('result').push(serializationResult);
+                return;
+            } else if (TP.isArray(serializationResult)) {
+
+                //  Otherwise, if we got an Array, that means that the result
+                //  will be in the first position and should be pushed onto the
+                //  results and the special control constant is in the second
+                //  position and should be returned.
+                storageInfo.at('result').push(serializationResult.first());
+                return serializationResult.last();
+            } else {
+
+                //  Otherwise, all we got back was a special control constant.
+                return serializationResult;
+            }
+        },
+        function(anElem) {
+
+            //  This function gets called when the end tag of an element is
+            //  encountered.
+
+            var tpElem,
+                serializationResult;
+
+            //  Wrap the element and serialize its close tag.
+            tpElem = TP.wrap(anElem);
+            serializationResult = tpElem.serializeCloseTag(storageInfo);
+
+            //  This behavior is the same as for the opening tag - see the
+            //  Function above.
+
+            if (TP.isString(serializationResult)) {
+                storageInfo.at('result').push(serializationResult);
+                return;
+            } else if (TP.isArray(serializationResult)) {
+                storageInfo.at('result').push(serializationResult.first());
+                return serializationResult.last();
+            } else {
+                return serializationResult;
+            }
+        },
+        function(nonElementNode) {
+
+            //  This function gets called when non-element content (i.e. comment
+            //  nodes, other text nodes, etc.) of an element is encountered.
+
+            var commentText;
+
+            //  Switch on the node type... we currently support TEXT_NODEs
+            //  and COMMENT_NODEs.
+            switch (nonElementNode.nodeType) {
+                case Node.TEXT_NODE:
+
+                    str = TP.htmlEntitiesToXMLEntities(
+                                    nonElementNode.nodeValue, false, false);
+                    str = TP.xmlLiteralsToEntities(
+                                    str, false, false);
+
+                    //  We make sure to replace any 'special characters' with
+                    //  their entity equivalent. This is because that is
+                    //  probably how things were authored in the original
+                    //  markup.
+                    str = str.replace(
+                            /[\u00A0-\u9999<>&]/gim,
+                            function(char) {
+                                return '&#' + char.charCodeAt(0) + ';';
+                            });
+
+                    storageInfo.at('result').push(str);
+
+                    break;
+
+                case Node.COMMENT_NODE:
+
+                    //  Make sure that any embedded '--' are converted to
+                    //  something benign.
+                    commentText = nonElementNode.nodeValue.replace(
+                                                            /--/g, '__');
+
+                    //  Push on content that has the proper leading and
+                    //  trailing comment characters.
+                    storageInfo.at('result').push('<!--' + commentText + '-->');
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    );
+
+    //  Join together the result Array and convert any HTML entities to their
+    //  XML equivalent. This causes replacements such as any HTML '&nbsp;'s
+    //  with the XML-compliant '&#160;'s.
+    result = TP.htmlEntitiesToXMLEntities(storageInfo.at('result').join(''));
+
+    result += '\n';
+
+    //  Grab the current store key and put the result into the overall 'stores'
+    //  hash (creating it if it doesn't exist).
+    storeKey = storageInfo.at('store');
+
+    if (TP.isValid(storeKey)) {
+        stores = storageInfo.atPutIfAbsent('stores', TP.hc());
+        stores.atPut(storeKey, result);
     }
 
     return this;
@@ -5169,10 +4261,7 @@ function(anObject, aParamHash) {
 /*
 Operations supporting common Node transformations. You can also use a
 selection operation such as getChildNodes() followed by a perform() or
-similar iteration operation to operate on node content. Be sure to leverage
-the set() call or other methods which ensure consistency of data if the node
-being operated on isTransactional() and has been checkpointing, otherwise
-old checkpoint data may not be cleared properly.
+similar iteration operation to operate on node content.
 */
 
 //  ------------------------------------------------------------------------
@@ -5307,9 +4396,9 @@ function(newContent, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.APPEND);
@@ -5317,9 +4406,9 @@ function(newContent, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                thisref.contentAppendCallback(aNode);
+                thisref.contentAppendCallback(targetNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.APPEND);
@@ -5603,9 +4692,9 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.INSERT);
@@ -5613,9 +4702,9 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                thisref.contentInsertCallback(aNode);
+                thisref.contentInsertCallback(targetNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.INSERT);
@@ -5677,14 +4766,14 @@ function(aParamHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceContent',
+TP.core.CollectionNode.Inst.defineMethod('replaceWith',
 function(newContent, aRequest, stdinContent) {
 
     /**
-     * @method replaceContent
-     * @summary Replaces the content of the receiver's native DOM counterpart
-     *     with the content supplied.
-     * @param {Object} newContent The content to write into the receiver. This
+     * @method replaceWith
+     * @summary Replaces the receiver's native DOM counterpart with the content
+     *     supplied.
+     * @param {Object} newContent The content to replace the receiver with. This
      *     can be a String, a Node, or an Object capable of being converted into
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
@@ -5698,7 +4787,14 @@ function(newContent, aRequest, stdinContent) {
 
     var request,
         resp,
-        content;
+        content,
+
+        str,
+
+        isElement,
+        isURIStr,
+        containsElemMarkup,
+        containsEntities;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -5708,21 +4804,43 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't an Element and the stringified content
-    //  isn't a URI and if the stringified content doesn't contain markup, then
-    //  it doesn't need to be processed but can just be set as the regular
-    //  content of the receiver, so we call up to the supertype to do that. At
-    //  the Node level, it is determined whether this is a scalar or
-    //  single-value node and might do some further processing on 'newContent'
-    //  at that point.
+    content = TP.unwrap(newContent);
+    str = TP.str(content);
+
+    isElement = TP.isElement(content);
 
     //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
     //  TP.isURIString() method because the content can be so mixed that it
     //  might have embedded URIs.
-    if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+    isURIStr = TP.regex.URI_LIKELY.test(str);
+
+    containsElemMarkup = TP.regex.CONTAINS_ELEM_MARKUP.test(str);
+    containsEntities = TP.regex.HAS_ENTITY.test(str);
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup or
+    //  entities, then it doesn't need to be processed but can just be set as
+    //  the regular content of the receiver, so we call up to the supertype to
+    //  do that. At the Node level, it is determined whether this is a scalar
+    //  or single-value node and might do some further processing on
+    //  'newContent' at that point.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        !containsEntities) {
         return this.callNextMethod();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup but
+    //  does contain entities, then it doesn't need to be processed but can just
+    //  be set as the regular content of the receiver, so we call
+    //  replaceRawWith() to do that.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        containsEntities) {
+        return this.replaceRawWith(content, request);
     }
 
     request = TP.request(aRequest);
@@ -5764,19 +4882,19 @@ function(newContent, aRequest, stdinContent) {
 
     content = resp.get('result');
 
-    return this.replaceRawContent(content, request);
+    return this.replaceRawWith(content, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceRawContent',
+TP.core.CollectionNode.Inst.defineMethod('replaceRawWith',
 function(newContent, aRequest, shouldSignal) {
 
     /**
-     * @method setRawContent
-     * @summary Replaces the content of the receiver with the content provided
-     *     without performing any content processing on it.
-     * @param {Object} newContent The content to write into the receiver. This
+     * @method replaceRawWith
+     * @summary Replaces the receiver with the content provided without
+     *     performing any content processing on it.
+     * @param {Object} newContent The content to replace the receiver with. This
      *     can be a String, a Node, or an Object capable of being converted into
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
@@ -5842,9 +4960,9 @@ function(newContent, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5852,7 +4970,7 @@ function(newContent, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5902,7 +5020,14 @@ function(newContent, aRequest, stdinContent) {
 
     var request,
         resp,
-        content;
+        content,
+
+        str,
+
+        isElement,
+        isURIStr,
+        containsElemMarkup,
+        containsEntities;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -5912,35 +5037,57 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't an Element and the stringified content
-    //  isn't a URI and if the stringified content doesn't contain markup, then
-    //  it doesn't need to be processed but can just be set as the regular
-    //  content of the receiver, so we call up to the supertype to do that. At
-    //  the Node level, it is determined whether this is a scalar or
-    //  single-value node and might do some further processing on 'newContent'
-    //  at that point.
+    content = TP.unwrap(newContent);
+    str = TP.str(content);
+
+    isElement = TP.isElement(content);
 
     //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
     //  TP.isURIString() method because the content can be so mixed that it
     //  might have embedded URIs.
-    if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+    isURIStr = TP.regex.URI_LIKELY.test(str);
+
+    containsElemMarkup = TP.regex.CONTAINS_ELEM_MARKUP.test(str);
+    containsEntities = TP.regex.HAS_ENTITY.test(str);
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup or
+    //  entities, then it doesn't need to be processed but can just be set as
+    //  the regular content of the receiver, so we call up to the supertype to
+    //  do that. At the Node level, it is determined whether this is a scalar
+    //  or single-value node and might do some further processing on
+    //  'newContent' at that point.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        !containsEntities) {
         return this.callNextMethod();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup but
+    //  does contain entities, then it doesn't need to be processed but can just
+    //  be set as the regular content of the receiver, so we call
+    //  setRawContent() to do that.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        containsEntities) {
+        return this.setRawContent(content, request);
     }
 
     request = TP.request(aRequest);
     request.atPutIfAbsent('targetPhase', this.getTargetPhase());
 
-    //  If the content to be set is a URI, then track it via the 'uri'
-    //  property on the request. This allows us to use it later when
-    //  attempting to add to the history mechanism.
+    //  If the content to be set is a URI, then track it via the 'uri' property
+    //  on the request. This allows us to use it later when attempting to add to
+    //  the history mechanism.
     if (TP.isURIString(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
 
-    //  Put ourself into the 'target' slot, so that the content pipeline has
-    //  the target 'surface' that its processing for available to it.
+    //  Put ourself into the 'target' slot, so that the content pipeline has the
+    //  target 'surface' that its processing for available to it.
     request.atPut('target', this);
 
     //  For now, anyway, processing the content needs to be synchronous.
@@ -6046,9 +5193,9 @@ function(newContent, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -6056,9 +5203,9 @@ function(newContent, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                thisref.contentReplaceCallback(aNode);
+                thisref.contentReplaceCallback(targetNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -6271,8 +5418,7 @@ function(attrName, attrValue, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod(
-        'getDescendantElementsByAttributePrefix',
+TP.core.CollectionNode.Inst.defineMethod('getDescendantElementsByAttributePrefix',
 function(attrPrefix, attrValue, breadthFirst) {
 
     /**
@@ -6871,62 +6017,105 @@ function() {
 //  NODE COLLECTION ITERATION
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('ancestorsDetect',
+function(aFunction) {
+
+    /**
+     * @method ancestorsDetect
+     * @summary Returns the first ancestor of the receiver for whom aFunction
+     *     returns true.
+     * @param {Function} aFunction A function taking a node and returning a
+     *     node.
+     */
+
+    return TP.nodeDetectAncestor(this.getNativeNode(), aFunction);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('ancestorMatchingCSS',
+function(aSelector, stopAncestor) {
+
+    /**
+     * @method ancestorMatchingCSS
+     * @summary Returns the first ancestor of the receiver for which aSelector
+     *     matches.
+     * @param {String} aSelector The selector to match.
+     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
+     *     this would be identical to the document node of the document that
+     *     the receiver is contained in.
+     * @returns {?TP.core.ElementNode} The ancestor element that matches the
+     *     CSS.
+     */
+
+    return TP.wrap(TP.nodeAncestorMatchingCSS(this.getNativeNode(),
+                                                aSelector,
+                                                stopAncestor));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('ancestorsPerform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method ancestorsPerform
      * @summary Executes aFunction with each ancestor of the node, working from
-     *     the node outward unless shouldReverse is true.
+     *     the node outward.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
-    return TP.nodeAncestorsPerform(this.getNativeNode(),
-                                    aFunction,
-                                    shouldReverse);
+    return TP.nodeAncestorsPerform(this.getNativeNode(), aFunction);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('ancestorsSelect',
+function(aFunction) {
+
+    /**
+     * @method ancestorsSelect
+     * @summary Returns a collection of the receiver's ancestors for whom
+     *     aFunction return true.
+     * @param {Function} aFunction A function taking a node and returning a
+     *     node.
+     */
+
+    return TP.nodeSelectAncestors(this.getNativeNode(), aFunction);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('childElementsPerform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method childElementsPerform
      * @summary Executes aFunction with each child element of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note the filter here for child nodes that are elements.
-     *     The index provided to aFunction is the index that would be used had
-     *     you collected the elements first, then iterated on that array. This
-     *     also means that, if the first or last node are not elements, the
-     *     iteration function will not be called and you should take that into
-     *     consideration when using atStart()/atEnd() functionality.
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note the filter here for child nodes that are elements. The index
+     *     provided to aFunction is the index that would be used had you
+     *     collected the elements first, then iterated on that array. This also
+     *     means that, if the first or last node are not elements, the iteration
+     *     function will not be called.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
     return TP.nodeChildElementsPerform(this.getNativeNode(),
-                                        aFunction,
-                                        shouldReverse);
+                                        aFunction);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('childNodesPerform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method childNodesPerform
@@ -6935,18 +6124,13 @@ function(aFunction, shouldReverse) {
      *     adjacent text nodes.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
     return TP.nodeChildNodesPerform(this.getNativeNode(),
-                                    aFunction,
-                                    shouldReverse);
+                                    aFunction);
 });
 
 //  ------------------------------------------------------------------------
@@ -7005,30 +6189,26 @@ function(aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('siblingsPerform',
-function(aFunction, aSubset, shouldReverse) {
+function(aFunction, aSubset) {
 
     /**
      * @method siblingsPerform
      * @summary Executes aFunction with each sibling of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note that the index provided to aFunction is the index
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note that the index provided to aFunction is the index
      *     that would have been used had you collected the siblings in an array
      *     first, then iterated.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
     return TP.nodeSiblingsPerform(this.getNativeNode(),
                                     aFunction,
-                                    aSubset,
-                                    shouldReverse);
+                                    aSubset);
 });
 
 //  ------------------------------------------------------------------------
@@ -7036,7 +6216,7 @@ function(aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectAncestor',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method detectAncestor
@@ -7045,19 +6225,17 @@ function(aFunction, shouldReverse) {
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.ElementNode} An ancestor found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectAncestor(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectChildElement',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method detectChildElement
@@ -7065,20 +6243,18 @@ function(aFunction, shouldReverse) {
      *     aFunction returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.ElementNode} A child element found acceptable by
      *     aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildElement(this.getNativeNode(),
-                                                aFunction,
-                                                shouldReverse));
+                                                aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectChildNode',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method detectChildNode
@@ -7086,13 +6262,11 @@ function(aFunction, shouldReverse) {
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A child node found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildNode(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
@@ -7149,7 +6323,7 @@ function(aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectSibling',
-function(aFunction, aSubset, shouldReverse) {
+function(aFunction, aSubset) {
 
     /**
      * @method detectSibling
@@ -7159,14 +6333,12 @@ function(aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A sibling found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectSibling(this.getNativeNode(),
                                         aFunction,
-                                        aSubset,
-                                        shouldReverse));
+                                        aSubset));
 });
 
 //  ------------------------------------------------------------------------
@@ -7174,7 +6346,7 @@ function(aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectAncestors',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method selectAncestors
@@ -7183,19 +6355,17 @@ function(aFunction, shouldReverse) {
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Array} An Array of ancestors found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectAncestors(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectChildElements',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method selectChildElements
@@ -7203,19 +6373,17 @@ function(aFunction, shouldReverse) {
      *     aFunction returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A child element found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildElements(this.getNativeNode(),
-                                                aFunction,
-                                                shouldReverse));
+                                                aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectChildNodes',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method selectChildNodes
@@ -7223,13 +6391,11 @@ function(aFunction, shouldReverse) {
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Node} A child node found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildNodes(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
@@ -7286,7 +6452,7 @@ function(aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectSiblings',
-function(aFunction, aSubset, shouldReverse) {
+function(aFunction, aSubset) {
 
     /**
      * @method selectSiblings
@@ -7296,14 +6462,12 @@ function(aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Array} An Array of siblings found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
                                             aFunction,
-                                            aSubset,
-                                            shouldReverse));
+                                            aSubset));
 });
 
 //  ------------------------------------------------------------------------
@@ -7410,14 +6574,14 @@ function(toNode, beforeNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeChild',
-function(aNode) {
+TP.core.CollectionNode.Inst.defineMethod('removeChildElement',
+function(anElement) {
 
     /**
-     * @method removeChild
-     * @summary Removes a specific child node, ensuring that proper flagging
-     *     and/or removal are done along with change notification.
-     * @param {Element} aNode A specific child/descendant node.
+     * @method removeChildElement
+     * @summary Removes a specific child *element*, ensuring that proper
+     *     flagging and/or removal are done along with change notification.
+     * @param {Element} anElement A specific child/descendant element.
      * @returns {TP.core.CollectionNode} The receiver.
      */
 
@@ -7426,7 +6590,7 @@ function(aNode) {
 
     node = this.getNativeNode();
 
-    child = aNode;
+    child = anElement;
 
     if (this.shouldFlagChanges()) {
         //  if we're flagging rather than 'doing' then we set the change flag to
@@ -7443,6 +6607,32 @@ function(aNode) {
     this.changed('content', TP.DELETE);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('removeChildElementAt',
+function(anIndex) {
+
+    /**
+     * @method removeChildElementAt
+     * @summary Removes the child element at the supplied index, ensuring that
+     *     proper flagging and/or removal are done along with change
+     *     notification.
+     * @param {Number} anIndex The index of the child *element*
+     * @returns {TP.core.CollectionNode} The receiver.
+     */
+
+    var child;
+
+    child = TP.unwrap(this.getChildElementAt(anIndex));
+    if (!TP.isElement(child)) {
+        return this.raise(
+                'TP.sig.InvalidIndex',
+                'Invalid index: ' + anIndex);
+    }
+
+    return this.removeChildElement(child);
 });
 
 //  ------------------------------------------------------------------------
@@ -10086,6 +9276,18 @@ function(resource, mimeType, fallback) {
     theme = /^style_/.test(res) ? theme = res.split('_').last() : '';
 
     //  ---
+    //  source file and test file lookups.
+    //  ---
+
+    if (res === 'source') {
+        return TP.objectGetSourcePath(this);
+    }
+
+    if (res === 'tests') {
+        return TP.objectGetSourcePath(this).replace(/\.js$/, '_test.js');
+    }
+
+    //  ---
     //  cached value check
     //  ---
 
@@ -10326,28 +9528,35 @@ function(anObject, aRequest) {
      * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
-     *     'attrInfo' TP.core.Hash|Function The Hash or Function to use to
-     *     compute attributes for the main element. 'format' String How items
-     *     should be formatted when this routine loops. 'autowrap' Boolean
+     *     'attrInfo'   TP.core.Hash|Function
+     *     The Hash or Function to use to compute attributes for the main
+     *     element.
+     *
+     *     'format'     String
+     *     How items should be formatted when this routine loops.
+     *
+     *     'autowrap'   Boolean
      *     Whether or not this routine iterates over an item list, generating
      *     markup for individual items, or just generates 'start & end' tags and
      *     hands the Object to the 'format' specified (or to this tag's 'item
-     *     tag name') to iterate. 'infos' Array The Array containing information
-     *     about each 'level' of the formatting recursion. If attrInfo is
-     *     supplied, and its a Function, that Function should be defined like
-     *     so:
+     *     tag name') to iterate.
      *
-     *     function(item) {
+     *     'infos'      Array
+     *     The Array containing information about each 'level' of the formatting
+     *     recursion. If attrInfo is supplied, and its a Function, that Function
+     *     should be defined like so:
      *
-     *     return 'foo="bar"'; };
+     *         function(item) {
+     *             return 'foo="bar"';
+     *         };
      *
      *     where the item is the Array itself. It should return a String as
      *     demonstrated. If itemAttrInfo is supplied, and its a Function, that
      *     Function should be defined like so:
      *
-     *     function(item) {
-     *
-     *     return 'foo="bar"'; };
+     *         function(item) {
+     *             return 'foo="bar"';
+     *         };
      *
      *     where the item is the item itself at that position in the Array. It
      *     should return a String as demonstrated.
@@ -10578,6 +9787,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     tagName = this.getLocalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     //  If we're not auto-wrapping, then just do an 'as' with the object.
     if (TP.isFalse(shouldAutoWrap)) {
         //  Join the tag name with the result of calling 'as' using the
@@ -10703,10 +9915,22 @@ function(aNode) {
         last = name;
         //  name wins if we have a type with that precise name
         if (TP.isType(type = TP.sys.getTypeByName(name))) {
-            //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-            return type;
+            //  If the type's Type prototype is not the same as this one's Type
+            //  prototype and it owns a 'getConcreteType' method (meaning it is
+            //  a type cluster and wants to specialize the type even further),
+            //  then invoke that and use the return value.
+            if (type.Type !== this.Type &&
+                TP.owns(type.Type, 'getConcreteType')) {
+                type = type.getConcreteType(aNode);
+            }
+
+            if (!type.isAbstract()) {
+                //  Only set the slot if its an HTML node... see above.
+                TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+
+                return type;
+            }
         }
 
         //  namespace qualified tags have two more tests to see if
@@ -10716,7 +9940,8 @@ function(aNode) {
             if (TP.notEmpty(prefix = name.match(/(.*):/)[1])) {
                 //  If that namespace has a 'prefix' associated with it,
                 //  we'll try to find a type named '<prefix>:Element'
-                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
+                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element')) &&
+                    !type.isAbstract()) {
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -10730,13 +9955,27 @@ function(aNode) {
                                             info.at('defaultNodeType'))) {
                             if (TP.isType(type =
                                             TP.sys.getTypeByName(defaultType))) {
-                                //  Only set the slot if its an HTML node...
-                                //  see above.
-                                TP.isHTMLNode(aNode) ?
-                                        aNode[TP.NODE_TYPE] = type :
-                                        0;
 
-                                return type;
+                                //  If the type's Type prototype is not the same
+                                //  as this one's Type prototype and it owns a
+                                //  'getConcreteType' method (meaning it is a
+                                //  type cluster and wants to specialize the
+                                //  type even further), then invoke that and use
+                                //  the return value.
+                                if (type.Type !== this.Type &&
+                                    TP.owns(type.Type, 'getConcreteType')) {
+                                    type = type.getConcreteType(aNode);
+                                }
+
+                                if (!type.isAbstract()) {
+                                    //  Only set the slot if its an HTML node...
+                                    //  see above.
+                                    TP.isHTMLNode(aNode) ?
+                                            aNode[TP.NODE_TYPE] = type :
+                                            0;
+
+                                    return type;
+                                }
                             }
                         }
                     }
@@ -10758,10 +9997,22 @@ function(aNode) {
         //  Sometime local tag names are also native types in the system - don't
         //  return those
         if (!TP.isNativeType(type)) {
-            //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-            return type;
+            //  If the type's Type prototype is not the same as this one's Type
+            //  prototype and it owns a 'getConcreteType' method (meaning it is
+            //  a type cluster and wants to specialize the type even further),
+            //  then invoke that and use the return value.
+            if (type.Type !== this.Type &&
+                TP.owns(type.Type, 'getConcreteType')) {
+                type = type.getConcreteType(aNode);
+            }
+
+            if (!type.isAbstract()) {
+                //  Only set the slot if its an HTML node... see above.
+                TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+
+                return type;
+            }
         }
     }
 
@@ -10774,10 +10025,22 @@ function(aNode) {
     last = name;
     name = TP.elementGetCanonicalName(aNode, true);
     if (name !== last && TP.isType(type = TP.sys.getTypeByName(name))) {
-        //  Only set the slot if its an HTML node... see above.
-        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-        return type;
+        //  If the type's Type prototype is not the same as this one's Type
+        //  prototype and it owns a 'getConcreteType' method (meaning it is a
+        //  type cluster and wants to specialize the type even further), then
+        //  invoke that and use the return value.
+        if (type.Type !== this.Type &&
+            TP.owns(type.Type, 'getConcreteType')) {
+            type = type.getConcreteType(aNode);
+        }
+
+        if (!type.isAbstract()) {
+            //  Only set the slot if its an HTML node... see above.
+            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+
+            return type;
+        }
     }
 
     //  couldn't find either a tibet:tag or a type that matches either the 'full
@@ -10792,10 +10055,23 @@ function(aNode) {
             //  try to find a type named '<prefix>:Element'
             if (TP.notEmpty(prefix = info.at('prefix'))) {
                 if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
-                    //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-                    return type;
+                    //  If the type's Type prototype is not the same as this
+                    //  one's Type prototype and it owns a 'getConcreteType'
+                    //  method (meaning it is a type cluster and wants to
+                    //  specialize the type even further), then invoke that and
+                    //  use the return value.
+                    if (type.Type !== this.Type &&
+                        TP.owns(type.Type, 'getConcreteType')) {
+                        type = type.getConcreteType(aNode);
+                    }
+
+                    if (!type.isAbstract()) {
+                        //  Only set the slot if its an HTML node... see above.
+                        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+
+                        return type;
+                    }
                 }
             }
 
@@ -10803,10 +10079,23 @@ function(aNode) {
             //  with it, we'll try to find a type named that.
             if (TP.notEmpty(defaultType = info.at('defaultNodeType'))) {
                 if (TP.isType(type = TP.sys.getTypeByName(defaultType))) {
-                    //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-                    return type;
+                    //  If the type's Type prototype is not the same as this
+                    //  one's Type prototype and it owns a 'getConcreteType'
+                    //  method (meaning it is a type cluster and wants to
+                    //  specialize the type even further), then invoke that and
+                    //  use the return value.
+                    if (type.Type !== this.Type &&
+                        TP.owns(type.Type, 'getConcreteType')) {
+                        type = type.getConcreteType(aNode);
+                    }
+
+                    if (!type.isAbstract()) {
+                        //  Only set the slot if its an HTML node... see above.
+                        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+
+                        return type;
+                    }
                 }
             }
         }
@@ -10832,7 +10121,8 @@ function(anObject, formatArgs) {
     /**
      * @method getItemTagName
      * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
+     *     fromArray()/fromObject() methods. Note that this should return the
+     *     receiver's *canonical* name.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.core.Hash} formatArgs The 'formatting arguments' used by this
      *     machinery to generate item markup.
@@ -10900,7 +10190,7 @@ function(aSignal) {
         inst;
 
     listener = aSignal.get('listener');
-    if (TP.notValid(listener)) {
+    if (!TP.isElement(listener)) {
         return null;
     }
 
@@ -10923,7 +10213,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
-function(wantsDeep, wantsCompiled) {
+function(wantsDeep, wantsCompiled, wantsDisabled) {
 
     /**
      * @method getQueryPath
@@ -10933,8 +10223,11 @@ function(wantsDeep, wantsCompiled) {
      * @param {Boolean} wantsDeep Whether or not the query should represent a
      *     'deep query' - that is, all of the occurrences of this element even
      *     under elements of the same type. This defaults to false.
-     * @param {Boolean} wantsCompiled Whether or not the query should also find
-     *     compiled representations of the receiver. This defaults to false.
+     * @param {Boolean} [wantsCompiled=false] Whether or not the query should
+     *     also find compiled representations of the receiver. This defaults to
+     *     false.
+     * @param {Boolean} [wantsDisabled=true] Whether or not the query should
+     *     also find disabled versions of the receiver. This defaults to true.
      * @returns {String} The path that can be used to query for Nodes of this
      *     type.
      */
@@ -10945,9 +10238,16 @@ function(wantsDeep, wantsCompiled) {
 
     //  Note here how we generate a CSS3 namespace query
     sourceTagQuery = this.get('nsPrefix') + '|' + this.get('localName');
+    if (TP.isFalse(wantsDisabled)) {
+        sourceTagQuery += ':not([disabled])';
+    }
+
     compiledTagQuery = '*[tibet|tag="' +
                         this.get('nsPrefix') + ':' + this.get('localName') +
                         '"]';
+    if (TP.isFalse(wantsDisabled)) {
+        compiledTagQuery += ':not([disabled])';
+    }
 
     query = sourceTagQuery;
 
@@ -11151,8 +10451,10 @@ function(anElement) {
 
     var elem,
         src,
-
+        len,
+        i,
         mime,
+        mimeType,
         uri,
         mimeTypes;
 
@@ -11185,18 +10487,17 @@ function(anElement) {
                                 TP.ietf.Mime.XML,
                                 TP.ietf.Mime.XSLT);
 
-            mimeTypes.perform(
-                    function(aMIMEType) {
+            len = mimeTypes.getSize();
+            for (i = 0; i < len; i++) {
+                mimeType = mimeTypes.at(i);
+                uri = this.getResourceURI('template', mimeType);
 
-                        uri = this.getResourceURI('template', aMIMEType);
-
-                        if (TP.isURI(uri)) {
-                            src = uri.getLocation();
-                            mime = aMIMEType;
-
-                            return TP.BREAK;
-                        }
-                    }.bind(this));
+                if (TP.isURI(uri)) {
+                    src = uri.getLocation();
+                    mime = mimeType;
+                    break;
+                }
+            }
         }
     }
 
@@ -11264,50 +10565,388 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('isOpaqueForSignal',
-function(anElement, aSignalName) {
+TP.core.ElementNode.Type.defineMethod('isOpaqueBubblerFor',
+function(anElement, aSignal) {
 
     /**
-     * @method isOpaqueForSignal
+     * @method isOpaqueBubblerFor
      * @summary Returns whether the elements of this type are considered to be
-     *     'opaque' for the supplied signal. This means that they will handle
-     *     the signal themselves and not allow targeted descendants underneath
+     *     an 'opaque bubbler' for the supplied signal (i.e. it won't let the
+     *     signal 'ascend' further up its parent hierarchy). This means that
+     *     they will handle the signal themselves and not allow ancestors above
      *     them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:opaque' attribute, which should contain a space-separated
-     *     set of TIBET signal names that will be captured by this element. If
-     *     that attribute is not present, it will check the 'opaqueSignalNames'
-     *     type attribute for a list of signal names.
-     * @param {Element} anElem The element to check for the 'tibet:opaque'
-     *     attribute.
-     * @param {String} aSignalName The name of the signal to check.
-     * @returns {Boolean} Whether or not the receiver is opaque for the named
-     *     signal.
+     *     'tibet:opaque_bubbling' attribute, which should contain a
+     *     space-separated set of TIBET signal names that will be captured by
+     *     this element during the bubble phase of signaling. If that attribute
+     *     is not present, it will check the 'opaqueBubblingSignalNames' type
+     *     attribute for a list of signal names.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque_bubbling' attribute.
+     * @param {TP.sig.Signal} aSignal The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     bubble phase for the signal.
      */
 
     var attrVal,
 
-        opaqueSigNames;
+        opaqueSigNames,
+
+        sigNames,
+
+        len,
+        i;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:opaque' attribute.
-    //  If so, split on space (' ') and use those values as the list of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:opaque', true)) {
-        attrVal = TP.elementGetAttribute(anElement, 'tibet:opaque', true);
+    //  Check to see if the supplied element has a 'tibet:opaque_bubbling'
+    //  attribute. If so, split on space (' ') and use those values as the list
+    //  of signals.
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque_bubbling', true)) {
+        attrVal = TP.elementGetAttribute(
+                        anElement, 'tibet:opaque_bubbling', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.
-        opaqueSigNames = this.get('opaqueSignalNames');
+        opaqueSigNames = this.get('opaqueBubblingSignalNames');
     }
 
     if (TP.isEmpty(opaqueSigNames)) {
         return false;
     }
 
-    return opaqueSigNames.indexOf(aSignalName) !== TP.NOT_FOUND;
+    //  Some signals, keyboard signals in particular, have multiple signal
+    //  names. We need to make sure that all of them are tested here.
+    sigNames = aSignal.getSignalNames();
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+        if (opaqueSigNames.indexOf(sigNames.at(i)) !== TP.NOT_FOUND) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('isOpaqueCapturerFor',
+function(anElement, aSignal) {
+
+    /**
+     * @method isOpaqueCapturerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque capturer' for the supplied signal (i.e. it won't let the
+     *     signal 'descend' further into its descendant hierarchy). This means
+     *     that they will handle the signal themselves and not allow targeted
+     *     descendants underneath them to handle it.
+     * @description At this level, the supplied element is checked for a
+     *     'tibet:opaque_capturing' attribute, which should contain a
+     *     space-separated set of TIBET signal names that will be captured by
+     *     this element during the capture phase of signaling. If that attribute
+     *     is not present, it will check the 'opaqueCapturingSignalNames' type
+     *     attribute for a list of signal names.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque_capturing' attribute.
+     * @param {TP.sig.Signal} aSignal The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     capture phase for the signal.
+     */
+
+    var attrVal,
+
+        opaqueSigNames,
+
+        sigNames,
+
+        len,
+        i;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Check to see if the supplied element has a 'tibet:opaque_capturing'
+    //  attribute. If so, split on space (' ') and use those values as the list
+    //  of signals.
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque_capturing', true)) {
+        attrVal = TP.elementGetAttribute(
+                        anElement, 'tibet:opaque_capturing', true);
+        opaqueSigNames = attrVal.split(' ');
+    } else {
+        //  Otherwise, ask the type.
+        opaqueSigNames = this.get('opaqueCapturingSignalNames');
+    }
+
+    if (TP.isEmpty(opaqueSigNames)) {
+        return false;
+    }
+
+    //  Some signals, keyboard signals in particular, have multiple signal
+    //  names. We need to make sure that all of them are tested here.
+    sigNames = aSignal.getSignalNames();
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+        if (opaqueSigNames.indexOf(sigNames.at(i)) !== TP.NOT_FOUND) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('mutationAddedNodes',
+function(anElement, nodesAdded) {
+
+    /**
+     * @method mutationAddedNodes
+     * @summary Handles a 'nodes added' synthetic 'event' that was dispatched
+     *     against the supplied native element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node whereby a descendant is being added. Note that
+     *     the 'nodesAdded' parameter here contains a list of *roots* that will
+     *     have been added to the receiver. Any descendants of these roots will
+     *     not be in this list.
+     * @param {HTMLElement} anElement The target element computed for this
+     *     signal.
+     * @param {Array} nodesAdded The nodes added to the receiver.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var processor,
+
+        mutatedGIDs,
+
+        rootNodesAdded,
+
+        len,
+        i,
+
+        root;
+
+    if (!TP.isElement(anElement)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  Allocate a tag processor and initialize it with the ATTACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.ATTACH_PHASES);
+
+    mutatedGIDs = TP.ac();
+
+    //  Filter out any non-roots. We only want to process roots.
+    rootNodesAdded = TP.nodeListFilterNonRoots(nodesAdded);
+
+    //  Now, process each *root* that we have gotten as an added root
+    len = rootNodesAdded.getSize();
+    for (i = 0; i < len; i++) {
+        root = rootNodesAdded.at(i);
+
+        mutatedGIDs.push(TP.gid(root));
+
+        if (TP.isElement(root)) {
+            TP.elementRemoveAttribute(root, 'tibet:refreshing', true);
+        }
+
+        //  Check to make sure we haven't already awakened this content. If so
+        //  we want to exit.
+        if (root.$$awakened) {
+            continue;
+        }
+
+        //  It seems weird that the root might be detached since it was 'added',
+        //  but the way that mutation observers work (they trigger this code) is
+        //  that the root might have been added and then removed all before the
+        //  'mutation records' are processed. We need to make sure the DOM root
+        //  is still attached.
+        if (TP.nodeIsDetached(root)) {
+            continue;
+        }
+
+        //  If the root is an Element and it has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(root) &&
+            TP.elementHasAttribute(root, 'tibet:noawaken', true)) {
+            continue;
+        }
+
+        //  If the root has an ancestor Element that has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
+                                        root, 'tibet:noawaken', null, true))) {
+            continue;
+        }
+
+        processor.processTree(root);
+
+        //  Signal from the root node that attach processing is complete.
+        TP.signal(TP.wrap(root),
+                    'TP.sig.AttachComplete',
+                    TP.hc('mutatedNodeIDs', mutatedGIDs));
+    }
+
+    //  Signal from our target element's document that we attached nodes due to
+    //  a mutation.
+    TP.signal(TP.tpdoc(anElement),
+                'TP.sig.MutationAttach',
+                TP.hc('mutationTarget', TP.wrap(anElement),
+                        'mutatedNodeIDs', mutatedGIDs));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('mutationRemovedNodes',
+function(anElement, nodesRemoved) {
+
+    /**
+     * @method mutationRemovedNodes
+     * @summary Handles a 'nodes removed' synthetic 'event' that was dispatched
+     *     against the supplied native element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node whereby a descendant is being removed. Note
+     *     that the 'nodesRemoved' parameter here contains a list of *roots*
+     *     that will have been removed from the receiver. Any descendants of
+     *     these roots will not be in this list.
+     * @param {HTMLElement} anElement The target element computed for this
+     *     signal.
+     * @param {Array} nodesRemoved  The nodes removed from the receiver.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var processor,
+
+        mutatedGIDs,
+
+        rootNodesRemoved,
+
+        focusStackCheckElems,
+
+        len,
+        i,
+
+        shouldProcess,
+
+        parentHasNoAwaken,
+        targetHasNoAwaken,
+        targetAnsHasNoAwaken,
+
+        root;
+
+    if (!TP.isElement(anElement)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  Allocate a tag processor and initialize it with the DETACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.DETACH_PHASES);
+
+    mutatedGIDs = TP.ac();
+
+    //  Filter out any non-roots. We only want to process roots.
+    rootNodesRemoved = TP.nodeListFilterNonRoots(nodesRemoved);
+
+    focusStackCheckElems = TP.ac();
+
+    //  Now, process each *root* that we have gotten as a removed root
+    len = rootNodesRemoved.getSize();
+    for (i = 0; i < len; i++) {
+
+        root = rootNodesRemoved.at(i);
+
+        mutatedGIDs.push(TP.gid(root));
+
+        //  Initially we're set to process this markup.
+        shouldProcess = true;
+
+        //  But if the root is an Element and it has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(root) &&
+            TP.elementHasAttribute(root, 'tibet:noawaken', true)) {
+            shouldProcess = false;
+        }
+
+        //  If the shouldProcess flag is still true
+        if (shouldProcess) {
+            //  We need to now check for 'tibet:noawaken' in the hierarchy of
+            //  the root. Because the root is detached, we need to break this
+            //  check into 2 parts: the first part will check the root's
+            //  ancestor tree (if there is any) and the second part will check
+            //  from the target root.
+            //  Then both results will be checked. This gives the maximum chance
+            //  that a 'tibet:noawaken' flag will be found, if it ever existed
+            //  for this root.
+
+            if (TP.isElement(root.parentNode)) {
+                parentHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
+                                            root, 'tibet:noawaken', null, true);
+            }
+
+            targetHasNoAwaken = TP.elementHasAttribute(
+                                    anElement, 'tibet:noawaken', true);
+
+            targetAnsHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
+                                    anElement, 'tibet:noawaken', null, true);
+
+            if (parentHasNoAwaken ||
+                targetHasNoAwaken ||
+                targetAnsHasNoAwaken) {
+                shouldProcess = false;
+            }
+        }
+
+        if (shouldProcess) {
+            //  Note here how we pass true to allow the processing pipeline to
+            //  process the root, even though it was detaached.
+            processor.processTree(root, null, true);
+        }
+
+        if (TP.isElement(root)) {
+            focusStackCheckElems.push(root);
+
+            focusStackCheckElems = focusStackCheckElems.concat(
+                                TP.nodeGetDescendantElements(root, '*'));
+        }
+
+        //  Signal from the root node that detach processing is complete.
+        TP.signal(TP.wrap(root),
+                    'TP.sig.DetachComplete',
+                    TP.hc('mutatedNodeIDs', mutatedGIDs));
+    }
+
+    //  Signal from our target element's document that we detached nodes due to
+    //  a mutation.
+    TP.signal(TP.tpdoc(anElement),
+                'TP.sig.MutationDetach',
+                TP.hc('mutationTarget', TP.wrap(anElement),
+                        'mutatedNodeIDs', mutatedGIDs));
+
+    //  Filter any elements that are descendants of the nodes we are removing
+    //  from the DOM out of the $focus_stack.
+
+    if (TP.notEmpty(focusStackCheckElems)) {
+        TP.$focus_stack = TP.$focus_stack.reject(
+                            function(aTPElem) {
+                                if (focusStackCheckElems.contains(
+                                        aTPElem.getNativeNode(),
+                                        TP.IDENTITY)) {
+                                    return true;
+                                }
+
+                                return false;
+                            });
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -11441,6 +11080,66 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description At this level, this type detects any 'on:' attributes that
+     *     have to do with 'attachment' and processes them according to 'on:'
+     *     rules.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        onAttrNodes,
+
+        len,
+        i,
+
+        name,
+
+        sigData;
+
+    node = aRequest.at('node');
+
+    //  Detect if there are any attribute nodes in the 'on:' namespace
+    if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
+                            node, null, TP.w3.Xmlns.ON))) {
+
+        //  If so, loop over them, detecting to see if any of them have to do
+        //  with attachment.
+        len = onAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            name = TP.attributeGetLocalName(onAttrNodes.at(i));
+
+            //  If the name matches any one of the three forms that we allow,
+            //  then go ahead and grab the signal data from the attribute's
+            //  value and queue the signal.
+            if (name === 'attach' ||
+                name === 'TP.sig.AttachComplete' ||
+                name === 'AttachComplete') {
+
+                sigData = onAttrNodes.at(i).value;
+
+                TP.queueSignalFromData(
+                    sigData,
+                    node,
+                    null,
+                    TP.sig.ResponderSignal);
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -11468,7 +11167,7 @@ function(aRequest) {
     //  If we are configured to watch remote resources, then we need to query
     //  this type for any 'reloadable URI attributes' and observe any URI
     //  values that we find there.
-    if (TP.sys.cfg('uri.remote_watch')) {
+    if (TP.sys.cfg('uri.watch_remote_changes')) {
 
         //  Make sure that we have a node to work from.
         if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -11540,6 +11239,32 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagAttachSignals
+     * @summary Awakens any on: namespace signal handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.setup(node);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagDetachBinds',
 function(aRequest) {
 
@@ -11562,6 +11287,65 @@ function(aRequest) {
     node = aRequest.at('node');
 
     return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagDetachComplete
+     * @summary Executes when the tag's detachment phases are fully complete.
+     * @description At this level, this type detects any 'on:' attributes that
+     *     have to do with 'detachment' and processes them according to 'on:'
+     *     rules.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        onAttrNodes,
+
+        len,
+        i,
+
+        name,
+
+        sigData;
+
+    node = aRequest.at('node');
+
+    //  Detect if there are any attribute nodes in the 'on:' namespace
+    if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
+                            node, null, TP.w3.Xmlns.ON))) {
+
+        //  If so, loop over them, detecting to see if any of them have to do
+        //  with detachment.
+        len = onAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            name = TP.attributeGetLocalName(onAttrNodes.at(i));
+
+            //  If the name matches any one of the three forms that we allow,
+            //  then go ahead and grab the signal data from the attribute's
+            //  value and queue the signal.
+            if (name === 'detach' ||
+                name === 'TP.sig.DetachComplete' ||
+                name === 'DetachComplete') {
+
+                sigData = onAttrNodes.at(i).value;
+
+                TP.queueSignalFromData(
+                    sigData,
+                    node,
+                    null,
+                    TP.sig.ResponderSignal);
+            }
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -11595,7 +11379,7 @@ function(aRequest) {
     //  this type for any 'reloadable URI attributes' and ignore any URI
     //  values that we find there (we will have already observed them in the
     //  'tagAttachDOM' call above).
-    if (TP.sys.cfg('uri.remote_watch')) {
+    if (TP.sys.cfg('uri.watch_remote_changes')) {
 
         //  Make sure that we have a node to work from.
         if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -11667,6 +11451,32 @@ function(aRequest) {
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
                             'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagDetachSignals
+     * @summary Detaches any on: namespace signal handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
     }
 
     node = aRequest.at('node');
@@ -11809,17 +11619,17 @@ function(className) {
 
     var natNode,
         oldValue,
-
-        retVal,
         newValue;
 
     natNode = this.getNativeNode();
 
     oldValue = TP.elementGetClass(natNode);
-
-    retVal = TP.elementAddClass(natNode, className);
-
+    TP.elementAddClass(natNode, className);
     newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
 
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
@@ -11830,7 +11640,7 @@ function(className) {
                     TP.hc(TP.OLDVAL, oldValue,
                             TP.NEWVAL, newValue));
 
-    return retVal;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -11914,12 +11724,13 @@ function(aPrefix, anAttributeName) {
     //  e.g. 'foo:bar' -> 'FooBar'
     if (TP.regex.HAS_COLON.test(attrName)) {
         parts = attrName.split(/:/);
-        attrName = parts.first().asStartUpper() + parts.last().asStartUpper();
+        attrName = TP.makeStartUpper(parts.first()) +
+                    TP.makeStartUpper(parts.last());
     } else {
 
         //  Otherwise, we just 'start upper' the whole piece
         //  'foo' -> 'Foo'
-        attrName = attrName.asStartUpper();
+        attrName = TP.makeStartUpper(attrName);
     }
 
     methodName = aPrefix + attrName;
@@ -11931,7 +11742,7 @@ function(aPrefix, anAttributeName) {
 
 TP.core.ElementNode.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -11970,7 +11781,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.core.ElementNode.Inst.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -12085,7 +11896,7 @@ function(attributeName) {
         }
 
         //  try common naming convention
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -12097,7 +11908,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -12136,6 +11947,89 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$getAttribute',
+function(attributeName) {
+
+    /**
+     * @method $getAttribute
+     * @summary Returns the value of the attribute provided.
+     * @description The typical operation is to retrieve the attribute from the
+     *     receiver's native node. When the attribute is prefixed this method
+     *     will attempt to find the matching attribute value for that prefix
+     *     based on the document's prefixes and TIBET's canonical prefixing
+     *     information regarding namespaces. Note that this call is only valid
+     *     for Element nodes; when invoked on a document the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to find.
+     * @returns {String} The attribute value, if found.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.elementGetAttribute(node, attributeName, true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getAttribute',
+function(attributeName) {
+
+    /**
+     * @method getAttribute
+     * @summary Returns the value of the attribute provided.
+     * @description The typical operation is to retrieve the attribute from the
+     *     receiver's native node. When the attribute is prefixed this method
+     *     will attempt to find the matching attribute value for that prefix
+     *     based on the document's prefixes and TIBET's canonical prefixing
+     *     information regarding namespaces. Note that this call is only valid
+     *     for Element nodes; when invoked on a document the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to find.
+     * @returns {String} The attribute value, if found.
+     */
+
+    var methodName;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('getAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
+    }
+
+    return this.$getAttribute(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getAttributes',
+function(attributeName, stripPrefixes) {
+
+    /**
+     * @method getAttributes
+     * @summary Returns a hash of zero to N attribute name/value pairs,
+     *     potentially matching the attribute name provided. For document nodes
+     *     this operation effectively operates on the document's
+     *     documentElement.
+     * @param {String|RegExp} attributeName An attributeName "search" criteria
+     *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
+     *     This is optional.
+     * @param {Boolean} stripPrefixes Whether or not to strip any namespace
+     *     prefixes from the attribute names as they are populated into the
+     *     return value.
+     * @returns {TP.core.Hash} A collection of name/value pairs.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.elementGetAttributes(node, attributeName, stripPrefixes);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getCanonicalName',
 function() {
 
@@ -12147,6 +12041,24 @@ function() {
      */
 
     return TP.elementGetCanonicalName(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getClass',
+function() {
+
+    /**
+     * @method getClass
+     * @summary Returns the CSS class attribute value of the receiving element.
+     * @returns {String} The class value, if any.
+     */
+
+    var natNode;
+
+    natNode = this.getNativeNode();
+
+    return TP.elementGetClass(natNode);
 });
 
 //  ------------------------------------------------------------------------
@@ -12280,6 +12192,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getTemplateName',
+function() {
+
+    /**
+     * @method getTemplateName
+     * @summary Returns the name of any associated template for the receiver.
+     * @returns {String} The template name.
+     */
+
+    var urn;
+
+    urn = this.getAttribute('tsh:template_name');
+    if (TP.notEmpty(urn)) {
+        urn = urn.startsWith(TP.TIBET_URN_PREFIX) ?
+                    urn :
+                    TP.TIBET_URN_PREFIX + urn;
+
+        return urn;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getTextContent',
 function() {
 
@@ -12379,6 +12316,9 @@ function(aSignal) {
      */
 
     var origin,
+
+        aspect,
+
         originLocation,
 
         reloadableAttrs,
@@ -12400,6 +12340,13 @@ function(aSignal) {
 
     //  If it was a URL, then process it as a 'remote resource change'.
     if (TP.isKindOf(origin, TP.core.URL)) {
+
+        //  If the aspect is one of URI's 'special aspects', then we just return
+        //  here.
+        aspect = aSignal.at('aspect');
+        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            return;
+        }
 
         //  Grab the fully expanded location of the URI that changed.
         originLocation = origin.getLocation();
@@ -12443,6 +12390,49 @@ function(aSignal) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('hasClass',
+function(className) {
+
+    /**
+     * @method hasClass
+     * @summary Tests to see if the receiving element has the named class.
+     * @param {String} className The class to test.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode;
+
+    natNode = this.getNativeNode();
+
+    return TP.elementHasClass(natNode, className);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('hasAttribute',
+function(attributeName) {
+
+    /**
+     * @method hasAttribute
+     * @summary Returns whether or not the receiver has the named attribute
+     *     provided. This method essentially emulates the native node
+     *     hasAttribute call. Note that this call is only valid for Element
+     *     nodes; when invoked on a document wrapper the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to test.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not the receiver has the named attribute.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.elementHasAttribute(node, attributeName, true);
 });
 
 //  ------------------------------------------------------------------------
@@ -12572,17 +12562,17 @@ function(className) {
 
     var natNode,
         oldValue,
-
-        retVal,
         newValue;
 
     natNode = this.getNativeNode();
 
     oldValue = TP.elementGetClass(natNode);
-
-    retVal = TP.elementRemoveClass(natNode, className);
-
+    TP.elementRemoveClass(natNode, className);
     newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
 
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.DELETE);
@@ -12593,7 +12583,155 @@ function(className) {
                     TP.hc(TP.OLDVAL, oldValue,
                             TP.NEWVAL, newValue));
 
-    return retVal;
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$removeAttribute',
+function(attributeName, shouldSignal) {
+
+    /**
+     * @method removeAttribute
+     * @summary Removes the named attribute. This version is a wrapper around
+     *     the native element node removeAttribute call which attempts to handle
+     *     standard change notification semantics for native nodes as well as
+     *     proper namespace management.
+     * @param {String} attributeName The attribute name to remove.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     */
+
+    var attr,
+        node,
+
+        flag;
+
+    node = this.getNativeNode();
+
+    //  work from the attribute node so we can be more accurate. this helps
+    //  ensure that environments which don't preserve the concept of a
+    //  namespace URI consistently (html) won't end up with two attributes
+    //  of the same name but different namespace URIs
+
+    if (TP.regex.HAS_COLON.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attr = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attr = node.getAttributeNode(attributeName);
+    }
+
+    //  no node? nothing to remove then
+    if (TP.notValid(attr)) {
+        return;
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    //  NB: We don't flag changes for internal 'tibet:' attributes
+    //  (presuming change flagging is on)
+    if (this.shouldFlagChanges() &&
+        !TP.regex.TIBET_SCHEME.test(attributeName)) {
+        TP.elementFlagChange(node, TP.ATTR + attributeName, TP.DELETE);
+    }
+
+    //  rip out the attribute itself
+    TP.elementRemoveAttribute(node, attributeName, true);
+
+    if (flag) {
+        this.changed('@' + attributeName, TP.DELETE);
+    }
+
+    //  removeAttribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('removeAttribute',
+function(attributeName) {
+
+    /**
+     * @method removeAttribute
+     * @summary Removes the named attribute. This version is a wrapper around
+     *     the native element node removeAttribute call which attempts to handle
+     *     standard change notification semantics for native nodes as well as
+     *     proper namespace management.
+     * @param {String} attributeName The attribute name to remove.
+     */
+
+    var methodName;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('removeAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
+    }
+
+    return this.$removeAttribute(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver. At this type level, this method does
+     *     nothing.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('replaceClass',
+function(oldClass, newClass) {
+
+    /**
+     * @method replaceClass
+     * @summary A convenience wrapper for TP.elementReplaceClass.
+     * @param {String} oldClass The class value to find.
+     * @param {String} newClass The class value to set.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode,
+        oldValue,
+        newValue;
+
+    natNode = this.getNativeNode();
+
+    oldValue = TP.elementGetClass(natNode);
+    TP.elementReplaceClass(natNode, oldClass, newClass);
+    newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
+
+    if (this.shouldFlagChanges()) {
+        TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
+    }
+
+    this.changed('@class',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue,
+                            TP.NEWVAL, newValue));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -12616,6 +12754,322 @@ function(aSignal) {
     }
 
     return TP.resume(this, aSignal);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('serializeCloseTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeCloseTag
+     * @summary Serializes the closing tag for the receiver.
+     * @description At this type level, this method, in conjunction with the
+     *     'serializeOpenTag' method, will always produce the 'XML version' of
+     *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the closing tag of the receiver.
+     */
+
+    var result,
+        elem;
+
+    result = TP.ac();
+
+    elem = this.getNativeNode();
+
+    //  If the tag is empty, then the serializeOpenTag() method will have
+    //  written 'empty XML syntax', so we don't need to do anything here.
+    if (TP.isEmpty(elem)) {
+        return '';
+    }
+
+    result.push('</', elem.tagName.toLowerCase(), '>');
+
+    return result.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('serializeOpenTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeOpenTag
+     * @summary Serializes the opening tag for the receiver.
+     * @description At this type level, this method performs a variety of
+     *     transformations and filtering of various attributes. See the code
+     *     below for more details. One notable transformation is that this
+     *     method, in conjunction with the 'serializeCloseTag' method,  will
+     *     always produce the 'XML version' of an empty tag (i.e. '<foo/>'
+     *     rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the opening tag of the receiver.
+     */
+
+    var result,
+
+        elem,
+
+        elemTagName,
+
+        computedElemName,
+        computedElemNameParts,
+        computedElemPrefix,
+        computedElemLocalName,
+
+        elemAttrs,
+
+        i,
+
+        attrName,
+        attrPrefix,
+        attrValue,
+
+        currentNSURI,
+        currentNSPrefixes,
+
+        mimeType,
+
+        storageLoc;
+
+    result = TP.ac();
+
+    elem = this.getNativeNode();
+
+    //  Grab the element's tag name and convert it to lowercase. It
+    //  it's empty, bail out.
+    if (TP.isEmpty(elemTagName = elem.tagName.toLowerCase())) {
+        return;
+    }
+
+    //  If the tag is a 'meta' tag with a 'generator', then its
+    //  unnecessary for our produced markup so we exit here.
+    if (elemTagName === 'meta') {
+        if (elem.name.toLowerCase() === 'generator') {
+            return;
+        }
+    }
+
+    computedElemName = this.getFullName();
+    computedElemNameParts = computedElemName.split(':');
+    computedElemPrefix = computedElemNameParts.first();
+    computedElemLocalName = computedElemNameParts.last();
+
+    currentNSPrefixes = TP.ac();
+
+    //  Start the tag
+    result.push('<', elemTagName);
+
+    //  Grab the element's attributes
+    elemAttrs = elem.attributes;
+
+    //  Loop over them and compute the name and value for them.
+    for (i = 0; i < elemAttrs.length; i++) {
+
+        attrName = elemAttrs[i].localName;
+        attrPrefix = elemAttrs[i].prefix;
+        attrValue = elemAttrs[i].value;
+
+        //  If the attribute has a colon (':') in it, check to see if a
+        //  namespace can be found that would match the part of the attribute
+        //  name before the colon.
+        if (TP.notEmpty(attrPrefix)) {
+
+            switch (attrPrefix) {
+
+                case 'acl':
+                case 'xml':
+                    continue;
+
+                case 'tibet':
+
+                    if (attrName !== 'tag') {
+                        continue;
+                    }
+                    break;
+
+                case 'xmlns':   //  NB: We allow default namespaces below.
+
+                    //  If the prefix has a matching URI, then it's a 'built in'
+                    //  (or has been registered), so we skip it. Otherwise, it
+                    //  needs to be printed.
+                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrPrefix))) {
+                        continue;
+                    }
+
+                /* eslint-disable no-fallthrough */
+                default:
+
+                    //  If this prefix is not in the 'current prefixes list'
+                    //  (tracked element-by-element and emptied after each
+                    //  element is processed) then try to grab the URI and build
+                    //  an 'xmlns' attribute.
+                    if (!currentNSPrefixes.contains(attrPrefix)) {
+                        currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
+
+                        if (TP.notEmpty(currentNSURI)) {
+                            result.push(' ', 'xmlns:', attrPrefix,
+                                    '="', currentNSURI, '"');
+                        } else {
+                            result.push(' ', 'xmlns:', attrPrefix,
+                                    '="urn:tibet:unrecognizednamespace"');
+                        }
+
+                        //  Remember that we processed this prefix for this
+                        //  element so that we don't end up with multiple
+                        //  'xmlns:' attributes with the same prefix on the same
+                        //  element.
+                        currentNSPrefixes.push(attrPrefix);
+                    }
+                /* eslint-enable no-fallthrough */
+            }
+        }
+
+        switch (attrName) {
+            case 'xmlns':
+
+                //  A default namespace. Try to obtain the document's MIME type
+                //  and derive a namespace from it. If it's the same as the
+                //  value of this attribute, then ignore it (per TIBET's 'auto
+                //  namespacing' capability).
+                mimeType = this.getDocumentMIMEType();
+
+                if (TP.notEmpty(mimeType)) {
+                    currentNSURI = TP.w3.Xmlns.fromMIMEType(mimeType).at('uri');
+                    if (TP.notEmpty(currentNSURI) &&
+                        currentNSURI === attrValue) {
+                        continue;
+                    }
+                }
+
+                break;
+
+            case 'id':
+
+                if (attrValue.startsWith(
+                        computedElemPrefix + '_' +
+                        computedElemLocalName + '_')) {
+                    continue;
+                }
+
+                break;
+
+            case 'href':
+
+                if (elem.tagName !== 'link' && elem.tagName !== 'a') {
+                    break;
+                }
+
+                storageLoc = storageInfo.at('store');
+
+                if (TP.isURIString(storageLoc)) {
+                    attrValue = TP.uriRelativeToPath(
+                                    attrValue,
+                                    storageLoc,
+                                    true);
+                }
+
+                break;
+
+            case 'src':
+
+                if (elem.tagName !== 'script') {
+                    break;
+                }
+
+                storageLoc = storageInfo.at('store');
+
+                if (TP.isURIString(storageLoc)) {
+                    attrValue = TP.uriRelativeToPath(
+                                    attrValue,
+                                    storageLoc,
+                                    true);
+                }
+
+                break;
+
+            case 'style':
+
+                //  The best way to get the attribute value of the 'style'
+                //  attribute is to grab its 'cssText' property (we also
+                //  lowercase it here to conform to TIBET coding standards).
+                attrValue = TP.elementGetStyleObj(elem).cssText.toLowerCase();
+                break;
+
+            default:
+
+                //  No special handling... just go ahead and use the value from
+                //  the attribute node.
+                break;
+        }
+
+        //  If no attribute value was supplied, then we merely set it to be the
+        //  empty string.
+        if (TP.isEmpty(attrValue)) {
+            if (TP.isEmpty(attrPrefix)) {
+                result.push(' ', attrName, '=""');
+            } else {
+                result.push(' ', attrPrefix, ':', attrName, '=""');
+            }
+        } else {
+            //  Otherwise, we set it to its value after replacing literal
+            //  constructs with entities.
+            if (TP.isEmpty(attrPrefix)) {
+                result.push(' ', attrName, '="',
+                            TP.xmlLiteralsToEntities(attrValue).replace(
+                                                            /&apos;/g, '\''),
+                            '"');
+            } else {
+                result.push(' ', attrPrefix, ':', attrName, '="',
+                            TP.xmlLiteralsToEntities(attrValue).replace(
+                                                            /&apos;/g, '\''),
+                            '"');
+            }
+        }
+    }
+
+    //  End the tag.
+
+    //  If the tag is empty, then we use 'XML empty' syntax.
+    if (TP.isEmpty(elem)) {
+        result.push('/>');
+    } else {
+        result.push('>');
+    }
+
+    //  Clear out any current namespace prefixes we are tracking.
+    currentNSPrefixes.empty();
+
+    return result.join('');
 });
 
 //  ------------------------------------------------------------------------
@@ -12689,7 +13143,7 @@ function(attributeName, attributeValue, shouldSignal) {
         }
 
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -12703,7 +13157,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }
@@ -12734,6 +13188,44 @@ function(attributeName, attributeValue, shouldSignal) {
 
     //  let the standard method handle it
     return this.setProperty(attributeName, attributeValue, shouldSignal);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setClass',
+function(className) {
+
+    /**
+     * @method setClass
+     * @summary A convenience wrapper for TP.elementSetClass.
+     * @param {String} className The class value to set.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode,
+        oldValue,
+        newValue;
+
+    natNode = this.getNativeNode();
+
+    oldValue = TP.elementGetClass(natNode);
+    TP.elementSetClass(natNode, className);
+    newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
+
+    if (this.shouldFlagChanges()) {
+        TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
+    }
+
+    this.changed('@class',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue,
+                            TP.NEWVAL, newValue));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -12825,6 +13317,220 @@ function(aPhase) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$setAttribute',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @method setAttribute
+     * @summary Sets the value of the named attribute. This version is a
+     *     wrapper around the native element node setAttribute call which
+     *     attempts to handle standard change notification semantics for native
+     *     nodes as well as proper namespace management.
+     * @param {String} attributeName The attribute name to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {null} Null according to the spec for DOM 'setAttribute'.
+     */
+
+    var boolAttrs,
+
+        node,
+
+        hadAttribute,
+
+        oldValue,
+
+        attr,
+
+        flag,
+
+        nameParts,
+        prefix,
+        name,
+        url;
+
+    if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
+        boolAttrs.containsString(attributeName) &&
+        TP.isFalsey(attributeValue)) {
+
+        return this.removeAttribute(attributeName);
+    }
+
+    node = this.getNativeNode();
+
+    hadAttribute = TP.elementHasAttribute(node, attributeName, true);
+
+    //  work from the attribute node so we can be more accurate. this helps
+    //  ensure that environments which don't preserve the concept of a
+    //  namespace URI consistently (html) won't end up with two attributes
+    //  of the same name but different namespace URIs
+
+    if (TP.regex.HAS_COLON.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attr = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attr = node.getAttributeNode(attributeName);
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (TP.isAttributeNode(attr)) {
+        //  Capture the current value
+        oldValue = attr.value;
+
+        if (attr.value === attributeValue) {
+            return;
+        } else {
+            //  NB: We don't flag changes for internal 'tibet:' attributes
+            //  (presuming change flagging is on)
+            if (this.shouldFlagChanges() &&
+                !TP.regex.TIBET_SCHEME.test(attributeName)) {
+                TP.elementFlagChange(node, TP.ATTR + attributeName, TP.UPDATE);
+            }
+
+            attr.value = attributeValue;
+
+            if (flag) {
+                this.changed('@' + attributeName,
+                                hadAttribute ? TP.UPDATE : TP.CREATE,
+                                TP.hc(TP.OLDVAL, oldValue,
+                                        TP.NEWVAL, attributeValue));
+            }
+
+            return;
+        }
+    }
+
+    //  if this is a prefixed attribute then we'll attempt to "do the right
+    //  thing" by finding the registered namespace and placing the attribute
+    //  in that namespace
+    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
+        nameParts = attributeName.match(TP.regex.NS_QUALIFIED);
+        prefix = nameParts.at(1);
+        name = nameParts.at(2);
+
+        if (attributeName.startsWith('xmlns')) {
+            //  If the caller was trying to add an 'xmlns' attribute, then
+            //  first check to make sure that they weren't trying to set the
+            //  default namespace - can't do that :-(.
+            if (attributeName === 'xmlns') {
+                //  TODO: Throw an error - you cannot reset the default
+                //  namespace :-(.
+                return;
+            }
+
+            //  Otherwise, they're trying to add a prefixed namespace
+            //  definition.
+            TP.elementAddNamespace(node,
+                                    prefix + ':' + name,
+                                    attributeValue);
+
+            //  NB: We don't 'flag changes' for setting an 'xmlns:*' attribute
+
+            if (flag) {
+                this.changed('@' + attributeName, TP.CREATE);
+            }
+
+            return;
+        }
+
+        //  if we made it here we're not setting an xmlns attribute so the
+        //  only other reason not to flag the element is if we're setting a
+        //  tibet: internal attribute (presuming change flagging is on)
+        if (this.shouldFlagChanges() &&
+            !TP.regex.TIBET_SCHEME.test(attributeName)) {
+            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
+        }
+
+        //  seems like we're dealing with a prefixed attribute that isn't an
+        //  xmlns attribute, so the question is do we know a URI so we can
+        //  map it properly?
+        if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
+            TP.elementSetAttributeInNS(node,
+                                        prefix + ':' + name,
+                                        attributeValue,
+                                        url);
+        } else {
+            //  no known prefix, just set it as an attribute whose name
+            //  happens to include a colon
+            TP.elementSetAttribute(node, attributeName, attributeValue);
+        }
+    } else {
+        //  not a prefixed attribute so we just need to ensure that we've
+        //  updated the element crud flags as needed and set the value
+        if (this.shouldFlagChanges()) {
+            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
+        }
+
+        TP.elementSetAttribute(node, attributeName, attributeValue);
+    }
+
+    if (flag) {
+        this.changed('@' + attributeName,
+                        TP.CREATE,
+                        TP.hc('oldValue', oldValue,
+                                'newValue', attributeValue));
+    }
+
+    //  setAttribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttribute',
+function(attributeName, attributeValue) {
+
+    /**
+     * @method setAttribute
+     * @summary Sets the value of the named attribute. This version is a
+     *     wrapper around the native element node setAttribute call which
+     *     attempts to handle standard change notification semantics for native
+     *     nodes as well as proper namespace management.
+     * @param {String} attributeName The attribute name to set.
+     * @param {Object} attributeValue The value to set.
+     */
+
+    var methodName;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('setAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](attributeValue);
+    }
+
+    //  Otherwise, there was no specific setter, so just use $setAttribute()
+    return this.$setAttribute(attributeName, attributeValue);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttributes',
+function(attributeHash) {
+
+    /**
+     * @method setAttributes
+     * @summary Sets the value of the attributes provided using the supplied
+     *     TP.core.Hash. For document nodes this operation effectively operates
+     *     on the document's documentElement.
+     * @param {TP.core.Hash} attributeHash The attributes to set.
+     */
+
+    attributeHash.perform(
+        function(kvPair) {
+            this.setAttribute(kvPair.first(), kvPair.last());
+        }.bind(this));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
@@ -12842,7 +13548,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.core.ElementNode} The receiver.
      */
 
     var flag,
@@ -12851,7 +13557,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue('value', aValue);
 
-    if (TP.isString(newValue)) {
+    //  If the value is a String, but doesn't have Element markup in it, then we
+    //  can just use 'setTextContent'. Otherwise, we have to use the full
+    //  'setContent'.
+    if (TP.isString(newValue) &&
+        !TP.regex.CONTAINS_ELEM_MARKUP.test(newValue)) {
         this.setTextContent(newValue, shouldSignal);
     } else {
         this.setContent(newValue);
@@ -12867,6 +13577,50 @@ function(aValue, shouldSignal) {
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('toggleClass',
+function(className) {
+
+    /**
+     * @method toggleClass
+     * @summary A convenience wrapper which will toggle a class, meaning that
+     *     if the class is present it is removed, and if it's not present it
+     *     will be added.
+     * @param {String} className The class value to toggle.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode,
+        oldValue,
+        newValue;
+
+    natNode = this.getNativeNode();
+
+    oldValue = TP.elementGetClass(natNode);
+    if (TP.hasClass(natNode, className)) {
+        TP.elementRemoveClass(natNode, className);
+    } else {
+        TP.elementAddClass(natNode, className);
+    }
+    newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
+
+    if (this.shouldFlagChanges()) {
+        TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
+    }
+
+    this.changed('@class',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue,
+                            TP.NEWVAL, newValue));
 
     return this;
 });
@@ -12907,23 +13661,14 @@ function(aFlag) {
 
     //  Notice here how we use the 'fast' native node get method to avoid any
     //  sorts of recursion issues.
-    natElem = this.$$getNativeNodeFast();
+    natElem = this.getNativeNode();
 
     if (TP.isBoolean(aFlag)) {
         if (TP.notTrue(aFlag)) {
             TP.elementRemoveAttribute(natElem, 'tibet:shouldFlagChanges');
-            //  turn it off
-            if (!this.isTransactional()) {
-                this.$set('getNativeNode',
-                            this.$$getNativeNodeFast,
-                            false);
-            }
         } else {
             TP.elementSetAttribute(
                     natElem, 'tibet:shouldFlagChanges', true);
-            this.$set('getNativeNode',
-                        this.$$getNativeNodeSlow,
-                        false);
         }
     }
 
@@ -13023,7 +13768,7 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
     //  do the actual dispatch work here using TIBET's standard
     //  TP.dispatch() call (this can handle keyboard events etc)
-    return TP.dispatch(null,        //  'V' will be computed from targetElem
+    return TP.dispatch(targetElem,
                         aSignal,
                         targetElem,
                         argsOrEvent,
@@ -13460,7 +14205,12 @@ function(aNode) {
 
     type = TP.sys.getTypeByName(name);
 
-    if (TP.isType(type)) {
+    //  Make sure that we got a subtype of TP.core.AttributeNode. Sometimes the
+    //  value of an attribute will have the same value as a custom tag name and
+    //  we don't want that in this case.
+    if (TP.isType(type) &&
+        TP.isSubtypeOf(type, TP.core.AttributeNode) &&
+        !type.isAbstract()) {
         return type;
     }
 
@@ -13535,9 +14285,10 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue('value', aValue);
 
-    return this.getOwnerElement().setAttribute(
-                                        this.getNativeNode().nodeName,
+    this.getOwnerElement().setAttribute(this.getNativeNode().nodeName,
                                         newValue);
+
+    return this;
 });
 
 //  ========================================================================
@@ -13732,7 +14483,12 @@ function(aNode) {
     //  getTypeByName() that can do a 'deep' search across namespaces.
     type = TP.sys.getTypeByName('TP.core.' + name + 'PINode');
 
-    if (TP.isType(type)) {
+    //  Make sure that we got a subtype of TP.core.ProcessingInstructionNode.
+    //  Sometimes the value of a processing instruction will have the same value
+    //  as a custom tag name and we don't want that in this case.
+    if (TP.isType(type) &&
+        TP.isSubtypeOf(type, TP.core.ProcessingInstructionNode) &&
+        !type.isAbstract()) {
         return type;
     }
 
@@ -13997,7 +14753,8 @@ function(aNode) {
         //  we may just work from naming convention
         if (TP.notEmpty(info = TP.ietf.Mime.get('info').at(mime))) {
             if (TP.notEmpty(name = info.at('tpDocNodeType'))) {
-                if (TP.isType(type = TP.sys.getTypeByName(name))) {
+                if (TP.isType(type = TP.sys.getTypeByName(name)) &&
+                    !type.isAbstract()) {
                     return type;
                 }
             }
@@ -14012,7 +14769,7 @@ function(aNode) {
         name = prefix + 'DocumentNode';
 
         //  use require to see if we can find that document type and use it
-        if (TP.isType(type = TP.sys.getTypeByName(name))) {
+        if (TP.isType(type = TP.sys.getTypeByName(name)) && !type.isAbstract()) {
             return type;
         }
     }
@@ -14150,7 +14907,7 @@ function(attributeName) {
         }
 
         //  try common naming convention
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -14162,7 +14919,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -14336,6 +15093,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('getRoot',
+function() {
+
+    /**
+     * @method getRoot
+     * @summary Returns the TP.core.ElementNode that represents the root
+     *     element in this document. For HTML/XHTML documents this would be the
+     *     <html> element. For an SVG document it would be the <svg> element.
+     * @exception TP.sig.InvalidDocument
+     * @returns {TP.core.ElementNode} The root element of the receiver.
+     */
+
+    return TP.wrap(TP.documentGetRoot(this.getNativeNode()));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DocumentNode.Inst.defineMethod('getTheme',
 function() {
 
@@ -14406,11 +15180,24 @@ function(aSignal) {
      */
 
     var req,
-        origin;
+        origin,
+        aspect;
 
+    //  Grab the signal origin - for changes to observed URI resources (see the
+    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
+    //  changed.
     origin = aSignal.getSignalOrigin();
 
+    //  If it was a URL, then process it as a 'remote resource change'.
     if (TP.isKindOf(origin, TP.core.URI)) {
+
+        //  If the aspect is one of URI's 'special aspects', then we just return
+        //  here.
+        aspect = aSignal.at('aspect');
+        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            return;
+        }
+
         req = TP.request();
         this.setContent(origin, req);
     } else {
@@ -14418,6 +15205,59 @@ function(aSignal) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('serializeForStorage',
+function(storageInfo) {
+
+    /**
+     * @method serializeForStorage
+     * @summary Serialize the receiver in a manner appropriate for storage.
+     * @description This method provides a serialized representation of the
+     *     receiver that can be used to store it in a persistent storage. The
+     *     supplied storageInfo hash should contain a storage key under the
+     *     'store' key that will be used to uniquely identify the content
+     *     produced for this receiver. Note that nested nodes might produce
+     *     their own 'serialization stores'. All of the stores can be found
+     *     under the 'stores' key in the storageInfo after the serialization
+     *     process is complete.
+     *     For this type, serialization means possibly writing an XML
+     *     declaration (if the 'wantsXMLDeclaration' flag in the storageInfo
+     *     hash is true) and the HTML5 doctype. It then calls upon its document
+     *     element to serialize itself.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {TP.core.DocumentNode} The receiver.
+     */
+
+    var result;
+
+    result = storageInfo.atPutIfAbsent('result', TP.ac());
+
+    if (storageInfo.at('wantsXMLDeclaration') === true) {
+        result.push(TP.XML_10_HEADER, '\n\n');
+    }
+
+    result.push(TP.w3.DocType.XHTML_50.asString(), '\n\n');
+
+    this.getDocumentElement().serializeForStorage(storageInfo);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -14674,6 +15514,31 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('transform',
+function(anObject, aParamHash) {
+
+    /**
+     * @method transform
+     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     *     content of the receiver.
+     * @param {Object} anObject The object supplying the data to use in the
+     *     transformation.
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A parameter container
+     *     responding to at(). For string transformations a key of 'repeat' with
+     *     a value of true will cause iteration to occur (if anObject is an
+     *     'ordered collection' this flag needs to be set to 'true' in order to
+     *     have 'automatic' iteration occur). Additional keys of '$STARTINDEX'
+     *     and '$REPEATCOUNT' determine the range of the iteration. A special
+     *     key of 'xmlns:fixup' should be set to true to fix up 'xmlns'
+     *     attributes such that they won't be lost during the transformation.
+     * @returns {String} The string resulting from the transformation process.
+     */
+
+    return this.getDocumentElement().transform(anObject, aParamHash);
+});
+
+//  ------------------------------------------------------------------------
+
 //  create backstop hooks for the native document methods we support
 TP.backstop(
     TP.ac('createElement',
@@ -14761,13 +15626,7 @@ function() {
      * @returns {TP.html.body} The 'body' element of the receiver.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.wrap(TP.documentGetBody(doc));
+    return TP.wrap(TP.documentGetBody(this.getNativeNode()));
 });
 
 //  ------------------------------------------------------------------------
@@ -14801,6 +15660,26 @@ function(operation) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.HTMLDocumentNode.Inst.defineMethod('getFocusedElement',
+function(orActiveElement) {
+
+    /**
+     * @method getFocusedElement
+     * @summary Returns the TP.core.ElementNode that represents the currently
+     *     focused (i.e. 'active') element in this document.
+     * @param {Boolean} [orActiveElement=true] Whether or not to return the
+     *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
+     *     available. The default is true.
+     * @exception TP.sig.InvalidDocument
+     * @returns {TP.core.ElementNode} The currently focused element.
+     */
+
+    return TP.wrap(TP.documentGetFocusedElement(
+        this.getNativeNode(), orActiveElement));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.HTMLDocumentNode.Inst.defineMethod('getHead',
 function() {
 
@@ -14812,13 +15691,7 @@ function() {
      * @returns {TP.html.head} The 'head' element of the receiver.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.wrap(TP.documentGetHead(doc));
+    return TP.wrap(TP.documentGetHead(this.getNativeNode()));
 });
 
 //  ------------------------------------------------------------------------
@@ -14833,13 +15706,7 @@ function() {
      * @returns {Window} The receiver's native window object.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.nodeGetWindow(doc);
+    return TP.nodeGetWindow(this.getNativeNode());
 });
 
 //  ------------------------------------------------------------------------
@@ -15089,6 +15956,31 @@ function() {
     }
 
     return TP.wrap(TP.documentGetBody(doc));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XHTMLDocumentNode.Inst.defineMethod('getFocusedElement',
+function(orActiveElement) {
+
+    /**
+     * @method getFocusedElement
+     * @summary Returns the TP.core.ElementNode that represents the currently
+     *     focused (i.e. 'active') element in this document.
+     * @param {Boolean} [orActiveElement=true] Whether or not to return the
+     *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
+     *     available. The default is true.
+     * @exception TP.sig.InvalidDocument
+     * @returns {TP.core.ElementNode} The currently focused element.
+     */
+
+    var doc;
+
+    if (!TP.isDocument(doc = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidDocument');
+    }
+
+    return TP.wrap(TP.documentGetFocusedElement(doc, orActiveElement));
 });
 
 //  ------------------------------------------------------------------------
@@ -16620,7 +17512,7 @@ function(aRequest) {
 
         //  rely on the URI to manage things for content acquisition, but
         //  unwrap any node wrappers we might get
-        resp = url.getResource(TP.hc('async', false));
+        resp = url.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
         content = TP.unwrap(resp.get('result'));
     }
 
@@ -16775,7 +17667,7 @@ function(aRequest) {
      */
 
     var elem,
-
+        id,
         genName,
 
         wantsTemplateWrapper,
@@ -16783,7 +17675,10 @@ function(aRequest) {
         replacement,
         replacementClone,
 
-        canonicalName;
+        canonicalName,
+
+        resourceTPElem,
+        resourceElem;
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -16842,24 +17737,43 @@ function(aRequest) {
         //  We didn't need a template wrapper - just fetch the resource content
         //  as indicated by the MIME type that should be in the element's
         //  'tibet:mime' attribute (if missing, the MIME type will be guessed).
-        replacement = this.getResourceElement(
-                        'template',
-                        TP.elementGetAttribute(elem, 'tibet:mime', true));
+        resourceTPElem = this.getResourceElement(
+                            'template',
+                            TP.elementGetAttribute(elem, 'tibet:mime', true));
 
         //  If no replacement came back we're dealing with likely problems in
         //  the template itself. Those should be notified via the prior call.
-        if (TP.notValid(replacement)) {
+        if (TP.notValid(resourceTPElem)) {
             return;
         }
 
-        replacementClone = TP.unwrap(replacement.clone());
-        replacement = replacementClone;
+        //  Use the *native* mechanism to clone the Element here - otherwise,
+        //  the wrapped element will try to return a wrapper and end up going
+        //  through the whole cycle to create another wrapper element, etc.
+        resourceElem = resourceTPElem.getNativeNode();
+        replacementClone = TP.nodeCloneNode(resourceElem);
 
-        replacement[TP.GENERATOR] = canonicalName;
+        //  Make sure that (almost) all of the expandos get copied to the clone.
+        TP.nodeCopyTIBETExpandos(resourceElem, replacementClone, false);
+
+        //  We've computed the generator, so (re)set it here.
+        replacementClone[TP.GENERATOR] = canonicalName;
 
         //  Merge any remaining attributes. Note that we don't want to overwrite
         //  or duplicate any src attribute we had to compute.
-        TP.elementMergeAttributes(elem, replacement);
+        TP.elementMergeAttributes(elem, replacementClone);
+
+        //  One last thing...since this is a template we need to force any
+        //  existing ID from the source element over any ID found on the
+        //  template content. Template content will get IDs largely due to
+        //  change notification semantics, but they should never take the place
+        //  of IDs from the authored source.
+        id = TP.elementGetAttribute(elem, 'id');
+        if (TP.notEmpty(id)) {
+            TP.elementSetAttribute(replacementClone, 'id', id);
+        }
+
+        replacement = replacementClone;
     }
 
     //  Replace the original element in the DOM so processing will continue in

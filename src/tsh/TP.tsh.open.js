@@ -63,18 +63,18 @@ function(aRequest) {
 
     aRequest.stdout('Coming soon.');
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('open',
     TP.tsh.open.Type.getMethod('tshExecute'),
     'Opens a URI in a window/canvas.',
     ':open',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

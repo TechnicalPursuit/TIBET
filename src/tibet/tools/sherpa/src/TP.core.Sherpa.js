@@ -23,7 +23,7 @@ TP.lang.Object.defineSubtype('core.Sherpa');
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Type.defineMethod('initialize',
-function(aName) {
+function() {
 
     /**
      * @method initialize
@@ -31,8 +31,7 @@ function(aName) {
      * @returns {TP.core.Sherpa} The receiver.
      */
 
-    var toggleKey,
-        sherpaSetupFunc;
+    var toggleKey;
 
     //  If the Sherpa isn't configured to start, then exit here.
     if (!TP.sys.cfg('sherpa.enabled')) {
@@ -46,112 +45,16 @@ function(aName) {
         return this;
     }
 
+    //  Make sure the toggle key signal starts with 'TP.sig.' so that the
+    //  observation works properly (specific-key observations need the full
+    //  name).
     if (!toggleKey.startsWith('TP.sig.')) {
         toggleKey = 'TP.sig.' + toggleKey;
     }
 
-    //  Set up the handler to finish the setup of the Sherpa when the toggle key
-    //  is pressed.
-
-    /* eslint-disable no-wrap-func */
-    //  set up keyboard toggle to show/hide the boot UI
-    (sherpaSetupFunc = function() {
-
-        var sherpaInst,
-
-            win,
-            drawerElement,
-
-            sherpaFinishSetupFunc,
-
-            contentElem,
-
-            allDrawers;
-
-        //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
-        //  handler Function. This is because, once we finish set up of the
-        //  Sherpa, it will install it's own handler for the trigger key and
-        //  take over that responsibility.
-        sherpaSetupFunc.ignore(TP.core.Keyboard, toggleKey);
-
-        if (TP.isValid(sherpaInst = TP.bySystemId('Sherpa'))) {
-
-            //  If we didn't show the IDE when we first started, the trigger has
-            //  now been fired to show it.
-            if (!TP.sys.cfg('boot.show_ide')) {
-
-                win = TP.win('UIROOT');
-                drawerElement = TP.byId('south', win, false);
-
-                (sherpaFinishSetupFunc = function(aSignal) {
-                    sherpaFinishSetupFunc.ignore(
-                        drawerElement, 'TP.sig.DOMTransitionEnd');
-
-                    //  The basic Sherpa framing has been set up, but we
-                    //  complete the setup here (after the drawers animate in).
-                    sherpaInst.finishSetup();
-
-                    //  Set the HUD to not be hidden
-                    TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                            'hidden', false);
-
-                    //  Refresh the input area after a 1000ms timeout. This
-                    //  ensures that other layout will happen before the editor
-                    //  component tries to compute its layout
-                    /* eslint-disable no-wrap-func,no-extra-parens */
-                    (function() {
-                        TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-                    }).fork(1000);
-                    /* eslint-enable no-wrap-func,no-extra-parens */
-
-                }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
-
-                //  Show the center area and the drawers.
-
-                //  First, we remove the 'fullscreen' class from the center
-                //  element. This allows the 'content' element below to properly
-                //  size it's 'busy message layer'.
-                TP.elementRemoveClass(TP.byId('center', win, false),
-                                        'fullscreen');
-
-                //  Grab the existing 'content' element, which is now unused
-                //  since the world element moved the screens out of it, and use
-                //  it to show the 'loading' element. The console will later
-                //  reuse it for it's output.
-                contentElem = TP.byId('content', win, false);
-
-                TP.elementShow(contentElem);
-                TP.elementShowBusyMessage(contentElem,
-                                            '...initializing TIBET Sherpa...');
-
-                allDrawers = TP.byCSSPath('.north, .south, .east, .west',
-                                            win,
-                                            false,
-                                            false);
-
-                //  Show the drawers.
-                allDrawers.perform(
-                            function(anElem) {
-                                TP.elementRemoveAttribute(
-                                            anElem, 'pclass:hidden', true);
-                            });
-            } else {
-                sherpaInst.finishSetup();
-
-                //  Set the HUD to not be hidden
-                TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                        'hidden', false);
-
-                //  Refresh the input area after a 1000ms timeout. This
-                //  ensures that other layout will happen before the editor
-                //  component tries to compute its layout
-                /* eslint-disable no-wrap-func,no-extra-parens */
-                (function() {
-                    TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-                }).fork(1000);
-                /* eslint-enable no-wrap-func,no-extra-parens */
-            }
-        }
+    //  Set up keyboard toggle to show/hide the Sherpa
+    (function() {
+        TP.signal(null, 'ToggleSherpa');
     }).observe(TP.core.Keyboard, toggleKey);
 
     return this;
@@ -161,7 +64,19 @@ function(aName) {
 
 TP.core.Sherpa.Type.defineMethod('hasStarted',
 function() {
-    return TP.isValid(TP.bySystemId('Sherpa'));
+
+    /**
+     * @method hasStarted
+     * @summary Whether or not the Sherpa itself has started (i.e. is installed
+     *     and is ready).
+     * @returns {Boolean} Whether or not the Sherpa is ready.
+     */
+
+    var inst;
+
+    inst = TP.bySystemId('Sherpa');
+
+    return TP.isValid(inst) && TP.isTrue(inst.get('setupComplete'));
 });
 
 //  ------------------------------------------------------------------------
@@ -169,11 +84,18 @@ function() {
 TP.core.Sherpa.Type.defineMethod('isOpen',
 function() {
 
+    /**
+     * @method isOpen
+     * @summary Whether or not the Sherpa is 'open' (i.e. has started and its
+     *     HUD component is currently showing).
+     * @returns {Boolean} Whether or not the Sherpa is open.
+     */
+
     var elem;
 
-    elem = TP.byId('SherpaHUD', this.get('vWin'));
+    elem = TP.byId('SherpaHUD', TP.win('UIROOT'));
     if (TP.isValid(elem)) {
-        elem.isVisible();
+        return !elem.hasAttribute('pclass:closed');
     }
 
     return false;
@@ -184,11 +106,24 @@ function() {
 TP.core.Sherpa.Type.defineMethod('replaceWithUnknownElementProxy',
 function(anElement) {
 
+    /**
+     * @method replaceWithUnknownElementProxy
+     * @summary This method, invoked from the core TIBET tag processing
+     *     machinery if the Sherpa is loaded and running in the current system,
+     *     will replace the supplied element with a stand in (a so-called 'tofu'
+     *     element) that represents an element type that is not yet known to the
+     *     system.
+     * @param {Element} anElement The element to replace.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
     var newTagContent,
         newElement;
 
     newTagContent = TP.str(anElement);
 
+    //  Build a chunk of markup that is a 'tibet:tofu' element with identifying
+    //  information about the element that it is standing in for.
     newElement = TP.xhtmlnode(
         '<tibet:tofu on:click="TagAssist"' +
                 ' proxyfor="' + TP.name(anElement) + '">' +
@@ -202,7 +137,7 @@ function(anElement) {
             '</span>' +
         '</tibet:tofu>');
 
-    newElement = TP.elementReplaceWith(anElement, newElement);
+    TP.elementReplaceWith(anElement, newElement);
 
     return this;
 });
@@ -414,6 +349,10 @@ function(inputText) {
         }
     }
 
+    if (TP.isEmpty(resolutionChunks) && TP.notEmpty(fragment)) {
+        resolutionChunks = TP.ac(fragment);
+    }
+
     return TP.hc(
             'context', context,
             'fragment', fragment,
@@ -456,17 +395,16 @@ function() {
         TP.elementHide(uiBootIFrameElem);
     }
 
+    //  Set up our window. By default, the Sherpa exists in the UIROOT window.
     win = TP.win('UIROOT');
-
-    //  set up our window
     this.set('vWin', win);
 
     //  Set up the World
     this.setupWorld();
 
     //  Based on the setting of this flag, we show or hide the center area and
-    //  the drawers (the HUD isn't real until we finish setup, so we do it
-    //  manually here).
+    //  the drawers (the HUD isn't real until we finish setup, so we show or
+    //  hide it manually here).
     if (TP.sys.cfg('boot.show_ide')) {
 
         TP.elementRemoveClass(TP.byId('center', win, false), 'fullscreen');
@@ -483,6 +421,10 @@ function() {
                     });
     }
 
+    //  Even if we showed our drawers above because of the 'boot.show_ide' flag,
+    //  we need to flag ourself not completely loaded yet.
+    this.set('setupComplete', false);
+
     return this;
 });
 
@@ -491,26 +433,28 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('finishSetup',
 function() {
 
+    /**
+     * @method finishSetup
+     * @summary Finishes the Sherpa setup process by setting up all of the
+     *     Sherpa's tools and configuring its drawers.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
     var viewDoc,
-
-        worldTPElem,
-
-        toggleKey,
-
-        breadcrumbTPElem;
-
-    this.set('setupComplete', false);
+        thisref,
+        worldTPElem;
 
     //  Set up the HUD. NOTE: This *must* be set up first - other components
     //  will rely on finding it when they awaken.
     this.setupHUD();
 
+    //  The document that we were installed into.
     viewDoc = this.get('vWin').document;
 
     //  The World was set up on initial startup - set up the rest of the
     //  components. We do set up the World to observe when the HUD shows
     worldTPElem = TP.byId('SherpaWorld', viewDoc);
-    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'HiddenChange');
+    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'ClosedChange');
 
     //  Set up the console
     this.setupConsole();
@@ -518,78 +462,61 @@ function() {
     //  Set up the context menu
     this.setupContextMenu();
 
-    //  Set up the extruder
-    this.setupExtruder();
-
     //  Set up the halo
     this.setupHalo();
+
+    //  NB: We set these up *after* the halo is set up.
+
+    //  Set up the outliner
+    this.setupOutliner();
+
+    //  Set up the workbench
+    this.setupWorkbench();
 
     //  Set up the inspector
     this.setupInspector();
 
     //  Set up the searcher
-    this.setupSearcher();
+    //  this.setupSearcher();
 
-    //  Set up the tile dock
-    TP.uc('urn:tibet:sherpa_tiledock').setResource(
-                                        TP.hc(),
-                                        TP.hc('observeResource', true));
+    //  Set up the thumbnail viewer
+    this.setupThumbnail();
 
-    //  Set up the breadcrumb bar
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', viewDoc);
-    breadcrumbTPElem.defineMethod(
-                    'getLabel',
-                    function(anItem) {
-
-                        var val,
-                            id;
-
-                        val = anItem.getLocalName();
-                        if (TP.notEmpty(id = anItem.getAttribute('id'))) {
-                            val += '#' + id;
-                        }
-
-                        return val;
-                    });
-
-    //  Configure a toggle so we can always get back to just showing the app.
-    toggleKey = TP.sys.cfg('sherpa.toggle_key');
-
-    if (!toggleKey.startsWith('TP.sig.')) {
-        toggleKey = 'TP.sig.' + toggleKey;
-    }
-
-    //  set up keyboard toggle to show/hide us
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        this.toggle();
-    }).bind(this).observe(TP.core.Keyboard, toggleKey);
-    /* eslint-enable no-wrap-func,no-extra-parens */
-
-    (function() {
-        var tpElem;
+    //  Configure the north and south drawers to not track mutations for
+    //  performance (we don't use mutation signals there anyway) and to set up
+    //  the console service's keyboard state machine. Note that we do this in a
+    //  fork to let the system do a GUI refresh to show initializng status,
+    //  etc.
+    thisref = this;
+    setTimeout(function() {
+        var tpElem,
+            consoleService;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:nomutationtracking', true);
+        tpElem.setAttribute('tibet:nomutationtracking', false);
 
         tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:nomutationtracking', true);
+        tpElem.setAttribute('tibet:nomutationtracking', false);
 
         tpElem = TP.byId('center', viewDoc);
         tpElem.setAttribute('tibet:nomutationtracking', true);
 
-        //  Hide the 'content' div
-        TP.elementHide(TP.byId('content', viewDoc, false));
+        consoleService = TP.bySystemId('SherpaConsoleService');
 
         //  Now that all components have loaded (and possibly installed state
-        //  machine responders into the console service's state machiner),
+        //  machine responders into the console service's state machine),
         //  activate the console service's state machine.
-        TP.bySystemId('SherpaConsoleService').get(
-                                        'keyboardStateMachine').activate();
+        consoleService.get('keyboardStateMachine').activate();
 
-        this.set('setupComplete', true);
+        //  Also, set the variable that will represent the UI canvas. This will
+        //  switch as different screens are selected.
+        consoleService.get('model').setVariable(
+            'UICANVAS',
+            worldTPElem.get('selectedScreen').getContentWindow());
 
-    }.bind(this)).fork(500);
+        thisref.set('setupComplete', true);
+
+    }, TP.sys.cfg('sherpa.setup.delay', 250));
 
     return this;
 });
@@ -604,16 +531,139 @@ function(aSignal) {
      * @summary Handles signals that trigger console command execution.
      * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var consoleService,
         cmdText;
 
+    //  Grab the console service. This gives us access to the currently active
+    //  shell.
     consoleService = TP.bySystemId('SherpaConsoleService');
+
+    //  Grab the command text to execute from the signal.
     cmdText = aSignal.at('cmdText');
 
+    //  If it's real and we were able to find the console server, then send the
+    //  console request.
     if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
         consoleService.sendConsoleRequest(cmdText);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('RemoteConsoleCommand',
+function(aSignal) {
+
+    /**
+     * @method handleRemoteConsoleCommand
+     * @summary Handles signals that trigger remote console command execution.
+     * @param {TP.sig.RemoteConsoleCommand} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
+    var consoleService,
+        cmdText,
+
+        originalRequest,
+        originalArgs,
+
+        req,
+
+        successFunc,
+        failFunc,
+
+        updateRequest;
+
+    //  Grab the console service. This gives us access to the currently active
+    //  shell.
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
+    //  The original request will be the one that got built when the user
+    //  invoked the command locally in the TSH.
+    originalRequest = aSignal.at('originalRequest');
+
+    //  Grab the 'local name' of the original request's command node. This will
+    //  give us the command that they were attempting to execute on the client.
+    cmdText = TP.lname(originalRequest.at('cmdNode'));
+
+    //  Prepend ':cli' onto it. When executed, this command will route the
+    //  original command over to the server-side for server execution.
+    cmdText = ':cli ' + cmdText;
+
+    //  Gather up the arguments from the original request (using the
+    //  consoleService's 'model' - i.e. the TSH).
+    originalArgs = consoleService.get('model').getArguments(originalRequest);
+
+    //  This is a TP.core.Hash - iterate over it and gather up the arguments.
+    originalArgs.perform(
+            function(kvPair) {
+                var argName,
+                    argValue;
+
+                argName = kvPair.first();
+                argValue = kvPair.last();
+
+                //  Note that we only gather arguments that are 'tsh:'
+                //  arguments.
+                if (argName.startsWith('tsh:')) {
+
+                    //  Slice off the 'tsh:'
+                    argName = argName.slice(4);
+
+                    cmdText += ' --' + argName + '=\'' + argValue + '\'';
+                }
+            });
+
+    //  If it's real and we were able to find the console server, then send the
+    //  console request.
+    if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
+
+        //  Send the now rewritten command (prepended with ':cli') to the
+        //  console service (which will send it onto the TSH) for processing.
+        req = consoleService.sendConsoleRequest(cmdText);
+
+        //  If the supplied signal had 'success' and/or 'failure' handler
+        //  Function(s) configured, then configure the just-fired request to
+        //  invoke them when it either succeeds or fails.
+        successFunc = aSignal.at(TP.ONSUCCESS);
+        failFunc = aSignal.at(TP.ONFAIL);
+
+        if (TP.isCallable(successFunc) ||
+            TP.isCallable(failFunc)) {
+
+            //  A request that will be configured with succeeded/failed handlers
+            //  to call whatever the supplied signal supplied as success and/or
+            //  failure handler.
+            updateRequest = TP.request();
+
+            //  Install a success handler if a success Function was supplied.
+            if (TP.isCallable(successFunc)) {
+                updateRequest.defineHandler(
+                                'RequestSucceeded',
+                                function(aResponse) {
+                                    successFunc(aResponse);
+                                });
+            }
+
+            //  Install a failure handler if a failure Function was supplied.
+            if (TP.isCallable(failFunc)) {
+                updateRequest.defineHandler(
+                                'RequestFailed',
+                                function(aResponse) {
+                                    failFunc(aResponse);
+                                });
+            }
+
+            //  Join the update request onto the request that was sent to the
+            //  console service for processing. This will cause it to be
+            //  performed upon completion of that request.
+            updateRequest.andJoinChild(req);
+        }
     }
 
     return this;
@@ -626,77 +676,53 @@ function(aSignal) {
 
     /**
      * @method handleAssistObject
-     * @summary
-     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     * @summary Handles signals that trigger an 'object assistant'.
+     * @description Some objects (including console commands) fire this signal
+     *     when they want the Sherpa to present an 'object assistant' in a modal
+     *     dialog box.
+     * @param {TP.sig.AssistObject} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var targetObj,
+        assistantContentTPElem,
 
-        srcID,
-        tileID,
+        dialogPromise;
 
-        tileText,
-
-        tileContentTPElem,
-
-        tileTPElem,
-
-        styleObj,
-
-        viewDoc,
-        curtainTPElem,
-        handler;
-
+    //  Grab the target object from the signal's payload
     targetObj = aSignal.getPayload().at('targetObject');
 
-    tileContentTPElem = TP.wrap(TP.getContentForAssistant(targetObj));
+    if (TP.notValid(targetObj)) {
+        //  TODO: Raise an exception here.
+        return this;
+    }
 
-    if (TP.isValid(tileContentTPElem)) {
+    //  Grab the assistant content
+    assistantContentTPElem = TP.wrap(TP.getContentForAssistant(targetObj));
 
-        //  srcID is really the header text
-        srcID = tileContentTPElem.getLocalID();
-        tileID = srcID + '_Tile';
+    //  If we got valid assistant content, then show a dialog with it.
+    if (TP.isValid(assistantContentTPElem)) {
 
-        tileText = aSignal.getPayload().at('title');
+        dialogPromise = TP.dialog(
+            TP.hc(
+                'dialogID', 'AssistantDialog',
+                'isModal', true,
+                'templateContent', assistantContentTPElem));
 
-        //  We don't supply a parent to the makeTile() call, so it will be
-        //  placed in the common tile tier. We also pass false as to whether
-        //  this tile is dockable or not.
-        tileTPElem = this.makeTile(tileID, tileText, null, false);
+        //  After the dialog is showing, set the assistant parameters on the
+        //  content object from those defined in the original signal's payload.
+        dialogPromise.then(
+            function(aDialogTPElem) {
 
-        tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
+                var contentTPElem;
 
-        tileContentTPElem.set('tileTPElem', tileTPElem);
+                contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                    getFirstChildElement();
 
-        tileContentTPElem.set('sourceObject', targetObj);
-        tileContentTPElem.set('assistantParams',
-                                aSignal.getPayload().at('assistantParams'));
-
-        tileContentTPElem.awaken();
-
-        tileTPElem.set('modal', true);
-
-        styleObj = TP.elementGetStyleObj(tileTPElem.getNativeNode());
-        styleObj.left = '';
-        styleObj.top = '';
-
-        viewDoc = this.get('vWin').document;
-        if (TP.isValid(curtainTPElem = TP.byId('systemCurtain', viewDoc))) {
-            curtainTPElem.setAttribute('hidden', false);
-        }
-
-        //  NB: Do this *before* we observe the 'hidden' state.
-        tileTPElem.toggle('hidden');
-
-        handler = function() {
-            handler.ignore(tileTPElem, 'HiddenChange');
-            curtainTPElem.setAttribute('hidden', true);
-
-            TP.byId('SherpaConsole', viewDoc).focusInput();
-        };
-
-        handler.observe(tileTPElem, 'HiddenChange');
+                contentTPElem.set('assistantParams',
+                                    aSignal.getPayload().at('assistantParams'));
+            });
     }
 
     return this;
@@ -709,17 +735,21 @@ function(aSignal) {
 
     /**
      * @method handleEditObject
-     * @summary
+     * @summary Handles signals that trigger the inspector's object editing
+     *     capabilities.
      * @param {TP.sig.EditObject} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var northDrawer;
 
+    //  Open the north drawer
     northDrawer = TP.byId('north', this.get('vWin'));
-
     northDrawer.setAttribute('closed', false);
 
+    //  Signal the inspector to focus itself for editing on the target object
+    //  supplied in the payload.
     TP.byId('SherpaInspector', this.get('vWin')).signal(
                             'FocusInspectorForEditing', aSignal.getPayload());
 
@@ -733,19 +763,47 @@ function(aSignal) {
 
     /**
      * @method handleInspectObject
-     * @summary
+     * @summary Handles signals that trigger the inspector's object inspection
+     *     capabilities.
      * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
-    var northDrawer;
+    var northDrawer,
+        isClosed,
 
+        drawerIsOpenFunc;
+
+    //  Open the north drawer
     northDrawer = TP.byId('north', this.get('vWin'));
 
-    northDrawer.setAttribute('closed', false);
+    isClosed = TP.bc(northDrawer.getAttribute('closed'));
 
-    TP.byId('SherpaInspector', this.get('vWin')).signal(
-                            'FocusInspectorForBrowsing', aSignal.getPayload());
+    if (isClosed) {
+        drawerIsOpenFunc = function(transitionSignal) {
+
+            //  Turn off any future notifications.
+            drawerIsOpenFunc.ignore(northDrawer, 'TP.sig.DOMTransitionEnd');
+
+            //  Signal the inspector to focus itself for browsing on the target
+            //  object supplied in the payload.
+            TP.byId('SherpaInspector', this.get('vWin')).signal(
+                    'FocusInspectorForBrowsing',
+                    aSignal.getPayload());
+
+        }.bind(this);
+
+        drawerIsOpenFunc.observe(northDrawer, 'TP.sig.DOMTransitionEnd');
+
+        northDrawer.setAttribute('closed', false);
+    } else {
+        //  Signal the inspector to focus itself for browsing on the target
+        //  object supplied in the payload.
+        TP.byId('SherpaInspector', this.get('vWin')).signal(
+                'FocusInspectorForBrowsing',
+                aSignal.getPayload());
+    }
 
     return this;
 });
@@ -760,6 +818,7 @@ function(aSignal) {
      * @summary Handles signals that are triggered when a new type is loaded.
      * @param {TP.sig.TypeLoaded} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var newType,
@@ -782,10 +841,197 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('SherpaNotify',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaNotify
+     * @summary Displays a notifier for the signal payload's message slot, if
+     *     any.
+     * @param {TP.sig.SherpaNotify} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
+    var notifier,
+        notifierContent,
+
+        message,
+
+        triggerTPDoc;
+
+    notifier = TP.byId('SherpaNotifier', TP.win('UIROOT'));
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-duration',
+                TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-delay',
+                TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000) + 'ms');
+
+    notifierContent = TP.byId('SherpaNotifierContent', this.get('vWin'));
+    if (TP.notValid(notifierContent)) {
+        return;
+    }
+
+    message = aSignal.at('message');
+    if (TP.notEmpty(message)) {
+        notifierContent.setContent(
+                        TP.xhtmlnode('<div>' + message + '</div>'));
+    }
+
+    triggerTPDoc = TP.tpdoc(this.get('vWin'));
+
+    this.signal(
+        'OpenNotifier',
+        TP.hc(
+            'overlayID', 'SherpaNotifier',
+            'contentID', 'SherpaNotifierContent',
+            'noPosition', true,
+            'triggerTPDocument', triggerTPDoc));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('ToggleSherpa',
+function(aSignal) {
+
+    /**
+     * @method handleToggleSherpa
+     * @summary Handles signals that are triggered when the Sherpa is to be
+     *     toggled.
+     * @param {TP.sig.ToggleSherpa} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
+    this.toggle();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('makeCustomTagFrom',
+function(aTPElem) {
+
+    /**
+     * @method makeCustomTagFrom
+     * @summary Constructs a custom tag using the supplied element. This will
+     *     invoke the 'type assistant' with the 'templatedtag' DNA selected.
+     * @param {TP.core.Element} aTPElem The element content to make a custom tag
+     *     from.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var newTagName,
+
+        handler;
+
+    //  We start the new tag name out with the application's namespace prefix
+    //  and a ':'.
+    newTagName = TP.sys.getApplication().getType().getNamespacePrefix() + ':';
+
+    //  Fire a 'ConsoleCommand' with a ':tag --assist' command, supplying the
+    //  name and the DNA for a templated tag.
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':type --assist' +
+                                ' --name=\'' + newTagName + '\'' +
+                                ' --dna=\'templatedtag\''
+                ));
+
+    //  Set up a handler that will wait for a 'TypeAdded' signal.
+    handler = function(typeAddedSignal) {
+
+        var elem,
+            tagType,
+            tagName,
+
+            resourceURI,
+            serializationStorage;
+
+        //  Make sure to unregister the handler - this is a one shot.
+        handler.ignore(TP.ANY, 'TypeAdded');
+
+        //  Grab the '<script>' node that was added for the newly defined tag
+        //  type. This will supply our new tag name.
+        elem = typeAddedSignal.at('node');
+
+        //  Make sure that we can get a tag type with the supplied element and
+        //  that it is a kind of templated tag.
+        tagType = TP.scriptElementGetType(elem);
+
+        //  Now, if it's a templated tag, we have to serialize and save a markup
+        //  representation of supplied TP.core.Element as the new tag's
+        //  template.
+        if (TP.isKindOf(tagType, TP.core.TemplatedTag)) {
+
+            //  Create a tag name from the type's namespace prefix and local
+            //  name.
+            tagName = tagType.getNamespacePrefix() +
+                        ':' +
+                        tagType.getLocalName();
+
+            //  Get the resource URI that we'll use to store it under.
+            resourceURI = tagType.getResourceURI('template');
+
+            //  Create a serialization storage object and populate the root
+            //  store location with the resource URI.
+            serializationStorage = TP.hc();
+            serializationStorage.atPut('store', resourceURI.getLocation());
+
+            //  Stamp the 'tibet:tag' attribute on it before it goes out.
+            TP.elementSetAttribute(TP.unwrap(aTPElem),
+                                    'tibet:tag', tagName, true);
+
+            //  Run the serialization engine on it.
+            aTPElem.serializeForStorage(serializationStorage);
+
+            //  Save the template to the file system. If this succeeds, then
+            //  replace the supplied TP.core.Element with the new custom tag.
+            this.saveElementSerialization(
+                    serializationStorage,
+                    function() {
+                        var newElem;
+
+                        newElem = TP.nodeFromString('<' + tagName + '/>');
+                        if (TP.isElement(newElem)) {
+                            aTPElem.replaceWith(newElem);
+                        }
+                    });
+        }
+    }.bind(this);
+
+    handler.observe(TP.ANY, 'TypeAdded');
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID, aName, tileParent, shouldDock) {
+function(anID, headerText, tileParent, shouldDock) {
+
+    /**
+     * @method makeTile
+     * @summary Makes a new TP.sherpa.tile 'draggable' surface and populates it
+     *     into the Sherpa's common layer (if tileParent isn't supplied) for
+     *     managing tiles.
+     * @param {String} anID The ID to give to the tile for future referencing.
+     * @param {String} headerText Text to place into the 'header' of the tile.
+     * @param {Element} [tileParent] The tile parent element. If this is not
+     *     supplied, then the Sherpa's common tile layer is used as the tile
+     *     parent.
+     * @param {Boolean} [shouldDock=true] Whether or not to configure the tile
+     *     to be 'dockable'.
+     * @returns {TP.sherpa.tile} The newly created tile.
+     */
 
     var tileTemplateTPElem,
 
@@ -794,37 +1040,342 @@ function(anID, aName, tileParent, shouldDock) {
 
         tileID,
 
-        wantsToDock;
+        wantsToDock,
 
+        centerTPElem,
+        centerTPElemPageRect;
+
+    //  Grab the TP.sherpa.tile's template.
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
                             TP.ietf.Mime.XHTML);
 
+    //  If the caller didn't supply a parent, then use the Sherpa's common tile
+    //  layer as the new tile's parent.
     parent = tileParent;
-
     if (!TP.isElement(parent) &&
         !TP.isKindOf(parent, TP.core.ElementNode)) {
         parent = TP.byId('commonTileLayer', this.get('vWin'));
     }
 
+    //  Add the tile's template to the parent.
     tileTPElem = TP.wrap(parent).addContent(tileTemplateTPElem);
 
+    //  Make sure to escape any necessary characters.
     tileID = TP.escapeTypeName(anID);
 
+    //  Set the ID and header text
     tileTPElem.setID(tileID);
-    tileTPElem.setHeaderText(aName);
+    tileTPElem.setHeaderText(headerText);
 
+    //  The default is to create a dockable tile.
     wantsToDock = TP.notDefined(shouldDock, true);
-
     tileTPElem.set('shouldDock', wantsToDock);
 
+    //  Awaken the tile.
     tileTPElem.awaken();
 
-    //  Avoid the north and west drawers
-    //  TODO: This is cheesy - calculate these from drawer positions
-    tileTPElem.setOffsetPosition(TP.pc(65, 215));
+    //  Center this based on where the 'center' div is located.
+    centerTPElem = TP.byId('center', this.get('vWin'));
+    centerTPElemPageRect = centerTPElem.getOffsetRect();
+
+    tileTPElem.setOffsetPosition(
+        TP.pc(centerTPElemPageRect.getX(), centerTPElemPageRect.getY()));
 
     return tileTPElem;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('saveElementSerialization',
+function(storageSerialization, successFunc, failFunc) {
+
+    /**
+     * @method saveElementSerialization
+     * @summary Saves the supplied element serialization to the server.
+     * @param {TP.core.Hash} storageSerialization The hash containing the
+     *     serialization of an element to save. This encoding will also contain
+     *     the location to save the serialization (and any nested
+     *     serializations) to.
+     * @param {Function} successFunc The Function to execute if the saving
+     *     process succeeds.
+     * @param {Function} failFunc The Function to execute if the saving process
+     *     fails.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
+    var stores;
+
+    stores = storageSerialization.at('stores');
+
+    //  Iterate over all of the top-level keys in the serialization.
+    stores.getKeys().forEach(
+        function(loc) {
+
+            var newContent,
+
+                uri,
+                req;
+
+            //  Grab the new content stored at the location in the stores
+            //  that were generated by the serialization process.
+            newContent = stores.at(loc);
+
+            //  No sense in making the server call if there is no new
+            //  content.
+            if (TP.isEmpty(newContent)) {
+                return;
+            }
+
+            uri = TP.uc(loc);
+            req = uri.constructRequest();
+
+            //  Install a success handler if a success Function was supplied.
+            if (TP.isCallable(successFunc)) {
+                req.defineHandler('RequestSucceeded',
+                                    function() {
+                                        successFunc();
+                                    });
+            }
+
+            //  Install a failure handler if a failure Function was supplied.
+            if (TP.isCallable(failFunc)) {
+                req.defineHandler('RequestFailed',
+                                    function(aResponse) {
+                                        failFunc();
+                                    });
+            }
+
+            //  Set the URI's content to the storage content.
+            uri.setResource(newContent);
+
+            //  Save it.
+            uri.save(req);
+        });
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the TP.core.Sherpa object.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var win,
+        drawerElement,
+        thisref,
+        sherpaFinishSetupFunc,
+
+        contentElem,
+
+        allDrawers,
+
+        centerElem,
+
+        resizingHandler,
+        observerConfig,
+        resizer,
+
+        framingStyleElement,
+        variablesRule;
+
+    win = this.get('vWin');
+
+    thisref = this;
+
+    //  If we didn't show the IDE when we first started, the trigger has now
+    //  been fired to show it.
+    if (!TP.sys.cfg('boot.show_ide')) {
+
+        drawerElement = TP.byId('south', win, false);
+
+        sherpaFinishSetupFunc = function(aSignal) {
+
+            //  Turn off any future notifications.
+            sherpaFinishSetupFunc.ignore(
+                drawerElement, 'TP.sig.DOMTransitionEnd');
+
+            //  After the drawers have finished animating in, delay,
+            //  giving the animation a chance to finish cleanly before
+            //  proceeding.
+            setTimeout(function() {
+
+                //  The basic Sherpa framing has been set up, but we complete
+                //  the setup here (after the drawers animate in). Note that
+                //  this will exit but want to service part of its code after
+                //  a short delay.
+                thisref.finishSetup();
+
+                //  Complete the setup after a final delay - we want to
+                //  schedule this *after* the finishSetup().
+                setTimeout(function() {
+                    TP.byId('SherpaHUD', win).toggle('closed');
+                    thisref.sherpaSetupComplete();
+                }, 250);
+
+            }, 1000);
+
+        };
+        sherpaFinishSetupFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+
+        //  Show the center area and the drawers.
+
+        //  First, we remove the 'fullscreen' class from the center element.
+        //  This allows the 'content' element below to properly size it's 'busy
+        //  message layer'.
+        TP.elementRemoveClass(TP.byId('center', win, false),
+                                'fullscreen');
+
+        //  Grab the existing 'content' element, which is now unused since the
+        //  world element moved the screens out of it, and use it to show the
+        //  'loading' element. The console will later reuse it for it's output.
+        contentElem = TP.byId('content', win, false);
+
+        //  Show the content element, only so that we can size a 'busy' message
+        //  to it properly. Then hide it again.
+        TP.elementShow(contentElem);
+        TP.elementShowBusyMessage(contentElem,
+                                    '...initializing TIBET Sherpa...');
+        TP.elementHide(contentElem);
+
+        //  Grab all of the drawer - north, south, east and west
+        allDrawers = TP.byCSSPath('.north, .south, .east, .west',
+                                    win,
+                                    false,
+                                    false);
+
+        //  Show the drawers.
+        allDrawers.forEach(
+                    function(anElem) {
+                        TP.elementRemoveAttribute(
+                                    anElem, 'pclass:hidden', true);
+                    });
+    } else {
+
+        //  The basic Sherpa framing has been drawn (because of the setting of
+        //  the 'boot.show_ide' flag), but we complete the setup here.
+        this.finishSetup();
+
+        TP.byId('SherpaHUD', win).toggle('closed');
+
+        //  Refresh the input area after a 1000ms timeout. This ensures that
+        //  animations and other layout will happen before the editor component
+        //  tries to compute its layout.
+        setTimeout(function() {
+            TP.byId('SherpaConsole', win).render();
+        }, 1000);
+    }
+
+    //  Set up mutation observers that will watch for the resizers to
+    //  become/resign being active and manage the 'transition' property of the
+    //  '#center' element appropriately.
+
+    centerElem = TP.byId('center', win, false);
+
+    resizingHandler = function(mutationRecords) {
+
+        var i,
+            len,
+            record;
+
+        len = mutationRecords.getSize();
+
+        for (i = 0; i < len; i++) {
+            record = mutationRecords.at(i);
+
+            if (record.attributeName === 'active') {
+
+                if (TP.elementHasAttribute(
+                        record.target, 'pclass:active', true)) {
+
+                    centerElem.style.transition = 'none';
+                } else {
+                    centerElem.style.transition = '';
+                }
+            }
+        }
+    };
+
+    observerConfig = {
+        subtree: true,
+        attributes: true
+    };
+
+    resizer = TP.byCSSPath('div#northResizer', win, true, false);
+    TP.addMutationObserver(
+            resizer, resizingHandler, observerConfig, 'N_RESIZING_OBSERVER');
+    TP.activateMutationObserver('N_RESIZING_OBSERVER');
+
+    resizer = TP.byCSSPath('div#southResizer', win, true, false);
+    TP.addMutationObserver(
+            resizer, resizingHandler, observerConfig, 'S_RESIZING_OBSERVER');
+    TP.activateMutationObserver('S_RESIZING_OBSERVER');
+
+    //  Set up resizing worker functions and value gathering.
+
+    framingStyleElement = TP.byCSSPath(
+                            'style[tibet|originalHref$="sherpa_framing.css"]',
+                            win,
+                            true,
+                            false);
+
+    variablesRule = TP.styleSheetGetStyleRulesMatching(
+                        TP.cssElementGetStyleSheet(framingStyleElement),
+                        'body').first();
+
+    TP.core.DragResponder.Type.defineConstant(
+        'ALTER_SHERPA_CUSTOM_PROPERTY',
+        function(anElement, styleObj, computedVals, infoAttrs) {
+
+            var customPropertyName,
+
+                minVal,
+                val;
+
+            customPropertyName = infoAttrs.at('drag:property');
+            switch (customPropertyName) {
+
+                case '--sherpa-drawer-north-open-height':
+
+                    minVal = TP.elementGetPixelValue(
+                                anElement,
+                                variablesRule.style.getPropertyValue(
+                                    '--sherpa-drawer-north-open-min-height'));
+
+                    val = computedVals.at('height');
+                    val = val.max(minVal);
+
+                    break;
+
+                case '--sherpa-drawer-south-open-height':
+
+                    minVal = TP.elementGetPixelValue(
+                                anElement,
+                                variablesRule.style.getPropertyValue(
+                                    '--sherpa-drawer-south-open-min-height'));
+
+                    val = computedVals.at('height');
+                    val = val.max(minVal);
+
+                    break;
+                default:
+                    return;
+            }
+
+            if (TP.notEmpty(customPropertyName)) {
+                variablesRule.style.setProperty(
+                                customPropertyName,
+                                val + 'px');
+            }
+        });
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -832,16 +1383,25 @@ function(anID, aName, tileParent, shouldDock) {
 TP.core.Sherpa.Inst.defineMethod('setupConsole',
 function() {
 
-    var uiDoc,
+    /**
+     * @method setupConsole
+     * @summary Sets up the Sherpa's 'console' component. The Sherpa's console
+     *     provides a command line interface to the underlying TIBET Shell
+     *     (TSH).
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var viewDoc,
 
         consoleOutputTPElem,
+        consoleInputTPElem,
 
         sherpaSouthDrawer,
-        consoleInputTPElem,
+        tshPanel,
 
         testAppender;
 
-    uiDoc = this.get('vWin').document;
+    viewDoc = this.get('vWin').document;
 
     //  We *must* set up the output first, since setting up the input will cause
     //  output to be logged.
@@ -853,15 +1413,14 @@ function() {
     consoleOutputTPElem = consoleOutputTPElem.clone();
     consoleOutputTPElem.compile();
 
+    //  Set the console output's ID and add it to the 'center' div.
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
 
-    consoleOutputTPElem = TP.byId('center', uiDoc).addContent(
+    consoleOutputTPElem = TP.byId('center', viewDoc).addContent(
                                                     consoleOutputTPElem);
-    consoleOutputTPElem.awaken();
 
-    //  Now we can set up the input
-
-    sherpaSouthDrawer = TP.byCSSPath('#south > .drawer', uiDoc, true);
+    //  Now we can set up the input cell. It currently goes into the south
+    //  drawer.
 
     consoleInputTPElem = TP.sherpa.console.getResourceElement('template',
                             TP.ietf.Mime.XHTML);
@@ -869,24 +1428,38 @@ function() {
     consoleInputTPElem = consoleInputTPElem.clone();
     consoleInputTPElem.compile();
 
-    consoleInputTPElem = sherpaSouthDrawer.addContent(consoleInputTPElem);
+    //  Grab the south drawer
+    sherpaSouthDrawer = TP.byCSSPath('#south > .drawer', viewDoc, true);
 
+    //  Grab the panel that the TSH is supposed to go into
+    tshPanel = TP.byPath(
+        './xctrls:panelbox/xctrls:panel[./xctrls:value/. = "TSH"]',
+        sherpaSouthDrawer,
+        true);
+
+    //  Insert our input element into that panel.
+    consoleInputTPElem = tshPanel.insertContent(consoleInputTPElem);
+
+    //  Do further set up for the console input. Note that this will also do
+    //  further set up for the console output that we attached above.
     consoleInputTPElem.setup();
 
+    //  Set the initial output mode.
     consoleInputTPElem.setOutputDisplayMode(
-                        TP.sys.cfg('sherpa.output_mode', 'one'));
+                        TP.sys.cfg('sherpa.tdc.output_mode', 'one'));
 
     //  NB: The console observes the HUD when it's done loading it's editor,
     //  etc.
 
     //  Install log appenders that know how to render logging entries to the
-    //  Sherpa.
+    //  Sherpa for both the lib (TP) and the app (APP).
 
     TP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
     APP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
 
-    //  Effectively replace the test logger's appenders with just ours.
-
+    //  Now, effectively replace the test logger's appenders with just ours.
+    //  This makes sure that when tests are executed in the Sherpa that the
+    //  output is placed into our console output.
     TP.getLogger(TP.TEST_LOG).clearAppenders();
 
     testAppender = TP.log.SherpaTestAppender.construct();
@@ -901,33 +1474,33 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupContextMenu',
 function() {
 
-    var uiDoc,
+    /**
+     * @method setupContextMenu
+     * @summary Sets up the Sherpa's 'context menu' component. The Sherpa's
+     *     context menu provides a way to issue commands to the system via the
+     *     'right button' click.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var viewDoc,
         menuTPElem;
 
-    uiDoc = this.get('vWin').document;
+    viewDoc = this.get('vWin').document;
 
-    menuTPElem = TP.sherpa.contextmenu.getResourceElement('template',
+    //  Add the stylesheet for the TP.xctrls.popup, if it's not there already.
+    //  All context menus will use this and we might as well pre-populate it.
+    TP.xctrls.popup.addStylesheetTo(viewDoc);
+
+    //  TODO: Make a loop here that will add the other context menus
+
+    TP.sherpa.halocontextmenu.addStylesheetTo(viewDoc);
+
+    menuTPElem = TP.sherpa.halocontextmenu.getResourceElement('template',
                             TP.ietf.Mime.XHTML);
 
     menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
 
-    TP.byId('center', uiDoc).addContent(menuTPElem);
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.core.Sherpa.Inst.defineMethod('setupExtruder',
-function() {
-
-    var newExtruder;
-
-    newExtruder = TP.sherpa.extruder.construct();
-    newExtruder.setID('SherpaExtruder');
-
-    TP.sys.registerObject(newExtruder);
+    TP.byId('center', this.get('vWin')).addRawContent(menuTPElem);
 
     return this;
 });
@@ -937,10 +1510,15 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHalo',
 function() {
 
-    var uiDoc,
-        haloTPElem;
+    /**
+     * @method setupHalo
+     * @summary Sets up the Sherpa's 'halo' component. The halo is the component
+     *     that overlays elements in the GUI and controls which element is the
+     *     current focus of manipulation activities.
+     * @returns {TP.core.sherpa} The receiver.
+     */
 
-    uiDoc = this.get('vWin').document;
+    var haloTPElem;
 
     haloTPElem = TP.sherpa.halo.getResourceElement('template',
                             TP.ietf.Mime.XHTML);
@@ -948,7 +1526,7 @@ function() {
     haloTPElem = haloTPElem.clone();
     haloTPElem.compile();
 
-    TP.byId('center', uiDoc).addContent(haloTPElem);
+    TP.byId('center', this.get('vWin')).addContent(haloTPElem);
 
     return this;
 });
@@ -958,18 +1536,19 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHUD',
 function() {
 
-    var uiDoc,
-        hudTPElem;
+    /**
+     * @method setupHUD
+     * @summary Sets up the Sherpa's 'hud' component. The hud is the component
+     *     that controls the drawers that encompass the user's application
+     *     canvas. These drawers contain controls that the user uses to
+     *     manipulate their applocation.
+     * @returns {TP.core.sherpa} The receiver.
+     */
 
-    uiDoc = this.get('vWin').document;
+    var hudTPElem;
 
-    hudTPElem = TP.sherpa.hud.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    hudTPElem = hudTPElem.clone();
-    hudTPElem.compile();
-
-    TP.wrap(TP.documentGetBody(uiDoc)).addContent(hudTPElem);
+    hudTPElem = TP.byId('SherpaHUD', this.get('vWin'));
+    hudTPElem.setup();
 
     return this;
 });
@@ -979,6 +1558,44 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupInspector',
 function() {
 
+    /**
+     * @method setupInspector
+     * @summary Sets up the Sherpa's 'inspector' component. The inspector is the
+     *     component that allows a user to browse 'under the covers' using a
+     *     multi-bay, hierarchical approach.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var inspectorTPElem;
+
+    inspectorTPElem = TP.byId('SherpaInspector', this.get('vWin'));
+    inspectorTPElem.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupOutliner',
+function() {
+
+    /**
+     * @method setupOutliner
+     * @summary Sets up the Sherpa's 'outliner' component. The outliner is the
+     *     component that allows a user to visualize and manipulate the
+     *     underlying DOM structure of their application.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var newOutliner;
+
+    //  The outliner doesn't have a visual 'tag' representation, so we manually
+    //  construct it, set its ID and register it so that it can be found.
+    newOutliner = TP.sherpa.outliner.construct();
+
+    newOutliner.setID('SherpaOutliner');
+    TP.sys.registerObject(newOutliner);
+
     return this;
 });
 
@@ -987,10 +1604,7 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupSearcher',
 function() {
 
-    /**
-     * @method setupSearcher
-     */
-
+    /*
     var searchDrawerContent;
 
     searchDrawerContent = TP.byCSSPath('sherpa|search > .content',
@@ -998,6 +1612,39 @@ function() {
                                         true);
 
     searchDrawerContent.insertContent('<sherpa:searcher/>', TP.AFTER_BEGIN);
+    */
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupThumbnail',
+function() {
+
+    /*
+    TP.byId('SherpaThumbnail', this.get('vWin')).setup();
+    */
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupWorkbench',
+function() {
+
+    /**
+     * @method setupWorkbench
+     * @summary Sets up the Sherpa's 'workbench' component. The workbench is the
+     *     component that contains the inspector and its attendant toolbars.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var workbenchTPElem;
+
+    workbenchTPElem = TP.byId('SherpaWorkbench', this.get('vWin'));
+    workbenchTPElem.setup();
 
     return this;
 });
@@ -1007,10 +1654,20 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupWorld',
 function() {
 
-    var uiScreensWin,
-        uiDoc,
+    /**
+     * @method setupWorld
+     * @summary Sets up the Sherpa's 'world' component. The world is the
+     *     component that holds a collection of 'screens' used by the Sherpa to
+     *     load different parts of the user's application GUI into and allows
+     *     the author to easily switch between them.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var viewDoc,
 
         worldElem,
+        screenHolderDiv,
+        infoHolderDiv,
 
         uiScreenIFrames,
         numIFrames,
@@ -1018,22 +1675,40 @@ function() {
         configNumIFrames,
         i,
 
-        screenElem,
-        iFrameElem,
+        worldTPElem,
 
-        worldTPElem;
+        screens,
+        infos;
 
-    uiScreensWin = this.get('vWin');
-    uiDoc = uiScreensWin.document;
+    //  Grab the document that we were installed into.
+    viewDoc = this.get('vWin').document;
 
     //  Create the <sherpa:world> tag
-    worldElem = TP.documentConstructElement(
-                    uiDoc, 'sherpa:world', TP.w3.Xmlns.SHERPA);
-    TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld');
+    worldElem = TP.documentConstructElement(viewDoc,
+                                            'sherpa:world',
+                                            TP.w3.Xmlns.SHERPA);
+    TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld', true);
+    TP.elementSetAttribute(worldElem, 'mode', 'normal', true);
+
+    //  Create the 'screen' holding div and append that to the <sherpa:world>
+    //  tag
+    screenHolderDiv = TP.documentConstructElement(viewDoc,
+                                                    'div',
+                                                    TP.w3.Xmlns.XHTML);
+    screenHolderDiv = TP.nodeAppendChild(worldElem, screenHolderDiv, false);
+    TP.elementAddClass(screenHolderDiv, 'screens');
+
+    //  Create the 'screen info' holding div and append that to the
+    //  <sherpa:world> tag.
+    infoHolderDiv = TP.documentConstructElement(viewDoc,
+                                                'div',
+                                                TP.w3.Xmlns.XHTML);
+    infoHolderDiv = TP.nodeAppendChild(worldElem, infoHolderDiv, false);
+    TP.elementAddClass(infoHolderDiv, 'infos');
 
     //  Append the <sherpa:world> tag into the loaded Sherpa document.
     TP.xmlElementInsertContent(
-            TP.byId('center', uiScreensWin, false),
+            TP.byId('center', viewDoc, false),
             worldElem,
             TP.AFTER_BEGIN,
             null);
@@ -1041,19 +1716,20 @@ function() {
     //  Grab the 1...n 'prebuilt' iframes that are available in the Sherpa
     //  template. Create a <sherpa:screen> tag and wrap them in it and place
     //  that screen tag into the world.
-    uiScreenIFrames = TP.byCSSPath('.center iframe', uiScreensWin, false, false);
-    uiScreenIFrames.perform(
-            function(anIFrameElem) {
-                var elem;
-
-                //  Wrap each iframe inside of a 'sherpa:screen' element
-                elem = TP.documentConstructElement(uiDoc,
-                                                'sherpa:screen',
-                                                TP.w3.Xmlns.SHERPA);
-
-                TP.nodeAppendChild(elem, anIFrameElem, false);
-                TP.nodeAppendChild(worldElem, elem, false);
+    uiScreenIFrames = TP.byCSSPath('.center iframe', viewDoc, false, false);
+    uiScreenIFrames.forEach(
+            function(anIFrameElem, index) {
+                TP.sherpa.world.$buildScreenFromIFrame(
+                        anIFrameElem,
+                        index,
+                        null,
+                        screenHolderDiv,
+                        infoHolderDiv);
             });
+
+    //  Grab the <sherpa:world> tag and awaken it.
+    worldTPElem = TP.byId('SherpaWorld', viewDoc);
+    worldTPElem.awaken();
 
     //  Get the number of actual iframes vs. the number of screens configured by
     //  the user as the desired number of iframes (defaulting to 1).
@@ -1063,62 +1739,106 @@ function() {
     //  If there are not enough screens, according to the number configured by
     //  the user, create more.
     if (configNumIFrames > numIFrames) {
-        for (i = 0; i < configNumIFrames - numIFrames; i++) {
-            screenElem = TP.documentConstructElement(uiDoc,
-                                                    'sherpa:screen',
-                                                    TP.w3.Xmlns.SHERPA);
-            iFrameElem = TP.documentConstructElement(uiDoc,
-                                                    'iframe',
-                                                    TP.w3.Xmlns.XHTML);
 
-            TP.nodeAppendChild(screenElem, iFrameElem, false);
-            TP.nodeAppendChild(worldElem, screenElem, false);
+        for (i = 0; i < configNumIFrames - numIFrames; i++) {
+            worldTPElem.createScreenElement('SCREEN_' + (i + numIFrames));
         }
     }
 
-    //  Grab the <sherpa:world> tag and awaken it.
-    worldTPElem = TP.byId('SherpaWorld', uiScreensWin);
-    worldTPElem.awaken();
+    //  Set both the first screen and it's info div to be the 'selected' one.
+    screens = worldTPElem.get('screens');
+    screens.first().setSelected(true);
+
+    infos = worldTPElem.get('infos');
+    infos.first().setSelected(true);
 
     //  Hide the 'content' div
-    TP.elementHide(TP.byId('content', uiScreensWin, false));
+    TP.elementHide(TP.byId('content', viewDoc, false));
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('sherpaSetupComplete',
+function() {
+
+    /**
+     * @method sherpaSetupComplete
+     * @summary Completes the setting up of the Sherpa. This is called once all
+     *     of the Sherpa's drawers have loaded with their content and have
+     *     animated in. It is called only once, however.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var viewWin;
+
+    //  Grab the root window.
+    viewWin = this.get('vWin');
+
+    //  Render the console component. This ensures that all of the setup has
+    //  happened and that all of the pieces that the console requires are ready
+    //  to go.
+    TP.byId('SherpaConsole', viewWin).render();
+
+    //  Toggle the east and west drawers to their 'maximum open' state.
+    TP.byCSSPath('#west sherpa|opener', viewWin).at(0).signal('Toggle');
+    TP.byCSSPath('#east sherpa|opener', viewWin).at(0).signal('Toggle');
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('postPatch',
-function(patchText, patchVirtualPath, onsuccess, onfailure) {
+TP.core.Sherpa.Inst.defineMethod('showTileAt',
+function(tileID, title, existedHandler, newHandler) {
 
-    var patchURL,
+    /**
+     * @method showTileAt
+     * @summary Shows a tile with the supplied title and content at the supplied
+     *     point.
+     * @param {String} tileID The unique ID of the tile. If a tile with this ID
+     *     cannot be found in the same document as the sidebar, then a new tile
+     *     will be created.
+     * @param {String} title The title of the tile.
+     * @param {Function} [existedHandler] If supplied, this Function is executed
+     *     after the tile is shown on screen when the tile already existed and
+     *     wasn't created again.
+     * @param {Function} [newHandler] If supplied, this Function is executed
+     *     after the tile is shown on screen when the tile was newly created.
+     * @return {TP.core.Sherpa} The receiver.
+     */
 
-        postRequest;
+    var alreadyExisted,
+        tileTPElem;
 
-    if (TP.isEmpty(patchText)) {
-        return;
+    alreadyExisted = false;
+
+    //  Look for an existing tile.
+    tileTPElem = TP.byId(tileID, this.get('vWin'));
+
+    //  Couldn't find one? Create one.
+    if (TP.notValid(tileTPElem)) {
+        //  NB: Because we don't supply a parent here, the Sherpa will use the
+        //  'common tile layer'.
+        tileTPElem = this.makeTile(tileID, title);
+    } else {
+        tileTPElem.setHeaderText(title);
+        alreadyExisted = true;
     }
 
-    patchURL = TP.uc(TP.sys.cfg('tds.patch.uri'));
-    if (TP.notValid(patchURL)) {
-        TP.error('Unable to create URL for patch server.');
-        return;
+    //  Show the tile.
+    tileTPElem.setAttribute('hidden', false);
+
+    if (alreadyExisted) {
+        if (TP.isCallable(existedHandler)) {
+            existedHandler(tileTPElem);
+        }
+    } else {
+        if (TP.isCallable(newHandler)) {
+            newHandler(tileTPElem);
+        }
     }
-
-    if (TP.isEmpty(patchVirtualPath)) {
-        TP.error('Unable to locate source path for function.');
-        return;
-    }
-
-    postRequest = patchURL.constructRequest(
-                    TP.hc('async', false, 'mimetype', TP.JSON_ENCODED));
-
-    patchURL.setResource(TP.hc('type', 'patch',
-                                'nowatch', true,
-                                'target', patchVirtualPath,
-                                'content', patchText));
-
-    patchURL.save(postRequest);
 
     return this;
 });
@@ -1128,12 +1848,21 @@ function(patchText, patchVirtualPath, onsuccess, onfailure) {
 TP.core.Sherpa.Inst.defineMethod('toggle',
 function() {
 
-    var elem;
+    /**
+     * @method toggle
+     * @summary Toggles the Sherpa's HUD open and closed.
+     * @returns {TP.core.sherpa} The receiver.
+     */
 
-    elem = TP.byId('SherpaHUD', this.get('vWin'));
-    if (TP.isValid(elem)) {
-        elem.toggle('hidden');
+    //  If the Sherpa's setup is complete, then we just toggle the HUD and exit.
+    if (this.get('setupComplete')) {
+        TP.byId('SherpaHUD', this.get('vWin')).toggle('closed');
+
+        return this;
     }
+
+    //  Otherwise, execute the setup process.
+    this.setup();
 
     return this;
 });
@@ -1142,20 +1871,58 @@ function() {
 //  Sherpa-specific TP.sig.Signal subtypes
 //  ============================================================================
 
-TP.sig.Signal.defineSubtype('ConsoleCommand');
+//  Sherpa signals
+TP.sig.Signal.defineSubtype('SherpaSignal');
 
-TP.sig.Signal.defineSubtype('EndAutocompleteMode');
-TP.sig.Signal.defineSubtype('EndSearchMode');
+TP.sig.SherpaSignal.Type.isControllerSignal(true);
+TP.sig.SherpaSignal.isControllerRoot(true);
 
-TP.sig.Signal.defineSubtype('TileDidOpen');
-TP.sig.Signal.defineSubtype('TileWillClose');
+TP.sig.SherpaSignal.defineSubtype('ToggleSherpa');
 
-TP.sig.Signal.defineSubtype('AssistObject');
-TP.sig.Signal.defineSubtype('EditObject');
-TP.sig.Signal.defineSubtype('InspectObject');
+//  Console input signals
+TP.sig.SherpaSignal.defineSubtype('ConsoleInput');
 
-TP.sig.ResponderSignal.defineSubtype('CancelAction');
-TP.sig.ResponderSignal.defineSubtype('ExecuteCommand');
+//  Console processing signals
+TP.sig.ResponderSignal.defineSubtype('ConsoleCommand');
+TP.sig.ResponderSignal.defineSubtype('RemoteConsoleCommand');
+
+TP.sig.ResponderSignal.defineSubtype('AssistObject');
+TP.sig.ResponderSignal.defineSubtype('EditObject');
+TP.sig.ResponderSignal.defineSubtype('InspectObject');
+
+//  Keyboard handling signals
+TP.sig.SherpaSignal.defineSubtype('EndAutocompleteMode');
+TP.sig.SherpaSignal.defineSubtype('EndSearchMode');
+
+//  Tile signals
+TP.sig.SherpaSignal.defineSubtype('TileDidOpen');
+TP.sig.SherpaSignal.defineSubtype('TileWillDetach');
+
+//  Halo Signals
+TP.sig.SherpaSignal.defineSubtype('HaloDidBlur');
+TP.sig.SherpaSignal.defineSubtype('HaloDidFocus');
+
+//  Inspector Signals
+TP.sig.SherpaSignal.defineSubtype('NavigateInspector');
+
+TP.sig.SherpaSignal.defineSubtype('InspectorDidFocus');
+
+TP.sig.ResponderSignal.defineSubtype('FocusInspectorForBrowsing');
+TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
+
+//  Breadcrumb Signals
+TP.sig.SherpaSignal.defineSubtype('BreadcrumbSelected');
+
+//  Screen Signals
+TP.sig.SherpaSignal.defineSubtype('ToggleScreen');
+TP.sig.SherpaSignal.defineSubtype('FocusScreen');
+
+//  GUI Signals
+TP.sig.ResponderSignal.defineSubtype('SherpaHaloToggle');
+TP.sig.ResponderSignal.defineSubtype('SherpaOutlinerToggle');
+
+//  Notifier Signals
+TP.sig.ResponderSignal.defineSubtype('SherpaNotify');
 
 //  ----------------------------------------------------------------------------
 //  end

@@ -15,7 +15,8 @@
             "map": {
                 "couch": {
                     "route": "/couch/*",
-                    "replace": "http://127.0.0.1:5984/"
+                    "replace": "http://127.0.0.1:5984/",
+                    "public": false
                 }
             }
         },
@@ -39,23 +40,14 @@
             TDS,
             url;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
         TDS = app.TDS;
 
         //  Activate proxy middleware?
-        if (TDS.cfg('tds.use.proxy') !== true) {
+        if (TDS.cfg('tds.use_proxy') !== true) {
             return;
         }
-        logger.debug('Integrating TDS proxy route handler.');
 
         //  ---
         //  Requires
@@ -81,7 +73,9 @@
 
         keys.forEach(function(key) {
             var name,
-                route;
+                route,
+                handler,
+                pub;
 
             //  Inbound key is the route key so fetch that first (what the route
             //  value should be for our app.all() call).
@@ -91,7 +85,14 @@
             //  We need to remove that and get the list of keys for route name.
             name = key.replace(/\.route$/, '');
 
-            app.all(route, function(req, res) {
+            pub = map[name + '.public'];
+            if (TDS.notValid(pub) || pub !== true) {
+                pub = false;
+            }
+
+            logger.system('enabling proxy for ' + route);
+
+            handler = function(req, res) {
                 var regex,
                     replace,
                     path,
@@ -99,14 +100,14 @@
 
                 regex = new RegExp(route);
                 if (!regex) {
-                    logger.error('Invalid proxy entry for ' + name +
+                    logger.error('invalid proxy entry for ' + name +
                         ' (route not regex-compatible).');
                     return;
                 }
 
                 replace = map[name + '.replace'];
                 if (!replace) {
-                    logger.error('Invalid proxy entry for ' + name +
+                    logger.error('invalid proxy entry for ' + name +
                         ' (no replacement pattern).');
                     return;
                 }
@@ -123,7 +124,14 @@
                         logger.error(err);
                     }
                 })).pipe(res);
-            });
+            };
+
+            if (pub) {
+                app.all(route, handler);
+            } else {
+                app.all(route, options.loggedInOrLocalDev, handler);
+            }
+
         });
     };
 

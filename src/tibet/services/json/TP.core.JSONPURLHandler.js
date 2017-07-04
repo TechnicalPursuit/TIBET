@@ -71,13 +71,19 @@ function(targetURI, aRequest) {
 
     //  Grab any parameters that were supplied on the request (as part of
     //  a command line, etc.)
-    uriparams = TP.ifInvalid(request.at('uriparams'), TP.hc());
+    uriparams = request.at('uriparams');
+    if (TP.notValid(uriparams)) {
+        uriparams = TP.hc();
+    }
 
     //  Grab any parameters that were supplied as part of the URI itself.
-    queryDict = TP.ifInvalid(targetURI.get('queryDict'), TP.hc());
+    queryDict = targetURI.get('queryDict');
+    if (TP.notValid(queryDict)) {
+        queryDict = TP.hc();
+    }
+
     queryDict.perform(
             function(kvPair) {
-
                 uriparams.atPutIfAbsent(kvPair.first(), kvPair.last());
             });
 
@@ -103,14 +109,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPURLHandler.Type.defineMethod('nuke',
+TP.core.JSONPURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes the target URL. This is an unsupported operation for a
      *     JSONP URL. NOTE: 'jsonp://' URIs don't implement this functionality.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of

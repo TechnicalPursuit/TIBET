@@ -18,9 +18,8 @@ TP.sherpa.TemplatedTag.defineSubtype('typedisplay');
 
 TP.sherpa.typedisplay.addTraits(TP.core.D3Tag);
 
-TP.sherpa.typedisplay.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
+TP.sherpa.typedisplay.Inst.defineAttribute('body',
+    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -75,10 +74,13 @@ function(enterSelection) {
      *     content into the supplied d3.js 'enter selection'.
      * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
      *     that new content should be appended to.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
      */
 
     var sections,
+
+        newContent,
 
         contentDivs,
 
@@ -88,6 +90,8 @@ function(enterSelection) {
 
     sections = enterSelection.append('div').
         attr('class', 'section');
+
+    newContent = sections;
 
     sections.append('div').
         attr('class', 'header').
@@ -158,7 +162,7 @@ function(enterSelection) {
             }
         });
 
-    return this;
+    return newContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -190,16 +194,18 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.typedisplay.Inst.defineMethod('getRootUpdateSelection',
-function(rootSelection) {
+function(containerSelection) {
 
     /**
      * @method getRootUpdateSelection
      * @summary Creates the 'root' update selection that will be used as the
      *     starting point to begin d3.js drawing operations.
-     * @returns {d3.Selection} The receiver.
+     * @param {TP.extern.d3.selection} containerSelection The selection made by
+     *     having d3.js select() the receiver's 'selection container'.
+     * @returns {TP.extern.d3.Selection} The receiver.
      */
 
-    return rootSelection.selectAll('div.section');
+    return containerSelection.selectAll('div.section');
 });
 
 //  ------------------------------------------------------------------------

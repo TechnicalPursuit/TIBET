@@ -1,0 +1,11 @@
+{
+    "type": "job",
+    "flow": "s3",
+    "owner": "Team TIBET",
+    "params": {
+        "s3": {
+            "key": "[[s3_key]]",
+            "body": "[[s3_body]]"
+        }
+    }
+}

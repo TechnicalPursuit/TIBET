@@ -386,7 +386,9 @@ function(srcNode, destNode, shouldRemove) {
 
     if (TP.notFalse(shouldRemove)) {
         srcNode[TP.EVENT_IDS] = null;
+
         srcNode[TP.WRAPPER] = null;
+        srcNode[TP.NODE_TYPE] = null;
 
         srcNode[TP.GLOBAL_ID] = null;
 

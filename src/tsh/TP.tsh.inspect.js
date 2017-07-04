@@ -43,7 +43,11 @@ function(aRequest) {
         url,
         obj,
 
-        pathName,
+        path,
+
+        showBusy,
+        pathParts,
+
         addTargetAsRoot;
 
     shell = aRequest.at('cmdShell');
@@ -77,23 +81,31 @@ function(aRequest) {
         obj = shell.resolveObjectReference(arg0, aRequest);
     }
 
-    if (TP.notValid(obj)) {
-        aRequest.stdout('Invalid object reference: ' + arg0);
+    path = shell.getArgument(aRequest, 'tsh:path', '', false);
 
-        return aRequest.complete(TP.TSH_NO_VALUE);
+    //  Convert '/'s to TP.PATH_SEP (but preserve backslashed '/'s)
+    path = TP.stringSplitSlashesAndRejoin(path, TP.PATH_SEP);
+
+    showBusy = true;
+
+    if (TP.notEmpty(path)) {
+        pathParts = path.split(TP.PATH_SEP);
+        if (pathParts.getSize() === 1) {
+            showBusy = false;
+        }
     }
 
-    pathName = shell.getArgument(aRequest, 'tsh:path', null, false);
     addTargetAsRoot = TP.bc(shell.getArgument(
-                                    aRequest, 'tsh:addroot', null, false));
+                                    aRequest, 'tsh:addroot', false, false));
 
     //  Fire a 'InspectObject' signal, supplying the target object to focus on.
     TP.signal(null,
                 'InspectObject',
                 TP.hc('targetObject', obj,
                         'targetAspect', TP.id(obj),
-                        'targetPath', pathName,
-                        'addTargetAsRoot', addTargetAsRoot));
+                        'targetPath', path,
+                        'addTargetAsRoot', addTargetAsRoot,
+                        'showBusy', showBusy));
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
@@ -102,7 +114,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('inspect',
     TP.tsh.inspect.Type.getMethod('tshExecute'),
     'Generates an inspector for stdin data.',
     ':inspect [target]',

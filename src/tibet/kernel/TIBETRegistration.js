@@ -101,49 +101,6 @@ function(anID, regOnly, nodeContext) {
     //  doesn't like it when you try to alter a non-null parameter value
     id = TP.str(anID);
 
-    if (TP.notEmpty(id) && id.isJSIdentifier()) {
-        url = TP.uc('urn:tibet:' + id);
-        if (TP.isValid(url)) {
-            inst = url.getContent();
-            if (TP.isValid(inst)) {
-                return inst;
-            }
-        }
-    }
-
-    //  if we're not told differently don't stop with registered objects
-    reg = TP.notValid(regOnly) ? false : regOnly;
-
-    if (TP.regex.VALID_TYPENAME.test(id)) {
-        //  check for type names as our second priority. note the flag here
-        //  is controlled by whether we're checking registrations only.
-        //  what that's implying in this case is that we'll only return the
-        //  type if it's already loaded when we're asked to stop with
-        //  registration checks only (reg = true means fault = false)
-        if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
-            return inst;
-        } else {
-            context = TP.sys.getLaunchWindow();
-            parts = id.split('.');
-            obj = context[parts[0]];
-            parts.shift();
-            while (TP.isValid(obj) && parts.length) {
-                key = parts.shift();
-                if (TP.isValid(obj[key])) {
-                    obj = obj[key];
-                } else if (TP.canInvoke(obj, 'get')) {
-                    obj = obj.get(key);
-                } else {
-                    obj = void 0;
-                }
-            }
-
-            if (TP.isValid(obj)) {
-                return TP.wrap(obj);
-            }
-        }
-    }
-
     //  If the ID starts with a TIBET URN scheme and it has a real resource
     //  result object, then return that. Note here how we use 'getInstanceById'
     //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
@@ -160,13 +117,59 @@ function(anID, regOnly, nodeContext) {
 
     //  Try to make a TIBET URN from the ID and, if it has a real resource
     //  result object, then return that. Note here how we use 'getInstanceById'
-    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  on the TP.core.URI type rather than 'TP.uc' - that call will always
     //  create an instance *and register it* if it doesn't exist.
     if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
 
         //  NB: This is a URN so we assume 'async' of false here.
         if (TP.isValid(inst = url.getResource().get('result'))) {
             return inst;
+        }
+    }
+
+    //  if we're not told differently don't stop with registered objects
+    reg = TP.notValid(regOnly) ? false : regOnly;
+
+    //  Check for type names as our second priority. Note the flag here is
+    //  controlled by whether we're checking registrations only. What that's
+    //  implying in this case is that we'll only return the type if it's already
+    //  loaded when we're asked to stop with registration checks only
+    //  (reg = true means fault = false)
+    if (TP.regex.VALID_TYPENAME.test(id)) {
+        if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
+            return inst;
+        } else {
+            context = TP.sys.getLaunchWindow();
+
+            parts = id.split('.');
+            obj = context[parts.at(0)];
+            parts.shift();
+
+            while (TP.isValid(obj) && parts.length) {
+                key = parts.shift();
+
+                if (key === 'Inst' &&
+                        TP.canInvoke(obj, 'getInstPrototype')) {
+                    obj = obj.getInstPrototype();
+                    continue;
+                } else if (key === 'Type' &&
+                                TP.canInvoke(obj, 'getPrototype')) {
+                    obj = obj.getPrototype();
+                    continue;
+                }
+
+                if (TP.isValid(obj[key])) {
+                    obj = obj[key];
+                } else if (TP.canInvoke(obj, 'get')) {
+                    obj = obj.get(key);
+                } else {
+                    obj = void 0;
+                }
+            }
+
+            if (TP.isValid(obj)) {
+                return TP.wrap(obj);
+            }
         }
     }
 
@@ -196,6 +199,34 @@ function(anID, regOnly, nodeContext) {
         return;
     }
 
+    //  common to search for elements in tibet://{canvas}/path#elem so try to
+    //  resolve those cases.
+    if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
+        parts = TP.regex.TIBET_URL_SPLITTER.match(id);
+        inst = TP.sys.getWindowById(parts.at(3));
+        if (TP.isWindow(inst)) {
+            if (parts.at(4) === 'document') {
+                return TP.tpdoc(inst.document);
+            } else if (TP.notEmpty(parts.at(6))) {
+
+                if (parts.at(6) === '#document') {
+                    return TP.tpdoc(inst.document);
+                }
+
+                inst = TP.nodeGetElementById(inst.document,
+                                                parts.at(6).slice(1));
+                if (TP.isNode(inst)) {
+                    return TP.tpnode(inst);
+                }
+
+                //  We're definitely a tibet:// URL, but we couldn't resolve to
+                //  a Node of some sort. No sense in continuing - exit with
+                //  null.
+                return null;
+            }
+        }
+    }
+
     //  anything that looks like a URI can be processed next since the test
     //  is pretty quick, and doing it now helps avoid confusion with later
     //  tests looking for dot-separated window/object paths
@@ -210,6 +241,12 @@ function(anID, regOnly, nodeContext) {
         //  avoid problems with references to namespace-qualified elements but
         //  we have to watch out for javascript uri entries
         if (TP.isURI(url = TP.uc(id))) {
+
+            //  If there is no fragment, just return the url instance itself.
+            if (!url.hasFragment()) {
+                return url;
+            }
+
             //  NOTE that this call means that URIs should be very careful not
             //  to re-invoke getObjectById without at least altering the actual
             //  ID being requested or we'll recurse
@@ -239,31 +276,16 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
-    //  common to search for elements in tibet://{canvas}/path#elem so try to
-    //  resolve those cases.
-    if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
-        parts = TP.regex.TIBET_URL_SPLITTER.match(id);
-        inst = TP.sys.getWindowById(parts.at(3));
-        if (TP.isWindow(inst)) {
-            if (parts.at(4) === 'document') {
-                return TP.tpdoc(inst.document);
-            } else {
-                inst = TP.nodeGetElementById(inst.document, parts[6].slice(1));
-                if (TP.isNode(inst)) {
-                    return TP.tpnode(inst);
-                }
-            }
-        }
-    }
-
     //  also common to look for an ID in a window, so check that by looking
     //  for anything that includes a fragment identifier (#). these are
     //  somewhat common in handlers where a leading # is used to help ensure
     //  proper recognition of the reference as a barename/pointer
     if (TP.regex.ELEMENT_ID.test(id)) {
+
         //  likely window#id since it didn't look like a URI above
         parts = TP.regex.ELEMENT_ID.match(id);
         inst = TP.sys.getWindowById(parts.at(1));
+
         if (TP.isWindow(inst)) {
             if (parts.at(2) === 'document') {
                 return TP.tpdoc(inst.document);
@@ -443,7 +465,7 @@ function(anObj, anID) {
     }
 
     //  Note that in the checks below, we check with the TP.core.URI *type*'s
-    //  'instances' registry *before* the 'TP.uc()' calls. 'TP.uc()' will create
+    //  'instances' registry *before* the 'TP.uc' calls. 'TP.uc' will create
     //  a URI in the registry if one doesn't exist.
 
     //  If a TIBET URN can be made from the ID and it is registered with the URI
@@ -508,7 +530,7 @@ function(anObj, anID, forceRegistration, observeResource) {
         return false;
     }
 
-    //  A URI can be found directly by using the TP.uc() call and its registry.
+    //  A URI can be found directly by using the TP.uc call and its registry.
     //  But go ahead and do the registration if caller is forcing it.
     if (TP.isKindOf(anObj, TP.core.URI) && TP.notTrue(forceRegistration)) {
         return false;
@@ -530,7 +552,10 @@ function(anObj, anID, forceRegistration, observeResource) {
         //  no way to get an ID? then the object itself is the key
         id = TP.ifInvalid(anID, anObj);
     } else {
-        id = TP.ifInvalid(anID, anObj.getID());
+        id = anID;
+        if (TP.notValid(id)) {
+            id = anObj.getID();
+        }
     }
 
     //  If the ID is already a URI, then it can already be looked up without
@@ -553,7 +578,8 @@ function(anObj, anID, forceRegistration, observeResource) {
     //  'observeResource' flag (which we default to true if one wasn't supplied)
     urn.setResource(
         anObj,
-        TP.hc('observeResource', TP.ifInvalid(observeResource, false)));
+        TP.hc('observeResource', TP.ifInvalid(observeResource, false),
+            'signalChange', false));
 
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');
@@ -587,7 +613,10 @@ function(anObj, anID) {
         id = anObj.getID();
     }
 
-    if (!TP.isURI(urn = TP.uc(TP.uc(TP.TIBET_URN_PREFIX + id)))) {
+    //  NOTE that we don't create a URI here, we simply check to see if one has
+    //  already been created that might need to be flushed.
+    urn = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id);
+    if (!TP.isURI(urn)) {
         return false;
     }
 

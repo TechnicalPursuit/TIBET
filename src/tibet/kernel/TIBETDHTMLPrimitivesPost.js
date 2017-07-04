@@ -203,7 +203,59 @@ function(aPrefix, aSuffix) {
         str += prefix + queries.at(i) + suffix + ', ';
     }
 
+    //  Slice off the last comma and space - otherwise, the query is considered
+    //  to be malformed
+    if (TP.notEmpty(str)) {
+        str = str.slice(0, -2);
+    }
+
     return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('computeOriginID',
+function(aWindow, aLocation, aLocalID) {
+
+    /**
+     * @method computeOriginID
+     * @summary Computes an 'origin ID' suitable for use with the TIBET
+     *     signaling system.
+     * @description Sometimes, it is desirable to observe a signaling source
+     *     (usually a Element) within a document that hasn't yet been rendered.
+     *     Given the supplied parameters, this method will produce the canonical
+     *     origin ID used by the signaling system. This can then be used to
+     *     'observe' that origin before the content is rendered.
+     * @param {Window|TP.core.Window|String} aWindow The target Window or
+     *     supplied String containing the Window's 'global ID'.
+     * @param {String} aLocation The URL location of the content to be rendered
+     *     into the target Window. This can be in either concrete or virtual URI
+     *     format.
+     * @param {String} aLocalID The 'local ID' of the signaling source in the
+     *     rendered content.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidString
+     * @returns {String} The origin ID computed from the supplied parameters.
+     */
+
+    var winGID,
+        normalizedLocation,
+        orgID;
+
+    if (TP.notValid(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    if (TP.isEmpty(aLocation) || TP.isEmpty(aLocalID)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    winGID = TP.gid(aWindow);
+    normalizedLocation = TP.uriInTIBETFormat(TP.uriExpandPath(aLocation));
+
+    orgID = 'tibet://' + winGID + '/' + normalizedLocation + '#' + aLocalID;
+
+    return orgID;
 });
 
 //  ------------------------------------------------------------------------
@@ -243,6 +295,64 @@ and movement/alteration of runtime DOM properties on documents.
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentBlurFocusedElement',
+function(aDocument, shouldFocusPrevious) {
+
+    /**
+     * @method documentBlurFocusedElement
+     * @summary Blurs the currently focused element in the supplied document.
+     * @param {Document} aDocument The document to blur the currently focused
+     *     element in.
+     * @param {Boolean} [shouldFocusPrevious=true] An optional parameter that
+     *     will determine whether, after blurring, this method should check the
+     *     focus stack to see if an element is there. If so, it will focus it.
+     * @exception TP.sig.InvalidDocument
+     */
+
+    var focusedElem,
+
+        lastDoc,
+        lastTPElem;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    focusedElem = TP.documentGetFocusedElement(aDocument);
+    if (TP.isElement(focusedElem)) {
+
+        //  Blur it 'the TIBET way' (so that we can manage the focus stack,
+        //  etc.)
+        TP.wrap(focusedElem).blur();
+    }
+
+    //  If we should focus the 'previous' element and there is a previous
+    //  element on the stack, then grab it and focus it.
+    if (TP.notFalse(shouldFocusPrevious) && TP.notEmpty(TP.$focus_stack)) {
+
+        //  Before we alter the stack, we grab the native document of the
+        //  last item on the top of the stack.
+        lastDoc = TP.$focus_stack.last().getNativeDocument();
+
+        //  If the document of what we just focused was the same as the supplied
+        //  document, then we need to pop off the last item as we end up with
+        //  one extra and focus it.
+
+        //  TODO: Investigate why this is the case.
+        if (lastDoc === aDocument) {
+            lastTPElem = TP.core.UIElementNode.popOffFocusStack();
+            lastTPElem.focus();
+        } else {
+            //  Go ahead and just focus the last item that's on the stack.
+            TP.$focus_stack.last().focus();
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentEnsureHeadElement',
 function(aDocument) {
 
@@ -273,38 +383,6 @@ function(aDocument) {
     }
 
     return head;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('documentFocusAutofocusedElement',
-function(aDocument) {
-
-    /**
-     * @method documentFocusAutofocusedElement
-     * @summary Focuses the element in the supplied document that contains the
-     *     HTML5 'autofocus' attribute (which would be the first one to focus
-     *     when the document first loads).
-     * @param {Document} aDocument The document to focus the autofocused element
-     *     in.
-     * @exception TP.sig.InvalidDocument
-     */
-
-    var autofocusedElem;
-
-    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument');
-    }
-
-    if (TP.isElement(autofocusedElem =
-                        TP.byCSSPath('*[autofocus]', aDocument, true, false))) {
-
-        //  Focus it 'the TIBET way' (so that proper highlighting, etc.
-        //  takes effect)
-        TP.wrap(autofocusedElem).focus();
-    }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -470,7 +548,7 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentGetFocusedElement',
-function(aDocument) {
+function(aDocument, orActiveElement) {
 
     /**
      * @method documentGetFocusedElement
@@ -478,11 +556,17 @@ function(aDocument) {
      *     'active') element. If no element is currently focused, this will
      *     return the 'body' element, as per the HTML5 specification.
      * @param {Document} aDocument The document to query.
+     * @param {Boolean} [orActiveElement=true] Whether or not to return the
+     *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
+     *     available. The default is true.
      * @exception TP.sig.InvalidDocument
      * @returns {Element} The currently focused element.
      */
 
-    var activeElement;
+    var activeElement,
+
+        docBody,
+        bodyIndex;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -493,18 +577,50 @@ function(aDocument) {
 
     //  Therefore, we try to query for the first element that would
     //  have the TIBET 'pclass:focus' pseudo-class on it and use that.
-    //  Otherwise, we do what the HTML5 standard says and return the 'body'
-    //  element.
-    //  In properly functioning browsers, the built-in routine already returns
-    //  the 'body' if there is no focused element.
 
-    if (!TP.isElement(activeElement = aDocument.activeElement)) {
-        //  Note how we pass 'true' as the third argument here to auto-collapse
-        //  the returned Array into the first item
-        if (!TP.isElement(activeElement = TP.byCSSPath('*[pclass|focus]',
-                                                     aDocument,
-                                                     true,
-                                                     false))) {
+    activeElement = TP.byCSSPath('*[pclass|focus]', aDocument, true, false);
+
+    if (TP.isArray(activeElement) && TP.notEmpty(activeElement)) {
+
+        //  Grab the body element and see if it's in the array of 'active
+        //  elements'. This is a common issue, especially when elements are
+        //  being focused via mouse clicks. The TIBET machinery will eventually
+        //  update everything as part of the mouse click / focusing operations
+        //  so that the focused element is truly set, so we don't worry about
+        //  warning if one of the elements is the body.
+        docBody = TP.documentGetBody(aDocument);
+        bodyIndex = activeElement.indexOf(docBody);
+
+        //  It wasn't, so we warn.
+        if (bodyIndex === TP.NOT_FOUND) {
+            TP.ifWarn() ?
+                TP.warn('Multiple elements with [pclass|focus] found.') : 0;
+        }
+
+        //  If the body was found at index 0, then use the element at index 1.
+        //  Otherwise, use the element at index 0.
+        if (bodyIndex === 0) {
+            activeElement = activeElement.at(1);
+        } else {
+            activeElement = activeElement.at(0);
+        }
+    }
+
+    //  If we're not checking for '.activeElement', then just return whatever
+    //  the computed active element is here.
+    if (TP.isFalse(orActiveElement)) {
+        return activeElement;
+    }
+
+    if (!TP.isElement(activeElement)) {
+
+        //  Otherwise, we try to use the activeElement if it's available. If
+        //  not, we do what the HTML5 standard says and return the 'body'
+        //  element. In properly functioning browsers, the built-in routine
+        //  already returns the 'body' for the active element if there is no
+        //  focused element.
+        activeElement = aDocument.activeElement;
+        if (!TP.isElement(activeElement)) {
             activeElement = TP.documentGetBody(aDocument);
         }
     }
@@ -774,6 +890,26 @@ function(aDocument, aFontSize) {
     }
 
     return numPixels;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentGetRoot',
+function(aDocument) {
+
+    /**
+     * @method documentGetRoot
+     * @summary Returns the enclosing document's root element.
+     * @param {Document} aDocument The document to use.
+     * @exception TP.sig.InvalidDocument
+     * @returns {Element} The document's root element.
+     */
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    return TP.nodeGetFirstChildElement(aDocument);
 });
 
 //  ------------------------------------------------------------------------
@@ -1186,7 +1322,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(aDocument));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(aDocument);
+    }
 
     //  unwrap any TP.core.Node wrapper we may have received
     content = TP.unwrap(theContent);
@@ -1339,7 +1478,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             //  to.
             TP.keys(TP.sys.$globals).perform(
                     function(aKey) {
-
                         win[aKey] = null;
                     });
         }
@@ -1383,7 +1521,7 @@ function(anElement, className) {
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} className The CSS class name to add.
      * @exception TP.sig.InvalidElement
-     * @returns {Element} The element the supplied class was added to.
+     * @returns {?Element} The element the supplied class was added to.
      */
 
     var existingClass;
@@ -1414,6 +1552,42 @@ function(anElement, className) {
     }
 
     return anElement;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementBlurFocusedDescendantElement',
+function(anElement) {
+
+    /**
+     * @method elementBlurFocusedDescendantElement
+     * @summary Blurs the currently focused element if it is a descendant of the
+     *     supplied element.
+     * @param {Element} anElement The document to focus the autofocused element
+     *     in.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var doc,
+        focusedElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    focusedElem = TP.documentGetFocusedElement(doc);
+
+    //  If there is a focused element, and it is within the supplied element,
+    //  then blur it.
+    if (TP.isElement(focusedElem) &&
+        TP.nodeContainsNode(anElement, focusedElem)) {
+
+        TP.documentBlurFocusedElement(doc);
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1491,7 +1665,7 @@ function(anElement, markup, boxType, wantsTransformed) {
 
 TP.definePrimitive('elementComputeCornerUsing',
 function(anElement, pointX, pointY, insetTop, insetRight, insetBottom,
-insetLeft) {
+         insetLeft) {
 
     /**
      * @method elementComputeCornerUsing
@@ -1658,8 +1832,10 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
     desiredOffsetY = TP.ifInvalid(offsetY, 0);
 
     //  The corner used for computation defaults to TP.TOP_LEFT
-    thePreferredCorners = TP.ifInvalid(preferredCorners,
-                                    TP.ac(TP.TOP_LEFT));
+    thePreferredCorners = preferredCorners;
+    if (TP.notValid(thePreferredCorners)) {
+        thePreferredCorners = TP.ac(TP.TOP_LEFT);
+    }
 
     elemDoc = TP.nodeGetDocument(anElement);
 
@@ -1929,6 +2105,61 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementFocusAutofocusedElement',
+function(anElement) {
+
+    /**
+     * @method elementFocusAutofocusedElement
+     * @summary Focuses the element in the supplied element that contains the
+     *     HTML5 'autofocus' attribute (which would be the first one to focus
+     *     when the element's document first loads).
+     * @param {Element} anElement The document to focus the autofocused element
+     *     in.
+     * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not an element was found and focused. Note
+     *     that if there is already a focused element and it is the same as the
+     *     element that will autofocus, this will return false.
+     */
+
+    var autofocusedElem,
+        focusedElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Grab the first element under supplied element that has an 'autofocus'
+    //  attribute on it (the value of that attribute is irrelevant).
+    if (TP.isElement(
+            autofocusedElem =
+                    TP.byCSSPath('*[autofocus]', anElement, true, false))) {
+
+        //  Obtain the currently focused element from the document of the
+        //  supplied element. Note how we pass false to *not* return the
+        //  'activeElement' here in case there are no elements with a
+        //  'pclass:focus' attribute. This will filter out any elements like
+        //  iframes that could have focus. We're not interested in whether they
+        //  do or not.
+        focusedElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(anElement),
+                            false);
+
+        //  If the currently focused element is different than the autofocus
+        //  element that we computed, then go ahead and focus it.
+        if (focusedElem !== autofocusedElem) {
+            //  Focus it 'the TIBET way' (so that proper highlighting, etc.
+            //  takes effect)
+            TP.wrap(autofocusedElem).focus();
+
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetBorderBox',
 function(anElement, wantsTransformed) {
 
@@ -1960,7 +2191,9 @@ function(anElement, wantsTransformed) {
         offsetWidth,
         offsetHeight,
 
-        elementBox;
+        elementBox,
+
+        box;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -1988,7 +2221,7 @@ function(anElement, wantsTransformed) {
         offsetAncestor = TP.elementGetOffsetParent(anElement);
         while (TP.isElement(offsetAncestor)) {
 
-            borderVals = TP.elementGetStyleValuesInPixels(
+            borderVals = TP.elementGetComputedStyleValuesInPixels(
                             offsetAncestor,
                             TP.ac('borderTopWidth', 'borderLeftWidth'));
 
@@ -2014,23 +2247,20 @@ function(anElement, wantsTransformed) {
         //  Mozilla's getBoundingClientRect() method hands back float
         //  values - in case Trident/Webkit's do the same thing, we
         //  round these to integers.
-        offsetX = elementBox.left.round();
-        offsetY = elementBox.top.round();
-        offsetWidth = elementBox.width.round();
-        offsetHeight = elementBox.height.round();
-
-        //  Make sure to compute in the scrollX / scrollY from the
-        //  document element.
-        offsetX += TP.documentGetScrollX(elementDoc);
-        offsetY += TP.documentGetScrollY(elementDoc);
+        offsetX = elementBox.left;
+        offsetY = elementBox.top;
+        offsetWidth = elementBox.width;
+        offsetHeight = elementBox.height;
     }
 
-    return TP.hc('left', offsetX,
+    box = TP.hc('left', offsetX,
                     'top', offsetY,
                     'width', offsetWidth,
                     'height', offsetHeight,
                     'right', offsetX + offsetWidth,
                     'bottom', offsetY + offsetHeight);
+
+    return box;
 });
 
 //  ------------------------------------------------------------------------
@@ -2559,7 +2789,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      */
 
     var elemWin,
-        winFrameElem,
 
         windowTransformation,
         ourTransformation,
@@ -2612,13 +2841,13 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         box = TP.elementGetPageBox(anElement, boxType, null, false);
     }
 
-    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+    if (TP.isElement(elemWin.frameElement)) {
         //  Note here that we pass 'top' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
                             top,
-                            TP.elementGetIFrameWindow(winFrameElem),
+                            elemWin,
                             wantsTransformed);
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
@@ -3078,7 +3307,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.CONTENT_BOX means we inset both the border and the
             //  padding from all sides
 
-            offsets = TP.elementGetStyleValuesInPixels(
+            offsets = TP.elementGetComputedStyleValuesInPixels(
                         anElement,
                         TP.ac('borderTopWidth', 'borderBottomWidth',
                                 'borderLeftWidth', 'borderRightWidth',
@@ -3126,7 +3355,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
             //  TP.PADDING_BOX means we inset the border from all
             //  sides.
-            offsets = TP.elementGetStyleValuesInPixels(
+            offsets = TP.elementGetComputedStyleValuesInPixels(
                         anElement,
                         TP.ac('borderTopWidth', 'borderBottomWidth',
                                 'borderLeftWidth', 'borderRightWidth'),
@@ -3165,7 +3394,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         case TP.MARGIN_BOX:
 
             //  TP.MARGIN_BOX means we outset the margin from both ends.
-            offsets = TP.elementGetStyleValuesInPixels(
+            offsets = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('marginTop', 'marginWidth',
                                     'marginLeft', 'marginRight'),
@@ -3260,11 +3489,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.CONTENT_BOX means we can have to add the border and
             //  the padding
             position += TP.elementGetBorderInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
+                                                        TP.LEFT,
+                                                        wantsTransformed);
             position += TP.elementGetPaddingInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
+                                                        TP.LEFT,
+                                                        wantsTransformed);
             break;
 
         case TP.PADDING_BOX:
@@ -3272,8 +3501,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.PADDING_BOX means we have to add the border
 
             position += TP.elementGetBorderInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
+                                                        TP.LEFT,
+                                                        wantsTransformed);
             break;
 
         case TP.BORDER_BOX:
@@ -3287,8 +3516,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.MARGIN_BOX means we subtract the margin off of the
             //  total
             position -= TP.elementGetMarginInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.LEFT);
+                                                    TP.LEFT,
+                                                    wantsTransformed);
             break;
 
         default:
@@ -3354,11 +3583,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.CONTENT_BOX means we can have to add the border and
             //  the padding
             position += TP.elementGetBorderInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                    TP.TOP,
+                                                    wantsTransformed);
             position += TP.elementGetPaddingInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                        TP.TOP,
+                                                        wantsTransformed);
             break;
 
         case TP.PADDING_BOX:
@@ -3366,8 +3595,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.PADDING_BOX means we have to add the border
 
             position += TP.elementGetBorderInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                    TP.TOP,
+                                                    wantsTransformed);
             break;
 
         case TP.BORDER_BOX:
@@ -3381,8 +3610,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.MARGIN_BOX means we subtract the margin off of the
             //  total
             position -= TP.elementGetMarginInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                    TP.TOP,
+                                                    wantsTransformed);
             break;
 
         default:
@@ -3549,6 +3778,8 @@ function(anElement, boxType, wantsTransformed) {
     if (TP.isElement(offsetAncestor = TP.elementGetOffsetParent(anElement))) {
         offsetXAndY = TP.elementGetPageXY(offsetAncestor, boxType, null,
                                              wantsTransformed);
+    } else {
+        offsetXAndY = TP.ac(0, 0);
     }
 
     box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
@@ -3824,7 +4055,10 @@ function(anElement, anAncestor, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    stopAncestor = TP.ifInvalid(anAncestor, TP.nodeGetDocument(anElement));
+    stopAncestor = anAncestor;
+    if (TP.notValid(stopAncestor)) {
+        stopAncestor = TP.nodeGetDocument(anElement);
+    }
 
     if (TP.isTrue(wantsTransformed)) {
         vals = TP.elementLocalToGlobalXY(anElement,
@@ -4227,7 +4461,8 @@ function(anElement) {
     //  We only do this if there is actually a busy element for the supplied
     //  element.
     if (TP.isElement(busyElement = anElement.busyElement)) {
-        TP.elementGetStyleObj(busyElement).display = 'none';
+
+        TP.elementSetAttribute(busyElement, 'pclass:hidden', true, true);
 
         //  Make sure and detach the resizing event handlers since they'll
         //  be reattached when the busy element is shown.
@@ -4261,14 +4496,17 @@ function(anElement) {
      * @description An element can be considered to be disabled if it has a
      *     '.disabled' property (as some HTML elements do) that is set to true
      *     or if it has an attribute of 'pclass:disabled' (the existence of
-     *     which means 'true').
+     *     which means 'true'). Note that this method will also check the parent
+     *     node chain to see if any of anElement's parent nodes are disabled. If
+     *     so, it is considered to be disabled.
      * @param {Element} anElement The element to determine the disabled state
      *     of.
      * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is disabled.
      */
 
-    var isDisabled;
+    var isDisabled,
+        ancestor;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -4280,8 +4518,28 @@ function(anElement) {
         return isDisabled;
     }
 
-    return TP.elementHasAttribute(anElement, 'disabled', true) ||
-            TP.elementHasAttribute(anElement, 'pclass|disabled', true);
+    isDisabled = TP.elementHasAttribute(anElement, 'disabled', true) ||
+                    TP.elementHasAttribute(anElement, 'pclass:disabled', true);
+
+    if (TP.notTrue(isDisabled)) {
+        ancestor =
+            TP.nodeDetectAncestor(
+                anElement,
+                function(aParent) {
+                    return TP.elementHasAttribute(
+                                aParent, 'disabled', true) ||
+                            TP.elementHasAttribute(
+                                aParent, 'pclass:disabled', true);
+                });
+
+        if (TP.isElement(ancestor)) {
+            return true;
+        }
+    } else {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -4806,9 +5064,11 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
 
     //  The corners used for computation defaults to:
     //      TP.TOP_LEFT, TP.BOTTOM_LEFT, TP.BOTTOM_LEFT, TP.TOP_LEFT
-    thePreferredCorners = TP.ifInvalid(
-        preferredCorners,
-        TP.ac(TP.TOP_LEFT, TP.BOTTOM_LEFT, TP.BOTTOM_LEFT, TP.TOP_LEFT));
+    thePreferredCorners = preferredCorners;
+    if (TP.notValid(thePreferredCorners)) {
+        thePreferredCorners =
+            TP.ac(TP.TOP_LEFT, TP.BOTTOM_LEFT, TP.BOTTOM_LEFT, TP.TOP_LEFT);
+    }
 
     //  Grab the border box width and height of the element, but first make
     //  sure to turn off any non-default 'display' setting that would cause
@@ -5028,7 +5288,7 @@ function(anElement, className) {
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} className The CSS class name to remove.
      * @exception TP.sig.InvalidElement
-     * @returns {Element} The element.
+     * @returns {?Element} The element the supplied class was removed from.
      */
 
     var re,
@@ -5061,6 +5321,27 @@ function(anElement, className) {
     TP.elementSetAttribute(anElement, 'class', str);
 
     return anElement;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementRemoveTransform',
+function(anElement) {
+
+    /**
+     * @method elementRemoveTransform
+     * @summary Removes any CSS transform placed on the element.
+     * @param {Element} anElement The element to set the transformation on.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    TP.elementGetStyleObj(anElement).transform = '';
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5345,6 +5626,78 @@ function(anElement, aWidth) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementSetTransform',
+function(anElement, aTransformStr) {
+
+    /**
+     * @method elementSetTransform
+     * @summary Sets the CSS transform of the element specified using the
+     *     supplied String (which should conform to one of the values specified
+     *     in the CSS Transform specification).
+     * @param {Element} anElement The element to set the transformation on.
+     * @param {String} aTransformStr The value to set on the supplied Element as
+     *     its CSS Transform.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    TP.elementGetStyleObj(anElement).transform = aTransformStr;
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementSetTransformOrigin',
+function(anElement, xValue, yValue, zValue) {
+
+    /**
+     * @method elementSetTransformOrigin
+     * @summary Sets the transformation origin of the element specified using
+     *     the supplied X and Y and (possibly) Z values.
+     * @description The X and Y values supplied to this method can be any CSS
+     *     'length' value (i.e. a number with a unit or a percentage) or one of
+     *     the approved CSS keywords. If a Number is supplied, 'px' is assumed.
+     *     The Z value must be a length, not keyword or percentage.
+     * @param {Element} anElement The element to set the transformation origin
+     *     on.
+     * @param {Number|String} xValue The 'X value' to set the transformation
+     *     origin to.
+     * @param {Number|String} yValue The 'Y value' to set the transformation
+     *     origin to.
+     * @param {Number|String} [zValue] The 'Z value' to set the transformation
+     *     origin to. Note that this *cannot* be a keyword or percentage.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var xVal,
+        yVal,
+        zVal;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
+    yVal = TP.isNumber(yValue) ? yValue + 'px' : yValue;
+    zVal = TP.isNumber(zValue) ? zValue + 'px' : zValue;
+
+    if (TP.isEmpty(zVal)) {
+        TP.elementGetStyleObj(anElement).transformOrigin =
+                                        TP.join(xVal, ' ', yVal);
+    } else {
+        TP.elementGetStyleObj(anElement).transformOrigin =
+                                        TP.join(xVal, ' ', yVal, ' ', zVal);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementShow',
 function(anElement) {
 
@@ -5379,7 +5732,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      *     busy element for the supplied element, one is created and then shown.
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
-     * @param {String} aMessage The message to use for the busy message.
+     * @param {String} [aMessage=''] The message to use for the busy message.
      * @param {Number} topCoord The top coordinate (relative to the 'body'
      *     element where the busy element will be appended) of the busy element.
      *     If this is not supplied, it will default to the top of the supplied
@@ -5397,7 +5750,9 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      * @returns {HTMLElement} The busy element itself.
      */
 
-    var busyElement,
+    var msg,
+
+        busyElement,
         busyMessageElement,
         win,
         busyElemStyleObj,
@@ -5411,8 +5766,14 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isEmpty(aMessage)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
+    msg = aMessage;
+    if (TP.isEmpty(msg)) {
+
+        //  Note that if the message is empty, that we use a *single space*
+        //  text value. This is so that text node below actually gets created.
+        //  Otherwise, no text node will be created under the busyMessage's
+        //  first child below and so this call will fail the second time.
+        msg = ' ';
     }
 
     busyElement = anElement.busyElement;
@@ -5446,7 +5807,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     busyElemStyleObj.height = busyHeight + 'px';
 
     //  Set the busy message to the supplied message.
-    busyMessageElement.firstChild.nodeValue = aMessage;
+    busyMessageElement.firstChild.nodeValue = msg;
 
     //  Set up a resize function, so that if the busy is showing when the
     //  user resizes the window, it will resize also. This function is
@@ -5473,7 +5834,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     }
 
     //  Finally, go ahead and show the busy element :-).
-    busyElemStyleObj.display = 'block';
+    TP.elementRemoveAttribute(busyElement, 'pclass:hidden', true);
 
     return busyElement;
 });
@@ -5489,55 +5850,20 @@ function(anElement, aMessage) {
      *     using the defaults) for the element provided.
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
-     * @param {String} aMessage The message to use for the busy message.
+     * @param {String} [aMessage=''] The message to use for the busy message.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidString
      */
 
-    var busyElement,
-
-        controlImageElement,
-
-        busyMessageElement,
-
-        styleObj;
+    var styleObj;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isEmpty(aMessage)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
-    }
-
-    busyElement = TP.$elementGetBusyLayer(anElement);
-
-    //  Because this can happen early in the page load process (before the
-    //  stylesheets are parsed), we have a Catch-22 where we need to display
-    //  this busy panel, but the styles aren't available. Therefore, we
-    //  hardcode them.
-
-    //  Note how the z-index here is set to the TP.POPUP_TIER in the TIBET
-    //  kernel.
-    TP.elementSetStyleString(
-            busyElement,
-            TP.join('position: absolute;',
-                    ' display: none;',
-                    ' z-index: ', TP.POPUP_TIER, ';'));
-
-    controlImageElement = busyElement.getElementsByTagName('div')[0];
-    TP.elementSetStyleString(
-        controlImageElement,
-            TP.join('position: relative;'));
-
-    busyMessageElement = busyElement.getElementsByTagName('span')[0];
-    TP.elementSetStyleString(
-        busyMessageElement,
-            TP.join(
-            'position: absolute;',
-            ' left: 0;',
-            ' right: 0;',
-            ' width: auto'));
+    //  Call this to create the busy layer element if it's not already created
+    //  for anElement, even though we don't capture the return value here.
+    TP.$elementGetBusyLayer(anElement);
 
     styleObj = TP.elementGetStyleObj(anElement);
 
@@ -6190,7 +6516,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, returnNode);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
@@ -6383,7 +6709,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction) && TP.isElement(returnNode)) {
-        loadedFunction(returnNode.parentNode);
+        loadedFunction(returnNode.parentNode, returnNode);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
@@ -6438,7 +6764,10 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(anElement);
+    }
 
     //  If the content is an HTML node, then we just make sure its an
     //  Element, and not a Document.
@@ -6538,7 +6867,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, anElement);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
@@ -8330,61 +8659,6 @@ function(obj1, obj2) {
 });
 
 //  ------------------------------------------------------------------------
-//  CSS MANAGEMENT PRIMITIVES
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('$computeOpaqueEnabledTargetFrom',
-function(anElement) {
-
-    /**
-     * @method $computeOpaqueEnabledTargetFrom
-     * @summary Computes an event target starting at the supplied element and
-     *     working up the parent chain to an element (which may be the supplied
-     *     element) that has a 'tibet:opaque' attribute on it. If any element in
-     *     the chain is 'disabled', this routine returns null.
-     * @param {HTMLElement} anElement The element to begin searching for the
-     *     event target.
-     * @exception TP.sig.InvalidElement
-     */
-
-    var theElement,
-        retElement;
-
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
-    }
-
-    theElement = anElement;
-    retElement = null;
-
-    //  Starting at the supplied element, traverse up the parent chain to
-    //  the Document node.
-    while (theElement.nodeType !== Node.DOCUMENT_NODE) {
-        //  If the element at this level is 'disabled', then nothing we do
-        //  here matters, so we bail out.
-        if (TP.elementHasAttribute(theElement, 'disabled')) {
-            retElement = null;
-            break;
-        }
-
-        //  If the return element hasn't already been set and the element at
-        //  this level is 'opaque', then set the element at this level to be
-        //  the return element.
-        if (TP.notValid(retElement) &&
-            TP.elementHasAttribute(theElement, 'tibet:opaque', true)) {
-            retElement = theElement;
-
-            //  Notice how we do *not* break here, so that if any parent
-            //  above us is disabled, we will still return 'null'.
-        }
-
-        theElement = theElement.parentNode;
-    }
-
-    return retElement;
-});
-
-//  ------------------------------------------------------------------------
 //  WINDOW PRIMITIVES
 //  ------------------------------------------------------------------------
 
@@ -8493,7 +8767,6 @@ function(url, name, aSpec, shouldReplace) {
 
         aSpec.perform(
             function(kvPair) {
-
                 spec += kvPair.first() + '=' + kvPair.last() + ',';
             });
 
@@ -8571,7 +8844,6 @@ function(aWindow) {
 
     var msg,
         docTitle,
-        allElems,
         i,
         theme,
         winLoadFuncs,
@@ -8602,12 +8874,8 @@ function(aWindow) {
     docTitle = TP.documentGetTitleContent(aWindow.document);
     TP.documentSetTitleContent(top.document, docTitle);
 
-    //  Go to every element in the document and try to bubble its namespaces
-    if (TP.notEmpty(allElems = aWindow.document.getElementsByTagName('*'))) {
-        for (i = 0; i < allElems.length; i++) {
-            TP.elementBubbleXMLNSAttributes(allElems[i]);
-        }
-    }
+    TP.elementBubbleXMLNSAttributesOnDescendants(
+                            aWindow.document.documentElement);
 
     //  Add common namespaces to the document element to further reduce
     //  namespace clutter.
@@ -8675,21 +8943,21 @@ function(aWindow) {
     //  cause the TIBET frame to be flushed.
     TP.windowInstallBackspaceHook(aWindow);
 
+    //  Set up any 'focus' handlers on the window so that the TIBET focus
+    //  machinery is kept in sync with what the browser considers to be the
+    //  focused element.
+    TP.windowInstallFocusHook(aWindow);
+
     //  Make sure that if there is an Element that wanted to be focused as the
     //  first focused element on the page (using the HTML5 'autofocus'
     //  attribute) that it is, indeed, focused.
-    TP.documentFocusAutofocusedElement(aWindow.document);
+    TP.elementFocusAutofocusedElement(aWindow.document.documentElement);
 
     //  If there was no focused element, then just go ahead and focus the
     //  window.
     if (!TP.isElement(TP.documentGetFocusedElement(aWindow.document))) {
         aWindow.focus();
     }
-
-    //  Set up any focus handlers for the various windows/frames that we use in
-    //  TIBET so that the user experiences 'proper' behavior when using the
-    //  keyboard during application execution.
-    TP.windowInstallFocusHook(aWindow);
 
     //  Update the top-level window title if we loaded into the UICANVAS and
     //  push the URI into our history record.
@@ -8813,8 +9081,8 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
     //  Clear any event data to avoid memory leaks for events that are holding
     //  onto DOM structures that might have been present in this window.
-    TP.core.Keyboard.resetEventData();
-    TP.core.Mouse.resetEventData();
+    TP.core.Keyboard.resetEventData(aWindow);
+    TP.core.Mouse.resetEventData(aWindow);
 
     if (checkWindow) {
         winDidClose = false;
@@ -9191,7 +9459,8 @@ function(aWindow) {
      * @exception TP.sig.InvalidDocument
      */
 
-    var doc;
+    var doc,
+        bodyElem;
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
@@ -9201,15 +9470,15 @@ function(aWindow) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        var focusedElem;
+    bodyElem = TP.documentGetBody(doc);
+    if (TP.isElement(bodyElem)) {
+        bodyElem.style.display = 'none';
 
-        if (TP.isElement(focusedElem = TP.documentGetFocusedElement(doc))) {
-            focusedElem.focus();
-        }
-    }).fork(50);
-    /* eslint-enable no-wrap-func,no-extra-parens */
+        //  No need to capture the value here - just touch the slot
+        bodyElem.offsetHeight;
+
+        bodyElem.style.display = 'block';
+    }
 
     return;
 });
@@ -9314,6 +9583,130 @@ function(aWindow) {
     }
 
     return TP.ac(aWindow.screen.availWidth, aWindow.screen.availHeight);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowInstallBackspaceHook',
+function(aWindow) {
+
+    /**
+     * @method windowInstallBackspaceHook
+     * @summary Configures the top level window(s) so that keydown (in the case
+     *     of IE) or keypress (in the case of Mozilla) with the 'backspace' key
+     *     received by the window itself will not cause TIBET to be flushed back
+     *     to its frameset.
+     * @param {Window} aWindow The window to configure.
+     * @exception TP.sig.InvalidWindow
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    //  Set up key handlers for 'keypress' and 'keydown' (depending on the
+    //  browser) aWindow's documentElement (or body) so that backspace
+    //  won't cause TIBET to be flushed back to its frameset.
+    aWindow.document.documentElement.addEventListener(
+        'keypress',
+        function(anEvent) {
+
+            if (TP.eventGetKeyCode(anEvent) === TP.BACK_SPACE_KEY &&
+                TP.eventGetTarget(anEvent) === this) {
+                anEvent.preventDefault();
+            }
+        }, false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowInstallFocusHook',
+function(aWindow) {
+
+    /**
+     * @method windowInstallFocusHook
+     * @summary Configures the top level window(s) so that focus will check to
+     *     make sure that what TIBET considers to be the focused element will
+     *     actually be focused and be present on the focus stack.
+     * @param {Window} aWindow The window to install the focus hook onto.
+     * @exception TP.sig.InvalidWindow
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    aWindow.addEventListener(
+        'focus',
+        function(anEvent) {
+
+            var focusedElemIncludingActive,
+                focusedElemNotIncludingActive;
+
+            //  Grab what TIBET considers to be the 'focused element' in both
+            //  forms - including whatever element has the '.activeElement'
+            //  property and not including whatever element has the
+            //  '.activeElement' property.
+            focusedElemIncludingActive =
+                TP.documentGetFocusedElement(this.document);
+            focusedElemNotIncludingActive =
+                TP.documentGetFocusedElement(this.document, false);
+
+            //  If they aren't *identical*, then investigate further.
+            if (focusedElemIncludingActive !== focusedElemNotIncludingActive) {
+
+                //  If the focused element including the '.activeElement'
+                //  property is an Element, but the one not including the
+                //  '.activeElement' property is not, then that means there was
+                //  a 'native XHTML element' that was focused when the window
+                //  was blurred, and we now need to refocus on that.
+                if (TP.isElement(focusedElemIncludingActive) &&
+                    !TP.isElement(focusedElemNotIncludingActive)) {
+
+                    //  Wrap the element to focus and use the *TIBET* focusing
+                    //  machinery to focus it - this will cause the focus stack,
+                    //  etc. to be maintained properly.
+                    TP.wrap(focusedElemIncludingActive).focus();
+                }
+            }
+
+        }, false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowInstallShutdownFinalizationHook',
+function(aWindow) {
+
+    /**
+     * @method windowInstallShutdownFinalizationHook
+     * @summary Installs the 'shutdown finalization' hook that will complete
+     *     the shut down of the TIBET application when the user navigates away
+     *     from it.
+     * @param {Window} aWindow The window to install the shutdown finalization
+     *     hook onto.
+     * @exception TP.sig.InvalidWindow
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    aWindow.addEventListener(
+        'unload',
+        function() {
+
+            TP.sys.finalizeShutdown();
+
+            return;
+        },
+        false);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -9430,7 +9823,6 @@ function(aWindow, anHref) {
 
         tpElem;
 
-    //  might be in a non-tibet frameset, so just ignore here
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
@@ -9559,7 +9951,7 @@ function(aWindow) {
         TP.tpwin(aWindow).setContent(
             locURI,
             TP.request(TP.ONLOAD,
-                        function(aNode) {
+                        function(targetNode, newNode) {
 
                             //  Remove the 'anti-looping' value (described
                             //  above) now that we're done.
@@ -9572,128 +9964,6 @@ function(aWindow) {
                         }));
     }).afterUnwind();
     /* eslint-enable no-wrap-func,no-extra-parens */
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallBackspaceHook',
-function(aWindow) {
-
-    /**
-     * @method windowInstallBackspaceHook
-     * @summary Configures the top level window(s) so that keydown (in the case
-     *     of IE) or keypress (in the case of Mozilla) with the 'backspace' key
-     *     received by the window itself will not cause TIBET to be flushed back
-     *     to its frameset.
-     * @param {Window} aWindow The window to configure.
-     */
-
-    //  might be in a non-tibet frameset, so just ignore here
-    if (!TP.isWindow(aWindow)) {
-        return;
-    }
-
-    //  Set up key handlers for 'keypress' and 'keydown' (depending on the
-    //  browser) aWindow's documentElement (or body) so that backspace
-    //  won't cause TIBET to be flushed back to its frameset.
-    aWindow.document.documentElement.addEventListener(
-        'keypress',
-        function(anEvent) {
-
-            if (anEvent.keyCode === TP.BACK_SPACE_KEY &&
-                anEvent.target === this) {
-                anEvent.preventDefault();
-            }
-        }, false);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallFocusHook',
-function(aWindow) {
-
-    /**
-     * @method windowInstallFocusHook
-     * @summary Configures the top level window(s) so that focus will return to
-     *     the canvas rather than moving outside the ui frame(s).
-     * @param {Window} aWindow The window to configure.
-     */
-
-    //  might be in a non-tibet frameset, so just ignore here
-    if (!TP.isWindow(aWindow)) {
-        return;
-    }
-
-    //  We don't install this on any other window than the UIROOT. If the Sherpa
-    //  is running, it will help with refocusing any controls that are in the
-    //  Sherpa itself. If the Sherpa isn't running (and we're probably in
-    //  production mode) then the UICANVAS === UIROOT at that point, so it will
-    //  be assisting the app.
-    if (aWindow !== TP.win('UIROOT')) {
-        return;
-    }
-
-    aWindow.addEventListener('focus',
-            function(anEvent) {
-
-                var canvasWindow,
-                    focusedElem,
-
-                    bodyElem;
-
-                //  For some reason, on Gecko trying to focus the canvas window
-                //  causes problems with focusing items not in the canvas
-                //  window. Focusing the document's body (if there is one) seems
-                //  to get around the problem.
-                if (anEvent.target === aWindow) {
-                    canvasWindow = TP.sys.getUICanvas(true);
-
-                    focusedElem = TP.documentGetFocusedElement(
-                                            canvasWindow.document);
-                    bodyElem = TP.documentGetBody(
-                                            canvasWindow.document);
-
-                    //  If the focused element is already the body, then just
-                    //  exit here. Further messing with the focus will cause IE,
-                    //  in particular, to seize up as it cycles the focus
-                    //  between the body and the window.
-                    if (focusedElem === bodyElem) {
-                        return;
-                    }
-
-                    if (TP.isElement(focusedElem)) {
-                        //  Sometimes, it's a custom XML element that doesn't
-                        //  know how to focus.
-                        if (TP.canInvoke(focusedElem, 'focus')) {
-                            focusedElem.focus();
-                        } else {
-                            //  Otherwise, try a TIBET wrapper around the
-                            //  element.
-                            focusedElem = TP.wrap(focusedElem);
-                            if (TP.canInvoke(focusedElem, 'focus')) {
-                                focusedElem.focus();
-                            } else {
-                                if (TP.sys.isUA('GECKO')) {
-                                    bodyElem.focus();
-                                } else {
-                                    canvasWindow.focus();
-                                }
-                            }
-                        }
-                    } else {
-                        if (TP.sys.isUA('GECKO')) {
-                            bodyElem.focus();
-                        } else {
-                            canvasWindow.focus();
-                        }
-                    }
-                }
-            },
-            false);
-
-    return;
 });
 
 //  ------------------------------------------------------------------------

@@ -6,16 +6,19 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
-//	========================================================================
+//  ========================================================================
 
 //  Bug fixes for Sinon fake server
 
 //  https://github.com/cjohansen/Sinon.JS/issues/559
-TP.extern.sinon.FakeXMLHttpRequest.prototype.overrideMimeType =
-    function() {return; };
+TP.extern.sinon.FakeXMLHttpRequest.prototype.overrideMimeType = function() {
+    return;
+};
 
 //  https://github.com/cjohansen/Sinon.JS/issues/558
-TP.extern.sinon.log = function() {return; };
+TP.extern.sinon.log = function() {
+    return;
+};
 
 //  ------------------------------------------------------------------------
 
@@ -232,6 +235,6 @@ function(methodName, altValue) {
     return existingMethod.asStub(altValue);
 });
 
-//	------------------------------------------------------------------------
-//	end
-//	========================================================================
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

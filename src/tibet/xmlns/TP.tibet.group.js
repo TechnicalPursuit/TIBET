@@ -37,9 +37,7 @@ function(aRequest) {
      */
 
     var elem,
-        elemTPNode,
-
-        groupTPElems;
+        elemTPNode;
 
     //  NOTE: WE DO *NOT* callNextMethod() here. This method is unusual in that
     //  it can take in Attribute nodes, etc. and our supertype method assumes
@@ -61,20 +59,9 @@ function(aRequest) {
     //  in its members, it needs to signal changes.
     elemTPNode.shouldSignalChange(true);
 
-    //  Grab all of the members of this group, iterate over them and add
-    //  ourself as a group that contains them. Note that an element can have
-    //  more than one group. Also, we observe each one for AttributeChange.
-    if (TP.notEmpty(groupTPElems = elemTPNode.getMembers())) {
-        groupTPElems.perform(
-                function(aTPElem) {
-
-                    //  Note: This will overwrite any prior group element
-                    //  setting for aTPElem
-                    aTPElem.setGroupElement(elemTPNode);
-
-                    elemTPNode.observe(aTPElem, 'AttributeChange');
-                });
-    }
+    //  Set up the members of the group (i.e. by adding attributes to them that
+    //  associate them with this group).
+    elemTPNode.setupMembers();
 
     //  We register a query that, if any subtree mutations occur under our
     //  document element we want to be notified. Note that we don't actually
@@ -84,7 +71,7 @@ function(aRequest) {
     //  Note that this calls our 'mutationAddedFilteredNodes' and
     //  'mutationRemovedFilteredNodes' methods below with just the nodes
     //  that got added or removed.
-    TP.core.MutationSignalSource.addSubtreeQuery(elem);
+    TP.sig.MutationSignalSource.addSubtreeQuery(elem);
 
     return;
 });
@@ -102,9 +89,7 @@ function(aRequest) {
      */
 
     var elem,
-        elemTPNode,
-
-        groupTPElems;
+        elemTPNode;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -117,25 +102,119 @@ function(aRequest) {
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
 
-    //  Grab all of the members of this group, iterate over them and ignore each
-    //  one for AttributeChange. This undoes the observation that we made in
-    //  tagAttachDOM().
-    if (TP.notEmpty(groupTPElems = elemTPNode.getMembers())) {
-        groupTPElems.perform(
-                function(aTPElem) {
-                    elemTPNode.ignore(aTPElem, 'AttributeChange');
-                });
-    }
+    //  Tear down the members of the group (i.e. by removing attributes from
+    //  them that associate them with this group).
+    elemTPNode.teardownMembers();
 
     //  We're going away - remove the subtree query that we registered when we
     //  got attached into this DOM.
-    TP.core.MutationSignalSource.removeSubtreeQuery(elem);
+    TP.sig.MutationSignalSource.removeSubtreeQuery(elem);
+
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('checkTestConditions',
+function(attrName, conditionAttrVal) {
+
+    /**
+     * @method checkTestConditions
+     * @summary Checks attribute test conditions for the receiver.
+     * @description It is possible for group elements to change their attribute
+     *     setting for certain 'ui state' attributes (i.e. readonly, disabled,
+     *     required, invalid) based on whether one or all of their members have
+     *     that setting. These take the form of:
+     *
+     *     invalidwhen="all"            All of the members must be invalid
+     *     invalidwhen="any"            Any of the members may be invalid
+     *     invalidwhen="none-or-all"    None or all of the members must be
+     *                                  invalid
+     * @param {String} attrName The name of the attribute to check on each of
+     *     the receiver's members to see if the test condition passes.
+     * @param {String} conditionAttrVal The value of the 'test condition'
+     *     attribute on the receiver. This determines what kind of test will be
+     *     run and can currently consist of 'all', 'any' or 'none-or-all'
+     * @returns {Boolean|null} True if the members meet the condition, false if
+     *     they don't or null if the value of the test condition doesn't match
+     *     one of it's currently supported values.
+     */
+
+    var positiveState,
+
+        members,
+
+        i,
+
+        count;
+
+    //  Grab all of the members of this group and test their values.
+    members = this.getMemberElements();
+
+    positiveState = null;
+
+    switch (conditionAttrVal) {
+
+        case 'all':
+
+            //  Initially set it to set our flag
+            positiveState = true;
+
+            for (i = 0; i < members.getSize(); i++) {
+                if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
+                    //  One failed - we'll no longer set our flag
+                    positiveState = false;
+                    break;
+                }
+            }
+
+            break;
+
+        case 'any':
+
+            //  Initially set it to *not* set our flag
+            positiveState = false;
+
+            for (i = 0; i < members.getSize(); i++) {
+                if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                    //  One succeeded - we'll set our flag
+                    positiveState = true;
+                    break;
+                }
+            }
+
+            break;
+
+        case 'none-or-all':
+
+            count = 0;
+
+            for (i = 0; i < members.getSize(); i++) {
+                if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                    count++;
+                    break;
+                }
+            }
+
+            /* eslint-disable no-extra-parens */
+            positiveState =
+                (count === 0 || count === members.getSize() - 1);
+            /* eslint-enable no-extra-parens */
+
+            break;
+        default:
+            break;
+    }
+
+    return positiveState;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('findFocusableElements',
@@ -152,10 +231,15 @@ function(includesGroups) {
      *     can be focused.
      */
 
-    var lid,
-        selExpr,
+    var elem,
 
-        results;
+        lid,
+
+        results,
+
+        queryStr,
+
+        noIntermediateGroups;
 
     //  Query for any elements under the context element that are focusable.
 
@@ -172,29 +256,64 @@ function(includesGroups) {
     //  attribute selector to the query to filter for only elements that are
     //  within our group, not in any other groups.
 
+    elem = this.getNativeNode();
+
     lid = this.getLocalID();
 
-    selExpr = TP.computeFocusableQuery(
-                            '> ', '[tibet|group="' + lid + '"]') +
-                            ', ' +
-                TP.computeFocusableQuery(
-                            '*[tibet|group="' + lid + '"] *:not(tibet|group) ');
+    //  NOTE: Because of how these queries are structured, they have to be
+    //  executed separately and their results combined.
+    results = TP.ac();
 
-    //  If we should include 'tibet:group' elements, then include them in
-    //  the CSS selector (but only shallowly - not under any other group).
+    //  Query for any immediate children that have a 'tibet:group' attribute
+    //  that matches our group ID.
+    queryStr = TP.computeFocusableQuery('> ', '[tibet|group="' + lid + '"]');
+
+    results.push(
+        TP.byCSSPath(queryStr,
+                        elem,
+                        false,
+                        false));
+
+    //  Query for any descendants that have a 'tibet:group' attribute that
+    //  matches our group ID.
+    queryStr = TP.computeFocusableQuery(null, '[tibet|group="' + lid + '"]');
+
+    //  Query for any descendants that have a 'tibet:group' attribute
+    //  that matches our group ID.
+    noIntermediateGroups = TP.byCSSPath(queryStr,
+                                        elem,
+                                        false,
+                                        false);
+
+    //  Now, filter that result set to make sure that there are no 'tibet:group'
+    //  elements between each result node and our own element.
+    noIntermediateGroups = noIntermediateGroups.filter(
+                            function(focusableElem) {
+                                return !TP.isElement(
+                                            TP.nodeAncestorMatchingCSS(
+                                                focusableElem,
+                                                'tibet|group',
+                                                elem));
+                            });
+
+    results.push(noIntermediateGroups);
+
     if (includesGroups) {
-        selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
+        results.push(
+            TP.byCSSPath('> tibet|group, *:not(tibet|group) tibet|group',
+                            elem,
+                            false,
+                            false));
     }
 
-    results = this.get(TP.cpc(selExpr));
-
-    results = TP.unwrap(results);
+    //  Flatten out the results and unique them.
+    results = results.flatten();
+    results.unique();
 
     //  Iterate over them and see if they're displayed (not hidden by CSS -
     //  although they could currently not be visible to the user).
     results = results.select(
                     function(anElem) {
-
                         return TP.elementIsDisplayed(anElem);
                     });
 
@@ -230,19 +349,22 @@ function(moveAction) {
      */
 
     var focusableElements,
-        elementToFocus;
+        tpElementToFocus;
 
     if (TP.notEmpty(focusableElements = this.findFocusableElements())) {
         if (moveAction === TP.LAST ||
             moveAction === TP.PREVIOUS ||
             moveAction === TP.LAST_IN_GROUP ||
             moveAction === TP.PRECEDING) {
-            elementToFocus = focusableElements.last();
+            tpElementToFocus = focusableElements.last();
         } else {
-            elementToFocus = focusableElements.first();
+            tpElementToFocus = focusableElements.first();
         }
 
-        elementToFocus.focus();
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem',
+                                    tpElementToFocus);
+
+        tpElementToFocus.focus();
     }
 
     return this;
@@ -250,11 +372,11 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.group.Inst.defineMethod('getMembers',
+TP.tibet.group.Inst.defineMethod('getMemberElements',
 function() {
 
     /**
-     * @method getMembers
+     * @method getMemberElements
      * @summary Returns the members of the group based on the query on the
      *     receiver.
      * @description If no query is supplied, a default of './*' (all descendants
@@ -267,6 +389,7 @@ function() {
      */
 
     var query,
+        queryWasDefined,
 
         contextElem,
 
@@ -274,19 +397,33 @@ function() {
 
     //  No query? Use the standard 'all child elements'
     if (TP.isEmpty(query = this.getAttribute('query'))) {
+        queryWasDefined = false;
+
         //  This query allows direct children who are any kind of element,
         //  including groups, and other descendants who aren't *under* a group,
         //  thereby populating only shallowly.
         query = '> *, *:not(tibet|group) *';
+    } else {
+        queryWasDefined = true;
     }
 
     //  If we don't have any child *elements*, then the context is the
     //  documentElement.
     if (TP.isEmpty(this.getChildElements())) {
+
+        //  If the query wasn't defined by the user, then we don't want to query
+        //  against the document element using the query above - just return an
+        //  empty Array here.
+        if (!queryWasDefined) {
+            return TP.ac();
+        }
+
         contextElem = this.getDocument().getDocumentElement();
     } else {
         //  Otherwise, its the receiver.
+        /* eslint-disable consistent-this */
         contextElem = this;
+        /* eslint-enable consistent-this */
     }
 
     //  Grab the 'result nodes' using the get call. If there were no
@@ -298,7 +435,6 @@ function() {
     //  Make sure that it contains only Elements.
     results = results.select(
                 function(aTPNode) {
-
                     return TP.isKindOf(aTPNode, TP.core.ElementNode);
                 });
 
@@ -322,7 +458,7 @@ function() {
     var allMembers,
         results;
 
-    if (TP.isEmpty(allMembers = this.getMembers())) {
+    if (TP.isEmpty(allMembers = this.getMemberElements())) {
         return TP.ac();
     }
 
@@ -358,16 +494,9 @@ function(aSignal) {
      */
 
     var attrName,
+        conditionAttrVal,
 
-        shouldSetFlag,
-
-        attrVal,
-
-        members,
-
-        i,
-
-        count;
+        positiveState;
 
     if (TP.isEmpty(attrName = aSignal.at('aspect'))) {
         //  TODO: Raise exception
@@ -380,67 +509,18 @@ function(aSignal) {
     //      required
     //      invalid
 
-    if (TP.notEmpty(attrVal = this.getAttribute(attrName + 'when'))) {
+    if (TP.notEmpty(conditionAttrVal = this.getAttribute(attrName + 'when'))) {
 
-        //  Grab all of the members of this group and test their values.
-        members = this.getMembers();
-
-        switch (attrVal) {
-
-            case 'all':
-
-                //  Initially set it to set our flag
-                shouldSetFlag = true;
-
-                for (i = 0; i < members.getSize(); i++) {
-                    if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
-                        //  One failed - we'll no longer set our flag
-                        shouldSetFlag = false;
-                        break;
-                    }
-                }
-
-                break;
-
-            case 'any':
-
-                //  Initially set it to *not* set our flag
-                shouldSetFlag = false;
-
-                for (i = 0; i < members.getSize(); i++) {
-                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
-                        //  One succeeded - we'll set our flag
-                        shouldSetFlag = true;
-                        break;
-                    }
-                }
-
-                break;
-
-            case 'none-or-all':
-
-                count = 0;
-
-                for (i = 0; i < members.getSize(); i++) {
-                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
-                        count++;
-                        break;
-                    }
-                }
-
-                /* eslint-disable no-extra-parens */
-                shouldSetFlag =
-                    (count === 0 || count === members.getSize() - 1);
-                /* eslint-enable no-extra-parens */
-
-                break;
-            default:
-                break;
-        }
+        //  NB: This method could return true, false or null. We test explicitly
+        //  for true or false below.
+        positiveState = this.checkTestConditions(attrName, conditionAttrVal);
 
         //  Set the flag (or not) and send the proper signal depending on
         //  whether the flag is already set.
-        if (shouldSetFlag) {
+
+        //  Note that positiveState could be null, in which case neither one of
+        //  these statements will execute.
+        if (TP.isTrue(positiveState)) {
             if (!this.$isInState('pclass:' + attrName)) {
                 if (attrName === 'invalid') {
                     this.signalUsingFacetAndValue('valid', false);
@@ -448,7 +528,7 @@ function(aSignal) {
                     this.signalUsingFacetAndValue(attrName, true);
                 }
             }
-        } else {
+        } else if (TP.isFalse(positiveState)) {
             if (this.$isInState('pclass:' + attrName)) {
                 if (attrName === 'invalid') {
                     this.signalUsingFacetAndValue('valid', true);
@@ -464,8 +544,488 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.group.Inst.defineHandler('UIDisabled',
+function(aSignal) {
+
+    /**
+     * @method handleUIDisabled
+     * @summary Causes the receiver to be put into its 'disabled state'.
+     * @param {TP.sig.UIDisabled} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('disabledwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'disabled', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:disabled')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrDisabled(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDisabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIEnabled',
+function(aSignal) {
+
+    /**
+     * @method handleUIEnabled
+     * @summary Causes the receiver to be put into its 'enabled state'.
+     * @param {TP.sig.UIEnabled} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('disabledwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'disabled', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:disabled')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrDisabled(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIEnabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIInvalid',
+function(aSignal) {
+
+    /**
+     * @method handleUIInvalid
+     * @summary Causes the receiver to be put into its 'invalid state'.
+     * @param {TP.sig.UIInvalid} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('invalidwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'invalid', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:invalid')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrInvalid(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInvalid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInvalid', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIOptional',
+function(aSignal) {
+
+    /**
+     * @method handleUIOptional
+     * @summary Causes the receiver to be put into its 'optional state'.
+     * @param {TP.sig.UIOptional} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('requiredwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'required', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:required')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrRequired(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOptional'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOptional', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIReadonly',
+function(aSignal) {
+
+    /**
+     * @method handleUIReadonly
+     * @summary Causes the receiver to be put into its 'read only state'.
+     * @param {TP.sig.UIReadonly} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('readonlywhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'readonly', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:readonly')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrReadonly(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadonly'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadonly', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIReadwrite',
+function(aSignal) {
+
+    /**
+     * @method handleUIReadwrite
+     * @summary Causes the receiver to be put into its 'read write state'.
+     * @param {TP.sig.UIReadwrite} aSignal The signal that caused this handler
+     *     to trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('readonlywhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'readonly', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:readonly')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrReadonly(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadwrite'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadwrite', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIRequired',
+function(aSignal) {
+
+    /**
+     * @method handleUIRequired
+     * @summary Causes the receiver to be put into its 'required state'.
+     * @param {TP.sig.UIRequired} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('requiredwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'required', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:required')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrRequired(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIRequired'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIRequired', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIValid',
+function(aSignal) {
+
+    /**
+     * @method handleUIValid
+     * @summary Causes the receiver to be put into its 'valid state'.
+     * @param {TP.sig.UIValid} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('invalidwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'invalid', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:invalid')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrInvalid(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIValid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIValid', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.group.Inst.defineMethod('mutationAddedFilteredNodes',
-function(addedNodes) {
+function(addedNodes, queryInfo) {
 
     /**
      * @method mutationAddedFilteredNodes
@@ -473,23 +1033,44 @@ function(addedNodes) {
      *     the query that we registered with the MutationSignalSource.
      * @param {Array} addedNodes The Array of nodes that got added to the DOM,
      *     then filtered by our query.
+     * @param {TP.core.Hash} queryInfo Information that was registered for this
+     *     query when it was originally set up.
      * @returns {TP.tibet.group} The receiver.
      */
 
     var groupTPElems,
         groupElems,
-        occursInBoth;
+
+        addedElems,
+
+        occursInBoth,
+
+        ourLocalID;
 
     //  Grab all elements that could be our members - if the added nodes are
     //  part of our group, they will now be in this list.
-    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
 
         //  Unwrap them
         groupElems = TP.unwrap(groupTPElems);
 
+        //  Collect up all of the descendant elements under the addedNodes
+        //  (since the mutation machinery will only hand us the added 'roots')
+        addedElems = addedNodes.collect(
+            function(aNode) {
+                if (TP.isElement(aNode)) {
+                    return TP.ac(aNode, TP.nodeGetDescendantElements(aNode));
+                }
+            });
+
+        //  This will be an Array of Arrays - flatten it.
+        addedElems = addedElems.flatten();
+
         //  Compare that list to what the mutation machinery handed us as added
         //  nodes.
-        occursInBoth = groupElems.intersection(addedNodes, TP.IDENTITY);
+        occursInBoth = groupElems.intersection(addedElems, TP.IDENTITY);
+
+        ourLocalID = this.getLocalID();
 
         //  Set the group of any that are in both lists. Also, we observe each
         //  one for AttributeChange.
@@ -499,7 +1080,10 @@ function(addedNodes) {
 
                     aTPElem = TP.wrap(anElem);
 
-                    aTPElem.setGroupElement(this);
+                    //  Use $setAttribute() and don't signal for these new
+                    //  elements since we're just setting them up.
+                    aTPElem.$setAttribute('tibet:group', ourLocalID, false);
+
                     this.observe(aTPElem, 'AttributeChange');
                 }.bind(this));
     }
@@ -510,31 +1094,51 @@ function(addedNodes) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('mutationRemovedFilteredNodes',
-function(removedNodes) {
+function(removedNodes, queryInfo) {
 
     /**
      * @method mutationRemovedFilteredNodes
-     * @summary Handles when nodes got added to the DOM we're in, filtered by
-     *     the query that we registered with the MutationSignalSource.
-     * @param {Array} removedNodes The Array of nodes that got removed from the
-     *     DOM, then filtered by our query.
+     * @summary Handles when nodes got removed from the DOM we're in, filtered
+     *     bythe query that we registered with the MutationSignalSource.
+     * @param {Array} removedNodes The Array of *all* of the nodes that got
+     *     removed from the DOM. Note that because these nodes have already been
+     *     removed from the DOM by the time TIBET's machinery gets called,
+     *     unlike mutationAddedFilteredNodes, they will *not* have been filtered
+     *     by the query.
+     * @param {TP.core.Hash} queryInfo Information that was registered for this
+     *     query when it was originally set up.
      * @returns {TP.tibet.group} The receiver.
      */
 
     var groupTPElems,
         groupElems,
+
+        removedElems,
+
         occursInBoth;
 
     //  Grab all elements that could be our members - if the added nodes are
     //  part of our group, they will now be in this list.
-    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
 
         //  Unwrap them
         groupElems = TP.unwrap(groupTPElems);
 
+        //  Collect up all of the descendant elements under the addedNodes
+        //  (since the mutation machinery will only hand us the removed 'roots')
+        removedElems = removedNodes.collect(
+                    function(aNode) {
+                        if (TP.isElement(aNode)) {
+                            return TP.nodeGetDescendantElements(aNode);
+                        }
+                    });
+
+        //  This will be an Array of Arrays - flatten it.
+        removedElems = removedElems.flatten();
+
         //  Compare that list to what the mutation machinery handed us as added
         //  nodes.
-        occursInBoth = groupElems.intersection(removedNodes, TP.IDENTITY);
+        occursInBoth = groupElems.intersection(removedElems, TP.IDENTITY);
 
         //  Ignore each member for AttributeChange. This undoes the observation
         //  that we do in mutationAddedFilteredNodes.
@@ -543,6 +1147,72 @@ function(removedNodes) {
                     var aTPElem;
 
                     aTPElem = TP.wrap(anElem);
+
+                    this.ignore(aTPElem, 'AttributeChange');
+                }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('setupMembers',
+function() {
+
+    /**
+     * @method setupMembers
+     * @summary Sets up the members of this group. This includes associating
+     *     them to the group and observing any attribute changes from those
+     *     members.
+     * @returns {TP.tibet.group} The receiver.
+     */
+
+    var groupTPElems;
+
+    //  Grab all of the members of this group, iterate over them and add
+    //  ourself as a group that contains them. Note that an element can have
+    //  more than one group. Also, we observe each one for AttributeChange.
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
+        groupTPElems.perform(
+                function(aTPElem) {
+
+                    //  Note: This will overwrite any prior group element
+                    //  setting for aTPElem
+                    aTPElem.setGroupElement(this);
+
+                    this.observe(aTPElem, 'AttributeChange');
+                }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('teardownMembers',
+function() {
+
+    /**
+     * @method teardownMembers
+     * @summary Tears down the members of this group. This includes
+     *     disassociating them from the group and ignoring any attribute changes
+     *     from those members.
+     * @returns {TP.tibet.group} The receiver.
+     */
+
+    var groupTPElems;
+
+    //  Grab all of the members of this group, iterate over them and add
+    //  ourself as a group that contains them. Note that an element can have
+    //  more than one group. Also, we observe each one for AttributeChange.
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
+        groupTPElems.perform(
+                function(aTPElem) {
+
+                    //  Note: This will remove the attribute associating aTPElem
+                    //  with this group.
+                    aTPElem.setGroupElement(null);
 
                     this.ignore(aTPElem, 'AttributeChange');
                 }.bind(this));

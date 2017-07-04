@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|thumbnail {
 
@@ -27,9 +27,21 @@ sherpa|thumbnail > .header {
     border-top-left-radius: 5px;
 
     background-color: #eee;
+
+    text-align: left;
 }
 
-sherpa|thumbnail > .header > .content {
+sherpa|thumbnail > .header button {
+
+    position: relative;
+
+    top: 0;
+
+    margin: 0;
+    margin-left: 0.25em;
+}
+
+sherpa|thumbnail > .header > .trigger {
 
     position: absolute;
 
@@ -44,17 +56,17 @@ sherpa|thumbnail > .header > .content {
 
     border: 1px solid #666;
 
-    background: white;
+    background-color: white;
 
     cursor: pointer;
 }
 
-sherpa|thumbnail > .header > .content:hover {
+sherpa|thumbnail > .header > .trigger:hover {
 
-    background: gold;
+    background-color: rgba(255, 215, 0, 0.5);
 }
 
-sherpa|thumbnail > .header > .content > .one {
+sherpa|thumbnail > .header > .trigger > .one {
 
     position: relative;
 
@@ -65,14 +77,14 @@ sherpa|thumbnail > .header > .content > .one {
 
     border: 1px solid #666;
 
-    background: #ddd;
+    background-color: #ddd;
 }
 
-sherpa|thumbnail > .header > .content > .two {
+sherpa|thumbnail > .header > .trigger > .two {
 
     position: relative;
 
-    top: 0px;
+    top: 0;
     left: 10px;
 
     height: 5px;
@@ -82,10 +94,10 @@ sherpa|thumbnail > .header > .content > .two {
 
     border: 1px solid #666;
 
-    background: #ddd;
+    background-color: #ddd;
 }
 
-sherpa|thumbnail > .header > .content > .three {
+sherpa|thumbnail > .header > .trigger > .three {
 
     position: relative;
 
@@ -97,14 +109,13 @@ sherpa|thumbnail > .header > .content > .three {
 
     border: 1px solid #666;
 
-    background: #ddd;
+    background-color: #ddd;
 }
 
 sherpa|thumbnail > .header > .content:hover > * {
 
-    background: white;
+    background-color: white;
 }
-
 
 sherpa|thumbnail > .content {
 
@@ -121,36 +132,27 @@ sherpa|thumbnail > .content {
 
     border-top: 1px solid #aaa;
 
-    background: #eee;
+    background-color: #eee;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-sherpa|thumbnail > .content > .world {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 50%;
+sherpa|thumbnail > .content > div {
+    font-size: 500%;
+    opacity: 0.1;
 }
 
-sherpa|thumbnail > .content > .canvas {
+/* Rules that trigger when the corner is closed */
 
-    position: absolute;
+.framing.south.west.corner[pclass|closed] sherpa|thumbnail > .header > *:not(.trigger) {
 
-    top: 50%;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    display: none;
 }
 
-sherpa|thumbnail > .content input {
+.framing.south.west.corner[pclass|closed] sherpa|thumbnail > .content {
 
-    width: 30%;
-}
-
-sherpa|thumbnail > .content select {
-
-    width: 30%;
+    display: none;
 }
 

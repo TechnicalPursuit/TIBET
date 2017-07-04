@@ -1,0 +1,14 @@
+{
+    "type": "task",
+    "name": "sendmail",
+    "owner": "Team TIBET",
+    "plugin": "mail-sendmail",
+    "params": {
+        "sendmail": {
+            "path": "sendmail",
+            "newline": "unix"
+        },
+        "from": "your@fromaddress",
+        "html": "<code>\{{job._id}}</code>"
+    }
+}

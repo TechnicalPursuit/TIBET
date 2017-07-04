@@ -58,11 +58,11 @@
 
         </span>
 
-        <button id="insertBeforeBegin" on:click="{signal: CreateItem, origin: 'repeater', payload:{index:1, position:TP.BEFORE}}">Click to insert a row before the beginning</button>
-        <button id="insertAfterBegin" on:click="{signal: CreateItem, origin: 'repeater', payload:{index:1}}">Click to insert a row after the beginning</button>
+        <button id="insertBeforeBegin" on:click="{signal: CloneItem, origin: 'repeater', payload:{index:1, position:TP.BEFORE}}">Click to insert a row before the beginning</button>
+        <button id="insertAfterBegin" on:click="{signal: CloneItem, origin: 'repeater', payload:{index:1}}">Click to insert a row after the beginning</button>
 
-        <button id="insertBeforeEnd" on:click="{signal: CreateItem, origin: 'repeater', payload:{position:TP.BEFORE}}">Click to insert a row before end</button>
-        <button id="insertAfterEnd" on:click="{signal: CreateItem, origin: 'repeater'}">Click to insert a row after end</button>
+        <button id="insertBeforeEnd" on:click="{signal: CloneItem, origin: 'repeater', payload:{position:TP.BEFORE}}">Click to insert a row before end</button>
+        <button id="insertAfterEnd" on:click="{signal: CloneItem, origin: 'repeater'}">Click to insert a row after end</button>
     </span>
 
 </body>

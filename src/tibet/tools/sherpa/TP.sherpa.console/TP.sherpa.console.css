@@ -1,18 +1,19 @@
-@import url("~ide_root/css/sherpa_pp.css");
+@import url("~ide_root/styles/sherpa_pp.css");
 
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|console {
 
     display: block;
     position: absolute;
 
-    top: 2px;
-    right: 0px;
-    bottom: 2px;
-    left: 0px;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -22,32 +23,33 @@ sherpa|console {
     /* This should match TIBET's CONSOLE_INPUT_TIER constant */
     z-index: 20000;
 
-    border: 1px solid black;
     border-radius: 3px;
+
     padding: 2px;
     padding-top: 3px;
     padding-bottom: 3px;
 
     text-align: left;
-    line-height: 1.0;
+    line-height: 1;
 }
 
 sherpa|console[pclass|hidden] {
 
-    height: 0px;
+    height: 0;
 }
 
 sherpa|console > xctrls|codeeditor {
 
     margin: 1px;
 
-    /*border-radius: 3px;*/
+    /* border-radius: 3px; */
 }
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
 
-    background-color: transparent;
     height: 100%;
+
+    background-color: transparent;
 }
 
 sherpa|console > xctrls|codeeditor[pclass|focus] > .CodeMirror {
@@ -55,92 +57,26 @@ sherpa|console > xctrls|codeeditor[pclass|focus] > .CodeMirror {
     background-color: white;
 }
 
-sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
+sherpa|console > xctrls|codeeditor[pclass|focus]:hover > .CodeMirror {
 
-    background-color: gold;
+    background-color: white;
 }
 
-sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
+sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
+
+    background-color: rgba(255, 215, 0, 0.5);
+}
+
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     overflow-x: auto !important;
     overflow-y: hidden !important;
 }
 
-#sherpaPrompt {
-
-    display: inline-block;
-
-    cursor: default;
-
-    margin-right: 6px;
-
-    line-height: 12px;
-
-    /* This is to 'pad out' the right hand side to account for the indicator
-       icons below. Otherwise, the cursor will show up 32px more to the left
-       than we want */
-    padding-right: 32px;
-}
-
-#sherpaPrompt > .text {
-
-    position: relative;
-
-    bottom: 0px;
-    left: 32px;
-
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
-    font-size: 12px;
-
-    white-space: nowrap;
-}
-
-#sherpaPrompt > .indicator {
-
-    display: block;
-    position: absolute;
-
-    top: 0px;
-    width: 16px;
-    height: 16px;
-
-    background-size: 16px 16px;
-}
-
-#sherpaPrompt > [name="outputmode"].indicator {
-
-    left: 2px;
-}
-
-#sherpaPrompt > [name="outputmode"][mode="none"].indicator {
-
-    background-image: url(~ide_root/media/ic_crop_free_24px.svg);
-}
-
-#sherpaPrompt > [name="outputmode"][mode="one"].indicator {
-
-    background-image: url(~ide_root/media/ic_filter_1_24px.svg);
-}
-
-#sherpaPrompt > [name="outputmode"][mode="all"].indicator {
-
-    background-image: url(~ide_root/media/ic_filter_none_24px.svg);
-}
-
-#sherpaPrompt > [name="autocomplete"].indicator {
-
-    display: none;
-
-    left: 18px;
-
-    background-image: url(../media/light88.svg);
-
-    transform: rotate(180deg);
-}
-
 .match_history_entry::before {
 
-    content: '\00BB  ';
-    color: #387DF1;
+    content: "\00BB  ";
+
+    color: #387df1;
 }
 

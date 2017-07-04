@@ -24,13 +24,16 @@
  */
 
 /* eslint no-eval:0, no-console:0 */
+
 /* global phantom:false, require:false */
+
 (function(root) {
 
     var fs,
         system,
         minimist,
         beautify,
+        Color,
         PhantomTSH;
 
     fs = require('fs');
@@ -53,24 +56,8 @@
     //  ---
 
     /**
-     * A set of color codes used to wrap text output to the console. Used by the
-     * PhantomTSH.color() method to colorize console output.
-     * @type {Object.<String, Array>}
-     */
-    PhantomTSH.COLORS = {
-        gray: ['\x1B[90m', '\x1B[39m'],     // admin output
-        yellow: ['\x1B[33m', '\x1B[39m'],   // warning output
-        green: ['\x1B[32m', '\x1B[39m'],    // passing/debug output
-        magenta: ['\x1B[35m', '\x1B[39m'],  // error, non-fatal
-        red: ['\x1B[31m', '\x1B[39m'],      // severe/fatal output
-        white: ['\x1B[37m', '\x1B[39m'],    // general logging
-        blue: ['\x1B[34m', '\x1B[39m'],     // currently unused
-        cyan: ['\x1B[36m', '\x1B[39m']      // currently unused
-    };
-
-    /**
      * The default logging level. Roughly equivalent to the logging levels from
-     * the TIBET boot system (ALL, TRACE, DEBUG, INFO, WARN, ERROR, SEVERE,
+     * the TIBET boot system (ALL, TRACE, DEBUG, INFO, WARN, ERROR,
      * FATAL, SYSTEM) running from 0 to N.
      * @type {Number}
      */
@@ -179,10 +166,9 @@
         INFO: 3,
         WARN: 4,
         ERROR: 5,
-        SEVERE: 6,
-        FATAL: 7,
-        SYSTEM: 8,
-        OFF: 9
+        FATAL: 6,
+        SYSTEM: 7,
+        OFF: 8
     };
 
     /**
@@ -343,29 +329,6 @@
     //  ---
 
     /**
-     * Returns the string wrapped in color codes appropriate to the specified
-     * color name. The color name must be found in PhantomTSH.COLORS.
-     * @param {String} string The string to color.
-     * @param {String} color The name of the color to be used.
-     * @returns {String} The colorized string, if the color is found.
-     */
-    PhantomTSH.color = function(string, color) {
-        var pair;
-
-        if (PhantomTSH.argv.color === false) {
-            return string;
-        }
-
-        pair = PhantomTSH.COLORS[color];
-        if (!pair) {
-            return string;
-        }
-
-        return pair[0] + string + pair[1];
-    };
-
-
-    /**
      * Executes the TIBET shell script provided using the TP.shell() primitive.
      * The PhantomTSH.page.onCallback routine is invoked with the result JSON.
      * @param {String} tshInput The TSH command line to execute.
@@ -474,8 +437,8 @@
             'cmdEcho', false,           // don't echo the request
             'cmdHistory', false,        // don't create a history entry
             'cmdSilent', false,         // report output so we can capture it
-            'success', handler,         // success handler (same handler)
-            'failure', handler));       // failure handler (same handler)
+            'onsuccess', handler,       // success handler (same handler)
+            'onfail', handler));        // failure handler (same handler)
 
         return;
     };
@@ -502,9 +465,9 @@
         /* eslint-enable no-nested-ternary,no-extra-parens */
 
         if (status === 0) {
-            color = 'white';
+            color = 'success';
         } else {
-            color = 'red';
+            color = 'failure';
         }
 
         if (reason && reason.length) {
@@ -521,7 +484,7 @@
                 (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
             /* eslint-enable no-extra-parens */
 
-            PhantomTSH.log(msg, 'gray', true);
+            PhantomTSH.log(msg, 'info', true);
         }
 
         phantom.exit(status);
@@ -579,12 +542,12 @@
     /**
      * Logs a message, prefixing it as a TAP comment if in TAP mode.
      * @param {String} message The string to output.
-     * @param {String} color The name of a color to use for output.
+     * @param {String} style The name of a theme style to use for output.
      */
-    PhantomTSH.log = function(message, color, flush) {
+    PhantomTSH.log = function(message, style, flush) {
         var level,
             msg,
-            colr;
+            styl;
 
         msg = '' + message;
 
@@ -607,15 +570,13 @@
             level = 4;
         } else if (/^ERROR/i.test(msg)) {
             level = 5;
-        } else if (/^SEVERE/i.test(msg)) {
-            level = 6;
         } else if (/^FATAL/i.test(msg)) {
-            level = 7;
+            level = 6;
         } else if (/^SYSTEM/i.test(msg)) {
             if (!PhantomTSH.argv.system) {
                 return;
             }
-            level = 8;
+            level = 7;
         }
 
         // If we have a level verify we should continue processing it.
@@ -629,9 +590,9 @@
 
         if (PhantomTSH.argv.contrast &&
                 msg.indexOf(PhantomTSH.argv.contrast) === 0) {
-            colr = 'gray';
+            styl = 'info';
         } else {
-            colr = color;
+            styl = style;
         }
 
         //  If the message is a JSON string beautify it for easier reading.
@@ -644,25 +605,25 @@
 
         // If color is explicit we go with that, otherwise we check the content
         // to see if it matches a typical output format from TIBET itself.
-        if (colr !== void 0) {
-            msg = PhantomTSH.color(msg, colr);
+        if (styl !== void 0) {
+            msg = PhantomTSH.colorize(msg, styl);
         } else {
             if (/^TRACE/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'gray');
+                msg = PhantomTSH.colorize(msg, 'trace');
             } else if (/^DEBUG/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'green');
+                msg = PhantomTSH.colorize(msg, 'debug');
             } else if (/^INFO/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'white');
+                msg = PhantomTSH.colorize(msg, 'info');
             } else if (/^WARN/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'yellow');
+                msg = PhantomTSH.colorize(msg, 'warn');
             } else if (/^ERROR/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'magenta');
-            } else if (/^(SEVERE|FATAL)/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'red');
+                msg = PhantomTSH.colorize(msg, 'error');
+            } else if (/^FATAL/i.test(msg)) {
+                msg = PhantomTSH.colorize(msg, 'fatal');
             } else if (/^SYSTEM/i.test(msg)) {
-                msg = PhantomTSH.color(msg, 'cyan');
+                msg = PhantomTSH.colorize(msg, 'system');
             } else {
-                msg = PhantomTSH.color(msg, 'white');
+                msg = PhantomTSH.colorize(msg, 'info');
             }
         }
 
@@ -689,6 +650,23 @@
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
 
+        Color = require(phantom.libraryPath + '/../common/tibet_color');
+        PhantomTSH._color = new Color(PhantomTSH.argv);
+
+        //  Define a local colorizing function that respects our 'color' option.
+        //  Don't colorize output (it's often parsed by invoking CLI commands)
+        //  unless we're asked to.
+        PhantomTSH.colorize = function(aString, aSpec) {
+            if (PhantomTSH.argv.color) {
+                return PhantomTSH._color.colorize(aString, aSpec);
+            }
+            return aString;
+        };
+
+        if (PhantomTSH.argv.debug) {
+            PhantomTSH.log(JSON.stringify(PhantomTSH.argv));
+        }
+
         if (phantom.version.major > 1) {
             PhantomTSH.url = 'file://' + PhantomTSH.url;
         }
@@ -700,16 +678,16 @@
                     phantom.version.patch +
                     ' at ' + (new Date()).toLocaleString().replace(
                         /( ){2}/g, ' '),
-                'gray', true);
+                'info', true);
 
             if (PhantomTSH.argv.debug) {
                 index = PhantomTSH.url.indexOf('#');
                 primary = PhantomTSH.url.slice(0, index);
                 fragment = PhantomTSH.url.slice(index + 1);
-                PhantomTSH.log(primary, 'gray');
-                PhantomTSH.log(fragment, 'gray');
+                PhantomTSH.log(primary, 'debug');
+                PhantomTSH.log(fragment, 'debug');
                 PhantomTSH.log('PhantomTSH.argv: ' +
-                    JSON.stringify(PhantomTSH.argv), 'gray');
+                    JSON.stringify(PhantomTSH.argv), 'debug');
             }
         }
 
@@ -738,7 +716,7 @@
         //  Check for page load success
         if (status !== 'success') {
             PhantomTSH.exit(
-                PhantomTSH.color('Error opening URL: ', 'red') + PhantomTSH.url,
+                PhantomTSH.colorize('Error opening URL: ', 'fatal') + PhantomTSH.url,
                 PhantomTSH.ERROR);
         } else {
             // Wait for TIBET to be available
@@ -773,7 +751,7 @@
                     if (!PhantomTSH.argv.quiet) {
                         PhantomTSH.log('TIBET loaded in ' +
                             (PhantomTSH.startExec - PhantomTSH.start) + ' ms.' +
-                            ' Starting execution.', 'gray', true);
+                            ' Starting execution.', 'info', true);
                     }
 
                     //  If the timeout wasn't supplied on the command line, then
@@ -845,10 +823,6 @@
             PhantomTSH.level = PhantomTSH.DEFAULT_LEVEL;
         }
 
-        if (PhantomTSH.argv.debug) {
-            PhantomTSH.log(JSON.stringify(argv));
-        }
-
         PhantomTSH.url = argv.url || PhantomTSH.DEFAULT_URL;
         PhantomTSH.url = fs.absolute(PhantomTSH.url);
 
@@ -888,38 +862,38 @@
         if (/^#/.test(msg)) {
             // comment
             if (/^# PASS:/.test(msg)) {
-                str = PhantomTSH.color(msg, 'green');
+                str = PhantomTSH.colorize(msg, 'pass');
             } else if (/^# FAIL:/.test(msg)) {
-                str = PhantomTSH.color(msg, 'red');
+                str = PhantomTSH.colorize(msg, 'fail');
             } else if (/# SKIP/.test(msg)) {
-                str = PhantomTSH.color(msg, 'cyan');
+                str = PhantomTSH.colorize(msg, 'skip');
             } else {
-                str = PhantomTSH.color(msg, 'gray');
+                str = PhantomTSH.colorize(msg, 'comment');
             }
         } else if (/^not ok/.test(msg)) {
             // bad, but might be todo item...
             if (/# TODO/.test(msg)) {
                 // warning but basically ignored
-                str = PhantomTSH.color('not ok', 'red') +
-                    PhantomTSH.color(msg.slice(6), 'yellow');
+                str = PhantomTSH.colorize('not ok', 'fail') +
+                    PhantomTSH.colorize(msg.slice(6), 'todo');
             } else {
                 // true error
-                str = PhantomTSH.color('not ok', 'red') + msg.slice(6);
+                str = PhantomTSH.colorize('not ok', 'fail') + msg.slice(6);
                 PhantomTSH.status = -1;
             }
         } else if (/^ok/.test(msg)) {
             // passed or skipped
             if (/# SKIP/.test(msg)) {
-                str = PhantomTSH.color(msg, 'cyan');
+                str = PhantomTSH.colorize(msg, 'skip');
             } else if (/# TODO/.test(msg)) {
-                str = PhantomTSH.color('ok', 'green') +
-                    PhantomTSH.color(msg.slice(2), 'yellow');
+                str = PhantomTSH.colorize('ok', 'pass') +
+                    PhantomTSH.colorize(msg.slice(2), 'todo');
             } else {
-                str = PhantomTSH.color('ok', 'green') + msg.slice(2);
+                str = PhantomTSH.colorize('ok', 'pass') + msg.slice(2);
             }
         } else if (/^bail out!/i.test(msg)) {
             // termination signal
-            str = PhantomTSH.color('Bail out!', 'red') + msg.slice(8);
+            str = PhantomTSH.colorize('Bail out!', 'fail') + msg.slice(8);
             PhantomTSH.status = -1;
         } else if (/^\d{1}\.\.\d+$/.test(msg)) {
             str = msg;
@@ -934,15 +908,13 @@
                 level = 4;
             } else if (/^ERROR/i.test(msg)) {
                 level = 5;
-            } else if (/^SEVERE/i.test(msg)) {
-                level = 6;
             } else if (/^FATAL/i.test(msg)) {
-                level = 7;
+                level = 6;
             } else if (/^SYSTEM/i.test(msg)) {
                 if (!PhantomTSH.argv.system) {
                     return;
                 }
-                level = 8;
+                level = 7;
             }
 
             // If we have a level verify we should continue processing it.
@@ -999,7 +971,7 @@
                     if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
                         clearInterval(PhantomTSH.timer);
                         PhantomTSH.exit(
-                            PhantomTSH.color('Operation timed out.', 'red'),
+                            PhantomTSH.colorize('Operation timed out.', 'fatal'),
                             PhantomTSH.ERROR);
                     }
                 }, 250);
@@ -1060,18 +1032,18 @@
                     ready = isReady();
                     if (typeof ready === 'string') {
                         PhantomTSH.exit(
-                            PhantomTSH.color(ready, 'red'),
+                            PhantomTSH.colorize(ready, 'fatal'),
                             PhantomTSH.ERROR);
                     }
                 } catch (e) {
                     if (/Stopped/.test(e.message)) {
                         PhantomTSH.exit(
-                            PhantomTSH.color(e.message, 'red'),
+                            PhantomTSH.colorize(e.message, 'fatal'),
                             PhantomTSH.ERROR);
                     } else {
                         PhantomTSH.exit(
-                            PhantomTSH.color('Error in ready check: ' +
-                                e.message, 'red'),
+                            PhantomTSH.colorize('Error in ready check: ' +
+                                e.message, 'fatal'),
                             PhantomTSH.ERROR);
                     }
                 }
@@ -1079,7 +1051,7 @@
                 if (!ready) {
                     // Ran out of time...
                     PhantomTSH.exit(
-                        PhantomTSH.color('Operation timed out.', 'red'),
+                        PhantomTSH.colorize('Operation timed out.', 'fatal'),
                         PhantomTSH.ERROR);
                 } else {
                     // Ready in time...clear the status check interval and our
@@ -1090,8 +1062,8 @@
                         onReady();
                     } catch (e) {
                         PhantomTSH.exit(
-                            PhantomTSH.color('Error in ready function: ' +
-                                e.message, 'red'),
+                            PhantomTSH.colorize('Error in ready function: ' +
+                                e.message, 'fatal'),
                             PhantomTSH.ERROR);
                     }
                 }
@@ -1111,7 +1083,7 @@
      * @param {String} msg The alert message.
      */
     PhantomTSH.page.onAlert = function(msg) {
-        PhantomTSH.log('alert(' + msg + ');', 'yellow');
+        PhantomTSH.log('alert(' + msg + ');', 'notify');
 
         return;
     };
@@ -1131,7 +1103,7 @@
         }
 
         if (!data) {
-            PhantomTSH.exit(PhantomTSH.color('Failed: ', 'red') +
+            PhantomTSH.exit(PhantomTSH.colorize('Failed: ', 'fatal') +
                 'No result data.', PhantomTSH.FAILURE);
         }
 
@@ -1152,16 +1124,16 @@
                 }
                 switch (item.meta) {
                     case 'notify':
-                        PhantomTSH.log(PhantomTSH.color(item.data), 'yellow');
+                        PhantomTSH.log(PhantomTSH.colorize(item.data), 'notify');
                         break;
                     case 'stdin':
-                        PhantomTSH.log(PhantomTSH.color(item.data), 'magenta');
+                        PhantomTSH.log(PhantomTSH.colorize(item.data), 'stdin');
                         break;
                     case 'stdout':
-                        PhantomTSH.log(PhantomTSH.color(item.data), 'white');
+                        PhantomTSH.log(PhantomTSH.colorize(item.data), 'stdout');
                         break;
                     case 'stderr':
-                        PhantomTSH.log(PhantomTSH.color(item.data), 'red');
+                        PhantomTSH.log(PhantomTSH.colorize(item.data), 'stderr');
                         code = PhantomTSH.FAILURE;
                         break;
                     default:
@@ -1189,7 +1161,7 @@
      * @returns {Boolean} True if you ask nicely.
      */
     PhantomTSH.page.onConfirm = function(msg) {
-        PhantomTSH.log('confirm(' + msg + ');', 'yellow');
+        PhantomTSH.log('confirm(' + msg + ');', 'notify');
 
         // Returning true => "OK", false => "Cancel". We return a value based on
         // whether the question includes the word please, so ask nicely :).
@@ -1266,7 +1238,7 @@
         if (PhantomTSH.argv.errexit) {
             PhantomTSH.exit(str, PhantomTSH.ERROR);
         } else {
-            PhantomTSH.log(str, 'red', true);
+            PhantomTSH.log(str, 'error', true);
         }
     };
 
@@ -1278,7 +1250,7 @@
      * @returns {String} oldFile.
      */
     PhantomTSH.page.onFilePicker = function(oldFile) {
-        PhantomTSH.log('onFilePicker(' + oldFile + ');', 'yellow');
+        PhantomTSH.log('onFilePicker(' + oldFile + ');', 'notify');
 
         return oldFile;
     };
@@ -1291,7 +1263,7 @@
      * @returns {String} A random string.
      */
     PhantomTSH.page.onPrompt = function(msg) {
-        PhantomTSH.log('prompt(' + msg + ');', 'yellow');
+        PhantomTSH.log('prompt(' + msg + ');', 'notify');
 
         return 'I have ' + Date.now() + ' answers.';
     };
@@ -1316,9 +1288,9 @@
             ', code: ' + resourceError.errorCode + ').';
 
         if (PhantomTSH.loaded) {
-            PhantomTSH.log(PhantomTSH.color(str, 'yellow'), true);
+            PhantomTSH.log(PhantomTSH.colorize(str, 'warn'), true);
         } else {
-            console.log(PhantomTSH.color(str, 'red'));
+            console.log(PhantomTSH.colorize(str, 'fatal'));
             phantom.exit(PhantomTSH.ERROR);
         }
     };
@@ -1338,7 +1310,7 @@
      */
     PhantomTSH.page.onResourceTimeout = function(request) {
         PhantomTSH.log('Request #' + request.id + ': ' +
-            JSON.stringify(request), 'red');
+            JSON.stringify(request), 'error');
     };
 
 

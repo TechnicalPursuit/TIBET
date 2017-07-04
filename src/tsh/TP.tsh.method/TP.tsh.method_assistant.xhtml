@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<tsh:method_assistant tibet:nomutationtracking="true">
+    <div class="head"/>
+    <div class="body">
+        <form bind:scope="urn:tibet:method_cmd_source#jpath($.info)">
+            <ul class="flex_outer">
+                <li>
+                    <label>Method Kind:</label>
+                    <ul class="flex_inner">
+                        <li>
+                            <label for="methodKindRadio1">Method</label>
+                            <input type="radio" name="methodkind_radio" value="method" id="methodKindRadio1" bind:io="{checked: methodKind}"/>
+                        </li>
+                        <li>
+                            <label for="methodKindRadio2">Handler</label>
+                            <input type="radio" name="methodkind_radio" value="handler" id="methodKindRadio2"/>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <label for="methodOwnerTypeNameField">Method Owner Type Name:</label>
+                    <input type="text" id="methodOwnerTypeNameField" bind:io="{value: methodOwnerTypeName}" autofocus="autofocus"/>
+                </li>
+
+                <li>
+                    <label>Method Track:</label>
+                    <ul class="flex_inner">
+                        <li>
+                            <label for="methodTrackRadio1">Type</label>
+                            <input type="radio" name="methodtrack_radio" value="type" id="methodTrackRadio1" bind:io="{checked: methodTrack}"/>
+                        </li>
+                        <li>
+                            <label for="methodTrackRadio2">Instance</label>
+                            <input type="radio" name="methodtrack_radio" value="instance" id="methodTrackRadio2"/>
+                        </li>
+                        <li>
+                            <label for="methodTrackRadio3">Type Local</label>
+                            <input type="radio" name="methodtrack_radio" value="typelocal" id="methodTrackRadio3"/>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <label for="methodNameField">Method name:</label>
+                    <input type="text" id="methodNameField" bind:io="{value: methodName}"/>
+                </li>
+            </ul>
+        </form>
+        <code id="generatedCmdLine"/>
+    </div>
+    <div class="foot">
+        <button on:click="DialogCancel">Cancel</button>
+        <button on:click="DialogOk">Create Method</button>
+    </div>
+</tsh:method_assistant>

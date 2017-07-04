@@ -1,37 +1,15 @@
 <!DOCTYPE html>
 
-<sherpa:thumbnail>
-    <div class="header" on:click="Toggle">
-        <div class="content" title="Thumbnail">
+<sherpa:thumbnail id="SherpaThumbnail">
+    <div class="header">
+        <div class="trigger" on:click="Toggle">
             <div class="one"></div>
             <div class="two"></div>
             <div class="three"></div>
+            <xctrls:hint>Thumbnail</xctrls:hint>
         </div>
     </div>
     <div class="content">
-        <div class="world">
-            <h2>World</h2>
-            <form>
-                <label for="world_rows">Rows:</label>
-                <input id="world_rows" value="1"/>
-                <label for="world_cols">Cols:</label>
-                <input id="world_cols" value="1"/>
-            </form>
-        </div>
-        <div class="canvas">
-            <h2>Canvas</h2>
-            <form>
-            <label for="canvas_size">Size:</label>
-            <select id="canvas_size">
-                <option>1024 x 768</option>
-                <option>1280 x 720</option>
-            </select>
-            <label for="grid_compute">Grid:</label>
-            <select id="grid_compute">
-                <option>50%</option>
-                <option>GCF</option>
-            </select>
-            </form>
-        </div>
+        <div>Coming Soon</div>
     </div>
 </sherpa:thumbnail>

@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -22,7 +22,7 @@ var CLI,
     TDS;
 
 //  Bring in the TDS code so we can reference command line options.
-TDS = require('../../../etc/tds/tds-base');
+TDS = require('../../../etc/tds/tds_base');
 
 CLI = require('./_cli');
 
@@ -30,7 +30,9 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -60,8 +62,8 @@ Cmd.NAME = 'start';
  * @type {Object}
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    TDS.PARSE_OPTIONS,          //   NOTE we use the TDS's list here.
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+    CLI.blend({}, TDS.PARSE_OPTIONS),       //  we use the TDS's list here so
+    Cmd.Parent.prototype.PARSE_OPTIONS);    //  we create a 'copy' first.
 
 /**
  * The command usage string.
@@ -85,6 +87,7 @@ Cmd.prototype.execute = function() {
         child,  // The child_process module.
         args,   // Argument list for child process.
         server, // Spawned child process for the server.
+        noop,   // Empty hook function to trigger signal passing to client.
         cmd,    // Closure'd var providing access to the command object.
         inuse,  // Flag to trap EADDRINUSE exceptions.
         msg,    // Shared message content.
@@ -103,7 +106,7 @@ Cmd.prototype.execute = function() {
     process.chdir(CLI.getAppHead());
 
     if (!sh.test('-f', 'server.js')) {
-        // If there's no server.js assume a 'noserver' template or 'couchdb'
+        // If there's no server.js assume a 'noserver' template or 'couch'
         // template of some sort and default to opening the index.html.
 
         //  If we see electron.js and we can find an electron binary we can
@@ -122,7 +125,8 @@ Cmd.prototype.execute = function() {
     } else {
         //  Capture the command line arguments and place server.js on the front.
         //  This essentially becomes the command line for a new 'node' command.
-        args = this.getArglist();
+        //  The slice() here removes the command name ('start').
+        args = this.getArglist().slice(1);
         args.unshift('server.js');
 
         //  Create and invoke the command to run the server.
@@ -176,13 +180,26 @@ Cmd.prototype.execute = function() {
 
     server.on('close', function(code) {
         if (code !== 0) {
-            cmd.error('Stopped with status: ' + code);
+            cmd.error('stopped with status: ' + code);
             /* eslint-disable no-process-exit */
             // exit with status code so command line sees proper exit code.
             process.exit(code);
             /* eslint-enable no-process-exit */
         }
     });
+
+    //  NOTE that by registering here in the parent we end up with transmission
+    //  to the client process. See server.js for the actual handler logic.
+    noop = function() {
+        return;
+    };
+    process.on('SIGINT', noop);
+    process.on('SIGHUP', noop);
+    process.on('SIGQUIT', noop);
+    process.on('SIGTERM', noop);
+    process.on('exit', noop);
+
+    return 0;
 };
 
 module.exports = Cmd;

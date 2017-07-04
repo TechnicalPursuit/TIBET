@@ -229,12 +229,14 @@ function(aFilterName) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -243,7 +245,9 @@ function() {
         joinCh,
         joinArr,
         str,
-        thisArg;
+        thisref,
+        $depth,
+        $level;
 
     this.$sortIfNeeded();
 
@@ -266,11 +270,14 @@ function() {
 
     str = '[' + TP.tname(this) + ' :: ';
 
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     try {
-        thisArg = this;
+        thisref = this;
         joinArr = this.collect(
             function(item, index) {
-                if (item === thisArg) {
+                if (item === thisref) {
                     if (TP.canInvoke(item, 'asRecursionString')) {
                         return item.asRecursionString();
                     } else {
@@ -278,7 +285,11 @@ function() {
                     }
                 }
 
-                return TP.dump(item);
+                if ($level > $depth && TP.isMutable(this)) {
+                    return str + '@' + TP.id(this) + ']';
+                } else {
+                    return TP.dump(item, $depth, $level + 1);
+                }
             });
 
         str += '[' + joinArr.join(joinCh) + ']]';
@@ -488,12 +499,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 Date.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -583,12 +596,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -788,12 +803,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 RegExp.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -947,12 +964,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -1041,7 +1060,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.Object.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -1057,7 +1076,9 @@ function() {
         len,
         i,
         str,
-        val;
+        val,
+        $depth,
+        $level;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1071,6 +1092,9 @@ function() {
     len = keys.getSize();
 
     str = '[' + TP.tname(this) + ' :: ';
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
 
     try {
         for (i = 0; i < len; i++) {
@@ -1089,7 +1113,13 @@ function() {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                joinArr.push(TP.join(keys.at(i), ' => ', TP.dump(val)));
+                if ($level > $depth && TP.isMutable(this)) {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        '@' + TP.id(this) + ']'));
+                } else {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        TP.dump(val, $depth, $level + 1)));
+                }
             }
         }
 

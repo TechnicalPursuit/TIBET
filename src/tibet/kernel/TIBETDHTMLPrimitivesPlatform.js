@@ -12,13 +12,7 @@
 Platform-specific functionality related to DHTML operations.
 */
 
-/* JSHint checking */
-
 /* global WebKitPoint:false
-*/
-
-/* jshint newcap:false,
-          evil:true
 */
 
 //  ------------------------------------------------------------------------
@@ -314,15 +308,19 @@ TP.hc(
 
             //  Go ahead and instance program an 'at' function on the Event
             //  object, so that calls below work without a lot of shuffle.
-            spec.at = function(aKey) {return this[aKey]; };
+            spec.at = function(aKey) {
+                return this[aKey];
+            };
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
             spec = TP.hc();
         }
 
-        doc = TP.ifInvalid(aDocument,
-                            TP.sys.getUICanvas().getNativeDocument());
+        doc = aDocument;
+        if (TP.notValid(doc)) {
+            doc = TP.sys.getUICanvas().getNativeDocument();
+        }
 
         type = TP.ifKeyInvalid(spec, 'type');
         switch (type) {
@@ -356,7 +354,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0));
                 break;
 
@@ -378,7 +376,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'char', null),
                             TP.ifKeyInvalid(spec, 'key', null),
                             TP.ifKeyInvalid(spec, 'location', null),
@@ -404,7 +402,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -433,7 +431,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -491,7 +489,6 @@ TP.hc(
                 //  the supplied hash onto the Event as instance properties.
                 TP.keys(spec).perform(
                         function(aKey) {
-
                             //  Got to filter out specified properties -
                             //  Mozilla will throw an exception.
                             if (TP.W3C_EVENT_PROPERTIES.test(aKey) ||
@@ -508,7 +505,6 @@ TP.hc(
         //  additional properties not necessarily covered by spec
         TP.TIBET_EVENT_PROPERTIES.perform(
             function(item) {
-
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
@@ -548,15 +544,19 @@ TP.hc(
 
             //  Go ahead and instance program an 'at' function on the Event
             //  object, so that calls below work without a lot of shuffle.
-            spec.at = function(aKey) {return this[aKey]; };
+            spec.at = function(aKey) {
+                return this[aKey];
+            };
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
             spec = TP.hc();
         }
 
-        doc = TP.ifInvalid(aDocument,
-                            TP.sys.getUICanvas().getNativeDocument());
+        doc = aDocument;
+        if (TP.notValid(doc)) {
+            doc = TP.sys.getUICanvas().getNativeDocument();
+        }
 
         type = TP.ifKeyInvalid(spec, 'type');
         switch (type) {
@@ -590,7 +590,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0));
                 break;
 
@@ -613,7 +613,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'key', null),
                             TP.ifKeyInvalid(spec, 'location', null),
                             modifiers,
@@ -638,7 +638,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -666,7 +666,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'wheelDeltaY', 0),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
                             TP.ifKeyInvalid(spec, 'clientX', 0),
@@ -713,7 +713,6 @@ TP.hc(
                 //  the supplied hash onto the Event as instance properties.
                 TP.keys(spec).perform(
                         function(aKey) {
-
                             //  We filter out specified properties - Mozilla
                             //  throws an exception. Trident/Webkit may not,
                             //  but it probably won't like it.
@@ -731,7 +730,6 @@ TP.hc(
         //  additional properties not necessarily covered by spec
         TP.TIBET_EVENT_PROPERTIES.perform(
             function(item) {
-
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
@@ -769,15 +767,19 @@ TP.hc(
 
             //  Go ahead and instance program an 'at' function on the Event
             //  object, so that calls below work without a lot of shuffle.
-            spec.at = function(aKey) {return this[aKey]; };
+            spec.at = function(aKey) {
+                return this[aKey];
+            };
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
             spec = TP.hc();
         }
 
-        doc = TP.ifInvalid(aDocument,
-                            TP.sys.getUICanvas().getNativeDocument());
+        doc = aDocument;
+        if (TP.notValid(doc)) {
+            doc = TP.sys.getUICanvas().getNativeDocument();
+        }
 
         type = TP.ifKeyInvalid(spec, 'type');
         switch (type) {
@@ -811,7 +813,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0));
                 break;
 
@@ -826,7 +828,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'key', false),
                             TP.ifKeyInvalid(spec, 'location', false),
 
@@ -854,7 +856,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -880,7 +882,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'wheelDeltaY', 0),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
                             TP.ifKeyInvalid(spec, 'clientX', 0),
@@ -925,7 +927,6 @@ TP.hc(
                 //  the supplied hash onto the Event as instance properties.
                 TP.keys(spec).perform(
                         function(aKey) {
-
                             //  We filter out specified properties - Mozilla
                             //  throws an exception. Trident/Webkit may not,
                             //  but it probably won't like it.
@@ -943,7 +944,6 @@ TP.hc(
         //  additional properties not necessarily covered by spec
         TP.TIBET_EVENT_PROPERTIES.perform(
             function(item) {
-
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
@@ -1274,7 +1274,7 @@ TP.hc(
 
         try {
             if (TP.isEmpty(aSide)) {
-                values = TP.elementGetStyleValuesInPixels(
+                values = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('borderTopWidth', 'borderRightWidth',
                                     'borderBottomWidth', 'borderLeftWidth'),
@@ -1288,7 +1288,7 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderTopWidth',
                                         wantsTransformed);
@@ -1296,7 +1296,7 @@ TP.hc(
 
                 case TP.RIGHT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderRightWidth',
                                         wantsTransformed);
@@ -1304,7 +1304,7 @@ TP.hc(
 
                 case TP.BOTTOM:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderBottomWidth',
                                         wantsTransformed);
@@ -1312,7 +1312,7 @@ TP.hc(
 
                 case TP.LEFT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderLeftWidth',
                                         wantsTransformed);
@@ -1394,8 +1394,8 @@ TP.hc(
 
                 valuesInPixels.push(pixelFunc('border-top-width'));
                 valuesInPixels.push(pixelFunc('border-right-width'));
-                valuesInPixels.push(pixelFunc('border-left-width'));
                 valuesInPixels.push(pixelFunc('border-bottom-width'));
+                valuesInPixels.push(pixelFunc('border-left-width'));
 
                 return valuesInPixels;
             }
@@ -1475,16 +1475,12 @@ TP.hc(
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
-        if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter');
-        }
-
         //  Set the initial value to 0.
         valueInPixels = 0;
 
         try {
             if (TP.isEmpty(aSide)) {
-                values = TP.elementGetStyleValuesInPixels(
+                values = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('marginTop', 'marginRight',
                                     'marginBottom', 'marginLeft'),
@@ -1497,7 +1493,7 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginTop',
                                             wantsTransformed);
@@ -1505,7 +1501,7 @@ TP.hc(
 
                 case TP.RIGHT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginRight',
                                             wantsTransformed);
@@ -1513,7 +1509,7 @@ TP.hc(
 
                 case TP.BOTTOM:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginBottom',
                                             wantsTransformed);
@@ -1521,7 +1517,7 @@ TP.hc(
 
                 case TP.LEFT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginLeft',
                                             wantsTransformed);
@@ -1573,10 +1569,6 @@ TP.hc(
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
-        if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter');
-        }
-
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
@@ -1606,8 +1598,8 @@ TP.hc(
 
                 valuesInPixels.push(pixelFunc('margin-top'));
                 valuesInPixels.push(pixelFunc('margin-right'));
-                valuesInPixels.push(pixelFunc('margin-left'));
                 valuesInPixels.push(pixelFunc('margin-bottom'));
+                valuesInPixels.push(pixelFunc('margin-left'));
 
                 return valuesInPixels;
             }
@@ -1696,7 +1688,7 @@ TP.hc(
 
         try {
             if (TP.isEmpty(aSide)) {
-                values = TP.elementGetStyleValuesInPixels(
+                values = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('paddingTop', 'paddingRight',
                                     'paddingBottom', 'paddingLeft'),
@@ -1710,7 +1702,7 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingTop',
                                             wantsTransformed);
@@ -1718,7 +1710,7 @@ TP.hc(
 
                 case TP.RIGHT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingRight',
                                             wantsTransformed);
@@ -1726,7 +1718,7 @@ TP.hc(
 
                 case TP.BOTTOM:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingBottom',
                                             wantsTransformed);
@@ -1734,7 +1726,7 @@ TP.hc(
 
                 case TP.LEFT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingLeft',
                                             wantsTransformed);
@@ -1818,8 +1810,8 @@ TP.hc(
 
                 valuesInPixels.push(pixelFunc('padding-top'));
                 valuesInPixels.push(pixelFunc('padding-right'));
-                valuesInPixels.push(pixelFunc('padding-left'));
                 valuesInPixels.push(pixelFunc('padding-bottom'));
+                valuesInPixels.push(pixelFunc('padding-left'));
 
                 return valuesInPixels;
             }
@@ -2149,190 +2141,6 @@ TP.hc(
 ));
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('elementSetTransform',
-TP.hc(
-    'test',
-    TP.sys.getBrowserUI,
-    'gecko',
-    function(anElement, aTransformStr) {
-
-        /**
-         * @method elementSetTransform
-         * @summary Sets the CSS transform of the element specified using the
-         *     supplied String (which should conform to one of the values
-         *     specified in the CSS Transform specification).
-         * @param {Element} anElement The element to set the transformation on.
-         * @param {String} aTransformStr The value to set on the supplied
-         *     Element as its CSS Transform.
-         * @exception TP.sig.InvalidElement
-         */
-
-        if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        TP.elementGetStyleObj(anElement).MozTransform = aTransformStr;
-
-        return;
-    },
-    'trident',
-    function(anElement, aTransformStr) {
-
-        /**
-         * @method elementSetTransform
-         * @summary Sets the CSS transform of the element specified using the
-         *     supplied String (which should conform to one of the values
-         *     specified in the CSS Transform specification).
-         * @param {Element} anElement The element to set the transformation on.
-         * @param {String} aTransformStr The value to set on the supplied
-         *     Element as its CSS Transform.
-         * @exception TP.sig.InvalidElement
-         */
-
-        if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        TP.elementGetStyleObj(anElement).msTransform = aTransformStr;
-
-        return;
-    },
-    'webkit',
-    function(anElement, aTransformStr) {
-
-        /**
-         * @method elementSetTransform
-         * @summary Sets the CSS transform of the element specified using the
-         *     supplied String (which should conform to one of the values
-         *     specified in the CSS Transform specification).
-         * @param {Element} anElement The element to set the transformation on.
-         * @param {String} aTransformStr The value to set on the supplied
-         *     Element as its CSS Transform.
-         * @exception TP.sig.InvalidElement
-         */
-
-        if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        TP.elementGetStyleObj(anElement).WebkitTransform = aTransformStr;
-
-        return;
-    }
-));
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('elementSetTransformOrigin',
-TP.hc(
-    'test',
-    TP.sys.getBrowserUI,
-    'gecko',
-    function(anElement, xValue, yValue) {
-
-        /**
-         * @method elementSetTransformOrigin
-         * @summary Sets the transformation origin of the element specified
-         *     using the supplied X and Y values.
-         * @description The X and Y values supplied to this method can be any
-         *     CSS 'length' value (i.e. a number with a unit or a percentage).
-         *     If a Number is supplied, 'px' is assumed.
-         * @param {Element} anElement The element to set the transformation
-         *     origin on.
-         * @param {Number|String} xValue The 'X value' to set the transformation
-         *     origin to.
-         * @param {Number|String} yValue The 'Y value' to set the transformation
-         *     origin to.
-         * @exception TP.sig.InvalidElement
-         */
-
-        var xVal,
-            yVal;
-
-        if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
-        yVal = TP.isNumber(yValue) ? yValue + 'px' : yValue;
-
-        TP.elementGetStyleObj(anElement).MozTransformOrigin =
-                                                TP.join(xVal, ' ', yVal);
-
-        return;
-    },
-    'trident',
-    function(anElement, xValue, yValue) {
-
-        /**
-         * @method elementSetTransformOrigin
-         * @summary Sets the transformation origin of the element specified
-         *     using the supplied X and Y values.
-         * @description The X and Y values supplied to this method can be any
-         *     CSS 'length' value (i.e. a number with a unit or a percentage).
-         *     If a Number is supplied, 'px' is assumed.
-         * @param {Element} anElement The element to set the transformation
-         *     origin on.
-         * @param {Number|String} xValue The 'X value' to set the transformation
-         *     origin to.
-         * @param {Number|String} yValue The 'Y value' to set the transformation
-         *     origin to.
-         * @exception TP.sig.InvalidElement
-         */
-
-        var xVal,
-            yVal;
-
-        if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
-        yVal = TP.isNumber(yValue) ? yValue + 'px' : yValue;
-
-        TP.elementGetStyleObj(anElement).msTransformOrigin =
-                                                TP.join(xVal, ' ', yVal);
-
-        return;
-    },
-    'webkit',
-    function(anElement, xValue, yValue) {
-
-        /**
-         * @method elementSetTransformOrigin
-         * @summary Sets the transformation origin of the element specified
-         *     using the supplied X and Y values.
-         * @description The X and Y values supplied to this method can be any
-         *     CSS 'length' value (i.e. a number with a unit or a percentage).
-         *     If a Number is supplied, 'px' is assumed.
-         * @param {Element} anElement The element to set the transformation
-         *     origin on.
-         * @param {Number|String} xValue The 'X value' to set the transformation
-         *     origin to.
-         * @param {Number|String} yValue The 'Y value' to set the transformation
-         *     origin to.
-         * @exception TP.sig.InvalidElement
-         */
-
-        var xVal,
-            yVal;
-
-        if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
-        yVal = TP.isNumber(yValue) ? yValue + 'px' : yValue;
-
-        TP.elementGetStyleObj(anElement).WebkitTransformOrigin =
-                                                TP.join(xVal, ' ', yVal);
-
-        return;
-    }
-));
-
-//  ------------------------------------------------------------------------
 //  WINDOW PRIMITIVES
 //  ------------------------------------------------------------------------
 
@@ -2639,6 +2447,10 @@ TP.hc(
                 return;
             }
 
+            if (TP.sys.cfg('boot.context') === 'electron') {
+                return;
+            }
+
             //  If there is no body, there is nothing to protect, so we can
             //  just exit here.
             if (TP.notValid(TP.documentGetBody(aWindow.document))) {
@@ -2700,6 +2512,10 @@ TP.hc(
 
             //  If running in a Karma testing environment don't prompt, exit.
             if (aWindow[TP.sys.cfg('karma.slot', '__karma__')]) {
+                return;
+            }
+
+            if (TP.sys.cfg('boot.context') === 'electron') {
                 return;
             }
 
@@ -2768,6 +2584,10 @@ TP.hc(
                 return;
             }
 
+            if (TP.sys.cfg('boot.context') === 'electron') {
+                return;
+            }
+
             //  If there is no body, there is nothing to protect, so we can
             //  just exit here.
             if (TP.notValid(TP.documentGetBody(aWindow.document))) {
@@ -2794,39 +2614,6 @@ TP.hc(
         };
 
         return;
-    }
-));
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallShutdownFinalizationHook',
-TP.hc(
-    TP.DEFAULT,
-    function(aWindow) {
-
-        /**
-         * @method windowInstallShutdownFinalizationHook
-         * @summary Installs the 'shutdown finalization' hook that will complete
-         *     the shut down of the TIBET application when the user navigates
-         *     away from it.
-         * @param {Window} aWindow The window to install the shutdown
-         *     finalization hook onto.
-         * @exception TP.sig.InvalidWindow
-         */
-
-        if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow');
-        }
-
-        aWindow.addEventListener(
-        'unload',
-        function() {
-
-            TP.sys.finalizeShutdown();
-
-            return;
-        },
-        false);
     }
 ));
 

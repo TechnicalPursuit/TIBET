@@ -18,30 +18,24 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var app,
-            logger;
-
-        //  ---
-        //  Config Check
-        //  ---
+        var app;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
-
-        logger.debug('Integrating TDS 404 error handler.');
-
-        //  ---
-        //  Middleware
-        //  ---
 
         //  Serve a general 404 if no other handler too care of the request.
         app.get('/*', function(req, res, next) {
-            res.status(404).render('404', {error:
-                req.url + ' not found.'});
+            var err;
+
+            err = {
+                status: 404,
+                message: req.url + ' not found.'
+            };
+
+            res.status(404).render(
+                '404',
+                {
+                    error: err
+                });
         });
     };
 

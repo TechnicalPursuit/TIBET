@@ -12,12 +12,6 @@
 Common functionality related to DHTML operations.
 */
 
-/* JSHint checking */
-
-/* jshint newcap:false,
-          evil:true
-*/
-
 //  ------------------------------------------------------------------------
 
 //  A global hash of display values for non-inline elements.
@@ -159,10 +153,6 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
     newScriptElement = TP.documentConstructElement(aDocument,
                                                 'script',
                                                 TP.w3.Xmlns.XHTML);
-    TP.elementSetAttribute(newScriptElement,
-                            'type',
-                            TP.JS_TEXT_ENCODED);
-    TP.elementSetAttribute(newScriptElement, 'charset', TP.UTF8);
 
     //  NOTE!! This *must* be done by using the '.async' property. Setting the
     //  'async' attribute to 'false' here will actually cause the new script
@@ -979,6 +969,153 @@ function(aDocument, newContent) {
 //  ELEMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementAddResizeListener',
+function(anElement, aHandler) {
+
+    /**
+     * @method elementAddResizeListener
+     * @summary Adds a 'resize listener' to the supplied element. This listener
+     *     will be called back when the element resizes in the DOM.
+     * @description Note that the technique embodied in this approach depends
+     *     upon two things: 1. That the supplied Element is positioned in some
+     *     fashion (and, in fact, the Element will be positioned 'relative' if
+     *     it's position is 'static' when it is supplied) and 2. an absolutely
+     *     positioned child element will be added to the supplied Element.
+     *     NB: This code adapted from:
+     *         http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
+     * @param {HTMLElement} anElement The element to add a resize listener to.
+     * @param {Function} aHandler The handler Function to invoke when the
+     *     supplied Element is resized. Note that this Function will be invoked
+     *     in the context of the supplied Element, such that the 'this'
+     *     reference will be that Element.
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidFunction
+     */
+
+    var trackerFunc,
+        trackerElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (!TP.isCallable(aHandler)) {
+        return TP.raise(this, 'TP.sig.InvalidFunction');
+    }
+
+    //  Define a 'work Function' that will execute when the tracking element
+    //  resizes.
+    trackerFunc = function(evt) {
+
+        var win;
+
+        //  Grab the content window of the tracker. This will be the target of
+        //  the event that triggered this hander.
+        win = TP.eventGetTarget(evt);
+
+        //  If we have a valid resizing requestAnimationFrame constant, then
+        //  cancel it.
+        if (TP.isValid(win.__resizeRAF__)) {
+            win.cancelAnimationFrame(win.__resizeRAF__);
+        }
+
+        //  Set up a resizing requestAnimationFrame constant by supplying a
+        //  Function that will use the resizing target (i.e. the Element that
+        //  we're installing the resize listener for) and, iterate over its
+        //  listeners, invoking the registered resize listener for each one.
+        win.__resizeRAF__ =
+            win.requestAnimationFrame(
+                    function() {
+                        var target;
+
+                        target = win.__resizeTarget__;
+
+                        if (TP.isElement(target)) {
+                            target[TP.RESIZE_LISTENERS].forEach(
+                                function(fn) {
+                                    fn.call(target, evt);
+                                });
+                        }
+                    });
+    };
+
+    //  If the resize listener Array is empty, then set one up and set up a
+    //  'resizing tracking element' that will be appended underneath the
+    //  supplied Element.
+    if (TP.isEmpty(anElement[TP.RESIZE_LISTENERS])) {
+
+        anElement[TP.RESIZE_LISTENERS] = TP.ac();
+        anElement[TP.RESIZE_LISTENERS].trackerFunc = trackerFunc;
+
+        //  If the element isn't positioned, we need to make it at least
+        //  'relative'. Then resizing will properly propagate to the tracker
+        //  child that we'll be adding below.
+        if (!TP.elementIsPositioned(anElement)) {
+            TP.elementSetStyleProperty(anElement, 'position', 'relative');
+        }
+
+        //  Create a tracker Element (which will be an XHTML 'object' element)
+        //  and style it to be 100%/100%, positioned absolute, but not accepting
+        //  any pointer events.
+        trackerElem = TP.documentConstructElement(TP.nodeGetDocument(anElement),
+                                                    'object',
+                                                    TP.w3.Xmlns.XHTML);
+        TP.elementAddClass(trackerElem, 'resizetracker');
+
+        //  Capture a reference to the tracker element on the Array itself.
+        anElement[TP.RESIZE_LISTENERS].tracker = trackerElem;
+
+        //  Mark this element as one that was generated by TIBET and shouldn't
+        //  be considered in CSS queries, etc.
+        trackerElem[TP.GENERATED] = true;
+
+        //  Capture a reference to the target element back onto the tracker
+        //  element.
+        trackerElem.__resizeTarget__ = anElement;
+
+        //  Set up an onload on the tracker element that will add an
+        //  EventListener on it's 'contentWindow' that will call the tracking
+        //  function above when the 'contentWindow' resizes.
+        trackerElem.onload = function(evt) {
+
+            var win,
+                doc;
+
+            win = this.contentWindow;
+
+            //  Fix for Safari/Webkit bug:
+            //  https://bugs.webkit.org/show_bug.cgi?id=148876
+            if (!TP.isWindow(win)) {
+
+                doc = this.contentDocument;
+                if (TP.isDocument(doc)) {
+                    win = doc.defaultView;
+                }
+
+                if (!TP.isWindow(win)) {
+                    return;
+                }
+            }
+
+            win.__resizeTarget__ = this.__resizeTarget__;
+            win.addEventListener('resize', trackerFunc);
+        };
+
+        //  Set some necessary properties on the tracker element.
+        trackerElem.type = 'text/html';
+        trackerElem.data = 'about:blank';
+
+        //  Append the tracker element to the target element.
+        anElement.appendChild(trackerElem);
+    }
+
+    //  Push the handler onto the Array of element resize listeners.
+    anElement[TP.RESIZE_LISTENERS].push(aHandler);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementContentIsScrolled',
 function(anElement) {
 
@@ -1166,11 +1303,32 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetStyleValueInPixels',
+TP.definePrimitive('elementGetOwnContent',
+function(anElement) {
+
+    /**
+     * @method elementGetOwnContent
+     * @summary Gets the markup which represents only the element
+     *     itself... effectively the outer content minus the inner content.
+     * @param {HTMLElement} anElement The element to get the 'own content' of.
+     * @exception TP.sig.InvalidElement
+     * @returns {String} The 'owned content' of the Element.
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    return anElement.outerHTML.replace(anElement.innerHTML, '');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementGetComputedStyleValueInPixels',
 function(anElement, styleProperty, wantsTransformed) {
 
     /**
-     * @method elementGetStyleValueInPixels
+     * @method elementGetComputedStyleValueInPixels
      * @summary Gets the computed style value of the property on the element in
      *     pixels. This routine can return NaN if a Number couldn't be computed.
      * @param {HTMLElement} anElement The element to get the numeric property
@@ -1209,11 +1367,11 @@ function(anElement, styleProperty, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetStyleValuesInPixels',
+TP.definePrimitive('elementGetComputedStyleValuesInPixels',
 function(anElement, styleProperties, wantsTransformed) {
 
     /**
-     * @method elementGetStyleValuesInPixels
+     * @method elementGetComputedStyleValuesInPixels
      * @summary Gets the computed style values of the properties on the element
      *     in pixels. This routine can produce NaNs in the output if a Number
      *     couldn't be computed for that property.
@@ -1608,6 +1766,78 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementRemoveResizeListener',
+function(anElement, aHandler) {
+
+    /**
+     * @method elementRemoveResizeListener
+     * @summary Removes a 'resize listener' from the supplied element. This
+     *     listener would have been registered using
+     *     TP.elementAddResizeListener.
+     * @description NB: This code adapted from:
+     *         http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
+     * @param {HTMLElement} anElement The element to remove a resize listener
+     *     from.
+     * @param {Function} aHandler The handler Function that was registered when
+     *     this listener was added.
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidFunction
+     */
+
+    var trackerFunc,
+        trackerElem,
+
+        listeners;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (!TP.isCallable(aHandler)) {
+        return TP.raise(this, 'TP.sig.InvalidFunction');
+    }
+
+    //  Grab the Array of resize listeners from the target Element.
+    listeners = anElement[TP.RESIZE_LISTENERS];
+
+    if (TP.isEmpty(listeners)) {
+        return;
+    }
+
+    //  Splice out the handler from the list of listeners
+    listeners.splice(listeners.indexOf(aHandler), 1);
+
+    //  If that list is now empty, tear down the listener machinery.
+    if (TP.isEmpty(listeners)) {
+
+        //  Grab the tracker element and function from where they were placed by
+        //  the TP.elementAddResizeListener method - directly on the listener
+        //  Array.
+        trackerElem = listeners.tracker;
+        trackerFunc = listeners.trackerFunc;
+
+        //  Remove the tracker function as a tracker element's contentWindow's
+        //  resize listener and remove the tracker element from the target
+        //  element. Note that sometimes, in a detachment scenario, the tracker
+        //  element's contentWindow will already be gone. So we test for that
+        //  here before accessing it.
+        if (TP.isWindow(trackerElem.contentWindow)) {
+            trackerElem.contentWindow.removeEventListener('resize', trackerFunc);
+        }
+        anElement.removeChild(trackerElem);
+
+        //  Null out all references for GC purposes and return
+
+        listeners.trackerFunc = null;
+        listeners.tracker = null;
+
+        anElement[TP.RESIZE_LISTENERS] = null;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementSelectContent',
 function(anElement, includeElement) {
 
@@ -1910,9 +2140,6 @@ function(aNode) {
      * @returns {Window}
      */
 
-    var doc,
-        win;
-
     //  Note that we don't check for an HTML document here, even though that
     //  might seem logical. A lot of times an XML document will be passed in
     //  and the caller is depending on this method returning null.
@@ -1922,15 +2149,12 @@ function(aNode) {
     }
 
     if (aNode.nodeType === Node.DOCUMENT_NODE) {
-        doc = aNode;
-        win = doc.defaultView;
-    } else if (TP.isDocument(doc = aNode.ownerDocument)) {
-        win = doc.defaultView;
-    } else {
-        win = null;
+        return aNode.defaultView;
+    } else if (aNode.ownerDocument !== undefined) {
+        return aNode.ownerDocument.defaultView;
     }
 
-    return win;
+    return;
 });
 
 //  ------------------------------------------------------------------------

@@ -9,6 +9,15 @@
 //  ========================================================================
 
 //  ========================================================================
+//  TP.tibet.testElem
+//  ========================================================================
+
+//  Don't redefine this if another test has defined it.
+if (!TP.isType(TP.tibet.testElem)) {
+    TP.core.UIElementNode.defineSubtype('tibet.testElem');
+}
+
+//  ========================================================================
 //  TP.core.UIElementNode
 //  ========================================================================
 
@@ -58,7 +67,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -79,10 +88,10 @@ function() {
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
 
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
@@ -98,12 +107,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Prove that.
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -112,12 +121,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem2
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -126,12 +135,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem3
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -140,12 +149,12 @@ function() {
                 //  ---
 
                 //  Use End to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -154,12 +163,12 @@ function() {
                 //  ---
 
                 //  Use Home to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -168,12 +177,12 @@ function() {
                 //  ---
 
                 //  Use Shift-Tab to go to elem4 (wrap-around)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -182,12 +191,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go back to elem1 (wrap-around)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -210,7 +219,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -227,12 +236,13 @@ function() {
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem2,
                 //  because it has an 'autofocus="true"' attribute.
@@ -249,12 +259,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -263,12 +273,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -277,12 +287,12 @@ function() {
                 //  ---
 
                 //  Use End to go to elem3
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -291,12 +301,12 @@ function() {
                 //  ---
 
                 //  Use Home to go to elem2
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -305,12 +315,12 @@ function() {
                 //  ---
 
                 //  Use Shift-Tab to go to elem3 (wraparound)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -319,12 +329,12 @@ function() {
                 //  ---
 
                 //  Use Shift-Tab to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -333,12 +343,12 @@ function() {
                 //  ---
 
                 //  Use Shift-Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -361,7 +371,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -378,12 +388,13 @@ function() {
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem3,
                 //  because it has an 'autofocus="true"' attribute.
@@ -394,12 +405,12 @@ function() {
                 //  ---
 
                 //  Use End to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -408,12 +419,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem1 (wraparound)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -422,12 +433,12 @@ function() {
                 //  ---
 
                 //  Use Shift-Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -436,12 +447,12 @@ function() {
                 //  ---
 
                 //  Use Home to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -451,12 +462,16 @@ function() {
 
                 //  Use Ctrl-Tab to go to elem2 (next element in same or next
                 //  group)
-                driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -466,12 +481,16 @@ function() {
 
                 //  Use Ctrl-Tab to go to elem3 (next element in same or next
                 //  group)
-                driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -481,12 +500,16 @@ function() {
 
                 //  Use Shift-Ctrl-Tab to go to elem2 (previous element in same
                 //  or next group)
-                driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -495,12 +518,12 @@ function() {
                 //  ---
 
                 //  Use 2 Tabs to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -509,12 +532,12 @@ function() {
                 //  ---
 
                 //  Use PageUp to go to elem3 (the first field in this group)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -523,12 +546,12 @@ function() {
                 //  ---
 
                 //  Use PageDown to go to elem4 (the last field in this group)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -538,12 +561,14 @@ function() {
 
                 //  Use Ctrl-PageDown to go to elem1 (the first field in the
                 //  previous group)
-                driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -553,12 +578,14 @@ function() {
 
                 //  Use Ctrl-PageUp to go to elem3 (the first field in the
                 //  next group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -581,7 +608,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -598,16 +625,17 @@ function() {
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
 
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem1,
                 //  because it has an 'autofocus="true"' attribute.
@@ -618,12 +646,12 @@ function() {
                 //  ---
 
                 //  Use 2 tabs to go to elem3 - we're in fooGroup and won't wrap
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -632,12 +660,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -647,12 +675,12 @@ function() {
 
                 //  Use Tab to go to elem3 - we're in gooGroup and will wrap
                 //  around
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -662,12 +690,12 @@ function() {
 
                 //  Use Shift-Tab to go to elem4 - we're in gooGroup and will
                 //  wrap around
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -677,12 +705,16 @@ function() {
 
                 //  Use Ctrl-Tab to go to elem1 (next element in same or next
                 //  group) - Ctrl-Tab ignores group wrapping
-                driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -691,12 +723,12 @@ function() {
                 //  ---
 
                 //  Use 2 tabs to go to elem3 - we're in fooGroup and won't wrap
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -706,12 +738,16 @@ function() {
 
                 //  Use Shift-Ctrl-Tab to go to elem2 (previous element in same
                 //  or next group) - Shift-Ctrl-Tab ignores group wrapping
-                driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -720,12 +756,12 @@ function() {
                 //  ---
 
                 //  Use 2 tabs to go to elem4 - we're in fooGroup and won't wrap
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -735,12 +771,12 @@ function() {
 
                 //  Use PageUp to go to elem3 (the first field in this group) -
                 //  PageUp ignores group wrapping
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -750,12 +786,12 @@ function() {
 
                 //  Use PageDown to go to elem4 (the last field in this group)
                 //  - PageDown ignores group wrapping
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -765,12 +801,14 @@ function() {
 
                 //  Use Ctrl-PageDown to go to elem1 (the first field in the
                 //  previous group)
-                driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -780,12 +818,14 @@ function() {
 
                 //  Use Ctrl-PageUp to go to elem3 (the first field in the
                 //  next group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -808,7 +848,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -825,16 +865,17 @@ function() {
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
 
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem2,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
@@ -848,12 +889,12 @@ function() {
 
                 //  Use a tab to go to elem1 - we're in fooGroup and won't wrap,
                 //  but officially elem2 comes before elem1 due to tabindex.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -864,12 +905,12 @@ function() {
                 //  Use a tab to go to elem3 - we're in fooGroup and won't wrap,
                 //  and officially elem1 comes after elem2 due to tabindex,
                 //  which means leaving elem1 means leaving the group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -878,12 +919,12 @@ function() {
                 //  ---
 
                 //  Use Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -893,12 +934,12 @@ function() {
 
                 //  Use Tab to go to elem3 - we're in gooGroup and will wrap
                 //  around
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -908,12 +949,12 @@ function() {
 
                 //  Use Shift-Tab to go to elem4 - we're in gooGroup and will
                 //  wrap around
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -924,12 +965,16 @@ function() {
                 //  Use Ctrl-Tab to go to elem2 (next element in same or next
                 //  group) - Ctrl-Tab ignores group wrapping and elem2 has a
                 //  lower tabindex than elem1
-                driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -938,12 +983,12 @@ function() {
                 //  Use 2 tabs to go to elem3 - we're in fooGroup and won't wrap,
                 //  and officially elem1 comes after elem2 due to tabindex,
                 //  which means leaving elem1 means leaving the group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -954,12 +999,16 @@ function() {
                 //  Use Shift-Ctrl-Tab to go to elem2 (previous element in same
                 //  or next group) - Shift-Ctrl-Tab ignores group wrapping and
                 //  elem1 has a higher tabindex than elem2
-                driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -969,12 +1018,12 @@ function() {
 
                 //  Use PageUp which will go to elem2 (the first field in this
                 //  group *by tabindex*) - PageUp ignores group wrapping
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -984,12 +1033,12 @@ function() {
 
                 //  Use PageDown to go to elem1 (the last field in this group
                 //  *by tabindex*) - PageDown ignores group wrapping
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -999,12 +1048,14 @@ function() {
 
                 //  Use Ctrl-PageDown to go to elem3 (the first field in the
                 //  previous group)
-                driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1014,12 +1065,14 @@ function() {
 
                 //  Use Ctrl-PageUp to go to elem2 (the first field *by
                 //  tabindex* in the next group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1042,7 +1095,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -1063,16 +1116,17 @@ function() {
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
-                elem5 = TP.byId('focusTestField5', windowContext, false);
-                elem6 = TP.byId('focusTestField6', windowContext, false);
-                elem7 = TP.byId('focusTestField7', windowContext, false);
-                elem8 = TP.byId('focusTestField8', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
+                elem5 = TP.byId('focusTestElem5', windowContext, false);
+                elem6 = TP.byId('focusTestElem6', windowContext, false);
+                elem7 = TP.byId('focusTestElem7', windowContext, false);
+                elem8 = TP.byId('focusTestElem8', windowContext, false);
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem1,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
@@ -1089,84 +1143,84 @@ function() {
                 //  ---
 
                 //  Use a Tab to go to elem2
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
                     });
 
                 //  Use a Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
                     });
 
                 //  Use a Tab to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
                     });
 
                 //  Use a Tab to go to elem6
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
                     });
 
                 //  Use a Tab to go to elem7
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
                     });
 
                 //  Use a Tab to go to elem8
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
                     });
 
                 //  Use a Tab to go to elem3
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1178,12 +1232,12 @@ function() {
 
                 //  Use End to go to elem7 - it's the last field in the last
                 //  group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1193,12 +1247,12 @@ function() {
 
                 //  Use Home to go to back to elem1 - it's the first field in
                 //  the first group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1208,12 +1262,12 @@ function() {
 
                 //  Use 3 Tabs to go to elem5 - we skip elem3 as it's not in any
                 //  group and will come at the end.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1222,12 +1276,12 @@ function() {
                 //  ---
 
                 //  Use PageUp to go to elem4.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1237,12 +1291,12 @@ function() {
 
                 //  Use a Shift-Tab to go to elem2. elem3 isn't in any group, so
                 //  it will be skipped.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1252,12 +1306,16 @@ function() {
 
                 //  Use Ctrl-Tab to go to elem4 (next element in same or next
                 //  group - elem3 isn't in any group)
-                driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1267,12 +1325,16 @@ function() {
 
                 //  Use Shift-Ctrl-Tab to go to back to elem2 (previous element
                 //  in same or next group - again, elem3 isn't in any group)
-                driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1281,12 +1343,12 @@ function() {
                 //  ---
 
                 //  Use 2 Tabs to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1296,12 +1358,14 @@ function() {
 
                 //  Use Ctrl-PageDown to go to elem6 (the first field in the next
                 //  group)
-                driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1311,12 +1375,14 @@ function() {
 
                 //  Use Ctrl-PageUp to go to elem4 (the first field in the
                 //  previous group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1326,12 +1392,12 @@ function() {
 
                 //  Use PageDown to go to elem8 (the last field in the
                 //  same group)
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1342,12 +1408,12 @@ function() {
                 //  Use Tab to go to elem3 (since we're in the last group, it
                 //  will consider the body before it would wrap - the first
                 //  (only) field in the body is elem3
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
@@ -1370,7 +1436,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -1395,14 +1461,14 @@ function() {
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
 
-                elem4 = TP.byId('focusTestField4', windowContext, false);
-                elem5 = TP.byId('focusTestField5', windowContext, false);
-                elem6 = TP.byId('focusTestField6', windowContext, false);
-                elem7 = TP.byId('focusTestField7', windowContext, false);
-                elem8 = TP.byId('focusTestField8', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
+                elem5 = TP.byId('focusTestElem5', windowContext, false);
+                elem6 = TP.byId('focusTestElem6', windowContext, false);
+                elem7 = TP.byId('focusTestElem7', windowContext, false);
+                elem8 = TP.byId('focusTestElem8', windowContext, false);
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
@@ -1415,12 +1481,12 @@ function() {
                 //  ---
 
                 //  Use a Tab to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Prove that.
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1429,108 +1495,108 @@ function() {
                 //  ---
 
                 //  Use a Tab to go to elem2
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
                     });
 
                 //  Use a Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
                     });
 
                 //  Use a Tab to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
                     });
 
                 //  Use a Tab to go to elem6
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
                     });
 
                 //  Use a Tab to go to elem7
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
                     });
 
                 //  Use a Tab to go to elem8
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
                     });
 
                 //  Use a Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
                     });
 
                 //  Use a Tab to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
                     });
 
                 //  Use a Tab to go to elem6
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1542,12 +1608,12 @@ function() {
 
                 //  Use End to go to elem7 - it's the last field in the last
                 //  group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1557,12 +1623,12 @@ function() {
 
                 //  Use Home to go to back to elem1 - it's the first field in
                 //  the first group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1572,12 +1638,12 @@ function() {
 
                 //  Use 3 Tabs to go to elem5 - we skip elem3 as it's not in any
                 //  group and will come at the end.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1586,12 +1652,12 @@ function() {
                 //  ---
 
                 //  Use PageUp to go to elem4.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1600,12 +1666,12 @@ function() {
                 //  ---
 
                 //  Use a Shift-Tab to go to elem8 - the gooGroup wraps.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1614,12 +1680,12 @@ function() {
                 //  ---
 
                 //  Use a Tab to go to elem4 - the gooGroup wraps.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1630,12 +1696,16 @@ function() {
                 //  Use Shift-Ctrl-Tab to go to back to elem2 (previous element
                 //  in same or next group ignoring wrapping - again, elem3 isn't
                 //  in any group)
-                driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -1644,12 +1714,12 @@ function() {
                 //  ---
 
                 //  Use 2 Tabs to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1659,12 +1729,14 @@ function() {
 
                 //  Use Ctrl-PageDown to go to elem6 (the first field in the next
                 //  group)
-                driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
@@ -1674,12 +1746,14 @@ function() {
 
                 //  Use Ctrl-PageUp to go to elem4 (the first field in the
                 //  previous group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1689,12 +1763,14 @@ function() {
 
                 //  Use Ctrl-PageUp to go to elem1 (the first field in the
                 //  previous group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1717,7 +1793,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -1740,14 +1816,14 @@ function() {
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
-                elem5 = TP.byId('focusTestField5', windowContext, false);
-                elem6 = TP.byId('focusTestField6', windowContext, false);
-                elem7 = TP.byId('focusTestField7', windowContext, false);
-                elem8 = TP.byId('focusTestField8', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
+                elem5 = TP.byId('focusTestElem5', windowContext, false);
+                elem6 = TP.byId('focusTestElem6', windowContext, false);
+                elem7 = TP.byId('focusTestElem7', windowContext, false);
+                elem8 = TP.byId('focusTestElem8', windowContext, false);
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
@@ -1762,132 +1838,132 @@ function() {
                 //  ---
 
                 //  Use a Tab to go to elem3
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
                     });
 
                 //  Use a Tab to go to elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
                     });
 
                 //  Use a Tab to go to elem2
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
                     });
 
                 //  Use a Tab to go to elem8
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
                     });
 
                 //  Use a Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
                     });
 
                 //  Use a Tab to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
                     });
 
                 //  Use a Tab to go to elem7
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
                     });
 
                 //  Use a Tab to go to elem6
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem6);
                     });
 
                 //  Use a Tab to go to elem8
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
                     });
 
                 //  Use a Tab to go to elem4
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
                     });
 
                 //  Use a Tab to go to elem5
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1899,12 +1975,12 @@ function() {
 
                 //  Use End to go to elem7 - it's the last field in the last
                 //  group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -1914,12 +1990,12 @@ function() {
 
                 //  Use Home to go to back to elem1 - it's the first field in
                 //  the first group.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -1930,12 +2006,12 @@ function() {
                 //  Use 2 Tabs to go to elem8 - we skip elem3 as it's not in any
                 //  group and will come at the end and elem 8 has the highest
                 //  tab index *in it's group*.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1944,12 +2020,12 @@ function() {
                 //  ---
 
                 //  Use a Tab to go to elem4 - the gooGroup wraps.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
@@ -1959,12 +2035,12 @@ function() {
 
                 //  Use PageUp to go to elem8 (it has the highest tab order in
                 //  its group).
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -1973,12 +2049,12 @@ function() {
                 //  ---
 
                 //  Use 2 Tabs to go to elem5 - the gooGroup wraps.
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem5);
@@ -1989,13 +2065,18 @@ function() {
                 //  Use 3 Shift-Ctrl-Tabs to go to back to elem2 (previous
                 //  element in same or next group ignoring wrapping - again,
                 //  elem3 isn't in any group)
-                driver.startSequence().
-                        sendKeys(
-                        '[Shift][Control][Tab][Tab][Tab][Control-Up][Shift-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
@@ -2006,12 +2087,15 @@ function() {
                 //  Use 2 Ctrl-PageDowns to go to elem7 (the first field in the
                 //  next, next group - which is elem7 because it has the highest
                 //  tab order in that group)
-                driver.startSequence().
-                        sendKeys('[Control][PageDown][PageDown][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        ']',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem7);
@@ -2020,14 +2104,16 @@ function() {
                 //  ---
 
                 //  Use a Ctrl-PageUp to go to elem8 (the first field in the
-                //  previous, previuos group - the reason it's first is it has
+                //  previous, previous group - the reason it's first is it has
                 //  the highest tab order)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem8);
@@ -2036,13 +2122,15 @@ function() {
                 //  ---
 
                 //  Use a Ctrl-PageUp to go to elem1 (the first field in the
-                //  previous, previuos group)
-                driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
-                        perform();
+                //  previous, previous group)
+                driver.constructSequence().
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
+                        run();
 
                 //  Test it
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
@@ -2065,7 +2153,7 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -2187,6 +2275,7 @@ function() {
                                             loadURI.getLocation()));
             });
     }).timeout(10000);
+
 }).timeout(60000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
@@ -2208,9 +2297,25 @@ function() {
 
     this.before(
         function() {
-            focusStackPreTest = TP.$focus_stack.copy();
-
+            //  We 'snapshot' the current focus stack so that in case we're
+            //  running this in the Sherpa, etc., any current items won't be
+            //  corrupting our assertions below.
+            focusStackPreTest = TP.$focus_stack;
             TP.$focus_stack = TP.ac();
+
+            //  Remove the 'pclass:focus' attribute from any elements that are
+            //  on the focus stack before we run our tests. This is so that our
+            //  focusing tests won't get confused with other elements that might
+            //  be focused before we start testing.
+            //  Note how we do this manually since we're trying to avoid
+            //  invoking focus stack maintenance machinery.
+            focusStackPreTest.forEach(
+                function(aTPElem) {
+                    TP.elementRemoveAttribute(
+                        TP.unwrap(aTPElem),
+                        'pclass:focus',
+                        true);
+                });
 
             this.getDriver().showTestGUI();
 
@@ -2219,11 +2324,26 @@ function() {
 
     this.after(
         function() {
-            TP.$focus_stack = focusStackPreTest;
 
             this.getDriver().showTestLog();
 
             this.stopTrackingSignals();
+
+            //  Restore the 'pclass:focus' attribute to any elements that were
+            //  on the focus stack before we ran our tests. Note how we do this
+            //  manually since we're trying to avoid invoking focus stack
+            //  maintenance machinery.
+            focusStackPreTest.forEach(
+                function(aTPElem) {
+                    TP.elementSetAttribute(
+                        TP.unwrap(aTPElem),
+                        'pclass:focus',
+                        'true',
+                        true);
+                });
+
+            //  Restore the focus stack to what it was.
+            TP.$focus_stack = focusStackPreTest;
         });
 
     //  ---
@@ -2232,7 +2352,7 @@ function() {
         function() {
             //  A short pause for when we're running these in a large group of
             //  tests gives the GUI a chance to update.
-            this.thenWait(500);
+            this.andWait(500);
         });
 
     this.afterEach(
@@ -2269,7 +2389,9 @@ function() {
             console.log('\n\n' +
                         'signals fired to achieve state:\n');
 
-            signalInfos = test.getFiredSignalInfosString({localID: true});
+            signalInfos = test.getFiredSignalInfosString({
+                localID: true
+            });
             signalInfos = signalInfos.match(/[\s\S]{1,500}/g);
 
             signalInfos.perform(
@@ -2295,9 +2417,9 @@ function() {
 
         //  A short pause for when we're running these in a large group of tests
         //  gives the GUI a chance to update.
-        test.thenWait(100);
+        test.andWait(100);
 
-        test.then(
+        test.chain(
             function(result) {
                 var windowContext,
 
@@ -2316,10 +2438,10 @@ function() {
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1', windowContext, false);
-                elem2 = TP.byId('focusTestField2', windowContext, false);
-                elem3 = TP.byId('focusTestField3', windowContext, false);
-                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem1 = TP.byId('focusTestElem1', windowContext, false);
+                elem2 = TP.byId('focusTestElem2', windowContext, false);
+                elem3 = TP.byId('focusTestElem3', windowContext, false);
+                elem4 = TP.byId('focusTestElem4', windowContext, false);
 
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
@@ -2339,15 +2461,15 @@ function() {
 
                 //  Give the browser (ok, IE) a chance to settle a bit before
                 //  continuing.
-                test.thenWait(100);
+                test.andWait(100);
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2362,7 +2484,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #1');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #1');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem1),
@@ -2380,21 +2504,18 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
-
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2409,7 +2530,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #2');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #2');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem2),
@@ -2427,9 +2550,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIFocus');
 
@@ -2439,21 +2559,18 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2470,7 +2587,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 2,
-                                'Focus stack not correct size in Step #3');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #3');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.first(),
                                 TP.wrap(elem2),
@@ -2491,9 +2610,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocus');
 
@@ -2503,21 +2619,18 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
-
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  We're currently on elem3, but because of the focus
                         //  stack when we leave elem3, elem4 will be briefly
@@ -2538,7 +2651,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #4');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #4');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem2),
@@ -2562,28 +2677,22 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaing in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem4
@@ -2600,24 +2709,26 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #5');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #5');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem4),
                                 'Stack last element not identical in Step #5');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(
@@ -2634,7 +2745,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 2,
-                                'Focus stack not correct size in Step #6');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #6');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.first(),
                                 TP.wrap(elem4),
@@ -2655,9 +2768,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocus');
 
@@ -2667,21 +2777,18 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
-
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  We're currently on elem3, but because of the focus
@@ -2703,7 +2810,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #7');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #7');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem4),
@@ -2727,28 +2836,22 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
                 //  This will put us at elem1
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem1
@@ -2765,25 +2868,27 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #8');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #8');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem1),
                                 'Stack last element not identical in Step #8');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
                 //  This will put us at elem2
-                driver.startSequence().
+                driver.constructSequence().
                         click(elem2).
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem2
@@ -2800,7 +2905,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #9');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #9');
                         test.assert.isIdenticalTo(TP.$focus_stack.last(),
                                                     TP.wrap(elem2));
 
@@ -2819,9 +2926,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIFocus');
 
@@ -2831,28 +2935,25 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDeactivate     -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDeactivate');
 
                         //  TP.sig.UIDidDeactivate  -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidDeactivate');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
                 //  This will put us at elem3
-                driver.startSequence().
+                driver.constructSequence().
                         click(elem3).
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
 
                         //  This should've put us at elem3
@@ -2871,7 +2972,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 2,
-                                'Focus stack not correct size in Step #10');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #10');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.first(),
                                 TP.wrap(elem2),
@@ -2895,12 +2998,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.DOMChange        -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMChange');
-
                         //  TP.sig.UIFocus          -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocus');
 
@@ -2910,28 +3007,25 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDeactivate     -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDeactivate');
 
                         //  TP.sig.UIDidDeactivate  -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidDeactivate');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
 
                 //  This will attempt to put us at elem4
-                driver.startSequence().
+                driver.constructSequence().
                         click(elem4).
-                        perform();
+                        run();
 
-                test.then(
+                test.chain(
                     function() {
                         //  We're currently on elem3, but because of the focus
                         //  stack when we leave elem3, elem4 will be briefly
@@ -2952,7 +3046,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #11');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #11');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem2),
@@ -2979,20 +3075,8 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.DOMChange        -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMChange');
-
-                        //  TP.sig.DOMChange        -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMChange');
 
                         //  TP.sig.UIDeactivate     -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDeactivate');
@@ -3000,9 +3084,9 @@ function() {
                         //  TP.sig.UIDidDeactivate  -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidDeactivate');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
             },
             function(error) {

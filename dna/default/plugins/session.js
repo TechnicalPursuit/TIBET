@@ -23,26 +23,14 @@
         var app,
             cookieKey,          // Key for cookie configuration.
             cookieParser,       // Express cookie parser.
-            logger,
             name,
             secretKey,          // Secrete key value.
             session,            // Express session management.
             store,              // Session store.
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
-
-        logger.debug('Integrating TDS session management.');
 
         //  ---
         //  Requires
@@ -77,7 +65,7 @@
             saveUninitialized: false,
             store: store,
             cookie: {
-                secure: false,  //  Only for HTTPS
+                secure: TDS.cfg('tds.https') === true,  //  Only for HTTPS
                 httpOnly: true
             }
         }));

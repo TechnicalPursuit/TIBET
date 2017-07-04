@@ -90,7 +90,7 @@ function() {
      * @summary TP.sys's 'activate()' method is called from $activate in the
      *     boot system once the blank page has been loaded and the UI canvas is
      *     read to display initialization messages. The handler here is
-     *     responsible for performing all code initialization, activating the
+     *     responsible for performing all code initialization, initialize the
      *     TP.core.Application object and then signaling the next signal in the
      *     startup sequence. Activation of the TIBET system includes:
      *     - Initializing all of the TIBET types loaded.
@@ -106,10 +106,12 @@ function() {
         type,
         msg,
         name,
-        coreInits,
-        typeInits,
-        postTypes,
-        postCore;
+
+        /* eslint-disable no-unused-vars */
+        promise,
+        /* eslint-enable no-unused-vars */
+
+        typeInits;
 
     // We only do this once.
     if (TP.sys.hasInitialized()) {
@@ -130,19 +132,129 @@ function() {
         TP.boot.$configurePluginEnvironment();
     }
 
-    //  Create a worklist of functions we'll activate asynchronously so we
-    //  get continual feedback/output during the boot process.
-    coreInits = TP.ac();
+    //  Install the patches for various native prototypes, etc. in the current
+    //  code frame (where we are executing).
+    TP.boot.installPatches(top);
 
-    coreInits.push(
+    //  Capture the list of type initializers. We'll invoke these first to
+    //  ensure the types are properly set up, then let completion on that
+    //  task trigger activation of the rest of our workload.
+    typeInits = TP.sys.getTypeInitializers();
+
+    //  Execute the following steps in a series of Promises to allow for GUI
+    //  updating.
+    promise = TP.extern.Promise.resolve();
+
+    promise.then(
         function() {
+            var uri,
+                req;
+
+            msg = 'Initializing user...';
+
+            if (TP.sys.cfg('boot.use_login')) {
+                //  User should be logged in. We want to load/generate a vcard
+                //  for them if possible.
+                uri = TP.sys.cfg('tds.vcard.uri');
+                if (TP.isEmpty(uri)) {
+                    TP.core.User.getRealUser();
+                } else {
+                    uri = TP.uriExpandPath(uri);
+                    req = TP.request('uri', uri, 'async', false);
+                    req.defineHandler('IOCompleted',
+                        function(aSignal) {
+                            var result;
+
+                            result = aSignal.getResult();
+                            if (TP.isDocument(result)) {
+                                TP.vcard.vcard.initVCards(result);
+                                TP.core.User.construct(
+                                    TP.nodeEvaluateXPath(result,
+                                        'string(//$def:fn/$def:text/text())'));
+                            } else {
+                                TP.ifWarn() ?
+                                    TP.warn('Invalid or missing user vcard.') : 0;
+                                TP.core.User.getRealUser();
+                            }
+                        });
+                    TP.httpGet(uri, req);
+                }
+            } else {
+                //  Not a login-restricted application. Force construction of
+                //  default user.
+                TP.core.User.getRealUser();
+            }
+
+            //  Set up common URIs for the user object and the raw user vCard
+            //  data.
+            TP.uc('urn:tibet:user').setResource(
+                                        TP.sys.getEffectiveUser());
+            TP.uc('urn:tibet:userinfo').setResource(
+                                        TP.sys.getEffectiveUser().get('vcard'));
+        }).then(
+        function() {
+            var i;
+
+            //  Initialize all the types which own initialize methods so we're
+            //  sure they're ready for operation. this may cause them to load
+            //  other types so we do this before proxy setup.
+            try {
+                //  Final signal before initializers are run.
+                TP.signal('TP.sys', 'AppInitialize');
+
+                msg = 'Initializing TIBET types...';
+
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
+
+                //  Run through the type initializers and run them.
+                for (i = 0; i < typeInits.getSize(); i++) {
+                    typeInits.at(i)();
+                }
+            } catch (e) {
+                msg = 'TIBET Type Initialization Error';
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                TP.boot.$stderr(msg, e, TP.FATAL);
+
+                TP.boot.shouldStop('Type Initialization Failure(s).');
+                TP.boot.$stderr('Initialization failure.', TP.FATAL);
+
+                throw e;
+            } finally {
+
+                //  If we're running inside of a Karma environment, we don't
+                //  reset the Application object even in parallel booting mode.
+                //  This is because data that Karma needs has already been
+                //  placed in the Application object and we aren't doing a
+                //  'routing-based' app when running Karma test anyway.
+                if (TP.sys.hasFeature('karma')) {
+                    //  empty
+                } else if (TP.sys.cfg('boot.parallel')) {
+                    //  One tricky part is that we can sometimes trigger
+                    //  application instance creation during phase one of
+                    //  parallel booting. Because of that, it will be an
+                    //  instance of the common TP.core.Application type and not
+                    //  the specific subtype of TP.core.Application that we'll
+                    //  want for the rest of the life of running the app.
+
+                    //  So, when that happens we want to clear the singleton
+                    //  instance now that phase two has loaded and before we try
+                    //  anything that would depend on routes etc. This singleton
+                    //  instance will be re-created as an instance of our
+                    //  application-specific subtype.
+                    TP.core.Application.set('singleton', null);
+                }
+            }
+        }).then(
+        function() {
+
             msg = 'Initializing root canvas...';
 
             //  Force initialization of the root canvas id before any changes
             //  are made to the canvas setting by other operations.
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
                 name = TP.sys.getUIRootName();
                 if (TP.notValid(name)) {
                     throw new Error('InvalidUIRoot');
@@ -153,17 +265,16 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    coreInits.push(
+        }).then(
         function() {
+
             msg = 'Initializing type proxies...';
 
             //  Initialize type proxies for types we didn't load as a result
             //  of the boot manifest or through type initialization.
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 TP.sys.initializeTypeProxies();
             } catch (e) {
@@ -172,17 +283,16 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    coreInits.push(
+        }).then(
         function() {
+
             msg = 'Initializing namespace support...';
 
             //  Install native/non-native namespace support. this may also
             //  involve loading types
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 //  Two classes of namespace, internally supported and those
                 //  TIBET has to provide support for
@@ -194,16 +304,15 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    coreInits.push(
+        }).then(
         function() {
+
             msg = 'Initializing default locale...';
 
             //  Bring in any locale that might be specified
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 if (TP.notEmpty(locale = TP.sys.cfg('tibet.locale'))) {
                     type = TP.sys.getTypeByName(locale);
@@ -229,106 +338,86 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
+        }).then(
+        function() {
+
+            msg = 'TIBET Initialization complete.';
+
+            TP.ifDebug() ? TP.debug(msg) : 0;
+            TP.boot.$stdout(msg, TP.DEBUG);
+
+            //  Ensure dependent code knows we're now fully initialized.
+            TP.sys.hasInitialized(true);
+
+            //  Refresh controllers now that all initialization is done.
+            TP.sys.getApplication().refreshControllers();
+
+            try {
+                //  Compute common sizes, such as font metrics and scrollbar
+                //  sizes.
+                TP.computeCommonSizes();
+            } catch (e) {
+                msg = 'UI metrics/size computations failed.';
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                TP.boot.$stderr(msg, e);
+                // Fall through and take our chances the UI will display
+                // properly.
+            }
+
+            //  Get the Application subtype instance built and configured. Note
+            //  that we don't need to assign this - we're only calling it to
+            //  make sure the cached application instance is built.
+            TP.sys.getApplication();
+
+            //  Final signal before UI begins processing.
+            TP.signal('TP.sys', 'AppDidInitialize');
+
+            if (TP.sys.hasFeature('sherpa')) {
+
+                //  Set up handler for tibet.json changes... NOTE that because
+                //  we're referencing via TIBETURL we want to get the concrete
+                //  URI to actually apply the handler to. The TIBETURL will
+                //  delegate to that during processing.
+                TP.uc('~app/tibet.json').getConcreteURI().defineMethod(
+                    'processRefreshedContent',
+                    function() {
+                        var obj,
+                            str;
+
+                        TP.info('Refreshing tibet.json configuration values.');
+
+                        str = TP.str(this.getContent());
+                        try {
+                            obj = JSON.parse(str);
+                        } catch (e) {
+                            TP.error(
+                                'Failed to parse: ' + this.getLocation(), e);
+                            return;
+                        }
+
+                        TP.boot.$configureOptions(obj);
+
+                        //  Configure routing data from cfg() parameters
+                        TP.core.URIRouter.$configureRoutes();
+                    });
+
+                TP.boot.$getStageInfo('starting').head =
+                    'Launching TIBET Sherpa&#8482; IDE...';
+            }
+
+            //  If we initialized without error move on to starting.
+            TP.boot.$setStage('starting');
+
+            //  Recapture starting time in case we broke for debugging.
+            TP.boot.$uitime = new Date();
+
+            //  Load the UI. This will ultimately trigger UIReady.
+            TP.sys.loadUIRoot();
+        }).catch(function(err) {
+
+            //  Re-throw any Error that got thrown above.
+            throw err;
         });
-
-    postCore = function(aSignal) {
-        var errors;
-
-        if (TP.isValid(aSignal)) {
-            errors = aSignal.at('errors');
-        }
-
-        if (TP.isValid(errors) && errors.getSize() > 0) {
-            // Problems in the initializer sequence.
-            TP.boot.shouldStop('Infrastructure Initialization Failure.');
-            TP.boot.$stderr('Initialization failure.', TP.FATAL);
-            return;
-        }
-
-        msg = 'TIBET Initialization complete.';
-
-        TP.ifTrace() ? TP.trace(msg) : 0;
-        TP.boot.$displayStatus(msg);
-
-        // Ensure dependent code knows we're now fully initialized.
-        TP.sys.hasInitialized(true);
-
-        try {
-            //  Compute common sizes, such as font metrics and scrollbar sizes.
-            TP.computeCommonSizes();
-        } catch (e) {
-            msg = 'UI metrics/size computations failed.';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            // Fall through and take our chances the UI will display properly.
-        }
-
-        //  Get the Application subtype instance built and configured. Note that
-        //  we don't need to assign this - we're only calling it to make sure
-        //  the cached application instance is built.
-        TP.sys.getApplication();
-
-        //  Final signal before UI begins processing.
-        TP.signal('TP.sys', 'AppDidInitialize');
-
-        // If we initialized without error move on to rendering the UI.
-        TP.boot.$setStage('rendering');
-
-        //  Recapture starting time in case we broke for debugging.
-        TP.boot.$uitime = new Date();
-
-        //  Load the UI. This will ultimately trigger UIReady.
-        TP.sys.loadUIRoot();
-    };
-
-    //  Capture the list of type initializers. We'll invoke these first to
-    //  ensure the types are properly set up, then let completion on that
-    //  task trigger activation of the rest of our workload.
-    typeInits = TP.sys.getTypeInitializers();
-
-    //  Create a simple function we'll trigger when the type initializers
-    //  have finished running.
-    postTypes = function(aSignal) {
-        var errors;
-
-        if (TP.isValid(aSignal)) {
-            errors = aSignal.at('errors');
-        }
-
-        if (TP.isValid(errors) && errors.getSize() > 0) {
-            TP.boot.shouldStop('Type Initialization Failure(s).');
-            TP.boot.$stderr('Initialization failure.', TP.FATAL);
-            return;
-        }
-
-        // If we initialized types without error move on to infrastructure.
-        coreInits.invokeAsync(null, null, true);
-    };
-
-    //  Get our handlers ready for responding to our async init/load operations.
-    postTypes.observe(typeInits, 'TP.sig.InvokeComplete');
-    postCore.observe(coreInits, 'TP.sig.InvokeComplete');
-
-    //  Initialize all the types which own initialize methods so we're sure
-    //  they're ready for operation. this may cause them to load other types
-    //  so we do this before proxy setup.
-    try {
-        //  Final signal before initializers are run.
-        TP.signal('TP.sys', 'AppInitialize');
-
-        msg = 'Initializing TIBET types...';
-
-        TP.ifTrace() ? TP.trace(msg) : 0;
-        TP.boot.$displayStatus(msg);
-
-        // Trigger the first async sequence. The handlers take it from there.
-        typeInits.invokeAsync();
-
-    } catch (e) {
-        msg = 'TIBET Type Initialization Error';
-        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-        TP.boot.$stderr(msg, e, TP.FATAL);
-    }
 
     return;
 });
@@ -358,17 +447,22 @@ function() {
     //  If we're supposed to grab a different type that'll happen here.
     appType = TP.sys.getTypeByName(typeName);
 
+    //  May be paused or booting in two phases, so only warn if we're fully
+    //  loaded.
     if (TP.notValid(appType)) {
-        TP.ifWarn() ?
-            TP.warn('Unable to locate application controller type: ' +
+        if (TP.sys.hasLoaded()) {
+            TP.ifWarn() ?
+                TP.warn('Unable to locate application controller type: ' +
                     typeName + '. ' +
                     'Defaulting to TP.core.Application.') : 0;
+        }
         appType = TP.sys.getTypeByName('TP.core.Application');
     }
 
     //  Create the new instance and define it as our singleton for any future
     //  application instance requests.
     newAppInst = appType.construct('Application', null);
+    newAppInst.setID('Application');
     TP.core.Application.set('singleton', newAppInst);
 
     return newAppInst;
@@ -395,7 +489,9 @@ function() {
 
         request,
         toggleKey,
-        bootframe;
+
+        bootTPFrameElem,
+        bootdoc;
 
     inPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
 
@@ -471,15 +567,15 @@ function() {
         } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
 
             //  No hook file in the boot screen so we initialize manually.
-            bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
-            if (TP.boot.$isValid(bootframe)) {
+            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            if (TP.isValid(bootTPFrameElem)) {
                 TP.boot.initializeCanvas(
-                    bootframe.getContentWindow().getNativeWindow());
+                    bootTPFrameElem.getContentWindow().getNativeWindow());
             }
 
             //  Prep the UI for full console mode.
-            if (TP.isValid(bootframe)) {
-                bootframe.getContentDocument().getBody().addClass(
+            if (TP.isValid(bootTPFrameElem)) {
+                bootTPFrameElem.getContentDocument().getBody().addClass(
                     'full_console');
             }
         }
@@ -508,7 +604,7 @@ function() {
     //  interface.
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
 
-    if (!inPhantom && !TP.sys.hasFeature('sherpa') && hasBootToggle) {
+    if (!inPhantom && hasBootToggle) {
 
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
@@ -518,13 +614,43 @@ function() {
             toggleKey = 'TP.sig.' + toggleKey;
         }
 
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        //  set up keyboard toggle to show/hide the boot UI
-        (function() {
-            TP.boot.toggleUI();
-            TP.boot.$scrollLog();
-        }).observe(TP.core.Keyboard, toggleKey);
-        /* eslint-enable no-wrap-func,no-extra-parens */
+        if (!TP.sys.hasFeature('sherpa')) {
+
+            /* eslint-disable no-wrap-func,no-extra-parens */
+            //  set up keyboard toggle to show/hide the boot UI
+            (function() {
+                TP.boot.toggleUI();
+                TP.boot.$scrollLog();
+            }).observe(TP.core.Keyboard, toggleKey);
+            /* eslint-enable no-wrap-func,no-extra-parens */
+
+        } else {
+
+            //  With sherpa in place the normal TP.core.Keyboard hook won't be
+            //  installed in UIBOOT, we need to do a lower level listener so
+            //  when/if that UI becomes primary we have event hooks in place.
+            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            if (TP.isValid(bootTPFrameElem)) {
+                try {
+                    bootdoc = bootTPFrameElem.getContentDocument().
+                                                    getNativeDocument();
+                    bootdoc.addEventListener('keyup',
+                    function(ev) {
+
+                        var keySigName;
+
+                        keySigName = 'TP.sig.' + TP.eventGetDOMSignalName(ev);
+
+                        if (keySigName === toggleKey) {
+                            TP.boot.showUIRoot();
+                        }
+                    }, false);
+                } catch (e) {
+                    TP.boot.$stderr('Unable to attach boot UI toggle: ' +
+                        e.message);
+                }
+            }
+        }
     }
 
     //  Set the location of the window (wrapping it to be a TP.core.Window).
@@ -542,16 +668,9 @@ function() {
 
     /**
      * @method finalizeShutdown
-     * @summary Finalizes the shut down of the application by removing the
-     *     protective onbeforeunload hooks that TIBET installs and sending the
+     * @summary Finalizes the shut down of the application by sending the
      *     'TP.sig.AppShutdown' signal.
      */
-
-    if (TP.isElement(TP.documentGetBody(window.document))) {
-        TP.elementSetAttribute(TP.documentGetBody(window.document),
-                                'allowUnload',
-                                'true');
-    }
 
     TP.signal(TP.sys, 'TP.sig.AppShutdown');
 
@@ -576,12 +695,29 @@ function(aURI) {
      *     application.
      */
 
-    var url,
+    var sig,
+
+        url,
         str;
 
-    url = TP.uc(TP.ifInvalid(aURI, TP.sys.cfg('path.blank_page')));
+    //  Send a TP.sig.AppWillShutdown signal. This can be canceled (i.e.
+    //  'prevent default'ed), in which case we just return.
+    sig = TP.signal(TP.sys, 'TP.sig.AppWillShutdown');
+
+    //  If the signal has been 'prevent default'ed, then return.
+    if (sig.shouldPrevent()) {
+        return;
+    }
+
+    if (TP.isValid(aURI)) {
+        url = TP.uc(aURI);
+    } else {
+        url = TP.uc(TP.sys.cfg('path.blank_page'));
+    }
 
     str = url.getLocation();
+
+    //  Can't use a 'tibet://' URL here.
     if (str.match(/tibet:/)) {
         TP.ifWarn() ?
             TP.warn('Invalid termination URI provided: ' + aURI) : 0;
@@ -592,6 +728,18 @@ function(aURI) {
 
     //  close open/registered windows. won't always work, but we can try :)
     TP.core.Window.closeRegisteredWindows();
+
+    //  By setting this on the code (i.e. top-level) window's document's body
+    //  element, we tell the onbeforeunload handler to just return and don't
+    //  supply text to the browser. This allows a 'clean' unload.
+
+    //  Note that the 'finalizeShutdown' method will be called from the 'unload'
+    //  handler as the code unloads.
+    if (TP.isElement(TP.documentGetBody(window.document))) {
+        TP.elementSetAttribute(TP.documentGetBody(window.document),
+                                'allowUnload',
+                                'true');
+    }
 
     //  put up the blank page at top, which blows away the app
 

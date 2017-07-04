@@ -22,88 +22,6 @@
 //  to the way that TP.htmlEntitiesToLiterals() works.
 TP.HTML_ENTITIES_TO_LITERALS =
     TP.hc(
-            '#160', '\u00a0',           //  space
-            '#161', '\u00a1',       //  ¡
-            '#162', '\u00a2',       //  ¢
-            '#163', '\u00a3',       //  £
-            '#165', '\u00a5',       //  ¥
-            '#167', '\u00a7',       //  §
-            '#169', '\u00a9',       //  ©
-            '#171', '\u00ab',       //  «
-            '#174', '\u00ae',       //  ®
-            '#177', '\u00b1',       //  ±
-            '#180', '\u00b4',       //  ´
-            '#181', '\u00b5',       //  µ
-            '#182', '\u00b6',       //  ¶
-            '#183', '\u00b7',       //  ·
-            '#187', '\u00bb',       //  »
-            '#191', '\u00bf',       //  ¿
-            '#192', '\u00c0',       //  À
-            '#193', '\u00c1',       //  Á
-            '#194', '\u00c2',       //  Â
-            '#195', '\u00c3',       //  Ã
-            '#196', '\u00c4',       //  Ä
-            '#197', '\u00c5',       //  Å
-            '#198', '\u00c6',       //  Æ
-            '#199', '\u00c7',       //  Ç
-            '#200', '\u00c8',       //  È
-            '#201', '\u00c9',       //  É
-            '#202', '\u00ca',       //  Ê
-            '#203', '\u00cb',       //  Ë
-            '#204', '\u00cc',       //  Ì
-            '#205', '\u00cd',       //  Í
-            '#206', '\u00ce',       //  Î
-            '#207', '\u00cf',       //  Ï
-            '#209', '\u00d1',       //  Ñ
-            '#210', '\u00d2',       //  Ò
-            '#211', '\u00d3',       //  Ó
-            '#212', '\u00d4',       //  Ô
-            '#213', '\u00d5',       //  Õ
-            '#214', '\u00d6',       //  Ö
-            '#216', '\u00d8',       //  Ø
-            '#217', '\u00d9',       //  Ù
-            '#218', '\u00da',       //  Ú
-            '#219', '\u00db',       //  Û
-            '#220', '\u00dc',       //  Ü
-            '#223', '\u00df',       //  ß
-            '#224', '\u00e0',       //  à
-            '#225', '\u00e1',       //  á
-            '#226', '\u00e2',       //  â
-            '#227', '\u00e3',       //  ã
-            '#228', '\u00e4',       //  ä
-            '#229', '\u00e5',       //  å
-            '#230', '\u00e6',       //  æ
-            '#231', '\u00e7',       //  ç
-            '#232', '\u00e8',       //  è
-            '#233', '\u00e9',       //  é
-            '#234', '\u00ea',       //  ê
-            '#235', '\u00eb',       //  ë
-            '#236', '\u00ec',       //  ì
-            '#237', '\u00ed',       //  í
-            '#238', '\u00ee',       //  î
-            '#239', '\u00ef',       //  ï
-            '#241', '\u00f1',       //  ñ
-            '#242', '\u00f2',       //  ò
-            '#243', '\u00f3',       //  ó
-            '#244', '\u00f4',       //  ô
-            '#245', '\u00f5',       //  õ
-            '#246', '\u00f6',       //  ö
-            '#247', '\u00f7',       //  ÷
-            '#248', '\u00f8',       //  ø
-            '#249', '\u00f9',       //  ù
-            '#250', '\u00fa',       //  ú
-            '#251', '\u00fb',       //  û
-            '#252', '\u00fc',       //  ü
-            '#255', '\u00ff',       //  ÿ
-            '#34', '\u0022',        //  "
-            '#38', '\u0026',        //  &
-            '#39', '\u0027',        //  '
-            '#60', '\u003c',        //  <
-            '#62', '\u003e',        //  >
-            '#8211', '\u2013',      //  ndash
-            '#8212', '\u2014',      //  mdash
-            '#8364', '\u20ac',      //  €
-            '#96', '\u0060',        //  `
             'aacute', '\u00c1',     //  Á
             'aacute', '\u00e1',     //  á
             'acirc', '\u00c2',      //  Â
@@ -420,168 +338,12 @@ TP.HTML_ENTITIES_TO_XML_ENTITIES =
 //  to the way that TP.xmlEntitiesToLiterals() works.
 TP.XML_ENTITIES_TO_LITERALS =
     TP.hc(
-            '#160', '\u00a0',       //  space
-            '#161', '\u00a1',       //  ¡
-            '#162', '\u00a2',       //  ¢
-            '#163', '\u00a3',       //  £
-            '#165', '\u00a5',       //  ¥
-            '#167', '\u00a7',       //  §
-            '#169', '\u00a9',       //  ©
-            '#171', '\u00ab',       //  «
-            '#174', '\u00ae',       //  ®
-            '#177', '\u00b1',       //  ±
-            '#180', '\u00b4',       //  ´
-            '#181', '\u00b5',       //  µ
-            '#182', '\u00b6',       //  ¶
-            '#183', '\u00b7',       //  ·
-            '#187', '\u00bb',       //  »
-            '#191', '\u00bf',       //  ¿
-            '#192', '\u00c0',       //  À
-            '#193', '\u00c1',       //  Á
-            '#194', '\u00c2',       //  Â
-            '#195', '\u00c3',       //  Ã
-            '#196', '\u00c4',       //  Ä
-            '#197', '\u00c5',       //  Å
-            '#198', '\u00c6',       //  Æ
-            '#199', '\u00c7',       //  Ç
-            '#200', '\u00c8',       //  È
-            '#201', '\u00c9',       //  É
-            '#202', '\u00ca',       //  Ê
-            '#203', '\u00cb',       //  Ë
-            '#204', '\u00cc',       //  Ì
-            '#205', '\u00cd',       //  Í
-            '#206', '\u00ce',       //  Î
-            '#207', '\u00cf',       //  Ï
-            '#209', '\u00d1',       //  Ñ
-            '#210', '\u00d2',       //  Ò
-            '#211', '\u00d3',       //  Ó
-            '#212', '\u00d4',       //  Ô
-            '#213', '\u00d5',       //  Õ
-            '#214', '\u00d6',       //  Ö
-            '#216', '\u00d8',       //  Ø
-            '#217', '\u00d9',       //  Ù
-            '#218', '\u00da',       //  Ú
-            '#219', '\u00db',       //  Û
-            '#220', '\u00dc',       //  Ü
-            '#223', '\u00df',       //  ß
-            '#224', '\u00e0',       //  à
-            '#225', '\u00e1',       //  á
-            '#226', '\u00e2',       //  â
-            '#227', '\u00e3',       //  ã
-            '#228', '\u00e4',       //  ä
-            '#229', '\u00e5',       //  å
-            '#230', '\u00e6',       //  æ
-            '#231', '\u00e7',       //  ç
-            '#232', '\u00e8',       //  è
-            '#233', '\u00e9',       //  é
-            '#234', '\u00ea',       //  ê
-            '#235', '\u00eb',       //  ë
-            '#236', '\u00ec',       //  ì
-            '#237', '\u00ed',       //  í
-            '#238', '\u00ee',       //  î
-            '#239', '\u00ef',       //  ï
-            '#241', '\u00f1',       //  ñ
-            '#242', '\u00f2',       //  ò
-            '#243', '\u00f3',       //  ó
-            '#244', '\u00f4',       //  ô
-            '#245', '\u00f5',       //  õ
-            '#246', '\u00f6',       //  ö
-            '#247', '\u00f7',       //  ÷
-            '#248', '\u00f8',       //  ø
-            '#249', '\u00f9',       //  ù
-            '#250', '\u00fa',       //  ú
-            '#251', '\u00fb',       //  û
-            '#252', '\u00fc',       //  ü
-            '#255', '\u00ff',       //  ÿ
-            '#34', '\u0022',        //  "
-            '#38', '\u0026',        //  &
-            '#39', '\u0027',        //  '
-            '#60', '\u003c',        //  <
-            '#62', '\u003e',        //  >
-            '#8211', '\u2013',      //  ndash
-            '#8212', '\u2014',      //  mdash
-            '#8364', '\u20ac',      //  €
-            '#96', '\u0060',        //  `
-            '#193', '\u00c1',       //  Á
-            '#225', '\u00e1',       //  á
-            '#194', '\u00c2',       //  Â
-            '#226', '\u00e2',       //  â
-            '#198', '\u00c6',       //  Æ
-            '#230', '\u00e6',       //  æ
-            '#192', '\u00c0',       //  À
-            '#224', '\u00e0',       //  à
             'amp', '&',
             'apos', '\'',
-            '#199', '\u00c5',       //  Å
-            '#229', '\u00e5',       //  å
-            '#195', '\u00c3',       //  Ã
-            '#227', '\u00e3',       //  ã
-            '#196', '\u00c4',       //  Ä
-            '#228', '\u00e4',       //  ä
-            '#199', '\u00c7',       //  Ç
-            '#231', '\u00e7',       //  ç
-            '#162', '\u00a2',       //  ¢
-            '#169', '\u00a9',       //  ©
-            '#247', '\u00f7',       //  ÷
-            '#201', '\u00c9',       //  É
-            '#233', '\u00e9',       //  é
-            '#202', '\u00ca',       //  Ê
-            '#234', '\u00ea',       //  ê
-            '#200', '\u00c8',       //  È
-            '#232', '\u00e8',       //  è
-            '#203', '\u00cb',       //  Ë
-            '#235', '\u00eb',       //  ë
-            '#8364', '\u20ac',      //  €
             'gt', '>',
-            '#205', '\u00cd',       //  Í
-            '#237', '\u00ed',       //  í
-            '#206', '\u00ce',       //  Î
-            '#238', '\u00ee',       //  î
-            '#161', '\u00a1',       //  ¡
-            '#204', '\u00cc',       //  Ì
-            '#236', '\u00ec',       //  ì
-            '#191', '\u00bf',       //  ¿
-            '#207', '\u00cf',       //  Ï
-            '#239', '\u00ef',       //  ï
-            '#171', '\u00ab',       //  «
             'lt', '<',
-            '#8212', '\u2014',      //  mdash
-            '#181', '\u00b5',       //  µ
-            '#183', '\u00b7',       //  ·
             'nbsp', '\u00a0',
-            '#8211', '\u2013',      //  ndash
-            '#209', '\u00d1',       //  Ñ
-            '#241', '\u00f1',       //  ñ
-            '#211', '\u00d3',       //  Ó
-            '#243', '\u00f3',       //  ó
-            '#212', '\u00d4',       //  Ô
-            '#244', '\u00f4',       //  ô
-            '#210', '\u00d2',       //  Ò
-            '#242', '\u00f2',       //  ò
-            '#216', '\u00d8',       //  Ø
-            '#248', '\u00f8',       //  ø
-            '#213', '\u00d5',       //  Õ
-            '#245', '\u00f5',       //  õ
-            '#214', '\u00d6',       //  Ö
-            '#246', '\u00f6',       //  ö
-            '#182', '\u00b6',       //  ¶
-            '#177', '\u00b1',       //  ±
-            '#163', '\u00a3',       //  £
-            'quot', '"',
-            '#187', '\u00bb',       //  »
-            '#174', '\u00ae',       //  ®
-            '#167', '\u00a7',       //  §
-            '#223', '\u00df',       //  ß
-            '#218', '\u00da',       //  Ú
-            '#250', '\u00fa',       //  ú
-            '#219', '\u00db',       //  Û
-            '#251', '\u00fb',       //  û
-            '#217', '\u00d9',       //  Ù
-            '#249', '\u00f9',       //  ù
-            '#220', '\u00dc',       //  Ü
-            '#252', '\u00fc',       //  ü
-            '#165', '\u00a5',       //  ¥
-            '#255', '\u00ff'        //  ÿ
+            'quot', '"'
     );
 
 //  ---
@@ -970,6 +732,39 @@ function() {
 //  SUPPORT
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isSherpaNode',
+function(aNode) {
+
+    /**
+     * @method isSherpaNode
+     * @summary Returns whether the node exists in the Sherpa context (i.e. is a
+     *     node that has been used to build the Sherpa, rather than a part of
+     *     the author's application).
+     * @param {Node} aNode The node to test.
+     * @returns {Boolean} Whether or not the node is part of the Sherpa itself
+     *     or not.
+     */
+
+    var backgroundElem;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  Make sure the Sherpa is running
+    if (!TP.sys.hasFeature('sherpa')) {
+        return false;
+    }
+
+    //  If it's a descendant under the 'background' element (but not in a canvas
+    //  iframe), then it's part of the Sherpa.
+    backgroundElem = TP.byId('background', TP.sys.getUIRoot(true), false);
+
+    return TP.nodeContainsNode(backgroundElem, aNode);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('htmlEntitiesToLiterals',
 function(aString) {
 
@@ -988,10 +783,14 @@ function(aString) {
     }
 
     return aString.replace(
-                /&([a-zA-Z#0-9]+);/g,
+                /&#?([a-zA-Z]+|[0-9]+);/g,
                 function(whole, entity) {
 
                     var lookup;
+
+                    if (TP.isNumber(parseInt(entity, 10))) {
+                        return String.fromCharCode(entity);
+                    }
 
                     lookup = TP.HTML_ENTITIES_TO_LITERALS.at(entity);
 
@@ -1002,7 +801,7 @@ function(aString) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('htmlLiteralsToEntities',
-function(aString, replaceSpaces) {
+function(aString, replaceSpaces, replaceQuoting) {
 
     /**
      * @method htmlLiteralsToEntities
@@ -1012,12 +811,16 @@ function(aString, replaceSpaces) {
      *     convert to HTML entities.
      * @param {Boolean} replaceSpaces Whether or not to 'entitify' spaces. The
      *     default is false.
+     * @param {Boolean} replaceQuoting Whether or not to 'entitify' quoting
+     *     characters (the ' and " characters). The default is true.
      * @returns {String} The supplied String with the literal characters that
      *     need to be entities made into them.
      */
 
     var regex,
-        result;
+        result,
+
+        dontReplaceQuoting;
 
     if (TP.regex.NON_UTF8_CHARS.test(aString)) {
         if (TP.notValid(regex = TP.regex.$$HTML_LITERALS_TO_ENTITIES)) {
@@ -1035,30 +838,51 @@ function(aString, replaceSpaces) {
                         return TP.HTML_LITERALS_TO_ENTITIES.at(match);
                     });
     } else {
-        result = aString.replace(
-            /[<>'"]/g,
-            function(aChar) {
 
-                switch (aChar) {
-                    case '<':
-                        return '&lt;';
+        if (/[&<>'"]/.test(aString)) {
 
-                    case '>':
-                        return '&gt;';
+            dontReplaceQuoting = TP.isFalse(replaceQuoting);
 
-                    case '\'':
-                        return '&apos;';
+            result = aString.replace(
+                /[<>'"]/g,
+                function(aChar) {
 
-                    case '"':
-                        return '&quot;';
+                    switch (aChar) {
+                        case '<':
+                            return '&lt;';
 
-                    default:
-                        break;
-                }
-            });
+                        case '>':
+                            return '&gt;';
 
-        //  Replace all '&' that are *not* part of an entity with '&amp;'
-        result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+                        case '\'':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
+                            return '&apos;';
+
+                        case '"':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
+                            return '&quot;';
+
+                        default:
+                            break;
+                    }
+                });
+
+            //  Replace all '&' that are *not* part of an entity with '&amp;'
+            //  Note here how we replace '&&' first because sometimes,
+            //  especially when formatting JavaScript, we might have an
+            //  expression like 'foo&&bar;' and the second RegExp cannot
+            //  determine whether or not '&bar;' is a real entity or not. So we
+            //  replace the double '&' first.
+            result = result.
+                        replace(/&&/g, '&amp;&amp;').
+                        replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+        } else {
+            result = aString;
+        }
     }
 
     result = replaceSpaces ? result.replace(/ /g, '&nbsp;') : result;
@@ -1086,10 +910,14 @@ function(aString) {
     }
 
     return aString.replace(
-                /&([a-zA-Z#0-9]+);/g,
+                /&#?([a-zA-Z]+|[0-9]+);/g,
                 function(whole, entity) {
 
                     var lookup;
+
+                    if (TP.isNumber(parseInt(entity, 10))) {
+                        return String.fromCharCode(entity);
+                    }
 
                     lookup = TP.XML_ENTITIES_TO_LITERALS.at(entity);
 
@@ -1100,7 +928,7 @@ function(aString) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('xmlLiteralsToEntities',
-function(aString, replaceSpaces) {
+function(aString, replaceSpaces, replaceQuoting) {
 
     /**
      * @method xmlLiteralsToEntities
@@ -1110,12 +938,16 @@ function(aString, replaceSpaces) {
      *     convert to XML entities.
      * @param {Boolean} replaceSpaces Whether or not to 'entitify' spaces. The
      *     default is false.
+     * @param {Boolean} replaceQuoting Whether or not to 'entitify' quoting
+     *     characters (the ' and " characters). The default is true.
      * @returns {String} The supplied String with the literal characters that
      *     need to be entities made into them.
      */
 
     var regex,
-        result;
+        result,
+
+        dontReplaceQuoting;
 
     if (TP.regex.NON_UTF8_CHARS.test(aString)) {
         if (TP.notValid(regex = TP.regex.$$XML_LITERALS_TO_ENTITIES)) {
@@ -1136,6 +968,8 @@ function(aString, replaceSpaces) {
 
         if (/[&<>'"]/.test(aString)) {
 
+            dontReplaceQuoting = TP.isFalse(replaceQuoting);
+
             result = aString.replace(
                 /[<>'"]/g,
                 function(aChar) {
@@ -1148,9 +982,15 @@ function(aString, replaceSpaces) {
                             return '&gt;';
 
                         case '\'':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
                             return '&apos;';
 
                         case '"':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
                             return '&quot;';
 
                         default:
@@ -1159,7 +999,14 @@ function(aString, replaceSpaces) {
                 });
 
             //  Replace all '&' that are *not* part of an entity with '&amp;'
-            result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+            //  Note here how we replace '&&' first because sometimes,
+            //  especially when formatting JavaScript, we might have an
+            //  expression like 'foo&&bar;' and the second RegExp cannot
+            //  determine whether or not '&bar;' is a real entity or not. So we
+            //  replace the double '&' first.
+            result = result.
+                        replace(/&&/g, '&amp;&amp;').
+                        replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
         } else {
             result = aString;
         }
@@ -1244,9 +1091,40 @@ function(aString) {
      *     escaped such that this string can be used to build a RegExp.
      */
 
-    TP.regex.REGEX_ESCAPE.lastIndex = 0;
+    TP.regex.REGEX_DETECT_META_CHARS.lastIndex = 0;
 
-    return aString.replace(TP.regex.REGEX_ESCAPE, '\\$1');
+    //  Replace any *unescaped* RegExp meta characters with an escaping
+    //  backslash and that character.
+    return aString.replace(TP.regex.REGEX_DETECT_META_CHARS, '\\$1');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('regExpUnescape',
+function(aString) {
+
+    /**
+     * @method regExpUnescape
+     * @summary Unescapes any RegExp metacharacters contained in the supplied
+     *     String.
+     * @param {String} aString The string that contains the regexp.
+     * @returns {String} The regexp string with all RegExp metacharacters
+     *     unescaped such that this string is stripped of all unescaped
+     *     metacharacters and with the remaining escaped metacharacters
+     *     unescaped.
+     */
+
+    var str;
+
+    TP.regex.REGEX_DETECT_UNESCAPED_META_CHARS.lastIndex = 0;
+
+    //  Strip all unescaped RegExp meta characters.
+    str = aString.strip(TP.regex.REGEX_DETECT_UNESCAPED_META_CHARS);
+
+    //  Then strip all of the escaping backslash characters themselves.
+    str = str.strip('\\');
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -1454,7 +1332,7 @@ function(anObject, assignIfAbsent) {
      *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.gid(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          TP.gid((function() {TP.alert('foo');}));
+     *          TP.gid((function() {TP.info('foo');}));
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.gid(TP.lang.Object.construct());
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -1514,7 +1392,11 @@ function(anObject, assignIfAbsent) {
     assign = TP.ifInvalid(assignIfAbsent, false);
 
     if (TP.isKindOf(anObject, TP.core.Node)) {
-        obj = TP.unwrap(anObject);
+        if (TP.isType(anObject)) {
+            obj = anObject;
+        } else {
+            obj = anObject.getNativeNode();
+        }
     } else {
         obj = anObject;
     }
@@ -1812,7 +1694,7 @@ function(anObject, assignIfAbsent) {
      *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.lid(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          TP.lid((function() {TP.alert('foo');}));
+     *          TP.lid((function() {TP.info('foo');}));
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.lid(TP.lang.Object.construct());
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -1847,8 +1729,6 @@ function(anObject, assignIfAbsent) {
         obj,
         localID,
         frameElem,
-        pname,
-        cid,
 
         elem;
 
@@ -1879,18 +1759,6 @@ function(anObject, assignIfAbsent) {
             //  if we're able to assign then we can look for semantically
             //  valuable identification options
             if (assign) {
-                //  local IDs for pseudo-elements are actually built from
-                //  their containing element's ID and their pelem name,
-                //  which creates a unique sub-ID for each pseudo element
-                if (TP.notEmpty(pname = TP.elementGetAttribute(
-                                                obj, 'tibet:pelem', true))) {
-                    //  find control ID...should be one, and if the control
-                    //  doesn't have an ID yet then optionally assign it one
-                    cid = TP.nodeGetControlId(obj, assign);
-                    if (TP.notEmpty(cid)) {
-                        localID = cid + '_' + pname;
-                    }
-                }
 
                 if (TP.isEmpty(localID)) {
                     //  Build a unique value and assign it
@@ -2054,7 +1922,7 @@ function(anObject, assignIfAbsent) {
      *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.id(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          TP.id((function() {TP.alert('foo');}));
+     *          TP.id((function() {TP.info('foo');}));
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.id(TP.lang.Object.construct());
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -2123,11 +1991,10 @@ function(anObject) {
     /**
      * @method objectName
      * @alias name
-     * @summary Returns the name of the receiver, most often associated with
-     *     types, functions, or node "tag names". When dealing with tag names
-     *     this method returns the canonical name of the tag. When all else
-     *     fails this method will return the local ID of the object. NOTE that
-     *     the TP.name() function is aliased to this function as a 'shorthand'.
+     * @summary Returns the name of anObject, most often associated with types,
+     *     functions, or node "tag names". When dealing with tag names this
+     *     method returns the canonical name of the tag. When all else fails
+     *     this method will return the local ID of the object.
      * @param {Object} anObject The object to interrogate.
      * @returns {String} A string "name".
      */
@@ -2198,6 +2065,70 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('name', TP.objectName);
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectOwner',
+function(anObject) {
+
+    /**
+     * @method objectOwner
+     * @alias owner
+     * @summary Returns the owner of anObject, which should be a Function. The
+     *     owner is the type, either TIBET or native type, which 'owns' the
+     *     Function (i.e. its 'owns' the property in a 'hasOwnProperty' sort of
+     *     way).
+     * @param {Object} anObject The object to interrogate.
+     * @returns {Object} The owner object.
+     */
+
+    if (TP.isValid(anObject)) {
+        return anObject[TP.OWNER];
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('owner', TP.objectOwner);
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectTrack',
+function(anObject) {
+
+    /**
+     * @method objectTrack
+     * @alias track
+     * @summary Returns the track of anObject, which should be a Function. The
+     *     track is the 'track' that the object can be found when looking up an
+     *     inheritance hierarchy. The value returned can be one of the
+     *     following:
+     *
+     *      TP.GLOBAL_TRACK
+     *      TP.PRIMITIVE_TRACK
+     *      TP.META_INST_TRACK
+     *      TP.META_TYPE_TRACK
+     *      TP.INST_TRACK
+     *      TP.LOCAL_TRACK
+     *      TP.TYPE_TRACK
+     *      TP.TYPE_LOCAL_TRACK
+     *
+     * @param {Object} anObject The object to interrogate.
+     * @returns {String} A string "track".
+     */
+
+    if (TP.isValid(anObject)) {
+        return anObject[TP.TRACK];
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('track', TP.objectTrack);
 
 //  ------------------------------------------------------------------------
 
@@ -2301,7 +2232,7 @@ function(anObject, shallow) {
         return anObject.copy(shallow);
     } else if (TP.isEvent(anObject)) {
         if (TP.isDocument(eventDocument =
-                        TP.eventGetTarget(anObject).document)) {
+                            TP.eventGetTarget(anObject).document)) {
             return TP.documentConstructEvent(eventDocument, anObject);
         }
     } else if (TP.isPlainObject(anObject)) {
@@ -2354,7 +2285,7 @@ function(anObject, aFormat, formatParams) {
      * @param {Object} anObject The object to format.
      * @param {Object} aFormat A String or type used to format the object. If
      *     empty then no formatting is performed.
-     * @param {TP.core.Hash|TP.core.Request} formatParams Optional formatting
+     * @param {TP.core.Hash|TP.sig.Request} formatParams Optional formatting
      *     data.
      * @returns {Object} Typically a string, but not required.
      */
@@ -2440,7 +2371,7 @@ function(anObject, aDocument) {
      *          <samp>[object Text]</samp>
      *          TP.htmlnode(TP.dc());
      *          <samp>[object Text]</samp>
-     *          TP.htmlnode((function() {TP.alert('foo');}));
+     *          TP.htmlnode((function() {TP.info('foo');}));
      *          <samp>[object Text]</samp>
      *          TP.htmlnode(TP.lang.Object.construct());
      *          <samp>[object Text]</samp>
@@ -3503,7 +3434,12 @@ function(anObject, anAspect, autoCollapse) {
      */
 
     var aspect,
-        val;
+        val,
+        i,
+        len,
+        parts,
+        part,
+        obj;
 
     if (anObject === null) {
         return null;
@@ -3536,6 +3472,27 @@ function(anObject, anAspect, autoCollapse) {
         }
 
         aspect = 'value';
+    } else if (TP.isPlainObject(anObject)) {
+        //  Really only one approach in this case...
+        if (anAspect.indexOf('.') !== -1) {
+
+            parts = anAspect.split('.');
+            obj = anObject;
+
+            len = parts.getSize();
+            for (i = 0; i < len; i++) {
+                part = parts.at(i);
+                obj = obj[part];
+                if (TP.notValid(obj)) {
+                    return;
+                }
+            }
+            return obj;
+        } else if (anAspect === 'value') {
+            return anObject;
+        } else {
+            return anObject[anAspect];
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(anAspect)) {
         aspect = TP.apc(anAspect);
     } else {
@@ -3549,7 +3506,8 @@ function(anObject, anAspect, autoCollapse) {
     if (TP.isURIString(anAspect) &&
         TP.regex.HAS_SCHEME.test(TP.str(anAspect))) {
         //  NB: We assume 'async' of false here.
-        val = TP.val(TP.uc(anAspect).getResource().get('result'));
+        val = TP.val(TP.uc(anAspect).getResource(
+                                        TP.hc('async', false)).get('result'));
     }
 
     //  some native objects may not have been TIBET-enabled, so for those
@@ -4471,9 +4429,9 @@ function(anObject) {
 
     stypes = TP.stypes(anObject);
 
-    //  Make sure to run a collect() to create a new Array, since we might be
+    //  Make sure to run a map() to create a new Array, since we might be
     //  touching a cached Array of TP.ANCESTORS.
-    return stypes.collect(
+    return stypes.map(
             function(aType) {
                 return TP.name(aType);
             });
@@ -4692,7 +4650,7 @@ function(anObject) {
     }
 
     //  TP.core.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
-    //  TP.core.URI, TP.sig.WebSocketResponse
+    //  TP.core.URI, etc.
     if (TP.canInvoke(anObject, 'getNativeObject')) {
         return anObject.getNativeObject();
     }
@@ -4911,7 +4869,10 @@ function(aPath, aScheme) {
     }
 
     //  If a schema wasn't supplied, try to compute one.
-    scheme = TP.ifInvalid(aScheme, TP.getPointerScheme(aPath));
+    scheme = aScheme;
+    if (TP.notValid(scheme)) {
+        scheme = TP.getPointerScheme(aPath);
+    }
 
     switch (scheme) {
 
@@ -5403,6 +5364,52 @@ function(prefixStr, aScriptStr) {
 //  Signaling
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('contractSignalName',
+function(signame) {
+
+    /**
+     * @method contractSignalName
+     * @summary Produces the 'short form' of the supplied signal name.
+     * @description Given a signal name of 'TP.sig.fooSignal', this method will
+     *     produce 'fooSignal'.
+     * @param {String} signame The signal name.
+     * @returns {String} The shortened signal name.
+     */
+
+    var parts,
+        i,
+        newparts;
+
+    if (TP.isEmpty(signame)) {
+        return '';
+    }
+
+    //  Event sequences (i.e. typically keyboard sequences) will have a
+    //  double underscore between each part of the sequence. We need to make
+    //  sure to contract each part.
+    if (/__/.test(signame)) {
+        newparts = TP.ac();
+        parts = signame.split('__');
+
+        for (i = 0; i < parts.getSize(); i++) {
+            //  Note the recursive call here.
+            newparts.push(TP.contractSignalName(parts.at(i)));
+        }
+
+        return newparts.join('__');
+    }
+
+    //  Note how we only do this if signame starts with 'TP.' - otherwise, we
+    //  leave the signal name.
+    if (/^TP\.(.+)/.test(signame)) {
+        return signame.slice(signame.lastIndexOf('.') + 1);
+    }
+
+    return signame;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('expandSignalName',
 function(signame) {
 
@@ -5424,7 +5431,10 @@ function(signame) {
 
         namespaceNames;
 
-    if (TP.isEmpty(signame)) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    if (signame === '') {
         return '';
     }
 
@@ -5477,48 +5487,124 @@ function(signame) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('contractSignalName',
-function(signame) {
+TP.definePrimitive('queueSignalFromData',
+function(signalData, originElem, triggerSignal, signalType) {
 
     /**
-     * @method contractSignalName
-     * @summary Produces the 'short form' of the supplied signal name.
-     * @description Given a signal name of 'TP.sig.fooSignal', this method will
-     *     produce 'fooSignal'.
-     * @param {String} signame The signal name.
-     * @returns {String} The shortened signal name.
+     * @method queueSignalFromData
+     * @summary Queues a signal derived from the signal data and the other
+     *     associated parameters for firing.
+     * @param {String} signalData The signal data which should either just a
+     *     signal name or a origin, signal, payload encoded as a JS-like String
+     *     that can be reformatted into JSON.
+     * @param {Element} originElem The originating element that will be used as
+     *     a target if an alternate target isn't provided as an ID to another
+     *     element in the signal data.
+     * @param {TP.sig.Signal} [triggerSignal] The signal that triggered this
+     *     signal queueing to happen. This will be placed in the firing signal's
+     *     payload under the 'trigger' key.
+     * @param {TP.meta.sig.Signal} A signal type that will be used as the 'real'
+     *     signal type if the signal name supplied (in some form) in the signal
+     *     data is a spoofed signal name.
      */
 
-    var parts,
-        i,
-        newparts;
+    var doc,
 
-    if (TP.isEmpty(signame)) {
-        return '';
-    }
+        sigData,
+        sigParams,
 
-    //  Event sequences (i.e. typically keyboard sequences) will have a
-    //  double underscore between each part of the sequence. We need to make
-    //  sure to contract each part.
-    if (/__/.test(signame)) {
-        newparts = TP.ac();
-        parts = signame.split('__');
+        orgid,
 
-        for (i = 0; i < parts.getSize(); i++) {
-            //  Note the recursive call here.
-            newparts.push(TP.contractSignalName(parts.at(i)));
+        target,
+
+        sigName,
+        sigPayload,
+
+        delay;
+
+    doc = TP.nodeGetDocument(originElem);
+
+    sigData = TP.trim(signalData);
+
+    //  If the signal data starts with a '{', then its not just a signal name.
+    //  There's a 'signal descriptor'.
+    if (sigData.startsWith('{')) {
+
+        //  What's left is a JS-formatted String. Parse that into a
+        //  TP.core.Hash.
+        sigParams = TP.json2js(TP.reformatJSToJSON(sigData));
+
+        //  If an 'origin' slot was supplied, then we look that up by ID (using
+        //  the original origin's document).
+        if (TP.notEmpty(orgid = sigParams.at('origin'))) {
+
+            //  Just in case it was supplied as a quoted value
+            orgid = orgid.unquoted();
+
+            //  Note how we pass false to avoid getting a wrapped origin, which
+            //  we don't want here.
+            target = TP.byId(orgid, doc, false);
         }
 
-        return newparts.join('__');
+        //  If a signal was supplied, use it as the signal name instead of the
+        //  name of the original DOM signal that was fired.
+        sigName = TP.ifInvalid(sigParams.at('signal'), sigName);
+
+        //  Just in case it was supplied in the signal params as a quoted value
+        sigName = sigName.unquoted();
+
+        //  Grab whatever payload was specified.
+        sigPayload = sigParams.at('payload');
+
+    } else {
+
+        //  No signal data - the signal name is all of the signal data.
+        sigName = sigData;
+
+        //  And the target is the origin Element.
+        target = originElem;
     }
 
-    //  Note how we only do this if signame starts with 'TP.' - otherwise, we
-    //  leave the signal name.
-    if (/^TP\.(.+)/.test(signame)) {
-        return signame.slice(signame.lastIndexOf('.') + 1);
+    if (TP.notValid(sigPayload)) {
+        sigPayload = TP.hc();
     }
 
-    return signame;
+    //  Stash a reference to the original DOM signal in the payload under the
+    //  key 'trigger'. This will be useful for things like stopping propagation,
+    //  etc.
+    sigPayload.atPut('trigger', triggerSignal);
+
+    //  Some objects in the system, in lieu of the trigger, will still use the
+    //  TP.core.Document where the triggering originated. We try to provide that
+    //  here, which is especially important if the trigger is undefined.
+    sigPayload.atPut('triggerTPDocument', TP.tpdoc(doc));
+
+    //  Note that it's important to put the current target on the signal here in
+    //  case that the new signal is a RESPONDER_FIRING signal (very likely) as
+    //  it will look there for the first responder when computing the responder
+    //  chain.
+    sigPayload.atPut('target', target);
+
+    //  Queue the new signal and continue - thereby skipping processing for the
+    //  bubbling phase of this signal (for this target) in deference to
+    //  signaling the new signal. Note here how we supply a signal type as the
+    //  default type to use if the mapped signal type isn't a real type.
+
+    //  If a delay was defined and it can be converted into a Number, then set
+    //  up a timeout to queue the signal after that delay. Otherwise, queue the
+    //  signal immediately.
+    delay = sigPayload.at('delay');
+
+    if (TP.notEmpty(delay) && TP.isNumber(delay = delay.asNumber())) {
+        setTimeout(
+            function() {
+                TP.queue(target, sigName, sigPayload, null, signalType);
+            }, delay);
+    } else {
+        TP.queue(target, sigName, sigPayload, null, signalType);
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5577,7 +5663,10 @@ function(aDescriptor) {
     }
 
     //  Signal types, signal instances, and Strings all respond to this.
-    if (TP.canInvoke(signal, 'getSignalName')) {
+    if (signal === TP.ANY) {
+        //  Default is 'handleSignal', not handleANY.
+        signame = 'Signal';
+    } else if (TP.canInvoke(signal, 'getSignalName')) {
         signame = signal.getSignalName();
     } else {
         //  Default is 'handleSignal', not handleANY.
@@ -5743,7 +5832,7 @@ function(eventObj) {
      * @method eventAsHTMLString
      * @summary Returns an HTML String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the HTML String
+     * @param {Event} eventObj The event object to produce the HTML String
      *     representation of.
      * @returns {String} An HTML String representation of the supplied event
      *     object.
@@ -5786,7 +5875,7 @@ function(eventObj) {
      * @method eventAsJSONSource
      * @summary Returns a JSON String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the JSON String
+     * @param {Event} eventObj The event object to produce the JSON String
      *     representation of.
      * @returns {String} An JSON String representation of the supplied event
      *     object.
@@ -5831,7 +5920,7 @@ function(eventObj) {
      * @method eventAsPrettyString
      * @summary Returns a 'pretty print' representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the pretty print
+     * @param {Event} eventObj The event object to produce the pretty print
      *     representation of.
      * @returns {String} A pretty print representation of the supplied event
      *     object.
@@ -5875,7 +5964,7 @@ function(eventObj) {
      * @method eventAsSource
      * @summary Returns a TIBET source string representation of the supplied
      *     event object.
-     * @param {event} eventObj The event object to produce the TIBET source
+     * @param {Event} eventObj The event object to produce the TIBET source
      *     representation of.
      * @returns {String} A TIBET source string representation of the supplied
      *     event object.
@@ -5891,7 +5980,7 @@ function(eventObj) {
 
     arr = TP.ac();
 
-    if (TP.isNode(target = eventObj.target)) {
+    if (TP.isNode(target = TP.eventGetTarget(eventObj))) {
         arr.push('TP.documentConstructEvent(',
                     TP.gid(TP.nodeGetWindow(target)),
                     '.document,');
@@ -5932,7 +6021,7 @@ function(eventObj) {
      * @method eventAsString
      * @summary Returns a String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the String
+     * @param {Event} eventObj The event object to produce the String
      *     representation of.
      * @returns {String} A String representation of the supplied event
      *     object.
@@ -5975,7 +6064,7 @@ function(eventObj) {
      * @method eventAsXMLString
      * @summary Returns an XML String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the XML String
+     * @param {Event} eventObj The event object to produce the XML String
      *     representation of.
      * @returns {String} An XML String representation of the supplied event
      *     object.
@@ -6004,6 +6093,323 @@ function(eventObj) {
     arr.push('/>');
 
     return arr.join('').toString();
+});
+
+//  ------------------------------------------------------------------------
+//  MUTATION OBSERVER REGISTRY
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('addMutationObserver',
+function(targetNode, recordsHandler, observerConfig, observerID) {
+
+    /**
+     * @method addMutationObserver
+     * @summary Adds a Mutation Observer entry to the Mutation Observer
+     *     registry.
+     * @description Note that you must call 'TP.activateMutationObserver()' in
+     *     order to actually activate the Mutation Observer. This method merely
+     *     creates a registry entry.
+     * @param {Node} targetNode The node that will be observed for mutations.
+     * @param {Function} recordsHandler A function that will take in an Array of
+     *     MutationRecord objects and process them.
+     * @param {Object} observerConfig A plain JS object that will be passed
+     *     along as options to the native Mutation Observer creation machinery.
+     * @param {String} observerID The ID of the observer to register.
+     */
+
+    var registry,
+        registryRecord;
+
+    registry = TP.$$mutationObserverRegistry;
+
+    //  Create the managed Mutation Observer registry if it doesn't already
+    //  exist.
+    if (TP.notValid(registry)) {
+        registry = TP.hc('$ALL_FILTER_FUNCS', TP.ac());
+        TP.$$mutationObserverRegistry = registry;
+    }
+
+    registryRecord = TP.hc(
+                'targetNode', targetNode,
+                'recordsHandler', recordsHandler,
+                'observerConfig', observerConfig,
+                'observerID', observerID,
+                'filterFunctions', TP.copy(registry.at('$ALL_FILTER_FUNCS'))
+                );
+
+    registry.atPut(observerID, registryRecord);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('addMutationObserverFilter',
+function(filterFunction, observerID) {
+
+    /**
+     * @method addMutationObserverFilter
+     * @summary Adds a filter function that will be used to filter mutation
+     *     records. This can be installed for either a particular observer or
+     *     for all managed Mutation Observers.
+     * @description If observerID is TP.ALL, the filter functions will be
+     *     installed for all managed Mutation Observers.
+     * @param {Function} filterFunction A function that will take in a single
+     *     MutationRecord objects and return true or false as to whether that
+     *     record should be processed.
+     * @param {String} observerID The ID of the observer to register the filter
+     *     function for or TP.ALL.
+     */
+
+    var registry,
+
+        registryRecord;
+
+    registry = TP.$$mutationObserverRegistry;
+
+    //  Create the managed Mutation Observer registry if it doesn't already
+    //  exist.
+    if (TP.notValid(registry)) {
+        registry = TP.hc('$ALL_FILTER_FUNCS', TP.ac());
+        TP.$$mutationObserverRegistry = registry;
+    }
+
+    //  If the supplied observer ID is not TP.ALL, then this filter is being
+    //  installed for a particular observer. Find its filter functions and add
+    //  the new Function.
+    if (observerID !== TP.ALL) {
+
+        registryRecord = registry.at(observerID);
+
+        if (TP.notValid(registryRecord)) {
+            return TP.raise(
+                    this,
+                    'TP.sig.InvalidObject',
+                    'No managed Mutation Observer entry for: ' + observerID);
+        }
+
+        registryRecord.at('filterFunctions').push(filterFunction);
+
+        return;
+    }
+
+    //  The observerID is TP.ALL... we need to add this filter to all managed
+    //  Mutation Observers.
+    registry.perform(
+            function(kvPair) {
+                if (kvPair.first() === '$ALL_FILTER_FUNCS') {
+                    return;
+                }
+
+                kvPair.last().at('filterFunctions').push(filterFunction);
+            });
+
+    //  We also keep track of all of the filter functions that should be
+    //  installed for all observers for installation into future managed
+    //  Mutation Observers.
+    registry.at('$ALL_FILTER_FUNCS').push(filterFunction);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('activateMutationObserver',
+function(observerID) {
+
+    /**
+     * @method activateMutationObserverFilter
+     * @summary Activates a previously added managed Mutation Observer.
+     * @param {String} observerID The ID of the observer to activate.
+     */
+
+    var registry,
+
+        registryRecord,
+
+        observerCallback,
+        observerObj;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Make sure that we can find the record of the managed Mutation Observer
+    //  that the caller wants.
+    registryRecord = registry.at(observerID);
+    if (TP.notValid(registryRecord)) {
+        return TP.raise(
+                this,
+                'TP.sig.InvalidObject',
+                'No managed Mutation Observer entry for: ' + observerID);
+    }
+
+    //  Create a Function that will be used as the native Mutation Observer
+    //  callback. This Function will filter mutation records based on whether
+    //  they've been handled or not already (to fix Webkit bug:
+    //  https://bugs.webkit.org/show_bug.cgi?id=103916) and whether they pass
+    //  further filter functions.
+
+    observerCallback = function(mutationRecords, observer) {
+
+        var records;
+
+        records = mutationRecords.filter(
+            function(aRecord) {
+
+                var handledSlotName,
+
+                    filterFuncs,
+
+                    len,
+                    i;
+
+                //  Compute a 'handled' slot based on the ID of the observer
+                //  that we're processing.
+                handledSlotName = 'HANDLED_FOR_' +
+                                    observer.registryRecord.at('observerID');
+
+                //  If the record has already been handled by this observer,
+                //  return false to filter it out. This fixes the Webkit bug
+                //  mentioned above.
+                if (aRecord[handledSlotName]) {
+                    return false;
+                }
+
+                //  We go ahead and stamp this record as 'handled' for this
+                //  observer.
+                aRecord[handledSlotName] = true;
+
+                //  Grab the filter functions, iterate through them and if *any
+                //  one* of them returns false, return false from here, thereby
+                //  filtering out that record.
+                filterFuncs =
+                    observer.registryRecord.at('filterFunctions');
+
+                len = filterFuncs.getSize();
+                for (i = 0; i < len; i++) {
+                    if (filterFuncs.at(i)(aRecord) === false) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+        //  If we have real records to process, call the records handling
+        //  Function with those records.
+        if (TP.notEmpty(records)) {
+            observer.registryRecord.at('recordsHandler')(records);
+        }
+    };
+
+    //  Go ahead and install the callback using the native Mutation Observer
+    //  call and begin observation using data found in the record created when
+    //  the caller added the managed Mutation Observer.
+    observerObj = new MutationObserver(observerCallback);
+
+    //  Capture the registry record on the observer object itself for use
+    //  inside of the callback handler above to avoid closure issues.
+    observerObj.registryRecord = registryRecord;
+
+    observerObj.observe(
+                    registryRecord.at('targetNode'),
+                    registryRecord.at('observerConfig'));
+
+    //  Stash the native Mutation Observer object into the registry record for
+    //  this managed Mutation Observer for use in deactivation.
+    registryRecord.atPut('$observerObj', observerObj);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('deactivateMutationObserver',
+function(observerID) {
+
+    /**
+     * @method deactivateMutationObserverFilter
+     * @summary Deactivates a previously activated managed Mutation Observer.
+     * @param {String} observerID The ID of the observer to deactivate.
+     */
+
+    var registry,
+
+        registryRecord,
+        observerObj;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Make sure that we can find the record of the managed Mutation Observer
+    //  that the caller wants.
+    registryRecord = registry.at(observerID);
+    if (TP.notValid(registryRecord)) {
+        return TP.raise(
+                this,
+                'TP.sig.InvalidObject',
+                'No managed Mutation Observer entry for: ' + observerID);
+    }
+
+    //  Make sure that we have a valid native Mutation Observer object.
+    observerObj = registryRecord.at('$observerObj');
+    if (TP.notValid(observerObj)) {
+        return TP.raise(
+                this,
+                'TP.sig.InvalidObject',
+                'No native Mutation Observer object for: ' + observerID);
+    }
+
+    //  Clean the native Mutation Observers queue. NB: This may cause the
+    //  callback that we installed in TP.activateMutationObserver() above to
+    //  activate.
+    observerObj.takeRecords();
+    observerObj.disconnect();
+
+    //  The native observer object is of no use to us now - remove it.
+    registryRecord.removeKey('$observerObj');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('removeMutationObserver',
+function(observerID) {
+
+    /**
+     * @method removeMutationObserverFilter
+     * @summary Removes a previously added managed Mutation Observer.
+     * @param {String} observerID The ID of the observer to remove.
+     */
+
+    var registry;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Deactivate it to properly shut it down.
+    TP.deactivateMutationObserver(observerID);
+
+    //  The managed Mutation Observer object is of no use to us now - remove it.
+    registry.removeKey(observerID);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -6115,6 +6521,7 @@ TP.boot.$simplePropertyRetriever = {
         return true;
     },
     // Inspired by http://stackoverflow.com/a/8024294/271577
+    /* eslint-disable func-names */
     _getPropertyNames: function getAllPropertyNames(
                                     obj, iterateSelfBool,
                                     iteratePrototypeBool, includePropCb) {
@@ -6149,6 +6556,7 @@ TP.boot.$simplePropertyRetriever = {
 
         return props;
     }
+    /* eslint-enable func-names */
 };
 
 //  ------------------------------------------------------------------------

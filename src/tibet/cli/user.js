@@ -21,16 +21,22 @@
 
 var CLI,
     crypto,
+    path,
+    hb,
     Cmd;
 
 CLI = require('./_cli');
 crypto = require('crypto');
+path = require('path');
+hb = require('handlebars');
 
 //  ---
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -46,6 +52,13 @@ Cmd.prototype = new Cmd.Parent();
 Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 
 /**
+ * Where are the dna templates we should clone from? This value will be joined
+ * with the current file's load path to create the absolute root path.
+ * @type {string}
+ */
+Cmd.prototype.DNA_ROOT = '../dna/user';
+
+/**
  * The command name for this type.
  * @type {string}
  */
@@ -58,7 +71,7 @@ Cmd.NAME = 'user';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'string': ['pass', 'env'],
+        'string': ['pass', 'env', 'role', 'org', 'unit'],
         'default': {
             'env': 'development'
         }
@@ -70,7 +83,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] [--env <env>]';
+Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] ' +
+    '[--env <env>] [--role <role>] [--org <org>] [--unit unit]';
 
 
 //  ---
@@ -88,8 +102,10 @@ Cmd.prototype.execute = function() {
         hex,
         json,
         pass,
+        salt,
         user,
-        users;
+        users,
+        fullpath;
 
     if (this.options._.length !== 2) {
         return this.usage();
@@ -99,28 +115,24 @@ Cmd.prototype.execute = function() {
         user = this.options._[1];
     }
 
-    file = CLI.expandPath('~tds_file');
+    file = CLI.expandPath('~user_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to load: ' + file);
+        this.error('Unable to load tds config file: ' + file);
         return 1;
     }
 
     //  Drill down into the environment provided. All TDS settings are intended
     //  to reside below either 'default' or an environment-specific root.
-    json = json[this.options.env];
-    if (!json) {
-        this.error('Unable to load: ' + env);
-        return 1;
+    env = json[this.options.env];
+    if (!env) {
+        env = {};
+        json[this.options.env] = env;
     }
 
     pass = this.options.pass;
 
-    users = json.users;
-    if (CLI.notValid(users)) {
-        users = {};
-        json.users = users;
-    }
+    users = env;
 
     if (CLI.isEmpty(pass)) {
         //  User lookup.
@@ -130,10 +142,40 @@ Cmd.prototype.execute = function() {
         } else {
             this.error('User not found.');
         }
-        return;
+
+        //  Check on vcard info
+        fullpath = path.join(CLI.expandPath(
+            CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
+
+        if (CLI.sh.test('-e', fullpath)) {
+            this.info('User vcard found in ' + fullpath);
+        } else {
+            this.warn('User vcard not found in ' + fullpath);
+            this.generateDefaultVCard(user, fullpath);
+        }
+
+        return 0;
     } else {
+
+        salt = process.env.TDS_CRYPTO_SALT || CLI.getcfg('tds.crypto.salt');
+        if (!salt) {
+            this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            this.warn('Defaulting to encryption salt default value');
+            salt = 'mmm...salty';
+        }
+
         //  Password update.
-        hex = crypto.createHash('md5').update(pass).digest('hex');
+        hex = crypto.createHash('sha256').update(pass + salt).digest('hex');
+
+        //  Check on vcard info
+        fullpath = path.join(CLI.expandPath(
+            CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
+
+        if (CLI.sh.test('-e', fullpath)) {
+            this.info('User vcard found in ' + fullpath);
+        } else {
+            this.generateDefaultVCard(user, fullpath);
+        }
 
         data = users[user];
         if (CLI.isValid(data)) {
@@ -146,9 +188,54 @@ Cmd.prototype.execute = function() {
             this.info('User added.');
         }
 
-        //  Write out the changes.
+        //  Write out the changes from the top-level json object.
         CLI.beautify(JSON.stringify(json)).to(file);
     }
+
+    return 0;
+};
+
+
+/**
+ */
+Cmd.prototype.generateDefaultVCard = function(user, fullpath) {
+    var file,
+        data,
+        template,
+        content;
+
+    this.info('Creating default ' + user + ' vcard in ' + fullpath);
+
+    file = path.join(module.filename, this.DNA_ROOT, 'vcard.xml.hb');
+    data = CLI.sh.cat(file);
+    try {
+        template = hb.compile(data);
+        if (!template) {
+            throw new Error('InvalidTemplate');
+        }
+    } catch (e) {
+        this.error('Error compiling template ' + fullpath + ': ' +
+            e.message);
+        return 1;
+    }
+
+    try {
+        content = template({
+            username: user,
+            role: this.options.role || '',
+            org: this.options.org || '',
+            unit: this.options.unit || ''
+        });
+        if (!content) {
+            throw new Error('InvalidContent');
+        }
+    } catch (e) {
+        this.error('Error injecting template data in ' + fullpath +
+            ': ' + e.message);
+        return 1;
+    }
+
+    content.to(fullpath);
 };
 
 module.exports = Cmd;

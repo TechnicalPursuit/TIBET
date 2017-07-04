@@ -35,7 +35,7 @@ function(anObject) {
      */
 
     var pair,
-        func;
+        key;
 
     if (TP.notValid(anObject)) {
         return;
@@ -44,19 +44,9 @@ function(anObject) {
     if (!TP.isPair(anObject)) {
         if (TP.isString(anObject)) {
             pair = anObject.split(' ');
-        }
-
-        if (TP.canInvoke(anObject, 'getPairs')) {
-            func = function(item) {
-                // if we're not on the first iteration bail out
-                if (!func.atStart()) {
-                    return TP.BREAK;
-                }
-
-                return true;
-            };
-
-            pair = anObject.getPairs(func).first();
+        } else {
+            key = TP.keys(anObject).first();
+            pair = TP.ac(key, TP.objectValue(anObject, key));
         }
     }
 

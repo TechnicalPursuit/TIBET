@@ -28,8 +28,11 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {};
-            s = {a: 1};
+            t = {
+            };
+            s = {
+                a: 1
+            };
             o = CLI.blend(t, s);
 
             expect(o.a).to.equal(1);
@@ -40,8 +43,14 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {};
-            s = {a: 1, b: {c: 3}};
+            t = {
+            };
+            s = {
+                a: 1,
+                b: {
+                    c: 3
+                }
+            };
             o = CLI.blend(t, s);
 
             expect(o.b.c).to.equal(3);
@@ -52,8 +61,15 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0};
-            s = {a: 1, b: {c: 3}};
+            t = {
+                a: 0
+            };
+            s = {
+                a: 1,
+                b: {
+                    c: 3
+                }
+            };
             o = CLI.blend(t, s);
 
             expect(o.a).to.equal(0);
@@ -64,8 +80,18 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0, b: {c: 2}};
-            s = {a: 1, b: {c: 3}};
+            t = {
+                a: 0,
+                b: {
+                    c: 2
+                }
+            };
+            s = {
+                a: 1,
+                b: {
+                    c: 3
+                }
+            };
             o = CLI.blend(t, s);
 
             expect(o.b.c).to.equal(2);
@@ -76,8 +102,18 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0, b: {c: 2}};
-            s = {a: 1, b: {c: 3, d: 4}};
+            t = {
+                a: 0,
+                b: {
+                    c: 2
+                }
+            };
+            s = {
+                a: 1,
+                b: {
+                    c: 3, d: 4
+                }
+            };
             o = CLI.blend(t, s);
 
             expect(o.b.c).to.equal(2);
@@ -89,8 +125,16 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0, b: {c: 2}};
-            s = {a: 1, b: 'foo'};
+            t = {
+                a: 0,
+                b: {
+                    c: 2
+                }
+            };
+            s = {
+                a: 1,
+                b: 'foo'
+            };
             o = CLI.blend(t, s);
 
             expect(o.b.c).to.equal(2);
@@ -126,8 +170,13 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0};
-            s = {a: 1, b: [1, 2, 3]};
+            t = {
+                a: 0
+            };
+            s = {
+                a: 1,
+                b: [1, 2, 3]
+            };
             o = CLI.blend(t, s);
 
             expect(o.a).to.equal(0);
@@ -139,8 +188,14 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0, b: [0]};
-            s = {a: 1, b: [1, 2, 3]};
+            t = {
+                a: 0,
+                b: [0]
+            };
+            s = {
+                a: 1,
+                b: [1, 2, 3]
+            };
             o = CLI.blend(t, s);
 
             expect(o.a).to.equal(0);
@@ -152,8 +207,18 @@ describe('_cli.js', function() {
                 s,
                 o;
 
-            t = {a: 0, b: [0]};
-            s = {a: 1, b: [1, 2, {c: 3, d: 4, e: [9, 8, 7]}]};
+            t = {
+                a: 0,
+                b: [0]
+            };
+            s = {
+                a: 1,
+                b: [1, 2, {
+                    c: 3,
+                    d: 4,
+                    e: [9, 8, 7]
+                }]
+            };
             o = CLI.blend(t, s);
 
             expect(o.b[3].e[1]).to.equal(8);

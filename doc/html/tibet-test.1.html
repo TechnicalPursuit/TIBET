@@ -24,8 +24,8 @@
 <p>tibet test [&lt;target&gt;] [--suite &lt;filter&gt;] [--cases &lt;filter&gt;] [--karma] [--context &lt;app|lib|all&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs unit, functional, and/or integration tests on your application.</p>
-<p>If the <code>--karma</code> flag is true (the default), <code>tibet test</code> checks to see if<br>the <code>karma-tibet</code> testing module and <code>karma</code> have been installed in your<br>project. If so the command delegates to <code>karma start</code> to run your tests.</p>
-<p>If <code>karma</code> isn&#39;t installed <code>phantomjs</code> is checked and tests will run in the<br>context of <code>phantomjs</code> if found. You can force PhantomJS use by using<br><code>--no-karma</code> on the command line.</p>
+<p>If the <code>--karma</code> flag is true, <code>tibet test</code> checks to see if the <code>karma-tibet</code><br>testing module and <code>karma</code> have been installed in your project. If so the<br>command delegates to <code>karma start</code> to run your tests.</p>
+<p>If <code>karma</code> isn&#39;t installed or the <code>--karma</code> flag is false (the default)<br><code>phantomjs</code> is checked and tests will run in the context of <code>phantomjs</code> if<br>found.</p>
 <p>In both cases (karma or phantom) you can specify a particular test target object<br>or test suite to run as the first argument to the command. If you need to<br>specify both a target and suite use <code>--target</code> and <code>--suite</code> respectively.</p>
 <p>You can limit testing to a particular case or set of cases by using the<br><code>--cases</code> parameter. Both <code>--suite</code> and <code>--cases</code> accept either a string or a<br>regular expression in JavaScript syntax such as <code>--cases /foo/i</code>.</p>
 <p>For phantomjs testing output is to the terminal in colorized TAP format by<br>default. Future versions will support additional test output formatters.</p>
@@ -38,7 +38,7 @@
 </li>
 <li><p><code>--context</code> :<br>Sets the context of the scan which is run. The default is <code>app</code><br>which scans only application-level resources, ignoring any potential library<br>resources. Other values are <code>lib</code> and <code>all</code>.</p>
 </li>
-<li><p><code>--karma</code> :<br>Turns on/off the search for a <code>karma</code> binary and <code>karma.conf.js</code> file. Using<br><code>--no-karma</code> will force TIBET&#39;s basic PhantomJS-driven test execution. The<br>default value is true.</p>
+<li><p><code>--karma</code> :<br>Turns on/off the search for a <code>karma</code> binary and <code>karma.conf.js</code> file. Using<br><code>--no-karma</code> will force TIBET&#39;s basic PhantomJS-driven test execution. The<br>default value is false.</p>
 </li>
 <li><p><code>--suite</code> :<br>A specific suite name or a /pattern/ to match to filter suite names.</p>
 </li>
@@ -46,7 +46,7 @@
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="run-default-application-tests-via-karma">Run default application tests via karma</h3>
 <p>Assuming you&#39;ve followed the installation instructions for <code>karma-tibet</code> (<a href="https://github.com/TechnicalPursuit/karma-tibet">https://github.com/TechnicalPursuit/karma-tibet</a>) you can run your karma tests via <code>tibet test</code>:</p>
-<pre><code>$ tibet test
+<pre><code>$ tibet test --karma
 
 30 06 2016 17:32:46.557:INFO [karma]: Karma v1.1.0 server started at http://0.0.0.0:9876/
 30 06 2016 17:32:46.560:INFO [launcher]: Launching browser Chrome with unlimited concurrency
@@ -98,7 +98,7 @@ ok - Is a templated tag.
 
 # Finished in 2385 ms w/TSH exec time of 93 ms.
 </code></pre><h3 id="run-tests-on-a-specific-type">Run tests on a specific type</h3>
-<pre><code>$ tibet test APP.hello.app
+<pre><code>$ tibet test --karma APP.hello.app
 
 overriding karma.script with: :test  -target=&#39;APP.hello.app&#39;
 01 07 2016 13:56:55.444:INFO [karma]: Karma v1.1.0 server started at http://0.0.0.0:9876/
@@ -127,7 +127,7 @@ ok - Has an application type.
 
 </div>
 <div id="footer">
-    TIBET v5.0.0-dev.11 - Copyright (C) 2016 Technical Pursuit Inc.
+    TIBET v5.0.0-dev.12 - Copyright (C) 2017 Technical Pursuit Inc.
 </div>
 </div>
 </body>

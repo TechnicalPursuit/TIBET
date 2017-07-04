@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|inspector {
 
@@ -17,15 +17,15 @@ sherpa|inspector {
     border-right: solid 1px #aaa;
     border-left: solid 1px #aaa;
 
-    font: 13px/1.231 arial, helvetica, clean, sans-serif;
+    font: 13px/1.231 "arial", "helvetica", "clean", sans-serif;
 
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 sherpa|inspector > .content {
 
     position: absolute;
+    display: flex;
 
     top: 0;
     bottom: 0;
@@ -33,5 +33,5 @@ sherpa|inspector > .content {
 
     min-width: 100%;
 
-    display: flex;
+    border: none;
 }

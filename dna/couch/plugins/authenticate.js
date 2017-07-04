@@ -26,33 +26,22 @@
             Keygrip,
             logger,
             name,
+            ip,
             parsers,
             passport,
             strategy,
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
-        parsers = options.parsers;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS authentication.');
-
-        //  ---
-        //  Requires
-        //  ---
+        parsers = options.parsers;
 
         Cookies = require('cookies');
         Keygrip = require('keygrip');
         passport = require('passport');
+        ip = require('ip');
 
         //  ---
         //  Initialization
@@ -182,15 +171,20 @@
         app.get('/login', parsers.urlencoded, function(req, res, next) {
             var user,
                 cookies,
-                keys;
+                grip;
 
             //  Read any username cookie from the client and use it to
             //  pre-populate the login field. Keys must match those used
             //  during the post /login process to read correctly.
-            keys = new Keygrip([
+            grip = new Keygrip([
                 TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
             ]);
-            cookies = new Cookies(req, res, keys);
+            cookies = new Cookies(
+                req,
+                res,
+                {
+                    keys: grip
+                });
             user = cookies.get(TDS.cfg('user.cookie'), {
                 signed: true
             }) || '';
@@ -210,14 +204,39 @@
         app.post('/login', parsers.json, parsers.urlencoded, function(req, res, next) {
 
             passport.authenticate(name, function(err, user, info) {
-                var keys,
+                var grip,
                     cookies;
 
                 if (err) {
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.status(400);
+                        res.json({
+                            ok: false,
+                            message: 'login failed'
+                        });
+                        return;
+                    }
+
+                    logger.error('Redirecting to login: ' + err);
                     return res.redirect('/login');
                 }
 
                 if (!user) {
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.status(400);
+                        res.json({
+                            ok: false,
+                            message: 'login failed'
+                        });
+                        return;
+                    }
+
+                    logger.error(
+                        'Redirecting to login: user/pass mismatch.');
                     return res.redirect('/login');
                 }
 
@@ -225,10 +244,15 @@
                 //  which vcard information (and hence which roles, orgs, units)
                 //  should be applied in the client. Set a cookie here the
                 //  client can access when login is successful.
-                keys = new Keygrip([
+                grip = new Keygrip([
                     TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
                 ]);
-                cookies = new Cookies(req, res, keys);
+                cookies = new Cookies(
+                    req,
+                    res,
+                    {
+                        keys: grip
+                    });
                 cookies.set(TDS.cfg('user.cookie'), user.id, {
                     maxAge: 600000,
                     signed: true,
@@ -256,13 +280,22 @@
                         //  the other route handler that we're done with
                         //  phase one and need to render the phasetwo page.
                         req.session.render = 'phasetwo';
-                        res.redirect('/');
 
                     } else {
                         //  NOTE: we set session state to communicate with
                         //  the other route handler that we're just getting
                         //  started and need to render the phase one page.
                         req.session.render = 'phaseone';
+                    }
+
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.json({
+                            ok: true
+                        });
+                        return;
+                    } else {
                         res.redirect('/');
                     }
                 });
@@ -284,7 +317,9 @@
         app.post('/logout', parsers.json, parsers.urlencoded, function(req, res) {
             //  Un-authenticate the user and send ack status.
             req.logout();
-            res.sendStatus('200');
+            res.json({
+                ok: true
+            });
         });
 
 
@@ -296,12 +331,81 @@
          *
          */
         options.loggedIn = function(req, res, next) {
-            if (req.isAuthenticated() ||
-                TDS.cfg('boot.use_login') === false) {
+            var uri;
+
+            if (req.isAuthenticated()) {
                 return next();
             }
 
-            res.redirect('/');
+            //  If the application wanted an initial login page redirect to home
+            //  and let that page show so they can log in.
+            uri = TDS.cfg('tds.auth.uri') ||
+                (TDS.cfg('boot.use_login') ? '/' : '/login');
+
+            res.redirect(uri);
+        };
+
+        /**
+         *
+         */
+        options.localDev = function(req, res, next) {
+            var i,
+                len,
+                nodeIPs,
+                reqIP;
+
+            //  If the request is made from the local host we can assume that's
+            //  a developer and let it pass without typical authentication.
+            if (TDS.getNodeEnv() === 'development') {
+                nodeIPs = TDS.getNodeIPs();
+                len = nodeIPs.length;
+                reqIP = req.ip;
+
+                for (i = 0; i < len; i++) {
+                    if (ip.isEqual(nodeIPs[i], reqIP)) {
+                        return next();
+                    }
+                }
+            }
+
+            res.status(403);        //  forbidden
+            res.send('{ok: false}');
+        };
+
+        /**
+         *
+         */
+        options.loggedInOrLocalDev = function(req, res, next) {
+            var uri,
+                i,
+                len,
+                nodeIPs,
+                reqIP;
+
+            if (req.isAuthenticated()) {
+                return next();
+            }
+
+            //  If the request is made from the local host we can assume that's
+            //  a developer and let it pass without typical authentication.
+            if (TDS.getNodeEnv() === 'development') {
+                nodeIPs = TDS.getNodeIPs();
+                len = nodeIPs.length;
+                reqIP = req.ip;
+
+                for (i = 0; i < len; i++) {
+                    if (ip.isEqual(nodeIPs[i], reqIP)) {
+                        return next();
+                    }
+                }
+            }
+
+            //  If the application wanted an initial login page redirect to home
+            //  and let that page show so they can log in.
+            uri = TDS.cfg('tds.auth.uri') ||
+                (TDS.cfg('boot.use_login') ? '/' : '/login');
+
+            res.redirect(uri);
         };
     };
 

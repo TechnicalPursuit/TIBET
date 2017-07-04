@@ -71,102 +71,6 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Type.defineMethod('tagAttachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagAttachComplete
-     * @summary Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem,
-
-        sigName;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    //  Grab a wrapped version of the element.
-    tpElem = TP.wrap(elem);
-
-    //  If it has an 'activateOn' attribute, then the author wants us to
-    //  activate when that signal is fired.
-    if (tpElem.hasAttribute('activateOn')) {
-
-        //  Get the signal name and normalize it.
-        sigName = tpElem.getAttribute('activateOn');
-        sigName = TP.expandSignalName(sigName);
-
-        //  If 'TP.sig.AttachComplete', then 'just do it'
-        if (sigName === 'TP.sig.AttachComplete') {
-            tpElem.activate();
-        } else {
-            //  Otherwise, observe the signal and install a local method that
-            //  will activate us when the signal is handled.
-            tpElem.observe(tpElem, sigName);
-            tpElem.defineMethod(
-                    TP.escapeTypeName(sigName),
-                    function(aSignal) {
-                        this.activate();
-                    });
-        }
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Type.defineMethod('tagDetachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagDetachComplete
-     * @summary Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem,
-
-        sigName;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  If it has an 'activateOn' attribute, then the author wanted us to
-    //  activate when that signal is fired and we set up a handler in the
-    //  'tagAttachComplete' method above. We need to ignore that signal now.
-    if (tpElem.hasAttribute('activateOn')) {
-
-        //  Get the signal name and normalize it.
-        sigName = tpElem.getAttribute('activateOn');
-        sigName = TP.expandSignalName(sigName);
-
-        //  Ignore any 'activateOn' signal that we were set up to observe.
-        tpElem.ignore(tpElem, sigName);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tibet.service.Type.defineMethod('tagDetachData',
 function(aRequest) {
 
@@ -182,7 +86,9 @@ function(aRequest) {
         resultHref,
         resultURI,
 
-        resource;
+        resource,
+
+        tpElem;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -212,8 +118,14 @@ function(aRequest) {
 
     resultURI.unregister();
 
+    tpElem = TP.wrap(elem);
+
     //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
-    TP.wrap(elem).signal('TP.sig.UIDataDestruct');
+    tpElem.signal('TP.sig.UIDataDestruct');
+
+    //  Check and dispatch a signal from our attributes if one exists for this
+    //  signal.
+    tpElem.dispatchResponderSignalFromAttr('UIDataDestruct', null);
 
     return;
 });
@@ -245,7 +157,7 @@ function() {
 
         method,
 
-        thisArg,
+        thisref,
 
         resp,
 
@@ -368,7 +280,7 @@ function() {
     //  will use to package the data.
     request.atPut('requestType', TP.WRAP);
 
-    thisArg = this;
+    thisref = this;
 
     //  Add a 'local' method on the individual object that defines a handler for
     //  job completion
@@ -384,7 +296,11 @@ function() {
                 newResource;
 
             //  Signal the fact that we've done the work.
-            thisArg.signal('TP.sig.UIDataReceived');
+            thisref.signal('TP.sig.UIDataReceived');
+
+            //  Check and dispatch a signal from our attributes if one exists
+            //  for this signal.
+            thisref.dispatchResponderSignalFromAttr('UIDataReceived', null);
 
             //  We only do this if the result URI is real - some services might
             //  be 'send only' and not define a result URI.
@@ -400,7 +316,7 @@ function() {
                     //  result type.
                     mimeType = TP.ietf.Mime.guessMIMEType(result, uri);
 
-                    resultType = thisArg.getResultType(mimeType);
+                    resultType = thisref.getResultType(mimeType);
 
                     //  If a result type couldn't be determined, then just use
                     //  String.
@@ -419,16 +335,15 @@ function() {
                         return this.raise('TP.sig.InvalidValue');
                     }
 
-                    newResource = resultType.construct();
-
                     //  If the new resource result is a content object of some
-                    //  sort (highly likely) then it should respond to 'setData'
-                    //  so set its data to the resource String (the content
-                    //  object type will convert it to the proper type).
-                    if (TP.canInvoke(newResource, 'setData')) {
-                        newResource.setData(result);
-                    } else {
-                        newResource = result;
+                    //  sort (highly likely) then we should initialize it with
+                    //  both the content String and the URI that it should be
+                    //  associated with. The content object type will convert it
+                    //  from a String to the proper type.
+                    if (TP.isSubtypeOf(resultType, TP.core.Content)) {
+                        newResource = resultType.construct(result, resultURI);
+                    } else if (resultType === String) {
+                        newResource = TP.str(result);
                     }
 
                 } else if (TP.isNode(result)) {
@@ -442,21 +357,35 @@ function() {
 
                 //  NB: We assume 'async' of false here.
                 if (TP.notEmpty(resultURI.getResource().get('result'))) {
-                    thisArg.signal('TP.sig.UIDataDestruct');
+
+                    thisref.signal('TP.sig.UIDataDestruct');
+
+                    //  Check and dispatch a signal from our attributes if one
+                    //  exists for this signal.
+                    thisref.dispatchResponderSignalFromAttr(
+                                                'UIDataDestruct', null);
                 }
 
                 //  Set the resource to the new resource (causing any observers
                 //  of the URI to get notified of a change) and signal
                 //  'TP.sig.UIDataConstruct'.
-                resultURI.setResource(newResource);
-                thisArg.signal('TP.sig.UIDataConstruct');
+                resultURI.setResource(
+                    newResource,
+                    TP.hc('observeResource', true, 'signalChange', true));
+
+                thisref.signal('TP.sig.UIDataConstruct');
+
+                //  Check and dispatch a signal from our attributes if one
+                //  exists for this signal.
+                thisref.dispatchResponderSignalFromAttr(
+                                                'UIDataConstruct', null);
 
                 //  Dispatch 'TP.sig.DOMReady' for consistency with other
                 //  elements that dispatch this when their 'dynamic content' is
                 //  resolved. Note that we use 'dispatch()' here because this is
                 //  a DOM signal and we want all of the characteristics of a DOM
                 //  signal.
-                thisArg.dispatch('TP.sig.DOMReady');
+                thisref.dispatch('TP.sig.DOMReady');
             }
         });
 
@@ -480,7 +409,11 @@ function() {
                 errorRecord = null;
             }
 
-            thisArg.signal('TP.sig.UIDataFailed', errorRecord);
+            thisref.signal('TP.sig.UIDataFailed', errorRecord);
+
+            //  Check and dispatch a signal from our attributes if one exists
+            //  for this signal.
+            thisref.dispatchResponderSignalFromAttr('UIDataFailed', null);
         });
 
     request.defineHandler('RequestCompleted',
@@ -496,8 +429,8 @@ function() {
                 statusCode = uri.getCommStatusCode();
                 statusText = uri.getCommStatusText();
 
-                thisArg.setAttribute('statuscode', statusCode);
-                thisArg.setAttribute('statustext', statusText);
+                thisref.setAttribute('statuscode', statusCode);
+                thisref.setAttribute('statustext', statusText);
             }
         });
 
@@ -506,6 +439,10 @@ function() {
         //  TODO: Log a warning?
         return this;
     }
+
+    //  Check and dispatch a signal from our attributes if one exists for this
+    //  signal.
+    this.dispatchResponderSignalFromAttr('UIDataWillSend', null);
 
     //  Do the work.
 
@@ -589,16 +526,24 @@ function() {
 
             break;
         case TP.HTTP_DELETE:
-            uri.nuke(request);
+            uri.delete(request);
 
             break;
         default:
             this.signal('TP.sig.UIDataFailed');
+
+            //  Check and dispatch a signal from our attributes if one exists
+            //  for this signal.
+            this.dispatchResponderSignalFromAttr('UIDataFailed', null);
             break;
     }
 
     //  Signal the fact that we're doing the work.
     this.signal('TP.sig.UIDataSent');
+
+    //  Check and dispatch a signal from our attributes if one exists
+    //  for this signal.
+    this.dispatchResponderSignalFromAttr('UIDataSent', null);
 
     return this;
 });
@@ -645,6 +590,11 @@ function(mimeType) {
                 break;
 
             case TP.XML_ENCODED:
+            case TP.XHTML_ENCODED:
+            case TP.XSLT_ENCODED:
+            case TP.ATOM_ENCODED:
+            case TP.XMLRPC_ENCODED:
+            case TP.SOAP_ENCODED:
 
                 tibetType = TP.core.XMLContent;
 

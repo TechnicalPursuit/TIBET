@@ -73,7 +73,7 @@ function(aDataSource, transformParams) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('compile',
-function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) {
+function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, annotateMarkup) {
 
     /**
      * @method compile
@@ -81,11 +81,11 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
      *     the key provided. If no template name is provided all cache and
      *     registration flags are effectively ignored.
      * @param {String} templateName The template's lookup ID.
-     * @param {Boolean} ignoreCache If true, this method ignores the template
-     *     cache and will compile and register the template, even if it has done
-     *     so before. The default is false.
-     * @param {Boolean} shouldRegister If false, this method does not register
-     *     the template in the template cache. The default is true.
+     * @param {Boolean} [ignoreCache=false] If true, this method ignores the
+     *     template cache and will compile and register the template, even if it
+     *     has done so before.
+     * @param {Boolean} [shouldRegister=true] If false, this method does not
+     *     register the template in the template cache.
      * @param {Array} sourceVarNames An Array of variable names that have a '$'
      *     as their first character, but that we want the templating engine to
      *     treat as coming from the data source instead of the params (the
@@ -93,15 +93,30 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
      *     from the 'params' argument instead of the source).
      * @param {Boolean} [echoFormat=true] Whether or not to 'echo' the format
      *     out to the result if no source object can be computed for it.
+     * @param {Boolean} [annotateMarkup=true] Whether or not to annotate markup
+     *     output with embedded XHTML 'span' elements that wrap ACP expressions
+     *     and contain the ACP expression in a 'tibet:template_expr' attribute
+     *     on that element.
      * @returns {Function} The compiled template Function.
      */
 
     var str,
         regName,
         uri,
+
         shouldEcho,
+
         func,
-        tokens;
+
+        tokens,
+
+        newTokens,
+        len,
+        i,
+
+        tokenType,
+        tokenText,
+        lastTokenText;
 
     //  Force a string representation. This ensures certain Mozilla bugs
     //  don't get triggered by referencing 'this' alone.
@@ -155,6 +170,59 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
                         TP.sc('Tokenization failed at: ', e.line || 'unknown',
                                 ' in template named: ', templateName,
                                 ' with source: ' + str)));
+        }
+
+        //  If the invoker hasn't explicitly set annotateMarkup to false, and
+        //  the result output contains markup, then annotate it with XHTML span
+        //  elements.
+        if (TP.notFalse(annotateMarkup) &&
+            TP.regex.CONTAINS_ELEM_MARKUP.test(str)) {
+
+            //  Allocate our Array of 'new tokens'.
+            newTokens = TP.ac();
+
+            len = tokens.getSize();
+            for (i = 0; i < len; i++) {
+
+                //  Grab the token type and test it to see if it's a 'value' or
+                //  'control' token.
+                tokenType = tokens.at(i).at(0);
+                tokenText = tokens.at(i).at(1);
+
+                if (TP.regex.ACP_VALUE_TOKEN.test(tokenType) ||
+                    TP.regex.ACP_CONTROL_TOKEN.test(tokenType)) {
+
+                    //  Grab the token text for the 'last' token.
+                    lastTokenText = tokens.at(i - 1).at(1);
+
+                    //  If the last token's text contains only the start of an
+                    //  XML attribute or element, then we don't want to embed
+                    //  markup inside of that - just push the token and move on.
+                    if (TP.regex.CONTAINS_ONLY_ATTR_START.test(lastTokenText) ||
+                        TP.regex.CONTAINS_ONLY_ELEM_START.test(lastTokenText)) {
+                        newTokens.push(tokens.at(i));
+                    } else {
+
+                        //  Otherwise, push 2 additional 'text' tokens 'around'
+                        //  the original token that contain a text blob of the
+                        //  starting and ending markup.
+                        newTokens.push(
+                            TP.ac('text',
+                                    '<span' +
+                                    ' tibet:template_expr="' + tokenText + '"' +
+                                    '>'),
+                                    tokens.at(i),
+                                    TP.ac('text', '</span>'));
+                    }
+                } else {
+
+                    //  Otherwise, just push the token and move on.
+                    newTokens.push(tokens.at(i));
+                }
+            }
+
+            //  Make the tokens that we'll use the 'new tokens'.
+            tokens = newTokens;
         }
 
         //  Compile the tokenized template into a Function object
@@ -220,7 +288,10 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         scopedParams,
         scopedSourceNames;
 
-    srcVars = TP.ifInvalid(sourceVarNames, TP.ac());
+    srcVars = sourceVarNames;
+    if (TP.notValid(srcVars)) {
+        srcVars = TP.ac();
+    }
 
     scopedParams = TP.ac();
     scopedSourceNames = TP.ac();
@@ -387,7 +458,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             }
 
             return commands[command].apply(this, args);
-        },
+        }.bind(this),
 
         loop: function(input, joinChar) {
             //  Loops over the stream of tokens represented by input, invokes
@@ -969,7 +1040,8 @@ function(aDataSource, transformParams) {
                         false,
                         true,
                         transformParams.at('sourcevars'),
-                        transformParams.at('shouldEcho'));
+                        transformParams.at('shouldEcho'),
+                        transformParams.at('annotateMarkup'));
         } else {
             template = template.compile(null, false, true);
         }
@@ -996,34 +1068,33 @@ function(aDataSource, transformParams) {
         }
     } else {
 
-        urn = str;
-        url = TP.uc(urn);
+        //  See if the format is a URI string. If so, see if there's a real URL
+        //  that we can use to do the formatting.
 
-        //  Try to build a URN if we didn't receive one. Set a flag that
-        //  says that we've built it so if it fails in lookup we won't error
-        //  out, but we'll fall through to 'callBestMethod'.
-        if (!TP.isURI(url)) {
-            urnBuilt = true;
-            urn = TP.TIBET_URN_PREFIX + str;
-            url = TP.uc(urn);
+        //  Note that this code is structured to purposely avoid creating a URI
+        //  via TP.uc for testing purposes. This avoids filling up the URI map
+        //  with URIs that don't really have resources.
+
+        urn = TP.uriExpandPath(str);
+        if (!TP.isURIString(urn)) {
+            urn = TP.TIBET_URN_PREFIX + urn;
         }
 
-        if (TP.isURI(url)) {
-
+        //  If we have a URI string and there's already a registered instance of
+        //  a URI matching that, then go ahead and use it.
+        if (TP.isURIString(urn) && TP.core.URI.hasInstance(urn)) {
+            url = TP.core.URI.getInstanceById(urn);
             //  NB: We assume 'async' of false here.
             if (TP.isValid(template = url.getResource().get('result'))) {
                 return template.transform(aDataSource, transformParams);
             } else if (TP.notTrue(urnBuilt)) {
+                //  If we didn't "augment" in an attempt to create a valid URI
+                //  then the one provided didn't resolve/find a resource.
                 TP.ifError() ?
                     TP.error('Unable to locate formatting template URN: ' +
                                     urn) : 0;
                 return;
             }
-        } else if (TP.notTrue(urnBuilt)) {
-            TP.ifError() ?
-                TP.error('Invalid formatting template URN: ' +
-                                urn) : 0;
-            return;
         }
     }
 
@@ -1219,7 +1290,6 @@ function(aDataSource, transformParams) {
 //  pegjs --export-var 'TP.$templateParser' <tibet_dir>/src/tibet/grammars/template_parser.pegjs
 
 /* eslint-disable */
-/* jshint ignore:start */
 
 TP.$templateParser = (function() {
   "use strict";
@@ -3100,7 +3170,6 @@ TP.$templateParser = (function() {
 })();
 
 /* eslint-enable */
-/* jshint ignore:end */
 
 //  ------------------------------------------------------------------------
 //  end

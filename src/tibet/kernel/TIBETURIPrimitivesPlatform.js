@@ -27,8 +27,6 @@ Platform-specific functionality related to file access operations.
  *     Webkit-based browsers don't, in general, allow file-system access.
  */
 
-/* JSHint checking */
-
 /* global ActiveXObject:false,
           Components:false,
           netscape:false
@@ -411,7 +409,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -474,7 +472,7 @@ TP.hc(
                 try {
                     httpObj = TP.httpConstruct(path);
                     if (TP.canInvoke(request, 'atPut')) {
-                        request.atPut('xhr', httpObj);
+                        request.atPut('commObj', httpObj);
                     }
 
                     httpObj.open(TP.HTTP_GET, path, false);
@@ -598,7 +596,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -677,7 +675,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -730,7 +728,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -854,7 +852,7 @@ TP.hc(
             try {
                 httpObj = TP.httpConstruct(path);
                 if (TP.canInvoke(request, 'atPut')) {
-                    request.atPut('xhr', httpObj);
+                    request.atPut('commObj', httpObj);
                 }
 
                 httpObj.open(TP.HTTP_GET, path, false);
@@ -886,7 +884,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -940,7 +938,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -1057,7 +1055,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -1099,7 +1097,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -1177,7 +1175,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -1219,7 +1217,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -1413,8 +1411,6 @@ TP.hc(
 
                     body = TP.ifKeyInvalid(request, 'body', '');
 
-                    /* jshint bitwise:false */
-
                     if (mode === TP.WRITE) {
                         flags = TP.MOZ_FILE_CREATE |
                                 TP.MOZ_FILE_TRUNCATE |
@@ -1479,8 +1475,6 @@ TP.hc(
                 }
 
                 retVal = false;
-
-                /* jshint bitwise:true */
 
                 return retVal;
             });

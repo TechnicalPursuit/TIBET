@@ -247,7 +247,7 @@ function(aRequest) {
     /**
      * @method finalizeRequest
      * @summary Perform any final updates or processing on the request to make
-     *     sure it is ready to send to TP.httpCall() for processing. For the
+     *     sure it is ready to send to TP.httpCall for processing. For the
      *     Amazon SimpleDB service, this is the key routine that computes an
      *     authentication 'signature' using the 'uriparams' in the request, plus
      *     some additional parameters added here.

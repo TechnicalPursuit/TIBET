@@ -14,153 +14,211 @@
     'use strict';
 
     /**
-     * Configures the winston and morgan loggers to cooperate and log both to
-     * the console and to a configurable log file (normally tds-{env} in the
-     * project's log directory). The resulting logger instance is added to the
-     * TDS variable for use by all remaining plugins.
+     * Configures the express-winston logger to log both to the console and to a
+     * configurable log file (normally tds-{env} in the project's log
+     * directory). The resulting logger instance is added to the TDS variable
+     * for use by all remaining plugins.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
-            config,
-            level,
             logcolor,           // Should console log be colorized.
             logcount,           // The app log file count.
             logfile,            // The app log file.
-            logformat,          // The morgan format to log with.
+            logtheme,           // The log colorizing theme.
             logger,             // The app logger instance.
+            meta,               // Reusable logger metadata.
             logsize,            // The app log file size per file.
-            morgan,             // Express request logger.
-            TDS,
-            winston;            // Appender-supported logging.
-
-        //  ---
-        //  Config Check
-        //  ---
+            TDS,                // The TIBET Data Server instance.
+            fileTransport,      // Logger-to-file transport.
+            consoleTransport,   // Logger-to-console transport.
+            watchurl,           // Ignore logging calls to watch url.
+            winston,            // Appender-supported logging.
+            expressWinston;     // Request logging support.
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         TDS = app.TDS;
 
-        //  NOTE this plugin _is_ the logger so our only option here is to
-        //  use the console for output meaning we must level check ourselves.
-        level = TDS.cfg('tds.log.level') || 'info';
-        if (level === 'debug') {
-            console.log('debug: Integrating TDS logger.');
-        }
+        //  NOTE this plugin _is_ the logger so our best option here is to
+        //  use the prelog function to queue logging output.
+        meta = {
+            type: 'plugin',
+            name: 'logger'
+        };
+        TDS.prelog('system', 'loading middleware', meta);
 
         //  ---
         //  Requires
         //  ---
 
-        morgan = require('morgan');
         winston = require('winston');
+        expressWinston = require('express-winston');
 
         //  ---
         //  Variables
         //  ---
 
         winston.emitErrs = true;
-        winston.level = TDS.cfg('tds.log.level') || 'info';
+
+        winston.level = (TDS.cfg('tds.log.level') || 'info').toLowerCase();
 
         logcolor = TDS.cfg('tds.log.color');
         if (logcolor === undefined || logcolor === null) {
             logcolor = true;
         }
-        logcount = TDS.cfg('tds.log.count') || 5;
-        logformat = TDS.cfg('tds.log.format') || 'dev';
-        logsize = TDS.cfg('tds.log.size') || 5242880;
 
-        //  If colors are turned on then we need to collect our values from
-        //  config and get ready to update the logger instance color values.
-        if (logcolor) {
-            config = TDS.cfg('tds.color');
-            Object.keys(config).forEach(function(key) {
-                config[key.split('.')[2]] = config[key];
-                delete config[key];
-            });
-            winston.config.addColors(config);
+        if (!logcolor) {
+            TDS.colorize = function(aString) {
+                return aString;
+            };
         }
 
+        logcount = TDS.cfg('tds.log.count') || 5;
+        logsize = TDS.cfg('tds.log.size') || 5242880;
+        logtheme = TDS.cfg('tds.color.theme') || 'default';
+
         //  Log file names can include the environment if desired.
-        //  NOTE the escaping here is due to handlebars processing during
+        //  NOTE any escaping here is due to handlebars processing during
         //  the `tibet clone` command. They disappear in the final output.
         /* eslint-disable no-useless-escape */
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
-            './log/tds-\{{env}}.log';
+            './logs/tds-\{{env}}.log';
         if (/\{{env}}/.test(logfile)) {
             logfile = logfile.replace(/\{{env}}/g, options.env);
         }
         /* eslint-enable no-useless-escape */
 
         //  ---
-        //  Initialization
+        //  Logger Plugins
         //  ---
 
-        logger = new winston.Logger({
-            transports: [
-                new winston.transports.File({
-                    level: winston.level,
-                    filename: logfile,
-                    maxsize: logsize,
-                    maxFiles: logcount,
-                    handleExceptions: true,
-                    json: true,         //  json is easier to parse with tools
-                    colorize: false     //  always false into the log file.
-                }),
-                new winston.transports.Console({
-                    level: winston.level,
-                    colorize: logcolor,
-                    handleExceptions: true,
-                    json: false,    //  json is harder to read in terminal view.
-                    eol: ' '   // Remove EOL newlines. Not '' or won't be used.
-                })
-            ],
-            exitOnError: false
-        });
+        watchurl = TDS.getcfg('tds.watch.uri');
 
-        //  Make sure we have a default function in place if no other is set.
-        TDS.logger_filter = TDS.logger_filter || function(req, res) {
-            var url;
-
-            url = TDS.getcfg('tds.watch.uri');
-
+        /**
+         */
+        TDS.log_filter = TDS.log_filter || function(req, res) {
             // Don't log repeated calls to the watcher URL.
-            if (req.path.indexOf(url) !== -1) {
+            if (req.path.indexOf(watchurl) !== -1) {
                 return true;
             }
         };
 
-        //  Additional trimming here to help support blending morgan and winston
-        //  and not ending up with too many newlines in the output stream.
-        logger.stream = {
-            write: function(message, encoding) {
-                var msg;
+        //  ---
+        //  Initialization
+        //  ---
 
-                msg = message;
-                while (msg.charAt(msg.length - 1) === '\n') {
-                    msg = msg.slice(0, -1);
-                }
-                logger[winston.level](msg);
-            }
+        fileTransport = new winston.transports.File({
+            level: winston.level,
+            filename: logfile,
+            maxsize: logsize,
+            maxFiles: logcount,
+            meta: true,
+            json: true,         //  json is easier to parse with tools
+            colorize: false     //  always false in the log file.
+        });
+
+        //  NOTE we use a TDS-specific transport for the console output
+        //  to help avoid issues with poor handling of newlines etc.
+        consoleTransport = new TDS.log_transport({
+            level: winston.level,
+            stderrLevels: ['error'],
+            debugStdout: false,
+            meta: true,
+            colorize: logcolor, //  Don't use built-in...we format this.
+            json: false,    //  json is harder to read in terminal view.
+            eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
+            formatter: TDS.log_formatter
+        });
+
+        logger = new winston.Logger({
+            //  NOTE winston's level #'s are inverted from TIBET's.
+            levels: {
+                trace: 6,
+                debug: 5,
+                info: 4,
+                warn: 3,
+                error: 2,
+                fatal: 1,
+                system: 0
+            },
+            colors: {
+                trace: TDS.getcfg('theme.' + logtheme + '.trace'),
+                debug: TDS.getcfg('theme.' + logtheme + '.debug'),
+                info: TDS.getcfg('theme.' + logtheme + '.info'),
+                warn: TDS.getcfg('theme.' + logtheme + '.warn'),
+                error: TDS.getcfg('theme.' + logtheme + '.error'),
+                fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
+                system: TDS.getcfg('theme.' + logtheme + '.system')
+            },
+            transports: [fileTransport, consoleTransport],
+            exitOnError: false
+        });
+
+        //  Hold a reference to the root logger since we'll need it from inside
+        //  any logger objects created for routes/tasks etc.
+        TDS.logger = logger;
+
+        //  ---
+
+        //  NOTE we assign a flush option to the logger to give us a way to
+        //  force flushing the console as needed.
+        logger.flush = consoleTransport.flush.bind(consoleTransport);
+
+
+        /**
+         * Constructs an object with proper handlers for the various logging
+         * methods which ensure the data block provided is used as metadata.
+         * @param {Object} data An object containing specific metadata.
+         * @return {Object} An object with trace, debug, etc. functions.
+         */
+        logger.getContextualLogger = function(data) {
+            var obj;
+
+            obj = {};
+
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'system'
+            ].forEach(function(key) {
+
+                obj[key] = function(msg, metadata) {
+                    switch (arguments.length) {
+                        case 1:
+                            TDS.logger[key](msg, data);
+                            break;
+                        case 2:
+                            TDS.logger[key](msg, metadata || data);
+                            break;
+                        default:
+                            TDS.logger[key].apply(TDS.logger, arguments);
+                            break;
+                    }
+                };
+            });
+
+            obj.getContextualLogger = TDS.logger.getContextualLogger;
+
+            return obj;
         };
 
         //  ---
-        //  Routes
-        //  ---
 
-        //  Merge in morgan request logger and direct it to the winston stream.
-        app.use(morgan(logformat, {
-            skip: TDS.logger_filter,
-            stream: logger.stream
+        app.use(expressWinston.logger({
+            winstonInstance: logger,
+            level: winston.level,
+            expressFormat: false,
+            colorize: logcolor,
+            json: false,
+            skip: TDS.log_filter
         }));
 
         //  ---
-        //  Sharing
+        //  Flush
+        //  ---
+
+        TDS.log_flush(logger);
+
+        //  ---
+        //  Share
         //  ---
 
         options.logger = logger;

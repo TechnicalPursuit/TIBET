@@ -1,4 +1,4 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 
 sherpa|inspectoritem {
 
@@ -8,26 +8,11 @@ sherpa|inspectoritem {
     position: relative;
 
     overflow: hidden;
-}
 
-sherpa|inspectoritem:last-child {
+    min-width: 250px;
 
-    flex: 1;
-}
-
-sherpa|inspectoritem.flex-1 {
-
-    flex: 1;
-}
-
-sherpa|inspectoritem.flex-2 {
-
-    flex: 2;
-}
-
-sherpa|inspectoritem.flex-3 {
-
-    flex: 3;
+    /* CSS custom property */
+    --sherpa-inspector-width: 1;
 }
 
 sherpa|inspectoritem > div {
@@ -46,18 +31,47 @@ sherpa|inspectoritem > div {
     border-radius: 3px;
 }
 
+sherpa|inspectoritem > div.scrollable {
+
+    overflow: auto;
+}
+
+sherpa|inspectoritem > div.wrapped {
+
+    white-space: pre-wrap;
+}
+
+sherpa|inspectoritem > div.noselect {
+
+    user-select: none;
+}
+
+sherpa|inspectoritem > div.readonly {
+
+    border: dashed 1px #aaa;
+}
+
 sherpa|inspectoritem > div > textarea {
 
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 90%;
 
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 
     border: none;
     border-radius: initial;
 
     width: 100%;
     height: 100%;
+}
+
+sherpa|inspectoritem[contenttype="html:div"] {
+}
+
+sherpa|inspectoritem[class~="doublewide"] {
+
+    /* CSS custom property */
+    --sherpa-inspector-width: 2;
 }
 

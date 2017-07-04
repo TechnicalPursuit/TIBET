@@ -93,9 +93,7 @@ function(aString) {
      * @returns {String} A properly quoted JSON string.
      */
 
-    var isBooleanToken,
-
-        lastNonSpaceToken,
+    var lastNonSpaceToken,
         nextNonSpaceToken,
         lastTokenNeedsQuote,
         nextTokenNeedsQuote,
@@ -114,12 +112,23 @@ function(aString) {
         len,
         i;
 
+    //  TODO: This is a bit cheesy - make TP.$tokenize() smarter or, better yet,
+    //  write a new routine to JSONize strings.
+
+    //  Temporarily delete the 'data' property from TP.boot.$uriSchemes so that
+    //  this call won't try to convert things like 'data:' (which may very well
+    //  be a property name) into a URI.
+    delete TP.boot.$uriSchemes.data;
+
     //  Tokenize the input string, supplying our own set of 'operators'.
     tokens = TP.$tokenize(
                     aString,
                     TP.ac('{', ':', '}', '.', ','),
                     true);  //  We specify 'tsh' (meaning that we want URI
                             //  parsing)
+
+    //  Restore the 'data' property.
+    TP.boot.$uriSchemes.data = 'data';
 
     str = '';
 
@@ -133,15 +142,6 @@ function(aString) {
     useGlobalContext = true;
 
     len = tokens.getSize();
-
-    isBooleanToken = function(aToken) {
-        if (aToken.name === 'keyword' &&
-            (aToken.value === 'true' || aToken.value === 'false')) {
-            return true;
-        }
-
-        return false;
-    };
 
     //  A function to find the last non-space token starting at an index
     lastNonSpaceToken = function(startIndex) {
@@ -170,9 +170,7 @@ function(aString) {
 
         lastToken = lastNonSpaceToken(startIndex);
 
-        if (lastToken.value === '}' ||
-            isBooleanToken(lastToken) ||
-            lastToken.name === 'number') {
+        if (lastToken.value === '}') {
             return false;
         }
 
@@ -184,9 +182,7 @@ function(aString) {
 
         nextToken = nextNonSpaceToken(startIndex);
 
-        if (nextToken.value === '{' ||
-            isBooleanToken(nextToken) ||
-            nextToken.name === 'number') {
+        if (nextToken.value === '{') {
             return false;
         }
 
@@ -208,9 +204,12 @@ function(aString) {
                     context = context[val];
                 } else {
                     //  If useGlobalContext is true and the value is a property
-                    //  on the global, then the context to it.
-                    if (useGlobalContext && self[val]) {
-                        context = self[val];
+                    //  *in the approved list of globals* (i.e. in
+                    //  TP.sys.$globals), then set the context to the value of
+                    //  that property on TP.global (which is the window/global
+                    //  object).
+                    if (useGlobalContext && TP.sys.$globals.hasKey(val)) {
+                        context = TP.global[val];
                     } else {
                         //  There was no context or value that resolved to a
                         //  context, so we trim the value and then unquote the
@@ -335,6 +334,11 @@ function(aString) {
                 break;
         }
     }
+
+    //  Change any *standalone* numeric or boolean double-quoted expression into
+    //  unquoted content (i.e. {"foo":"1"} becomes {"foo":1})
+    TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN.lastIndex = 0;
+    str = str.replace(TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN, '$1');
 
     //  Because JSON doesn't allow for escaped single quotes, we have to make
     //  sure to replace them all here.
@@ -622,7 +626,9 @@ function(anObject, aFilterName) {
     //  If the object has more than 1 key, then put it in another object with a
     //  single slot, 'value'. This makes it easier on the JSON<->XML conversion.
     if (TP.objectGetKeys(obj).getSize() > 1) {
-        obj = {value: obj};
+        obj = {
+            value: obj
+        };
     }
 
     //  Make sure that this is a Badgerfish convention-following String
@@ -763,7 +769,9 @@ function(anObject) {
                         //  POJO with '$' as the key and the value. This is what
                         //  allows us to conform to Badgerfish conventions.
                         if (key !== '$' && !TP.isMutable(value)) {
-                            return {$: value};
+                            return {
+                                $: value
+                            };
                         }
 
                         return value;
@@ -1371,6 +1379,7 @@ function(aNode) {
     }
 
     root = {};
+
     xmlNodeAsJSONObj(node, root);
 
     return root;
@@ -1391,36 +1400,62 @@ function(aString) {
      *     level) prefixes in the supplied String.
      */
 
-    var results;
+    var elemResults,
+        attrResults,
 
-    //  Extract all of the element or attribute prefixes from the supplied
-    //  String. Note that they will all contain a trailing colon (':').
-    TP.regex.ALL_ELEM_OR_ATTR_PREFIXES.lastIndex = 0;
-    results = TP.regex.ALL_ELEM_OR_ATTR_PREFIXES.match(aString);
+        allResults;
 
-    if (TP.isEmpty(results)) {
-        return TP.ac();
+    //  Extract all of the element prefixes from the supplied String. Note that
+    //  they will all contain a leading less than ('<') and a trailing colon
+    //  (':').
+    TP.regex.ALL_ELEM_PREFIXES.lastIndex = 0;
+    elemResults = TP.regex.ALL_ELEM_PREFIXES.match(aString);
+
+    if (TP.isArray(elemResults)) {
+        //  We're only interested in one occurrence per prefix.
+        elemResults.unique();
+
+        //  Strip off the leading less than and trailing colon from each one.
+        elemResults = elemResults.collect(
+                        function(aPrefix) {
+                            //  Slice off the '<' and ':'
+                            return aPrefix.slice(1, -1);
+                        });
+    } else {
+        elemResults = TP.ac();
     }
 
-    //  We're only interested in one occurrence per prefix.
-    results.unique();
+    //  Extract all of the attribute prefixes from the supplied String. Note
+    //  that they will all contain a colon (':') followed by the attribute name
+    //  and an equals ('=') that we don't care about.
+    TP.regex.ALL_ATTR_PREFIXES.lastIndex = 0;
+    attrResults = TP.regex.ALL_ATTR_PREFIXES.match(aString);
 
-    //  Strip off the trailing colon from each one.
-    results = results.collect(
-                    function(aPrefix) {
-                        //  Slice off the ':'
-                        return aPrefix.slice(0, -1);
-                    });
+    if (TP.isArray(attrResults)) {
+        //  We're only interested in one occurrence per prefix.
+        attrResults.unique();
+
+        //  Strip off the leading less than and trailing colon from each one.
+        attrResults = attrResults.collect(
+                        function(aPrefix) {
+                            //  Slice off from the index ':'
+                            return aPrefix.slice(0, aPrefix.indexOf(':'));
+                        });
+    } else {
+        attrResults = TP.ac();
+    }
+
+    allResults = elemResults.concat(attrResults);
 
     //  Filter the results to only those that do *not* have a definition in our
     //  common namespace URI dictionary.
-    results = results.filter(
+    allResults = allResults.filter(
                     function(aPrefix) {
                         return TP.notValid(TP.w3.Xmlns.getPrefixURI(aPrefix)) &&
                                 TP.notValid(TP.boot.$uriSchemes[aPrefix]);
                     });
 
-    return results.unique();
+    return allResults.unique();
 });
 
 //  ------------------------------------------------------------------------
@@ -1500,7 +1535,7 @@ function(aString) {
 
 TP.definePrimitive('jsonpCall',
 function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
-shouldRaise) {
+         shouldRaise) {
 
     /**
      * @method jsonpCall
@@ -1618,7 +1653,7 @@ shouldRaise) {
     }
 
     //  Set a slot on the contextWin window object with the callbackID.
-    //  This slot will be removed either inside of this call, or by a fork()
+    //  This slot will be removed either inside of this call, or by a fork
     //  later if the supplied callback Function has an error.
     contextWin[callbackID] =
         function(resultObj) {
@@ -1669,16 +1704,14 @@ shouldRaise) {
                 //  after 1 second after this function is called (which is
                 //  called after the callback function whose reference is
                 //  embedded in the JSON).
-                /* eslint-disable no-wrap-func,no-extra-parens */
-                (function() {
+                setTimeout(function() {
 
                     if (TP.isCallable(contextWin[callbackID])) {
                         //  Note that we just set this to 'null' to avoid IE
                         //  problems
                         contextWin[callbackID] = null;
                     }
-                }).fork(TP.sys.cfg('jsonp.delay'));
-                /* eslint-enable no-wrap-func,no-extra-parens */
+                }, TP.sys.cfg('jsonp.delay'));
             });
 
     //  adding the elem to the 'head' will start the loading process

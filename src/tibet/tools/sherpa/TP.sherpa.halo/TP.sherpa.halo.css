@@ -1,41 +1,48 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|halo {
 
-	display: block;
-	position: absolute;
+    display: block;
+    position: absolute;
 
-	top: 200px;
-	left: 200px;
+    top: 200px;
+    left: 200px;
 
-    min-height: 1em;
+    min-height: 15px;
+    min-width: 50px;
 
-	/* This should match TIBET's HALO_TIER constant */
-	z-index: 10000;
+    /* This should match TIBET's HALO_TIER constant */
+    z-index: 10000;
 
-    border: dashed 1px #666;
-    border-radius: 5px;
+    outline: dashed 1px #666;
 
     /* Turn off pointer events so that elements *under* the halo can receive
         events */
     pointer-events: none;
 
-    box-shadow: 3px 3px 3px #AAA;
+    box-shadow: 3px 3px 3px #aaa;
 }
 
 sherpa|halo:not([pclass|hidden]) {
 
-	width: 100px;
-	height: 100px;
+    width: 100px;
+    height: 100px;
+}
+
+/* In effect when the halo is focused on a target that is below the minimum size
+   as defined in the main sherpa|halo rule above */
+sherpa|halo[size="belowMinimum"] {
+
+    background: repeating-linear-gradient(142deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 10px, rgba(216, 216, 216, 0.75) 10px, rgba(216, 216, 216, 0.75) 15px);
 }
 
 sherpa|halo > div {
 
-	position: absolute;
+    position: absolute;
 
-	width: 10px;
-	height: 10px;
+    width: 10px;
+    height: 10px;
 }
 
 .haloCorner {
@@ -43,16 +50,16 @@ sherpa|halo > div {
     border: solid 1px black;
     border-radius: 0.7em;
 
-    background-color: #ACD;
+    background-color: #acd;
 
-    transition: opacity .25s ease-out;
+    transition: opacity 0.25s ease-out;
 
     pointer-events: auto;
 }
 
 .haloCorner:hover {
 
-    opacity: 1.0;
+    opacity: 1;
 }
 
 /* TP.NORTHWEST */
@@ -93,8 +100,8 @@ sherpa|halo > div {
 /* TP.SOUTHWEST */
 #haloCorner-Southwest {
 
-	bottom: -7px;
-	left: -7px;
+    bottom: -7px;
+    left: -7px;
 }
 
 /* TP.SOUTH */
@@ -107,8 +114,8 @@ sherpa|halo > div {
 /* TP.SOUTHEAST */
 #haloCorner-Southeast {
 
-	bottom: -7px;
-	right: -7px;
+    bottom: -7px;
+    right: -7px;
 }
 
 /* Halo breadcrumb */

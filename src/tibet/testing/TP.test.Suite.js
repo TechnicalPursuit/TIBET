@@ -20,6 +20,12 @@ TP.test.Root.defineSubtype('Suite');
 //  ------------------------------------------------------------------------
 
 /**
+ * The root request that started the execution of the test harness.
+ * @type {TP.sig.Request}
+ */
+TP.test.Suite.defineAttribute('$rootRequest');
+
+/**
  * The container for all defined test suites, keyed by target ID. Methods which
  * access this property refer to TP.test.Suite since it is not inherited by any
  * subtypes, it's local to the TP.test.Suite type.
@@ -33,6 +39,9 @@ TP.test.Suite.defineAttribute('suites', TP.ac());
  * @type {TP.log.TestAppender}
  */
 TP.test.Suite.Type.defineAttribute('logAppender');
+
+TP.test.Suite.Type.defineAttribute('appAppenders');
+TP.test.Suite.Type.defineAttribute('tpAppenders');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -108,14 +117,8 @@ function() {
      * @returns {TP.test.Suite} The receiver.
      */
 
-    var appender;
-
-    appender = this.get('logAppender');
-
-    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
-    //  logs as our last thing to do.
-    TP.getDefaultLogger().removeAppender(appender);
-    APP.getDefaultLogger().removeAppender(appender);
+    TP.getDefaultLogger().set('appenders', this.$get('tpAppenders'));
+    APP.getDefaultLogger().set('appenders', this.$get('appAppenders'));
 
     return this;
 });
@@ -134,13 +137,30 @@ function() {
      * @returns {TP.test.Suite} The receiver.
      */
 
-    var appender;
+    var appender,
+        logger;
 
     appender = this.get('logAppender');
 
-    //  Install it for both 'TP' and 'APP' logs
-    TP.getDefaultLogger().addAppender(appender);
-    APP.getDefaultLogger().addAppender(appender);
+    logger = TP.getDefaultLogger();
+    this.$set('tpAppenders', logger.getAppenders(true));
+    logger.clearAppenders();
+    logger.addAppender(appender);
+
+    //  Don't inherit so we skip the ConsoleAppender when in phantom mode.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        logger.inheritsAppenders(false);
+    }
+
+    logger = APP.getDefaultLogger();
+    this.$set('appAppenders', logger.getAppenders(true));
+    logger.clearAppenders();
+    logger.addAppender(appender);
+
+    //  Don't inherit so we skip the ConsoleAppender when in phantom mode.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        logger.inheritsAppenders(false);
+    }
 
     return this;
 });
@@ -234,23 +254,6 @@ TP.test.Suite.Inst.defineAttribute('suiteList');
  * @type {String}
  */
 TP.test.Suite.Inst.defineAttribute('suiteName');
-
-/**
- * A promise reference that points to the 'last promise' that was
- * allocated/initialized. Therefore, this promise reference can change as the
- * suite logic adds new Promises.
- * @type {Promise}
- */
-TP.test.Suite.Inst.defineAttribute('$internalPromise');
-
-/**
- * A promise reference that is kept by the test suite for use by test suite
- * logic as the suite works it's way through any 'stacking' logic whereby
- * fulfillment or rejection 'then()' handlers have 'then()' statements within
- * themselves. See the 'then()' method for more information.
- * @type {Promise}
- */
-TP.test.Suite.Inst.defineAttribute('$currentPromise');
 
 /**
  * Whether or not we're capturing signals.
@@ -376,6 +379,46 @@ function(setup) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('errorJob',
+function(aFaultString, aFaultCode, aFaultInfo) {
+
+    /**
+     * @method errorJob
+     * @summary Internal method for handling errors thrown by test functions.
+     * @param {String} aFaultString A string description of the fault.
+     * @param {Object} aFaultCode A code providing additional information on the
+     *     reason for the failure.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
+     * @returns {TP.test.Case} The receiver.
+     */
+
+    var msg,
+
+        info;
+
+    this.set('msend', Date.now());
+
+    msg = ('not ok - SUITE ' + this.getSuiteName() + ' error' +
+            (aFaultString ? ': ' + aFaultString : '')).trim();
+
+    if (msg.charAt(msg.getSize() - 1) !== '.') {
+        msg += '.';
+    }
+
+    TP.sys.logTest(msg);
+
+    info = TP.hc(aFaultInfo);
+
+    if (TP.isError(info.at('error'))) {
+        TP.sys.logTest(info.at('error'));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('executeAfter',
 function(result, options) {
 
@@ -398,11 +441,9 @@ function(result, options) {
 
     this.set('msend', Date.now());
 
-    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-    //  'thenWait()' API to our drivers.
     //  We need to reset this after executing all of the test cases, since they
     //  set this to themselves while they're running.
-    this.setPromiseAPIProvider(this);
+    this.setChainingProvider(this);
 
     //  And the current UI canvas is the GUI driver's window context. Again, we
     //  reset this in case one of test cases set it to something else.
@@ -505,8 +546,9 @@ function(currentcase, result, options) {
                         TP.raise.shouldFailTest &&
                         !TP.raise.$suspended) {
 
-                        currentcase.set('statusCode', TP.ACTIVE);
-                        currentcase.fail();
+                        //  If raise is called exception happened. That's an
+                        //  error() rather than a fail().
+                        currentcase.error();
                     }
                 });
     } else {
@@ -523,8 +565,9 @@ function(currentcase, result, options) {
                             TP.raise.shouldFailTest &&
                             !TP.raise.$suspended) {
 
-                            currentcase.set('statusCode', TP.ACTIVE);
-                            currentcase.fail();
+                            //  If raise is called exception happened. That's an
+                            //  error() rather than a fail().
+                            currentcase.error();
                         }
                     });
     }
@@ -563,9 +606,7 @@ function(result, options) {
 
     this.set('msstart', Date.now());
 
-    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-    //  'thenWait()' API to our drivers.
-    this.setPromiseAPIProvider(this);
+    this.setChainingProvider(this);
 
     //  And the current UI canvas is the GUI driver's window context.
     this.setGUIDriverWindowContext(TP.sys.getUICanvas());
@@ -641,6 +682,45 @@ function(currentcase, result, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('failJob',
+function(aFaultString, aFaultCode, aFaultInfo) {
+
+    /**
+     * @method failJob
+     * @summary Internal method for handling notifications of test failures.
+     * @param {String} aFaultString A string description of the fault.
+     * @param {Object} aFaultCode A code providing additional information on the
+     *     reason for the failure.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
+     * @returns {TP.test.Case} The receiver.
+     */
+
+    var msg,
+        info;
+
+    this.set('msend', Date.now());
+
+    msg = 'not ok - SUITE ' + this.getSuiteName() +
+        (aFaultString ? ': ' + aFaultString : '').trim();
+
+    if (msg.charAt(msg.getSize() - 1) !== '.') {
+        msg += '.';
+    }
+
+    TP.sys.logTest(msg);
+
+    info = TP.hc(aFaultInfo);
+
+    if (TP.isError(info.at('error'))) {
+        TP.sys.logTest(info.at('error'));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('getDriver',
 function(aKey) {
 
@@ -692,6 +772,7 @@ function(options) {
         cases = TP.ac();
         this.$set('caseList', cases);
 
+        /* eslint-disable consistent-this */
         suite = this;
 
         //  Execute the suiteList functions to generate the case list.
@@ -711,6 +792,7 @@ function(options) {
                     suite.error(e);
                 }
             });
+        /* eslint-enable consistent-this */
     }
 
     if (TP.notValid(options) || TP.isEmpty(params.at('cases'))) {
@@ -759,6 +841,20 @@ function() {
      */
 
     return this.get('suiteOwner');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('getSignalingArgs',
+function() {
+
+    /**
+     * @method getSignalingArgs
+     * @summary Returns any signal tracking arguments.
+     * @returns {TP.test.Suite} The receiver.
+     */
+
+    return TP.signal.args;
 });
 
 //  ------------------------------------------------------------------------
@@ -835,6 +931,9 @@ function(target, suiteName, suiteFunc) {
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
     this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
 
+    suiteFunc[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
+    suiteFunc[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+
     //  Set up a handler for unhandled rejections. We need this because if we
     //  have code outside of the test harness that is using Promises, we need to
     //  make sure that if they haven't handled the rejection, that we can fail
@@ -868,6 +967,10 @@ function(caseName, caseFunc) {
         this.raise('InvalidTestCase');
         return;
     }
+
+    //  Track load information to support context/file test filtering.
+    caseFunc[TP.LOAD_PATH] = this.$get(TP.LOAD_PATH);
+    caseFunc[TP.SOURCE_PATH] = this.$get(TP.SOURCE_PATH);
 
     caseList = this.$get('caseList');
     if (TP.notValid(caseList)) {
@@ -1023,8 +1126,21 @@ function(options) {
         this.$set('mslimit', options.at('suite_timeout'));
     }
 
-    this.$set('$internalPromise', null);
-    this.$set('$currentPromise', null);
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('resetSignalTracking',
+function() {
+
+    /**
+     * @method resetSignalTracking
+     * @summary Resets any signal tracking and statistics.
+     * @returns {TP.test.Suite} The receiver.
+     */
+
+    TP.signal.reset();
 
     return this;
 });
@@ -1066,6 +1182,8 @@ function(options) {
     var suiteOwner,
         id,
 
+        isAppTarget,
+
         caselist,
         statistics,
         result,
@@ -1101,13 +1219,27 @@ function(options) {
         id = suiteOwner.getID();
     }
 
+    if (/Proto$/.test(id) && TP.isPrototype(suiteOwner)) {
+        id = id.replace(/Proto$/, '');
+    }
+
+    isAppTarget = /^APP/.test(id);
+
     TP.sys.logTest('#', TP.DEBUG);
-    TP.sys.logTest('# ' +
-        (TP.sys.cfg('boot.context') === 'phantomjs' ?
-            'tibet test ' : ':test ') +
-            id + ' --context=all --suite \'' +
-            this.getSuiteName() + '\'',
-                    TP.DEBUG);
+
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        TP.sys.logTest('# ' + 'tibet test ' +
+                        id +
+                        (isAppTarget ? ' ' : ' --context=\'all\' ') +
+                        '--suite=\'' + this.getSuiteName() + '\'',
+                        TP.DEBUG);
+    } else {
+        TP.sys.logTest('# ' + ':test ' +
+                        id +
+                        (isAppTarget ? ' ' : ' --context=\'all\' ') +
+                        '--suite=\'' + this.getSuiteName() + '\'',
+                        TP.DEBUG);
+    }
 
     params = TP.hc(options);
 
@@ -1163,6 +1295,8 @@ function(options) {
             this.set('$exclusiveCount', caselist.getSize());
         }
     }
+
+    /* eslint-disable consistent-this */
 
     //  Binding attribute for our promise closures below.
     suite = this;
@@ -1342,9 +1476,10 @@ function(options) {
                 //  generate a Promise that will be in '$internalPromise'.
                 afterMaybe = suite.executeAfter(resultObj, options);
             } finally {
+                /* eslint-disable no-unsafe-finally */
                 //  Output summary
 
-                //  The 'after' method scheduled a Promise. Put a 'then()' on it
+                //  The 'after' method scheduled a Promise. Put a 'then' on it
                 //  that will generate the report *after* it runs and return
                 //  that.
                 if (TP.isValid(finalPromise = suite.$get('$internalPromise'))) {
@@ -1376,8 +1511,11 @@ function(options) {
                     //  Otherwise, just report and cleanup.
                     suite.report(options);
                 }
+                /* eslint-enable no-unsafe-finally */
             }
         };
+
+    /* eslint-enable consistent-this */
 
     //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(finalAfterHandler, finalAfterHandler);
@@ -1385,11 +1523,11 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('setPromiseAPIProvider',
+TP.test.Suite.Inst.defineMethod('setChainingProvider',
 function(provider) {
 
     /**
-     * @method setPromiseAPIProvider
+     * @method setChainingProvider
      * @summary Sets the 'promise provider' for the drivers that have been set
      *     up for this suite, such as GUI or TSH drivers.
      * @param {Object} provider The object that will provide Promise objects for
@@ -1398,9 +1536,6 @@ function(provider) {
      */
 
     var drivers;
-
-    //  The provider object provides a 'then()', 'thenAllowGUIRefresh()',
-    //  'thenPromise()' and 'thenWait()' API to our drivers.
 
     drivers = this.$get('drivers');
     drivers.getKeys().perform(
@@ -1454,8 +1589,6 @@ function(captureStackTraces) {
 
     var func;
 
-    this.set('$capturingSignals', true);
-
     //  If we're capturing stack traces, then we actually install a stub to do
     //  so.
     if (captureStackTraces) {
@@ -1479,12 +1612,14 @@ function(captureStackTraces) {
                 //  Sinon.
                 TP.signal.args.last().stack = stack.slice(3);
 
-                return func.apply(TP, arguments);
+                return func.apply(TP.sig.SignalMap, arguments);
             });
     } else {
         //  Otherwise, just install a simple spy.
         TP.signal = TP.signal.asSpy();
     }
+
+    this.set('$capturingSignals', true);
 
     return this;
 });
@@ -1503,253 +1638,6 @@ function() {
     TP.signal.restore();
 
     this.set('$capturingSignals', false);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Inst.defineMethod('then',
-function(onFulfilled, onRejected) {
-
-    /**
-     * @method then
-     * @summary 'Then's onto our internally-held promise thereby, effectively
-     *     queuing the operation.
-     * @param {Function} onFulfilled The Function to run to if the Promise has
-     *     been fulfilled.
-     * @param {Function} onRejected The Function to run to if the Promise has
-     *     been rejected.
-     * @returns {TP.test.Suite} The receiver.
-     */
-
-    var internalPromise,
-        lastPromise,
-
-        thisArg,
-
-        _callback,
-        _errback,
-
-        newPromise;
-
-    //  First, see if there's an existing internal promise. If not, create one
-    //  and set the internal promise to be that.
-    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = TP.extern.Promise.resolve();
-        this.$set('$internalPromise', internalPromise);
-    }
-
-    //  Next, see if there's a 'current promise'. This is a Promise reference
-    //  that would've been set 'higher up' (i.e. one frame back in a nested set
-    //  of promises). If so, use that as the 'last promise' that we're going to
-    //  append to. If not, use our internal promise.
-    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
-        lastPromise = internalPromise;
-    }
-
-    thisArg = this;
-
-    //  Make sure that a callback function is defined. Either the supplied one
-    //  or a simple one that returns the value.
-    if (!TP.isCallable(_callback = onFulfilled)) {
-        _callback = function(value) {
-            return value;
-        };
-    }
-
-    //  Make sure that an errback function is defined. Either the supplied one
-    //  or a simple one that rejects with the reason
-    if (!TP.isCallable(_errback = onRejected)) {
-        _errback = function(reason) {
-            return TP.extern.Promise.reject(reason);
-        };
-    }
-
-    //  'then' onto our last promise with fulfillment/rejection handlers that
-    //  manage a 'stacking' of nested Promises.
-    newPromise = lastPromise.then(
-        function(result) {
-
-            var subPromise,
-                maybe,
-                subReturnPromise;
-
-            //  First, allocated a 'sub promise' and set it as the 'current
-            //  promise'. This will be used as the 'last promise' (see above)
-            //  for any nested 'then()' statements *inside* of the fulfillment
-            //  handler.
-            subPromise = TP.extern.Promise.resolve();
-            thisArg.$set('$currentPromise', subPromise);
-
-            //  Protect the callback in a try...catch to make sure that any
-            //  errors result in the promise being rejected.
-            try {
-                maybe = _callback(result);
-            } catch (e) {
-                maybe = TP.extern.Promise.reject(e);
-            }
-
-            //  The fulfillment handler will have set the 'new promise' that it
-            //  created as the 'current promise' (see below). We need that here.
-            //  Note how we then null out the current promise - this is
-            //  important to keep things straight.
-            subReturnPromise = thisArg.$get('$currentPromise');
-            thisArg.$set('$currentPromise', null);
-
-            //  If we got a Promise back from the fulfillment handler, chain it
-            //  on to the 'sub return promise' here.
-            if (TP.isThenable(maybe)) {
-                subReturnPromise = subReturnPromise.then(
-                                        function() {
-                                            return maybe;
-                                        });
-            }
-
-            return subReturnPromise;
-        },
-        function(reason) {
-
-            var subPromise,
-                maybe,
-                subReturnPromise;
-
-            //  All of the same stuff above, except we're dealing with the
-            //  rejection handler.
-
-            subPromise = TP.extern.Promise.resolve();
-            thisArg.$set('$currentPromise', subPromise);
-
-            //  Protect the errback in a try...catch to make sure that any
-            //  errors that could happen as part of the errback itself result in
-            //  the promise being rejected.
-            try {
-                maybe = _errback(reason);
-            } catch (e) {
-                maybe = TP.extern.Promise.reject(e);
-            }
-
-            subReturnPromise = thisArg.$get('$currentPromise');
-            thisArg.$set('$currentPromise', null);
-
-            if (TP.isThenable(maybe)) {
-                subReturnPromise = subReturnPromise.then(
-                                        function() {
-                                            return maybe;
-                                        });
-            }
-
-            return subReturnPromise;
-        });
-
-    //  Set both our 'internal promise' (used to track the last promise
-    //  allocated) and the 'current promise' to the new promise we just obtained
-    //  by 'then()'ing onto the 'last promise' (which will either by the
-    //  internal promise as obtained when we entered this method or the current
-    //  promise set by our parent stack frame 'earlier' in our computation.
-    this.$set('$currentPromise', newPromise);
-    this.$set('$internalPromise', newPromise);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Inst.defineMethod('thenAllowGUIRefresh',
-function() {
-
-    /**
-     * @method thenAllowGUIRefresh
-     * @summary A convenience mechanism to give the GUI a chance to refresh.
-     * @returns {TP.test.Suite} The receiver.
-     */
-
-    this.thenPromise(
-        function(resolver, rejector) {
-            return TP.extern.Promise.delay(
-                        TP.sys.cfg('test.anti_starve_timeout')).then(
-                                                        resolver, rejector);
-        });
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Inst.defineMethod('thenPromise',
-function(aFunction) {
-
-    /**
-     * @method thenPromise
-     * @summary A convenience mechanism to create a Promise with the supplied
-     *     Function and 'append it' (if you will) onto the current
-     *     internally-held Promise. Note that this operation will also reset the
-     *     internally-held Promise to be the new Promise that it creates.
-     * @param {Function} aFunction The Function to run to fulfill the Promise.
-     * @returns {TP.test.Suite} The receiver.
-     */
-
-    var internalPromise,
-        subPromise,
-
-        lastPromise,
-        newPromise;
-
-    //  First, see if there's an existing internal promise. If not, create one
-    //  and set the internal promise to be that.
-    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = TP.extern.Promise.resolve();
-        this.$set('$internalPromise', internalPromise);
-    }
-
-    //  Next, see if there's a 'current promise'. This is a Promise reference
-    //  that would've been set 'higher up' (i.e. one frame back in a nested set
-    //  of promises). If so, use that as the 'last promise' that we're going to
-    //  append to. If not, use our internal promise.
-    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
-        lastPromise = internalPromise;
-    }
-
-    /* eslint-disable new-cap */
-    //  Execute the supplied Function and wrap a Promise around the result.
-    subPromise = TP.extern.Promise.construct(aFunction);
-    /* eslint-enable new-cap */
-
-    //  'then' onto our last promise, chaining on the promise we just
-    //  allocated.
-    newPromise = lastPromise.then(
-        function() {
-            return subPromise;
-        });
-
-    //  Set both our 'internal promise' (used to track the last promise
-    //  allocated) and the 'current promise' to the new promise we just obtained
-    //  by 'then()'ing onto the 'last promise' (which will either by the
-    //  internal promise as obtained when we entered this method or the current
-    //  promise set by our parent stack frame 'earlier' in our computation.
-    this.$set('$currentPromise', newPromise);
-    this.$set('$internalPromise', newPromise);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Inst.defineMethod('thenWait',
-function(timeoutMS) {
-
-    /**
-     * @method thenWait
-     * @summary A convenience mechanism to wait a certain number of milliseconds
-     *     using the receiver's Promise machinery.
-     * @param {Number} timeoutMS The number of milliseconds to wait.
-     * @returns {TP.test.Suite} The receiver.
-     */
-
-    this.thenPromise(
-        function(resolver, rejector) {
-            return TP.extern.Promise.delay(timeoutMS).then(resolver, rejector);
-        });
 
     return this;
 });

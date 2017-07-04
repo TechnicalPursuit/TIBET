@@ -29,7 +29,7 @@
     TP = root.TP || this.TP;
 
     //  If we can't find the TP reference, or we're part of tibet_loader and
-    //  we're loading due to a location change that should route we exit.
+    //  we're loading due to a location change we exit.
     if (!TP || TP.$$nested_loader) {
         return;
     }
@@ -91,7 +91,7 @@
     //  what threshold in milliseconds constitues something worth colorizing to
     //  draw attention to the fact it's a long-running step that may need
     //  tuning.
-    TP.sys.setcfg('boot.delta_threshold', 50);
+    TP.sys.setcfg('boot.delta_threshold', 10);
 
     //  maximum number of errors before we automatically stop the boot process.
     TP.sys.setcfg('boot.error_max', 20);
@@ -101,7 +101,7 @@
     TP.sys.setcfg('boot.fatalistic', false);
 
     //  the logging level for the boot log. best to use strings to define.
-    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, SYSTEM
     TP.sys.setcfg('boot.level', 'INFO');
 
     //  should the boot pause once all code has loaded to allow for setting
@@ -136,10 +136,18 @@
     //  dictionary of data used by the isSupported call in the loader to
     //  determine if a browser should be considered supported.
     TP.sys.setcfg('boot.supported_browsers', {
-        ie: [{major: 11}],
-        chrome: [{major: 39}],
-        firefox: [{major: 34}],
-        safari: [{major: 7}]
+        ie: [{
+            major: 11
+        }],
+        chrome: [{
+            major: 39
+        }],
+        firefox: [{
+            major: 34
+        }],
+        safari: [{
+            major: 7
+        }]
     });
 
     //  the toggle key for the boot console
@@ -218,9 +226,10 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.minified', true);
 
-    //  Do we want to loading resource bundles? Usually set to true but often
-    //  set to false by developer profiles so resources are dynamic.
-    TP.sys.setcfg('boot.resourced', true);
+    //  Do we want to load inlined resources? Inlined reources are generated
+    //  from resource tags and placed in separate config blocks which are
+    //  typically leveraged during rollup for production.
+    TP.sys.setcfg('boot.inlined', true);
 
     //  ---
     //  obsolete ???
@@ -283,25 +292,240 @@
     TP.sys.setcfg('boot.uichunked',
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
+    //  ---
+    //  color maps
+    //  ---
+
+    TP.sys.setcfg('color.mode', 'browser');     //  updated based on boot.context
+
+    //  tty* values should be values mapping to RGB values in ansi-256-colors.
+    //  Use 'fg.bg' to specify a pair, or simply 'fg' or fg (as a number) to
+    //  define just the foreground color. NOTE that for tty the 'dim' entry
+    //  is a modifier, not a distinct color as seen in the webchalk theme.
+
+    //  TTY colors matching the 'chalk' softer color values
+    TP.sys.setcfg('color.ttychalk.black', 236);
+    TP.sys.setcfg('color.ttychalk.red', 9);
+    TP.sys.setcfg('color.ttychalk.green', 10);
+    TP.sys.setcfg('color.ttychalk.yellow', 11);
+    TP.sys.setcfg('color.ttychalk.blue', 12);
+    TP.sys.setcfg('color.ttychalk.magenta', 13);
+    TP.sys.setcfg('color.ttychalk.cyan', 14);
+    TP.sys.setcfg('color.ttychalk.white', 15);
+    TP.sys.setcfg('color.ttychalk.gray', 8);
+
+    TP.sys.setcfg('color.ttychalk.bgBlack', 236);
+    TP.sys.setcfg('color.ttychalk.bgRed', 9);
+    TP.sys.setcfg('color.ttychalk.bgGreen', 10);
+    TP.sys.setcfg('color.ttychalk.bgYellow', 11);
+    TP.sys.setcfg('color.ttychalk.bgBlue', 12);
+    TP.sys.setcfg('color.ttychalk.bgMagenta', 13);
+    TP.sys.setcfg('color.ttychalk.bgCyan', 14);
+    TP.sys.setcfg('color.ttychalk.bgWhite', 15);
+
+    TP.sys.setcfg('color.ttychalk.bgGray', 8);
+    TP.sys.setcfg('color.ttychalk.fgText', 8);   //  default for bg*
+
+    //  TTY colors matching the baseline default colors (standards)
+    TP.sys.setcfg('color.ttycolor.black', 0);
+    TP.sys.setcfg('color.ttycolor.red', 1);
+    TP.sys.setcfg('color.ttycolor.green', 2);
+    TP.sys.setcfg('color.ttycolor.yellow', 3);
+    TP.sys.setcfg('color.ttycolor.blue', 4);
+    TP.sys.setcfg('color.ttycolor.magenta', 5);
+    TP.sys.setcfg('color.ttycolor.cyan', 6);
+    TP.sys.setcfg('color.ttycolor.white', 7);
+    TP.sys.setcfg('color.ttycolor.gray', 8);
+
+    TP.sys.setcfg('color.ttycolor.bgBlack', 0);
+    TP.sys.setcfg('color.ttycolor.bgRed', 1);
+    TP.sys.setcfg('color.ttycolor.bgGreen', 2);
+    TP.sys.setcfg('color.ttycolor.bgYellow', 3);
+    TP.sys.setcfg('color.ttycolor.bgBlue', 4);
+    TP.sys.setcfg('color.ttycolor.bgMagenta', 5);
+    TP.sys.setcfg('color.ttycolor.bgCyan', 6);
+    TP.sys.setcfg('color.ttycolor.bgWhite', 7);
+
+    TP.sys.setcfg('color.ttycolor.bgGray', 8);      //  missing
+    TP.sys.setcfg('color.ttycolor.fgText', 8);      //  default for bg*
+
+    //  web* colors should map to web colors in either # or webcolor format.
+    //  These colors are typically used by the client-side code and hence map to
+    //  colors that are viable in a web browser, not a terminal.
+
+    //  web color matching 'chalk' soft color settings
+    TP.sys.setcfg('color.webchalk.dim', '#565656');
+    TP.sys.setcfg('color.webchalk.black', '#2d2d2d');
+    TP.sys.setcfg('color.webchalk.red', '#f58e8e');
+    TP.sys.setcfg('color.webchalk.green', '#a9d3ab');
+    TP.sys.setcfg('color.webchalk.yellow', '#fed37f');
+    TP.sys.setcfg('color.webchalk.blue', '#7aabd4');
+    TP.sys.setcfg('color.webchalk.magenta', '#d6add5');
+    TP.sys.setcfg('color.webchalk.cyan', '#79d4d5');
+    TP.sys.setcfg('color.webchalk.white', '#d6d6d6');
+    TP.sys.setcfg('color.webchalk.gray', '#939393');
+
+    TP.sys.setcfg('color.webchalk.bgBlack', '#2d2d2d');
+    TP.sys.setcfg('color.webchalk.bgRed', '#f58e8e');
+    TP.sys.setcfg('color.webchalk.bgGreen', '#a9d3ab');
+    TP.sys.setcfg('color.webchalk.bgYellow', '#fed37f');
+    TP.sys.setcfg('color.webchalk.bgBlue', '#7aabd4');
+    TP.sys.setcfg('color.webchalk.bgMagenta', '#d6add5');
+    TP.sys.setcfg('color.webchalk.bgCyan', '#79d4d5');
+    TP.sys.setcfg('color.webchalk.bgWhite', '#d6d6d6');
+
+    TP.sys.setcfg('color.webchalk.bgGray', '#939393');
+    TP.sys.setcfg('color.webchalk.fgText', '#646464');   //  default for bg*
+
+    //  Web color by name
+    TP.sys.setcfg('color.webcolor.black', 'black');
+    TP.sys.setcfg('color.webcolor.red', 'red');
+    TP.sys.setcfg('color.webcolor.green', 'green');
+    TP.sys.setcfg('color.webcolor.yellow', 'yellow');
+    TP.sys.setcfg('color.webcolor.blue', 'blue');
+    TP.sys.setcfg('color.webcolor.magenta', 'magenta');
+    TP.sys.setcfg('color.webcolor.cyan', 'cyan');
+    TP.sys.setcfg('color.webcolor.white', 'white');
+    TP.sys.setcfg('color.webcolor.gray', 'gray');
+
+    TP.sys.setcfg('color.webcolor.bgBlack', 'black');
+    TP.sys.setcfg('color.webcolor.bgRed', 'red');
+    TP.sys.setcfg('color.webcolor.bgGreen', 'green');
+    TP.sys.setcfg('color.webcolor.bgYellow', 'yellow');
+    TP.sys.setcfg('color.webcolor.bgBlue', 'blue');
+    TP.sys.setcfg('color.webcolor.bgMagenta', 'magenta');
+    TP.sys.setcfg('color.webcolor.bgCyan', 'cyan');
+    TP.sys.setcfg('color.webcolor.bgWhite', 'white');
+
+    TP.sys.setcfg('color.webcolor.bgGray', 'gray');
+    TP.sys.setcfg('color.webcolor.fgText', 'gray');   //  used with bg*
 
     //  ---
-    //  ui colors
+    //  theme styles
     //  ---
 
-    // Must use colors in the colors.js set (until we replace/expand).
-    TP.sys.setcfg('log.color.trace', 'grey');
-    TP.sys.setcfg('log.color.info', 'white');
-    TP.sys.setcfg('log.color.warn', 'yellow');
-    TP.sys.setcfg('log.color.error', 'red');
-    TP.sys.setcfg('log.color.severe', 'red');
-    TP.sys.setcfg('log.color.fatal', 'red');
-    TP.sys.setcfg('log.color.system', 'cyan');
+    //  Common modifiers for theme entries
+    //
+    //  bold
+    //  italic (not widely supported)
+    //  underline
+    //  inverse
+    //  hidden
+    //  strikethrough (not widely supported)
 
-    TP.sys.setcfg('log.color.time', 'grey');
-    TP.sys.setcfg('log.color.delta', 'grey');
-    TP.sys.setcfg('log.color.slow', 'yellow');
-    TP.sys.setcfg('log.color.debug', 'grey');
-    TP.sys.setcfg('log.color.verbose', 'grey');
+    //  Standard TIBET logging levels
+    TP.sys.setcfg('theme.default.trace', 'gray');
+    TP.sys.setcfg('theme.default.debug', 'gray');
+    TP.sys.setcfg('theme.default.info', 'white');
+    TP.sys.setcfg('theme.default.warn', 'yellow');
+    TP.sys.setcfg('theme.default.error', 'red');
+    TP.sys.setcfg('theme.default.fatal', 'red');
+    TP.sys.setcfg('theme.default.system', 'cyan');
+    TP.sys.setcfg('theme.default.off', 'black');
+
+    //  Additional names from cli, npm, syslog from winston
+    TP.sys.setcfg('theme.default.emerg', 'red');
+    TP.sys.setcfg('theme.default.crit', 'red');
+    TP.sys.setcfg('theme.default.warning', 'yellow');
+    TP.sys.setcfg('theme.default.alert', 'yellow');
+    TP.sys.setcfg('theme.default.notice', 'yellow');
+    TP.sys.setcfg('theme.default.help', 'cyan');
+    TP.sys.setcfg('theme.default.silly', 'magenta');
+    TP.sys.setcfg('theme.default.data', 'gray');
+    TP.sys.setcfg('theme.default.prompt', 'gray');
+    TP.sys.setcfg('theme.default.input', 'gray');
+    TP.sys.setcfg('theme.default.verbose', 'magenta');
+
+    //  Chalk et. al. ANSI setting
+    TP.sys.setcfg('theme.default.dim', 'gray');
+
+    //  Common log entry items (datetime, timestamp, time delta, etc.)
+    TP.sys.setcfg('theme.default.bracket', 'white');
+    TP.sys.setcfg('theme.default.time', 'gray');
+    TP.sys.setcfg('theme.default.stamp', 'gray');
+    TP.sys.setcfg('theme.default.delta', 'gray');
+    TP.sys.setcfg('theme.default.slow', 'yellow');
+    TP.sys.setcfg('theme.default.ms', 'magenta');
+    TP.sys.setcfg('theme.default.size', 'magenta');
+
+    //  Standard HTTP logging elements and result codes
+    TP.sys.setcfg('theme.default.verb', 'green');
+    TP.sys.setcfg('theme.default.url', 'underline.gray');
+    TP.sys.setcfg('theme.default.1xx', 'white');
+    TP.sys.setcfg('theme.default.2xx', 'green');
+    TP.sys.setcfg('theme.default.3xx', 'cyan');
+    TP.sys.setcfg('theme.default.4xx', 'red');
+    TP.sys.setcfg('theme.default.5xx', 'red');
+
+    //  Common file/path output formats.
+    TP.sys.setcfg('theme.default.file', 'underline.white');
+    TP.sys.setcfg('theme.default.line', 'bold.white');
+
+    //  Startup information for the TDS
+    TP.sys.setcfg('theme.default.logo', 'gray');
+    TP.sys.setcfg('theme.default.project', 'green');
+    TP.sys.setcfg('theme.default.version', 'white');
+    TP.sys.setcfg('theme.default.env', 'green');
+    TP.sys.setcfg('theme.default.host', 'underline.white');
+
+    //  Common TDS components and data items.
+    TP.sys.setcfg('theme.default.tds', 'magenta');
+    TP.sys.setcfg('theme.default.tws', 'magenta');
+    TP.sys.setcfg('theme.default.plugin', 'magenta');
+    TP.sys.setcfg('theme.default.route', 'green');
+    TP.sys.setcfg('theme.default.mock', 'yellow');
+    TP.sys.setcfg('theme.default.task', 'magenta');
+
+    //  Common CLI components and data items.
+    TP.sys.setcfg('theme.default.command', 'yellow');
+    TP.sys.setcfg('theme.default.option', 'yellow');
+    TP.sys.setcfg('theme.default.param', 'white');
+
+    //  Processing states
+    TP.sys.setcfg('theme.default.success', 'green');
+    TP.sys.setcfg('theme.default.failure', 'red');
+
+    //  TAP output components
+    TP.sys.setcfg('theme.default.comment', 'gray');
+    TP.sys.setcfg('theme.default.pass', 'green');
+    TP.sys.setcfg('theme.default.fail', 'red');
+    TP.sys.setcfg('theme.default.skip', 'cyan');
+    TP.sys.setcfg('theme.default.todo', 'yellow');
+
+    //  Linting output elements.
+    TP.sys.setcfg('theme.default.lintpass', 'underline.green');
+    TP.sys.setcfg('theme.default.lintfail', 'underline.red');
+    TP.sys.setcfg('theme.default.lintwarn', 'underline.yellow');
+
+    //  Alert/confirm/prompt and stdio components.
+    TP.sys.setcfg('theme.default.notify', 'yellow');
+    TP.sys.setcfg('theme.default.stdin', 'green');
+    TP.sys.setcfg('theme.default.stdout', 'white');
+    TP.sys.setcfg('theme.default.stderr', 'red');
+
+    //  Markup, JSON, etc.
+    TP.sys.setcfg('theme.default.angle', 'white');
+    TP.sys.setcfg('theme.default.brace', 'white');
+    TP.sys.setcfg('theme.default.tag', 'white');
+    TP.sys.setcfg('theme.default.attr', 'white');
+    TP.sys.setcfg('theme.default.equal', 'white');
+    TP.sys.setcfg('theme.default.quote', 'white');
+    TP.sys.setcfg('theme.default.key', 'white');
+    TP.sys.setcfg('theme.default.colon', 'white');
+    TP.sys.setcfg('theme.default.value', 'white');
+
+    //  ---
+    //  scheme/theme defaults
+    //  ---
+
+    TP.sys.setcfg('boot.color.scheme', 'webchalk');
+    TP.sys.setcfg('boot.color.theme', 'default');
+
+    TP.sys.setcfg('cli.color.scheme', 'ttychalk');
+    TP.sys.setcfg('cli.color.theme', 'default');
+
+    TP.sys.setcfg('tds.color.scheme', 'ttychalk');
+    TP.sys.setcfg('tds.color.theme', 'default');
 
     //  ---
     //  browser context
@@ -314,7 +538,7 @@
         TP.sys.setcfg('boot.context', 'nodejs');
         TP.sys.setcfg('boot.reporter', 'console');
 
-        TP.sys.setcfg('log.color.mode', 'terminal');
+        TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
     } else if (/PhantomJS/.test(navigator.userAgent)) {
@@ -325,7 +549,7 @@
         TP.sys.setcfg('boot.level', 'WARN');
         TP.sys.setcfg('log.level', 'WARN');
 
-        TP.sys.setcfg('log.color.mode', 'terminal');
+        TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
     } else if (/Electron\//.test(navigator.userAgent)) {
@@ -333,7 +557,7 @@
         TP.sys.setcfg('boot.context', 'electron');
         TP.sys.setcfg('boot.reporter', 'bootui');
 
-        TP.sys.setcfg('log.color.mode', 'browser');
+        TP.sys.setcfg('color.mode', 'browser');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
     } else {
@@ -341,7 +565,7 @@
         TP.sys.setcfg('boot.context', 'browser');
         TP.sys.setcfg('boot.reporter', 'bootui');
 
-        TP.sys.setcfg('log.color.mode', 'browser');
+        TP.sys.setcfg('color.mode', 'browser');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
     }
 
@@ -397,39 +621,77 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
+    //  ---
+    //  TDS shared values. This subset is required by the client and server.
+    //  ---
+
+    TP.sys.setcfg('tds.auth.uri', '/login');
+    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
+    TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
+    TP.sys.setcfg('tds.user.uri', '/whoami');
+    TP.sys.setcfg('tds.vcard.uri', '/vcard');
+
+    //  remote resources that we should try to watch. NOTE that these should be
+    //  provided as virtual paths or wildcard expressions to match effectively
+    //  since they're shared between client and server.
+    TP.sys.setcfg('tds.watch.include',
+        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
+
+    //  remote resources that we should try to watch. NOTE that these should
+    //  be provided as virtual paths or wildcard expressions to match since
+    //  they're shared between client and server.
+    TP.sys.setcfg('tds.watch.exclude', ['~app/TIBET-INF/tibet']);
+
+    //  what url does client use to connect to the TDS watch SSE endpoint (and
+    //  where does the TDS watch plugin configure its route to listen).
+    TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
+
+    //  what event will the TDS watch SSE endpoint send when a file changes?
+    //  NOTE that this is also used in the client to map SSE event to a TIBET
+    //  signal picked up by the TDSURLHandler.
+    TP.sys.setcfg('tds.watch.event', 'fileChange');
+
+    //  Includes/excludes for couchdb observations. NOTE that none of these are
+    //  leveraged if uri.watch_couchdb_changes is false.
+    TP.sys.setcfg('tds.couch.watch.include',
+        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
+    TP.sys.setcfg('tds.couch.watch.exclude', ['~app/TIBET-INF/tibet']);
+
+
+    //  What URI does the client use for generic WebDAV calls? NOTE this is also
+    //  where the TDS webdav plugin will register.
+    TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
 
     //  ---
     //  users and roles (and vcards and keyrings)
     //  ---
 
-    //  What cookie name should be used to communicate username after a
-    //  successful login to the TDS (or other similarly-instrumented server)?
+    //  What cookie name should be used to remember username between logins.
     TP.sys.setcfg('user.cookie', 'username');
 
     //  Default values used to drive the DEFAULT templates for vcard and keyring
     //  data (which are used by the default User instance creation machinery).
-    TP.sys.setcfg('user.default_name', 'Guest');
+    TP.sys.setcfg('user.default_name', 'guest');
     TP.sys.setcfg('user.default_role', 'Public');
     TP.sys.setcfg('user.default_org', 'Public');
     TP.sys.setcfg('user.default_unit', 'Public');
     TP.sys.setcfg('user.default_keyring', 'Public');
 
-    //  What route should be used to load application keyrings? Note that by
+    //  What path should be used to load application keyrings? Note that by
     //  default there is no path here. A typical value if you want to make use
     //  of keyrings would be `~app_dat/keyrings.xml` to mirror the library path.
     TP.sys.setcfg('path.app_keyrings', null);
 
-    //  What route should be used to load application vcards? Note that by
-    //  default there is no path here. A typical value if you want to make use
-    //  of vcards would be `~app_dat/vcards.xml` to mirror the library path.
+    //  What path should be used to load application vcards? NOTE that this is
+    //  the path to a 'summary file' the client will attempt to load, not to a
+    //  specific user file or to the directory used for that purpose.
     TP.sys.setcfg('path.app_vcards', null);
 
-    //  What route should be used to load library keyrings? The default is
-    //  provided as support for service vcards which are necessary.
+    //  What path should be used to load library keyrings? The default is
+    //  provided as a simple stub. no default keyrings are required.
     TP.sys.setcfg('path.lib_keyrings', '~lib_dat/keyrings.xml');
 
-    //  the default location for TIBET's service vcard data. This file is always
-    //  loaded to ensure that the various services have appropriate vcard data.
+    //  The default location for TIBET's service vcard data.
     TP.sys.setcfg('path.lib_vcards', '~lib_dat/vcards.xml');
 
     //  ---
@@ -639,10 +901,6 @@
     TP.sys.setcfg('path.tibet_file', '~app/tibet.json');
     TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
 
-    TP.sys.setcfg('path.tds_file', '~/tds.json');
-    TP.sys.setcfg('path.tds_plugins', '~/plugins');
-    TP.sys.setcfg('path.tds_tasks', '~/tasks');
-
     TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
     TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
 
@@ -659,8 +917,8 @@
     TP.sys.setcfg('path.app_cfg', '~app_inf/cfg');
     TP.sys.setcfg('path.lib_cfg', '~lib_lib/cfg');
 
-    TP.sys.setcfg('path.app_cmd', '~app_inf/cmd');
-    TP.sys.setcfg('path.lib_cmd', '~lib_inf/cmd');
+    TP.sys.setcfg('path.app_cmd', '~/cmd');
+    TP.sys.setcfg('path.lib_cmd', '~lib/cmd');
 
     TP.sys.setcfg('path.app_dat', '~app_inf/dat');
     TP.sys.setcfg('path.lib_dat', '~lib_lib/dat');
@@ -719,12 +977,13 @@
     //  app-only virtual paths
     TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
     TP.sys.setcfg('path.app_change', '~app_src/changes');
-    TP.sys.setcfg('path.app_log', '~/log');
+    TP.sys.setcfg('path.app_log', '~/logs');
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
-    //  TIBET namespace source is used often enough that a shortcut is nice
+    //  These namespaces are used often enough that a shortcut is nice
     TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');
+    TP.sys.setcfg('path.xctrls_src', '~lib_src/xctrls');
 
     //  Sherpa (external IDE components).
     TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
@@ -747,6 +1006,18 @@
 
     //  what method (browser or man page) should we try for help display?
     TP.sys.setcfg('cli.help.viewer', 'man');
+
+    //  define any additional (beyond the default values) extensions for js
+    //  source, style (css, less, sass), and xml files. See the lint command
+    //  docs for more details.
+    TP.sys.setcfg('cli.lint.js_extensions', []);
+    TP.sys.setcfg('cli.lint.style_extensions', []);
+    TP.sys.setcfg('cli.lint.xml_extensions', []);
+
+    //  CLI flag defaulting
+    TP.sys.setcfg('cli.couch.confirm', true);       //  should couch command
+                                                    //  confirm db target?
+    TP.sys.setcfg('cli.tws.confirm', true);         //  should tws confirm db?
 
     //  ---
     //  content mgmt
@@ -893,11 +1164,11 @@
     //  job/fork control
     //  ---
 
-    //  the delays in milliseconds used for Function.fork() calls, the
+    //  the delays in milliseconds used for Function.fork calls, the
     //  typical repeat time for a repetitive fork, and typical requeue time
-    TP.sys.setcfg('fork.delay', 10);
+    TP.sys.setcfg('fork.delay', 0);
     TP.sys.setcfg('fork.interval', 5000);
-    TP.sys.setcfg('fork.requeue_delay', 10);
+    TP.sys.setcfg('fork.requeue_delay', 0);
 
     //  when computing intervals for certain TP.core.Job instances we need a
     //  default value for the interval. standard is "animation speed" which is
@@ -948,7 +1219,7 @@
 
     //  the logging level for the TP.log logging system. Set once that code has
     //  loaded during kernel startup since the levels are actual instances.
-    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, SYSTEM
     TP.sys.setcfg('log.level', 'INFO');
 
     //  when logging is on the value here will control how large the activity
@@ -1143,16 +1414,23 @@
     //  how far (in pixels) the mouse has to move to start a drag operation
     TP.sys.setcfg('mouse.drag_distance', 3);
 
-    //  how long the event system has to wait before triggering drag events.
+    //  how long (in ms) the event system has to wait before triggering drag
+    //  events.
     TP.sys.setcfg('mouse.drag_delay', 100);
 
-    //  how long a hover has to wait before triggering a DOMMouseHover event.
+    //  how long (in ms) a hover has to wait before triggering a DOMMouseOver
+    //  event.
+    TP.sys.setcfg('mouse.over_delay', 0);
+
+    //  how long (in ms) a hover has to wait before triggering a DOMMouseHover
+    //  event.
     TP.sys.setcfg('mouse.hover_delay', 300);
 
-    //  how long a click has to wait before triggering a DOMClick event.
+    //  how long (in ms) a click has to wait before triggering a DOMClick event.
     TP.sys.setcfg('mouse.click_delay', 0);
 
-    //  how long a hover has to wait before retriggering a DOMMouseHover event.
+    //  how long (in ms) a hover has to wait before retriggering a DOMMouseHover
+    //  event.
     TP.sys.setcfg('mouse.hover_repeat', 100);
 
 
@@ -1163,6 +1441,14 @@
     //  how long to wait before cancelling a keyboard shortcut sequence
     TP.sys.setcfg('keyboard.shortcut_cancel_delay', 500);
 
+    //  ---
+    //  timeouts
+    //  ---
+
+    TP.sys.setcfg('editor.select.delay', 50);
+
+    TP.sys.setcfg('shell.init.delay', 10);
+    TP.sys.setcfg('shell.update.delay', 1000);
 
     //  ---
     //  os integration
@@ -1189,8 +1475,11 @@
     TP.sys.setcfg('sherpa.enabled', true);
 
     //  if the Sherpa is running, we use this flag to determine whether or not
-    //  to autodefine tags that are not known by the system.
-    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+    //  to autodefine tags that are not known by the system. NOTE: This flag is
+    //  set to false and should *not* be set to true except by runtime
+    //  machinery. Otherwise, all plain XML tags will be 'autodefined', which is
+    //  definitely not what we want (especially on startup).
+    TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
 
     //  how many screens should the Sherpa display?
     TP.sys.setcfg('sherpa.num_screens', 1);
@@ -1228,19 +1517,44 @@
     //  debugging, otherwise tends to be annoying to users.
     TP.sys.setcfg('sherpa.console_stack', false);
 
+    //  the amount of time that the Sherpa notifier will wait before fading out
+    TP.sys.setcfg('sherpa.notifier_fadeout_delay', 5000);
+
+    //  the amount of time that the Sherpa notifier will take to fade out.
+    TP.sys.setcfg('sherpa.notifier_fadeout_duration', 3000);
+
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
+
+    //  should the TIBET icon which identifies the sherpa:toggle be visible?
+    TP.sys.setcfg('sherpa.show_toggle', true);
 
     //  the output mode that the Sherpa will start with - 'none', 'one' or
     //  'all'.
     TP.sys.setcfg('sherpa.tdc.output_mode', 'one');
 
-    //  the amount of time that the Sherpa TDC will wait before fading out a
-    //  cell.
-    TP.sys.setcfg('sherpa.tdc.cell_fadeout_delay', 2000);
+    //  the amount of time that the Sherpa TDC will wait before fading out an
+    //  output item.
+    TP.sys.setcfg('sherpa.tdc.item_fadeout_delay', 2000);
 
-    //  the amount of time that the Sherpa TDC will take to fade out a cell.
-    TP.sys.setcfg('sherpa.tdc.cell_fadeout_duration', 2000);
+    //  the amount of time that the Sherpa TDC will take to fade out an output
+    //  item.
+    TP.sys.setcfg('sherpa.tdc.item_fadeout_duration', 2000);
+
+    //  the minimum width of an inspector item
+    TP.sys.setcfg('sherpa.inspector.min_item_width', 200);
+
+    //  the minimum number of inspector items when computing 'empty space'
+    //  across the inspector
+    TP.sys.setcfg('sherpa.inspector.min_item_count', 3);
+
+    //  the root entries and their types in the inspector
+    TP.sys.setcfg('sherpa.inspector_root_sources',
+        [
+            ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
+            ['Remote Data Sources',
+                'TP.sherpa.TIBETRemoteDataSourcesInspectorSource']
+        ]);
 
     //  the initial location to load into screen_0 in the Sherpa. Note this
     //  might be the same as 'project.homepage', but the Sherpa contains
@@ -1252,107 +1566,12 @@
     //  SSE support
     //  ---
 
+    //  how often in milleseconds should we try to reconnect for dropped
+    //  connections?
+    TP.sys.setcfg('sse.retry', 3000);
+
     //  How many errors on SSE connection before UnstableConnection exception?
-    TP.sys.setcfg('sse.max_errors', 10);
-
-    //  ---
-    //  tds support
-    //  ---
-
-    TP.sys.setcfg('couch.app.root', 'public');
-    TP.sys.setcfg('couch.app_name', 'app');
-    TP.sys.setcfg('couch.db_name', null);
-    TP.sys.setcfg('couch.host', '127.0.0.1');
-    TP.sys.setcfg('couch.port', '5984');
-    TP.sys.setcfg('couch.scheme', 'http');
-
-    TP.sys.setcfg('couch.watch.filter', '*');
-
-    TP.sys.setcfg('couch.watch.empty', '\n');
-    TP.sys.setcfg('couch.watch.feed', 'continuous');
-    TP.sys.setcfg('couch.watch.heartbeat', 500);
-    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
-    TP.sys.setcfg('couch.watch.inactivity_ms', null);
-    TP.sys.setcfg('couch.watch.initial_retry_delay', 1000);
-    TP.sys.setcfg('couch.watch.max_retry_seconds', 360);
-    TP.sys.setcfg('couch.watch.response_grace_time', 5000);
-    TP.sys.setcfg('couch.watch.root', '~app');
-    TP.sys.setcfg('couch.watch.since', 'now');
-
-    TP.sys.setcfg('tds.auth.strategy', 'tds');
-
-    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
-
-    //  The combined names from cli, npm, and syslog from winston.
-    TP.sys.setcfg('tds.color.emerg', 'red');
-    TP.sys.setcfg('tds.color.crit', 'red');
-    TP.sys.setcfg('tds.color.error', 'red');
-    TP.sys.setcfg('tds.color.warning', 'yellow');   //  cli color vs. syslog
-    TP.sys.setcfg('tds.color.warn', 'yellow');
-    TP.sys.setcfg('tds.color.alert', 'yellow');
-    TP.sys.setcfg('tds.color.notice', 'yellow');
-    TP.sys.setcfg('tds.color.help', 'cyan');
-    TP.sys.setcfg('tds.color.data', 'grey');
-    TP.sys.setcfg('tds.color.info', 'green');
-    TP.sys.setcfg('tds.color.debug', 'green');  //  blue is hard to read.
-    TP.sys.setcfg('tds.color.prompt', 'grey');
-    TP.sys.setcfg('tds.color.verbose', 'cyan');
-    TP.sys.setcfg('tds.color.input', 'grey');
-    TP.sys.setcfg('tds.color.silly', 'magenta');
-
-    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
-    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
-
-    TP.sys.setcfg('tds.https', false);
-
-    TP.sys.setcfg('tds.log.count', 5);
-    TP.sys.setcfg('tds.log.file', '~app_log/tds-{{env}}.log');
-    TP.sys.setcfg('tds.log.format', 'dev');
-    TP.sys.setcfg('tds.log.level', 'info');
-    TP.sys.setcfg('tds.log.routes', false);
-    TP.sys.setcfg('tds.log.size', 5242880); // 5MB
-
-    TP.sys.setcfg('tds.max_bodysize', '5mb');
-
-    TP.sys.setcfg('tds.patch.root', '~');
-    TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
-
-    //  NOTE we do _not_ default this here so env.PORT etc can be used when the
-    //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
-    TP.sys.setcfg('tds.port', null);
-
-    TP.sys.setcfg('tds.pouch.name', 'tds');
-    TP.sys.setcfg('tds.pouch.prefix', './pouch/');
-    TP.sys.setcfg('tds.pouch.route', '/db');
-
-    TP.sys.setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
-
-    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   // change this too :)
-    TP.sys.setcfg('tds.session.store', 'memory');
-
-    TP.sys.setcfg('tds.stop_onerror', true);
-
-    TP.sys.setcfg('tds.job.uri', '/_tds/jobs');
-
-    TP.sys.setcfg('tds.use.cli', false);
-    TP.sys.setcfg('tds.use.couch', false);
-    TP.sys.setcfg('tds.use.mocks', false);
-    TP.sys.setcfg('tds.use.patch', false);
-    TP.sys.setcfg('tds.use.pouch', false);
-    TP.sys.setcfg('tds.use.proxy', false);
-    TP.sys.setcfg('tds.use.tasks', false);
-    TP.sys.setcfg('tds.use.watch', false);
-    TP.sys.setcfg('tds.use.webdav', false);
-
-    TP.sys.setcfg('tds.watch.event', 'fileChange');
-    TP.sys.setcfg('tds.watch.heartbeat', 10000);
-    TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
-    TP.sys.setcfg('tds.watch.root', '~app');
-    TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
-
-    TP.sys.setcfg('tds.webdav.mount', '/');
-    TP.sys.setcfg('tds.webdav.root', '~app');
-    TP.sys.setcfg('tds.webdav.uri', '/_tds/webdav');
+    TP.sys.setcfg('sse.max_errors', 20);
 
     //  ---
     //  tsh processing
@@ -1530,6 +1749,9 @@
     //  avoid problems during startup.
     TP.sys.setcfg('oo.$$use_backstop', false);
 
+    //  should type proxies be created? we don't do this by default.
+    TP.sys.setcfg('oo.$$use_proxies', false);
+
     //  should inferencing be enabled.
     TP.sys.setcfg('oo.$$use_inferencing', true);
 
@@ -1577,10 +1799,10 @@
 
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
-    TP.sys.setcfg('karma.boot.profile', 'main#developer');
+    TP.sys.setcfg('karma.boot.profile', 'main#testing');
     TP.sys.setcfg('karma.boot.teamtibet', false);
     TP.sys.setcfg('karma.boot.minified', true);
-    TP.sys.setcfg('karma.boot.resourced', true);
+    TP.sys.setcfg('karma.boot.inlined', true);
 
     //  Path and file name of the load script to be used to launch TIBET.
     TP.sys.setcfg('karma.load_path', 'TIBET-INF/tibet/lib/src');
@@ -1605,13 +1827,6 @@
     //  arrays can be sometimes be scanned for strings faster via regex so we
     //  set a threshold to tune between iteration and regex-based search
     TP.sys.setcfg('array.max_contains_loop', 50);
-
-    //  the perform() call can instrument iterators with atStart/atEnd data
-    //  and does this for all iteration sizes below this threshold. above this
-    //  figure the function's string is tested to see if it makes use of this
-    //  data. this figure can therefore be set to the size below which the
-    //  toString test is slower than the instrumentation overhead
-    TP.sys.setcfg('perform.max_instrument', 100);
 
     //  limit on the maximum number of entries in the signal stats array, which
     //  tracks overall times for signal handler invocations
@@ -1652,11 +1867,22 @@
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 
-    //  should we watch remote resources?
-    TP.sys.setcfg('uri.remote_watch', true);
+    //  should we watch remote resources configured to be 'watched'?
+    TP.sys.setcfg('uri.watch_remote_changes', false);
 
-    //  remote resources that we should try to watch.
-    TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles', '~app_cfg']);
+    //  should we take action when notified of a remote uri change?
+    TP.sys.setcfg('uri.process_remote_changes', false);
+
+    //  should we watch changes from couchdb? Currently awaiting updates to SSE
+    //  to support authentication.
+    TP.sys.setcfg('uri.watch_couchdb_changes', false);
+
+    //  which CouchDB change feed URLs do we want to observe?
+    TP.sys.setcfg('uri.watch_couchdb_uris', [
+        '_db_updates?feed=eventsource',                     //  server changes
+        // '_changes?feed=eventsource',                     //  no docs
+        '_changes?feed=eventsource&include_docs=true'       //  with docs
+    ]);
 
     //  ---
     //  xpath/xslt

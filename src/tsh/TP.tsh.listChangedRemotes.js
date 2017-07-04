@@ -52,7 +52,7 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
 
     //  Set cmdAsIs to false to get fancy JSON formatting.
 
@@ -66,7 +66,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('listChangedRemotes',
     TP.tsh.listChangedRemotes.Type.getMethod('tshExecute'),
     'Displays a list of pending remote resource changes. Requires TDS.',
     ':listChangedRemotes',

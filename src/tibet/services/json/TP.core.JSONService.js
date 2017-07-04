@@ -181,7 +181,7 @@ function(aRequest) {
 
                     request.set('result', null);
 
-                    url.updateResourceCache(request);
+                    url.$setPrimaryResource(undefined, request);
                     url.isLoaded(false);
                     url.isDirty(true);
 
@@ -210,7 +210,10 @@ function(aRequest) {
 
                     request.set('result', resultData);
 
-                    dat = url.updateResourceCache(request);
+                    dat = url.getRequestedResource(request);
+                    /*
+                    url.$setPrimaryResource(dat, request);
+                    */
                     url.isLoaded(true);
                     url.isDirty(false);
 
@@ -247,7 +250,7 @@ function(aRequest) {
 
                 req = aSignal.getPayload();
 
-                if (TP.isXHR(xhr = req.at('xhr')) &&
+                if (TP.isXHR(xhr = req.at('commObj')) &&
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.json2js(xhrStr);
                 }
@@ -278,7 +281,7 @@ function(aRequest) {
 
                 req = aSignal.getPayload();
 
-                if (TP.isXHR(xhr = req.at('xhr')) &&
+                if (TP.isXHR(xhr = req.at('commObj')) &&
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.sc('Failure: ') + xhrStr;
                 }

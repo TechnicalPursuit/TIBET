@@ -8,9 +8,9 @@
  */
 //  ========================================================================
 
-//	========================================================================
-//	TP.xs.anyType
-//	========================================================================
+//  ========================================================================
+//  TP.xs.anyType
+//  ========================================================================
 
 TP.xs.anyType.Inst.describe('xs.anyType: validation',
 function() {
@@ -32,9 +32,9 @@ function() {
 
     this.it('test04', function(test, options) {
 
-        /* eslint-disable no-extra-parens */
+        /* eslint-disable no-extra-parens,no-empty-function */
         test.assert.isA((function() {}), TP.xs.anyType);
-        /* eslint-enable no-extra-parens */
+        /* eslint-enable no-extra-parens,no-empty-function */
     });
 
     this.it('test05', function(test, options) {
@@ -87,7 +87,7 @@ function() {
 
         var foo;
 
-        //	this will pass the undefined ref
+        //  this will pass the undefined ref
         test.assert.isFalse(TP.xs.anyType.validate(foo));
     });
 
@@ -104,9 +104,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.anySimpleType
-//	========================================================================
+//  ========================================================================
+//  TP.xs.anySimpleType
+//  ========================================================================
 
 TP.xs.anySimpleType.Inst.describe('xs.anySimpleType: validation',
 function() {
@@ -128,9 +128,9 @@ function() {
 
     this.it('test04', function(test, options) {
 
-        /* eslint-disable no-extra-parens */
+        /* eslint-disable no-extra-parens,no-empty-function */
         test.assert.isA((function() {}), TP.xs.anySimpleType);
-        /* eslint-enable no-extra-parens */
+        /* eslint-enable no-extra-parens,no-empty-function */
     });
 
     this.it('test05', function(test, options) {
@@ -183,7 +183,7 @@ function() {
 
         var foo;
 
-        //	this will pass the undefined ref
+        //  this will pass the undefined ref
         test.assert.isFalse(TP.xs.anySimpleType.validate(foo));
     });
 
@@ -200,9 +200,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.string
-//	========================================================================
+//  ========================================================================
+//  TP.xs.string
+//  ========================================================================
 
 TP.xs.string.Inst.describe('xs.string: validation',
 function() {
@@ -224,9 +224,9 @@ function() {
 
     this.it('test04', function(test, options) {
 
-        /* eslint-disable no-extra-parens */
+        /* eslint-disable no-extra-parens,no-empty-function */
         test.refute.isA((function() {}), TP.xs.string);
-        /* eslint-enable no-extra-parens */
+        /* eslint-enable no-extra-parens,no-empty-function */
     });
 
     this.it('test05', function(test, options) {
@@ -279,13 +279,13 @@ function() {
 
         var foo;
 
-        //	this will pass the undefined ref
+        //  this will pass the undefined ref
         test.assert.isFalse(TP.xs.string.validate(foo));
     });
 
     this.it('test14', function(test, options) {
 
-        //	text nodes aren't TP.xs.string's
+        //  text nodes aren't TP.xs.string's
         test.assert.isFalse(
                 TP.xs.string.validate(document.createTextNode('foo')),
                 'Expected text node validation to be false');
@@ -297,46 +297,46 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.normalizedString
-//	========================================================================
+//  ========================================================================
+//  TP.xs.normalizedString
+//  ========================================================================
 
 TP.xs.normalizedString.Inst.describe('xs.normalizedString: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	normalized means no tabs, crs, or lfs
+        //  normalized means no tabs, crs, or lfs
         test.assert.isA('abc.def;ghi "and then some"', TP.xs.normalizedString);
     });
 
     this.it('test02', function(test, options) {
 
-        //	no tabs
+        //  no tabs
         test.refute.isA('abc\u0009', TP.xs.normalizedString);
     });
 
     this.it('test03', function(test, options) {
 
-        //	no lfs
+        //  no lfs
         test.refute.isA('abc\u000A', TP.xs.normalizedString);
     });
 
     this.it('test04', function(test, options) {
 
-        //	no crs
+        //  no crs
         test.refute.isA('abc\u000D', TP.xs.normalizedString);
     });
 
     this.it('test05', function(test, options) {
 
-        //	multiple spaces are allowed
+        //  multiple spaces are allowed
         test.assert.isA('abc\u0020\u0020', TP.xs.normalizedString);
     });
 
     this.it('test06', function(test, options) {
 
-        //	leading and trailing spaces are allowed
+        //  leading and trailing spaces are allowed
         test.assert.isA('\u0020abc\u0020', TP.xs.normalizedString);
     });
 
@@ -346,60 +346,60 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.token
-//	========================================================================
+//  ========================================================================
+//  TP.xs.token
+//  ========================================================================
 
 TP.xs.token.Inst.describe('xs.token: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	tokenized, like normalized means no tabs, crs, or lfs but with no
-        //	multiple-space sequences...most everything else is legal
+        //  tokenized, like normalized means no tabs, crs, or lfs but with no
+        //  multiple-space sequences...most everything else is legal
         test.assert.isA('abc.def;ghi "and_then' + '=-some"', TP.xs.token);
     });
 
     this.it('test02', function(test, options) {
 
-        //	must be normalized
+        //  must be normalized
         test.refute.isA('abc\u0009', TP.xs.token);
     });
 
     this.it('test03', function(test, options) {
 
-        //	must be normalized
+        //  must be normalized
         test.refute.isA('abc\u000A', TP.xs.token);
     });
 
     this.it('test04', function(test, options) {
 
-        //	must be normalized
+        //  must be normalized
         test.refute.isA('abc\u000D', TP.xs.token);
     });
 
     this.it('test05', function(test, options) {
 
-        //	multiple spaces are NOT allowed in this type
+        //  multiple spaces are NOT allowed in this type
         test.refute.isA('abc\u0020\u0020', TP.xs.token);
     });
 
     this.it('test06', function(test, options) {
 
-        //	leading and trailing spaces are NOT allowed in this type
+        //  leading and trailing spaces are NOT allowed in this type
         test.refute.isA('\u0020abc\u0020', TP.xs.token);
     });
 
     this.it('test07', function(test, options) {
 
-        //	single spaces are allowed
+        //  single spaces are allowed
         test.assert.isA('a b c', TP.xs.token);
     });
 });
 
-//	========================================================================
-//	TP.xs.language
-//	========================================================================
+//  ========================================================================
+//  TP.xs.language
+//  ========================================================================
 
 TP.xs.language.Inst.describe('xs.language: validation',
 function() {
@@ -411,55 +411,55 @@ function() {
 
     this.it('test02', function(test, options) {
 
-        //	spaces and other whitespace not allowed
+        //  spaces and other whitespace not allowed
         test.refute.isA('abc\u0009', TP.xs.language);
     });
 
     this.it('test03', function(test, options) {
 
-        //	spaces and other whitespace not allowed
+        //  spaces and other whitespace not allowed
         test.refute.isA('abc\u000A', TP.xs.language);
     });
 
     this.it('test04', function(test, options) {
 
-        //	spaces and other whitespace not allowed
+        //  spaces and other whitespace not allowed
         test.refute.isA('abc\u000D', TP.xs.language);
     });
 
     this.it('test05', function(test, options) {
 
-        //	multiple spaces not allowed
+        //  multiple spaces not allowed
         test.refute.isA('abc\u0020\u0020', TP.xs.language);
     });
 
     this.it('test06', function(test, options) {
 
-        //	single spaces are also not allowed
+        //  single spaces are also not allowed
         test.refute.isA('a b c', TP.xs.language);
     });
 
     this.it('test07', function(test, options) {
 
-        //	hyphen is allowed after at least one leading char
+        //  hyphen is allowed after at least one leading char
         test.assert.isA('a-b', TP.xs.language);
     });
 
     this.it('test08', function(test, options) {
 
-        //	digits can occur in the second half
+        //  digits can occur in the second half
         test.assert.isA('ac-0', TP.xs.language);
     });
 
     this.it('test09', function(test, options) {
 
-        //	a typical language code value
+        //  a typical language code value
         test.assert.isA('en', TP.xs.language);
     });
 
     this.it('test10', function(test, options) {
 
-        //	a typical language code value
+        //  a typical language code value
         test.assert.isA('en-US', TP.xs.language);
     });
 
@@ -475,7 +475,7 @@ function() {
 
     this.it('test13', function(test, options) {
 
-        //	can't have a leading Digit
+        //  can't have a leading Digit
         test.refute.isA('0abc-lang', TP.xs.language);
     });
 
@@ -485,16 +485,16 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.NMTOKEN
-//	========================================================================
+//  ========================================================================
+//  TP.xs.NMTOKEN
+//  ========================================================================
 
 TP.xs.NMTOKEN.Inst.describe('xs.NMTOKEN: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	a token list can be a single value
+        //  a token list can be a single value
         test.assert.isA('abc', TP.xs.NMTOKEN);
     });
 
@@ -544,16 +544,16 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.NMTOKENS
-//	========================================================================
+//  ========================================================================
+//  TP.xs.NMTOKENS
+//  ========================================================================
 
 TP.xs.NMTOKENS.Inst.describe('xs.NMTOKENS: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	a token list can be a single value
+        //  a token list can be a single value
         test.assert.isA('abc', TP.xs.NMTOKENS);
     });
 
@@ -604,7 +604,7 @@ function() {
 
     this.it('test11', function(test, options) {
 
-        //	a token list can be a single value
+        //  a token list can be a single value
         test.assert.isA('abc def', TP.xs.NMTOKENS);
     });
 
@@ -654,9 +654,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:Name
-//	========================================================================
+//  ========================================================================
+//  xs:Name
+//  ========================================================================
 
 TP.xs.Name.Inst.describe('xs.Name: validation',
 function() {
@@ -752,9 +752,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:NCName
-//	========================================================================
+//  ========================================================================
+//  xs:NCName
+//  ========================================================================
 
 TP.xs.NCName.Inst.describe('xs.NCName: validation',
 function() {
@@ -850,9 +850,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:ID
-//	========================================================================
+//  ========================================================================
+//  xs:ID
+//  ========================================================================
 
 TP.xs.ID.Inst.describe('xs.ID: validation',
 function() {
@@ -948,9 +948,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:IDREF
-//	========================================================================
+//  ========================================================================
+//  xs:IDREF
+//  ========================================================================
 
 TP.xs.IDREF.Inst.describe('xs.IDREF: validation',
 function() {
@@ -1028,9 +1028,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:IDREFS
-//	========================================================================
+//  ========================================================================
+//  xs:IDREFS
+//  ========================================================================
 
 TP.xs.IDREFS.Inst.describe('xs.IDREFS: validation',
 function() {
@@ -1216,9 +1216,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:ENTITY
-//	========================================================================
+//  ========================================================================
+//  xs:ENTITY
+//  ========================================================================
 
 TP.xs.ENTITY.Inst.describe('xs.ENTITY: validation',
 function() {
@@ -1314,9 +1314,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:ENTITIES
-//	========================================================================
+//  ========================================================================
+//  xs:ENTITIES
+//  ========================================================================
 
 TP.xs.ENTITIES.Inst.describe('xs.ENTITIES: validation',
 function() {
@@ -1502,100 +1502,100 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:duration
-//	========================================================================
+//  ========================================================================
+//  xs:duration
+//  ========================================================================
 
 TP.xs.duration.Inst.describe('xs.duration: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	must have a P even if beginning with -
+        //  must have a P even if beginning with -
         test.refute.isA('-', TP.xs.duration);
     });
 
     this.it('test02', function(test, options) {
 
-        //	must have at least one duration segment
+        //  must have at least one duration segment
         test.refute.isA('P', TP.xs.duration);
     });
 
     this.it('test03', function(test, options) {
 
-        //	must have a Y or other segment ID
+        //  must have a Y or other segment ID
         test.refute.isA('P1', TP.xs.duration);
     });
 
     this.it('test04', function(test, options) {
 
-        //	must have a P
+        //  must have a P
         test.refute.isA('1Y', TP.xs.duration);
     });
 
     this.it('test05', function(test, options) {
 
-        //	negative must be first char in string
+        //  negative must be first char in string
         test.refute.isA('P-1Y', TP.xs.duration);
     });
 
     this.it('test06', function(test, options) {
 
-        //	decimals only in seconds
+        //  decimals only in seconds
         test.refute.isA('P0.5Y', TP.xs.duration);
     });
 
     this.it('test07', function(test, options) {
 
-        //	can't have T without H,M, or S
+        //  can't have T without H,M, or S
         test.refute.isA('P1YT', TP.xs.duration);
     });
 
     this.it('test08', function(test, options) {
 
-        //	can't have H,M, or S without a T
+        //  can't have H,M, or S without a T
         test.refute.isA('P1H', TP.xs.duration);
     });
 
     this.it('test09', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.refute.isA('P-1347M', TP.xs.duration);
     });
 
     this.it('test10', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.refute.isA('P1Y2MT', TP.xs.duration);
     });
 
     this.it('test11', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.assert.isA('P1347Y', TP.xs.duration);
     });
 
     this.it('test12', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.assert.isA('P1347M', TP.xs.duration);
     });
 
     this.it('test13', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.assert.isA('P1Y2MT2H', TP.xs.duration);
     });
 
     this.it('test14', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.assert.isA('P0Y1347M', TP.xs.duration);
     });
 
     this.it('test15', function(test, options) {
 
-        //	from spec
+        //  from spec
         test.assert.isA('-P1347M', TP.xs.duration);
     });
 
@@ -1681,307 +1681,307 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:dateTime
-//	========================================================================
+//  ========================================================================
+//  xs:dateTime
+//  ========================================================================
 
 TP.xs.dateTime.Inst.describe('xs.dateTime: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	time zone data can be missing
+        //  time zone data can be missing
         test.assert.isA('2001-10-26T21:32:52', TP.xs.dateTime);
     });
 
     this.it('test02', function(test, options) {
 
-        //	time zone data here is valid
+        //  time zone data here is valid
         test.assert.isA('2001-10-26T21:32:52+02:00', TP.xs.dateTime);
     });
 
     this.it('test03', function(test, options) {
 
-        //	canonical value for TZ +00:00
+        //  canonical value for TZ +00:00
         test.assert.isA('2001-10-26T19:32:52Z', TP.xs.dateTime);
     });
 
     this.it('test04', function(test, options) {
 
-        //	same as last test
+        //  same as last test
         test.assert.isA('2001-10-26T19:32:52+00:00', TP.xs.dateTime);
     });
 
     this.it('test05', function(test, options) {
 
-        //	zone can be minus too
+        //  zone can be minus too
         test.assert.isA('-2001-10-26T19:32:52-00:00', TP.xs.dateTime);
     });
 
     this.it('test06', function(test, options) {
 
-        //	decimal seconds
+        //  decimal seconds
         test.assert.isA('2001-10-26T19:32:52.12679', TP.xs.dateTime);
     });
 
     this.it('test07', function(test, options) {
 
-        //	missing parts
+        //  missing parts
         test.refute.isA('2001-10-26', TP.xs.dateTime);
     });
 
     this.it('test08', function(test, options) {
 
-        //	missing parts
+        //  missing parts
         test.refute.isA('2001-10-26T21:32', TP.xs.dateTime);
     });
 
     this.it('test09', function(test, options) {
 
-        //	bad hour
+        //  bad hour
         test.refute.isA('2001-10-26T25:32:52+02:00', TP.xs.dateTime);
     });
 
     this.it('test10', function(test, options) {
 
-        //	bad year
+        //  bad year
         test.refute.isA('01-10-26T25:32:52+02:00', TP.xs.dateTime);
     });
 
     this.it('test11', function(test, options) {
 
-        //	fractional seconds can't end in 0
+        //  fractional seconds can't end in 0
         test.refute.isA('2001-10-26T19:32:52.12670', TP.xs.dateTime);
     });
 
     this.it('test12', function(test, options) {
 
-        //	not a leap year
+        //  not a leap year
         test.refute.isA('2001-02-29T19:32:52', TP.xs.dateTime);
     });
 
     this.it('test13', function(test, options) {
 
-        //	leap year
+        //  leap year
         test.assert.isA('2000-02-29T19:32:52', TP.xs.dateTime);
     });
 
     this.it('test14', function(test, options) {
 
-        //	year 0 invalid but planned, so TIBET allows it
+        //  year 0 invalid but planned, so TIBET allows it
         test.assert.isA('0000-03-29T19:32:52', TP.xs.dateTime);
     });
 
     this.it('test15', function(test, options) {
 
-        //	month 0 invalid
+        //  month 0 invalid
         test.refute.isA('2000-00-01T19:32:52', TP.xs.dateTime);
     });
 
     this.it('test16', function(test, options) {
 
-        //	day 0 invalid
+        //  day 0 invalid
         test.refute.isA('2000-01-00T19:32:52', TP.xs.dateTime);
     });
 
     this.it('test17', function(test, options) {
 
-        //	minute 60 invalid
+        //  minute 60 invalid
         test.refute.isA('2000-01-01T19:60:52', TP.xs.dateTime);
     });
 
     this.it('test18', function(test, options) {
 
-        //	seconds 62 invalid
+        //  seconds 62 invalid
         test.refute.isA('2000-01-01T19:12:62', TP.xs.dateTime);
     });
 
     this.it('test19', function(test, options) {
 
-        //	if TZ must be complete
+        //  if TZ must be complete
         test.refute.isA('2000-01-01T19:12:23-10', TP.xs.dateTime);
     });
 
     this.it('test20', function(test, options) {
 
-        //	if TZ must be complete
+        //  if TZ must be complete
         test.refute.isA('2000-01-01T19:12:23-10:', TP.xs.dateTime);
     });
 
     this.it('test21', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('2000-01-01T19:12:23+15:00', TP.xs.dateTime);
     });
 
     this.it('test22', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('2000-01-01T19:12:23+14:01', TP.xs.dateTime);
     });
 
     this.it('test23', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('2000-01-01T19:12:23-15:00', TP.xs.dateTime);
     });
 
     this.it('test24', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('2000-01-01T19:12:23-14:01', TP.xs.dateTime);
     });
 
     this.it('test25', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.assert.isA('2000-01-01T19:12:23-14:00', TP.xs.dateTime);
     });
 
     this.it('test26', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.assert.isA('2000-01-01T19:12:23+14:00', TP.xs.dateTime);
     });
 
     this.it('test27', function(test, options) {
 
-        //	midnight new years eve
+        //  midnight new years eve
         test.assert.isA('1999-12-31T00:00:00', TP.xs.dateTime);
     });
 });
 
-//	========================================================================
-//	xs:time
-//	========================================================================
+//  ========================================================================
+//  xs:time
+//  ========================================================================
 
 TP.xs.time.Inst.describe('xs.time: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	time zone data can be missing
+        //  time zone data can be missing
         test.assert.isA('21:32:52', TP.xs.time);
     });
 
     this.it('test02', function(test, options) {
 
-        //	time zone data here is valid
+        //  time zone data here is valid
         test.assert.isA('21:32:52+02:00', TP.xs.time);
     });
 
     this.it('test03', function(test, options) {
 
-        //	canonical value for TZ +00:00
+        //  canonical value for TZ +00:00
         test.assert.isA('19:32:52Z', TP.xs.time);
     });
 
     this.it('test04', function(test, options) {
 
-        //	same as last test
+        //  same as last test
         test.assert.isA('19:32:52+00:00', TP.xs.time);
     });
 
     this.it('test05', function(test, options) {
 
-        //	zone can be minus too
+        //  zone can be minus too
         test.assert.isA('19:32:52-00:00', TP.xs.time);
     });
 
     this.it('test06', function(test, options) {
 
-        //	decimal seconds
+        //  decimal seconds
         test.assert.isA('19:32:52.12679', TP.xs.time);
     });
 
     this.it('test07', function(test, options) {
 
-        //	missing parts
+        //  missing parts
         test.refute.isA('21:32', TP.xs.time);
     });
 
     this.it('test08', function(test, options) {
 
-        //	bad hour
+        //  bad hour
         test.refute.isA('25:32:52+02:00', TP.xs.time);
     });
 
     this.it('test09', function(test, options) {
 
-        //	fractional seconds can't end in 0
+        //  fractional seconds can't end in 0
         test.refute.isA('19:32:52.12670', TP.xs.time);
     });
 
     this.it('test10', function(test, options) {
 
-        //	minute 60 invalid
+        //  minute 60 invalid
         test.refute.isA('19:60:52', TP.xs.time);
     });
 
     this.it('test10', function(test, options) {
 
-        //	seconds 62 invalid
+        //  seconds 62 invalid
         test.refute.isA('19:12:62', TP.xs.time);
     });
 
     this.it('test11', function(test, options) {
 
-        //	if TZ must be complete
+        //  if TZ must be complete
         test.refute.isA('19:12:23-10', TP.xs.time);
     });
 
     this.it('test12', function(test, options) {
 
-        //	if TZ must be complete
+        //  if TZ must be complete
         test.refute.isA('19:12:23-10:', TP.xs.time);
     });
 
     this.it('test13', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('19:12:23+15:00', TP.xs.time);
     });
 
     this.it('test14', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('19:12:23+14:01', TP.xs.time);
     });
 
     this.it('test15', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('19:12:23-15:00', TP.xs.time);
     });
 
     this.it('test16', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.refute.isA('19:12:23-14:01', TP.xs.time);
     });
 
     this.it('test17', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.assert.isA('19:12:23-14:00', TP.xs.time);
     });
 
     this.it('test18', function(test, options) {
 
-        //	if TZ can't be more than +14, or less than -14
+        //  if TZ can't be more than +14, or less than -14
         test.assert.isA('19:12:23+14:00', TP.xs.time);
     });
 
     this.it('test19', function(test, options) {
 
-        //	midnight
+        //  midnight
         test.assert.isA('00:00:00', TP.xs.time);
     });
 });
 
-//	========================================================================
-//	xs:date
-//	========================================================================
+//  ========================================================================
+//  xs:date
+//  ========================================================================
 
 TP.xs.date.Inst.describe('xs.date: validation',
 function() {
@@ -1993,37 +1993,37 @@ function() {
 
     this.it('test02', function(test, options) {
 
-        //	bad year
+        //  bad year
         test.refute.isA('01-10-26', TP.xs.date);
     });
 
     this.it('test03', function(test, options) {
 
-        //	not a leap year
+        //  not a leap year
         test.refute.isA('2001-02-29', TP.xs.date);
     });
 
     this.it('test04', function(test, options) {
 
-        //	leap year
+        //  leap year
         test.assert.isA('2000-02-29', TP.xs.date);
     });
 
     this.it('test05', function(test, options) {
 
-        //	year 0 invalid but planned, so TIBET allows it
+        //  year 0 invalid but planned, so TIBET allows it
         test.assert.isA('0000-03-29', TP.xs.date);
     });
 
     this.it('test06', function(test, options) {
 
-        //	month 0 invalid
+        //  month 0 invalid
         test.refute.isA('2000-00-01', TP.xs.date);
     });
 
     this.it('test07', function(test, options) {
 
-        //	day 0 invalid
+        //  day 0 invalid
         test.refute.isA('2000-01-00', TP.xs.date);
     });
 
@@ -2078,9 +2078,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:gYearMonth
-//	========================================================================
+//  ========================================================================
+//  xs:gYearMonth
+//  ========================================================================
 
 TP.xs.gYearMonth.Inst.describe('xs.gYearMonth: validation',
 function() {
@@ -2092,7 +2092,7 @@ function() {
 
     this.it('test02', function(test, options) {
 
-        //	bad year
+        //  bad year
         test.refute.isA('01-10', TP.xs.gYearMonth);
     });
 
@@ -2147,9 +2147,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:gYear
-//	========================================================================
+//  ========================================================================
+//  xs:gYear
+//  ========================================================================
 
 TP.xs.gYear.Inst.describe('xs.gYear: validation',
 function() {
@@ -2161,7 +2161,7 @@ function() {
 
     this.it('test02', function(test, options) {
 
-        //	bad year
+        //  bad year
         test.refute.isA('01', TP.xs.gYear);
     });
 
@@ -2206,9 +2206,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:gMonth
-//	========================================================================
+//  ========================================================================
+//  xs:gMonth
+//  ========================================================================
 
 TP.xs.gMonth.Inst.describe('xs.gMonth: validation',
 function() {
@@ -2269,9 +2269,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:gDay
-//	========================================================================
+//  ========================================================================
+//  xs:gDay
+//  ========================================================================
 
 TP.xs.gDay.Inst.describe('xs.gDay: validation',
 function() {
@@ -2332,9 +2332,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:gMonthDay
-//	========================================================================
+//  ========================================================================
+//  xs:gMonthDay
+//  ========================================================================
 
 TP.xs.gMonthDay.Inst.describe('xs.gMonthDay: validation',
 function() {
@@ -2351,13 +2351,13 @@ function() {
 
     this.it('test03', function(test, options) {
 
-        //	not a leap year
+        //  not a leap year
         test.refute.isA('--02-30', TP.xs.gMonthDay);
     });
 
     this.it('test04', function(test, options) {
 
-        //	leap year
+        //  leap year
         test.assert.isA('--02-29', TP.xs.gMonthDay);
     });
 
@@ -2368,13 +2368,13 @@ function() {
 
     this.it('test06', function(test, options) {
 
-        //	month 0 invalid
+        //  month 0 invalid
         test.refute.isA('--00-01', TP.xs.gMonthDay);
     });
 
     this.it('test07', function(test, options) {
 
-        //	day 0 invalid
+        //  day 0 invalid
         test.refute.isA('--01-00', TP.xs.gMonthDay);
     });
 
@@ -2439,9 +2439,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:boolean
-//	========================================================================
+//  ========================================================================
+//  xs:boolean
+//  ========================================================================
 
 TP.xs.boolean.Inst.describe('xs.boolean: validation',
 function() {
@@ -2522,9 +2522,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:base64Binary
-//	========================================================================
+//  ========================================================================
+//  xs:base64Binary
+//  ========================================================================
 
 TP.xs.base64Binary.Inst.describe('xs.base64Binary: validation',
 function() {
@@ -2545,28 +2545,28 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:hexBinary
-//	========================================================================
+//  ========================================================================
+//  xs:hexBinary
+//  ========================================================================
 
 TP.xs.hexBinary.Inst.describe('xs.hexBinary: validation',
 function() {
 
     this.it('test01', function(test, options) {
 
-        //	not even
+        //  not even
         test.refute.isA('abc', TP.xs.hexBinary);
     });
 
     this.it('test02', function(test, options) {
 
-        //	bad chars
+        //  bad chars
         test.refute.isA('gh', TP.xs.hexBinary);
     });
 
     this.it('test03', function(test, options) {
 
-        //	bad char
+        //  bad char
         test.refute.isA('1.00', TP.xs.hexBinary);
     });
 
@@ -2586,9 +2586,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:float
-//	========================================================================
+//  ========================================================================
+//  xs:float
+//  ========================================================================
 
 TP.xs.float.Inst.describe('xs.float: validation',
 function() {
@@ -2609,7 +2609,7 @@ function() {
 
     this.it('test03', function(test, options) {
 
-        //	too big for a float (this is a double)
+        //  too big for a float (this is a double)
         /* eslint-disable no-extra-parens */
         test.refute.isA((-1.2344e56), TP.xs.float);
         /* eslint-enable no-extra-parens */
@@ -2658,9 +2658,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:double
-//	========================================================================
+//  ========================================================================
+//  xs:double
+//  ========================================================================
 
 TP.xs.double.Inst.describe('xs.double: validation',
 function() {
@@ -2729,9 +2729,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:anyURITests
-//	========================================================================
+//  ========================================================================
+//  xs:anyURITests
+//  ========================================================================
 
 TP.xs.anyURI.Inst.describe('xs.anyURI: validation',
 function() {
@@ -2762,9 +2762,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:QNameTests
-//	========================================================================
+//  ========================================================================
+//  xs:QNameTests
+//  ========================================================================
 
 TP.xs.QName.Inst.describe('xs.QName: validation',
 function() {
@@ -2805,13 +2805,13 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:NOTATION
-//	========================================================================
+//  ========================================================================
+//  xs:NOTATION
+//  ========================================================================
 
-//	========================================================================
-//	xs:decimal
-//	========================================================================
+//  ========================================================================
+//  xs:decimal
+//  ========================================================================
 
 TP.xs.decimal.Inst.describe('xs.decimal: validation',
 function() {
@@ -2887,9 +2887,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:integer
-//	========================================================================
+//  ========================================================================
+//  xs:integer
+//  ========================================================================
 
 TP.xs.integer.Inst.describe('xs.integer: validation',
 function() {
@@ -2951,9 +2951,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:nonPositiveInteger
-//	========================================================================
+//  ========================================================================
+//  xs:nonPositiveInteger
+//  ========================================================================
 
 TP.xs.nonPositiveInteger.Inst.describe('xs.nonPositiveInteger: validation',
 function() {
@@ -3005,9 +3005,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:negativeInteger
-//	========================================================================
+//  ========================================================================
+//  xs:negativeInteger
+//  ========================================================================
 
 TP.xs.negativeInteger.Inst.describe('xs.negativeInteger: validation',
 function() {
@@ -3059,9 +3059,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:nonNegativeInteger
-//	========================================================================
+//  ========================================================================
+//  xs:nonNegativeInteger
+//  ========================================================================
 
 TP.xs.nonNegativeInteger.Inst.describe('xs.nonNegativeInteger: validation',
 function() {
@@ -3113,9 +3113,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:positiveInteger
-//	========================================================================
+//  ========================================================================
+//  xs:positiveInteger
+//  ========================================================================
 
 TP.xs.positiveInteger.Inst.describe('xs.positiveInteger: validation',
 function() {
@@ -3166,9 +3166,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:unsignedLong
-//	========================================================================
+//  ========================================================================
+//  xs:unsignedLong
+//  ========================================================================
 
 TP.xs.unsignedLong.Inst.describe('xs.unsignedLong: validation',
 function() {
@@ -3219,9 +3219,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:unsignedInt
-//	========================================================================
+//  ========================================================================
+//  xs:unsignedInt
+//  ========================================================================
 
 TP.xs.unsignedInt.Inst.describe('xs.unsignedInt: validation',
 function() {
@@ -3272,9 +3272,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:unsignedShort
-//	========================================================================
+//  ========================================================================
+//  xs:unsignedShort
+//  ========================================================================
 
 TP.xs.unsignedShort.Inst.describe('xs.unsignedShort: validation',
 function() {
@@ -3325,9 +3325,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:unsignedByte
-//	========================================================================
+//  ========================================================================
+//  xs:unsignedByte
+//  ========================================================================
 
 TP.xs.unsignedByte.Inst.describe('xs.unsignedByte: validation',
 function() {
@@ -3378,9 +3378,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:long
-//	========================================================================
+//  ========================================================================
+//  xs:long
+//  ========================================================================
 
 TP.xs.long.Inst.describe('xs.long: validation',
 function() {
@@ -3431,9 +3431,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:int
-//	========================================================================
+//  ========================================================================
+//  xs:int
+//  ========================================================================
 
 TP.xs.int.Inst.describe('xs.int: validation',
 function() {
@@ -3484,9 +3484,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:short
-//	========================================================================
+//  ========================================================================
+//  xs:short
+//  ========================================================================
 
 TP.xs.short.Inst.describe('xs.short: validation',
 function() {
@@ -3537,9 +3537,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	xs:byte
-//	========================================================================
+//  ========================================================================
+//  xs:byte
+//  ========================================================================
 
 TP.xs.byte.Inst.describe('xs.byte: validation',
 function() {
@@ -3590,9 +3590,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.simpleType
-//	========================================================================
+//  ========================================================================
+//  TP.xs.simpleType
+//  ========================================================================
 
 TP.xs.simpleType.Inst.describe('TP.xs.simpleType: validation',
 function() {
@@ -3783,7 +3783,7 @@ function() {
         val = 1.5;
         test.refute.isA(val, TP.xs.intOrDate);
 
-        //	month 0 invalid
+        //  month 0 invalid
         val = '2000-00-01';
         test.refute.isA(val, TP.xs.intOrDate);
     });
@@ -3824,9 +3824,9 @@ function() {
     });
 });
 
-//	========================================================================
-//	TP.xs.complexType
-//	========================================================================
+//  ========================================================================
+//  TP.xs.complexType
+//  ========================================================================
 
 TP.xs.complexType.Inst.describe('TP.xs.complexType: validation',
 function() {
@@ -3990,6 +3990,6 @@ function() {
     });
 });
 
-//	------------------------------------------------------------------------
-//	end
-//	========================================================================
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

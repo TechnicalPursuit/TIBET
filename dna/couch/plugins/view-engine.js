@@ -20,21 +20,9 @@
      */
     module.exports = function(options) {
         var app,
-            handlebars,
-            logger;
-
-        //  ---
-        //  Config Check
-        //  ---
+            handlebars;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
-
-        logger.debug('Integrating TDS view engine.');
 
         //  ---
         //  Requires
@@ -47,7 +35,11 @@
         //  ---
 
         app.set('views', './views');
-        app.engine('handlebars', handlebars({defaultLayout: 'main'}));
+        app.engine('handlebars',
+            handlebars(
+                {
+                    defaultLayout: 'main'
+                }));
         app.set('view engine', 'handlebars');
     };
 

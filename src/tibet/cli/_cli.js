@@ -19,16 +19,18 @@
  *      lib_root        // Where is the library root? Normally computed.
  *
  *      color           // Display colored output. Default is true.
+ *      verbose         // Provide more verbose output. Default is false.
+ *      silent          // Run without providing any output. Default is false.
  *
- *      debug           // Display debug-level messages. Default is false.
+ *      level           // Set an explicit logging level. Default is 'info'.
+ *      debug           // Set logging level to debug. Default is false.
  *      stack           // Dump stack with error messages? Default is false.
- *      verbose         // Display verbose-level messages. Default is false.
  *
  *      help            // Display help on the command. Default is false.
  *      usage           // Display usage of the command. Default is false.
  */
 
-/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0 */
+/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0, consistent-this:0 */
 (function() {
 
 'use strict';
@@ -36,33 +38,18 @@
 var path,
     sh,
     beautify,
-    chalk,
     minimist,
     prompt,
+    Color,
+    Logger,
     Package,
     CLI;
 
 path = require('path');
 sh = require('shelljs');
-chalk = require('chalk');
 minimist = require('minimist');
 prompt = require('readline-sync');
 beautify = require('js-beautify').js_beautify;
-
-/*
- * Color theme:
- *
- *  log: 'grey',
- *  info: 'white',
- *  warn: 'yellow',
- *  error: 'red',
- *  debug: 'grey',
- *  verbose: 'grey',
- *  system: 'cyan',
- *
- *  success: 'green'
- */
-
 
 //  ---
 //  Object Construction
@@ -85,7 +72,6 @@ CLI = {};
 
 //  Convenience references to common modules.
 CLI.sh = sh;
-CLI.beautify = beautify;
 
 /**
  * The max number of characters per line in the item lists for commands like
@@ -103,6 +89,7 @@ CLI.CONTEXTS = {
     ANY: 'any',
     PROJECT: 'project',
     LIBRARY: 'library',
+    NONLIB: 'nonlib',
     INSIDE: 'inside',
     OUTSIDE: 'outside'
 };
@@ -139,7 +126,7 @@ CLI.GULP_FILE = 'gulpfile.js';
  * launch root location, not app root or lib root.
  * @type {string}
  */
-CLI.MAKE_FILE = 'makefile.js';
+CLI.MAKE_FILE = '~app_cmd/make/makefile.js';
 
 
 /**
@@ -165,8 +152,8 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'initpath', 'complete'],
-    'string': ['app_root', 'lib_root'],
+        'initpath', 'completion', 'tds-cli', 'force'],
+    'string': ['app_root', 'lib_root', 'level'],
     'default': {
         color: true
     }
@@ -184,25 +171,10 @@ CLI.PROJECT_FILE = 'tibet.json';
 
 
 /**
- * The file path to an optional bash/zsh completion script initializer.
- * @type {String}
- */
-CLI.TIBETINIT_FILE = '../../../../etc/scripts/tibetinit.sh';
-
-/**
  * Optional configuration data typically passed into run() via tibet 'binary'.
  * @type {Object}
  */
 CLI.config = {};
-
-
-/**
- * A reference to the current project's associated TIBET make targets. This
- * will only exist inProject where the project utilizes TIBET's ultra-light
- * variant on shelljs/make.
- * @type {Object}
- */
-CLI.make_targets = null;
 
 
 /**
@@ -226,77 +198,79 @@ CLI._package = null;
 //  ---
 
 /*
- * Methods here provide simple coloring to match the level of the log message.
+ * Maps the functions from the common logger into methods that are easier for
+ * individual commands to access. See tibet_logger.js for more details.
  */
 
+CLI.$log = function(level, msg, spec) {
+    if (this.getArgv().indexOf('--tds-cli') !== -1) {
+        this.$tdsclilog(level, msg, spec);
+    } else {
+        this.logger[level](msg, spec);
+    }
+};
+
+/**
+ */
+CLI.$tdsclilog = function(level, msg, spec) {
+    var obj,
+        ok;
+
+    ok = true;
+    if (['error', 'fatal'].indexOf(level) !== -1) {
+        ok = false;
+    }
+
+    obj = {
+        ok: ok,
+        level: level
+    };
+
+    if (ok) {
+        obj.data = msg;
+    } else {
+        obj.error = 'error';
+        obj.reason = msg;
+    }
+
+    this.logger[level](JSON.stringify(obj), spec);
+};
+
 /* eslint-disable no-console */
-CLI.log = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-    console.log(chalk.grey(msg));
+CLI.trace = function(msg, spec) {
+    this.$log('trace', msg, spec);
 };
 
-CLI.info = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.info(msg);
-    }
-    console.info(chalk.white(msg));
+CLI.debug = function(msg, spec) {
+    this.$log('debug', msg, spec);
 };
 
-CLI.warn = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.warn(msg);
-    }
-    console.warn(chalk.yellow(msg));
+CLI.info = function(msg, spec) {
+    this.$log('info', msg, spec);
 };
 
-CLI.error = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.error(msg);
-    }
-    console.error(chalk.red(msg));
+CLI.warn = function(msg, spec) {
+    this.$log('warn', msg, spec);
 };
 
-CLI.debug = function(msg, verbose) {
-    if (!this.isTrue(this.options.debug)) {
-        return;
-    }
-
-    if (verbose === true &&
-        !this.isTrue(this.options.verbose)) {
-        return;
-    }
-
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-    console.log(chalk.grey(msg));
+CLI.error = function(msg, spec) {
+    this.$log('error', msg, spec);
 };
 
-CLI.verbose = function(msg) {
-    if (!this.isTrue(this.options.verbose)) {
-        return;
-    }
-
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-    console.log(chalk.grey(msg));
+CLI.fatal = function(msg, spec) {
+    this.$log('fatal', msg, spec);
 };
 
-CLI.system = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.info(msg);
-    }
-    console.info(chalk.cyan(msg));
+CLI.system = function(msg, spec) {
+    this.$log('system', msg, spec);
 };
 
-CLI.success = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.info(msg);
-    }
-    console.info(chalk.green(msg));
+CLI.log = function(msg, spec, level) {
+    this.$log('log', msg, spec);
+};
+
+CLI.verbose = function(msg, spec) {
+    this.$log('verbose', msg, spec);
 };
 /* eslint-enable no-console */
 
@@ -320,6 +294,22 @@ CLI.isFalse = function(aReference) {
 };
 
 /**
+ * Returns true if the string provided is a valid JS identifier.
+ * @param {String} aString The string value to test.
+ * @returns {Boolean} true if the string would make a valid JS identifier.
+ */
+CLI.isJSIdentifier = function(aString) {
+
+    if (typeof aString !== 'string') {
+        return false;
+    }
+
+    //  Strictly speaking the '.' here is not part of a valid individual
+    //  identifier name...but we allow for JS identifier "paths".
+    return /^[a-zA-Z_$]{1}[.a-zA-Z0-9_$]*$/.test(aString);
+};
+
+/**
  * Returns true if the object provided is an 'Object' as opposed to a string,
  * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
  * hash of keys.
@@ -329,6 +319,86 @@ CLI.isFalse = function(aReference) {
 CLI.isObject = function(obj) {
     return typeof obj === 'object' &&
         Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+/**
+ * Compares two object structures and attempts to determine if they are a rough
+ * match in JSON terms by iterating over keys and checking values. NOTE that the
+ * semantics of checking JSON equality differ from the standard semantics of JS.
+ * We only care whether serialized strings would differ but we can't rely on the
+ * JSON.stringify call since keys aren't ordered.
+ * @param {Object} objOne The first object in the comparison.
+ * @param {Object} objTwo The second object in the comparison.
+ * @return {Boolean} true if the objects have the same key/value content.
+ */
+CLI.isSameJSON = function(objOne, objTwo) {
+    var first,
+        second,
+        fkeys,
+        skeys;
+
+    //  Two keys pointing to 'null' have the same "string" values.
+    if (objOne === null) {
+        return objTwo === null;
+    }
+
+    if (objTwo === null) {
+        return objOne === null;
+    }
+
+    //  If they're not the same type they can't be equal.
+    if (typeof objOne !== typeof objTwo) {
+        return false;
+    }
+
+    //  If values are identical up we're good.
+    if (objOne === objTwo) {
+        return true;
+    }
+
+    //  Normalize the objects in JSON terms by serializing/parsing. This has the
+    //  effect of taking things like NaN and converting them to null, taking
+    //  Date objects and turning them into numbers, etc.
+    try {
+        first = JSON.parse(JSON.stringify(objOne));
+        second = JSON.parse(JSON.stringify(objTwo));
+    } catch (e) {
+        //  Can't compare. Assume false.
+        return false;
+    }
+
+    //  If they're not objects they're primitive and unequal.
+    if (typeof first !== 'object') {
+        return false;
+    }
+
+    //  If they're not both Object or both Array they're unequal.
+    /* eslint-disable no-extra-parens */
+    if ((Array.isArray(first) && !Array.isArray(second)) ||
+        (!Array.isArray(first) && Array.isArray(second))) {
+        return false;
+    }
+    /* eslint-enable no-extra-parens */
+
+    try {
+        fkeys = Object.keys(first).sort();
+        skeys = Object.keys(second).sort();
+    } catch (e) {
+        //  If either of the objects are not capable of returning a set of keys
+        //  then at least one is non-object and we're talking about inequality.
+        return false;
+    }
+
+    //  Sort the keys and compare. If the keysets differ we're also inequal.
+    if (fkeys.toString() !== skeys.toString()) {
+        return false;
+    }
+
+    //  Recursively check values at the next level. Any mismatches will fail the
+    //  test and trigger a false return.
+    return !fkeys.some(function(key) {
+        return !CLI.isSameJSON(first[key], second[key]);
+    });
 };
 
 CLI.isTrue = function(aReference) {
@@ -352,6 +422,32 @@ CLI.notValid = function(aReference) {
 //  ---
 //  Utilities
 //  ---
+
+/**
+ * A common handle to the js-beautify routine for pretty-printing JSON to
+ * the console or via the logger.
+ * @type {Function}
+ */
+CLI.beautify = function(obj) {
+    var str;
+
+    if (CLI.notValid(obj)) {
+        return obj;
+    }
+
+    if (typeof obj !== 'string') {
+        try {
+            str = JSON.stringify(obj);
+        } catch (e) {
+            str = '' + obj;
+        }
+    } else {
+        str = obj;
+    }
+
+    return beautify(str);
+};
+
 
 /**
  * A useful variation on extend from other libs sufficient for parameter block
@@ -449,6 +545,8 @@ CLI.canRun = function(CmdType) {
             return this.inProject(CmdType);
         case CLI.CONTEXTS.LIBRARY:
             return this.inLibrary(CmdType);
+        case CLI.CONTEXTS.NONLIB:
+            return this.inProject(CmdType) || !this.inLibrary(CmdType);
         case CLI.CONTEXTS.INSIDE:
             return this.inProject(CmdType) || this.inLibrary(CmdType);
         case CLI.CONTEXTS.OUTSIDE:
@@ -456,6 +554,24 @@ CLI.canRun = function(CmdType) {
         default:
             return false;
     }
+};
+
+
+/**
+ * Returns a function representing a curried version of the provided function.
+ */
+CLI.curry = function(method) {
+    var args;
+
+    //  Arg list other than the original method to be curried.
+    args = Array.prototype.slice.call(arguments, 1);
+
+    return function() {
+        /* eslint-disable no-invalid-this */
+        return method.apply(this, args.concat(
+            Array.prototype.slice.call(arguments, 0)));
+        /* eslint-enable no-invalid-this */
+    };
 };
 
 
@@ -503,8 +619,6 @@ CLI.escapeWhitespace = function(aString) {
  * @returns {String} The fully-expanded path value.
  */
 CLI.expandPath = function(aPath, silent) {
-    this.initPackage();
-
     return this._package.expandPath(aPath, silent);
 };
 
@@ -516,7 +630,6 @@ CLI.expandPath = function(aPath, silent) {
  * @returns {string} The application root directory.
  */
 CLI.getAppRoot = function() {
-    this.initPackage();
     return this._package.getAppRoot();
 };
 
@@ -528,10 +641,9 @@ CLI.getAppRoot = function() {
  * property values. The virtual path for this root is '~' or '~/'. The search
  * for this location works upward from the current directory to attempt to find
  * either a PROJECT_FILE or NPM_FILE. If that fails the search is done relative
- * to the module.filename, ie. the tibet-package.js file location itself.
+ * to the module.filename, ie. the tibet_package.js file location itself.
  */
 CLI.getAppHead = function() {
-    this.initPackage();
     return this._package.getAppHead();
 };
 
@@ -539,9 +651,8 @@ CLI.getAppHead = function() {
 /**
  * Returns an array of actual arguments from the command line. This is useful
  * for comparing with the getArglist results or capturing specific arguments for
- * use in a child process. Note that items up through the command name are not
- * included in this list.
- * @returns {Array.<String>} The argv list minus executable/command.
+ * use in a child process. Note that argv[0] is the command name.
+ * @returns {Array.<String>} The argv list.
  */
 CLI.getArgv = function() {
     var argv;
@@ -554,13 +665,21 @@ CLI.getArgv = function() {
 
 
 /**
+ * Returns the current process environment (or 'development' if not set).
+ * @returns {string} The environment string.
+ */
+CLI.getNodeEnv = function() {
+    return process.env.NODE_ENV || 'development';
+};
+
+
+/**
  * Returns the library root directory, the path where the TIBET library is
  * found. In combination with the application root this path is one of the
  * critical paths for proper operation.
  * @returns {string} The library root directory.
  */
 CLI.getLibRoot = function() {
-    this.initPackage();
     return this._package.getLibRoot();
 };
 
@@ -574,8 +693,6 @@ CLI.getLibRoot = function() {
  * @returns {Object} The property value, or the entire configuration object.
  */
 CLI.getcfg = function(property) {
-    this.initPackage();
-
     return this._package.getcfg(property);
 };
 CLI.cfg = CLI.getcfg;
@@ -624,9 +741,15 @@ CLI.getCommandOptions = function(command) {
     // Load the command type
     try {
         CmdType = require(cmdPath);
+        if (typeof CmdType.initialize === 'function') {
+            try {
+                CmdType.initialize();
+            } catch (e) {
+                this.handleError(e, 'initializing', command);
+            }
+        }
         cmd = new CmdType();
     } catch (e) {
-        this.debug('cmdPath: ' + cmdPath);
         this.handleError(e, 'loading', command);
     }
 
@@ -683,12 +806,6 @@ CLI.getCommandPath = function(command) {
         }
     }
 
-    try {
-        this.initPackage();
-    } catch (e) {
-        this.handleError(e, 'loading', command);
-    }
-
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
 
@@ -714,8 +831,6 @@ CLI.getCommands = function() {
         i,
         files;
 
-    this.initPackage();
-
     roots = ['~app_cmd', '~lib_src/tibet/cli', '~lib_cmd'];
     len = roots.length;
     files = [];
@@ -735,10 +850,6 @@ CLI.getCommands = function() {
                     return false;
                 }
 
-                if (name === 'makefile') {
-                    return false;
-                }
-
                 return true;
             }));
         }
@@ -753,43 +864,17 @@ CLI.getCommands = function() {
 
 
 /**
- * Returns the targets exported from any CLI.MAKE_FILE in the application. If
- * the file isn't loaded yet this call will attempt to load it.
- * @returns {boolean} True if the target is found.
+ * Returns the targets exported from any makefile in the application. If
+ * the makefile file isn't loaded yet this call will attempt to load it.
+ * @returns {Array.<String>} The list of available make target names.
  */
 CLI.getMakeTargets = function() {
-    var fullpath,
-        prefix;
+    var Make;
 
-    if (this.make_targets) {
-        return this.make_targets;
-    }
+    Make = require('./make');
+    Make.initialize();
 
-    //  Prefix varies by whether we're in a project or not.
-    if (this.inProject()) {
-        prefix = '~app_cmd';
-    } else if (this.inLibrary()) {
-        prefix = '~lib_inf/cmd';
-    } else {
-        //  Not an error so we can do command-completion even outside a project
-        //  or the library.
-        return [];
-    }
-
-    fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
-
-    if (!sh.test('-f', fullpath)) {
-        this.debug('Project make file not found: ' + fullpath);
-        return;
-    }
-
-    try {
-        this.make_targets = require(fullpath);
-    } catch (e) {
-        this.error('Unable to load TIBET make file: ' + e.message);
-    }
-
-    return this.make_targets;
+    return Make.getTargetNames();
 };
 
 
@@ -799,8 +884,6 @@ CLI.getMakeTargets = function() {
  * @returns {Package} The receiver's package instance.
  */
 CLI.getPackage = function() {
-    this.initPackage();
-
     return this._package;
 };
 
@@ -820,25 +903,22 @@ CLI.getProjectName = function() {
  * @returns {string} The virtual version of the path.
  */
 CLI.getVirtualPath = function(aPath) {
-    this.initPackage();
     return this._package.getVirtualPath(aPath);
 };
 
 
 /**
- * Checks for a CLI.MAKE_FILE in the application root directory and, if found,
- * checks it for a matching target.
- * @param {string} target The target to search for.
+ * Checks the known list of TIBET makefile targets for a specific target.
+ * @param {string} target The target name to search for.
  * @returns {boolean} True if the target is found.
  */
 CLI.hasMakeTarget = function(target) {
-    var targets;
+    var Make;
 
-    targets = this.getMakeTargets();
-    if (this.notValid(targets)) {
-        return false;
-    }
-    return typeof targets[target] === 'function';
+    Make = require('./make');
+    Make.initialize();
+
+    return Make.hasTarget(target);
 };
 
 
@@ -919,12 +999,18 @@ CLI.initPackage = function() {
         return;
     }
 
-    Package = require('../../../etc/cli/tibet-package');
+    Package = require('../../../etc/common/tibet_package');
     this._package = new Package(this.options);
 
     this.config.tibet = this._package.getProjectConfig();
     this.config.tds = this._package.getServerConfig();
     this.config.npm = this._package.getPackageConfig();
+
+    //  Set up options for creating a proper color instance.
+    this.options.scheme = this.options.scheme || process.env.TIBET_CLI_SCHEME ||
+        this._package.getcfg('cli.color.scheme') || 'ttychalk';
+    this.options.theme = this.options.theme || process.env.TIBET_CLI_THEME ||
+        this._package.getcfg('cli.color.theme') || 'default';
 };
 
 
@@ -934,8 +1020,6 @@ CLI.initPackage = function() {
  * @returns {Boolean} True if the current context is inside the TIBET library.
  */
 CLI.inLibrary = function(CmdType) {
-    this.initPackage();
-
     return this._package.inLibrary();
 };
 
@@ -952,9 +1036,32 @@ CLI.inProject = function(CmdType) {
     var silent;
 
     silent = CmdType && CmdType.NAME === 'help';
-    this.initPackage();
 
     return this._package.inProject(silent);
+};
+
+
+/**
+ * Returns true if the path provided appears to be an aboslute path. Note that
+ * this will return true for TIBET virtual paths since they are absolute paths
+ * when expanded.
+ * @param {string} aPath The path to be tested.
+ * @returns {Boolean} True if the path is absolute.
+ */
+CLI.isAbsolutePath = function(aPath) {
+    if (aPath.indexOf('~') === 0) {
+        return true;
+    }
+
+    if (aPath.indexOf('/') === 0) {
+        return true;
+    }
+
+    if (/^[a-zA-Z]+:/.test(aPath)) {
+        return true;
+    }
+
+    return false;
 };
 
 
@@ -1118,12 +1225,10 @@ CLI.rpad = function(obj, length, padChar) {
 /**
  * Sets a configuration value. Leverages the logic in a TIBET Package object for
  * the processing of TIBET configuration data.
- * @param {string} property A specific property name to be updated.
- * @param {string} value A specific property value to set.
+ * @param {String|Object} property A specific property name to be updated.
+ * @param {Object} [value] A specific property value to set.
  */
 CLI.setcfg = function(property, value) {
-    this.initPackage();
-
     return this._package.setcfg(property, value);
 };
 
@@ -1205,9 +1310,11 @@ CLI.unquote = function(aString) {
  * @param {Error} e The error object.
  * @param {string} phase The phase of command processing.
  * @param {string} command The command that failed.
+ * @param {Boolean} exit Set to false to avoid exiting the process.
  */
-CLI.handleError = function(e, phase, command) {
-    var msg;
+CLI.handleError = function(e, phase, command, exit) {
+    var msg,
+        str;
 
     try {
 
@@ -1223,14 +1330,20 @@ CLI.handleError = function(e, phase, command) {
         }
 
         // Try to avoid Error... Error... messages being built up.
-        if (!/^Error/.test(msg)) {
-            msg = 'Error ' + phase + ' ' + command + ': ' + msg;
+        if (!/^Error/i.test(msg)) {
+            str = 'Error';
+            str += ' ' + (phase ? phase : 'running');
+            str += ' ' + (command ? command : 'command');
+            str += ': ' + msg;
+            msg = str;
         }
 
         this.error(msg);
 
     } finally {
-        process.exit(1);
+        if (exit !== false) {
+            process.exit(1);
+        }
     }
 };
 
@@ -1243,12 +1356,16 @@ CLI.handleError = function(e, phase, command) {
  */
 CLI.run = function(config) {
 
-    var command,        // the first non-option argument, the command name.
+    var cfg,
+        command,        // the first non-option argument, the command name.
         cmdPath;        // the command path (for use with require())
 
-    // Typically contains npm config data under a 'npm' key and a slot for TIBET
-    // config data (normally read in by _cmd) under a 'tibet' key.
-    this.config = config || {};
+    //  Need to do a cautious merge here. The initPackage data should be in
+    //  this.config when we invoke run. We don't want to lose it. We want to
+    //  treat it like defaults that could be overwritten by things in config.
+    cfg = config || {};
+    this.config = this.config || {};
+    this.config = CLI.blend(this.config, cfg);
 
     //  ---
     //  Process the command-line arguments to find the command name.
@@ -1259,7 +1376,25 @@ CLI.run = function(config) {
     this.options = minimist(process.argv.slice(2),
         this.PARSE_OPTIONS) || {_: []};
 
-    if (this.options.complete) {
+    if (this.options.initpath) {
+        /* eslint-disable no-console */
+        console.log(
+            path.join(__dirname,
+                '..', '..', '..',
+                'etc', 'scripts', 'tibetinit.sh'));
+        /* eslint-enable no-console */
+        process.exit(0);
+    }
+
+    //  Get color instance configured to support colorizing.
+    Color = require('../../../etc/common/tibet_color');
+    this.color = new Color(this.options);
+    this.colorize = this.color.colorize.bind(this.color);
+
+    Logger = require('../../../etc/common/tibet_logger');
+    this.logger = new Logger(this.options);
+
+    if (this.options.completion) {
         this.runComplete();
         return;
     }
@@ -1272,24 +1407,23 @@ CLI.run = function(config) {
         if (this.options.version) {
             command = 'version';
         } else if (this.options.initpath) {
-            this.log(this.expandPath(
-                path.join(module.filename, this.TIBETINIT_FILE)));
+            this.log(
+                path.join(__dirname,
+                    '..', '..', '..',
+                    'etc', 'scripts', 'tibetinit.sh'),
+                'no-color');    //  NOTE we turn off any colorizing since this
+                                //  is often invoked by the shell autocomplete
+                                //  configuration scripts which parse output.
             process.exit(0);
         } else {
-            command = 'help';
+            this.runHelp('tibet');
+            return;
         }
     }
 
     // Don't run commands that are prefixed, they're considered 'cli internals'.
-    if (command.charAt(0) === '_') {
+    if (command.charAt(0) === '_' && !this.options.force) {
         this.error('Cannot directly run private command: ' + command);
-        process.exit(1);
-    }
-
-    //  The makefile often resides in the command location, but we don't want to
-    //  try to run it like a command.
-    if (command + '.js' === CLI.MAKE_FILE) {
-        this.error('Cannot directly run TIBET makefile.');
         process.exit(1);
     }
 
@@ -1298,8 +1432,7 @@ CLI.run = function(config) {
     //  ---
 
     if (this.options.help) {
-        this.runHelp(command);
-        return;
+        return this.runHelp(command);
     }
 
     //  ---
@@ -1311,26 +1444,31 @@ CLI.run = function(config) {
 
     // Not a 'native TIBET command' so try handling via fallback logic.
     if (!cmdPath) {
-        this.runFallback(command);
-        return;
+        return this.runFallback(command);
     }
 
-    this.runCommand(command, cmdPath);
+    return this.runCommand(command, cmdPath);
 };
 
 
 /**
  * Executes a named command which should be found at cmdPath. Command instances
  * are invoked via their `execute` method. See the _cmd.js documentation for
- * more detail.
- * @param {string} command The command name.
+ * more detail. In some cases the command can be passed as a command line (as
+ * with runViaMake). In that case the argv parsed is the one created by
+ * splitting the command string to remove the initial command rather than
+ * process.argv.
+ * @param {string} command The command name and optional arguments.
  * @param {string} cmdPath The path used to require the command implementation.
  */
 CLI.runCommand = function(command, cmdPath) {
 
     var CmdType,
         cmd,
-        msg;
+        msg,
+        parts,
+        argv,
+        result;
 
     // Load the command type
     try {
@@ -1340,6 +1478,15 @@ CLI.runCommand = function(command, cmdPath) {
         this.handleError(e, 'loading', command);
     }
 
+    // Initialize the type if it has an initializer.
+    if (typeof CmdType.initialize === 'function') {
+        try {
+            CmdType.initialize();
+        } catch (e) {
+            this.handleError(e, 'initializing', command);
+        }
+    }
+
     // Instantiate the command instance. Note no arguments here.
     try {
         cmd = new CmdType();
@@ -1347,10 +1494,14 @@ CLI.runCommand = function(command, cmdPath) {
         this.handleError(e, 'instantiating', command);
     }
 
-    //  Reparse the options now that we've been able to merge in any
-    //  command-specific ones.
-    this.options = minimist(process.argv.slice(2),
-       cmd.PARSE_OPTIONS) || {_: []};
+    parts = command.split(' ');
+    if (parts.length > 1) {
+        argv = parts.slice(1);
+    } else {
+        argv = process.argv.slice(2);
+    }
+    this.options = minimist(argv,
+        cmd.PARSE_OPTIONS) || {_: []};
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
@@ -1381,7 +1532,17 @@ CLI.runCommand = function(command, cmdPath) {
     //  Dispatch the command. It will parse the command
     //  line again itself so it can be certain of flag values.
     try {
-        cmd.run();
+        result = cmd.run(argv);
+        if (typeof result === 'number') {
+            if (result !== 0) {
+                /* eslint-disable no-process-exit */
+                process.exit(result);
+                /* eslint-enable no-process-exit */
+            }
+        // } else {
+        // TODO:    reactivate this after reviewing all commands/promises.
+            // this.warn(command + ' returned non-numeric status value');
+        }
     } catch (e) {
         this.handleError(e, 'processing', command);
     }
@@ -1389,7 +1550,7 @@ CLI.runCommand = function(command, cmdPath) {
 
 
 /**
- * Processes potential autocompletion  matches and logs a list of options to
+ * Processes potential autocompletion matches and logs a list of options to
  * display in the Bash or Zsh shells.
  */
 CLI.runComplete = function() {
@@ -1401,9 +1562,9 @@ CLI.runComplete = function() {
 
     list = [];
 
-    targets = this.getMakeTargets() || {};
+    targets = this.getMakeTargets() || [];
     list = this.getCommands();
-    list = list.concat(Object.keys(targets).filter(function(name) {
+    list = list.concat(targets.filter(function(name) {
         return name.charAt(0) !== '_';
     }));
 
@@ -1504,7 +1665,7 @@ CLI.runFallback = function(command) {
  * @param {string} topic The help topic to display, if available.
  */
 CLI.runHelp = function(topic) {
-    this.runCommand('help', path.join(__dirname, 'help.js'));
+    return this.runCommand('help', path.join(__dirname, 'help.js'));
 };
 
 
@@ -1612,13 +1773,26 @@ CLI.runViaGulp = function(command) {
  * @param {string} command The command to attempt to execute.
  */
 CLI.runViaMake = function(command) {
+    var args;
 
     // Delegate to the same runCommand used for all other common commands. Note
     // that the only difference to the `make` command is that it won't be able
-    // to parse quite the same command line from process.argv.
-    this.runCommand('make', path.join(__dirname, 'make.js'));
+    // to parse quite the same command line from process.argv. Note we use the
+    // command provided and essentially slice off node, tibet, and the original
+    // command name here to allow for redispatch.
+    args = process.argv.slice(3);
+    this.runCommand('make ' + command + (args ? ' ' + args : ''),
+        path.join(__dirname, 'make.js'));
 };
 
+
+try {
+    CLI.initPackage();
+} catch (e) {
+    /* eslint-disable no-console */
+    console.error(e.message);
+    /* eslint-enable no-console */
+}
 
 module.exports = CLI;
 

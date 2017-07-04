@@ -1,0 +1,70 @@
+@namespace tsh url("http://www.technicalpursuit.com/1999/tshell");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+tsh|method_assistant {
+
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+tsh|method_assistant > .head {
+}
+
+tsh|method_assistant > .body {
+}
+
+tsh|method_assistant > .body .flex_outer li,
+.flex-inner {
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+tsh|method_assistant > .body .flex_outer > li > label {
+
+    flex: 1 0 120px;
+
+    max-width: 220px;
+}
+
+tsh|method_assistant > .body .flex_outer > li > label + *,
+.flex_inner {
+
+    flex: 1 0 220px;
+}
+
+tsh|method_assistant > .body .flex_inner {
+
+    justify-content: space-between;
+}
+
+tsh|method_assistant > .body .flex_inner li {
+
+    width: 100px;
+}
+
+tsh|method_assistant > .body #generatedCmdLine {
+
+    margin-bottom: 10px;
+    margin-left: 10px;
+
+    font-size: 100%;
+
+    background-color: #f8f8f8;
+
+    border: dashed 1px black;
+}
+
+tsh|method_assistant > .foot {
+
+    margin-top: 1em;
+}
+

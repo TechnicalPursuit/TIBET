@@ -5,10 +5,13 @@
 TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: manipulation',
 function() {
 
-    var unloadURI,
-        loadURI,
+    var driver,
+        windowContext,
 
-        windowContext;
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -17,10 +20,10 @@ function() {
     this.before(
         function() {
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -33,7 +36,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -41,18 +44,9 @@ function() {
 
     //  ---
 
-    this.beforeEach(
-        function() {
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(100);
-        });
-
-    //  ---
-
     this.afterEach(
         function() {
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -65,16 +59,22 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
+
+                var focusedElem;
+
                 test.assert.hasAttribute(radioitem, 'pclass:focus');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIFocus');
                 test.assert.didSignal(radioitem, 'TP.sig.UIDidFocus');
+
+                focusedElem = driver.getFocusedElement();
+                test.assert.isIdenticalTo(focusedElem, radioitem);
             });
     });
 
@@ -90,41 +90,41 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseDown(radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(radioitem, 'pclass:active');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
                 test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseUp(radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
                 test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  click
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             click(radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Don't test the attribute here - it will already have been
@@ -150,25 +150,25 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyDown(radioitem, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(radioitem, 'pclass:active');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
                 test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyUp(radioitem, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
@@ -192,27 +192,27 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:focus');
 
                 test.refute.didSignal(radioitem, 'TP.sig.UIFocus');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidFocus');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseDown(radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
@@ -220,25 +220,25 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseUp(radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- click
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             click(radioitem).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
@@ -246,30 +246,30 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyDown(radioitem, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
                 test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyUp(radioitem, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
@@ -279,15 +279,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: get/set value',
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: get/set value - no multiple',
 function() {
 
-    var testData,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI,
 
-        windowContext;
+        testData;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -299,10 +302,10 @@ function() {
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            windowContext = this.getDriver().get('windowContext');
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
         });
 
     //  ---
@@ -311,7 +314,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -319,12 +322,12 @@ function() {
 
     //  ---
 
-    this.it('setting value to scalar values', function(test, options) {
+    this.it('xctrls:radioitem - setting value to scalar values', function(test, options) {
 
         var tpElem,
             value;
 
-        tpElem = TP.byId('dataradioitem1', windowContext);
+        tpElem = TP.byId('testGroup1', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -354,12 +357,12 @@ function() {
 
     //  ---
 
-    this.it('setting value to complex object values', function(test, options) {
+    this.it('xctrls:radioitem - setting value to complex object values', function(test, options) {
 
         var tpElem,
             value;
 
-        tpElem = TP.byId('dataradioitem1', windowContext);
+        tpElem = TP.byId('testGroup1', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -377,7 +380,10 @@ function() {
         test.assert.isEqualTo(value, 'foo');
 
         //  Object
-        tpElem.set('value', {foo: 'baz'});
+        tpElem.set('value',
+            {
+                foo: 'baz'
+            });
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
@@ -389,12 +395,12 @@ function() {
 
     //  ---
 
-    this.it('setting value to markup', function(test, options) {
+    this.it('xctrls:radioitem - setting value to markup', function(test, options) {
 
         var tpElem,
             value;
 
-        tpElem = TP.byId('dataradioitem1', windowContext);
+        tpElem = TP.byId('testGroup1', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -446,6 +452,771 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
     });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: get/set value - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI,
+
+        testData;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+            testData = TP.$$commonObjectValues;
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+
+            var tpElem;
+
+            //  Make sure that each test starts with a freshly reset item
+            tpElem = TP.byId('testGroup2', windowContext);
+            tpElem.deselectAll();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  String (multiple)
+        tpElem.set('value', 'foo;baz');
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Array
+        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  Object
+        tpElem.set('value',
+            {
+                foo: 'baz'
+            });
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('baz'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  TP.core.Hash
+        tpElem.set('value', TP.hc('foo', 'bar'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  reset
+        tpElem.deselectAll();
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('baz'));
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: selection management - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+
+            windowContext = driver.get('windowContext');
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - addSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  radio elements do *not* allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
+
+        //  ---
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+    });
+
+    //  ---
+
+    this.it('xctrls:dataradioitem - removeSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        tpElem.addSelection('bar');
+
+        //  (property defaults to 'value')
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        //  'value' property
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+
+        //  NB: This is different from XHTML in that we can have a radioitem
+        //  with 'no selection'
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+    });
+
+    //  ---
+
+    this.it('xctrls:dataradioitem - select', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  (property defaults to 'value')
+        tpElem.select('bar');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        tpElem.select('baz');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem3', windowContext).isSelected());
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: selection management - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI,
+
+        getSelectedIndices;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    getSelectedIndices = function() {
+
+        var groupElem,
+            checkboxIndices;
+
+        groupElem = TP.byId('testGroup2', windowContext);
+
+        checkboxIndices = groupElem.get('xctrls|radioitem').collect(
+                            function(valueTPElem, anIndex) {
+
+                                if (valueTPElem.hasAttribute(
+                                                    'pclass:checked')) {
+                                    return anIndex;
+                                }
+                            });
+
+        //  Removes nulls and undefineds
+        return checkboxIndices.compact();
+    };
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+
+            var tpElem;
+
+            //  Make sure that each test starts with a freshly reset item
+            tpElem = TP.byId('testGroup2', windowContext);
+            tpElem.deselectAll();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - addSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  checkbox elements allow multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
+
+        //  ---
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - removeSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - selectAll', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - select', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - select with RegExp', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - deselect', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - deselect with RegExp', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: data binding - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('testGroup3', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'bar');
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_1')),
+            'bar');
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            dataradioitem7;
+
+        tpElem = TP.byId('testGroup3', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        dataradioitem7 = TP.byId('dataradioitem7', windowContext);
+
+        test.getDriver().constructSequence().
+            click(dataradioitem7).
+            run();
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    'foo');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_1')),
+                    'foo');
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: data binding - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('testGroup4', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'baz'));
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_2')),
+            TP.ac('foo', 'baz'));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            dataradioitem11,
+            dataradioitem12;
+
+        tpElem = TP.byId('testGroup4', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        dataradioitem11 = TP.byId('dataradioitem11', windowContext);
+
+        test.getDriver().constructSequence().
+            click(dataradioitem11).
+            run();
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar', 'baz'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar', 'baz'));
+            });
+
+        dataradioitem12 = TP.byId('dataradioitem12', windowContext);
+
+        test.getDriver().constructSequence().
+            click(dataradioitem12).
+            run();
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar'));
+            });
+    });
+
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------

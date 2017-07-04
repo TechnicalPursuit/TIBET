@@ -5,16 +5,9 @@
 
 <config id="base">
 
-    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.extern.JsDiff = JsDiff;
-        ]]>
-    </script>
-
     <script src="./src/Matchers.js"/>
 
-    <script src="./src/sherpa_Element.js"/>
+    <script src="./src/TP.sherpa.Element.js"/>
 
     <script src="./src/TP.tibet.sherpa.js"/>
 
@@ -29,23 +22,22 @@
     <script src="./src/TP.log.SherpaAppender.js"/>
     <script src="./src/TP.log.SherpaTestAppender.js"/>
 
-    <script src="./src/TP.sherpa.popup.js"/>
-
-    <script src="./src/UIElementNodeAdditions.js"/>
+    <script src="./src/TP.sherpa.menucontent.js"/>
+    <script src="./src/TP.sherpa.hudsidebar.js"/>
 
     <script src="./src/TP.sherpa.ToolAPI.js"/>
-
-    <script src="./src/TP.sherpa.ctrl.js"/>
 
     <script src="./TP.sherpa.about/TP.sherpa.about.js"/>
     <script src="./TP.sherpa.console/TP.sherpa.console.js"/>
     <script src="./TP.sherpa.halo/TP.sherpa.halo.js"/>
-    <script src="./TP.sherpa.haloMenuContent/TP.sherpa.haloMenuContent.js"/>
+    <script src="./TP.sherpa.customTagContextMenuContent/TP.sherpa.customTagContextMenuContent.js"/>
     <script src="./TP.sherpa.hud/TP.sherpa.hud.js"/>
     <script src="./TP.sherpa.world/TP.sherpa.world.js"/>
     <script src="./TP.sherpa.screen/TP.sherpa.screen.js"/>
+    <script src="./TP.sherpa.flex/TP.sherpa.flex.js"/>
+    <script src="./TP.sherpa.toggle/TP.sherpa.toggle.js"/>
     <script src="./TP.sherpa.tile/TP.sherpa.tile.js"/>
-    <script src="./TP.sherpa.parents/TP.sherpa.parents.js"/>
+    <script src="./TP.sherpa.domhud/TP.sherpa.domhud.js"/>
     <script src="./TP.sherpa.breadcrumb/TP.sherpa.breadcrumb.js"/>
     <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
     <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>
@@ -54,8 +46,8 @@
     <script src="./TP.sherpa.drawer/TP.sherpa.drawer.js"/>
     <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
     <script src="./TP.sherpa.workbench/TP.sherpa.workbench.js"/>
-    <script src="./TP.sherpa.styles/TP.sherpa.styles.js"/>
-    <script src="./TP.sherpa.binds/TP.sherpa.binds.js"/>
+    <script src="./TP.sherpa.styleshud/TP.sherpa.styleshud.js"/>
+    <script src="./TP.sherpa.bindshud/TP.sherpa.bindshud.js"/>
     <script src="./TP.sherpa.opener/TP.sherpa.opener.js"/>
     <script src="./TP.sherpa.scrollbutton/TP.sherpa.scrollbutton.js"/>
     <script src="./TP.sherpa.splitbox/TP.sherpa.splitbox.js"/>
@@ -63,21 +55,41 @@
     <script src="./TP.sherpa.dispenser/TP.sherpa.dispenser.js"/>
     <script src="./TP.sherpa.dispenseritem/TP.sherpa.dispenseritem.js"/>
     <script src="./TP.sherpa.readout/TP.sherpa.readout.js"/>
-    <script src="./TP.sherpa.notifier/TP.sherpa.notifier.js"/>
     <script src="./TP.sherpa.consoleoutput/TP.sherpa.consoleoutput.js"/>
-    <script src="./TP.sherpa.contextmenu/TP.sherpa.contextmenu.js"/>
-    <script src="./TP.sherpa.responders/TP.sherpa.responders.js"/>
+    <script src="./TP.sherpa.halocontextmenu/TP.sherpa.halocontextmenu.js"/>
+    <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
-    <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>
-    <script src="./TP.sherpa.extruder/TP.sherpa.extruder.js"/>
-    <script src="./TP.sherpa.quality/TP.sherpa.quality.js"/>
-    <script src="./TP.sherpa.search/TP.sherpa.search.js"/>
+    <script src="./TP.sherpa.outliner/TP.sherpa.outliner.js"/>
+    <script src="./TP.sherpa.changes/TP.sherpa.changes.js"/>
+    <script src="./TP.sherpa.count/TP.sherpa.count.js"/>
+    <script src="./TP.sherpa.sync/TP.sherpa.sync.js"/>
+    <script src="./TP.sherpa.settings/TP.sherpa.settings.js"/>
+    <script src="./TP.sherpa.bookmarkMenuContent/TP.sherpa.bookmarkMenuContent.js"/>
+    <script src="./TP.sherpa.snippetMenuContent/TP.sherpa.snippetMenuContent.js"/>
+    <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>
+    <script src="./TP.sherpa.toolbar/TP.sherpa.toolbar.js"/>
+    <script src="./TP.sherpa.typeToolbarContent/TP.sherpa.typeToolbarContent.js"/>
+    <script src="./TP.sherpa.typesToolbarContent/TP.sherpa.typesToolbarContent.js"/>
+    <script src="./TP.sherpa.methodsToolbarContent/TP.sherpa.methodsToolbarContent.js"/>
+    <script src="./TP.sherpa.uriEditorToolbarContent/TP.sherpa.uriEditorToolbarContent.js"/>
+    <script src="./TP.sherpa.methodEditorToolbarContent/TP.sherpa.methodEditorToolbarContent.js"/>
+    <script src="./TP.sherpa.elementContextMenuContent/TP.sherpa.elementContextMenuContent.js"/>
+
+    <!-- These may create subtypes defined in TP.sherpa.inspector.js, so we need
+         to place them *after* that in the load order. -->
+    <script src="./src/TIBETNativeTypes_Additions.js"/>
+    <script src="./src/TP.core.Node_Additions.js"/>
+    <script src="./src/TP.core.URI_Additions.js"/>
+    <script src="./src/TP.html_Additions.js"/>
+    <script src="./src/TP.lang.RootObject_Additions.js"/>
 
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
 
-    <resource href="~ide_root/css/sherpa_pp.css"/>
+    <resource href="~ide_root/styles/sherpa_pp.css"/>
+
+    <script src="./src/TP.sherpa.CouchTools.js"/>
 
 </config>
 

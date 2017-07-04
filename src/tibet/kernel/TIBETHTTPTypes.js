@@ -31,13 +31,6 @@ TP.sig.HTTPRequest.Type.defineAttribute('responseType', 'TP.sig.HTTPResponse');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-/**
- * Whether this request has been logged. Normally not used but if errors occur
- * during the request this slot is used to avoid logging multiple times.
- * @type {Boolean}
- */
-TP.sig.HTTPRequest.Inst.defineAttribute('logged');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -65,7 +58,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     //  presumably we can do this only because the request is async and
     //  we've got some cycles...so do what we can to turn off the request
-    if (TP.isXHR(httpObj = this.at('xhr'))) {
+    if (TP.isXHR(httpObj = this.at('commObj'))) {
         TP.httpAbort(httpObj);
     }
 
@@ -119,7 +112,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     //  presumably we can do this only because the request is async and
     //  we've got some cycles...so do what we can to turn off the request
-    if (TP.isXHR(httpObj = this.at('xhr'))) {
+    if (TP.isXHR(httpObj = this.at('commObj'))) {
         TP.httpAbort(httpObj);
     }
 
@@ -168,28 +161,77 @@ function(aResult) {
     var httpObj,
         url,
         uri,
-        data;
+        data,
+        result,
 
-    if (TP.isXHR(httpObj = this.at('xhr'))) {
-        //  update what we consider to be our "final uri", the qualified URI
-        //  based on parameter data etc.
-        url = this.at('finaluri');
-        if (TP.isURIString(url)) {
-            uri = TP.uc(url);
-            if (TP.isURI(uri)) {
-                uri.updateHeaders(httpObj);
-                data = uri.updateResourceCache(this);
+        wasRefreshingContent;
 
-                uri.isLoaded(true);
-                uri.isDirty(false);
-            }
+    httpObj = this.at('commObj');
+
+    //  update what we consider to be our "final uri", the qualified URI
+    //  based on parameter data etc.
+    url = this.at('finaluri');
+    if (TP.isURIString(url)) {
+        uri = TP.uc(url);
+        if (TP.isURI(uri)) {
+            uri.updateHeaders(httpObj);
+
+            //  Get the filtered resource result as our request response. This
+            //  does not change the uri's internally held resource (although it
+            //  may change the internal data of a content object resource).
+            data = uri.getRequestedResource(this);
         }
     }
 
-    data = data || aResult;
-    this.set('result', data);
+    result = TP.ifInvalid(aResult, data);
 
-    return this.callNextMethod(data);
+    switch (this.get('resultType')) {
+        case TP.DOM:
+            if (!TP.isNode(result)) {
+                result = httpObj.responseXML;
+            }
+            break;
+        case TP.TEXT:
+            if (!TP.isString(result)) {
+                result = httpObj.responseText;
+            }
+            break;
+        case TP.XHR:
+        case TP.NATIVE:
+            if (!TP.isXHR(result)) {
+                result = httpObj;
+            }
+            break;
+        default:    //  TP.WRAP
+            break;
+    }
+
+    //  Set the result to the new data (or to the old data if the new data was
+    //  invalid, per our switch statement above).
+    this.set('result', result);
+
+    //  Now, if we have a valid URI, update the resource cache again, which will
+    //  use the result we just set and will update it to the new (or maybe old)
+    //  data. NOTE: we capture the result and return it as the result from the
+    //  HTTP call. This is important so that we get the last, most up-to-date
+    //  data representation.
+    if (TP.isValid(uri)) {
+
+        //  Note how we force the 'refreshContent' setting to true here - this
+        //  will make sure that the resource cache is updated with the content
+        //  from this request and that the proper result is returned.
+        wasRefreshingContent = this.at('refreshContent');
+        this.atPut('refreshContent', true);
+
+        //  Get the filtered resource result as our request response. This does
+        //  not change the uri's internally held resource (although it may
+        //  change the internal data of a content object resource).
+        result = uri.getRequestedResource(this);
+
+        this.atPut('refreshContent', wasRefreshingContent);
+    }
+
+    return this.callNextMethod(result);
 });
 
 //  ------------------------------------------------------------------------
@@ -205,7 +247,7 @@ function(aSignal) {
      *     specific status code, i.e. it has a method such as handle404, then
      *     that handler is called before processing a fail call.
      * @param {TP.sig.IOFailed} aSignal A response object containing the native
-     *     request as 'xhr'.
+     *     XMLHttpRequest as 'commObj'.
      * @returns {TP.sig.HTTPRequest} The receiver.
      */
 
@@ -219,8 +261,8 @@ function(aSignal) {
 
     request = aSignal.getPayload();
     if (TP.isValid(request)) {
-        httpObj = request.at('xhr');
-        this.atPut('xhr', httpObj);
+        httpObj = request.at('commObj');
+        this.atPut('commObj', httpObj);
     }
 
     //  If the XHR mechanism has aborted in Mozilla, it will cause the
@@ -293,8 +335,8 @@ function(aSignal) {
     //  isn't actually the receiver we still tuck away the xhr for reference
     request = aSignal.getPayload();
     if (TP.isValid(request)) {
-        httpObj = request.at('xhr');
-        this.atPut('xhr', httpObj);
+        httpObj = request.at('commObj');
+        this.atPut('commObj', httpObj);
     }
 
     //  If the XHR mechanism has aborted in Mozilla, it will cause the
@@ -368,7 +410,7 @@ function() {
     var httpObj,
         statusCode;
 
-    httpObj = this.getRequest().at('xhr');
+    httpObj = this.getRequest().at('commObj');
     if (TP.isXHR(httpObj)) {
         if (!TP.httpDidSucceed(httpObj)) {
             //  If the XHR mechanism has aborted in Mozilla, it will cause
@@ -378,7 +420,9 @@ function() {
             } catch (e) {
                 statusCode = null;
             } finally {
+                /* eslint-disable no-unsafe-finally */
                 return statusCode;
+                /* eslint-enable no-unsafe-finally */
             }
         }
     }
@@ -399,7 +443,7 @@ function() {
 
     var httpObj;
 
-    httpObj = this.getRequest().at('xhr');
+    httpObj = this.getRequest().at('commObj');
     if (TP.isXHR(httpObj)) {
         if (!TP.httpDidSucceed(httpObj)) {
             return httpObj.statusText;
@@ -424,8 +468,8 @@ function() {
      * @returns {XMLHttpRequest} The native XMLHttpRequest.
      */
 
-    //  if we have one it'll be stored with our request in the 'xhr' key
-    return this.getRequest().at('xhr');
+    //  if we have one it'll be stored with our request in the 'commObj' key
+    return this.getRequest().at('commObj');
 });
 
 //  ------------------------------------------------------------------------
@@ -677,19 +721,27 @@ function(aFormat) {
     var format,
         result;
 
-    format = TP.ifInvalid(aFormat, this.at('resultType'));
+    format = aFormat;
+    if (TP.notValid(format)) {
+        format = this.at('resultType');
+    }
 
     switch (format) {
         case TP.DOM:
             return this.getResponseXML();
         case TP.TEXT:
             return this.getResponseText();
+        case TP.XHR:
         case TP.NATIVE:
-            return this.getRequest().at('xhr');
+            return this.getRequest().at('commObj');
         default:
             //  Default is to try to find the best object possible at the
             //  low level.
-            result = this.getResponseXML();
+            result = this.$get('result');
+            if (TP.notValid(result)) {
+                result = this.getResponseXML();
+            }
+
             if (TP.notValid(result)) {
                 result = this.getResponseText();
             }
@@ -741,7 +793,7 @@ function(aRequest) {
     /**
      * @method finalizeRequest
      * @summary Perform any final updates or processing on the request to make
-     *     sure it is ready to send to TP.httpCall() for processing.
+     *     sure it is ready to send to TP.httpCall for processing.
      * @param {TP.sig.Request} aRequest The request being finalized.
      * @returns {TP.sig.HTTPRequest} The request to send. NOTE that this may not
      *     be the original request.
@@ -797,8 +849,7 @@ function() {
      * @returns {Constant} A constant suitable for TP.httpEncode.
      */
 
-    return TP.ifInvalid(this.$get('mimetype'),
-                        this.getType().get('mimetype'));
+    return this.$get('mimetype') || this.getType().get('mimetype');
 });
 
 //  ------------------------------------------------------------------------
@@ -814,8 +865,7 @@ function() {
      * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
-    return TP.ifInvalid(this.$get('httpMethod'),
-                        this.getType().get('httpMethod'));
+    return this.$get('httpMethod') || this.getType().get('httpMethod');
 });
 
 //  ------------------------------------------------------------------------
@@ -935,11 +985,10 @@ function(aRequest) {
         aRequest.atPut('object', e);
         aRequest.atPut('message', TP.str(e));
 
-        return TP.httpError(
-                    url,
-                    TP.ifKeyInvalid(aRequest, 'exceptionType',
-                                                        'HTTPException'),
-                    aRequest);
+        TP.httpError(url,
+            TP.ifKeyInvalid(aRequest, 'exceptionType', 'HTTPException'),
+            aRequest);
+        return;
     }
 
     return aRequest;
@@ -1012,7 +1061,10 @@ function(aRequest) {
         url;
 
     //  make sure we can define header values as needed to control the call
-    headers = TP.ifInvalid(aRequest.at('headers'), TP.hc());
+    headers = aRequest.at('headers');
+    if (TP.notValid(headers)) {
+        headers = TP.hc();
+    }
 
     //  Make sure we have a viable URL.
     url = aRequest.at('uri');
@@ -1064,10 +1116,10 @@ function(aRequest) {
 TP.sig.HTTPRequest.defineSubtype('HTTPLoadRequest');
 
 //  ========================================================================
-//  TP.sig.HTTPNukeRequest
+//  TP.sig.HTTPDeleteRequest
 //  ========================================================================
 
-TP.sig.HTTPRequest.defineSubtype('HTTPNukeRequest');
+TP.sig.HTTPRequest.defineSubtype('HTTPDeleteRequest');
 
 //  ========================================================================
 //  TP.sig.HTTPSaveRequest

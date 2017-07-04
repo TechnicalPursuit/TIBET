@@ -1,0 +1,6 @@
+{
+    "db_name": "fluffy",
+    "db_app": "fluffy",
+    "viewname": "sample",
+    "include_docs": true
+}

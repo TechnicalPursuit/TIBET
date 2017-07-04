@@ -11,8 +11,6 @@
 /*
 */
 
-/* JSHint checking */
-
 /* global CSSRule:false
 */
 
@@ -153,10 +151,7 @@ function(targetDoc, styleText, beforeNode) {
     targetHead = TP.documentEnsureHeadElement(targetDoc);
 
     //  Create a new 'style' element
-    newStyleElement = TP.documentConstructElement(targetDoc, 'style',
-                                                    TP.w3.Xmlns.XHTML);
-
-    TP.elementSetAttribute(newStyleElement, 'type', TP.CSS_TEXT_ENCODED);
+    newStyleElement = TP.documentConstructCSSStyleElement(targetDoc);
 
     //  Got to do this *before* we try to set the text content of the style
     //  element.
@@ -172,6 +167,35 @@ function(targetDoc, styleText, beforeNode) {
         //  Set the content of the style element to the new style text.
         TP.cssStyleElementSetContent(newStyleElement, styleText);
     }
+
+    return newStyleElement;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentConstructCSSStyleElement',
+function(targetDoc) {
+
+    /**
+     * @method documentConstructCSSStyleElement
+     * @summary Constructs a 'style' element on the target document.
+     * @param {Document} targetDoc The document to which the new style element
+     *     should be added.
+     * @exception TP.sig.InvalidDocument
+     * @returns {HTMLElement} The new style element that was added.
+     */
+
+    var newStyleElement;
+
+    if (!TP.isDocument(targetDoc)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    //  Create a new 'style' element
+    newStyleElement = TP.documentConstructElement(targetDoc, 'style',
+                                                    TP.w3.Xmlns.XHTML);
+
+    TP.elementSetAttribute(newStyleElement, 'type', TP.CSS_TEXT_ENCODED);
 
     return newStyleElement;
 });
@@ -311,7 +335,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
         //  under a 'style' element.
 
         resp = TP.uc(linkHref).getResource(
-            TP.hc('async', false, 'resultType', TP.TEXT));
+                                TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = resp.get('result');
 
         newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
@@ -537,8 +561,10 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
     shouldRefresh = TP.ifInvalid(refreshImports, false);
 
-    //  First, see if we've processed this style URI before
-    inlinedStyleElem = TP.byCSSPath('style[tibet|originalHref=' +
+    //  First, see if we've processed this style URI into an *XHTML* style
+    //  element before (note the specific namespace query of 'html|' for XHTML
+    //  style elements only - we don't want 'tibet:style' elements).
+    inlinedStyleElem = TP.byCSSPath('html|style[tibet|originalHref=' +
                                         '"' +
                                         styleURI.getOriginalSource() +
                                         '"]',
@@ -549,10 +575,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
     //  If not, create one.
     if (!TP.isElement(inlinedStyleElem)) {
 
-        inlinedStyleElem = TP.documentConstructElement(
-                                aDocument,
-                                'style',
-                                TP.w3.Xmlns.XHTML);
+        inlinedStyleElem = TP.documentConstructCSSStyleElement(aDocument);
 
         TP.elementSetAttribute(inlinedStyleElem,
                                 'tibet:originalHref',
@@ -591,9 +614,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
         processedStyleContent = processedStyleContent.replace(
                 TP.regex.CSS_IMPORT_RULE,
-                function(wholeMatch,
-                            leadingText,
-                            importLocation) {
+                function(wholeMatch, leadingText, importLocation) {
 
                     var importedStyleLocation,
                         importedStyleURI,
@@ -613,7 +634,6 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
                         importedStyleURI =
                                     TP.uc(importedStyleLocation);
-
 
                         //  Fetch content from the URI's resource
 
@@ -651,9 +671,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
         processedStyleContent = processedStyleContent.replace(
                 TP.regex.CSS_URL_PROPERTY,
-                function(wholeMatch,
-                            leadingText,
-                            locationValue) {
+                function(wholeMatch, leadingText, locationValue) {
 
                     var importedStyleLocation;
 
@@ -727,61 +745,105 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$documentRefreshAppliedRulesCaches',
-function(aDocument) {
+function(aDocument, flushCaches) {
 
     /**
      * @method $documentRefreshAppliedRulesCaches
      * @summary Refreshes all style rules for every element in the document.
      *     The end result of running this function is that every element in the
-     *     document will have a '.appliedRules' property that contains an Array
-     *     of CSS style rules that apply to it.
+     *     document will have a 'TP.APPLIED_RULES' property that contains an
+     *     Array of CSS style rules that apply to it.
      * @description As this function iterates over every CSS rule in the
      *     document, querying the document for matching elements and then adding
-     *     to that element's '.appliedRules' property with that rule. Therefore,
-     *     this can be a time consuming process. A 50 rule document with 50
-     *     elements takes about 500ms on a 2.2Ghz Pentium 4 class machine.
+     *     to that element's 'TP.APPLIED_RULES' property with that rule.
+     *     Therefore, this can be a time consuming process.
      * @param {HTMLDocument} aDocument The document to refresh all of the
      *     elements of.
+     * @param {Boolean} [flushCaches=false] Whether or not we should flush the
+     *     element-level rule caches. After this method is executed, elements
+     *     will have cached Arrays containing the Rule objects applying to them.
+     *     Passing true here will cause those caches to flush.
      * @exception TP.sig.InvalidDocument
      */
 
-    var docRules,
+    var shouldFlushCaches,
 
+        docRules,
+
+        leni,
         i,
         aRule,
 
+        parentSS,
+
         elementsMatchingRule,
 
+        lenj,
         j,
-        matchingElement;
+        matchingElement,
+
+        appliedRules;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  For some reason, some CSS selector queries can return the document
-    //  object. Go ahead and put an 'appliedRules' Array there.
-    aDocument.appliedRules = TP.ac();
+    shouldFlushCaches = TP.ifInvalid(flushCaches, false);
 
     //  Grab all of the document's CSS rules.
     docRules = TP.documentGetNativeStyleRules(aDocument);
 
-    //  Iterate over them, querying the document for any elements that
-    //  match the selector text of the rule. Then, iterate over those
-    //  elements and add the rule to its 'appliedRules' Array.
-    for (i = 0; i < docRules.getSize(); i++) {
+    //  Iterate over them, querying the document for any elements that match
+    //  the selector text of the rule. Then, iterate over those elements and add
+    //  the rule to its 'appliedRules' Array.
+    leni = docRules.getSize();
+    for (i = 0; i < leni; i++) {
+
         aRule = docRules.at(i);
 
-        elementsMatchingRule = TP.nodeEvaluateCSS(null, aRule.selectorText);
+        //  Not a CSSRule.STYLE_RULE? Must be an @import or a @namespace - move
+        //  on.
+        if (aRule.type !== CSSRule.STYLE_RULE) {
+            continue;
+        }
 
-        for (j = 0; j < elementsMatchingRule.getSize(); j++) {
-            matchingElement = elementsMatchingRule.at(j);
+        //  Find the style sheet associated with the element that inserted the
+        //  rule's stylesheet (because of @import, it might not be the sheet in
+        //  the 'parentStyleSheet' slot of the rule itself).
+        parentSS = aRule.parentStyleSheet;
+        while (parentSS.parentStyleSheet) {
+            parentSS = parentSS.parentStyleSheet;
+        }
 
-            if (TP.notValid(matchingElement.appliedRules)) {
-                matchingElement.appliedRules = TP.ac();
+        //  If the stylesheet came from a private TIBET stylesheet (normally
+        //  used for IDE or other purposes), then don't consider it.
+        if (parentSS.ownerNode[TP.TIBET_PRIVATE]) {
+            continue;
+        }
+
+        //  Grab any elements that match the rule's selector
+        elementsMatchingRule = TP.nodeEvaluateCSS(aDocument,
+                                                    aRule.selectorText);
+
+        //  Iterate over those elements, and add the rule object to that
+        //  element's list of applicable rules
+        lenj = elementsMatchingRule.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            if (j === 0 && shouldFlushCaches) {
+                matchingElement[TP.APPLIED_RULES] = null;
             }
 
-            matchingElement.appliedRules.push(aRule);
+            matchingElement = elementsMatchingRule.at(j);
+
+            appliedRules = matchingElement[TP.APPLIED_RULES];
+
+            if (TP.notValid(appliedRules)) {
+                appliedRules = TP.ac();
+                matchingElement[TP.APPLIED_RULES] = appliedRules;
+            }
+
+            appliedRules.push(aRule);
         }
     }
 
@@ -1122,13 +1184,14 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidString
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element. Note that this routine can also
      *     return NaN, if it cannot compute a numeric value.
      */
 
-    var parentElem,
+    var val,
+
+        parentElem,
 
         results,
         numericPart,
@@ -1139,14 +1202,17 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    //  No value for this property? Then it's pixel value is 0.
     if (TP.isEmpty(aValue)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
+        return 0;
     }
+
+    val = TP.trim(aValue);
 
     //  If it's just a pixel value, then we can do a simple parse here and
     //  return.
-    if (TP.regex.CSS_PIXEL.test(aValue)) {
-        if (TP.isNaN(results = parseFloat(aValue))) {
+    if (TP.regex.CSS_PIXEL.test(val)) {
+        if (TP.isNaN(results = parseFloat(val))) {
             return 0;
         }
 
@@ -1161,8 +1227,8 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  If the value is not expressed using 'unit length' (i.e. it is a
     //  keyword such as 'inherit', 'initial', 'none', etc.), then we try to
     //  'do the right thing', based on a property name if one was supplied.
-    if (!TP.regex.CSS_UNIT.test(aValue)) {
-        switch (aValue) {
+    if (!TP.regex.CSS_UNIT.test(val)) {
+        switch (val) {
             case 'inherit':
 
                 //  We inherited the property - return whatever our *parent
@@ -1170,7 +1236,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
                 //  as a value for this property.
                 if (TP.isElement(parentElem = anElement.parentNode)) {
                     return TP.elementGetPixelValue(parentElem,
-                                                    aValue,
+                                                    val,
                                                     targetProperty,
                                                     wantsTransformed);
                 }
@@ -1191,7 +1257,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
                 //  Could be border values... check further
                 if (/border.*?Width/.test(targetProperty)) {
-                    switch (aValue) {
+                    switch (val) {
                         case 'thin':
                             results = 2;
                             break;
@@ -1219,12 +1285,10 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
                 return NaN;
 
                 //  Otherwise, return NaN
-            /* jshint -W086 */
             case 'auto':
             case 'none':
             default:
                 return NaN;
-            /* jshint +W086 */
         }
 
         return;
@@ -1233,8 +1297,8 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  If the value is expressed using a 'non-relative' unit measurement
     //  (i.e. not '%', 'em' or 'ex'), then we can try to convert it just
     //  using the 'pixelsPerPoint' computation.
-    if (TP.regex.CSS_NON_RELATIVE_UNIT.test(aValue)) {
-        results = TP.regex.CSS_NON_RELATIVE_UNIT.exec(aValue);
+    if (TP.regex.CSS_NON_RELATIVE_UNIT.test(val)) {
+        results = TP.regex.CSS_NON_RELATIVE_UNIT.exec(val);
         numericPart = parseFloat(results.at(2));
         unitPart = results.at(3);
 
@@ -1290,7 +1354,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  property, then we can determine the pixel value by calling a routine
     //  that, based on the property name, will return the correct number of
     //  pixels.
-    if (TP.regex.PERCENTAGE.test(aValue)) {
+    if (TP.regex.PERCENTAGE.test(val)) {
         if (TP.notValid(targetProperty)) {
             TP.ifError() ?
                 TP.error('Percentage computation needs target property',
@@ -1301,12 +1365,12 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
         return TP.elementGetNumericValueFromPercentage(anElement,
                                                         targetProperty,
-                                                        aValue,
+                                                        val,
                                                         wantsTransformed);
     }
 
     return TP.elementConvertUnitLengthToPixels(anElement,
-                                                aValue,
+                                                val,
                                                 targetProperty,
                                                 wantsTransformed);
 });
@@ -1761,6 +1825,8 @@ function(aStyleRule, sourceASTs) {
         httpObj,
         srcText,
 
+        request,
+
         sheetAST,
 
         vendorPrefix,
@@ -1818,7 +1884,10 @@ function(aStyleRule, sourceASTs) {
 
             //  Otherwise, it's an external sheet - fetch it's contents
             //  *synchronously*.
-            httpObj = TP.httpGet(sheetLoc, TP.request('async', false));
+            //  TODO:   rebuilt to eliminate the sync call here.
+            request = TP.request('async', false);
+            TP.httpGet(sheetLoc, request);
+            httpObj = request.at('commObj');
             srcText = httpObj.responseText;
         }
 
@@ -1989,23 +2058,54 @@ function(aStyleRule) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleSheetGetImportHrefs',
+function(aStylesheet, expandImports) {
+
+    /**
+     * @method styleSheetGetImportHrefs
+     * @summary Retrieves the imported hrefs from the supplied stylesheet.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     imported hrefs from.
+     * @param {Boolean} [expandImports=true] Whether or not @import statements
+     *     should be recursively 'expanded' and the hrefs gathered from them
+     *     too. This defaults to true.
+     * @exception TP.sig.InvalidParameter
+     * @returns {String[]} A list of imported hrefs.
+     */
+
+    var resultSheets,
+
+        hrefs;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    resultSheets = TP.styleSheetGetImportSheets(aStylesheet, expandImports);
+
+    hrefs = resultSheets.collect(
+                            function(aSheet) {
+                                return aSheet.href;
+                            });
+
+    return hrefs;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetGetImportSheets',
 function(aStylesheet, expandImports) {
 
     /**
      * @method styleSheetGetImportSheets
-     * @summary Retrieves the rules from the supplied stylesheet. Note that
-     *     this function also recursively descends through CSS @import
-     *     statements to retrieve any imported style rules.
-     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
-     *     from.
-     * @param {Boolean} expandImports Whether or not @import statements should
-     *     be recursively 'expanded' and the rules gathered from them from. This
-     *     defaults to true.
+     * @summary Retrieves the imported stylesheets from the supplied stylesheet.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     imported stylesheets from.
+     * @param {Boolean} [expandImports=true] Whether or not @import statements
+     *     should be recursively 'expanded' and the stylesheets gathered from
+     *     them too. This defaults to true.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} A list of CSSStyleRule objects in the supplied
-     *     CSSStyleSheet, including those that may have been imported using an.
-     *     @import statement.
+     * @returns {CSSStyleSheet[]} A list of imported stylesheets.
      */
 
     var resultSheets,
@@ -2051,6 +2151,56 @@ function(aStylesheet, expandImports) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleSheetGetLocation',
+function(aStylesheet) {
+
+    /**
+     * @method styleSheetGetLocation
+     * @summary Retrieves the location for the supplied stylesheet. Note that
+     *     some stylesheet, like those produced from compiled or processed CSS,
+     *     will be associated with an XHTML 'style' element that doesn't have an
+     *     'href' pointing back to the source of the sheet. In this case, we
+     *     have stamped a TIBETan attribute on it that points back to the
+     *     original source.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     location of.
+     * @exception TP.sig.InvalidParameter
+     * @returns {String} The location URL of the source of the stylesheet.
+     */
+
+    var parentSS,
+        loc;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Iterate (if necessary) to find the stylesheet associated with the actual
+    //  node (link, style, etc. element) that inserted it (because of @import,
+    //  the supplied style sheet's 'parentStyleSheet' might not be that sheet).
+    parentSS = aStylesheet;
+    while (parentSS.parentStyleSheet) {
+        parentSS = parentSS.parentStyleSheet;
+    }
+
+    //  If there is an 'href', use it.
+    loc = parentSS.href;
+    if (TP.notEmpty(loc)) {
+        return loc;
+    }
+
+    //  Otherwise, if we can get to the stylesheet's owner node, return whatever
+    //  is stored in 'tibet:originalHref'.
+    if (TP.isElement(parentSS.ownerNode)) {
+        return TP.elementGetAttribute(
+                    parentSS.ownerNode, 'tibet:originalHref', true);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetGetStyleRules',
 function(aStylesheet, expandImports) {
 
@@ -2061,9 +2211,9 @@ function(aStylesheet, expandImports) {
      *     statements to retrieve any imported style rules.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
      *     from.
-     * @param {Boolean} expandImports Whether or not @import statements should
-     *     be recursively 'expanded' and the rules gathered from them from. This
-     *     defaults to true.
+     * @param {Boolean} [expandImports=true] Whether or not @import statements
+     *     should be recursively 'expanded' and the rules gathered from them
+     *     from. This defaults to true.
      * @exception TP.sig.InvalidParameter
      * @returns {Array} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
@@ -2096,8 +2246,11 @@ function(aStylesheet, expandImports) {
         //  stylesheet object of the stylesheet being imported) and add all
         //  of the rules found there to our result array.
         if (shouldExpand && sheetRules[i].type === CSSRule.IMPORT_RULE) {
-            resultRules.addAll(
-                TP.styleSheetGetStyleRules(sheetRules[i].styleSheet));
+
+            if (TP.isValid(sheetRules[i].styleSheet)) {
+                resultRules.addAll(
+                    TP.styleSheetGetStyleRules(sheetRules[i].styleSheet));
+            }
         } else {
             resultRules.push(sheetRules[i]);
         }
@@ -2210,6 +2363,103 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
                             newRuleIndex);
 
     return newRuleIndex;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$styleSheetRefreshAppliedRulesCaches',
+function(aStylesheet) {
+
+    /**
+     * @method $styleSheetRefreshAppliedRulesCaches
+     * @summary Refreshes all style rules for every element that will match
+     *     style rules in the supplied style sheet.
+     *     The end result of running this function is that every element in the
+     *     document will have a 'TP.APPLIED_RULES' property that contains an
+     *     Array of CSS style rules from the supplied stylesheet that apply to
+     *     it.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to obtain the rules
+     *     from.
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var sheetRules,
+
+        parentSS,
+
+        doc,
+
+        leni,
+        i,
+        aRule,
+
+        elementsMatchingRule,
+
+        lenj,
+        j,
+        matchingElement,
+
+        appliedRules;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Iterate (if necessary) to find the stylesheet associated with the actual
+    //  node (link, style, etc. element) that inserted it (because of @import,
+    //  the supplied style sheet's 'parentStyleSheet' might not be that sheet).
+    parentSS = aStylesheet;
+    while (parentSS.parentStyleSheet) {
+        parentSS = parentSS.parentStyleSheet;
+    }
+
+    //  If the stylesheet came from a private TIBET stylesheet (normally
+    //  used for IDE or other purposes), then don't consider it.
+    if (parentSS.ownerNode[TP.TIBET_PRIVATE]) {
+        return;
+    }
+
+    //  Grab all the stylesheets's CSS rules.
+    sheetRules = TP.styleSheetGetStyleRules(aStylesheet);
+
+    doc = TP.nodeGetDocument(parentSS.ownerNode);
+
+    //  Iterate over them, querying the document for any elements that match
+    //  the selector text of the rule. Then, iterate over those elements and add
+    //  the rule to its 'appliedRules' Array.
+    leni = sheetRules.getSize();
+    for (i = 0; i < leni; i++) {
+
+        aRule = sheetRules.at(i);
+
+        //  Not a CSSRule.STYLE_RULE? Must be an @import or a @namespace - move
+        //  on.
+        if (aRule.type !== CSSRule.STYLE_RULE) {
+            continue;
+        }
+
+        //  Grab any elements that match the rule's selector
+        elementsMatchingRule = TP.nodeEvaluateCSS(doc, aRule.selectorText);
+
+        //  Iterate over those elements, and add the rule object to that
+        //  element's list of applicable rules
+        lenj = elementsMatchingRule.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            matchingElement = elementsMatchingRule.at(j);
+
+            appliedRules = matchingElement[TP.APPLIED_RULES];
+
+            if (TP.notValid(appliedRules)) {
+                appliedRules = TP.ac();
+                matchingElement[TP.APPLIED_RULES] = appliedRules;
+            }
+
+            appliedRules.push(aRule);
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

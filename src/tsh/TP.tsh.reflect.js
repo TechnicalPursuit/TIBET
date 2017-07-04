@@ -51,7 +51,10 @@ function(aRequest) {
      *     TP.BREAK.
      */
 
-    var shell,
+    var getTIBETMethodInfoOrNull,
+        renderResults,
+
+        shell,
         arg0,
         meta,
         obj,
@@ -68,9 +71,70 @@ function(aRequest) {
         filter,
         interf,
         pwd,
+        docsonly,
         text,
         file,
-        results;
+        inputStr,
+        locStr,
+        results,
+        nativeref;
+
+    getTIBETMethodInfoOrNull = function(aMethod, methodResults) {
+
+        if (TP.canInvoke(aMethod, 'getMethodName')) {
+            methodResults.push(aMethod.getMethodName(), '');
+        }
+        methodResults.push(aMethod.getSignature());
+
+        text = aMethod.getCommentText();
+
+        if (TP.isEmpty(text)) {
+
+            //  Note how we go after load path here, since source
+            //  paths will never be minified and that's what we
+            //  check below.
+            file = TP.objectGetLoadPath(aMethod);
+
+            if (TP.notEmpty(file)) {
+                if (file.match(/\.min\./)) {
+                    methodResults.push(
+                        'Source minified.' +
+                        ' No comment text available.');
+                } else {
+                    methodResults.push(
+                        'Uncommented :(.' +
+                        ' No comment text available.');
+                }
+            } else {
+                methodResults.push(
+                    'No source file. Native code?');
+            }
+        } else {
+            methodResults.push('');
+            methodResults.push(text.replace(/\n\s+\*/g, '\n *'));
+        }
+    };
+
+    renderResults = function(inputKeys, inputResults, inputRequest) {
+
+        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+            inputResults.addAll(inputKeys);
+        } else {
+            inputRequest.atPut('cmdAsIs', true);
+
+            inputResults.push('<ul>');
+            inputKeys.forEach(
+                    function(aKey) {
+                        results.push(
+                            '<li>',
+                            '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\':reflect ' + aKey + '\'); return false;">',
+                            aKey,
+                            '</a>',
+                            '</li>');
+                    });
+            inputResults.push('</ul>');
+        }
+    };
 
     shell = aRequest.at('cmdShell');
 
@@ -111,13 +175,17 @@ function(aRequest) {
 
     pwd = shell.getArgument(aRequest, 'tsh:pwd', false);
 
+    docsonly = shell.getArgument(aRequest, 'tsh:docsonly', false);
+
     //  We collect data based on potentially multiple flags so the best way to
     //  start is with an empty array we can add to.
     results = TP.ac();
 
     //  No specification for an object means we need a flag of some kind saying
     //  what we should list (types vs. methods).
-    if (TP.isString(arg0) && TP.isEmpty(arg0)) {
+    /* eslint-disable no-extra-parens */
+    if (TP.notValid(arg0) || (TP.isString(arg0) && TP.isEmpty(arg0))) {
+    /* eslint-enable no-extra-parens */
 
         //  By default we'll dump the type list.
         if (!types && !methods && !attributes) {
@@ -146,7 +214,23 @@ function(aRequest) {
                         '.Primitive.', '.');
                 }));
         }
+
         results.sort();
+    } else if (docsonly) {
+        nativeref = arg0;
+
+        locStr = this.$computeDevDocsURI(null, nativeref);
+
+        if (TP.notEmpty(locStr)) {
+            aRequest.atPut('cmdAsIs', true);
+            results.push(
+                '<a href="' + locStr + '" target="_blank">',
+                locStr,
+                '</a>');
+        } else {
+            results.push(
+                'No source file. Native code?');
+        }
     } else {
 
         //  First attempt to resolve the target as a specific object name.
@@ -158,6 +242,7 @@ function(aRequest) {
         //  NOTE we don't go here for 'null' values since those actually DID
         //  resolve, probably to an attribute slot or other defined slot value.
         if (TP.notDefined(obj)) {
+
             meta = TP.sys.getMetadata('methods');
 
             //  Query for owners, but just names. We don't want to ass_ume
@@ -186,7 +271,7 @@ function(aRequest) {
                 }
             } else {
                 obj = meta.at(arg0);
-                if (TP.notValid(obj)) {
+                if (TP.notValid(obj) && TP.canInvoke(arg0, 'replace')) {
                     obj = meta.at(arg0.replace(/\./g, '_'));
                 }
             }
@@ -203,21 +288,27 @@ function(aRequest) {
                 name = TP.name(obj);
                 keys = TP.interface(obj, interf);
 
-                keys = keys.map(function(key) {
-                    return name + '.' + key;
-                });
+                keys = keys.map(
+                        function(key) {
+                            return name + '.' + key;
+                        });
                 keys.sort();
-                results.addAll(keys);
+
+                renderResults(keys, results, aRequest);
 
             } else if (TP.isType(obj)) {
 
+                results.push('# Type: ' + TP.name(obj));
+                //  NOTE no separator here to avoid issues with phantom vs.
+                //  browser for things like >> etc.
                 names = TP.stnames(obj);
-                names.unshift(TP.name(obj));
-                results.push('# Type: ' + names.join(' << '), '');
+                results.push('# Supertypes: ' + names.join(' '), '');
+
+                interf = TP.ifEmpty(interf, TP.SLOT_FILTERS.introduced_methods);
 
                 //  Iterate across the type, the type.Type, and the type.Inst
                 //  objects to get a complete picture of the type.
-                [obj, obj.getPrototype(), obj.getInstPrototype()].forEach(
+                TP.ac(obj, obj.getPrototype(), obj.getInstPrototype()).forEach(
                 function(thing, index) {
                     var id;
 
@@ -240,11 +331,13 @@ function(aRequest) {
                     results.push('# ' + id);
 
                     keys = TP.interface(thing, interf);
-                    keys = keys.map(function(key) {
-                        return id + '.' + key;
-                    });
+                    keys = keys.map(
+                            function(key) {
+                                return id + '.' + key;
+                            });
                     keys.sort();
-                    results.addAll(keys);
+
+                    renderResults(keys, results, aRequest);
 
                     if (index < 2) {
                         results.push('');
@@ -258,11 +351,13 @@ function(aRequest) {
                 name = arg0;
 
                 keys = TP.interface(obj, interf);
-                keys = keys.map(function(key) {
-                    return name + '.' + key;
-                });
+                keys = keys.map(
+                        function(key) {
+                            return name + '.' + key;
+                        });
                 keys.sort();
-                results.addAll(keys);
+
+                renderResults(keys, results, aRequest);
 
             } else if (TP.isFunction(obj)) {
 
@@ -274,9 +369,10 @@ function(aRequest) {
                         if (TP.isValid(regex)) {
                             meta = TP.sys.getMetadata('methods');
                             keys = meta.getKeys().filter(
-                                function(key) {
-                                    return TP.notEmpty(regex.match(key));
-                                });
+                                            function(key) {
+                                                return TP.notEmpty(
+                                                        regex.match(key));
+                                            });
 
                             if (TP.notEmpty(keys) && keys.getSize() > 1) {
                                 results = keys.collect(
@@ -292,17 +388,24 @@ function(aRequest) {
                     }
                     results.sort();
 
+                    renderResults(keys, results, aRequest);
+
                 } else {
 
-                    results = [];
-                    if (TP.canInvoke(obj, 'getMethodName')) {
-                        results.push(obj.getMethodName(), '');
-                    }
-                    results.push(obj.getSignature());
+                    results = TP.ac();
 
-                    text = obj.getCommentText();
-
-                    if (TP.isEmpty(text)) {
+                    //  If we're running in a PhantomJS/CLI environment, then
+                    //  try to use reflection the best we can to find some
+                    //  printable information about the function/method
+                    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+                        getTIBETMethodInfoOrNull(obj, results);
+                    } else {
+                        //  We're running in a browser, so we try to use
+                        //  reflection the best we can to find some printable
+                        //  information about the function/method and if that
+                        //  fails, we assume that it's a native function/method
+                        //  and we will try to generate a link to the
+                        //  documentation on devdocs.io.
 
                         //  Note how we go after load path here, since source
                         //  paths will never be minified and that's what we
@@ -310,22 +413,26 @@ function(aRequest) {
                         file = TP.objectGetLoadPath(obj);
 
                         if (TP.notEmpty(file)) {
-                            if (file.match(/\.min\./)) {
+                            getTIBETMethodInfoOrNull(obj, results);
+                        } else {
+
+                            inputStr = shell.getArgument(
+                                                aRequest, 'ARG0',
+                                                null, false, true);
+
+                            locStr = this.$computeDevDocsURI(obj, inputStr);
+
+                            if (TP.notEmpty(locStr)) {
+                                aRequest.atPut('cmdAsIs', true);
                                 results.push(
-                                    'Source minified.' +
-                                    ' No comment text available.');
+                                    '<a href="' + locStr + '" target="_blank">',
+                                    locStr,
+                                    '</a>');
                             } else {
                                 results.push(
-                                    'Uncommented :(.' +
-                                    ' No comment text available.');
+                                    'No source file. Native code?');
                             }
-                        } else {
-                            results.push(
-                                'No source file. Native code?');
                         }
-                    } else {
-                        results.push('');
-                        results.push(text.replace(/\n\s+\*/g, '\n *'));
                     }
                 }
 
@@ -334,7 +441,7 @@ function(aRequest) {
                 //  Simple values should just output as values.
                 try {
                     str = JSON.stringify(obj);
-                }  catch (e) {
+                } catch (e) {
                     str = TP.str(obj);
                 }
                 results.push(str);
@@ -344,18 +451,34 @@ function(aRequest) {
                 name = arg0;
                 keys = TP.interface(obj, interf);
 
-                keys = keys.map(function(key) {
-                    return name + '.' + key;
-                });
+                keys = keys.map(
+                        function(key) {
+                            return name + '.' + key;
+                        });
                 keys.sort();
-                results.addAll(keys);
+
+                renderResults(keys, results, aRequest);
             }
         } else if (TP.isDefined(obj)) {
             results.push(arg0 + ' => null.');
         }
 
         if (results.getSize() === 0 && TP.notDefined(obj)) {
-            results.push(arg0 + ' not found.');
+
+            inputStr = shell.getArgument(aRequest, 'ARG0', null, false, true);
+
+            locStr = this.$computeDevDocsURI(arg0, inputStr);
+
+            if (TP.notEmpty(locStr)) {
+                aRequest.atPut('cmdAsIs', true);
+                results.push(
+                    '<a href="' + locStr + '" target="_blank">',
+                    locStr,
+                    '</a>');
+            } else {
+                results.push(
+                    arg0 + ' not found.');
+            }
         }
     }
 
@@ -369,19 +492,20 @@ function(aRequest) {
             filter = filter.unquoted();
             regex = RegExp.construct(filter);
 
-            results = results.filter(function(result) {
+            results = results.filter(
+                        function(result) {
 
-                //  preserve blank lines from prior constructions
-                if (TP.isEmpty(result)) {
-                    return true;
-                }
+                            //  preserve blank lines from prior constructions
+                            if (TP.isEmpty(result)) {
+                                return true;
+                            }
 
-                if (TP.isValid(regex)) {
-                    return regex.test(result);
-                } else {
-                    return result.indexOf(filter) !== TP.NOT_FOUND;
-                }
-            });
+                            if (TP.isValid(regex)) {
+                                return regex.test(result);
+                            } else {
+                                return result.indexOf(filter) !== TP.NOT_FOUND;
+                            }
+                        });
         }
 
         path = TP.objectGetSourcePath(obj);
@@ -397,10 +521,12 @@ function(aRequest) {
 
         //  PhantomJS/CLI support requires output line-by-line.
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
-            results.forEach(function(result) {
-                aRequest.stdout(result);
-            });
+            results.forEach(
+                    function(result) {
+                        aRequest.stdout(result);
+                    });
             aRequest.complete('');
+
             return;
         }
 
@@ -409,7 +535,7 @@ function(aRequest) {
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
             return aRequest.complete('');
         }
-        aRequest.complete(TP.TSH_NO_INPUT);
+        aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     return;
@@ -417,7 +543,98 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.tsh.reflect.Type.defineMethod('$computeDevDocsURI',
+function(anObj, anInputStr) {
+
+    var httpStr,
+
+        obj,
+
+        pathParts,
+
+        owner,
+        track,
+        slotName,
+        slot,
+        slotExists;
+
+    //  If we're running in a PhantomJS/CLI environment, then we always return
+    //  null here since we can't go get Web-based docs.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        return null;
+    }
+
+    httpStr = 'http://devdocs.io/';
+
+    if (TP.isString(anObj)) {
+        obj = anObj;
+    } else {
+        obj = anInputStr;
+    }
+
+    if (TP.isString(obj) ||
+        obj.contains('.Inst.') ||
+        obj.contains('.Type.')) {
+
+        pathParts = anInputStr.split('.');
+
+        switch (pathParts.at(0)) {
+            case 'CSS':
+                httpStr += 'css/' + obj;
+                return httpStr;
+            default:
+                break;
+        }
+
+        pathParts = obj.split('.');
+
+        owner = TP.global[pathParts.at(0)];
+        if (TP.notValid(owner)) {
+            return null;
+        }
+
+        track = pathParts.at(1);
+        slotName = pathParts.at(2);
+
+        try {
+            if (track === TP.INST_TRACK) {
+                slot = owner.getInstPrototype()[slotName];
+            } else {
+                slot = owner[slotName];
+            }
+
+            slotExists = TP.isNativeFunction(slot);
+        } catch (e) {
+            slotExists = TP.isValid(Object.getOwnPropertyDescriptor(
+                                        owner.getInstPrototype(), slotName));
+        }
+    } else {
+        slot = anObj;
+        owner = anObj[TP.OWNER];
+        slotName = TP.name(anObj);
+    }
+
+    if (slotExists && TP.isNativeType(owner)) {
+
+        if (TP.META_TYPE_TARGETS.contains(owner)) {
+            httpStr += 'javascript/global_objects/' +
+                        TP.name(owner) + '/' + slotName;
+        } else {
+            httpStr += 'dom/' +
+                        TP.name(owner) + '/' + slotName;
+        }
+
+        httpStr = httpStr.toLowerCase();
+
+        return httpStr;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.addHelpTopic('reflect',
     TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
     ':reflect [target] [--interface <interface>]' +

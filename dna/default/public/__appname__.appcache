@@ -29,7 +29,7 @@ TIBET-INF/tibet/lib/cfg/tibet_testing.xml
 TIBET-INF/tibet/lib/cfg/version.xml
 TIBET-INF/tibet/lib/cfg/xmpp.xml
 
-TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.default_keymap.js
+TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.default_keybindings.js
 TIBET-INF/tibet/lib/dat/TP.core.URI.default_urimap.js
 TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 TIBET-INF/tibet/lib/dat/TP.dat.COUNTRYCODES.js
@@ -60,36 +60,49 @@ TIBET-INF/tibet/lib/schema/tibet_common_types.xsd
 ## TIBET-INF/tibet/lib/src/tibet_base.js.gz
 TIBET-INF/tibet/lib/src/tibet_base.min.js
 ## TIBET-INF/tibet/lib/src/tibet_base.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_base.min.js.br
 #
 ## TIBET-INF/tibet/lib/src/tibet_contributor.js
 ## TIBET-INF/tibet/lib/src/tibet_contributor.js.gz
 TIBET-INF/tibet/lib/src/tibet_contributor.min.js
 ## TIBET-INF/tibet/lib/src/tibet_contributor.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_contributor.min.js.br
 
 ## TIBET-INF/tibet/lib/src/tibet_developer.js
 ## TIBET-INF/tibet/lib/src/tibet_developer.js.gz
 TIBET-INF/tibet/lib/src/tibet_developer.min.js
 ## TIBET-INF/tibet/lib/src/tibet_developer.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_developer.min.js.br
 
 ## TIBET-INF/tibet/lib/src/tibet_loader.js
 ## TIBET-INF/tibet/lib/src/tibet_loader.js.gz
 TIBET-INF/tibet/lib/src/tibet_loader.min.js
 ## TIBET-INF/tibet/lib/src/tibet_loader.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_loader.min.js.br
 
 ##TIBET-INF/tibet/lib/src/tibet_login.js
 ##TIBET-INF/tibet/lib/src/tibet_login.js.gz
 TIBET-INF/tibet/lib/src/tibet_login.min.js
 ##TIBET-INF/tibet/lib/src/tibet_login.min.js.gz
+##TIBET-INF/tibet/lib/src/tibet_login.min.js.br
+
+##TIBET-INF/tibet/lib/src/tibet_worker.js
+##TIBET-INF/tibet/lib/src/tibet_worker.js.gz
+TIBET-INF/tibet/lib/src/tibet_worker.min.js
+##TIBET-INF/tibet/lib/src/tibet_worker.min.js.gz
+##TIBET-INF/tibet/lib/src/tibet_worker.min.js.br
 
 ## TIBET-INF/tibet/lib/src/tibet_full.js
 ## TIBET-INF/tibet/lib/src/tibet_full.js.gz
 TIBET-INF/tibet/lib/src/tibet_full.min.js
 ## TIBET-INF/tibet/lib/src/tibet_full.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_full.min.js.br
 
 ## TIBET-INF/tibet/lib/src/tibet_hook.js
 ## TIBET-INF/tibet/lib/src/tibet_hook.js.gz
 TIBET-INF/tibet/lib/src/tibet_hook.min.js
 ## TIBET-INF/tibet/lib/src/tibet_hook.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_hook.min.js.br
 
 TIBET-INF/tibet/lib/styles/normalize.css
 TIBET-INF/tibet/lib/styles/tibet.css
@@ -216,6 +229,7 @@ TIBET-INF/boot/xhtml/home.xhtml
 ## build/app_base.min.js
 ## build/app_base.js.gz
 ## build/app_base.min.js.gz
+## build/app_base.min.js.br
 
 ## build/tags.APP.{{appname}}.js
 ## build/tags.APP.{{appname}}_test.js

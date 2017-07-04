@@ -26,7 +26,7 @@
 *           TP.html.Aligned
                 TP.html.legend
 *           TP.html.Focused
-                TP.html.select (TP.core.SelectingUIElementNode)
+                TP.html.select (TP.core.TogglingUIElementNode)
                 TP.html.textarea (TP.html.textUtilities)
 *               TP.html.input
                     TP.html.inputImage
@@ -156,7 +156,8 @@ function() {
     /**
      * @method getItemTagName
      * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
+     *     fromArray()/fromObject() methods. Note that this should return the
+     *     receiver's *canonical* name.
      * @returns {String} The item tag name.
      */
 
@@ -429,6 +430,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     tagName = this.getCanonicalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     if (TP.isFalse(shouldAutoWrap)) {
         if (TP.isTrue(theRequest.at('repeat'))) {
             if (TP.isArray(anObject)) {
@@ -659,6 +663,41 @@ TP.html.textUtilities.Type.resolveTrait('booleanAttrs', TP.html.Element);
 TP.html.textUtilities.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.html.textUtilities.Type.defineMethod('tagResolve',
+function(aRequest) {
+
+    /**
+     * @method tagResolve
+     * @summary Resolves the receiver's content. This includes resolving XML
+     *     Base URIs and virtual URIs that may occur on the receiver's
+     *     attributes.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    //  Set the attribute to not trap dragging in the TIBET D&D system, but
+    //  allow targets of this type to do their natural drag operation (which, in
+    //  this case, is selecting text).
+    TP.elementSetAttribute(elem, 'tibet:nodragtrapping', 'true', true);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1251,7 +1290,10 @@ function(anObject, aRequest) {
 
     val = TP.str(anObject);
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_',
                     fieldNum,
@@ -1287,7 +1329,10 @@ function(anObject, aRequest) {
         val = TP.str(anObject);
     }
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
@@ -1317,7 +1362,10 @@ function(anObject, aRequest) {
         val = TP.str(anObject);
     }
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
@@ -1353,7 +1401,10 @@ function(anObject, aRequest) {
         val = TP.str(anObject);
     }
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
@@ -1388,6 +1439,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     var template,
         str;
+
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
 
     //  We use the abstract 'TP.html.input' type here for 'item formatting'.
     //  It will taste the object its receiving and return the 'correct
@@ -1433,7 +1487,8 @@ function(aNodeOrId) {
      */
 
     var inputType,
-        typeName;
+        typeName,
+        type;
 
     if (TP.isString(aNodeOrId)) {
         return TP.byId(aNodeOrId);
@@ -1449,7 +1504,12 @@ function(aNodeOrId) {
     //  to node component types for those various types.
     typeName = TP.html.form.NODE_TYPE_NAMES.at(inputType);
 
-    return typeName.asType();
+    type = TP.sys.getTypeByName(typeName);
+    if (TP.isType(type) && !type.isAbstract()) {
+        return type;
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1488,7 +1548,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
+     * @returns {Boolean} For input types, this returns true.
      */
 
     return true;
@@ -1881,6 +1941,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     */
+
+    return this.$getVisualToggle();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('setFacet',
 function(aspectName, facetName, facetValue, shouldSignal) {
 
@@ -1967,12 +2041,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    if (tpElem.isBoundElement()) {
-
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                tpElem.getBindingScopeValues(),
-                                tpElem.getAttribute('bind:io'));
-    }
+    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
@@ -2097,7 +2166,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
+     * @returns {Boolean} For checkbox types, this returns false.
      */
 
     //  Checkbox (arrays) are not single valued.
@@ -2628,7 +2697,7 @@ TP.html.Aligned.defineSubtype('legend');
 
 TP.html.Focused.defineSubtype('select');
 
-TP.html.select.addTraits(TP.core.SelectingUIElementNode);
+TP.html.select.addTraits(TP.core.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 
@@ -2649,7 +2718,8 @@ function() {
     /**
      * @method getItemTagName
      * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
+     *     fromArray()/fromObject() methods. Note that this should return the
+     *     receiver's *canonical* name.
      * @returns {String} The ID of the observer.
      */
 
@@ -2674,11 +2744,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                tpElem.getBindingScopeValues(),
-                                tpElem.getAttribute('bind:io'));
-    }
+    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
@@ -2798,6 +2864,10 @@ function() {
         }
     }
 
+    if (!this.allowsMultiples()) {
+        return selectionArray.first();
+    }
+
     return selectionArray;
 });
 
@@ -2820,20 +2890,27 @@ function() {
 
     value = this.getDisplayValue();
 
-    //  If the receiver has a 'ui:type' attribute, then try first to convert the
-    //  content to that type before trying to format it.
-    if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
-        if (!TP.isType(type = TP.sys.getTypeByName(type))) {
-            return this.raise('TP.sig.InvalidType');
-        } else {
-            value = type.fromString(value);
-        }
-    }
+    //  Given that this type can represent multiple items, it may return an
+    //  Array. We should check to make sure the Array isn't empty before doing
+    //  any more work.
+    if (TP.notEmpty(value)) {
 
-    //  If the receiver has a 'ui:storage' attribute, then format the return
-    //  value according to the formats found there.
-    if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
-        value = this.$formatValue(value, formats);
+        //  If the receiver has a 'ui:type' attribute, then try first to convert
+        //  the content to that type before trying to format it.
+        if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+            if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+                return this.raise('TP.sig.InvalidType');
+            } else {
+                value = type.fromString(value);
+            }
+        }
+
+        //  If the receiver has a 'ui:storage' attribute, then format the return
+        //  value according to the formats found there.
+        //  the content to that type before trying to format it.
+        if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
+            value = this.$formatValue(value, formats);
+        }
     }
 
     return value;
@@ -2872,7 +2949,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For input types, this returns true.
+     * @returns {Boolean} For select types, this returns true.
      */
 
     return true;
@@ -2926,6 +3003,120 @@ function(aValue, optionProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.select.Inst.defineMethod('setData',
+function(aDataObject, shouldSignal) {
+
+    /**
+     * @method setData
+     * @summary Sets the receiver's data object to the supplied object.
+     * @param {Object} aDataObject The object to set the receiver's internal
+     *     data to.
+     * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
+     * @returns {TP.html.select} The receiver.
+     */
+
+    var dataObj,
+
+        elem,
+        doc,
+
+        leni,
+        i,
+
+        obj,
+
+        optElem,
+        optGrpElem,
+
+        optGrpKeys,
+
+        optGrpKey,
+        optGrpData,
+
+        lenj,
+        j,
+
+        lenk,
+        k;
+
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    if (!TP.isArray(dataObj)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  Empty out whatever content we currently have
+    this.empty();
+
+    elem = this.getNativeNode();
+    doc = this.getNativeDocument();
+
+    //  Loop over the outer Array and get either nested Arrays (which are
+    //  value/label pairs) or Objects (which are groups)
+
+    leni = dataObj.getSize();
+    for (i = 0; i < leni; i++) {
+
+        obj = dataObj.at(i);
+        if (TP.isArray(obj)) {
+
+            //  Construct an XHTML 'option' element and append it to ourself.
+            optElem = TP.documentConstructElement(
+                            doc, 'option', TP.w3.Xmlns.XHTML);
+            elem.appendChild(optElem);
+
+            //  Set the option's value and text to the appropriate parts of the
+            //  pair.
+            optElem.value = obj.first();
+            optElem.text = obj.last();
+
+        } else if (TP.isHash(obj)) {
+
+            optGrpKeys = obj.getKeys();
+
+            //  Iterate over all of the keys. They should each have an Array of
+            //  option pairs as their value .
+            lenj = optGrpKeys.getSize();
+            for (j = 0; j < lenj; j++) {
+
+                //  Construct an XHTML 'optgroup' element and append it to
+                //  ourself.
+                optGrpElem = TP.documentConstructElement(
+                                doc, 'optgroup', TP.w3.Xmlns.XHTML);
+                elem.appendChild(optGrpElem);
+
+                optGrpKey = optGrpKeys.at(j);
+                optGrpData = obj.at(optGrpKey);
+
+                //  Set the option group's label to the key
+                optGrpElem.label = optGrpKey;
+
+                //  Iterate over the Array of option pairs found at that key.
+                lenk = optGrpData.getSize();
+                for (k = 0; k < lenk; k++) {
+
+                    //  Construct an XHTML 'option' element and append it to
+                    //  ourself.
+                    optElem = TP.documentConstructElement(
+                                    doc, 'option', TP.w3.Xmlns.XHTML);
+                    optGrpElem.appendChild(optElem);
+
+                    //  Set the option's value and text to the appropriate parts
+                    //  of the pair.
+                    optElem.value = optGrpData.at(k).first();
+                    optElem.text = optGrpData.at(k).last();
+                }
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.select.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
@@ -2966,10 +3157,36 @@ function(aValue) {
     separator = TP.ifEmpty(this.getAttribute('bind:separator'),
                             TP.sys.cfg('bind.value_separator'));
 
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
+    value = aValue;
+
+    //  If the value is an Array and has a size of 1, just use that item.
+    //  Otherwise, turn the Array into String representations of the objects it
+    //  contains.
+    if (TP.isArray(value)) {
+        if (value.getSize() === 1) {
+            value = value.first();
+        } else {
+
+            //  Iterate over each item, getting it's String value and possibly
+            //  making a new nested Array by splitting on any separator if it
+            //  exists.
+            value = value.collect(
+                            function(aVal) {
+                                var val;
+
+                                val = TP.str(aVal);
+                                val = val.split(separator).collapse();
+
+                                return val;
+                            });
+
+            //  Make sure to flatten the resultant Array.
+            value = value.flatten();
+        }
+    }
+
+    if (TP.isString(value)) {
+        value = value.split(separator).collapse();
     }
 
     //  watch for multiple selection issues
@@ -3008,6 +3225,12 @@ function(aValue) {
     //  deselected and it definitely helps when reading the value back out.
     if (deselectCount === i) {
         this.getNativeNode().selectedIndex = -1;
+
+        //  Also, empty the selection model to keep it in sync
+        this.$getSelectionModel().empty();
+    } else {
+        //  Keep the selection model in sync with the selected values.
+        this.$getSelectionModel().atPut('value', dict.getKeys());
     }
 
     if (dirty) {
@@ -3121,11 +3344,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                tpElem.getBindingScopeValues(),
-                                tpElem.getAttribute('bind:io'));
-    }
+    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
@@ -3162,7 +3381,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
+     * @returns {Boolean} For textarea types, this returns true.
      */
 
     return true;
@@ -3180,7 +3399,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For input types, this returns true.
+     * @returns {Boolean} For textarea types, this returns true.
      */
 
     return true;

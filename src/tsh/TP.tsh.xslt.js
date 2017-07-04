@@ -58,18 +58,18 @@ function(aRequest) {
 
     aRequest.stdout('Coming soon.');
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('xslt',
     TP.tsh.xslt.Type.getMethod('tshExecute'),
     'Transforms a node using an XSLT node/file.',
     ':xslt',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

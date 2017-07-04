@@ -42,10 +42,6 @@ TP.hc(
             deltaX,
             deltaY;
 
-        if (!TP.isEvent(anEvent)) {
-            return TP.raise(this, 'TP.sig.InvalidEvent');
-        }
-
         //  If the Event object has already been normalized, then just return.
         if (anEvent.$normalized) {
             return anEvent;
@@ -126,10 +122,6 @@ TP.hc(
             return anEvent;
         }
 
-        if (!TP.isEvent(anEvent)) {
-            return TP.raise(this, 'TP.sig.InvalidEvent');
-        }
-
         //  Make sure to set $normalized here because other calls in this
         //  method may recurse and use this call.
         anEvent.$normalized = true;
@@ -186,10 +178,6 @@ TP.hc(
         var wheelVal,
             deltaX,
             deltaY;
-
-        if (!TP.isEvent(anEvent)) {
-            return TP.raise(this, 'TP.sig.InvalidEvent');
-        }
 
         //  If the Event object has already been normalized, then just
         //  return.
@@ -249,23 +237,29 @@ function(anEvent, currentTarget) {
 
     var win;
 
-    if (TP.isValid(anEvent.$$view)) {
+    if (anEvent.$$view !== undefined) {
         return anEvent.$$view;
     }
 
-    if (TP.isValid(anEvent.view)) {
+    if (anEvent.view !== undefined) {
         return anEvent.view;
     }
 
-    if (TP.isValid(currentTarget)) {
+    if (currentTarget !== undefined) {
         win = TP.nodeGetWindow(currentTarget);
+        if (win !== undefined) {
+            return win;
+        }
     }
 
-    if (TP.notValid(win) && TP.isValid(anEvent.currentTarget)) {
+    if (anEvent.currentTarget !== undefined) {
         win = TP.nodeGetWindow(anEvent.currentTarget);
+        if (win !== undefined) {
+            return win;
+        }
     }
 
-    if (TP.notValid(win) && TP.isValid(anEvent.srcElement)) {
+    if (anEvent.srcElement !== undefined) {
         win = TP.nodeGetWindow(anEvent.srcElement);
     }
 

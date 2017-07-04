@@ -8,11 +8,6 @@
  */
 //  ========================================================================
 
-/* JSHint checking */
-
-/* jshint evil:true
-*/
-
 //  ========================================================================
 //  TP.lang.Object Extensions
 //  ========================================================================
@@ -30,86 +25,6 @@ function(content, aURI) {
      */
 
     return this.construct(content);
-});
-
-//  ========================================================================
-//  TP.core.CSSStyleSheet
-//  ========================================================================
-
-/**
- */
-
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.defineSubtype('core.CSSStyleSheet');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CSSStyleSheet.Type.defineMethod('constructContentObject',
-function(content, aURI) {
-
-    /**
-     * @method constructContentObject
-     * @summary Returns a content handler for the URI provided. This method is
-     *     invoked as part of MIME-type specific handling for URIs.
-     * @param {String} content The string content to process.
-     * @param {TP.core.URI} aURI The source URI.
-     * @returns {Object} The object representation of the content.
-     */
-
-    return this.construct(content, aURI);
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The URI that this stylesheet is coming from, either because it maps to a
-//  '.css' file somewhere or its part of an embedded 'style' element that
-//  has an ID (either assigned by the author or auto-assigned by TIBET)
-//  which is then used as an XPointer.
-TP.core.CSSStyleSheet.Inst.defineAttribute('sourceURI');
-
-//  The stylesheet's XML & indexed representation.
-TP.core.CSSStyleSheet.Inst.defineAttribute('cssSheet');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CSSStyleSheet.Inst.defineMethod('init',
-function(content, aURI) {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @param {String} content The string content to process.
-     * @param {TP.core.URI} aURI The source URI.
-     * @returns {TP.core.CSSStyleSheet} A new instance.
-     */
-
-    this.callNextMethod();
-
-    this.set('sourceURI', aURI);
-    this.set('cssSheet', content);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CSSStyleSheet.Inst.defineMethod('asString',
-function() {
-
-    /**
-     * @method asString
-     * @summary Returns the common string representation of the receiver.
-     * @returns {String} The content object in string form.
-     */
-
-    return this.get('cssSheet').asString();
 });
 
 //  ========================================================================
@@ -273,6 +188,38 @@ function(content, aURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('getConcreteType',
+function(content, aURI) {
+
+    /**
+     * @method getConcreteType
+     * @summary Returns the type to use for a particular access path.
+     * @param {Object} content The data to find a concrete type for.
+     * @param {TP.core.URI} [aURI] The source URI.
+     * @return {TP.core.Content} A viable subtype for enclosing the content.
+     */
+
+    if (TP.isNode(content) || TP.isKindOf(content, TP.core.Node)) {
+        return TP.core.XMLContent;
+    }
+
+    if (TP.core.XMLContent.canConstruct(content, aURI)) {
+        return TP.core.XMLContent;
+    }
+
+    if (TP.core.CSSStyleSheet.canConstruct(content, aURI)) {
+        return TP.core.CSSStyleSheet;
+    }
+
+    if (TP.core.JSONContent.canConstruct(content, aURI)) {
+        return TP.core.JSONContent;
+    }
+
+    return TP.core.TextContent;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -285,6 +232,52 @@ TP.core.Content.Inst.defineAttribute('sourceURI');
 //  The content's JavaScript representation
 TP.core.Content.Inst.defineAttribute('data');
 
+//  does this content act transactionally?
+TP.core.Content.Inst.defineAttribute('transactional');
+
+//  current checkpoint index, used by back/forward and getData to manage which
+//  version of a transactional content object is current.
+TP.core.Content.Inst.defineAttribute('currentIndex');
+
+//  the snapshot stack when the receiver is using transactions
+TP.core.Content.Inst.defineAttribute('snaps');
+
+//  the checkpoint hash, used when the receiver is checkpointing
+TP.core.Content.Inst.defineAttribute('points');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('fromString',
+function(aString, aURI) {
+
+    /**
+     * @method fromString
+     * @summary Returns a new instance from the string provided.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
+     * @returns {TP.core.Content} A new instance.
+     */
+
+    return this.construct(aString, aURI);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('fromTP_core_Content',
+function(aContent) {
+
+    /**
+     * @method fromTP.core.Content
+     * @summary Returns the TP.core.Content object provided.
+     * @param {TP.core.Content} aContent A content object.
+     * @returns {TP.core.Content} The supplied object.
+     */
+
+    return aContent;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -294,8 +287,9 @@ function(data, aURI) {
 
     /**
      * @method init
-     * @summary Returns a newly constructed Object from inbound JSON content.
+     * @summary Returns a newly constructed Object from inbound content.
      * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
      */
 
@@ -303,6 +297,14 @@ function(data, aURI) {
 
     this.set('sourceURI', aURI, false);
     this.set('data', data, false);
+
+    //  Execute the data getter once just to get private data structures
+    //  initialized.
+    if (TP.isValid(data)) {
+        this.get('data');
+    }
+
+    this.set('transactional', false, false);
 
     return this;
 });
@@ -344,6 +346,36 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return TP.str(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('asCleanString',
+function() {
+
+    /**
+     * @method asCleanString
+     * @summary Returns the 'clean' string representation of the receiver.
+     *     This may have transformations in it to 'clean' the String, such as
+     *     removing unnecessary namespace definitions, etc.
+     * @returns {String} The content object in clean string form.
+     */
+
+    return this.asString();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('changed',
 function(anAspect, anAction, aDescription) {
 
@@ -363,13 +395,72 @@ function(anAspect, anAction, aDescription) {
      * @fires Change
      */
 
-    var data;
+    var srcURI;
 
-    if (TP.isValid(data = this.get('data'))) {
-        data.changed(anAspect, anAction, aDescription);
+    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
+    //  We don't normally do this in TIBET, but this method is used heavily and
+    //  is a hotspot.
+    if (!this.shouldSignalChange()) {
+        return;
+    }
+
+    //  when a change has happened we need to adjust to the current index so
+    //  things like a combination of a back() and a set() will throw away the
+    //  data after the current data, but when the aspect is current index itself
+    //  we skip this since what's happening is just a forward or back call
+    //  shifting the current "visible" data
+    if (TP.isEmpty(anAspect) || anAspect !== 'currentIndex') {
+        this.discardCheckpointSnaps();
+    }
+
+    //  with possible snaps list adjustments we now need to update the name
+    //  to index hash entries
+    this.discardCheckpointNames();
+
+    if (anAspect === 'currentIndex') {
+        this.callNextMethod();
+        this.$changed('value', TP.UPDATE);
+    } else {
+        if (TP.isValid(this.get('data'))) {
+            this.$changed(anAspect, anAction, aDescription);
+        }
+
+        srcURI = this.get('sourceURI');
+        if (TP.isURI(srcURI)) {
+            srcURI.isDirty(true);
+        }
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('copy',
+function() {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver.
+     * @returns {TP.core.Content} A copy of the receiver.
+     */
+
+    var dataCopy,
+        newinst;
+
+    dataCopy = TP.copy(this.$get('data'));
+
+    newinst = this.getType().construct(dataCopy, this.get('sourceURI'));
+
+    //  NB: We do *not* copy '$publicURI' here
+
+    newinst.$set('transactional', this.$get('transactional'), false);
+    newinst.$set('currentIndex', this.$get('currentIndex'), false);
+    newinst.$set('snaps', TP.copy(this.$get('snaps')), false);
+    newinst.$set('points', TP.copy(this.$get('points')), false);
+
+    return newinst;
 });
 
 //  ------------------------------------------------------------------------
@@ -383,7 +474,49 @@ function() {
      * @returns {Object} The receiver's underlying data object.
      */
 
-    return this.$get('data');
+    var ndx,
+        data,
+        snaps;
+
+    if (!this.$get('transactional')) {
+        return this.$get('data');
+    }
+
+    ndx = this.$get('currentIndex');
+    snaps = this.$get('snaps');
+
+    //  NOTE:   we use $get here since we don't want to recurse over
+    //          getProperty() calls that use getNativeNode
+    if (TP.isValid(ndx)) {
+        data = snaps.at(ndx);
+    } else {
+        data = this.$get('data');
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('$getEqualityValue',
+function() {
+
+    /**
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality
+     *     for the receiver.
+     * @returns {Object} A value appropriate for use in equality comparisons.
+     */
+
+    var data;
+
+    data = this.get('data');
+
+    if (TP.canInvoke(data, '$getEqualityValue')) {
+        return data.$getEqualityValue();
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -410,6 +543,19 @@ function() {
     }
 
     return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('getNativeObject',
+function(aRequest) {
+
+    /**
+     * @method getNativeObject
+     * @summary Returns the underlying data object.
+     */
+
+    return this.getData();
 });
 
 //  ------------------------------------------------------------------------
@@ -469,7 +615,7 @@ function() {
      * @returns {Object} The value of the receiver - in this case, it's 'data'.
      */
 
-    return this.$get('data');
+    return this.get('data');
 });
 
 //  ------------------------------------------------------------------------
@@ -496,6 +642,22 @@ function() {
     }
 
     return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @description For content objects, they are considered empty if their data
+     *     is considered empty.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return TP.isEmpty(this.getData());
 });
 
 //  ------------------------------------------------------------------------
@@ -590,7 +752,7 @@ function(aSignal) {
 
             description.atPut('aspect', aspectName);
 
-            aspectSigName = aspectName.asStartUpper() + 'Change';
+            aspectSigName = TP.makeStartUpper(aspectName) + 'Change';
 
             //  Note that we force the firing policy here. This allows observers
             //  of a generic Change to see 'aspect'Change notifications, even if
@@ -618,42 +780,20 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineHandler('CreateItem',
+TP.core.Content.Inst.defineHandler('CloneItem',
 function(aSignal) {
 
     /**
-     * @method handleCreateItem
-     * @summary Handles when an item is to be created and inserted into the
+     * @method handleCloneItem
+     * @summary Handles when an item is to be cloned and inserted into the
      *     receiver's data.
-     * @param {TP.sig.CreateItem} aSignal The signal instance which triggered
+     * @param {TP.sig.CloneItem} aSignal The signal instance which triggered
      *     this handler.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
      */
 
-    var scope,
-        scopeURI;
-
-    //  The 'scope' should be a URI location to find the overall collection to
-    //  insert the item into. It should be either the whole collection
-    //  representing the data of the receiver or a subcollection of that data.
-    if (TP.isEmpty(scope = aSignal.at('scope'))) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  Make sure we can create a real URI from it.
-    if (!TP.isURI(scopeURI = TP.uc(scope))) {
-        return this.raise('TP.sig.InvalidURI');
-    }
-
-    //  Insert a row into that collection, using the cloning index, insertion
-    //  index and position given in the signal.
-    this.insertRowIntoAt(scopeURI,
-                            TP.nc(aSignal.at('cloneIndex')).asNumber(),
-                            TP.nc(aSignal.at('index')).asNumber(),
-                            aSignal.at('position'));
-
-    return;
+    return TP.override();
 });
 
 //  ------------------------------------------------------------------------
@@ -689,6 +829,128 @@ function(aSignal) {
     //  Remove a row from that collection, using the deletion index in the
     //  signal.
     this.removeRowFromAt(scopeURI, aSignal.at('index'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineHandler('InsertItem',
+function(aSignal) {
+
+    /**
+     * @method handleInsertItem
+     * @summary Handles when an item is to be inserted into the receiver's data.
+     * @param {TP.sig.InsertItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI,
+
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  This could be undefined, but if it's real we want to make URI out of it.
+    source = aSignal.at('source');
+    if (TP.notEmpty(source)) {
+        source = source.unquoted();
+
+        if (TP.isURIString(source)) {
+            source = TP.uc(source);
+        } else if (source.charAt(0) === '#') {
+
+            //  If it's not an XPointer, then make a 'direct to GUI' URI out of
+            //  it.
+            if (!TP.regex.ANY_POINTER.test(source)) {
+                source = 'tibet://uicanvas#tibet(' + source + ')';
+            }
+
+            source = TP.uc(source);
+        } else {
+
+            //  Otherwise, try to create an access path from it.
+            source = TP.apc(source);
+        }
+    }
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+        scopeURI,
+        source,
+        TP.nc(aSignal.at('index')).asNumber(),
+        aSignal.at('position'),
+        aSignal.at('copy'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineHandler('SetContent',
+function(aSignal) {
+
+    /**
+     * @method handleSetContent
+     * @summary Handles when the receiver's data is to be set to the source
+     *     specified in the 'source' parameter of the supplied signal. The
+     *     source should resolve to a value that a URI can be constructed from.
+     *     The signal should also specify via a 'copy' Boolean flag as to
+     *     whether the source's data should be copied.
+     * @param {TP.sig.SetContent} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidSource
+     */
+
+    var scope,
+        scopeURI,
+
+        sourceURI,
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  Make sure we can create a real URI from the source.
+    source = aSignal.at('source');
+    if (TP.isEmpty(source)) {
+        return this.raise('TP.sig.InvalidSource');
+    }
+
+    source = source.unquoted();
+
+    if (!TP.isURI(sourceURI = TP.uc(source))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    scopeURI.setResourceToResultOf(
+        sourceURI,
+        TP.hc('signalChange', true),
+        TP.bc(aSignal.at('copy')));
 
     return;
 });
@@ -752,25 +1014,13 @@ function(attributeName, attributeValue, shouldSignal) {
     //  This might be an access path
     attrName = attributeName.asString();
 
-    if (attrName !== 'data') {
+    if (attrName !== 'data' &&
+        attrName !== 'sourceURI' &&
+        attrName !== 'transactional') {
         this.checkFacets(attrName);
     }
 
     return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Content.Inst.defineMethod('asString',
-function() {
-
-    /**
-     * @method asString
-     * @summary Returns the common string representation of the receiver.
-     * @returns {String} The content object in string form.
-     */
-
-    return TP.str(this.get('data'));
 });
 
 //  ------------------------------------------------------------------------
@@ -786,7 +1036,6 @@ function(aDataObject, shouldSignal) {
      * @param {Boolean} [shouldSignal=false] Whether or not to signal change.
      * @returns {TP.core.Content} The receiver.
      */
-
 
     return this.setData(aDataObject, shouldSignal);
 });
@@ -816,10 +1065,8 @@ function(aDataObject, shouldSignal) {
 
     this.$set('data', aDataObject, false);
 
-    if (TP.isValid(aDataObject)) {
-        if (TP.isMutable(aDataObject)) {
-            this.observe(aDataObject, 'Change');
-        }
+    if (TP.isMutable(aDataObject)) {
+        this.observe(aDataObject, 'Change');
     }
 
     if (TP.notFalse(shouldSignal)) {
@@ -885,13 +1132,27 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    var data;
+    var data,
 
-    if (TP.isValid(data = this.get('data'))) {
-        return data.shouldSignalChange(aFlag);
+        dataChanges,
+        receiverChanges;
+
+    data = this.get('data');
+
+    if (TP.isValid(data)) {
+        if (TP.canInvoke(data, 'shouldSignalChange')) {
+            //  Note we can't do 'if (flag)' here because of its Boolean nature.
+            if (arguments.length) {
+                dataChanges = data.shouldSignalChange(aFlag);
+            } else {
+                dataChanges = data.shouldSignalChange();
+            }
+        }
     }
 
-    return this.callNextMethod();
+    receiverChanges = this.callNextMethod();
+
+    return receiverChanges || dataChanges;
 });
 
 //  ------------------------------------------------------------------------
@@ -908,33 +1169,589 @@ function() {
     return this.getData().toJSON();
 });
 
+//  ------------------------------------------------------------------------
+//  CONTENT "TRANSACTIONS"
+//  ------------------------------------------------------------------------
+
+/*
+Operations which form the core of the TP.core.Content "transaction" support
+which allows content to serve as a model supporting undo/redo operations via
+back/forward (temporary) and commit/rollback (permanent) methods.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('back',
+function(aName) {
+
+    /**
+     * @method back
+     * @summary Moves the receiver's current snapshot index back to the named
+     *     checkpoint index, or by one checkpoint such that requests for
+     *     information about the receiver resolve to that state. No checkpoints
+     *     are removed and a forward() will undo the effect of this call --
+     *     unless you alter the state of the snapshot after calling back().
+     * @param {String} aName The name of a specific checkpoint to index to.
+     *     Defaults to the prior checkpoint location.
+     * @exception TP.sig.InvalidCheckpoint
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        points,
+        ndx;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  if user thought there was a named checkpoint but we don't have any
+        //  then we consider that an error
+        if (TP.isString(aName)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been made.');
+        } else {
+            //  if no name provided we can consider this a no-op
+            return this;
+        }
+    }
+
+    if (TP.notEmpty(aName)) {
+
+        points = this.get('points');
+        if (TP.notValid(points)) {
+            //  if user thought there was a checkpoint but we don't have any
+            //  then we consider that an error
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been named.');
+        }
+
+        ndx = points.at(aName);
+        if (TP.notValid(ndx)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'Checkpoint ' + aName + ' not found.');
+        }
+
+    } else {
+
+        //  decrement the index, but don't let it go below 0
+        ndx = this.get('currentIndex');
+        if (ndx === 0) {
+            return this;
+        } else if (TP.notValid(ndx)) {
+            //  Set to the end of the snapshot list.
+            ndx = snaps.getSize() - 1;
+        }
+
+        //  back up one index
+        ndx = ndx - 1;
+    }
+
+    //  Make sure we're not backing up past the start of the list.
+    ndx = ndx.max(0);
+
+    //  if the value changes here a change notice will fire...
+    this.set('currentIndex', ndx);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('checkpoint',
+function(aName) {
+
+    /**
+     * @method checkpoint
+     * @summary Checkpoints the current content, making it available for future
+     *     rollback operations via either name or position.
+     * @param {String} aName An optional name to assign to the checkpoint which
+     *     can be supplied to rollback() calls.
+     * @returns {Number} The number of checkpoints after the new checkpoint has
+     *     been added.
+     */
+
+    var snaps,
+        ndx,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    //  if no snaps list yet then construct one so we can store the data
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        snaps = TP.ac();
+        this.$set('snaps', snaps, false);
+    }
+
+    //  here's a bit of a twist, if we checkpoint while looking at an indexed
+    //  location we have to clear the rest of the list and remove any checkpoint
+    //  name references to points later in the list
+    if (TP.isNumber(ndx = this.get('currentIndex'))) {
+        //  set length to trim off elements past the current index location,
+        //  discarding their changes, this will cause the discardCheckpoint
+        //  routine to consider checkpoints referencing indexes past that
+        //  point to be invalid so they get removed
+        snaps.length = ndx + 1;
+
+        //  since we've adjusted the snaps list length we need to update the
+        //  index reference data
+        this.discardCheckpointNames();
+    }
+
+    //  are we naming this one?
+    if (TP.notEmpty(aName)) {
+        //  construct a hash for named checkpoint references
+        if (TP.notValid(points = this.get('points'))) {
+            points = TP.hc();
+            this.$set('points', points, false);
+        }
+
+        //  correlate name with current 'end of list' index which points to
+        //  the snaps just prior to cloning it to save state at the "old"
+        //  location
+        points.atPut(aName, snaps.getSize());
+    }
+
+    //  with the snaps list in shape we can now add the new data.
+    snaps.add(this.snapshotData());
+
+    //  clear the current index since we're essentially saying we want to
+    //  operate at the current location and start to float with checkpoint
+    //  state again
+    this.set('currentIndex', null);
+
+    return snaps.getSize();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('commit',
+function() {
+
+    /**
+     * @method commit
+     * @summary Collapses the list of available snaps into a single committed
+     *     copy of the receiver containing all changes made.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var data,
+        snaps,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    //  Get the data - if there were snapshots in place, this will get the data
+    //  from the 'currently active' one.
+    data = this.get('data');
+
+    snaps = this.$get('snaps');
+    if (TP.isValid(snaps)) {
+        snaps.length = 1;
+    }
+
+    points = this.$get('points');
+    if (TP.isValid(points)) {
+        points.getKeys().forEach(
+            function(point) {
+                if (points.at(point) > 0) {
+                    points.removeKey(point);
+                }
+            });
+    }
+
+    this.$set('currentIndex', 0, false);
+
+    //  Note how we use the regular 'set()' call here (because we might want
+    //  custom setter logic to run), but we don't signal change because, to all
+    //  outward appearances, this is the same data.
+    this.set('data', data, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('discardCheckpointSnaps',
+function() {
+
+    /**
+     * @method discardCheckpointSnaps
+     * @summary Flushes any stored checkpoint data after the current snapshot
+     *     index. When using back() and forward() along with checkpoint,
+     *     rollback, or any mutation operations this method will be called to
+     *     clear the obsolete data itself.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var ndx,
+        snaps;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    //  when there's no index set there have been no back calls and so we're
+    //  at the end, or a previous forward cleared it because we reached the
+    //  end...
+    if (TP.notValid(ndx = this.get('currentIndex'))) {
+        return this;
+    }
+
+    //  we've got a valid index, which indicates where we're currently
+    //  looking. we want to discard everything from that point on...
+    snaps.length = ndx + 1;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('discardCheckpointNames',
+function() {
+
+    /**
+     * @method discardCheckpointNames
+     * @summary Flushes any stored checkpoint names which come after the
+     *     current snapshot list length.
+     * @description When using back() and forward() along with checkpoint,
+     *     rollback, or any mutation operations this method will be called to
+     *     clear name references to indexes into the snaps list which no longer
+     *     exist.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    if (TP.isEmpty(snaps)) {
+        //  when there are no snaps all points are invalid...
+        this.set('points', null);
+    } else if (TP.isArray(points = this.get('points'))) {
+        //  clear out point references to non-existent entries
+        points.perform(
+            function(item) {
+
+                if (item.last() > snaps.getSize() - 1) {
+                    points.removeKey(item.first());
+                }
+            });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('forward',
+function(aName) {
+
+    /**
+     * @method forward
+     * @summary Moves the receiver's current snapshot index forward to the named
+     *     checkpoint index, or by one checkpoint such that requests for
+     *     information about the receiver resolve to that state.
+     * @param {String} aName The name of a specific checkpoint to index to.
+     *     Defaults to the next checkpoint location available.
+     * @exception TP.sig.InvalidCheckpoint
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        ndx,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    //  when there's no index set there have been no back calls and so we're
+    //  at the end, or a previous forward cleared it because we reached the
+    //  end...
+    if (TP.notValid(ndx = this.get('currentIndex'))) {
+        return this;
+    }
+
+    if (TP.notEmpty(aName)) {
+        if (TP.notValid(points = this.get('points'))) {
+            //  if user thought there was a checkpoint but we don't have
+            //  any then we consider that an error
+            return this.raise('TP.sig.InvalidCheckpoint',
+                                'No active checkpoints have been named.');
+        }
+
+        ndx = points.at(aName);
+        if (TP.notValid(ndx)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                                'Checkpoint ' + aName + ' not found.');
+        }
+
+        //  this will trigger a change notice so observers can update
+        this.set('currentIndex', ndx);
+    } else {
+        //  increment the index, but don't let it go off the end
+        ndx = this.get('currentIndex') + 1;
+        if (ndx < snaps.getSize()) {
+            this.set('currentIndex', ndx);
+        } else {
+            //  if forward would go off the end then we'll reset so we
+            //  start to float again. Note here how we do *not* signal change.
+            this.set('currentIndex', null);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('isTransactional',
+function(aFlag) {
+
+    /**
+     * @method isTransactional
+     * @summary Combined setter/getter for whether the receiver has been told
+     *     to support transactional behavior via checkpoint, commit, and
+     *     rollback.
+     * @param {Boolean} aFlag The state of the content's transaction flag, which
+     *     will be set when provided.
+     * @returns {Boolean} The current transaction state, after any optional
+     *     set() operation has occurred.
+     */
+
+    if (TP.isBoolean(aFlag)) {
+
+        if (TP.isTrue(this.$get('transactional'))) {
+
+            if (!aFlag) {
+                //  was transactional, clearing it now...
+
+                //  TODO: check for unsaved changes etc...
+
+                this.$set('snaps', null, false);
+                this.$set('points', null, false);
+                this.$set('currentIndex', null, false);
+            }
+
+        } else {
+
+            if (aFlag) {
+                //  wasn't transactional, turning it on...
+
+                this.$set('transactional', aFlag, false);
+                this.checkpoint();
+            }
+        }
+
+        this.$set('transactional', aFlag, false);
+
+        if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
+            TP.ifWarn() ?
+                TP.warn('Content transactions have been activated but ' +
+                            'content is not being checkpointed.') : 0;
+        }
+    }
+
+    return this.$get('transactional');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('hasCheckpoint',
+function(aName) {
+
+    /**
+     * @method hasCheckpoint
+     * @summary Looks up the named checkpoint and returns true if it exists.
+     * @param {String} aName An optional name to look up.
+     * @returns {Boolean} True if the receiver has the named checkpoint.
+     */
+
+    var points;
+
+    if (!TP.isString(aName)) {
+        return false;
+    }
+
+    if (TP.notValid(points = this.get('points'))) {
+        return false;
+    }
+
+    return TP.isValid(points.at(aName));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('rollback',
+function(aName) {
+
+    /**
+     * @method rollback
+     * @summary Rolls back changes made since the named checkpoint provided in
+     *     the first parameter, or all changes if no checkpoint name is
+     *     provided. Note that unlike 'back' this routine will discard any
+     *     checkpoints after the target checkpoint.
+     * @param {String} aName An optional name provided when a checkpoint call
+     *     was made, identifying the specific point to roll back to.
+     * @exception TP.sig.InvalidRollback
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        points,
+        ndx;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  if user thought there was a named checkpoint but we don't have any
+        //  then we consider that an error
+        if (TP.isString(aName)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been made.');
+        } else {
+            //  if no name provided we can consider this a no-op
+            return this;
+        }
+    }
+
+    points = this.get('points');
+    if (TP.notEmpty(aName)) {
+
+        if (TP.notValid(points)) {
+            //  if user thought there was a checkpoint but we don't have any
+            //  then we consider that an error
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been named.');
+        }
+
+        ndx = points.at(aName);
+        if (TP.notValid(ndx)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'Checkpoint ' + aName + ' not found.');
+        }
+
+    } else {
+
+        //  If no checkpoint name is provided then we're resetting to the
+        //  initial snapshot.
+        ndx = 0;
+    }
+
+    //  Make sure we're not backing up past the start of the list.
+    ndx = ndx.max(0);
+
+    //  throw away snapshots beyond the one we'll be adjusting to.
+    snaps.length = ndx + 1;
+
+    //  NOTE we also have to remove any named checkpoints which point to
+    //  indexes beyond our current index.
+    if (TP.isValid(points)) {
+        points.getKeys().forEach(
+            function(point) {
+                if (points.at(point) > ndx) {
+                    points.removeKey(point);
+                }
+            });
+    }
+
+    //  if the value changes here a change notice will fire...
+    this.set('currentIndex', ndx);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('snapshotData',
+function() {
+
+    /**
+     * @method snapshotData
+     * @summary Returns a snapshot of the receiver's underlying data for use by
+     *     the transactional data management routines of the receiver.
+     * @returns {Object} The snapshot data.
+     */
+
+    return TP.override();
+});
+
 //  ========================================================================
-//  TP.core.GenericContent
+//  TP.core.CSSStyleSheet
 //  ========================================================================
 
 /**
- * @type {TP.core.GenericContent}
- * @summary A content handler specific to the TP.core.XMLContent format.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.defineSubtype('core.GenericContent');
+TP.core.Content.defineSubtype('core.CSSStyleSheet');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.GenericContent.Type.defineMethod('canConstruct', function(data) {
+TP.core.CSSStyleSheet.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.CSS;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CSSStyleSheet.Type.defineMethod('canConstruct',
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
-    return true;
+    if (TP.regex.CONTAINS_CSS.test(data)) {
+        return true;
+    }
+
+    //  Not all style sheets have actual content. Check the URI.
+    if (TP.canInvoke(uri, 'getExtension')) {
+        return uri.getExtension() === 'css';
+    }
 });
 
 //  ========================================================================
@@ -969,16 +1786,34 @@ function(data) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Type.defineMethod('canConstruct', function(data) {
+TP.core.JSONContent.Type.defineMethod('canConstruct',
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
     return TP.isJSONString(data);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.JSON;
 });
 
 //  ------------------------------------------------------------------------
@@ -1142,7 +1977,7 @@ function() {
             return;
         }
 
-        this.set('data', jsonData);
+        this.set('data', jsonData, false);
     }
 
     return jsonData;
@@ -1176,8 +2011,54 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineHandler('CloneItem',
+function(aSignal) {
+
+    /**
+     * @method handleCloneItem
+     * @summary Handles when an item is to be cloned and inserted into the
+     *     receiver's data.
+     * @param {TP.sig.CloneItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI,
+
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+        scopeURI,
+        source,
+        TP.nc(aSignal.at('index')).asNumber(),
+        aSignal.at('position'),
+        true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('insertRowIntoAt',
-function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
+         shouldClone) {
 
     /**
      * @method insertRowIntoAt
@@ -1185,24 +2066,39 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
-     *     add the row to.
-     * @param {Number} aCloneIndex The index of the item to clone when creating
-     *     the new item.
-     * @param {Number} anInsertIndex The index to insert the item at in the
+     * @param {TP.core.URI|TP.core.AccessPath} aCollectionURIOrPath The URI
+     *     pointing to the collection to add the row to or a path that, in
+     *     combination with the receiver's 'public facing' URI, can be used to
+     *     obtain a collection to add the row to.
+     * @param {Array|TP.core.URI|TP.core.AccessPath} aDataRowOrURIOrPath The URI
+     *     or path that points to data or the object itself to insert into the
+     *     collection.
+     * @param {Number} [anInsertIndex] The index to insert the item at in the
      *     collection. Note that this works with the supplied position to
-     *     determine whether the insertion should happen before or after.
-     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
-     *     determines the position of the insertion. If no position is supplied,
-     *     TP.AFTER is assumed.
+     *     determine whether the insertion should happen before or after. If not
+     *     specified, the item will be inserted at the end of the collection.
+     * @param {Constant} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     *     null. This determines the position of the insertion. If no position
+     *     is supplied, TP.AFTER is assumed.
+     * @param {Boolean} [shouldClone=false] Whether or not to clone the data
+     *     before inserting it. The default is false.
      * @returns {TP.core.Content} The receiver.
      */
 
-    var targetCollection,
+    var targetURIOrPath,
 
-        cloneIndex,
-        itemToClone,
-        newItem,
+        targetURI,
+        publicURI,
+
+        targetCollection,
+
+        dataRow,
+
+        keys,
+
+        fragmentExpr,
+
+        queryURI,
 
         insertIndex,
 
@@ -1213,28 +2109,113 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
         batchID;
 
-    //  Make sure that we have an Array as our collection. If we end up with a
-    //  non-Array, we wrap it into one.
+    //  Obtain a URI that will be pointing at a collection.
 
-    //  NB: We assume 'async' of false here.
-    if (!TP.isArray(targetCollection =
-                    aCollectionURI.getResource().get('result'))) {
-        targetCollection = TP.ac(targetCollection);
+    targetURIOrPath = aCollectionURIOrPath;
+    publicURI = this.get('$publicURI');
+
+    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  path...), then set targetURI to publicURI (if its real).
+    if (!TP.isURI(targetURIOrPath)) {
+
+        //  publicURI isn't real - nothing to do here.
+        if (!TP.isURI(publicURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        targetURI = publicURI;
+        if (targetURIOrPath.isAccessPath()) {
+            //  NB: We assume 'async' of false here.
+            targetCollection =
+                targetURI.getResource(
+                    TP.hc('async', false)).get('result').get(targetURIOrPath);
+
+            //  Now, make sure that we're dealing with an Array
+            if (!TP.isArray(targetCollection)) {
+                targetCollection = TP.ac(targetCollection);
+            }
+
+            fragmentExpr = targetURIOrPath.asString();
+
+        } else {
+            //  Not a real path either.
+            //  TODO: Raise exception
+            return this;
+        }
+
+    } else {
+
+        //  A URI was supplied to begin with.
+        targetURI = targetURIOrPath;
+
+        //  We should make sure that at least the primary URIs of the supplied
+        //  URI and our source content URI are the same.
+        if (targetURI.getPrimaryURI() !== publicURI.getPrimaryURI()) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        //  NB: We assume 'async' of false here.
+        targetCollection = targetURI.getResource(
+                            TP.hc('async', false,
+                                    'shouldCollapse', false)).get('result');
+
+        //  Now, make sure that we're dealing with an Array
+        if (!TP.isArray(targetCollection)) {
+            targetCollection = TP.ac(targetCollection);
+        }
+
+        fragmentExpr = targetURI.getFragmentExpr();
     }
 
-    //  Clone the first row if no clone index was supplied
-    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
-        cloneIndex = 0;
+    if (TP.isURI(aDataRowOrURIOrPath)) {
+        //  NB: We assume 'async' of false here.
+        dataRow = aDataRowOrURIOrPath.getResource(
+                                TP.hc('async', false)).get('result');
+
+    } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+        queryURI = aCollectionURIOrPath;
+
+        if (!TP.isURI(queryURI)) {
+
+            queryURI = publicURI;
+
+            //  Neither aCollectionURIOrPath or publicURI isn't real - nothing
+            //  to do here.
+            if (!TP.isURI(queryURI)) {
+                //  TODO: Raise exception
+                return this;
+            }
+        }
+
+        //  NB: We assume 'async' of false here.
+        dataRow =
+            queryURI.getResource(
+                TP.hc('async', false)).get('result').get(aDataRowOrURIOrPath);
+
+    } else {
+        dataRow = aDataRowOrURIOrPath;
     }
 
-    //  Get the item to clone and clone it.
-    itemToClone = targetCollection.get(cloneIndex);
-    newItem = TP.copy(itemToClone);
+    if (TP.isTrue(shouldClone)) {
 
-    //  Clear out all of the 'text content' - that is, all of the scalar values
-    //  in the newly cloned item. This will descend through the new item's data
-    //  structure and cleanse it all of previous values.
-    newItem.clearTextContent();
+        dataRow = TP.copy(dataRow);
+
+        if (TP.canInvoke(dataRow, 'clearTextContent')) {
+            //  Clear out all of the 'text content' - that is, all of the scalar
+            //  values in the newly cloned item. This will descend through the
+            //  new item's data structure and cleanse it all of previous values.
+            dataRow.clearTextContent();
+        } else {
+            keys = TP.keys(dataRow);
+            keys.forEach(
+                function(aKey) {
+                    dataRow[aKey] = '';
+                });
+        }
+    }
 
     //  NB: The insertion index is computed to represent the row that will come
     //  *after* the new row after the insertion operation is complete (per
@@ -1255,14 +2236,23 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
     }
 
     //  Splice it into the collection.
-    targetCollection.splice(insertIndex, 0, newItem);
+    targetCollection.splice(insertIndex, 0, dataRow);
+
+    //  NB: We *must* reset the targetURI's resource here since we've modified
+    //  it 'outside' of the normal set()/get() behavior and observers that are
+    //  observing this object for changes will be depending on having a
+    //  queryable structure when they receive their notification. Note also how
+    //  we do *not* signal change when we set this value. We don't want those
+    //  observers to trigger early, but instead use the richer notification
+    //  they'll receive from the code below.
+    targetURI.setResource(targetCollection, TP.request('signalChange', false));
 
     //  The index that changed.
     changedIndex = insertIndex;
 
     //  The aspect that changed is just the collection along with the index that
     //  changed.
-    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+    changedAspect = fragmentExpr + '[' + changedIndex + ']';
 
     //  For these paths, the changed addresses are just an Array of the changed
     //  aspect.
@@ -1329,8 +2319,9 @@ function(aCollectionURI, aDeleteIndex) {
     //  row.
 
     //  NB: We assume 'async' of false here.
-    if (TP.isArray(targetCollection =
-                    aCollectionURI.getResource().get('result'))) {
+    if (TP.isArray(
+        targetCollection =
+            aCollectionURI.getResource(TP.hc('async', false)).get('result'))) {
 
         //  If a deletion index was supplied or we have numbers in our selection
         //  indexes, then use those as the deletion indexes.
@@ -1403,42 +2394,67 @@ function(aCollectionURI, aDeleteIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('shouldSignalChange',
-function(aFlag) {
+TP.core.JSONContent.Inst.defineMethod('snapshotData',
+function() {
 
     /**
-     * @method shouldSignalChange
-     * @summary Defines whether the receiver should actively signal change
-     *     notifications.
-     * @description In general objects do not signal changes when no observers
-     *     exist. This flag is triggered by observe where the signal being
-     *     observed is a form of Change signal to "arm" the object for change
-     *     notification. You can also manipulate it during multi-step
-     *     manipulations to signal only when a series of changes has been
-     *     completed.
-     * @param {Boolean} aFlag true/false signaling status.
-     * @returns {Boolean} The current status.
+     * @method snapshotData
+     * @summary Returns a snapshot of the receiver's underlying data for use by
+     *     the transactional data management routines of the receiver.
+     * @returns {Object} The snapshot data.
      */
 
     var data;
 
-    //  Sometimes this object holds a TIBET-wrapped piece of XML data (when it
-    //  is being used by a JSONPath). In this case, we want to pass through this
-    //  setting. Otherwise, it's holding a plain JavaScript Object created from
-    //  JSON, so it won't respond to this.
+    data = TP.js2json(this.getData());
+    data = TP.json2js(data);
 
-    data = this.get('data');
+    return data;
+});
 
-    if (TP.canInvoke(data, 'shouldSignalChange')) {
-        //  Note we can't do 'if (flag)' here because of its Boolean nature.
-        if (arguments.length) {
-            return data.shouldSignalChange(aFlag);
-        } else {
-            return data.shouldSignalChange();
-        }
-    }
+//  ========================================================================
+//  TP.core.TextContent
+//  ========================================================================
 
-    return false;
+/**
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.defineSubtype('core.TextContent');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TextContent.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.PLAIN;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TextContent.Type.defineMethod('canConstruct',
+function(data, uri) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
+     * @returns {Boolean}
+     */
+
+    return TP.isString(data);
 });
 
 //  ========================================================================
@@ -1474,16 +2490,34 @@ function(data, aURI) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Type.defineMethod('canConstruct', function(data) {
+TP.core.XMLContent.Type.defineMethod('canConstruct',
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
-    return TP.isXMLString(data);
+    return TP.isNode(data) || TP.isXMLString(data);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.XML;
 });
 
 //  ------------------------------------------------------------------------
@@ -1527,51 +2561,86 @@ function(anObject, includeFacetChecks) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('getData',
-function() {
+TP.core.XMLContent.Inst.defineMethod('init',
+function(data, aURI) {
 
     /**
-     * @method getData
-     * @summary Returns the underlying data object.
-     * @returns {Object} The receiver's underlying data object.
+     * @method init
+     * @summary Returns a newly constructed Object from inbound content.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
+     * @returns {TP.core.XMLContent} A new instance.
      */
 
-    var xmlData,
-        uri;
+    var contentData;
 
-    xmlData = this.$get('data');
+    contentData = data;
 
-    //  If a String was handed in, it's probably JSON - try to convert it.
-    if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
-
-        //  TP.tpdoc() will raise for us if we supply 'true' as the 3rd
-        //  parameter.
-        xmlData = TP.tpdoc(xmlData, null, true);
-
-        if (TP.notValid(xmlData, null, true)) {
-            return;
-        }
-
-        uri = this.get('sourceURI');
-        if (TP.notEmpty(uri)) {
-            TP.documentSetLocation(xmlData.getNativeDocument(), TP.loc(uri));
-        }
-
-        this.set('data', xmlData);
-
-    } else if (TP.isNode(xmlData)) {
-
-        xmlData = TP.wrap(xmlData);
-        this.set('data', xmlData);
+    if (TP.isKindOf(contentData, TP.core.Node)) {
+        contentData = contentData.getNativeNode();
     }
 
-    return xmlData;
+    this.callNextMethod(contentData, aURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineHandler('CloneItem',
+function(aSignal) {
+
+    /**
+     * @method handleCloneItem
+     * @summary Handles when an item is to be cloned and inserted into the
+     *     receiver's data.
+     * @param {TP.sig.CloneItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI,
+
+        source;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    source = aSignal.at('source');
+    if (TP.notEmpty(source)) {
+        source = TP.str(source.unquoted());
+        source = TP.xpc(source);
+    } else {
+        source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+    }
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+        scopeURI,
+        source,
+        TP.nc(aSignal.at('index')).asNumber(),
+        aSignal.at('position'),
+        true);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
-function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
+         shouldClone) {
 
     /**
      * @method insertRowIntoAt
@@ -1579,29 +2648,41 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
-     *     add the row to.
-     * @param {Number} aCloneIndex The index of the item to clone when creating
-     *     the new item.
-     * @param {Number} anInsertIndex The index to insert the item at in the
+     * @param {TP.core.URI|TP.core.AccessPath} aCollectionURIOrPath The URI
+     *     pointing to the collection to add the row to or a path that, in
+     *     combination with the receiver's 'public facing' URI, can be used to
+     *     obtain a collection to add the row to.
+     * @param {Array|TP.core.URI|TP.core.AccessPath} aDataRowOrURIOrPath The URI
+     *     or path that points to data or the object itself to insert into the
+     *     collection.
+     * @param {Number} [anInsertIndex] The index to insert the item at in the
      *     collection. Note that this works with the supplied position to
-     *     determine whether the insertion should happen before or after.
-     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
-     *     determines the position of the insertion. If no position is supplied,
-     *     TP.AFTER is assumed.
-     * @exception TP.sig.InvalidNode
+     *     determine whether the insertion should happen before or after. If not
+     *     specified, the item will be inserted at the end of the collection.
+     * @param {Constant} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     *     null. This determines the position of the insertion. If no position
+     *     is supplied, TP.AFTER is assumed.
+     * @param {Boolean} [shouldClone=false] Whether or not to clone the data
+     *     before inserting it. The default is false.
      * @returns {TP.core.Content} The receiver.
      */
 
-    var targetCollection,
+    var targetURIOrPath,
 
-        cloneIndex,
-        itemToClone,
-        newItem,
+        targetURI,
+        publicURI,
 
-        itemParent,
+        targetCollection,
+
+        dataRow,
+
+        fragmentExpr,
+
+        queryURI,
 
         insertIndex,
+
+        insertionNode,
 
         insertionPath,
 
@@ -1614,32 +2695,108 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
         batchID;
 
-    //  Make sure that we have a TP.core.CollectionNode
+    //  Obtain a URI that will be pointing at a collection.
 
-    //  NB: We assume 'async' of false here.
-    targetCollection = aCollectionURI.getResource(
-                        TP.hc('resultType', TP.WRAP)).get('result');
+    targetURIOrPath = aCollectionURIOrPath;
+    publicURI = this.get('$publicURI');
 
-    if (!TP.isArray(targetCollection)) {
-        targetCollection = TP.ac(targetCollection);
+    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  path...), then set targetURI to publicURI (if its real).
+    if (!TP.isURI(targetURIOrPath)) {
+
+        //  publicURI isn't real - nothing to do here.
+        if (!TP.isURI(publicURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        targetURI = publicURI;
+        if (targetURIOrPath.isAccessPath()) {
+            //  NB: We assume 'async' of false here.
+            targetCollection =
+                targetURI.getResource(
+                    TP.hc('async', false)).get('result').get(targetURIOrPath);
+
+            //  Now, make sure that we're dealing with an Array
+            if (!TP.isArray(targetCollection)) {
+                targetCollection = TP.ac(targetCollection);
+            }
+
+            fragmentExpr = targetURIOrPath.asString();
+
+        } else {
+            //  Not a real path either.
+            //  TODO: Raise exception
+            return this;
+        }
+
+    } else {
+
+        //  A URI was supplied to begin with.
+        targetURI = targetURIOrPath;
+
+        //  We should make sure that at least the primary URIs of the supplied
+        //  URI and our source content URI are the same.
+        if (targetURI.getPrimaryURI() !== publicURI.getPrimaryURI()) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        //  Make sure that we have a TP.core.CollectionNode
+
+        //  NB: We assume 'async' of false here.
+        targetCollection = targetURI.getResource(
+                            TP.hc('resultType', TP.WRAP,
+                                    'async', false,
+                                    'shouldCollapse', false)).get('result');
+
+        if (!TP.isArray(targetCollection)) {
+            targetCollection = TP.ac(targetCollection);
+        }
+
+        fragmentExpr = targetURI.getFragmentExpr();
     }
 
-    //  Clone the first row if no clone index was supplied
-    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
-        //  XPath starts indexing at 1
-        cloneIndex = 1;
+    if (TP.isURI(aDataRowOrURIOrPath)) {
+        //  NB: We assume 'async' of false here.
+        dataRow = aDataRowOrURIOrPath.getResource(
+                                TP.hc('async', false)).get('result');
+
+    } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+        queryURI = aCollectionURIOrPath;
+
+        if (!TP.isURI(queryURI)) {
+
+            queryURI = publicURI;
+
+            //  Neither aCollectionURIOrPath or publicURI isn't real - nothing
+            //  to do here.
+            if (!TP.isURI(queryURI)) {
+                //  TODO: Raise exception
+                return this;
+            }
+        }
+
+        //  NB: We assume 'async' of false here.
+        dataRow =
+            queryURI.getResource(
+                TP.hc('async', false)).get('result').get(aDataRowOrURIOrPath);
+
+    } else {
+        dataRow = aDataRowOrURIOrPath;
     }
 
-    //  Get the item to clone and clone it.
-    itemToClone = targetCollection.at(cloneIndex);
-    newItem = itemToClone.clone(true);
+    if (TP.isTrue(shouldClone)) {
 
-    itemParent = itemToClone.getParentNode();
+        //  Get the item to clone and clone it.
+        dataRow = dataRow.clone(true);
 
-    //  Clear out all of the 'text content' - that is, all of the scalar values
-    //  in the newly cloned item. This will descend through the new item's data
-    //  structure and cleanse it all of previous values.
-    newItem.clearTextContent();
+        //  Clear out all of the 'text content' - that is, all of the scalar
+        //  values in the newly cloned item. This will descend through the new
+        //  item's data structure and cleanse it all of previous values.
+        dataRow.clearTextContent();
+    }
 
     //  NB: The insertion index is computed to represent the row that will come
     //  *after* the new row after the insertion operation is complete (per
@@ -1667,14 +2824,17 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
         }
     }
 
+    insertionNode = targetCollection.first().getParentNode();
+
     //  If the insertion path is not empty, that means that we're not just
     //  appending to the end.
     if (TP.notEmpty(insertionPath)) {
-        newTPNode = itemParent.insertRawContent(
-                            newItem, insertionPath, null, false);
+        newTPNode = insertionNode.insertRawContent(
+                            dataRow, insertionPath, null, false);
     } else {
         //  We're just appending to the end.
-        newTPNode = itemParent.addRawContent(newItem, null, false);
+        newTPNode = insertionNode.addRawContent(
+                            dataRow, null, false);
     }
 
     //  Grab the address of the node that changed.
@@ -1685,7 +2845,7 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
     //  The aspect that changed is just the collection along with the
     //  index that changed.
-    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+    changedAspect = fragmentExpr + '[' + changedIndex + ']';
 
     //  Construct a 'changed paths' data structure that observers will expect to
     //  see.
@@ -1710,6 +2870,105 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
                         TP.END_SIGNAL_BATCH, batchID));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('getData',
+function() {
+
+    /**
+     * @method getData
+     * @summary Returns the underlying data object.
+     * @returns {Object} The receiver's underlying data object.
+     */
+
+    var xmlData,
+
+        uri,
+
+        newData,
+
+        defaultNS,
+        mimeType,
+        nsEntry;
+
+    xmlData = this.callNextMethod();
+
+    uri = this.get('sourceURI');
+
+    newData = false;
+
+    if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
+
+        defaultNS = null;
+
+        //  Try to determine a default namespace based on the extension of the
+        //  URI.
+        if (TP.notEmpty(uri)) {
+
+            //  Guess the MIME type based on the data and the URI
+            mimeType = TP.ietf.Mime.guessMIMEType(xmlData, uri);
+
+            //  Try to get a 'namespace entry' from that. The namespace URI can
+            //  be found under 'uri'.
+            nsEntry = TP.w3.Xmlns.fromMIMEType(mimeType);
+            if (TP.isValid(nsEntry)) {
+                defaultNS = nsEntry.at('uri');
+            }
+        }
+
+        //  TP.tpdoc() will raise for us if we supply 'true' as the 3rd
+        //  parameter.
+        xmlData = TP.tpdoc(xmlData, defaultNS, true);
+
+        if (TP.notValid(xmlData)) {
+            return;
+        }
+
+        newData = true;
+    } else if (TP.isNode(xmlData)) {
+        xmlData = TP.wrap(xmlData);
+        newData = true;
+    }
+
+    if (newData) {
+        //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
+        //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
+        //  *MUST* be done *before* we call set('data', ...) below, otherwise
+        //  the underlying XML will end up with bad global IDs.
+        if (TP.notEmpty(uri)) {
+            xmlData.$set('uri', uri, false);
+            xmlData.addTIBETSrc(uri);
+            xmlData.addXMLBase(uri);
+        }
+
+        this.set('data', xmlData, false);
+    }
+
+    return xmlData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('getNativeNode',
+function() {
+
+    /**
+     * @method getNativeNode
+     * @summary Returns the native node of the underlying data object.
+     * @returns {Object} The receiver's underlying data object's native node.
+     */
+
+    var xmlData;
+
+    xmlData = this.get('data');
+
+    if (TP.isKindOf(xmlData, TP.core.Node)) {
+        xmlData = xmlData.getNativeNode();
+    }
+
+    return xmlData;
 });
 
 //  ------------------------------------------------------------------------
@@ -1753,7 +3012,7 @@ function(aCollectionURI, aDeleteIndex) {
 
     //  NB: We assume 'async' of false here.
     targetCollection = aCollectionURI.getResource(
-                        TP.hc('resultType', TP.WRAP)).get('result');
+                    TP.hc('resultType', TP.WRAP, 'async', false)).get('result');
 
     if (!TP.isArray(targetCollection)) {
         targetCollection = TP.ac(targetCollection);
@@ -1860,6 +3119,159 @@ function() {
      */
 
     return this.asXMLString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('asCleanString',
+function() {
+
+    /**
+     * @method asCleanString
+     * @summary Returns the 'clean' string representation of the receiver.
+     *     This may have transformations in it to 'clean' the String, such as
+     *     removing unnecessary namespace definitions, etc.
+     * @returns {String} The content object in clean string form.
+     */
+
+    var data,
+
+        uri,
+        loc,
+
+        serializationStorage,
+
+        str;
+
+    data = this.get('data');
+
+    uri = this.get('sourceURI');
+    loc = uri.getLocation();
+
+    serializationStorage = TP.hc();
+
+    serializationStorage.atPut('store', loc);
+
+    data.serializeForStorage(serializationStorage);
+
+    str = serializationStorage.at('stores').at(loc);
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('snapshotData',
+function() {
+
+    /**
+     * @method snapshotData
+     * @summary Returns a snapshot of the receiver's underlying data for use by
+     *     the transactional data management routines of the receiver.
+     * @returns {Object} The snapshot data.
+     */
+
+    var data;
+
+    data = this.getNativeNode();
+    data = TP.nodeCloneNode(data, true, true);
+
+    return TP.wrap(data);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('transform',
+function(anObject, aParamHash) {
+
+    /**
+     * @method transform
+     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     *     content of the receiver.
+     * @param {Object} anObject The object supplying the data to use in the
+     *     transformation.
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A parameter container
+     *     responding to at(). For string transformations a key of 'repeat' with
+     *     a value of true will cause iteration to occur (if anObject is an
+     *     'ordered collection' this flag needs to be set to 'true' in order to
+     *     have 'automatic' iteration occur). Additional keys of '$STARTINDEX'
+     *     and '$REPEATCOUNT' determine the range of the iteration. A special
+     *     key of 'xmlns:fixup' should be set to true to fix up 'xmlns'
+     *     attributes such that they won't be lost during the transformation.
+     * @returns {String} The string resulting from the transformation process.
+     */
+
+    var xmlData;
+
+    xmlData = this.get('data');
+
+    if (TP.isKindOf(xmlData, TP.core.Node)) {
+        return xmlData.transform(anObject, aParamHash);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('setNativeNode',
+function(aNode, shouldSignal) {
+
+    /**
+     * @method setNativeNode
+     * @summary Sets the receiver's native DOM node object.
+     * @param {Node} aNode The node to wrap.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to the return value of sending
+     *     shouldSignalChange() to the receiver.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.core.XMLContent} The receiver.
+     */
+
+    var oldNode,
+
+        nodes,
+        ndx,
+
+        flag;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode', aNode);
+    }
+
+    //  Notice here how we use the 'fast' native node get method to avoid any
+    //  sorts of recursion issues.
+    oldNode = this.getNativeNode();
+
+    //  what we do here varies by whether we're checkpointing or not...
+    if (TP.isArray(nodes = this.get('snaps'))) {
+        ndx = this.get('currentIndex');
+        if (TP.isValid(ndx)) {
+            //  working in the middle of the list, have to truncate
+            nodes.length = ndx;
+            nodes.add(aNode);
+
+            //  clear the index since we're basically defining the end of
+            //  the list now
+            this.$set('currentIndex', null, false);
+        } else {
+            nodes.atPut(nodes.getSize() - 1, aNode);
+        }
+    } else {
+        this.get('data').$set('node', aNode, false);
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('content', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldNode, TP.NEWVAL, aNode));
+    }
+
+    return this;
 });
 
 //  ========================================================================
@@ -2313,12 +3725,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.AccessPath.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -2554,6 +3968,378 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Inst.defineMethod('getLastChangedPathsInfo',
+function(targetObj, filterOutSignalSupertypes) {
+
+    /**
+     * @method getLastChangedPathsInfo
+     * @summary Retrieves a set of 'path info records' that contain data about
+     *     the last changed paths, data addresses and signal types that got
+     *     computed the last time the receiving path was executed.
+     * @param {Object} targetObj The object to use to retrieve the 'last changed
+     *     paths' for.
+     * @param {Boolean} [filterOutSignalSupertypes=false] Whether or not to
+     *     filter out records where a signal subtype is already present in
+     *     another record in the result set (and, therefore, the signal
+     *     supertype will be signaled anyway, assuming INHERITANCE_FIRING). The
+     *     default is true.
+     * @returns {Array} An Array of 'path info records' that contain a 'signal
+     *     description' record and
+     */
+
+    var target,
+
+        allAddresses,
+
+        observedAddresses,
+
+        executedPaths,
+
+        changedAddresses,
+        changedPaths,
+
+        signalNameForAction,
+
+        infos,
+
+        pathKeys,
+        keysLen,
+        i,
+
+        pathAspectAliases,
+        j,
+
+        pathEntry,
+        actions,
+        description,
+
+        actionsLen,
+
+        pathAction,
+        pathAddresses,
+
+        sigName,
+
+        aliasesLen,
+        k,
+        aspectName,
+        aspectSigName,
+
+        filteredInfos,
+
+        leni,
+        lenj,
+
+        iAspect,
+        iSigType,
+
+        shouldAdd,
+
+        jAspect,
+        jSigType;
+
+    //  TODO: This logic is very similar to sendChangedSignal() (and, in fact,
+    //  was derived from there). Refactor that method to use the data from this
+    //  one.
+
+    //  '$observedAddresses' is a map that looks like this:
+    //  {
+    //      <sourceObjID>  :    {
+    //                              <address>   :   [path1, path2, ...]
+    //                          }
+    //  }
+
+    target = targetObj;
+    if (TP.isKindOf(target, TP.core.Content)) {
+        target = target.$get('data');
+    }
+
+    allAddresses = TP.core.AccessPath.$getObservedAddresses();
+
+    observedAddresses = allAddresses.at(TP.id(target));
+
+    //  If we couldn't find any 'observed' addresses for the target object,
+    //  then we should try to compute them - at least for this path. This is
+    //  normally done by doing a 'get'.
+
+    if (TP.isEmpty(observedAddresses)) {
+        this.executeGet(target);
+
+        observedAddresses = allAddresses.at(TP.id(target));
+
+        //  If we still can't find any, then we just exit
+        if (TP.isEmpty(observedAddresses)) {
+            return TP.ac();
+        }
+    } else {
+
+        //  Make sure that this path is registered in 'executed paths' - to
+        //  make sure that at least observers of this path will be notified.
+        executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                            TP.id(target));
+
+       //  If we can't find any executed paths for the source, or not one for
+       //  this path, then execute a get - this will register this path in both
+       //  'executed paths' and, more importantly, will register any addresses
+       //  that this path references in the data object
+        if (TP.notValid(executedPaths) ||
+            TP.notValid(executedPaths.at(this.get('srcPath')))) {
+            this.executeGet(target);
+        }
+    }
+
+    //  Grab all of the data addresses that changed. We'll iterate over this,
+    //  comparing with the 'observed' addresses and then collect the paths that
+    //  did those observations.
+
+    changedAddresses = TP.core.AccessPath.$getChangedAddresses();
+
+    //  Generate a data structure with a data path as its key and
+    //  action/addresses as the value:
+    //
+    //  {
+    //      <path1>  :  {
+    //                      <action>   :   [address1, address2, ...]
+    //                  }
+    //  }
+
+    changedPaths = TP.hc();
+
+    observedAddresses.perform(
+        function(addressPair) {
+            var observedAddress,
+                interestedPaths,
+
+                l,
+                record,
+
+                m,
+
+                action,
+                thePath,
+
+                addressesEntry,
+                actionEntry;
+
+            observedAddress = addressPair.first();
+
+            //  Note that this is an Array of paths
+            interestedPaths = addressPair.last();
+
+            for (l = 0; l < changedAddresses.getSize(); l++) {
+
+                record = changedAddresses.at(l);
+
+                //  We found an address match between changed and observed
+                //  addresses. Add the paths from the observed address and
+                //  the action from the changed address into the Array of
+                //  'changed paths'.
+
+                if (record.at('address') === observedAddress) {
+                    action = record.at('action');
+
+                    //  Loop over all of the interested paths
+                    for (m = 0; m < interestedPaths.getSize(); m++) {
+                        thePath = interestedPaths.at(m);
+
+                        //  If there isn't an action/addresses entry for the
+                        //  path, create one.
+                        if (TP.notValid(actionEntry =
+                                        changedPaths.at(thePath))) {
+
+                            addressesEntry = TP.ac();
+                            actionEntry = TP.hc(action, addressesEntry);
+
+                            changedPaths.atPut(thePath, actionEntry);
+                        } else {
+                            //  Otherwise, if there was an entry for the path,
+                            //  but not for the action, create one.
+                            if (TP.notValid(addressesEntry =
+                                            actionEntry.at(action))) {
+
+                                addressesEntry = TP.ac();
+                                actionEntry.atPut(action, addressesEntry);
+                            }
+                        }
+
+                        //  Push the observed address into the list of addresses
+                        //  for this action for this path.
+                        addressesEntry.push(observedAddress);
+                    }
+                }
+            }
+        });
+
+    //  Define a Function to compute a signal name from an action
+    signalNameForAction = function(anAction) {
+
+        switch (anAction) {
+            case TP.CREATE:
+            case TP.INSERT:
+            case TP.APPEND:
+
+                //  CREATE, INSERT or APPEND means an 'insertion structural
+                //  change' in the data.
+                return 'TP.sig.StructureInsert';
+
+            case TP.DELETE:
+
+                //  DELETE means a 'deletion structural change' in the data.
+                return 'TP.sig.StructureDelete';
+
+            case TP.UPDATE:
+            default:
+
+                //  UPDATE means just a value changed.
+                return 'TP.sig.ValueChange';
+        }
+    };
+
+    infos = TP.ac();
+
+    //  Now, process all of the changed paths and send changed signals. The
+    //  signal type sent will be based on their action.
+
+    pathKeys = changedPaths.getKeys();
+
+    //  Loop over all of the changed paths.
+    keysLen = pathKeys.getSize();
+    for (i = 0; i < keysLen; i++) {
+
+        //  Get any aliases that are associated with the particular path.
+        pathAspectAliases = target.getAccessPathAliases(pathKeys.at(i));
+
+        //  This will be a hash
+        pathEntry = changedPaths.at(pathKeys.at(i));
+
+        //  Loop over all of the entries for this particular path. Each one
+        //  will contain an Array of the addresses that changed and the action
+        //  that changed them (TP.CREATE, TP.DELETE or TP.UPDATE)
+        actions = pathEntry.getKeys();
+
+        description = TP.hc(
+                        'target', target,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths);
+
+        actionsLen = actions.getSize();
+        for (j = 0; j < actionsLen; j++) {
+
+            pathAction = actions.at(j);
+            description.atPut('action', pathAction);
+
+            pathAddresses = pathEntry.at(pathAction);
+            description.atPut('addresses', pathAddresses);
+
+            //  Compute the signal name based on the action.
+            sigName = signalNameForAction(pathAction);
+
+            //  If we found any path aliases, then loop over them and dispatch
+            //  individual signals using their aspect name.
+            if (TP.isValid(pathAspectAliases)) {
+
+                aliasesLen = pathAspectAliases.getSize();
+
+                for (k = 0; k < aliasesLen; k++) {
+                    aspectName = pathAspectAliases.at(k);
+
+                    description.atPut('aspect', aspectName);
+
+                    aspectSigName = TP.makeStartUpper(aspectName) + 'Change';
+
+                    infos.push(
+                        TP.hc('sigName', aspectSigName,
+                                'description', TP.copy(description),
+                                'policy', TP.INHERITANCE_FIRING,
+                                'sigType', sigName));
+                }
+            } else {
+
+                description.atPut('aspect', pathKeys.at(i));
+
+                infos.push(
+                    TP.hc('sigName', sigName,
+                            'description', TP.copy(description),
+                            'sigType', sigName));
+            }
+        }
+    }
+
+    //  De-dup the records according to a 'aspect :: sigType' key
+    infos.unique(
+        function(anInfo) {
+            return anInfo.at('description').at('aspect') +
+                    ' :: ' +
+                    anInfo.at('sigType');
+        });
+
+    //  If we're not filtering records by signal types, then just return them
+    //  all here.
+    if (TP.isFalse(filterOutSignalSupertypes)) {
+        return infos;
+    }
+
+    //  Now, iterate through all of the records, looking for ones that have the
+    //  same aspect but different signal types. Filter out those that are signal
+    //  supertypes of others, since those will be signaled anyway.
+
+    filteredInfos = TP.ac();
+
+    leni = infos.getSize();
+    for (i = 0; i < leni; i++) {
+
+        iAspect = infos.at(i).at('description').at('aspect');
+        iSigType = TP.sys.getTypeByName(infos.at(i).at('sigType'));
+
+        shouldAdd = true;
+
+        lenj = filteredInfos.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            jAspect = filteredInfos.at(j).at('description').at('aspect');
+            jSigType = TP.sys.getTypeByName(filteredInfos.at(j).at('sigType'));
+
+            if (jAspect === iAspect) {
+                if (TP.isSubtypeOf(jSigType, iSigType)) {
+                    //  What is already in the filtered records is a subtype of
+                    //  what we're trying to add - don't add.
+                    shouldAdd = false;
+                    break;
+                } else if (TP.isKindOf(iSigType, jSigType)) {
+                    //  What is already in the filtered records is a supertype
+                    //  of what we're trying to add - replace what's already
+                    //  there (and don't add it again, obviously).
+                    filteredInfos.splice(j, 1, infos.at(i));
+                    shouldAdd = false;
+                    break;
+                }
+            }
+        }
+
+        if (shouldAdd) {
+            filteredInfos.push(infos.at(i));
+        }
+    }
+
+    return filteredInfos;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
@@ -2577,7 +4363,9 @@ function(aReturnValue, targetObj) {
      * @returns {Object} The final value to be returned from this path.
      */
 
-    var retVal,
+    var isEmptyArray,
+
+        retVal,
 
         extractWith,
 
@@ -2588,7 +4376,13 @@ function(aReturnValue, targetObj) {
 
         fallbackWith;
 
-    if (TP.isValid(retVal = aReturnValue)) {
+    isEmptyArray = TP.isArray(aReturnValue) && TP.isEmpty(aReturnValue);
+
+    retVal = aReturnValue;
+
+    //  NB: We only do this if the return value is valid *and* its not an empty
+    //  Array. Otherwise, we run the fallback function below if it's available.
+    if (TP.isValid(retVal) && !isEmptyArray) {
 
         //  If we're configured to collapse, then do it.
 
@@ -3069,7 +4863,7 @@ function(targetObj) {
 
                     description.atPut('aspect', aspectName);
 
-                    aspectSigName = aspectName.asStartUpper() + 'Change';
+                    aspectSigName = TP.makeStartUpper(aspectName) + 'Change';
 
                     //  Note that we force the firing policy here. This allows
                     //  observers of a generic Change to see 'aspect'Change
@@ -3131,15 +4925,25 @@ function(aPath, config) {
      * @returns {TP.core.CompositePath} The receiver.
      */
 
-    var pathStrs,
+    var path,
+
+        pathStrs,
         i,
 
         paths;
 
     this.callNextMethod('value', config);
 
+    path = aPath;
+
+    //  If the path has a '#tibet(...)' scheme wrapping it, slice that off. It
+    //  will cause the split below to be off.
+    if (TP.regex.TIBET_POINTER.test(path)) {
+        path = path.slice(7, -1);
+    }
+
     //  Split along '.(' or ').'
-    pathStrs = aPath.split(/(\.\(|\)\.)/);
+    pathStrs = path.split(/(\.\(|\)\.)/);
 
     //  Strip any leading parenthesis from the first item and any trailing
     //  parenthesis from the last item.
@@ -3466,7 +5270,10 @@ function(srcPath, templateArgs) {
         if (tokenRecord) {
             exprRecord = tokenRecord.expression;
         } else {
-            exprRecord = {type: 'none', value: 'none'};
+            exprRecord = {
+                type: 'none',
+                value: 'none'
+            };
         }
 
         switch (operation) {
@@ -3804,6 +5611,10 @@ function(targetObj, varargs) {
 
     var target,
 
+        targetNdx,
+        targetSnaps,
+        targetData,
+
         tpXMLDoc,
 
         currentJSONData,
@@ -3830,9 +5641,26 @@ function(targetObj, varargs) {
         }
     }
 
+    if (targetObj.$get('transactional')) {
+
+        targetNdx = targetObj.$get('currentIndex');
+        targetSnaps = targetObj.$get('snaps');
+
+        //  NOTE:   we use $get here since we don't want to recurse over
+        //          getProperty() calls that use getNativeNode
+        if (TP.isValid(targetNdx)) {
+            targetData = targetSnaps.at(targetNdx);
+        } else {
+            targetData = targetObj.$get('data');
+        }
+
+        tpXMLDoc = targetData;
+    } else {
+        tpXMLDoc = target.$get('data');
+    }
+
     //  See if the JSONContent object already has corresponding XML content. If
     //  not, create it.
-    tpXMLDoc = target.$get('data');
     if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
 
         //  Some sleight-of-hand to get our target content object to hold XML
@@ -3857,6 +5685,33 @@ function(targetObj, varargs) {
 
         //  ---
 
+        target.defineMethod(
+            '$convertXMLValueDocToJSON',
+            function(someTPXML) {
+                var result;
+
+                if (TP.isValid(
+                    result = TP.$xml2jsonObj(TP.unwrap(someTPXML)))) {
+
+                    //  Locally program a reference to ourself on the
+                    //  generated XML TP.core.Document.
+                    someTPXML.defineAttribute('$$realData');
+                    someTPXML.$set('$$realData', this);
+
+                    //  NB: In our particular encoding of JS<->XML, we use
+                    //  the 'rootObj' slot as a top-level value. See below.
+                    return result.rootObj;
+                } else {
+                    TP.ifWarn() ?
+                        TP.warn(TP.annotate(
+                                this,
+                                'Unable to produce JSON data' +
+                                ' for path: ' + this.get('srcPath'))) : 0;
+                }
+            });
+
+        //  ---
+
         //  Define a local version of 'getData' to return the result of
         //  converting the entire XML data structure to a "plain" JavaScript
         //  object. Note that this is very rarely done - normally a 'slice' of
@@ -3866,34 +5721,37 @@ function(targetObj, varargs) {
             'getData',
             function() {
                 var tpValueDoc,
-                    result;
 
-                //  Retrieve the XML representation that is sitting in the
-                //  actual 'data' slot (using $get() to avoid getting
-                //  recursively called here).
-                tpValueDoc = this.$get('data');
-                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
-                    if (TP.isValid(
-                        result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
+                    ndx,
+                    data,
+                    snaps;
 
-                        //  Locally program a reference to ourself on the
-                        //  generated XML TP.core.Document.
-                        tpValueDoc.defineAttribute('$$realData');
-                        tpValueDoc.$set('$$realData', this);
+                if (this.$get('transactional')) {
 
-                        //  NB: In our particular encoding of JS<->XML, we use
-                        //  the 'rootObj' slot as a top-level value. See below.
-                        return result.rootObj;
+                    ndx = this.$get('currentIndex');
+                    snaps = this.$get('snaps');
+
+                    //  NOTE:   we use $get here since we don't want to recurse
+                    //  over getProperty() calls that use getNativeNode
+                    if (TP.isValid(ndx)) {
+                        data = snaps.at(ndx);
                     } else {
-                        TP.ifWarn() ?
-                            TP.warn(TP.annotate(
-                                    this,
-                                    'Unable to produce JSON data' +
-                                    ' for path: ' + this.get('srcPath'))) : 0;
+                        data = this.$get('data');
                     }
+
+                    tpValueDoc = data;
+                } else {
+                    //  Retrieve the XML representation that is sitting in the
+                    //  actual 'data' slot (using $get() to avoid getting
+                    //  recursively called here).
+                    tpValueDoc = this.$get('data');
                 }
 
-                return null;
+                if (TP.isValid(tpValueDoc)) {
+                    return this.$convertXMLValueDocToJSON(tpValueDoc);
+                }
+
+                return;
             });
 
         //  ---
@@ -3931,7 +5789,9 @@ function(targetObj, varargs) {
                 //  need to have this anyway so that the XML can have a single
                 //  root element. The TP.$jsonObj2xml() call will do this for us
                 //  automatically, but we want to have a well-known handle.
-                rootObj = {rootObj: dataObj};
+                rootObj = {
+                    rootObj: dataObj
+                };
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
                 if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
@@ -3966,10 +5826,62 @@ function(targetObj, varargs) {
 
                 var data;
 
+                if (anAspect === 'value' || anAspect === 'currentIndex') {
+                    return this.callNextMethod();
+                }
+
+                if (anAspect === 'data') {
+                    return this.$changed(anAspect, anAction, aDescription);
+                }
+
                 if (TP.isValid(data = this.$get('data'))) {
                     return data.changed(anAspect, anAction, aDescription);
                 }
+            }, {
+                patchCallee: true
             });
+
+        //  ---
+
+        target.defineMethod('CloneItem',
+        function(aSignal) {
+
+            var scope,
+                scopeURI,
+
+                source;
+
+            //  The 'scope' should be a URI location to find the overall
+            //  collection to insert the item into. It should be either the whole
+            //  collection representing the data of the receiver or a
+            //  subcollection of that data.
+            if (TP.isEmpty(scope = aSignal.at('scope'))) {
+                return this.raise('TP.sig.InvalidParameter');
+            }
+
+            //  Make sure we can create a real URI from it.
+            if (!TP.isURI(scopeURI = TP.uc(scope))) {
+                return this.raise('TP.sig.InvalidURI');
+            }
+
+            source = aSignal.at('source');
+            if (TP.notEmpty(source)) {
+                source = TP.str(source.unquoted());
+                source = TP.xpc(source);
+            } else {
+                source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+            }
+
+            //  Go ahead and insert the cloned data.
+            this.insertRowIntoAt(
+                scopeURI,
+                source,
+                TP.nc(aSignal.at('index')).asNumber(),
+                aSignal.at('position'),
+                true);
+
+            return;
+        });
 
         //  ---
 
@@ -3979,15 +5891,25 @@ function(targetObj, varargs) {
         //  be changed and, therefore, we need to adjust those indexes and use
         //  XPaths against that representation.
         target.defineMethod('insertRowIntoAt',
-        function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+        function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex,
+                 aPosition, shouldClone) {
 
-            var xpath,
+            var targetURIOrPath,
+
+                targetURI,
+                publicURI,
+
                 targetCollection,
 
-                cloneIndex,
+                dataRow,
 
-                itemToClone,
-                newItem,
+                fragmentExpr,
+
+                xpath,
+
+                queryURI,
+
+                nodeName,
 
                 insertIndex,
 
@@ -4002,9 +5924,43 @@ function(targetObj, varargs) {
 
                 batchID;
 
+            //  Obtain a URI that will be pointing at a collection.
+
+            targetURIOrPath = aCollectionURIOrPath;
+            publicURI = this.get('$publicURI');
+
+            //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+            //  path...), then set targetURI to publicURI (if its real).
+            if (!TP.isURI(targetURIOrPath)) {
+
+                //  publicURI isn't real - nothing to do here.
+                if (!TP.isURI(publicURI)) {
+                    //  TODO: Raise exception
+                    return this;
+                }
+
+                targetURI = publicURI;
+                if (targetURIOrPath.isAccessPath()) {
+
+                    fragmentExpr = targetURIOrPath.asString();
+
+                } else {
+                    //  Not a real path either.
+                    //  TODO: Raise exception
+                    return this;
+                }
+
+            } else {
+
+                //  A URI was supplied to begin with.
+                targetURI = targetURIOrPath;
+
+                fragmentExpr = targetURI.getFragmentExpr();
+            }
+
             //  Grab the XPath version of the JSONPath that should be the
             //  fragment expression of the supplied URI.
-            xpath = TP.core.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
+            xpath = TP.core.JSONPath.asXPath(fragmentExpr);
 
             //  Grab the underlying XML data structure that we will manipulate.
             //  Note how we do this with a primitive call, so that we avoid
@@ -4014,26 +5970,53 @@ function(targetObj, varargs) {
                                         this.$get('data').getNativeNode(),
                                         xpath));
 
-            //  Clone the first row if no clone index was supplied
-            if (!TP.isNumber(cloneIndex = aCloneIndex)) {
-                cloneIndex = 0;
+            if (TP.isURI(aDataRowOrURIOrPath)) {
+                //  NB: We assume 'async' of false here.
+                dataRow = aDataRowOrURIOrPath.getResource(
+                                        TP.hc('async', false)).get('result');
+
+            } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+                queryURI = aCollectionURIOrPath;
+
+                if (!TP.isURI(queryURI)) {
+
+                    queryURI = publicURI;
+
+                    //  Neither aCollectionURIOrPath or publicURI isn't real -
+                    //  nothing to do here.
+                    if (!TP.isURI(queryURI)) {
+                        //  TODO: Raise exception
+                        return this;
+                    }
+                }
+
+                //  NB: We assume 'async' of false here.
+                dataRow =
+                    queryURI.getResource(
+                        TP.hc('async', false)).get('result').get(
+                                                    aDataRowOrURIOrPath);
+
+            } else {
+                dataRow = aDataRowOrURIOrPath;
             }
 
-            //  We add 1 to account for indexing differences between JSONPath
-            //  and XPath
-            cloneIndex++;
+            nodeName = targetCollection.first().getLocalName();
+            dataRow = TP.$jsonObj2xml(dataRow, nodeName);
 
-            //  Get the item to clone and clone it.
-            itemToClone = TP.wrap(TP.nodeEvaluateXPath(
-                                        TP.unwrap(targetCollection),
-                                        './*[' + cloneIndex + ']',
-                                        TP.FIRST_NODE));
-            newItem = itemToClone.clone(true);
+            dataRow = TP.wrap(dataRow.documentElement);
 
-            //  Clear out all of the 'text content' - that is, all of the scalar
-            //  values in the newly cloned item. This will descend through the
-            //  new item's data structure and cleanse it all of previous values.
-            newItem.clearTextContent();
+            if (TP.isTrue(shouldClone)) {
+
+                //  Get the item to clone and clone it.
+                dataRow = dataRow.clone(true);
+
+                //  Clear out all of the 'text content' - that is, all of the
+                //  scalar values in the newly cloned item. This will descend
+                //  through the new item's data structure and cleanse it all of
+                //  previous values.
+                dataRow.clearTextContent();
+            }
 
             //  NB: The insertion index is computed to represent the row that
             //  will come *after* the new row after the insertion operation is
@@ -4051,12 +6034,14 @@ function(targetObj, varargs) {
 
             } else {
 
-                //  No index specified - we will be manipulating the end of
-                //  the collection.
+                //  No index specified - we will be manipulating the end of the
+                //  collection.
                 if (aPosition === TP.BEFORE) {
                     insertionPath = './*[last()]';
                     insertIndex = targetCollection.getSize() - 1;
                 } else {
+                    //  Add one because the collection size isn't taking our new
+                    //  size into account.
                     insertIndex = targetCollection.getSize();
                 }
             }
@@ -4065,27 +6050,22 @@ function(targetObj, varargs) {
             //  just appending to the end.
             if (TP.notEmpty(insertionPath)) {
                 newTPNode = targetCollection.insertRawContent(
-                                    newItem, insertionPath, null, false);
+                                    dataRow, insertionPath, null, false);
             } else {
                 //  We're just appending to the end.
                 newTPNode = targetCollection.addRawContent(
-                                    newItem, null, false);
+                                    dataRow, null, false);
             }
 
             //  Grab the address of the node that changed.
             changedAddresses = TP.ac(newTPNode.getDocumentPosition());
 
-            //  And the index that changed. Note here how, because we added 1 to
-            //  the insertIndex above to make it work with XPath, that we
-            //  subtract that 1 off here.
+            //  And the index that changed.
             changedIndex = insertIndex;
 
             //  The aspect that changed is just the collection along with the
-            //  index that changed (using the JSON compatible index, not the
-            //  XPath compatible one).
-            changedAspect =
-                    aCollectionURI.getFragmentExpr() +
-                    '[' + changedIndex + ']';
+            //  index that changed.
+            changedAspect = fragmentExpr + '[' + changedIndex + ']';
 
             //  Construct a 'changed paths' data structure that observers will
             //  expect to see.
@@ -4237,6 +6217,20 @@ function(targetObj, varargs) {
 
         //  ---
 
+        target.defineMethod(
+            'snapshotData',
+            function() {
+                var tpValueDoc;
+
+                tpValueDoc = this.$get('data');
+
+                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
+                    return tpValueDoc.clone(true, true);
+                }
+            });
+
+        //  ---
+
         //  Now that we've redefined setData(), push the current data back
         //  through it, causing the XML representation to be created.
 
@@ -4311,6 +6305,12 @@ function(targetObj, varargs) {
 
                                 return result;
                             });
+
+            //  Because the conversion process will always yield an Array, make
+            //  sure to collapse it so that, if there's only one item in the
+            //  Array, that item is used as the return value.
+            retVal = TP.collapse(retVal);
+
         } else if (TP.isNode(retVal)) {
 
             retVal = TP.$xml2jsonObj(retVal);
@@ -4333,6 +6333,8 @@ function(targetObj, varargs) {
     }
 
     return null;
+}, {
+    patchCallee: false
 });
 
 //  -----------------------------------------------------------------------
@@ -4444,7 +6446,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  First, grab the native plain JS Object under the Hash, then run it
         //  through the conversion process.
         objVal = attributeValue.asObject();
-        valueXMLDoc = TP.$jsonObj2xml({rootObj: objVal});
+        valueXMLDoc = TP.$jsonObj2xml(
+            {
+                rootObj: objVal
+            });
 
         //  This will extract the child nodes as a DocumentFragment *and remove
         //  them from their current parent node*.
@@ -4453,7 +6458,18 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         attrVal = attributeValue;
     }
 
-    xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
+    //  If there are more than 3 args, then we have to gather them up,
+    //  substitute the first two for the arguments that we computed here and
+    //  apply.
+    if (arguments.length > 3) {
+        args = TP.args(arguments);
+        args.atPut(0, tpXMLDoc);
+        args.atPut(1, attrVal);
+
+        xmlPath.executeSet.apply(xmlPath, args);
+    } else {
+        xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
+    }
 
     return this;
 });
@@ -4484,6 +6500,20 @@ function() {
      */
 
     return TP.JSON_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'jpath';
 });
 
 //  ------------------------------------------------------------------------
@@ -4851,6 +6881,8 @@ function(templateArgs) {
     xmlPath.set('$interestedPath', this.asString());
 
     return xmlPath;
+}, {
+    patchCallee: false
 });
 
 //  ========================================================================
@@ -5171,6 +7203,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         retVal,
         traversalLevel,
 
+        executedPaths,
+
+        obsAddresses,
+
         sigFlag,
 
         mutatedStructure;
@@ -5218,6 +7254,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         path = path.transform(args);
     }
 
+    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    if (traversalLevel === 0) {
+
+        //  Empty the changed addresses before we start another run.
+        TP.core.AccessPath.$getChangedAddresses().empty();
+    }
+
     //  Trigger the actual 'set' mechanism, tracking changed addresses as we
     //  go.
 
@@ -5256,9 +7299,32 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.postSetAccess(targetObj);
 
+    //  We're all done - acquire the traversal level again. We have to do this
+    //  a second time, since the pre/post calls manipulate it.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
 
     if (traversalLevel === 0) {
+
+        //  If we 'created structure', that means that all of the previously
+        //  executed paths need to be run, because they could now refer to new
+        //  addresses.
+        if (this.get('$createdStructure')) {
+            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                    TP.id(targetObj));
+
+            if (TP.notEmpty(executedPaths)) {
+                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                                                TP.id(targetObj));
+                if (TP.notEmpty(obsAddresses)) {
+                    obsAddresses.empty();
+                }
+
+                executedPaths.perform(
+                        function(pathEntry) {
+                            pathEntry.last().executeGet(targetObj);
+                        });
+            }
+        }
 
         if (TP.isValid(shouldSignal)) {
             sigFlag = shouldSignal;
@@ -5281,9 +7347,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 this.updateRegistrationsAfterSignaling(targetObj);
             }
         }
-
-        //  Empty the changed addresses now that we've sent the signal.
-        TP.core.AccessPath.$getChangedAddresses().empty();
     }
 
     return retVal;
@@ -5331,6 +7394,20 @@ function() {
      */
 
     return TP.TIBET_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SimpleTIBETPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'tibet';
 });
 
 //  ------------------------------------------------------------------------
@@ -5660,10 +7737,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         traversalLevel,
         oldVal,
 
+        executedPaths,
+        obsAddresses,
+
         sigFlag,
 
-        mutatedStructure,
-        executedPaths;
+        mutatedStructure;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -5697,8 +7776,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
-    //  NB: We have to do this *after* the preSetAccess call so that change
-    //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
 
@@ -5719,9 +7796,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  endless recursion when doing a 'two-ended bind' to data referenced
         //  by this path and to avoid a lot of unnecessary signaling.
         if (this.checkValueEquality(oldVal, attributeValue)) {
-
             return oldVal;
         }
+
+        //  Empty the changed addresses before we start another run.
+        TP.core.AccessPath.$getChangedAddresses().empty();
     }
 
     //  Note here how we always do the set with a 'false' and then send a
@@ -5745,6 +7824,27 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  had more 'complex paths' buried under us.
     if (traversalLevel === 0) {
 
+        //  If we 'created structure', that means that all of the previously
+        //  executed paths need to be run, because they could now refer to new
+        //  addresses.
+        if (this.get('$createdStructure')) {
+            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                    TP.id(targetObj));
+
+            if (TP.notEmpty(executedPaths)) {
+                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                                                TP.id(targetObj));
+                if (TP.notEmpty(obsAddresses)) {
+                    obsAddresses.empty();
+                }
+
+                executedPaths.perform(
+                        function(pathEntry) {
+                            pathEntry.last().executeGet(targetObj);
+                        });
+            }
+        }
+
         if (TP.isValid(shouldSignal)) {
             sigFlag = shouldSignal;
         } else if (TP.isValid(targetObj)) {
@@ -5759,16 +7859,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 this.updateRegistrationsBeforeSignaling(targetObj);
             }
 
-            if (this.get('$createdStructure')) {
-                executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
-                                        TP.id(targetObj));
-
-                executedPaths.perform(
-                        function(pathEntry) {
-                            pathEntry.last().executeGet(targetObj);
-                        });
-            }
-
             //  Send the changed signal
             this.sendChangedSignal(targetObj);
 
@@ -5776,9 +7866,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 this.updateRegistrationsAfterSignaling(targetObj);
             }
         }
-
-        //  Empty the changed addresses now that we've sent the signal.
-        TP.core.AccessPath.$getChangedAddresses().empty();
 
         //  Flip this back off for the next run.
         this.set('$createdStructure', false);
@@ -5817,6 +7904,9 @@ function(targetObj) {
         queryParts,
 
         val,
+
+        tailPath,
+
         retVal;
 
     path = this.get('$transformedPath');
@@ -5980,7 +8070,10 @@ function(targetObj) {
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
         thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.tpc(tail));
+        tailPath = TP.tpc(tail);
+        tailPath.set('shouldCollapse', this.get('shouldCollapse'));
+
+        retVal = val.get(tailPath);
 
         thisType.endObservedAddress();
 
@@ -5988,7 +8081,11 @@ function(targetObj) {
     } else if (TP.isString(tail) && TP.isPlainObject(val)) {
         thisType.startObservedAddress(head);
 
-        retVal = val[tail];
+        if (tail.indexOf('.') !== -1) {
+            return TP.objectValue(val, tail);
+        } else {
+            retVal = val[tail];
+        }
 
         thisType.endObservedAddress();
 
@@ -6024,6 +8121,9 @@ function(targetObj) {
         queryParts,
 
         val,
+
+        tailPath,
+
         retVal;
 
     path = this.get('$transformedPath');
@@ -6117,7 +8217,10 @@ function(targetObj) {
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
         thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.tpc(tail));
+        tailPath = TP.tpc(tail);
+        tailPath.set('shouldCollapse', this.get('shouldCollapse'));
+
+        retVal = val.get(tailPath);
 
         thisType.endObservedAddress();
 
@@ -6125,7 +8228,11 @@ function(targetObj) {
     } else if (TP.isString(tail) && TP.isPlainObject(val)) {
         thisType.startObservedAddress(head);
 
-        retVal = val[tail];
+        if (tail.indexOf('.') !== -1) {
+            return TP.objectValue(val, tail);
+        } else {
+            retVal = val[tail];
+        }
 
         thisType.endObservedAddress();
 
@@ -6373,10 +8480,12 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        indexVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
-                                                                shouldMake)),
-                                attributeValue,
-                                false);
+                        indexVal.set(
+                            TP.tpc(
+                                tail,
+                                TP.hc('shouldMakeStructures', shouldMake)),
+                            attributeValue,
+                            false);
 
                         thisType.endChangedAddress();
                     }.bind(this));
@@ -6482,10 +8591,12 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        itemVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
-                                                                shouldMake)),
-                                attributeValue,
-                                false);
+                        itemVal.set(
+                            TP.tpc(
+                                tail,
+                                TP.hc('shouldMakeStructures', shouldMake)),
+                            attributeValue,
+                            false);
 
                         thisType.endChangedAddress();
                     }.bind(this), queryParts);
@@ -7081,7 +9192,7 @@ function(targetObj, varargs) {
     }
 
     if (TP.isKindOf(target, TP.core.XMLContent)) {
-        target = target.$get('data');
+        target = target.get('data');
     }
 
     //  This kind of path only works against XML
@@ -7250,10 +9361,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         signalChange,
 
-        flagChanges,
         leaveFlaggedChanges,
 
         path,
+
+        traversalLevel,
 
         createdStructure,
         changeAction,
@@ -7280,7 +9392,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         contentnode,
 
-        executedPaths;
+        executedPaths,
+        obsAddresses;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -7352,16 +9465,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         signalChange = targetTPDoc.shouldSignalChange();
     }
 
-    //  If the target object is flagging changes, then we set both flags to
-    //  true. Otherwise, we set whether we flag changes as to whether we want
-    //  to signal change (in which case we have to, in order to get the proper
-    //  set of addresses) but we don't want to leave those flags around, so we
-    //  set the 'leaveFlaggedChanges' to false to strip them out.
+    //  If the target object is flagging changes, then we set a flag to leave
+    //  the flagged changes to true. Otherwise, we set the flag to false to
+    //  strip them out.
     if (TP.wrap(target).shouldFlagChanges()) {
-        flagChanges = true;
         leaveFlaggedChanges = true;
     } else {
-        flagChanges = signalChange;
         leaveFlaggedChanges = false;
     }
 
@@ -7375,13 +9484,20 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
     this.set('$transformedPath', path);
 
+    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    if (traversalLevel === 0) {
+
+        //  Empty the changed addresses before we start another run.
+        TP.core.AccessPath.$getChangedAddresses().empty();
+    }
+
     //  First, we have to get the nodes that we can use to set the value - if
     //  we can't do that, then we're dead in the water...
 
     //  Note here how we pass 'true' to *always* flag changes in any content
     //  that we generate
     if (TP.notValid(content = this.$$getContentForSetOperation(
-                                                natTargetObj, flagChanges))) {
+                                                natTargetObj, true))) {
 
         //  unable to build nodes...path may not be specific enough
         TP.ifWarn() ?
@@ -7446,9 +9562,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  in mind that we've got a second set of considerations about elements
     //  vs. attributes, and a third set around nodes vs. javascript objects
 
-    if (signalChange) {
-        affectedElems = TP.ac();
-    }
+    affectedElems = TP.ac();
 
     if (TP.isNode(content)) {
 
@@ -7481,76 +9595,47 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         content :
                         content.parentNode;
 
-            //  If we're gonna signal a change, then add the element's address
-            //  to the list of changed addresses.
-            if (signalChange) {
-                affectedElems.push(content);
+            //  add the element's address to the list of changed addresses.
+            affectedElems.push(content);
 
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.SELF
-                //  address on this element.
-                TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
+            //  Note here how we pass in 'false', because we don't want to
+            //  overwrite any existing change flag record for the TP.SELF
+            //  address on this element.
+            TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, oldcontent, value);
+            this.$addChangedAddressFromNode(content, oldcontent, value);
 
-                if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
-                    affectedElems.push(ownerElem);
-                    this.$addChangedAddressFromNode(ownerElem, null, false);
-                }
-            } else if (flagChanges) {
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.SELF
-                //  address on this element.
-                TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
-
-                if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
-                    affectedElems.push(ownerElem);
-                }
+            if (TP.notEmpty(
+                TP.elementGetChangeAction(ownerElem, TP.SELF))) {
+                affectedElems.push(ownerElem);
+                this.$addChangedAddressFromNode(ownerElem, null, false);
             }
         } else if (TP.isAttributeNode(content)) {
             ownerElem = TP.attributeGetOwnerElement(content);
 
-            //  If we're gonna signal a change, then add the attribute's
-            //  address to the list of changed addresses.
-            if (signalChange) {
-                affectedElems.push(ownerElem);
+            //  add the attribute's address to the list of changed addresses.
+            affectedElems.push(ownerElem);
 
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
+            //  Note here how we pass in 'false', because we don't want to
+            //  overwrite any existing change flag record for the TP.ATTR +
+            //  content.name address on this element.
+            TP.elementFlagChange(
+                    ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, null, false);
-            } else if (flagChanges) {
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
-            }
+            this.$addChangedAddressFromNode(content, null, false);
         } else if (TP.isTextNode(content)) {
             ownerElem = content.parentNode;
 
-            //  If we're gonna signal a change, then add the element's address
-            //  to the list of changed addresses.
-            if (signalChange) {
-                affectedElems.push(ownerElem);
+            //  Add the element's address to the list of changed addresses.
+            affectedElems.push(ownerElem);
 
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.SELF, TP.UPDATE, false);
+            //  Note here how we pass in 'false', because we don't want to
+            //  overwrite any existing change flag record for the TP.ATTR +
+            //  content.name address on this element.
+            TP.elementFlagChange(
+                    ownerElem, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, null, false);
-            } else if (flagChanges) {
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.SELF, TP.UPDATE, false);
-            }
+            this.$addChangedAddressFromNode(content, null, false);
         }
     } else if (TP.isArray(content)) {
         len = content.getSize();
@@ -7585,103 +9670,67 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode :
                                 contentnode.parentNode;
 
-                    //  If we're gonna signal a change, then add the element's
-                    //  address to the list of changed addresses.
-                    if (signalChange) {
-                        affectedElems.push(contentnode);
+                    //  Add the element's address to the list of changed
+                    //  addresses.
+                    affectedElems.push(contentnode);
 
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.SELF address on this element.
-                        TP.elementFlagChange(
-                                contentnode, TP.SELF, TP.UPDATE, false);
+                    //  Note here how we pass in 'false', because we don't
+                    //  want to overwrite any existing change flag record
+                    //  for the TP.SELF address on this element.
+                    TP.elementFlagChange(
+                            contentnode, TP.SELF, TP.UPDATE, false);
 
-                        this.$addChangedAddressFromNode(contentnode,
-                                                        oldcontent,
+                    this.$addChangedAddressFromNode(contentnode,
+                                                    oldcontent,
+                                                    value);
+
+                    if (TP.notEmpty(TP.elementGetChangeAction(
+                                                    ownerElem, TP.SELF))) {
+                        affectedElems.push(ownerElem);
+                        this.$addChangedAddressFromNode(ownerElem,
+                                                        null,
                                                         value);
-
-                        if (TP.notEmpty(TP.elementGetChangeAction(
-                                                        ownerElem, TP.SELF))) {
-                            affectedElems.push(ownerElem);
-                            this.$addChangedAddressFromNode(ownerElem,
-                                                            null,
-                                                            value);
-                        }
-                    } else if (flagChanges) {
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.SELF address on this element.
-                        TP.elementFlagChange(
-                                contentnode, TP.SELF, TP.UPDATE, false);
-                        if (TP.notEmpty(TP.elementGetChangeAction(
-                                                        ownerElem, TP.SELF))) {
-                            affectedElems.push(ownerElem);
-                        }
                     }
                 } else if (TP.isAttributeNode(contentnode)) {
                     ownerElem = TP.attributeGetOwnerElement(contentnode);
 
-                    //  If we're gonna signal a change, then add the
-                    //  attribute's address to the list of changed addresses.
-                    if (signalChange) {
-                        affectedElems.push(ownerElem);
+                    //  Add the attribute's address to the list of changed
+                    //  addresses.
+                    affectedElems.push(ownerElem);
 
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.ATTR + contentnode.name,
-                                TP.UPDATE,
-                                false);
+                    //  Note here how we pass in 'false', because we don't
+                    //  want to overwrite any existing change flag record
+                    //  for the TP.ATTR + contentnode.name address on this
+                    //  element.
+                    TP.elementFlagChange(
+                            ownerElem,
+                            TP.ATTR + contentnode.name,
+                            TP.UPDATE,
+                            false);
 
-                        this.$addChangedAddressFromNode(contentnode,
-                                                        null,
-                                                        value);
-                    } else if (flagChanges) {
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.ATTR + contentnode.name,
-                                TP.UPDATE,
-                                false);
-                    }
+                    this.$addChangedAddressFromNode(contentnode,
+                                                    null,
+                                                    value);
                 } else if (TP.isTextNode(contentnode)) {
                     ownerElem = contentnode.parentNode;
 
-                    //  If we're gonna signal a change, then add the
-                    //  attribute's address to the list of changed addresses.
-                    if (signalChange) {
-                        affectedElems.push(ownerElem);
+                    //  Add the attribute's address to the list of changed
+                    //  addresses.
+                    affectedElems.push(ownerElem);
 
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.SELF,
-                                TP.UPDATE,
-                                false);
+                    //  Note here how we pass in 'false', because we don't
+                    //  want to overwrite any existing change flag record
+                    //  for the TP.ATTR + contentnode.name address on this
+                    //  element.
+                    TP.elementFlagChange(
+                            ownerElem,
+                            TP.SELF,
+                            TP.UPDATE,
+                            false);
 
-                        this.$addChangedAddressFromNode(contentnode,
-                                                        null,
-                                                        value);
-                    } else if (flagChanges) {
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.SELF,
-                                TP.UPDATE,
-                                false);
-                    }
+                    this.$addChangedAddressFromNode(contentnode,
+                                                    null,
+                                                    value);
                 } else {
                     //  not a node or collection of them? only real option is
                     //  that the XPath returned a scalar value, which we can't
@@ -7717,6 +9766,28 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return;
     }
 
+    //  If we 'created structure', that means that all of the previously
+    //  executed paths need to be run, because they could now refer to new
+    //  addresses.
+    if (createdStructure) {
+        if (TP.notEmpty(
+            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                                targetTPDoc.getID()))) {
+            if (TP.notEmpty(executedPaths)) {
+                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                                                TP.id(targetObj));
+                if (TP.notEmpty(obsAddresses)) {
+                    obsAddresses.empty();
+                }
+
+                executedPaths.perform(
+                        function(pathEntry) {
+                            pathEntry.last().executeGet(target);
+                        });
+            }
+        }
+    }
+
     if (signalChange) {
 
         //  If it was a structural change, then we need to clear the path
@@ -7726,39 +9797,22 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             this.updateRegistrationsBeforeSignaling(targetTPDoc);
         }
 
-        //  If we 'created structure', that means that all of the previously
-        //  executed paths need to be run, because they could now refer to new
-        //  addresses.
-        if (createdStructure) {
-            if (TP.notEmpty(
-                executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
-                                                    targetTPDoc.getID()))) {
-                executedPaths.perform(
-                        function(pathEntry) {
-                            pathEntry.last().executeGet(target);
-                        });
-            }
-        }
-
         //  Send the changed signal
         this.sendChangedSignal(target);
 
         if (mutatedStructure) {
             this.updateRegistrationsAfterSignaling(targetTPDoc);
         }
+    }
 
-        //  Empty the changed addresses now that we've sent the signal.
-        TP.core.AccessPath.$getChangedAddresses().empty();
-
-        //  If the node wasn't originally configured to flag changes, then (now
-        //  that we've registered all addresses that have changed) we need to
-        //  strip it out.
-        if (!leaveFlaggedChanges) {
-            affectedElems.perform(
-                    function(anElem) {
-                        TP.elementStripChangeFlags(anElem);
-                    });
-        }
+    //  If the node wasn't originally configured to flag changes, then (now
+    //  that we've registered all addresses that have changed) we need to
+    //  strip it out.
+    if (!leaveFlaggedChanges) {
+        affectedElems.perform(
+                function(anElem) {
+                    TP.elementStripChangeFlags(anElem);
+                });
     }
 
     //  Make sure to put the 'shouldSignalDOMLoaded' flag back to it's prior
@@ -7839,6 +9893,23 @@ function() {
      */
 
     return TP.getAccessPathParts(this.get('srcPath'), 'xpointer');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    //  Note here that we return null, allowing the low-level primitive call to
+    //  determine the path type. Subtypes of this type can override this to
+    //  specify the path type.
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -8086,6 +10157,20 @@ function() {
     return TP.getAccessPathParts(this.get('srcPath'), 'css');
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.CSSPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'css';
+});
+
 //  ========================================================================
 //  TP.core.BarenamePath
 //  ========================================================================
@@ -8153,6 +10238,20 @@ function() {
     return TP.BARENAME_PATH_TYPE;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.BarenamePath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return '';
+});
+
 //  ========================================================================
 //  XPath support
 //  ========================================================================
@@ -8166,7 +10265,9 @@ Note that the setup for this type is handled dynamically during processing
 of the getFunctionResolver method on TP.core.XPathPath.
 */
 
+/* eslint-disable no-empty-function */
 TP.extern.XPathFunctionResolver = function() {};
+/* eslint-enable no-empty-function */
 
 //  ========================================================================
 //  TP.extern.XPathNamespaceResolver
@@ -8177,7 +10278,9 @@ Note that the setup for this type is handled dynamically during processing
 of the getNSResolver method on TP.core.XPathPath.
 */
 
+/* eslint-disable no-empty-function */
 TP.extern.XPathNamespaceResolver = function() {};
+/* eslint-enable no-empty-function */
 
 //  ========================================================================
 //  TP.extern.XPathVariableResolver
@@ -8188,7 +10291,9 @@ Note that the setup for this type is handled dynamically during processing
 of the getVariableResolver method on TP.core.XPathPath.
 */
 
+/* eslint-disable no-empty-function */
 TP.extern.XPathVariableResolver = function() {};
+/* eslint-enable no-empty-function */
 
 //  ========================================================================
 //  TP.core.XPathPath
@@ -8771,11 +10876,19 @@ function(aTPNode, resultType, logErrors, flagChanges) {
      *     Array (of Nodes).
      */
 
+    var flag;
+
+    if (TP.isValid(flag)) {
+        flag = flagChanges;
+    } else {
+        flag = aTPNode.shouldFlagChanges();
+    }
+
     return this.execOnNative(
                     aTPNode.getNativeNode(),
                     resultType,
                     logErrors,
-                    TP.ifInvalid(flagChanges, aTPNode.shouldFlagChanges()));
+                    flag);
 });
 
 //  ------------------------------------------------------------------------
@@ -9093,7 +11206,9 @@ function(aNode, flagChanges) {
         }
 
         if (TP.notValid(newPath)) {
+            /* eslint-disable consistent-this */
             newPath = this;
+            /* eslint-enable consistent-this */
         }
 
         //  Note that results will always be a TP.NODESET
@@ -9125,6 +11240,20 @@ function() {
      */
 
     return TP.XPATH_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XPathPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'xpath1';
 });
 
 //  ------------------------------------------------------------------------
@@ -9485,7 +11614,7 @@ function(aPath, forceNative) {
  * @type {TP.w3.DTDInfo}
  * @summary This type of JSONContent provides convenience routines for
  *     accessing and validating DTD data as processed by the scripts located
- *     here: https://github.com/dominicmarks/html4-dtd-json
+ *     here: https://github.com/djwmarks/html4-dtd-json
  * @description This type accesses data that has a structure that could contain
  *     items such as these. Note that this is not a complete description of the
  *     data schema. See the data file itself for more structural elements:
@@ -9528,19 +11657,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.DTDInfo.Type.defineMethod('canConstruct', function(data) {
+TP.w3.DTDInfo.Type.defineMethod('canConstruct',
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
     //  Must be JSON for starters...but we also want to restrict it to
-    //  JSON with keys hopefully unique to the Google result dataset.
-    return TP.isJSONString(data) && /childElements/.test(data) &&
-        /contentModel/.test(data);
+    //  JSON with keys hopefully unique to the DTD result dataset.
+    return TP.isJSONString(data) &&
+            /childElements/.test(data) &&
+            /contentModel/.test(data);
 });
 
 //  ------------------------------------------------------------------------
@@ -9548,8 +11681,7 @@ TP.w3.DTDInfo.Type.defineMethod('canConstruct', function(data) {
 //  ------------------------------------------------------------------------
 
 TP.w3.DTDInfo.Inst.defineAttribute(
-        'elements',
-        {value: TP.apc('element', TP.hc('shouldCollapse', true))});
+    'elements', TP.apc('element', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -9569,8 +11701,11 @@ function(childElementName, parentElementName) {
      */
 
     var parentContentModels,
-
-        childElems;
+        groupElem,
+        childElems,
+        len,
+        i,
+        contentModel;
 
     parentContentModels = this.get('elements').at(
                             parentElementName).at(
@@ -9580,23 +11715,22 @@ function(childElementName, parentElementName) {
     //  There could be more than one parent content model describing valid
     //  child elements. We must iterate through them all. They can take the
     //  form of an 'orGroup', 'andGroup' or 'sequenceGroup'.
-    parentContentModels.perform(
-        function(contentModel) {
+    len = parentContentModels.getSize();
+    for (i = 0; i < len; i++) {
+        contentModel = parentContentModels.at(i);
 
-            var groupElem;
-
-            if (TP.isEmpty(groupElem = contentModel.at('orGroup'))) {
-                if (TP.isEmpty(groupElem =
-                                contentModel.at('sequenceGroup'))) {
-                    groupElem = contentModel.at('andGroup');
-                }
+        if (TP.isEmpty(groupElem = contentModel.at('orGroup'))) {
+            if (TP.isEmpty(groupElem =
+                            contentModel.at('sequenceGroup'))) {
+                groupElem = contentModel.at('andGroup');
             }
+        }
 
-            if (TP.isElement(groupElem) &&
+        if (TP.isElement(groupElem) &&
                 TP.isArray(childElems = groupElem.at('elements'))) {
-                return TP.BREAK;
-            }
-        });
+            break;
+        }
+    }
 
     if (TP.isEmpty(childElems)) {
         return false;
@@ -9615,7 +11749,6 @@ function(childElementName, parentElementName) {
 //  pegjs --export-var 'TP.$JSONPathParser' <tibet_dir>/src/tibet/grammars/jsonpath_parser.pegjs
 
 /* eslint-disable */
-/* jshint ignore:start */
 TP.$JSONPathParser = (function() {
   /*
    * Generated by PEG.js 0.8.0.
@@ -11748,7 +13881,6 @@ TP.$JSONPathParser = (function() {
   };
 })();
 /* eslint-enable */
-/* jshint ignore:end */
 
 //  ------------------------------------------------------------------------
 //  end

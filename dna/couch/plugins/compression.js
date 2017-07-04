@@ -12,33 +12,16 @@
     'use strict';
 
     /**
-     * Configures a JSON and urlencoded body parser instance and applies them to
-     * the options object for use by later plugins. The authentication plugin is
-     * a good example of a parser consumer.
+     * Configures compression middleware so content can be served in compressed
+     * formats.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
-            compression,
-            logger;
-
-        //  ---
-        //  Config Check
-        //  ---
+            compression;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
-
-        logger.debug('Integrating TDS compression.');
-
-        //  ---
-        //  Requires
-        //  ---
 
         compression = require('compression');
 

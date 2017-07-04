@@ -199,7 +199,7 @@ TP.defineNamespace = function(namespaceName) {
     names = namespaceName.split('.');
     root = names.shift();
 
-    currentObj = self[root];
+    currentObj = TP.global[root];
     if (!currentObj) {
         TP.boot.$stderr('Invalid namespace root.', TP.FATAL);
         return;
@@ -268,12 +268,12 @@ TP.defineNamespace = function(namespaceName) {
 //  pre-populate with the 'special namespaces' that didn't get added via
 //  TP.defineNamespace.
 TP.$$bootstrap_namespaces = [
-    self.TP,
-    self.APP,
-    self.TP.sys,
-    self.TP.boot,
-    self.TP.core,
-    self.TP.extern];
+    TP.global.TP,
+    TP.global.APP,
+    TP.global.TP.sys,
+    TP.global.TP.boot,
+    TP.global.TP.core,
+    TP.global.TP.extern];
 
 //  Manual setup
 TP.defineNamespace[TP.NAME] = 'defineNamespace';
@@ -642,30 +642,12 @@ TP.sys.$$contentExpiration = 0;
 TP.sys.$$windowCount = 0;
 
 //  ------------------------------------------------------------------------
-//  DOM CONSTANTS
+//  MUTATION OBSERVER FLAGS
 //  ------------------------------------------------------------------------
 
-//  ------------------------------------------------------------------------
-//  requestAnimationFrame CONSTANTS
-//  ------------------------------------------------------------------------
-
-/* eslint-disable no-multi-spaces */
-
-//  Define our own versions of these functions on Window, since they could be
-//  platform dependent and putting them on other objects seems to not work.
-window.requestAnimFrame =
-        window.requestAnimationFrame       ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame    ||
-        window.msRequestAnimationFrame;
-
-window.cancelAnimFrame =
-        window.cancelAnimationFrame       ||
-        window.webkitCancelAnimationFrame ||
-        window.mozCancelAnimationFrame    ||
-        window.msCancelAnimationFrame;
-
-/* eslint-enable no-multi-spaces */
+//  Initially set to be false - allow all managed Mutation Observers to be
+//  suspended until this flag is flipped again.
+TP.sys.$$suspendAllTIBETMutationObservers = false;
 
 //  ------------------------------------------------------------------------
 //  "TP" CONSTANTS
@@ -725,9 +707,6 @@ TP.CONSTANT = 'Constant';
 TP.INSTANCE = 'Instance';
 TP.PROTOTYPE = 'Prototype';
 
-//  A list of methods that needs 'callee' access.
-TP.NEEDS_CALLEE = /\.(callNextMethod|callNextHandler)(\(|\.apply|\.call)/;
-
 //  DOM relationships
 TP.ANCESTOR = 'ans';
 TP.ANCESTOR_OR_SELF = 'ansorself';
@@ -753,7 +732,9 @@ TP.HIDDEN = 'hidden';
 //  for traits
 TP.BEFORE = 'before';
 TP.AFTER = 'after';
-TP.REQUIRED = function() {return; };
+TP.REQUIRED = function() {
+    return;
+};
 
 //  for native nodes
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
@@ -770,20 +751,47 @@ TP.SRC_LOCATION = 'tp_sourcelocation';
 TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
 TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
+TP.GENERATED = 'tp_generated';
+TP.APPLIED_RULES = 'tp_appliedrules';
+TP.TIBET_PRIVATE = 'tp_tibetprivate';
+TP.PREVIOUS_POSITION = 'tp_previousposition';
+TP.INSERTION_POSITION = 'tp_insertionposition';
+TP.RESIZE_LISTENERS = 'tp_resize_listeners';
+
+TP.OLD_TOP = 'tp_top';
+TP.OLD_LEFT = 'tp_left';
+TP.OLD_HEIGHT = 'tp_oldheight';
+TP.OLD_WIDTH = 'tp_oldwidth';
 
 //  meta owners and their target objects
 
 TP.META_TYPE_OWNER = {};
 TP.META_TYPE_OWNER[TP.ID] = 'MetaType';
 TP.META_TYPE_OWNER[TP.NAME] = 'MetaType';
-TP.META_TYPE_OWNER.getID = function() {return 'MetaType'; };
-TP.META_TYPE_OWNER.getName = function() {return 'MetaType'; };
-TP.META_TYPE_OWNER.getSupertype = function() {return; };
-TP.META_TYPE_OWNER.getSupertypeName = function() {return ''; };
-TP.META_TYPE_OWNER.getSupertypeNames = function() {return []; };
-TP.META_TYPE_OWNER.getType = function() {return; };
-TP.META_TYPE_OWNER.getTypeName = function() {return; };
-TP.META_TYPE_OWNER.getConstructor = function() {return Object; };
+TP.META_TYPE_OWNER.getID = function() {
+    return 'MetaType';
+};
+TP.META_TYPE_OWNER.getName = function() {
+    return 'MetaType';
+};
+TP.META_TYPE_OWNER.getSupertype = function() {
+    return;
+};
+TP.META_TYPE_OWNER.getSupertypeName = function() {
+    return '';
+};
+TP.META_TYPE_OWNER.getSupertypeNames = function() {
+    return [];
+};
+TP.META_TYPE_OWNER.getType = function() {
+    return;
+};
+TP.META_TYPE_OWNER.getTypeName = function() {
+    return;
+};
+TP.META_TYPE_OWNER.getConstructor = function() {
+    return Object;
+};
 
 TP.META_TYPE_OWNER.meta_methods = {};
 
@@ -801,14 +809,30 @@ TP.META_TYPE_TARGETS = [
 TP.META_INST_OWNER = {};
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
 TP.META_INST_OWNER[TP.NAME] = 'MetaInst';
-TP.META_INST_OWNER.getID = function() {return 'MetaInst'; };
-TP.META_INST_OWNER.getName = function() {return 'MetaInst'; };
-TP.META_INST_OWNER.getSupertype = function() {return; };
-TP.META_INST_OWNER.getSupertypeName = function() {return ''; };
-TP.META_INST_OWNER.getSupertypeNames = function() {return []; };
-TP.META_INST_OWNER.getType = function() {return; };
-TP.META_INST_OWNER.getTypeName = function() {return; };
-TP.META_INST_OWNER.getConstructor = function() {return Object; };
+TP.META_INST_OWNER.getID = function() {
+    return 'MetaInst';
+};
+TP.META_INST_OWNER.getName = function() {
+    return 'MetaInst';
+};
+TP.META_INST_OWNER.getSupertype = function() {
+    return;
+};
+TP.META_INST_OWNER.getSupertypeName = function() {
+    return '';
+};
+TP.META_INST_OWNER.getSupertypeNames = function() {
+    return [];
+};
+TP.META_INST_OWNER.getType = function() {
+    return;
+};
+TP.META_INST_OWNER.getTypeName = function() {
+    return;
+};
+TP.META_INST_OWNER.getConstructor = function() {
+    return Object;
+};
 
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
@@ -868,12 +892,29 @@ TP.UNDEF = '$$UNDEFINED$$';
 //  string used to join segments of things together
 TP.JOIN = '__JOIN__';
 
+//  strings used to delimit path start, end and separators when those paths
+//  could have normal delimiters (like '.' or '/') embedded in them.
+TP.PATH_START = '__PATH_START__';
+TP.PATH_END = '__PATH_END__';
+TP.PATH_SEP = '__PATH_SEP__';
+
+//  to match any character except a delimiter
+TP.PATH_NO_SEP = '(?!.+__PATH_SEP__).+';
+
+//  Used in data to mark a 'grouping'
+TP.GROUPING_PREFIX = '__GROUPING__';
+
+//  Used in data to mark a 'spacing'
+TP.SPACING = '__SPACING__';
+
 //  positional identifiers
 TP.CURRENT = 'CURRENT';
 
 //  increment identifiers
 TP.LINE = 'LINE';
 TP.PAGE = 'PAGE';
+
+TP.HOME = 'HOME';
 
 TP.FIRST = 'FIRST';
 TP.LAST = 'LAST';
@@ -1097,6 +1138,7 @@ TP.END_SIGNAL_BATCH = 'endbatch';
 //  ---
 
 TP.ONLOAD = 'onload';
+TP.ONSUCCESS = 'onsuccess';
 TP.ONFAIL = 'onfail';
 
 //  ---
@@ -1136,6 +1178,8 @@ TP.SORTED = 'sorted';
 TP.OLDVAL = 'oldval';
 TP.NEWVAL = 'newval';
 
+TP.REVISED = 'revised';
+
 //  facet names
 TP.READONLY = 'readonly';
 TP.RELEVANT = 'relevant';
@@ -1155,9 +1199,9 @@ TP.EDIT = 'edit';
 //  url load return types: xml, text, native, "wrapper", or "best possible"
 TP.DOM = 1;
 TP.TEXT = 2;
-TP.NATIVE = 3;
+TP.XHR = 3;
 TP.WRAP = 4;
-TP.BEST = 5;
+TP.NATIVE = 5;
 
 //  IO Directions
 TP.SEND = 'SEND';
@@ -1205,11 +1249,13 @@ TP.MOZ_FILE_EXCL = 0x80;
 //  ---
 
 //  HTTP call types
+TP.HTTP_CONNECT = 'CONNECT';
 TP.HTTP_DELETE = 'DELETE';
 TP.HTTP_GET = 'GET';
 TP.HTTP_HEAD = 'HEAD';
 TP.HTTP_OPTIONS = 'OPTIONS';
 TP.HTTP_POST = 'POST';
+TP.HTTP_PATCH = 'PATCH';
 TP.HTTP_PUT = 'PUT';
 TP.HTTP_TRACE = 'TRACE';
 
@@ -1357,7 +1403,12 @@ TP.CONSOLE_INPUT_TIER = 20000;
 TP.HUD_V_EDGE_TIER = 22500;
 TP.CONNECTOR_TIER = 25000;
 TP.HUD_H_EDGE_TIER = 26250;
+TP.HUD_CORNER_TIER = 27000;
+TP.HUD_TILE_TIER = 27250;
 TP.CONSOLE_OUTPUT_TIER = 27500;
+TP.CONTEXT_MENU_TIER = 28750;
+TP.HUD_OPENER_TIER = 29000;
+TP.NOTIFIER_TIER = 29000;
 TP.DRAG_DROP_TIER = 30000;
 TP.CURTAIN_TIER = 32500;
 TP.ALERT_TIER = 32767;
@@ -1451,22 +1502,30 @@ TP.XML_10_STANDALONE_HEADER = '<?xml version="1.0" standalone="yes"?>';
 //  MSXML versions 4 and 5 are not recommended by Microsoft so they're not
 //  included below.
 
-TP.IE_XMLHTTP_VERSIONS = ['Msxml2.XMLHTTP.6.0',
-                            'Msxml2.XMLHTTP.3.0',
-                            'Msxml2.XMLHTTP',
-                            'Microsoft.XMLHTTP'];
+TP.IE_XMLHTTP_VERSIONS = [
+    'Msxml2.XMLHTTP.6.0',
+    'Msxml2.XMLHTTP.3.0',
+    'Msxml2.XMLHTTP',
+    'Microsoft.XMLHTTP'
+];
 
-TP.IE_DOM_DOCUMENT_VERSIONS = ['Msxml2.DOMDocument.6.0',
-                                'Msxml2.DOMDocument.3.0',
-                                'Msxml2.DOMDocument'];
+TP.IE_DOM_DOCUMENT_VERSIONS = [
+    'Msxml2.DOMDocument.6.0',
+    'Msxml2.DOMDocument.3.0',
+    'Msxml2.DOMDocument'
+];
 
-TP.IE_THREADED_DOM_VERSIONS = ['Msxml2.FreeThreadedDOMDocument.6.0',
-                                'Msxml2.FreeThreadedDOMDocument.3.0',
-                                'Msxml2.FreeThreadedDOMDocument'];
+TP.IE_THREADED_DOM_VERSIONS = [
+    'Msxml2.FreeThreadedDOMDocument.6.0',
+    'Msxml2.FreeThreadedDOMDocument.3.0',
+    'Msxml2.FreeThreadedDOMDocument'
+];
 
-TP.IE_XSL_TEMPLATE_VERSIONS = ['Msxml2.XSLTemplate.6.0',
-                                'Msxml2.XSLTemplate.3.0',
-                                'Msxml2.XSLTemplate'];
+TP.IE_XSL_TEMPLATE_VERSIONS = [
+    'Msxml2.XSLTemplate.6.0',
+    'Msxml2.XSLTemplate.3.0',
+    'Msxml2.XSLTemplate'
+];
 
 //  ------------------------------------------------------------------------
 //  PRIVILEGED CAPABILITY CONSTANTS
@@ -1578,149 +1637,300 @@ NOTE: the collection is sparse and relies on default values of:
     public: if hidden is false, then the default is true. If hidden is true,
             then the default is false. Specify 'hidden: true' and 'public: true'
             to get both.
+
+    Scope is defined as follows:
+
+        TP.ALL          all slots, no matter where they exist
+        TP.LOCAL        only if the slot exists locally on the object and not on
+                        any of its prototype chain and the object itself is not
+                        a prototype of others.
+        TP.INTRODUCED   only if this slot exists locally on the object, not on
+                        any of its prototype chain and the object itself is a
+                        prototype of others.
+        TP.INHERITED    only if this slot exists both on the object and its
+                        prototype and they both have the *identical* value.
+        TP.OVERRIDDEN   only if this slot exists both on the object and its
+                        prototype and they do *not* have the *identical* value.
 */
 
 /* eslint-disable no-reserved-keys */
 TP.SLOT_FILTERS = {
     //  Visibility
-    public:
-        {methods: true, scope: TP.ALL},
-    hidden:
-        {methods: true, hidden: true, scope: TP.ALL},
-    known:
-        {methods: true, hidden: true, scope: TP.ALL, public: true},
+    public: {
+        methods: true,
+        scope: TP.ALL
+    },
+    hidden: {
+        methods: true,
+        hidden: true,
+        scope: TP.ALL
+    },
+    known: {
+        methods: true,
+        hidden: true,
+        scope: TP.ALL,
+        public: true
+    },
 
     //  Different scopes
-    unique:
-        {methods: true},
-    local:
-        {methods: true, scope: TP.LOCAL},
-    introduced:
-        {methods: true, scope: TP.INTRODUCED},
-    inherited:
-        {methods: true, scope: TP.INHERITED},
-    overridden:
-        {methods: true, scope: TP.OVERRIDDEN},
+    unique: {
+        methods: true
+    },
+    local: {
+        methods: true,
+        scope: TP.LOCAL
+    },
+    introduced: {
+        methods: true,
+        scope: TP.INTRODUCED
+    },
+    inherited: {
+        methods: true,
+        scope: TP.INHERITED
+    },
+    overridden: {
+        methods: true,
+        scope: TP.OVERRIDDEN
+    },
 
     //  Attributes only
-    attributes:
-        {scope: TP.ALL},
-    hidden_attributes:
-        {hidden: true, scope: TP.ALL},
-    known_attributes:
-        {hidden: true, scope: TP.ALL, public: true},
+    attributes: {
+        scope: TP.ALL
+    },
+    hidden_attributes: {
+        hidden: true,
+        scope: TP.ALL
+    },
+    known_attributes: {
+        hidden: true,
+        scope: TP.ALL,
+        public: true
+    },
 
-    unique_attributes:
-        {},  // default values
-    local_attributes:
-        {scope: TP.LOCAL},
-    introduced_attributes:
-        {scope: TP.INTRODUCED},
-    inherited_attributes:
-        {scope: TP.INHERITED},
-    overridden_attributes:
-        {scope: TP.OVERRIDDEN},
+    unique_attributes: {
+    },  // default values
+    local_attributes: {
+        scope: TP.LOCAL
+    },
+    introduced_attributes: {
+        scope: TP.INTRODUCED
+    },
+    inherited_attributes: {
+        scope: TP.INHERITED
+    },
+    overridden_attributes: {
+        scope: TP.OVERRIDDEN
+    },
 
-    hidden_unique_attributes:
-        {hidden: true},
-    hidden_local_attributes:
-        {hidden: true, scope: TP.LOCAL},
-    hidden_introduced_attributes:
-        {hidden: true, scope: TP.INTRODUCED},
-    hidden_inherited_attributes:
-        {hidden: true, scope: TP.INHERITED},
-    hidden_overridden_attributes:
-        {hidden: true, scope: TP.OVERRIDDEN},
+    hidden_unique_attributes: {
+        hidden: true
+    },
+    hidden_local_attributes: {
+        hidden: true,
+        scope: TP.LOCAL
+    },
+    hidden_introduced_attributes: {
+        hidden: true,
+        scope: TP.INTRODUCED
+    },
+    hidden_inherited_attributes: {
+        hidden: true,
+        scope: TP.INHERITED
+    },
+    hidden_overridden_attributes: {
+        hidden: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    known_unique_attributes:
-        {hidden: true, public: true},
-    known_local_attributes:
-        {hidden: true, scope: TP.LOCAL, public: true},
-    known_introduced_attributes:
-        {hidden: true, scope: TP.INTRODUCED, public: true},
-    known_inherited_attributes:
-        {hidden: true, scope: TP.INHERITED, public: true},
-    known_overridden_attributes:
-        {hidden: true, scope: TP.OVERRIDDEN, public: true},
+    known_unique_attributes: {
+        hidden: true,
+        public: true
+    },
+    known_local_attributes: {
+        hidden: true,
+        scope: TP.LOCAL,
+        public: true
+    },
+    known_introduced_attributes: {
+        hidden: true,
+        scope: TP.INTRODUCED,
+        public: true
+    },
+    known_inherited_attributes: {
+        hidden: true,
+        scope: TP.INHERITED,
+        public: true
+    },
+    known_overridden_attributes: {
+        hidden: true,
+        scope: TP.OVERRIDDEN,
+        public: true
+    },
 
     //  Methods only
-    methods:
-        {attributes: false, methods: true, scope: TP.ALL},
-    hidden_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.ALL},
-    known_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.ALL, public: true},
+    methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.ALL
+    },
+    hidden_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.ALL
+    },
+    known_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.ALL,
+        public: true
+    },
 
-    unique_methods:
-        {attributes: false, methods: true},
-    local_methods:
-        {attributes: false, methods: true, scope: TP.LOCAL},
-    introduced_methods:
-        {attributes: false, methods: true, scope: TP.INTRODUCED},
-    inherited_methods:
-        {attributes: false, methods: true, scope: TP.INHERITED},
-    overridden_methods:
-        {attributes: false, methods: true, scope: TP.OVERRIDDEN},
+    unique_methods: {
+        attributes: false,
+        methods: true
+    },
+    local_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.LOCAL
+    },
+    introduced_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.INTRODUCED
+    },
+    inherited_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.INHERITED
+    },
+    overridden_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    hidden_unique_methods:
-        {attributes: false, methods: true, hidden: true},
-    hidden_local_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.LOCAL},
-    hidden_introduced_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INTRODUCED},
-    hidden_inherited_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INHERITED},
-    hidden_overridden_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.OVERRIDDEN},
+    hidden_unique_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true
+    },
+    hidden_local_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL
+    },
+    hidden_introduced_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED
+    },
+    hidden_inherited_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED
+    },
+    hidden_overridden_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    known_unique_methods:
-        {attributes: false, methods: true, hidden: true,
-            public: true},
-    known_local_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.LOCAL, public: true},
-    known_introduced_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INTRODUCED, public: true},
-    known_inherited_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INHERITED, public: true},
-    known_overridden_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.OVERRIDDEN, public: true},
+    known_unique_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        public: true
+    },
+    known_local_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL,
+        public: true
+    },
+    known_introduced_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED,
+        public: true
+    },
+    known_inherited_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED,
+        public: true
+    },
+    known_overridden_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN,
+        public: true
+    },
 
     //  Attributes and methods
-    hidden_unique:
-        {methods: true, hidden: true},
-    hidden_local:
-        {methods: true, hidden: true, scope: TP.LOCAL},
-    hidden_introduced:
-        {methods: true, hidden: true, scope: TP.INTRODUCED},
-    hidden_inherited:
-        {methods: true, hidden: true, scope: TP.INHERITED},
-    hidden_overridden:
-        {methods: true, hidden: true, scope: TP.OVERRIDDEN},
+    hidden_unique: {
+        methods: true,
+        hidden: true
+    },
+    hidden_local: {
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL
+    },
+    hidden_introduced: {
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED
+    },
+    hidden_inherited: {
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED
+    },
+    hidden_overridden: {
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    known_unique:
-        {methods: true, hidden: true, public: true},
-    known_local:
-        {methods: true, hidden: true, scope: TP.LOCAL,
-            public: true},
-    known_introduced:
-        {methods: true, hidden: true, scope: TP.INTRODUCED,
-            public: true},
-    known_inherited:
-        {methods: true, hidden: true, scope: TP.INHERITED,
-            public: true},
-    known_overridden:
-        {methods: true, hidden: true, scope: TP.OVERRIDDEN,
-            public: true}
+    known_unique: {
+        methods: true,
+        hidden: true,
+        public: true
+    },
+    known_local: {
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL,
+        public: true
+    },
+    known_introduced: {
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED,
+        public: true},
+    known_inherited: {
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED,
+        public: true
+    },
+    known_overridden: {
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN,
+        public: true
+    }
 };
 /* eslint-enable no-reserved-keys */
 
@@ -1792,27 +2002,53 @@ options here, such as RETURN_ARG0, represent common features (K function)
 etc. that you may find useful.
 */
 
-TP.RETURN_NULL = function() { return; };
-TP.RETURN_THIS = function() { return this; };
-TP.RETURN_TRUE = function() { return true; };
-TP.RETURN_FALSE = function() { return false; };
+TP.RETURN_NULL = function() {
+    return;
+};
+TP.RETURN_THIS = function() {
+    return this;
+};
+TP.RETURN_TRUE = function() {
+    return true;
+};
+TP.RETURN_FALSE = function() {
+    return false;
+};
 
-TP.RETURN_ARG0 = function() { return arguments[0]; };
-TP.RETURN_ARGS = function() { return arguments; };
+TP.RETURN_ARG0 = function() {
+    return arguments[0];
+};
+TP.RETURN_ARGS = function() {
+    return arguments;
+};
 
 //  item selectors, useful for key/item manipulations
-TP.RETURN_FIRST = function() { return arguments[0].first(); };
-TP.RETURN_LAST = function() { return arguments[0].last(); };
+TP.RETURN_FIRST = function(item) {
+    return item.first();
+};
+TP.RETURN_LAST = function(item) {
+    return item.last();
+};
 
 //  when you just gotta have a string
-TP.RETURN_EMPTY = function() { return ''; };
-TP.RETURN_SPACE = function() { return ' '; };
+TP.RETURN_EMPTY = function() {
+    return '';
+};
+TP.RETURN_SPACE = function() {
+    return ' ';
+};
 
 //  union and addAll "duplicate discriminators"
-TP.RETURN_ORIG = function(key, orig) { return orig; };
-TP.RETURN_NEW = function(key, orig, knew) { return knew; };
+TP.RETURN_ORIG = function(key, orig) {
+    return orig;
+};
+TP.RETURN_NEW = function(key, orig, knew) {
+    return knew;
+};
 
-TP.RETURN_TOSTRING = function() { return this.toString(); };
+TP.RETURN_TOSTRING = function() {
+    return this.toString();
+};
 
 //  ------------------------------------------------------------------------
 //  STRING LOCALIZATION / MAPPING
@@ -2033,7 +2269,8 @@ TP.sort.NATURAL_ORDER = function(a, b) {
             return +1;
         }
 
-        ++ia; ++ib;
+        ++ia;
+        ++ib;
     }
     /* eslint-enable no-constant-condition */
 };
@@ -2073,7 +2310,6 @@ TP.sort.DELETION = function(a, b) {
 //  nodes can be sorted in document order using this sort
 TP.sort.DOCUMENT_ORDER = function(a, b) {
 
-    /* jshint bitwise:false */
     if (a.sourceIndex) {
         return a.sourceIndex - b.sourceIndex;
     } else if (a.compareDocumentPosition) {
@@ -2081,7 +2317,6 @@ TP.sort.DOCUMENT_ORDER = function(a, b) {
     } else {
         return 0;
     }
-    /* jshint bitwise:true */
 };
 
 //  elements can be sorted in tabindex order using this sort
@@ -2355,6 +2590,10 @@ TP.defineNamespace('TP.regex');
 TP.regex.JOIN = new RegExp(TP.JOIN, 'g');
 TP.regex.BASE_AWARE = new RegExp(TP.BASE_AWARE_PREFIX);
 
+//  The grouping name can be found in group 1
+TP.regex.GROUPING = new RegExp(TP.GROUPING_PREFIX + '\\s*-\\s*(.+)');
+TP.regex.SPACING = new RegExp(TP.SPACING);
+
 //  ---
 //  type-checking/metadata
 //  ---
@@ -2370,6 +2609,10 @@ TP.regex.STRING_CONSTRUCTOR = /function String\(\)/;
 
 TP.regex.FUNCTION_LITERAL = /^function(?:.*)\((?:.*)\)(?:\s*)\{(?:.*)\}$/;
 TP.regex.FUNCTION_EXTRACT = /\s*function\s*\(.*?\)\s*\{([\s\S]*)\}\s*/;
+
+//  A list of methods that needs 'callee' access.
+TP.regex.NEEDS_CALLEE =
+    /\.(callNextMethod|callNextHandler|getCurrentCallee)(\(|\.apply|\.call)/;
 
 TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 
@@ -2398,7 +2641,7 @@ TP.regex.APP_TYPENAME = /^APP\./;
 TP.regex.TP_TYPENAME = /^TP\./;
 TP.regex.META_TYPENAME = /\.meta\./;
 
-TP.regex.INTERNAL_TYPENAME = /^(Inst|Type|Local)$/i;
+TP.regex.INTERNAL_TYPENAME = /^(Inst|Type|Local)$/;
 
 TP.regex.INSTANCE_OID = /^([a-zA-Z_$]{1}[a-zA-Z0-9_$]*?)\$([a-zA-Z0-9]{12,})$/;
 
@@ -2429,6 +2672,7 @@ TP.regex.HAS_BACKSLASH = /\\/;
 TP.regex.HAS_COLON = /:/;
 TP.regex.HAS_HASH = /#/;
 TP.regex.HAS_HYPHEN = /\-/;
+TP.regex.HAS_LINEBREAK = /\n|\r/;
 TP.regex.HAS_PAREN = /\(|\)/;       //  moz won't parse without closing )
 TP.regex.HAS_PERCENT = /%/;
 TP.regex.HAS_PERIOD = /\./;
@@ -2438,10 +2682,13 @@ TP.regex.HAS_SCHEME = /^([A-Za-z][-.+A-Za-z0-9]*):/;
 TP.regex.HAS_SLASH = /\//;
 TP.regex.HAS_TIMEZONE = /[Z\+\-]/;
 TP.regex.HAS_PIPE = /\|/;
+TP.regex.HAS_OID_SUFFIX = /(\$[a-zA-Z0-9]{12,}|(.*)_([a-zA-Z0-9]{12,})(_[a-zA-Z0-9]+)*)$/;
 
 //  ---
 //  css support
 //  ---
+
+TP.regex.CONTAINS_CSS = /\s*[a-zA-Z\-]+\s*[:]{1}\s[a-zA-Z0-9\s.#]+[;]{1}/;
 
 TP.regex.CSS_CLIP_RECT = /rect\s*\((\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)/;
 
@@ -2453,6 +2700,9 @@ TP.regex.CSS_URL_PROPERTY = /:\s+(url\(){1}['"]?([^)]*?)['"]?(\)){1};/g;
 
 //  The URL value of the property can be found in group 2. (needs reset)
 TP.regex.CSS_URL_VALUE = /(url\(){1}['"]?(~[^)]*?)['"]?(\)){1}/g;
+
+//  Whether or not the name denotes a CSS 'custom property'.
+TP.regex.CSS_CUSTOM_PROPERTY_NAME = /^--/;
 
 TP.regex.PIXELS = /px/;
 TP.regex.QUANTIFIERS = /[\$\.\?\+\(\)]/g;                   //  needs reset
@@ -2552,6 +2802,12 @@ TP.regex.ACP_FORMAT_SEPARATOR = /\s*\.\|\s*/;
 //  All of the ACP operators legal in a template - '.%', '.%*', '.||'
 TP.regex.ACP_OPERATORS = /(\.(%\*|%|\|\|))/g;   //  needs reset
 
+TP.regex.ACP_CONTROL_TOKEN = /(with|if|for)/;
+TP.regex.ACP_VALUE_TOKEN = /value/;
+
+TP.regex.ACP_BEGIN_CONTROL_STATEMENT = /\{\{:(with|if|for)(.*?)\}\}/;
+TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
+
 //  '$' followed by a word character (including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP|APP|\$(\w|\*|#)+/;
 
@@ -2597,6 +2853,9 @@ TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 TP.regex.ANY_NUMBER = /^-?\d*\.{0,1}\d+$/i;
 TP.regex.PERCENTAGE = /^-?\d+%$/i;
 
+TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN =
+                        /"(-?\d*\.?\d+|true|false)"/g;  //  needs reset
+
 // needs reset
 TP.regex.NON_UTF8_CHARS =
 /[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF4][\x80-\xBF]{3}/g;
@@ -2631,9 +2890,10 @@ TP.regex.CONTAINS_ELEM_MARKUP = new RegExp(TP.CONTAINS_ELEM_MARKUP_DEF);
 
 TP.regex.HAS_ELEMENT = /<\/|\/>/;
 TP.regex.HAS_PI = /<\?|\?>/;
-TP.regex.HAS_ENTITY = /&#/;
+TP.regex.HAS_ENTITY = /&(?:#([0-9]+)|#x([0-9a-fA-F]+)|([0-9a-zA-Z]+));/;
 
-TP.regex.INVALID_ID_CHARS = /[ !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g; // needs reset
+//  needs reset
+TP.regex.INVALID_ID_CHARS = /[. !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g;
 
 TP.regex.EMPTY_TAG_END = /\/>/;
 
@@ -2722,6 +2982,11 @@ TP.regex.XML_ATTR_NULL = /\s*([\w:]+)=['"]null['"]/g;   //  needs reset
 TP.regex.XML_ATTR_CONTAINING_NULL =
     /(\s*[\w:]+=)['"]([^'"]*?)null([^'"]*?)['"]/g;  //  needs reset
 
+TP.regex.CONTAINS_ONLY_ATTR_START =
+    new RegExp('\\w*\\s*(' + TP.XML_NAME + ')=[\'"][^>]*$');
+TP.regex.CONTAINS_ONLY_ELEM_START =
+    new RegExp('<(' + TP.XML_NAMESTART + ')([^<>"\']+)*$');
+
 //  A RegExp that matches various HTML tags.
 TP.regex.HTML_HTML_ELEM =
         /<html((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/html)>/gi;   // needs reset
@@ -2756,10 +3021,27 @@ TP.regex.NON_PREFIXED_NS_ATTR =
 TP.regex.PREFIXED_NS_ATTR =
         /\s+xmlns:\w+=(['"])([\x00-\x7F]*?)\1/g;    //  needs reset
 
-//  A RegExp that matches all element or attribute prefixes. Note that each will
-//  have a trailing colon (':')
-TP.regex.ALL_ELEM_OR_ATTR_PREFIXES =
-/((?:[A-Za-z_]|[^\x00-\x7F])(?:[A-Za-z0-9_.-]|[^\x00-\x7F])*):/g; // needs reset
+//  A RegExp that matches all element prefixes
+TP.regex.ALL_ELEM_PREFIXES =
+    new RegExp('<' +
+                '(' +
+                '(?:' + TP.XML_NCNAME + ')' +
+                '(?:' + TP.XML_NCNAMECHAR + ')*' +
+                ')' +
+                ':',
+                'g');   //  global, needs reset
+
+//  A RegExp that matches all attribute prefixes
+TP.regex.ALL_ATTR_PREFIXES =
+    new RegExp('(' +
+                '(?:' + TP.XML_NCNAME + ')' +
+                '(?:' + TP.XML_NCNAMECHAR + ')*' +
+                ')' +
+                ':' +
+                '(?:' + TP.XML_NCNAME + ')' +
+                '(?:' + TP.XML_NCNAMECHAR + ')*' +
+                '=' +
+                'g');   //  global, needs reset
 
 /* eslint-enable no-control-regex */
 
@@ -2814,8 +3096,15 @@ TP.regex.MULTI_VALUED = / /;
 //  regex support
 //  ---
 
-//  A RegExp that will escape Strings for use as RegExps :)
-TP.regex.REGEX_ESCAPE = /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;    //  needs reset
+//  RegExps that will be used to escape and unescape Strings for use as
+//  RegExps :)
+TP.regex.REGEX_DETECT_META_CHARS =
+        /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;   //  needs reset
+
+//  Same as above, except it won't detect escaped metacharacters.
+TP.regex.REGEX_DETECT_UNESCAPED_META_CHARS =
+        /(^|[^\\])([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;    //  needs reset
+
 TP.regex.REGEX_LITERAL_STRING = /^\/(.+)\/[gimy]*$/;
 
 //  ---
@@ -2826,8 +3115,11 @@ TP.regex.TIBET_URL = /^[tibet:|~]/;
 //  node@domain:port, resource, canvas, path, and pointer
 TP.regex.TIBET_URL_SPLITTER =
                 /tibet:([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
+TP.regex.URL_SPLITTER =
+                /(?:.*):([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
 
 TP.regex.TIBET_URN = /urn:tibet:|urn::/;
+TP.regex.TIBET_COMPACT_URN = /urn::/;
 TP.TIBET_URN_PREFIX = 'urn:tibet:';
 
 TP.regex.TPOINTER = /([^\(]*)\(([^\)]*)\)/;
@@ -2875,7 +3167,7 @@ TP.regex.TIBET_SCHEME = /^tibet:/;
 TP.regex.URI_LIKELY =
     /^~|^\/|^\.\/|^\.\.\/|^urn:|^tibet:|^javascript:|^(?:\w+):(?:.*)\//;
 
-TP.regex.URI_FRAGMENT = /#/;
+TP.regex.URI_FRAGMENT = /#\w+/;
 
 /* eslint-disable max-len */
 TP.regex.URI_STRICT = /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/;
@@ -2954,8 +3246,6 @@ TP.CHANGE_URIS = 'uris';
 //  One or more access paths separated by '.(' and ').'
 TP.regex.COMPOSITE_PATH = /(^|\.)\((.+?)\)(\.|$)/;
 
-TP.regex.ANY_POINTER = /(\w+)\((.*)\)$/;
-
 //  one or more of any characters with optional preceding or following
 //  whitespace
 TP.regex.PATH_EXPR = /(^|\s+)(.+?)($|\s+)/g; // needs reset
@@ -3003,8 +3293,6 @@ TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
 //  TIBET extensions that can be used in *node* paths
 TP.regex.XTENSION_POINTER = /css\((.*)\)/;
 
-TP.regex.CSS_POINTER = /css\((.*)\)/;
-
 //  Detect @[anything] as whole
 TP.regex.ATTRIBUTE = /^@\w+$/;
 
@@ -3017,6 +3305,12 @@ TP.regex.ATTRIBUTE_ALL = /^@\*/;
 //  Detect text() at end
 TP.regex.TEXT_NODE_ENDS = /\/text\(\)$/;
 
+//  XPointer matchers
+
+TP.regex.ANY_POINTER = /(\w+)\((.*)\)$/;
+
+TP.regex.CSS_POINTER = /css\((.*)\)/;
+
 //  Detect starts with #, followed by word characters. Also, TIBET's extension
 //  to barenames (a trailing '@expr') allows access to Attributes.
 TP.regex.BARENAME = new RegExp(
@@ -3025,7 +3319,7 @@ TP.regex.BARENAME = new RegExp(
                     '(@(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*)*' +
                     ')$');
 
-TP.regex.DOCUMENT_ID = /#document$/;
+TP.regex.DOCUMENT_ID = /^#document$/;
 TP.regex.ELEMENT_ID = /(.*)#(.*)/;
 TP.regex.BOOLEAN_ID = /^true$|^false$/;
 

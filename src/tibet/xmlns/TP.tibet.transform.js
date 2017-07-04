@@ -21,7 +21,6 @@
 TP.core.ActionElementNode.defineSubtype('tibet:transform');
 
 TP.tibet.transform.addTraits(TP.core.PipeSegmentElementNode);
-TP.tibet.transform.addTraits(TP.tibet.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -156,7 +155,7 @@ function(anInput, cmdNode, aRequest) {
                     TP.TIBET_URN_PREFIX + rootName;
 
     //  Fetch the template from the URI.
-    resp = TP.uc(templateName).getResource(TP.hc('async', false));
+    resp = TP.uc(templateName).getResource(TP.hc('async', false, 'resultType', TP.TEXT));
 
     if (TP.notValid(template = resp.get('result'))) {
 
@@ -164,7 +163,7 @@ function(anInput, cmdNode, aRequest) {
         this.compileTemplates(cmdNode);
 
         //  Try again.
-        resp = TP.uc(templateName).getResource(TP.hc('async', false));
+        resp = TP.uc(templateName).getResource(TP.hc('async', false, 'resultType', TP.TEXT));
 
         if (TP.notValid(template = resp.get('result'))) {
             aRequest.fail('Unable to find template: ' + templateName);

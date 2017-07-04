@@ -1,67 +1,54 @@
 # TIBET <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
 
-
-                                          ,`
-                                    __,~//`
-           ,///,_            .~////////'`
-          '///////,       //////''`
-                 '//,   ///'`
-                    '/_/'
-                      `
-            ////////////////////     ///////////////////  ////
-            `//'````````````///      `//'```````````````  '''
-             /`              //       /'
-            /                //      '/
-           ,/____             /'    ,/_____
-          ////////;,,,_       //   ,//////////;,_
-                     '`'/,_   '/              `'///,_
-                         `'/,_ /                   '//,
-                            '/,/,                    '/_
-                              `/,                     `/,
-                                '                      `/
-                                                       '/
-                                                        /
-                                                        '
+                                     ,`
+                              __,~//`
+           ,///,_       .~///////'`
+               '//,   ///'`
+                  '/_/'
+                    `
+            /////////////////     /////////////// ///
+            `//'````````///      `//'```````````  '''
+            ,/`          //      ,/'
+           ,/___          /'    ,/_____
+          ///////;;,_     //   ,/////////;,_
+                   `'//,  '/            `'///,_
+                       `'/,/                '//,
+                          `/,                  `/,
+                            '                   `/
+                                                 '/
+                                                  /
+                                                  '
 
 ---
 
-#### The Sum Of The Parts, Not Some Of The Parts&#8482;
+### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
-our way of saying TIBET is a seamlessly integrated framework; one **focused on
-solving both the business and technical problems** associated with
-large-scale web development.
+our way of saying TIBET is a seamlessly integrated solution, not an à la carte
+mashup.
 
-##### Full Client Stack
+**TIBET reduces <a target="_blank"
+href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical
+complexity</a>, improves tooling, and lowers costs** with a single-vendor
+stack that's <a target="_blank"
+href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> from
+client to server, CLI to IDE.
 
-TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
-combines best-of-breed technology with unmatched standards support in a
-comprehensive, vendor-supported stack that reduces technical risk.
+**Fully-integrated, fully-tooled, fully-supported;** TIBET is built for business
+and government web application projects that need a turnkey solution.
 
-##### Fully Tooled
+**If you're building a true application**, a call center, an HR app, a
+back-office app, the kind of application you'd have formerly built in
+VisualBasic, Delphi, or PowerBuilder, using the web as your
+development/deployment platform, **we built TIBET for you**.
 
-TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
-let your team focus on standards-compliant markup, not JavaScript coding,
-reducing the need for costly gurus, ninjas, and rock stars.
-
-##### Full-Stack Option
-
-<a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">Optional server components</a>
-let you build and deploy collaborative Cloud applications based on a
-fully-supported Node.js server with lightweight workflow support.
-
-##### Fully Supported
-
-<a href="http://www.technicalpursuit.com/support.xhtml">Affordable vendor-backed support</a> and
-<a href="http://www.technicalpursuit.com/solutions.xhtml">development solutions</a> are available
-from Technical Pursuit Inc., the company behind TIBET since 1999.
 
 ---
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
-#### Get answers to common questions in the <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ">TIBET FAQ</a>.
+#### New to TIBET? Start with the <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
+
 ---
 
 # Installation
@@ -86,6 +73,8 @@ network connection and the particular version and dependencies being installed.
 
 Once the installation completes you're ready to start building with TIBET.
 
+---
+
 # Quickstart
 
 With TIBET installed the `tibet` command gives you access to TIBET-aware
@@ -95,9 +84,16 @@ The `tibet quickstart` command outputs version-specific instructions on how
 to clone, initialize, and start a TIBET application (your output may vary by
 version):
 
-<pre>
+```bash
 tibet quickstart
+```
 
+Following the steps described by `tibet quickstart` for your TIBET version
+should result in a running application. See the <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
+target="_blank">TIBET Quickstart Guide</a> for a thorough introduction.
+
+<pre>
 Welcome to TIBET! This quickstart content is intended to get you up and running
 with a minimum of overhead so we'll be working with a limited set of commands
 and using their default options. Once you're done, check out the development wiki
@@ -145,11 +141,7 @@ on how to take the next step in your TIBET journey.
 For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
 </pre>
 
-Following the steps described by `tibet quickstart` for your TIBET version
-should result in a running application. See the <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
-target="_blank">TIBET Quickstart Guide</a> to continue your journey.
-
+---
 
 # Documentation
 
@@ -164,8 +156,8 @@ target="_blank">TIBET CLI</a> documentation on the wiki.
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
 target="_blank">TIBET Wiki</a> provides extensive tutorials,
-whitepapers, and other conceptual and design documentation. _Some
-variation may exist between TIBET versions_.
+whitepapers, and other conceptual and design documentation. We strongly
+recommend you take a few minutes to scan it.
 
 <a name="tutorials" href="#"></a>
 #### Tutorials
@@ -178,7 +170,7 @@ few minutes with this guide.
 
 #### API Reference
 
-##### `reflect`
+##### `tibet reflect`
 
 API documentation is generated for your TIBET version via `tibet reflect` at
 the command line and via `:reflect` from within the <a
@@ -186,7 +178,7 @@ href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Shell"
 target="_blank">TIBET Shell</a>. TIBET's `reflect` options can output type
 lists, method lists, or individual object documentation.
 
-##### `apropos`
+##### `tibet apropos`
 
 To explore TIBET functionality use the `tibet apropos` command
 or `:apropos` from the <a
@@ -195,17 +187,16 @@ target="_blank">TIBET Shell</a>. The `apropos` feature scans method names and
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
 
+---
 
 <a name="prereqs" href="#"></a>
 # Prerequisites
 
-
 #### Install Node.js
 
 TIBET relies on Node.js and npm for command line tooling and integration of
-today's best JavaScript modules. To install TIBET properly first make sure
-you have Node.js <b>version 0.10.x</b>. _TIBET is not yet certified for Node
-0.12_.
+today's best JavaScript modules. To install TIBET make sure
+you have a recent version of Node.js.
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
 your Node.js installation. Using `nvm` lets you install multiple versions of
@@ -241,6 +232,8 @@ without PhantomJS installed.
 
 To install PhantomJS follow the instructions at <a
 target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
+
+---
 
 <a name="gitinstall" href="#"></a>
 # Installing TIBET via Git
@@ -295,18 +288,24 @@ npm link .
 You should now be able to use the `tibet` command which lets you run `tibet
 build`.
 
-##### Build TIBET Packages
+##### Build TIBET Dependencies and Packages
 
 When working with a `git`-based repository you'll need to rebuild TIBET packages
-on occasion, depending on your individual project launch configuration.
+and dependencies, depending on your individual project launch configuration.
 
-To build the initial set of TIBET launch packages use:
+To build the full set of TIBET dependencies and launch packages use:
 
 ```
-tibet build
+tibet build_all
 ```
+
+NOTE: the above command can take _quite some time_ depending on your network
+connection, machine performance, etc. since it's building a large set of
+dependent modules in addition to TIBET itself.
 
 With TIBET cloned, initialized, linked, and built you're ready to rock.
+
+---
 
 # Feedback
 
@@ -318,6 +317,8 @@ target="_blank">issues list</a> for TIBET.
 Additional contact info is provided on the <a href="http://www.technicalpursuit.com/community.xhtml"
 target="_blank">community page</a> at <a
 href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
+
+---
 
 # License
 

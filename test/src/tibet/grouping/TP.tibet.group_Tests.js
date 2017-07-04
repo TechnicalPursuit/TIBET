@@ -51,7 +51,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -66,7 +66,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -75,7 +75,7 @@ function() {
                         TP.ac('foo'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -97,7 +97,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -115,7 +115,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -137,7 +137,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -158,7 +158,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'nestedGooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -167,7 +167,7 @@ function() {
                         TP.ac('foo', 'bar'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -176,7 +176,7 @@ function() {
                         TP.ac('gar', 'gaz', 'nestedGooStuff'));
 
                 groupMembers =
-                    TP.byId('nestedGooGroup', windowContext).getMembers().collect(
+                    TP.byId('nestedGooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -198,7 +198,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -228,7 +228,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -237,7 +237,7 @@ function() {
                         TP.ac('foo', 'bar'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -246,7 +246,7 @@ function() {
                         TP.ac('gaz'));
 
                 groupMembers =
-                    TP.byId('mooGroup', windowContext).getMembers().collect(
+                    TP.byId('mooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -268,7 +268,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -292,7 +292,7 @@ function() {
                 test.assert.isBlank(tpElem.getGroupName());
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -301,7 +301,7 @@ function() {
                         TP.ac('onlyThing'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -323,7 +323,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -353,7 +353,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -389,7 +389,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -425,7 +425,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -490,7 +490,7 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var tpElem;
 
@@ -558,20 +558,20 @@ function() {
 
         test.getDriver().setLocation(loadURI);
 
-        test.then(
+        test.chain(
             function(result) {
                 var parentTPElem,
                     tpElem;
 
                 parentTPElem = TP.byId('fooStuff', windowContext);
 
-                parentTPElem.addRawContent('<div id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
+                parentTPElem.addRawContent('<div xmlns="' + TP.w3.Xmlns.XHTML + '" id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
 
                 //  Give it a 50ms wait - otherwise, Promises starve the event
                 //  loop and the MO machinery will never be triggered.
-                test.thenWait(50);
+                test.andWait(50);
 
-                test.then(
+                test.chain(
                     function() {
                         tpElem = TP.byId('moo', windowContext);
                         test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');

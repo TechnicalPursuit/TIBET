@@ -14,7 +14,7 @@
 
 TP.definePrimitive('defineBinding',
 function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -137,7 +137,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  sourceAttr is 'value' we'd rather have a signal name of
         //  'TP.sig.ValueChange' than 'ValueChange').
         if (facetName === 'value' && sourceAttr !== 'value') {
-            signalName = sourceAttr.asStartUpper() + 'Change';
+            signalName = TP.makeStartUpper(sourceAttr) + 'Change';
         }
     }
 
@@ -276,7 +276,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.defineMetaInstMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -304,7 +304,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Type.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -332,7 +332,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -360,7 +360,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.definePrimitive('destroyBinding',
 function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -459,7 +459,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  sourceAttr is 'value' we'd rather have a signal name of
         //  'TP.sig.ValueChange' than 'ValueChange').
         if (facetName === 'value' && sourceAttr !== 'value') {
-            signalName = sourceAttr.asStartUpper() + 'Change';
+            signalName = TP.makeStartUpper(sourceAttr) + 'Change';
         }
     }
 
@@ -507,7 +507,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.defineMetaInstMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -531,7 +531,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Type.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -555,7 +555,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Inst.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -909,7 +909,7 @@ function(aSignal) {
                         //  compiled.
                         tpDocElem.refreshBranches(
                             primarySource, aSignal, elems, initialVal,
-                            pathType, pathParts, pathAction);
+                            pathType, pathParts, pathAction, false);
                     }
                 });
 
@@ -923,6 +923,18 @@ function(aSignal) {
         aspect = aSignal.at('aspect');
         facet = aSignal.at('facet');
 
+        //  If our signal origin is a URI and the aspect is one of URI's
+        //  'special aspects', then we just return here.
+        if (TP.isURI(aSignal.getOrigin()) &&
+            TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+
+            //  Set the DOM content loaded signaling whatever it was when we
+            //  entered this method.
+            TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+            return;
+        }
+
         //  If we have an aspect and the facet that we're updating is *not*
         //  'value', then that means we're updating other facets such as
         //  'readonly', 'required', etc. This means that we just use the
@@ -934,8 +946,8 @@ function(aSignal) {
             //  we're updating 'non value facet' bindings..
             tpDocElem.refreshBranches(
                     primarySource, aSignal, elems, primarySource,
-                    TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE);
-        } else {
+                    TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE, false);
+        } else if (TP.notEmpty(facet)) {
 
             //  Otherwise, if the signal's origin is a URI (usually a data-bound
             //  URI), then (because we don't have 'changed data paths' to go
@@ -945,7 +957,7 @@ function(aSignal) {
 
                 tpDocElem.refreshBranches(
                         primarySource, aSignal, elems, primarySource,
-                        null, null, null);
+                        null, null, null, false);
             } else {
 
                 //  Otherwise, the signal's origin was not a URI, so it must've
@@ -1008,7 +1020,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentNode.Inst.defineMethod('refresh',
-function() {
+function(shouldRender) {
 
     /**
      * @method refresh
@@ -1016,7 +1028,12 @@ function() {
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
      */
 
     var node,
@@ -1026,13 +1043,13 @@ function() {
 
     if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
         if (TP.isElement(body = TP.documentGetBody(node))) {
-            TP.tpnode(body).refresh();
+            return TP.tpnode(body).refresh(shouldRender);
         }
     } else {
-        TP.tpnode(node.documentElement).refresh();
+        return TP.tpnode(node.documentElement).refresh(shouldRender);
     }
 
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -1363,12 +1380,11 @@ function(attributeValue) {
     if (!isSimpleExpr) {
 
         transformFunc = function(source, val, targetTPElem,
-                                    repeatSource, index, isXMLResource) {
+                                 repeatSource, index, isXMLResource) {
             var wrappedVal,
 
                 params,
 
-                repeatResourceResult,
                 last,
 
                 retVal;
@@ -1388,10 +1404,11 @@ function(attributeValue) {
                                 '$REQUEST', null,
                                 'TP', TP,
                                 'APP', APP,
+                                '$SOURCE', source,
                                 '$TAG', targetTPElem,
                                 '$TARGET', targetTPElem.getDocument(),
                                 '$_', wrappedVal,
-                                '$INPUT', repeatResourceResult,
+                                '$INPUT', repeatSource,
                                 '$INDEX', index,
                                 '$FIRST', index === 1,
                                 '$MIDDLE', index > 1 && index < last,
@@ -1407,10 +1424,11 @@ function(attributeValue) {
                                 '$REQUEST', null,
                                 'TP', TP,
                                 'APP', APP,
+                                '$SOURCE', source,
                                 '$TAG', targetTPElem,
                                 '$TARGET', targetTPElem.getDocument(),
                                 '$_', wrappedVal,
-                                '$INPUT', repeatResourceResult,
+                                '$INPUT', repeatSource,
                                 '$INDEX', index,
                                 '$FIRST', index === 0,
                                 '$MIDDLE', index > 0 && index < last,
@@ -1736,7 +1754,7 @@ function(wantsShallowScope) {
      * @param {Boolean} wantsShallowScope Whether or not to produce bound
      *     elements that are 'under' a nested scope (i.e. either a bind:scope or
      *     bind:repeat) under the receiver.
-     * @returns {Array} An Array of bound elements.
+     * @returns {Element[]} An Array of bound elements.
      */
 
     var elem,
@@ -1771,6 +1789,15 @@ function(wantsShallowScope) {
                 function(aSubscope) {
 
                     var k;
+
+                    //  We don't want ourself in the list
+                    if (aSubscope === elem) {
+                        return false;
+                    }
+
+                    if (!elem.contains(aSubscope)) {
+                        return false;
+                    }
 
                     for (k = 0; k < allScopes.length; k++) {
                         if (allScopes[k] !== aSubscope &&
@@ -1828,6 +1855,112 @@ function(wantsShallowScope) {
     }
 
     return boundElems;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBoundValues',
+function(scopeVals, bindingInfoValue) {
+
+    /**
+     * @method getBoundValue
+     * @summary Returns a hash of the bound values of the receiver.
+     * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
+     *     that, when combined, make up the entire bind scoping path).
+     * @param {String} bindingInfoValue A String, usually in a JSON-like format,
+     *     that details the binding information for the receiver. That is, the
+     *     bounds aspects of the receiver and what they're bound to.
+     * @returns {TP.core.Hash} A hash of the bound values where the key is the
+     *     bound aspect and the value is the value of that aspect in the bound
+     *     data source.
+     */
+
+    var retVal,
+
+        bindingInfo;
+
+    retVal = TP.hc();
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
+
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var aspectName,
+
+                bindVal,
+
+                dataExprs,
+                i,
+                dataExpr,
+
+                allVals,
+                fullExpr,
+
+                wholeURI,
+
+                result;
+
+            aspectName = bindEntry.first();
+
+            bindVal = bindEntry.last();
+
+            //  There will be 1...n data expressions here. Iterate over them and
+            //  compute a model reference.
+            dataExprs = bindVal.at('dataExprs');
+            for (i = 0; i < dataExprs.getSize(); i++) {
+                dataExpr = dataExprs.at(i);
+
+                if (TP.notEmpty(scopeVals)) {
+                    //  Concatenate the binding value onto the scope values
+                    //  array (thereby creating a new Array) and use it to
+                    //  join all of the values together.
+                    allVals = scopeVals.concat(dataExpr);
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(fullExpr)) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(fullExpr);
+                } else {
+                    //  Scope values is empty - this is (hopefully) a fully
+                    //  qualified binding expression.
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(dataExpr);
+                }
+
+                if (!TP.isURI(wholeURI)) {
+                    this.raise('TP.sig.InvalidURI');
+
+                    break;
+                }
+
+                if (TP.isValid(result = wholeURI.getResource().get('result'))) {
+                    retVal.atPut(aspectName, result);
+                }
+            }
+        });
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -2008,7 +2141,7 @@ function() {
                         this.$captureRepeatContent();
                     });
                 this.defineMethod(
-                    'replaceContent',
+                    'replaceWith',
                     function(newContent, aRequest, stdinContent) {
                         this.callNextMethod();
                         this.$captureRepeatContent();
@@ -2027,6 +2160,8 @@ function() {
     }
 
     return null;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
@@ -2140,6 +2275,12 @@ function(indexes) {
     //  was rebuilt.
     if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
         return this;
+    }
+
+    //  If the repeat content's child element list has a size of 1, then we
+    //  reach under there and use that element as the repeat content
+    if (TP.nodeGetChildElements(repeatContent).getSize() === 1) {
+        repeatContent = repeatContent.firstElementChild;
     }
 
     //  Whichever element has a 'tibet:nomutationtracking' attribute on it is
@@ -2282,7 +2423,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, altContext) {
+function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, isScoped) {
 
     var elem,
 
@@ -2294,8 +2435,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         attrs,
         i,
         j,
-
-        // ownerWrappers,
 
         theVal,
 
@@ -2347,23 +2486,35 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
         needsRefresh,
 
-        isRepeatScope,
-        insertParts,
+        insideRepeatScope,
 
         indexes,
-        newRowElem,
-        newSubElems;
+        newRowElem;
 
     elem = this.getNativeNode();
 
     //  TIMING: var startQuery = Date.now();
 
+    //  Grab all of the elements that contain 'scope' or 'repeat' attributes.
+    //  Note that we can't filter for the 'bind:' (TP.w3.Xmlns.BIND) namespace
+    //  on those attributes here because the 'querySelectorAll' call has no
+    //  namespace support :-(. It is, however, very fast. We'll filter for that
+    //  later.
     subscopes = TP.ac(elem.querySelectorAll('*[*|scope], *[*|repeat]'));
 
     subscopes = subscopes.filter(
             function(aSubscope) {
 
                 var k;
+
+                //  We don't want ourself in the list
+                if (aSubscope === elem) {
+                    return false;
+                }
+
+                if (!elem.contains(aSubscope)) {
+                    return false;
+                }
 
                 for (k = 0; k < subscopes.length; k++) {
                     if (subscopes[k] !== aSubscope &&
@@ -2375,11 +2526,16 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 return true;
             });
 
+    //  Get the set of elements that are contained within the receiver, but in a
+    //  'shallow' fashion - that is, 'under' the receiver but not under any
+    //  nested scopes (i.e. 'bind:scope' or 'bind:repeat') that are also under
+    //  the receiver.
     nextElems = elems.filter(
             function(anElem) {
 
                 var k;
 
+                //  We don't want ourself in the list
                 if (anElem === elem) {
                     return false;
                 }
@@ -2398,20 +2554,21 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
     nextElems = nextElems.concat(subscopes);
 
+    //  Iterate over all of those elements containing binding attributes and
+    //  grab the attribute nodes that are in the TP.w3.Xmlns.BIND namespace.
     boundAttrNodes = TP.ac();
     for (i = 0; i < nextElems.length; i++) {
         attrs = nextElems[i].attributes;
 
         for (j = 0; j < attrs.length; j++) {
 
-            //  Make sure the attribute is in the binding namespace
+            //  Make sure the attribute is in the binding namespace. This also
+            //  accounts for the deficency of the querySelectorAll() call above.
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
                 boundAttrNodes.push(attrs[j]);
             }
         }
     }
-
-    // ownerWrappers = TP.hc();
 
     //  TIMING: var endQuery = Date.now();
     //  TIMING: TP.totalBranchQueryTime += (endQuery - startQuery);
@@ -2427,8 +2584,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         primaryLocMatcher =
             TP.rc(TP.regExpEscape(aSignal.getOrigin().getPrimaryLocation()));
 
+        //  Loop over all of the found binding attributes.
         len = boundAttrNodes.getSize();
         for (i = 0; i < len; i++) {
+
             boundAttr = boundAttrNodes.at(i);
 
             attrName = boundAttr.localName;
@@ -2437,8 +2596,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             ownerElem = boundAttr.ownerElement;
             ownerTPElem = TP.wrap(ownerElem);
 
-            //  Nested scope?
-            isScopingElement = attrName === 'scope' || attrName === 'repeat';
+            //  Are we processing a nested scope?
+
+            /* eslint-disable no-extra-parens */
+            isScopingElement = (attrName === 'scope' || attrName === 'repeat');
+            /* eslint-enable no-extra-parens */
+
             if (isScopingElement) {
 
                 if (TP.isURIString(attrVal) &&
@@ -2453,14 +2616,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     } else {
                         branchVal = theVal;
                     }
-
-                    /* TODO: For now, we don't do this
-                    if (TP.notEmpty(branchFrag = branchURI.getFragmentExpr())) {
-                        pathType = TP.ifInvalid(
-                                    aPathType,
-                                    TP.getAccessPathType(branchFrag));
-                    }
-                    */
                 } else {
                     if (TP.isArray(theVal) &&
                         theVal.first() !== TP.NULL &&
@@ -2503,6 +2658,11 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         TP.apc(repeatFragExpr).executeGet(primarySource);
                     }
 
+                    //  Make sure that branchVal is an Array
+                    if (!TP.isArray(branchVal)) {
+                        branchVal = TP.ac(branchVal);
+                    }
+
                     //  NB: This modifies the supplied 'elems' Array to add the
                     //  newly generated elements. They will be refreshed below.
                     ownerTPElem.$regenerateRepeat(branchVal, elems);
@@ -2511,23 +2671,22 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, branchVal,
-                                pathType, null, null);
+                                pathType, null, pathAction, true);
             } else {
 
-                //  There are different types of wrappers depending on full tag
-                //  name of element (ns:tagname)
-
-                /*
-                if (TP.notValid(
-                        ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
-                    ownerTPElem = TP.core.ElementNode.construct(ownerElem);
-                    ownerWrappers.atPut(ownerElem.tagName, ownerTPElem);
+                //  If we're not scoped (i.e. we're running top-level
+                //  expressions) and the expression that we're processing
+                //  doesn't contain ACP variables and the primary location
+                //  matcher doesn't match the expression, then it's a top-level
+                //  expression pointing at another data location - don't process
+                //  them.
+                if (!isScoped &&
+                    !TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal) &&
+                    !primaryLocMatcher.test(attrVal)) {
+                    continue;
                 }
 
-                //  NB: Primitive and fast way to set native node
-                ownerTPElem.$set('node', ownerElem, false);
-                */
-
+                //  Otherwise, go ahead and process this as a leaf.
                 ownerTPElem.refreshLeaf(
                     primarySource, aSignal, theVal, boundAttr, aPathType);
             }
@@ -2590,7 +2749,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                             '|.)$');
             }
 
-            leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+            //  If there is only one search part, and it is a URI, then we've
+            //  'trimmed back' to the most general part of the source URI. In
+            //  that case, we only want to match 'leafs' that are looking at the
+            //  'whole' URI, not all of the ones that have subparts that match.
+            if (searchParts.getSize() === 1 && TP.isURIString(searchPath)) {
+                leafMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+            } else {
+                leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+            }
 
             len = boundAttrNodes.getSize();
             for (j = 0; j < len; j++) {
@@ -2607,10 +2774,13 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 if (isScopingElement && branchMatcher.test(attrVal)) {
 
+                    //  If the scoping element has a '.', then it wants to scope
+                    //  to the data (probably a collection) that was supplied to
+                    //  this method and is currently in theVal.
                     if (attrVal === '.') {
                         return ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, theVal,
-                                aPathType, pathParts, pathAction, this);
+                                aPathType, pathParts, pathAction, true);
                     }
 
                     if (TP.isURIString(attrVal)) {
@@ -2675,15 +2845,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     needsRefresh = true;
 
-                    isRepeatScope =
+                    insideRepeatScope =
                         TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
                         TP.elementHasClass(ownerElem, 'item');
 
-                    if ((attrName === 'repeat' || isRepeatScope) &&
+                    if ((attrName === 'repeat' || insideRepeatScope) &&
                         TP.isEmpty(remainderParts) &&
                         attrVal === searchPath) {
 
-                        if (isRepeatScope) {
+                        if (insideRepeatScope) {
                             ownerElem = TP.nodeDetectAncestor(
                                 ownerElem,
                                 function(aNode) {
@@ -2705,23 +2875,21 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                 if (TP.notEmpty(indexes)) {
                                     newRowElem =
                                         ownerTPElem.$insertRepeatRowAt(indexes);
-                                    newSubElems =
-                                        TP.wrap(newRowElem).$getBoundElements(
-                                                                        false);
 
-                                    if (isRepeatScope) {
-                                        insertParts = pathParts.slice(0, -1);
-                                    } else {
-                                        insertParts = pathParts;
+                                    if (TP.owns(
+                                        ownerTPElem, 'generatedItemCount')) {
+                                        ownerTPElem.set(
+                                        'generatedItemCount',
+                                        ownerTPElem.get('generatedItemCount') +
+                                                1);
                                     }
 
-                                    ownerTPElem.refreshBranches(
-                                        primarySource, aSignal, newSubElems,
-                                        theVal, pathType, insertParts,
-                                        pathAction);
+                                    TP.wrap(newRowElem).
+                                        refreshBoundDescendants();
 
-                                    needsRefresh = false;
                                 } else {
+
+                                    ownerTPElem.empty();
 
                                     //  NB: This modifies the supplied 'elems'
                                     //  Array to add the newly generated
@@ -2729,7 +2897,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                     ownerTPElem.$regenerateRepeat(
                                                     branchVal, elems);
                                     ownerTPElem.$showHideRepeatRows(branchVal);
+
+                                    TP.wrap(ownerTPElem).
+                                            refreshBoundDescendants();
                                 }
+
+                                needsRefresh = false;
 
                                 break;
 
@@ -2737,6 +2910,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                                 if (TP.notEmpty(indexes)) {
                                     ownerTPElem.$deleteRepeatRowAt(indexes);
+                                    ownerTPElem.set(
+                                    'generatedItemCount',
+                                    ownerTPElem.get('generatedItemCount') - 1);
                                 } else {
                                     ownerTPElem.empty();
                                     ownerTPElem.set('generatedItemCount', 0);
@@ -2756,23 +2932,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     if (needsRefresh) {
                         ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, branchVal,
-                                pathType, remainderParts, pathAction);
+                                pathType, remainderParts, pathAction, true);
                     } else {
                         break;
                     }
 
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
-
-                    /*
-                    if (TP.notValid(
-                        ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
-                        ownerTPElem = TP.core.ElementNode.construct(ownerElem);
-                        ownerWrappers.atPut(ownerElem.tagName, ownerTPElem);
-                    }
-
-                    //  NB: Primitive and fast way to set native node
-                    ownerTPElem.$set('node', ownerElem, false);
-                    */
 
                     ownerTPElem.refreshLeaf(
                         primarySource, aSignal, theVal, boundAttr, aPathType);
@@ -2783,29 +2948,35 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
             //  If we didn't process at least once, and the last part of the
             //  path is a simple numeric path, and there is a value at the end
-            //  of that patch, then we may have an insertion.
+            //  of that path, then we may have an insertion.
             if (!didProcess &&
-                TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
-                TP.isDefined(branchVal = TP.wrap(theVal).get(attrVal)) &&
+                TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart) &&
+                TP.isDefined(branchVal = TP.wrap(theVal).get(lastPart)) &&
                 (pathAction === TP.CREATE || pathAction === TP.INSERT)) {
 
                 indexes = aSignal.at('indexes');
 
                 if (TP.notEmpty(indexes)) {
                     newRowElem = this.$insertRepeatRowAt(indexes);
-                    newSubElems = TP.wrap(newRowElem).$getBoundElements(false);
+                    if (TP.owns(
+                        this, 'generatedItemCount')) {
+                        this.set(
+                        'generatedItemCount',
+                        this.get('generatedItemCount') +
+                                1);
+                    }
 
-                    this.refreshBranches(
-                        primarySource, aSignal, newSubElems,
-                        theVal, pathType, TP.ac(),
-                        pathAction);
-
+                    TP.wrap(newRowElem).refreshBoundDescendants();
                 } else {
+
+                    ownerTPElem.empty();
 
                     //  NB: This modifies the supplied 'elems' Array to add the
                     //  newly generated elements. They will be refreshed below.
                     ownerTPElem.$regenerateRepeat(branchVal, elems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
+
+                    TP.wrap(ownerTPElem).refreshBoundDescendants();
                 }
             }
 
@@ -2910,6 +3081,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 continue;
             }
 
+            //  TODO: Support more than 1 expr
             expr = exprs.at(0);
 
             if (TP.regex.BARENAME.test(expr)) {
@@ -2917,9 +3089,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             }
 
             pathType = aPathType;
-
-            // pathType = TP.ifInvalid(
-            //                aPathType, TP.getAccessPathType(exprs.at(0)));
 
             if (TP.isValid(pathType)) {
 
@@ -3040,6 +3209,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     }
                 } else if (TP.notValid(theVal)) {
                     finalVal = null;
+                } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
+                    finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
                 } else {
                     finalVal = theVal.get(expr);
                 }
@@ -3109,8 +3280,8 @@ function(aCollection, elems) {
      *     for the repeating content. Note that this method merely generates the
      *     blank repeating rows - it is up to other methods to refresh the data
      *     bindings within them.
-     * @param {Array.<Element>} elems The list of elements that the bind engine
-     *     is currently processing, of which is this element. We will splice any
+     * @param {Element[]} elems The list of elements that the bind engine is
+     *     currently processing, of which is this element. We will splice any
      *     new content that this method generates into this collection so that
      *     the engine will recursively process into this new content.
      * @returns {TP.core.ElementNode} The receiver.
@@ -3316,10 +3487,12 @@ function() {
 
         elemWithID = elemsWithIDs.at(j);
 
-        TP.ifWarn() ?
-            TP.warn('Stripping ID from Element in repeat template: ' +
-                    TP.str(elemWithID) + '. ' +
-                    'IDs are supposed to be unique in markup.') : 0;
+        if (!TP.elementHasGeneratedID(elemWithID)) {
+            TP.ifWarn() ?
+                TP.warn('Stripping ID from Element in repeat template: ' +
+                        TP.str(elemWithID) + '. ' +
+                        'IDs are supposed to be unique in markup.') : 0;
+        }
 
         TP.elementRemoveAttribute(elemWithID, 'id', true);
     }
@@ -3398,10 +3571,10 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
     /**
      * @method setBoundValue
      * @summary Sets the bound value of the receiver to the supplied value. This
-     *     takes the supplied value and sets the value onto the model.
+     *     takes the supplied value and sets that value onto the model.
      * @param {Object} aValue The value to set onto the model.
      * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
-     *     that, when combined, make up the entire bind scoping path.
+     *     that, when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
      *     bounds aspects of the receiver and what they're bound to.
@@ -3421,9 +3594,20 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
     bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
 
     if (TP.notTrue(ignoreBidiInfo)) {
-        //  Grab the list of our 'bidirectional' attributes. This will tell us
-        //  which aspects can be 'set' from GUI to model.
+        //  Grab the list of our 'bidirectional' instance (not DOM) attributes.
+        //  This will tell us which aspects can be 'set' from GUI to model.
         bidiAttrs = this.getType().get('bidiAttrs');
+    }
+
+    //  Make sure that the receiver is configured with bidi instance attributes.
+    //  If there are none, that means that we have no GUI to model capable
+    //  aspects, so warn and exit here.
+    if (TP.isEmpty(bidiAttrs)) {
+        TP.ifWarn() ?
+            TP.warn('No bidi attrs defined for bound control: ' +
+                    TP.name(this) + '.') : 0;
+
+        return this;
     }
 
     //  Iterate over each binding expression in the binding information.
@@ -3537,6 +3721,50 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 }
             }
         });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setBoundValueIfBound',
+function(aValue) {
+
+    /**
+     * @method setBoundValueIfBound
+     * @summary Sets the bound value of the receiver to the supplied value if
+     *     the receiver is bound. This takes the supplied value and sets that
+     *     value onto the model.
+     * @description This method is a convenience wrapper for setBoundValue()
+     *     that assumes that the receiver's binding scope values and binding
+     *     attribute value will be used.
+     * @param {Object} aValue The value to set onto the model.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        attrName;
+
+    elem = this.getNativeNode();
+
+    //  NB: 'bind:in' doesn't matter here - that goes 'in', these go 'out'.
+
+    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrName = 'bind:io';
+    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
+        attrName = 'bind:out';
+    }
+
+    if (TP.isEmpty(attrName)) {
+        return this;
+    }
+
+    //  Call setBoundValue, using the supplied value and assuming our binding
+    //  scope values and the value of the found binding attribute.
+    this.setBoundValue(aValue,
+                        this.getBindingScopeValues(),
+                        this.getAttribute(attrName));
 
     return this;
 });
@@ -3658,6 +3886,7 @@ function(aSignal) {
      * @summary Refreshes the receiver's bound data.
      * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
      *     this handler.
+     * @returns {TP.core.ElementNode} The receiver.
      */
 
     this.refresh();
@@ -3667,20 +3896,270 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$refresh',
+function(shouldRender) {
+
+    /**
+     * @method $refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var elem,
+
+        attrVal,
+
+        scopeVals,
+
+        repeatFullExpr,
+        repeatWholeURI,
+        repeatResult,
+
+        bindingInfo,
+
+        valChanged,
+
+        willRender;
+
+    elem = this.getNativeNode();
+
+    //  NB: This check is done in order of precedence of these attributes
+    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrVal = this.getAttribute('bind:io');
+    } else if (TP.elementHasAttribute(elem, 'bind:in', true)) {
+        attrVal = this.getAttribute('bind:in');
+    } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
+        return this.refreshBoundDescendants();
+    } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        scopeVals = this.getBindingScopeValues();
+
+        repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
+        repeatWholeURI = TP.uc(repeatFullExpr);
+        repeatResult = repeatWholeURI.getResource().get('result');
+
+        this.$regenerateRepeat(repeatResult, TP.ac());
+
+        return this.refreshBoundDescendants();
+    } else {
+        //  If this isn't an element around one of those three attributes, then
+        //  just call render() and return
+        this.render();
+        return this;
+    }
+
+    //  If there is no attribute value, then just return
+    if (TP.isEmpty(attrVal)) {
+        return this;
+    }
+
+    scopeVals = this.getBindingScopeValues();
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(attrVal);
+
+    valChanged = false;
+
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var aspectName,
+
+                bindVal,
+
+                dataExprs,
+                i,
+                dataExpr,
+
+                allVals,
+
+                fullURI,
+                fullExpr,
+
+                wholeURI,
+
+                oldVal,
+
+                result,
+
+                transformFunc;
+
+            aspectName = bindEntry.first();
+
+            bindVal = bindEntry.last();
+
+            //  There will be 1...n data expressions here. Iterate over them and
+            //  compute a model reference.
+            dataExprs = bindVal.at('dataExprs');
+            for (i = 0; i < dataExprs.getSize(); i++) {
+                dataExpr = dataExprs.at(i);
+
+                //  If the data expression is a 'whole URI' (without a
+                //  fragment), then it's not scoped no matter whether we have
+                //  scoping values or not.
+                if (TP.isURIString(dataExpr) &&
+                    !TP.regex.URI_FRAGMENT.test(dataExpr)) {
+
+                    dataExpr = TP.trim(dataExpr);
+
+                    //  Grab the primary URI from a URI computed from the value
+                    //  expression and append a '#tibet(.)' on it (which will
+                    //  retrieve the whole value).
+                    fullURI = TP.uc(dataExpr);
+                    fullExpr = fullURI.getPrimaryLocation() + '#tibet(.)';
+
+                    wholeURI = TP.uc(fullExpr);
+                } else if (TP.notEmpty(scopeVals)) {
+                    //  Concatenate the binding value onto the scope values
+                    //  array (thereby creating a new Array) and use it to
+                    //  join all of the values together.
+                    allVals = scopeVals.concat(dataExpr);
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(fullExpr)) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(fullExpr);
+                } else {
+                    //  Scope values is empty - this is (hopefully) a fully
+                    //  qualified binding expression.
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                        this.raise('TP.sig.InvalidURI');
+                        break;
+                    }
+
+                    wholeURI = TP.uc(dataExpr);
+                }
+
+                if (!TP.isURI(wholeURI)) {
+                    this.raise('TP.sig.InvalidURI');
+                    break;
+                }
+
+                oldVal = this.get(aspectName);
+
+                //  If the content is quoted (with, specifically, quote marks at
+                //  either end), then it's a literal value. The result should be
+                //  that content with the quotes stripped off.
+                if (TP.regex.QUOTED_CONTENT.test(dataExpr)) {
+                    result = dataExpr.unquoted();
+                } else {
+                    //  Otherwise, it's a binding expression to a data source.
+                    //  Grab the result from the URI. Then use that value to set
+                    //  our value in the receiver for that particular aspect.
+                    result = wholeURI.getResource().get('result');
+                }
+
+                if (TP.isCallable(
+                            transformFunc = bindVal.at('transformFunc'))) {
+                    result = transformFunc(null, result, this);
+                }
+
+                if (!TP.equal(result, oldVal)) {
+                    this.set(aspectName, result);
+                    valChanged = true;
+                }
+            }
+        }.bind(this));
+
+    //  Note here how we force the value of willRender to shouldRender (no
+    //  matter whether it's true or false) if shouldRender is supplied.
+    if (TP.notValid(shouldRender)) {
+        willRender = valChanged;
+    } else {
+        willRender = shouldRender;
+    }
+
+    if (willRender) {
+        this.render();
+    }
+
+    return valChanged;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('refresh',
-function() {
+function(shouldRender) {
 
     /**
      * @method refresh
-     * @summary Updates the receiver's content by refreshing all bound elements
-     *     in the document. For an HTML document this will refresh content under
-     *     the body, while in an XML document all elements including the
-     *     documentElement are refreshed.
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver and all of the descendants of the receiver that are
+     *     bound.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var retVal;
+
+    retVal = this.$refresh();
+
+    this.refreshBoundDescendants();
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refreshBoundDescendants',
+function(shouldRender) {
+
+    /**
+     * @method refreshBoundDescendants
+     * @summary Updates bound descendants content by refreshing all bound
+     *     aspects in each one.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    //  TODO: Call the receiver's FacetChange handler with a faked signal
-    return TP.todo();
+    var boundDescendants;
+
+    //  Get the bound descendant elements of the receiver. Note how we pass
+    //  'true' here to *just* get elements that are 'shallow'. If we pick up
+    //  'scope' or 'repeat' elements, those will recursively call this method
+    //  for any 'in' or 'io' elements under them.
+    boundDescendants = TP.wrap(this.$getBoundElements(true));
+
+    boundDescendants.forEach(
+        function(aDescendant) {
+
+            //  NB: We call the primitive '$refresh' call here - otherwise,
+            //  we'll end up recursing. Note that, even though boundDescendants
+            //  will contain 'bind:scope' and 'bind:repeat' elements at this
+            //  point, they will be filtered out by this method. Their
+            //  descendants, the real bind:[in|io|out] elements, will be
+            //  refreshed.
+            aDescendant.$refresh(shouldRender);
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3699,9 +4178,7 @@ function(aSignal) {
      *     this handler.
      */
 
-    var event,
-
-        targetElem,
+    var targetElem,
         textNode,
 
         removeEditorAndSetValue,
@@ -3723,13 +4200,8 @@ function(aSignal) {
     //  don't get notified.
     aSignal.stopPropagation();
 
-    //  Compute the target element from the native Event
-    event = aSignal.getPayload().at('event');
-    if (!TP.isEvent(event)) {
-        //  Didn't have a real Event here - bail out
-        return this;
-    }
-    targetElem = TP.eventGetTarget(event);
+    //  Compute the target element from the underlying DOM signal.
+    targetElem = aSignal.getDOMTarget();
 
     //  If the target was a Text node, then we use its parent node.
     if (TP.isTextNode(targetElem)) {
@@ -3797,11 +4269,9 @@ function(aSignal) {
         //  Set the value of the editor to the element's text content.
         editor.value = elemTextContent;
 
-        //  Select the text in the editor, but fork() to allow the GUI to
+        //  Select the text in the editor, but fork to allow the GUI to
         //  refresh, which seems to help out focusing mechanics.
-        (function() {
-            editor.select();
-        }).fork(50);
+        setTimeout(editor.select, TP.sys.cfg('editor.select.delay', 50));
     };
 
     //  Replace the text node with an editor and style it.

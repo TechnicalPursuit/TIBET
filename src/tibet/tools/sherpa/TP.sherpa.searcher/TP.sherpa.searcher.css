@@ -1,5 +1,5 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|tile[contenttype="sherpa:searcher"] {
 
@@ -19,7 +19,7 @@ sherpa|searcher {
 
     margin: 2px;
 
-    font: 13px/1.231 arial, helvetica, clean, sans-serif;
+    font: 13px/1.231 "arial", "helvetica", "clean", sans-serif;
 
     background-color: #eee;
 
@@ -63,12 +63,17 @@ sherpa|searcher > .scroller > ul > li {
 
 sherpa|searcher > .scroller > ul > li[pclass|selected] {
 
-    background: gold;
+    background-color: gold;
+}
+
+sherpa|searcher > .scroller > ul > li[pclass|selected]:hover {
+
+    background-color: gold;
 }
 
 sherpa|searcher > .scroller > ul > li:hover {
 
-    background-color: gold;
+    background-color: rgba(255, 215, 0, 0.5);
 }
 
 sherpa|searcher > .scroller > ul > li:first-child {
@@ -83,7 +88,7 @@ sherpa|searcher > .scroller > ul > li:last-child {
 
 sherpa|searcher .category {
 
-    background-color: gold;
+    background-color: rgba(255, 215, 0, 0.5);
     text-align: center;
 }
 

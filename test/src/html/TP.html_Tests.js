@@ -2142,7 +2142,7 @@ function() {
 
         //  ---
 
-        //  addSelection
+        //  addSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2171,7 +2171,7 @@ function() {
 
         //  ---
 
-        //  removeSelection
+        //  removeSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2227,6 +2227,59 @@ function() {
         tpElem.addSelection(TP.ac(0, 1), 'index');
         tpElem.removeSelection(0, 'index');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  selectAll
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+
+        //  ---
+
+        //  select (and deselectAll)
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  ---
+
+        //  select (with RegExp)
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  deselect (and selectAll)
+
+        //  (property defaults to 'value')
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  deselect (with RegExp)
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
     });
 
     //  ---
@@ -2253,32 +2306,46 @@ function() {
 
         //  (property defaults to 'value')
         tpElem.addSelection('baz');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'value' property
         tpElem.addSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'label' property
         tpElem.addSelection('Dog', 'label');
         test.assert.isTrue(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'id' property
         tpElem.addSelection('input_radio_3', 'id');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'index' property
         tpElem.addSelection(1, 'index');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  ---
+
+        tpElem.addSelection('bar');
 
         //  removeSelection
 
         //  (property defaults to 'value')
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('baz');
@@ -2287,6 +2354,8 @@ function() {
         //  'value' property
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_2', windowContext, false).checked = true;
@@ -2296,7 +2365,9 @@ function() {
         //  'label' property
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('Dog', 'label');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_1', windowContext, false).checked = true;
         tpElem.removeSelection('Dog', 'label');
@@ -2305,7 +2376,9 @@ function() {
         //  'id' property
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('input_radio_3', 'id');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('input_radio_3', 'id');
@@ -2314,12 +2387,29 @@ function() {
         //  'index' property
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection(1, 'index');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection(1, 'index');
         test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
-    });
+
+        //  ---
+
+        //  select
+
+        //  (property defaults to 'value')
+        tpElem.select('bar');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
+
+        tpElem.select('baz');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     //  ---
 
@@ -2359,7 +2449,7 @@ function() {
 
         //  ---
 
-        //  addSelection
+        //  addSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2388,7 +2478,7 @@ function() {
 
         //  ---
 
-        //  removeSelection
+        //  removeSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2444,7 +2534,60 @@ function() {
         tpElem.addSelection(TP.ac(0, 1), 'index');
         tpElem.removeSelection(0, 'index');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
-    });
+
+        //  ---
+
+        //  selectAll
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+
+        //  ---
+
+        //  select (and deselectAll)
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  ---
+
+        //  select (with RegExp)
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  deselect (and selectAll)
+
+        //  (property defaults to 'value')
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  deselect (with RegExp)
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 });
 
 //  ------------------------------------------------------------------------
@@ -2520,7 +2663,7 @@ function() {
     //  ---
 
     this.it('data binding to complex object values', function(test, options) {
-
+        //  empty
     }).todo();
 
     //  ---
@@ -2562,7 +2705,7 @@ function() {
     //  ---
 
     this.it('data binding "value" to path complex values', function(test, options) {
-
+        //  empty
     }).todo();
 });
 

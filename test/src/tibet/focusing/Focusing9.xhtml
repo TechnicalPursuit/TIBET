@@ -14,12 +14,13 @@
     <![CDATA[
     @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-    *[tibet|group~="fooGroup"]
-    {
+    *[tibet|group~="fooGroup"] {
+
         border: solid 1px black;
     }
-    *[tibet|group~="gooGroup"]
-    {
+
+    *[tibet|group~="gooGroup"] {
+
         border: solid 1px blue;
     }
     ]]>
@@ -38,13 +39,13 @@
     <br/>
 
     <span id="testGroup1">
-        Field #1: <input type="text" id="field_1" hidefocus="true"/>
+        Field #1: <input type="text" id="field_1" hidefocus="true" tabindex="0"/>
         <br/>
-        Field #2: <input type="text" id="field_2" hidefocus="true"/>
+        Field #2: <input type="text" id="field_2" hidefocus="true" tabindex="0"/>
         <br/>
-        Field #3: <input type="text" id="field_3" hidefocus="true"/>
+        Field #3: <input type="text" id="field_3" hidefocus="true" tabindex="0"/>
         <br/>
-        Field #4: <input type="text" id="field_4" hidefocus="true"/>
+        Field #4: <input type="text" id="field_4" hidefocus="true" tabindex="0"/>
     </span>
 
     <br/>
@@ -56,9 +57,9 @@
     <span id="testGroup2">
         Field #5: <input type="text" id="field_5" tabindex="-1"/>
         <br/>
-        Field #6: <input type="text" id="field_6" hidefocus="true"/>
+        Field #6: <input type="text" id="field_6" hidefocus="true" tabindex="0"/>
         <br/>
-        Field #7: <input type="text" id="field_7" hidefocus="true"/>
+        Field #7: <input type="text" id="field_7" hidefocus="true" tabindex="0"/>
         <br/>
         Field #8: <input type="text" id="field_8" tabindex="-1"/>
     </span>
@@ -72,11 +73,11 @@
     <span id="testGroup3">
         Field #9: <input type="text" id="field_9" tabindex="0"/>
         <br/>
-        Field #10: <input type="text" id="field_10" hidefocus="true"/>
+        Field #10: <input type="text" id="field_10" hidefocus="true" tabindex="0"/>
         <br/>
         Field #11: <input type="text" id="field_11" tabindex="-1"/>
         <br/>
-        Field #12: <input type="text" id="field_12" hidefocus="true"/>
+        Field #12: <input type="text" id="field_12" hidefocus="true" tabindex="0"/>
         <br/>
         Field #13: <input type="text" id="field_13" tabindex="0"/>
         <br/>
@@ -92,13 +93,13 @@
     <span id="testGroup4">
         Field #15: <input type="text" id="field_15" tabindex="0"/>
         <br/>
-        Field #16: <input type="text" id="field_16" hidefocus="true"/>
+        Field #16: <input type="text" id="field_16" hidefocus="true" tabindex="0"/>
         <br/>
         Field #17: <input type="text" id="field_17" tabindex="2"/>
         <br/>
         Field #18: <input type="text" id="field_18" tabindex="-1"/>
         <br/>
-        Field #19: <input type="text" id="field_19" hidefocus="true"/>
+        Field #19: <input type="text" id="field_19" hidefocus="true" tabindex="0"/>
         <br/>
         Field #20: <input type="text" id="field_20" tabindex="0"/>
         <br/>

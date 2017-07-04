@@ -710,8 +710,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 //  ------------------------------------------------------------------------
 
 TP.xmpp.URL.Inst.defineMethod('signalObservers',
-function(anOrigin, aSignal, aPayload, aPolicy, aType,
-    isCancelable, isBubbling) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable,
+         isBubbling) {
 
     /**
      * @method signalObservers

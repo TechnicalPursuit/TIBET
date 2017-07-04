@@ -51,9 +51,9 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('systemConsole', false);
 //  key is held down for a particular amount of time
 TP.sherpa.ConsoleService.Inst.defineAttribute('markingTimer');
 
-//  the ID of the last 'non cmd output cell' - usually a logging cell that we
+//  the ID of the last 'non cmd output item' - usually a logging item that we
 //  just want to append to.
-TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdCellID');
+TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdItemID');
 
 //  a state machine handling keyboard states
 TP.sherpa.ConsoleService.Inst.defineAttribute('keyboardStateMachine');
@@ -161,14 +161,12 @@ function(aResourceID, aRequest) {
     this.get('$consoleGUI').updateStatus();
 
     //  put our project identifier in place in the notifier bar
-    this.notify(TP.sc('Welcome to project: ', TP.sys.cfg('project.name')));
+    this.notify(TP.sc(
+            'Welcome to Sherpa&#8482; Shift-Right-Click in page to begin editing.'
+        ));
 
     //  Process whatever initial request(s) might be sitting in the queue
     this[TP.composeHandlerName('NextRequest')]();
-
-    //  Not sure why we need this... probably some coordination in how observes
-    //  get set up.
-    this.shouldSignalChange(true);
 
     //  get started by scrolling to the end (causes the scroller to
     //  resize/reposition)
@@ -188,7 +186,7 @@ function(aResourceID, aRequest) {
     //  if we're configured to auto-login, try to do that now.
     if (TP.sys.cfg('sherpa.auto_login') &&
         TP.isValid(user = TP.sys.getEffectiveUser()) &&
-        TP.notEmpty(userName = user.get('vcard').get('shortname'))) {
+        TP.notEmpty(userName = user.getUsername())) {
 
         TP.sig.UserOutputRequest.construct(
             TP.hc('output', 'Sherpa auto-login configured to log in current' +
@@ -199,6 +197,8 @@ function(aResourceID, aRequest) {
 
         model.login();
     }
+
+    this.observe(TP.ANY, 'TP.sig.ConsoleInput');
 
     //  Configure the keyboard state machine
     this.configureKeyboardStateMachine();
@@ -266,7 +266,7 @@ function() {
             normalResponder.handle(triggerSignal);
         }
 
-        aSignal.shouldStop(true);
+        aSignal.stopPropagation();
 
         return;
     });
@@ -277,14 +277,18 @@ function() {
     //  ---  autocomplete
 
     keyboardSM.defineState(
-                'normal',
-                'autocompletion',
-                {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_A_Up')});
+        'normal',
+        'autocompletion',
+        {
+            trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_A_Up')
+        });
 
     keyboardSM.defineState(
-                'autocompletion',
-                'normal',
-                {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
+        'autocompletion',
+        'normal',
+        {
+            trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')
+        });
 
     autocompleteResponder = TP.sherpa.AutoCompletionKeyResponder.construct();
     autocompleteResponder.set('$consoleService', this);
@@ -316,10 +320,10 @@ function() {
         model.attachSTDIO(this);
     }
 
-    if (TP.isWindow(self.$$TIBET) &&
-        this.get('$consoleGUI').getNativeWindow() !== self.$$TIBET) {
+    if (TP.isWindow(TP.global.$$TIBET) &&
+        this.get('$consoleGUI').getNativeWindow() !== TP.global.$$TIBET) {
 
-        TP.tpwin(self.$$TIBET).attachSTDIO(this);
+        TP.tpwin(TP.global.$$TIBET).attachSTDIO(this);
     }
 
     return this;
@@ -374,8 +378,7 @@ function(aFlag) {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaConsole'},
+TP.sherpa.ConsoleService.Inst.defineHandler('HiddenChange',
 function(aSignal) {
 
     /**
@@ -399,6 +402,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaConsole'
 });
 
 //  ------------------------------------------------------------------------
@@ -413,8 +418,11 @@ function(aSignal) {
      *     this method.
      */
 
-    //  Set the shell '$HALO' variable
-    this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
+    //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables.
+    this.get('model').setVariable('HALO',
+                                    aSignal.at('haloTarget'));
+    this.get('model').setVariable('HALO_TYPE',
+                                    aSignal.at('haloTarget').getType());
 
     this.get('$consoleGUI').focusInput();
 
@@ -433,8 +441,10 @@ function(aSignal) {
      *     this method.
      */
 
-    //  Set the shell '$HALO' variable to null
+    //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables to
+    //  null
     this.get('model').setVariable('HALO', null);
+    this.get('model').setVariable('HALO_TYPE', null);
 
     return this;
 });
@@ -536,7 +546,7 @@ function(aSignal) {
 
     //  If the event happened in our UI canvas, then update with real data from
     //  the signal, otherwise update with 'null' to clear the info.
-    if (aSignal.getWindow() === TP.sys.getUICanvas(true)) {
+    if (aSignal.getWindow() === TP.sys.getUICanvas()) {
         this.get('$consoleGUI').updateStatus(aSignal, 'mouseInfo');
     } else {
         this.get('$consoleGUI').updateStatus(null, 'mouseInfo');
@@ -566,19 +576,20 @@ function(aRequest) {
 
     //  operate on the request provided, unless we're being asked to default
     //  to the current input request
-    if (TP.notValid(req =
-            TP.ifInvalid(aRequest, this.get('lastInputRequest')))) {
-
-        return;
+    req = aRequest;
+    if (TP.notValid(req)) {
+        req = this.get('lastInputRequest');
+        if (TP.notValid(req)) {
+            return;
+        }
     }
 
     //  clear our input wait flag so any new input request can be processed
     this.isAwaitingInput(false);
 
-    //  hide the input cell if the request was our current input request
+    //  reset the current input request if the request was identical to it.
     if (this.get('lastInputRequest') === req) {
         this.set('lastInputRequest', null);
-        // this.hideInputCell();
     } else {
         this.get('requestQueue').remove(req);
     }
@@ -842,7 +853,23 @@ function(aSignal) {
             aSignal.atPut('messageType', 'prompt');
         }
 
-        this.stdin(aSignal.at('query'), aSignal.at('default'), aSignal);
+        TP.prompt(aSignal.at('query'), aSignal.at('default')).then(
+            function(retVal) {
+
+                //  If the value came back empty, then cancel the request. This
+                //  is important to close the loop so that we don't have an open
+                //  request hanging around.
+                if (TP.isEmpty(retVal)) {
+                    this.cancelUserInputRequest();
+
+                    return;
+                }
+
+                //  Otherwise, send the raw text on to the currently waiting
+                //  request and submit that to the shell.
+                this.submitRawInput(retVal);
+
+            }.bind(this));
     }
 
     return;
@@ -930,11 +957,40 @@ function(aRequest) {
 
     if (TP.notEmpty(def = aRequest.at('default'))) {
         consoleGUI.setInputContent(def);
+
+        //  If the request specifies to select the default text, then do it.
+        if (aRequest.at('select')) {
+            consoleGUI.get('consoleInput').get('$editorObj').execCommand(
+                                                            'selectAll');
+        }
     }
 
     if (TP.isValid(hide = aRequest.at('hideInput'))) {
         this.shouldConcealInput(hide);
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('submitRawInput',
+function(anInput) {
+
+    /**
+     * @method submitRawInput
+     * @summary Submits the supplied raw input to the shell for execution.
+     * @param {String} anInput The text to submit to the shell as input
+     */
+
+    //  Fire off the input content to the shell. Note here how we configure the
+    //  request to:
+    //      1. Generate a history entry
+    //      2. Not be silent with it's output
+    //      3. Echo the input as output
+    this.sendShellRequest(
+        anInput,
+        TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
 
     return;
 });
@@ -1075,17 +1131,15 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler('RawInput',
-function(anEvent) {
+TP.sherpa.ConsoleService.Inst.defineHandler('ConsoleInput',
+function(aSignal) {
 
     /**
-     * @method handleRawInput
+     * @method handleConsoleInput
      * @summary Handles raw input and converts it into an appropriate input
-     *     response. Some console input is in response to some input request so
-     *     we try to bind the result to the request where possible. If no
-     *     request appears to be current then we assume a new shell request is
-     *     being made.
-     * @param {Event} anEvent A JS/DOM Event object.
+     *     response.
+     * @param {TP.sig.ConsoleInput} aSignal The signal which triggered this
+     *     method.
      */
 
     var consoleGUI,
@@ -1101,12 +1155,14 @@ function(anEvent) {
         return;
     }
 
-    //  always clear the cell to provide visual feedback that we've accepted
-    //  the input and are working on it
+    //  always clear the input cell to provide visual feedback that we've
+    //  accepted the input and are working on it
     consoleGUI.clearInput();
 
-    //  Fire off the input content to the shell
-    this.sendShellRequest(input);
+    //  Reset the number of 'new output items' in the console GUI to 0
+    consoleGUI.set('newOutputCount', 0);
+
+    this.submitRawInput(input);
 
     //  Make sure that the console GUI clears its eval mark
     consoleGUI.teardownEvalMark();
@@ -1119,36 +1175,52 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('sendConsoleRequest',
-function(rawInput) {
+function(rawInput, options) {
 
     /**
      * @method sendConsoleRequest
      * @summary Sends a 'console request', which may be input to the shell or
      *     just command text that only the console itself processes.
      * @param {String} rawInput A String of raw input.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @param {Request|TP.core.Hash} [options] Options for the request.
+     * @returns {TP.sig.ShellRequest|TP.sig.ConsoleRequest} The newly created
+     *     request.
      */
 
     var consoleGUI,
-
         text,
+        params,
         req;
 
     if (TP.notEmpty(rawInput)) {
 
         consoleGUI = this.get('$consoleGUI');
 
+        //  Strip off any enclosing quotes (either single or double) wrapping
+        //  the raw input.
         text = rawInput.stripEnclosingQuotes();
 
+        //  If the input is a shell command, then execute it as one.
         if (this.isShellCommand(text)) {
-            this.sendShellRequest(text);
+            req = this.sendShellRequest(text, options);
         } else {
-            text = text.slice(1);
 
-            req = TP.sig.ConsoleRequest.construct(
-                                TP.hc('cmd', text,
-                                        'cmdHistory', false,
-                                        'cmdSilent', true));
+            //  Otherwise, just execute it as a command to the console.
+            params = TP.hc(options);
+
+            text = text.slice(1);
+            params.atPut('cmd', text);
+
+            //  Configure the request to:
+            //      1. Not generate a history entry
+            //      2. Be silent
+            //      3. Echo the command to the output
+            params.atPutIfAbsent('cmdHistory', false);
+            params.atPutIfAbsent('cmdSilent', true);
+            params.atPutIfAbsent('cmdEcho', true);
+
+            req = TP.sig.ConsoleRequest.construct(params);
+
             req.fire(this.get('model'));
 
             consoleGUI.setPrompt(this.get('model').getPrompt());
@@ -1157,24 +1229,26 @@ function(rawInput) {
         consoleGUI.focusInput();
     }
 
-    return this;
+    return req;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('sendShellRequest',
-function(rawInput) {
+function(rawInput, options) {
 
     /**
      * @method sendShellRequest
      * @summary Sends a 'shell request', which, unlike a ConsoleRequest, *must*
      *     be input to the shell.
      * @param {String} rawInput A String of raw input.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @param {Request|TP.core.Hash} [options] Options for the request.
+     * @returns {TP.sig.ShellRequest} The newly created request.
      */
 
     var res,
         req,
+        params,
         model;
 
     if (TP.notEmpty(rawInput)) {
@@ -1191,19 +1265,24 @@ function(rawInput) {
                 return;
             }
 
-            req = TP.sig.ShellRequest.construct(
-                TP.hc('async', true,
-                        'cmd', rawInput,        //  The source text
-                        'cmdAllowSubs', true,
-                        'cmdEcho', true,        //  Send output to attached GUI
-                        'cmdExecute', true,
-                        'cmdHistory', true,     //  Generate history entry
-                        'cmdBuildGUI', true,    //  Attached GUI should build UI
-                        'cmdLogin', true,
-                        'cmdPhases', 'nocache',
-                        'cmdSilent', false,     //  Allow logging output
-                        'cmdEcho', true
-                ));
+            params = TP.hc(options);
+
+            params.atPut('cmd', rawInput);
+            params.atPutIfAbsent('async', true);
+
+            //  Control these for interactive use. Normally off for "UI
+            //  triggered" activity
+            params.atPutIfAbsent('cmdHistory', false);
+            params.atPutIfAbsent('cmdSilent', false);
+            params.atPutIfAbsent('cmdEcho', true);
+
+            params.atPutIfAbsent('cmdAllowSubs', true);
+            params.atPutIfAbsent('cmdExecute', true);
+            params.atPutIfAbsent('cmdBuildGUI', true);
+            params.atPutIfAbsent('cmdLogin', true);
+            params.atPutIfAbsent('cmdPhases', 'nocache');
+
+            req = TP.sig.ShellRequest.construct(params);
 
             req.set('requestor', this);
             TP.handle(model, req);
@@ -1219,7 +1298,7 @@ function(rawInput) {
         }
     }
 
-    return this;
+    return req;
 });
 
 //  ------------------------------------------------------------------------
@@ -1358,18 +1437,24 @@ function(aWidth) {
     /**
      * @method setWidth
      * @summary Sets the maximum width of unbroken strings in the console. Note
-     *     that this only affects newly constructed cells, older cells are not
+     *     that this only affects newly constructed items; older items are not
      *     reflowed.
      * @param {Number} aWidth The character count to use.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    var model;
+    var model,
+        width;
+
+    width = aWidth;
+    if (TP.notValid(width)) {
+        width = this.$get('width');
+    }
 
     if (TP.isValid(model = this.getModel())) {
-        model.setVariable('WIDTH', TP.ifInvalid(aWidth, this.$get('width')));
+        model.setVariable('WIDTH', width);
     } else {
-        this.$set('width');
+        this.$set('width', width);
     }
 
     return this;
@@ -1394,7 +1479,37 @@ function(anObject, aRequest) {
      *     values for messageType, cmdAsIs, etc.
      */
 
-    TP.byId('SherpaNotifier', TP.win('UIROOT')).setContent(anObject, aRequest);
+    var notifier,
+        notifierContent,
+
+        triggerTPDoc;
+
+    notifier = TP.byId('SherpaNotifier', TP.win('UIROOT'));
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-duration',
+                TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');
+    notifier.setStyleProperty(
+                '--sherpa-notifier-fadeout-delay',
+                TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000) + 'ms');
+
+    notifierContent = TP.byId('SherpaNotifierContent', TP.win('UIROOT'));
+    if (TP.notValid(notifierContent)) {
+        return;
+    }
+
+    notifierContent.setContent(
+        TP.xhtmlnode('<div>' + TP.str(anObject) + '</div>'),
+        aRequest);
+
+    triggerTPDoc = TP.tpdoc(TP.win('UIROOT'));
+
+    this.signal(
+        'OpenNotifier',
+        TP.hc(
+            'overlayID', 'SherpaNotifier',
+            'contentID', 'SherpaNotifierContent',
+            'noPosition', true,
+            'triggerTPDocument', triggerTPDoc));
 
     return;
 });
@@ -1436,8 +1551,6 @@ function(anError, aRequest) {
             this.writeInputContent(request);
         }
 
-        request.atPut('reuseCell', false);
-
         //  Write output content
         this.writeOutputContent(err, request);
 
@@ -1459,7 +1572,7 @@ function(anError, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('stdin',
-function(anObject, aDefault, aRequest) {
+function(aQuery, aDefault, aRequest) {
 
     /**
      * @method stdin
@@ -1478,8 +1591,14 @@ function(anObject, aDefault, aRequest) {
 
     consoleGUI = this.get('$consoleGUI');
 
-    consoleGUI.setPrompt(anObject);
+    consoleGUI.setPrompt(aQuery);
     consoleGUI.setInputContent(aDefault);
+
+    //  If the request specifies to select the default text, then do it.
+    if (aRequest.at('select')) {
+        consoleGUI.get('consoleInput').get('$editorObj').execCommand(
+                                                            'selectAll');
+    }
 
     return;
 });
@@ -1509,7 +1628,7 @@ function(anObject, aRequest) {
         append;
 
     //  We should see multiple output calls, at least one of which is the
-    //  cmdConstruct notifier which tells us to build our output cell.
+    //  cmdConstruct notifier which tells us to build our output item.
     if (aRequest && aRequest.at('cmdConstruct') === true) {
         return;
     }
@@ -1588,7 +1707,7 @@ function(aRequest) {
      * @summary Writes input content to the console GUI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
+     * @returns {TP.tsh.ConsoleService} The receiver.
      */
 
     var request,
@@ -1600,7 +1719,7 @@ function(aRequest) {
 
         inputData,
 
-        cellID;
+        itemID;
 
     request = TP.request(aRequest);
 
@@ -1650,16 +1769,18 @@ function(aRequest) {
                         'cssClass', cssClass,
                         'request', request);
 
-    //  Get the unique ID used for the overall output cell (containing both the
+    //  Get the unique ID used for the overall output item (containing both the
     //  input readout and the output from the command) for the supplied request.
-    cellID = aRequest.at('cmdID');
-    if (TP.isEmpty(cellID)) {
+    itemID = aRequest.at('cmdID');
+    if (TP.isEmpty(itemID)) {
         //  Fail - shouldn't get here
         //  empty
     } else {
-        //  Replace the '$' with a '_' to avoid X(HT)ML naming issues.
-        cellID = cellID.replace(/[$.]+/g, '_');
-        this.get('$consoleGUI').createOutputEntry(cellID, inputData);
+        //  Replace illegal ID characters with '_' to avoid X(HT)ML naming
+        //  issues.
+        TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+        itemID = itemID.replace(TP.regex.INVALID_ID_CHARS, '_');
+        this.get('$consoleGUI').createOutputItem(itemID, inputData);
     }
 
     return this;
@@ -1694,7 +1815,7 @@ function(anObject, aRequest) {
         cssClass,
         outputData,
 
-        cellID,
+        itemID,
 
         consoleGUI;
 
@@ -1760,6 +1881,7 @@ function(anObject, aRequest) {
 
                 //  and, since we're not feeding it through a formatter (who is
                 //  normally responsible for this), make sure its escaped
+
                 //  (ss) We really shouldn't be doing the line below...the asIs
                 //  flag is here to say "what's coming through should not be
                 //  altered" so we shouldn't alter it.
@@ -1775,6 +1897,8 @@ function(anObject, aRequest) {
                 cssClass = 'tap-pass';
             } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
                 cssClass = 'tap-fail';
+            } else if (/^Error /.test(data)) {
+                cssClass = 'tap-error';
             } else if (/^#/.test(data)) {
                 cssClass = 'tap-comment';
             } else {
@@ -1801,20 +1925,26 @@ function(anObject, aRequest) {
 
     consoleGUI = this.get('$consoleGUI');
 
-    //  If the request has no cmdID for us to use as a cell ID, then this was
+    //  If the request has no cmdID for us to use as a item ID, then this was
     //  probably a call to stdout() that wasn't a direct result of a command
     //  being issued.
-    if (TP.isEmpty(cellID = aRequest.at('cmdID')) ||
-        TP.isFalse(aRequest.at('reuseCell'))) {
+    if (TP.isEmpty(itemID = aRequest.at('cmdID')) ||
+        TP.isFalse(aRequest.at('reuseItem'))) {
 
-        //  See if there's a current 'non cmd' cell that we're using to write
+        //  See if there's a current 'non cmd' item that we're using to write
         //  this kind of output. If there isn't one, then create one (but don't
         //  really hand it any data to write out - we'll take care of that
         //  below).
-        if (TP.isEmpty(cellID = this.get('lastNonCmdCellID'))) {
-            cellID = 'log' + TP.genID().replace(/[$.]+/g, '_');
-            consoleGUI.createOutputEntry(cellID, TP.hc());
-            this.set('lastNonCmdCellID', cellID);
+        if (TP.isEmpty(itemID = this.get('lastNonCmdItemID')) ||
+            !consoleGUI.shouldCoalesceLogMessages()) {
+
+            //  Replace illegal ID characters with '_' to avoid X(HT)ML naming
+            //  issues.
+            TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+            itemID = 'log' + TP.genID().replace(TP.regex.INVALID_ID_CHARS, '_');
+
+            consoleGUI.createOutputItem(itemID, TP.hc());
+            this.set('lastNonCmdItemID', itemID);
         }
 
         //  Stub in an empty String  for the stats and the word 'LOG' for the
@@ -1823,8 +1953,12 @@ function(anObject, aRequest) {
         outputData.atPut('typeinfo', 'LOG');
         outputData.atPut('messageLevel', request.at('messageLevel'));
     } else {
-        cellID = cellID.replace(/[$.]+/g, '_');
-        this.set('lastNonCmdCellID', null);
+        //  Replace illegal ID characters with '_' to avoid X(HT)ML naming
+        //  issues.
+        TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+        itemID = itemID.replace(TP.regex.INVALID_ID_CHARS, '_');
+
+        this.set('lastNonCmdItemID', null);
         if (isLoggingMessage) {
             //  Stub in an empty String  for the stats and the word 'LOG' for
             //  the result data type information.
@@ -1834,8 +1968,8 @@ function(anObject, aRequest) {
         }
     }
 
-    //  Update the output entry cell with the output data.
-    consoleGUI.updateOutputEntry(cellID, outputData);
+    //  Update the output entry item with the output data.
+    consoleGUI.updateOutputItem(itemID, outputData);
 
     return this;
 });
@@ -2012,7 +2146,7 @@ function(aSignal) {
     switch (sigName) {
 
         case 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up':
-            handlerName = TP.composeHandlerName('DOMShiftUp__DOMShiftUp');
+            handlerName = TP.composeHandlerName('DOM_Shift_Up__DOM_Shift_Up');
             break;
 
         default:
@@ -2030,13 +2164,37 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Enter_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.composeHandlerName('RawInput')](aSignal);
+
+    /**
+     * @method handleDOM_Shift_Enter_Up
+     * @summary Executes the current console input.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
+    this.get('$consoleService')[TP.composeHandlerName('ConsoleInput')](aSignal);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOMShiftUp__DOMShiftUp',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Up__DOM_Shift_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Up__DOM_Shift_Up
+     * @summary Focuses the input cell.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
@@ -2055,10 +2213,23 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Down_Up',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Ctrl_Down_Up
+     * @summary 'Decreases' the setting of the output mode. This direction moves
+     *     from 'all' to 'one' to 'growl'.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
     consoleGUI.decreaseOutputDisplayMode();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2066,10 +2237,23 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Up_Up',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Ctrl_Up_Up
+     * @summary 'Increases' the setting of the output mode. This direction moves
+     *     from 'growl' to 'one' to 'all'.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
     consoleGUI.increaseOutputDisplayMode();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2077,18 +2261,28 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Down_Down',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Down_Down
+     * @summary Scrolls the last output item down by a line.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
     }
 
-    aSignal.preventDefault();
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2096,18 +2290,28 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Up_Down
+     * @summary Scrolls the last output item up by a line.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
     }
 
-    aSignal.preventDefault();
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2115,18 +2319,28 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_PageDown_Down
+     * @summary Scrolls the last output item down by a page.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
     }
 
-    aSignal.preventDefault();
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2134,40 +2348,91 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_PageUp_Down
+     * @summary Scrolls the last output item up by a page.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
     }
 
-    aSignal.preventDefault();
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Down_Up
+     * @summary Places the content of the 'next' history entry, if there is one,
+     *     into the input cell.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('HistoryNext')](aSignal);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Up_Up
+     * @summary Places the content of the 'previous' history entry, if there is
+     *     one, into the input cell.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('HistoryPrev')](aSignal);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_U_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Ctrl_U_Up
+     * @summary Clears the input cell of any content.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('ClearInput')](
             aSignal.getEvent());
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2175,159 +2440,41 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_K_Up',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Ctrl_K_Up
+     * @summary Clears the console output of any content
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     //  Clear the output
     this.get('$consoleGUI').get('consoleOutput').clear();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Esc_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Esc_Up
+     * @summary Cancels whatever multi-step console command that is in process.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('Cancel')](
             aSignal.getEvent());
-});
-
-//  ========================================================================
-//  TP.sherpa.EvalMarkingKeyResponder
-//  ========================================================================
-
-TP.sherpa.NormalKeyResponder.defineSubtype('EvalMarkingKeyResponder');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('init',
-function() {
-
-    /**
-     * @method init
-     * @summary Constructor for new instances.
-     * @returns {TP.sherpa.EvalMarkingKeyResponder} A new instance.
-     */
-
-    var delayedShiftTimer,
-        currentKeyboard;
-
-    //  Define a faux type for the keyboard event that we will use for our 'long
-    //  Shift down'
-    TP.sig.DOMKeyDown.defineSubtype('LongShiftDown');
-
-    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
-
-    //  Define a behavior for our faux type that will trigger it when the user
-    //  has pressed the Shift key down for a certain amount of time (defaulting
-    //  to 2000ms).
-    /* eslint-disable no-extra-parens,indent */
-    (function(aSignal) {
-            delayedShiftTimer =
-                setTimeout(function() {
-                                TP.signal(currentKeyboard,
-                                            'TP.sig.LongShiftDown',
-                                            aSignal.getPayload());
-                            }, TP.sys.cfg('sherpa.eval_mark_time', 2000));
-    }).observe(currentKeyboard, 'TP.sig.DOM_Shift_Down');
-
-    (function(aSignal) {
-        clearTimeout(delayedShiftTimer);
-    }).observe(currentKeyboard, 'TP.sig.DOMKeyUp');
-    /* eslint-enable no-extra-parens,indent */
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('didEnter',
-function(aSignal) {
-
-    /**
-     * @method didEnter
-     */
-
-    var consoleGUI;
-
-    consoleGUI = this.get('$consoleGUI');
-
-    consoleGUI.transitionToSeparateEvalMarker();
-    consoleGUI.togglePromptIndicator('eval', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('didExit',
-function(aSignal) {
-
-    /**
-     * @method didExit
-     */
-
-    var consoleGUI;
-
-    consoleGUI = this.get('$consoleGUI');
-    consoleGUI.togglePromptIndicator('eval', false);
-
-    consoleGUI.teardownEvalMark();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Right_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Left_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Down_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.HEAD);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Up_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.HEAD);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Right_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.HEAD);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Left_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.HEAD);
 });
 
 //  ========================================================================
@@ -2495,7 +2642,7 @@ function(aSignal) {
 
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.togglePromptIndicator('autocomplete', true);
+    consoleGUI.toggleIndicatorVisibility('autocomplete', true);
 
     return this;
 });
@@ -2535,7 +2682,7 @@ function(aSignal) {
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.togglePromptIndicator('autocomplete', false);
+    consoleGUI.toggleIndicatorVisibility('autocomplete', false);
 
     return this;
 });
@@ -2634,8 +2781,14 @@ function(cm, options) {
                     cursor = editorObj.getCursor();
 
                     range = {
-                        anchor: {line: cursor.line, ch: cursor.ch},
-                        head: {line: cursor.line, ch: cursor.ch}
+                        anchor: {
+                            line: cursor.line,
+                            ch: cursor.ch
+                        },
+                        head: {
+                            line: cursor.line,
+                            ch: cursor.ch
+                        }
                     };
 
                     marker = consoleGUI.generateCompletionMarkAt(
@@ -2938,6 +3091,9 @@ function(editor, options) {
                             TP.sort.COMPARE(
                                 completionB.score,
                                 completionA.score) ||
+                            TP.sort.COMPARE(
+                                completionA.text.length,
+                                completionB.text.length) ||
                             TP.sort.COMPARE(
                                 completionA.text,
                                 completionB.text);

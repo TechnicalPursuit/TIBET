@@ -104,7 +104,8 @@ function(aRequest) {
                     var resp,
                         schemaObj;
 
-                    resp = TP.uc(aSchemaURL).getResource(TP.hc('async', false));
+                    resp = TP.uc(aSchemaURL).getResource(
+                                TP.hc('async', false, 'resultType', TP.WRAP));
 
                     if (TP.isValid(schemaObj = resp.get('result'))) {
                         if (TP.isKindOf(schemaObj, TP.core.XMLDocumentNode)) {
@@ -269,33 +270,19 @@ function(aRequest) {
 
                     //  ---
 
-                    //  'value'
+                    //  'value' is treated specially by the 'defineAttribute'
+                    //  call below.
                     if (TP.notEmpty(val = aTPElem.getAttribute('value'))) {
-                        descriptor.value = computeFacetSetting(val);
+                        val = computeFacetSetting(val);
                     }
 
                     //  ---
 
                     //  Define the attribute on the type, using the descriptor
                     //  that we just built up.
-                    type.Inst.defineAttribute(name, descriptor);
+                    type.Inst.defineAttribute(name, val, descriptor);
                 });
     }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.content.Type.defineMethod('tagDetachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagDetachDOM
-     * @summary Tears down runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
 
     return;
 });

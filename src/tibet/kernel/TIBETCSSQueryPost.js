@@ -6,7 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
-//	========================================================================
+//  ========================================================================
 
 TP.definePrimitive('elementMatchesCSS',
 function(anElement, aSelector) {
@@ -38,7 +38,7 @@ function(anElement, aSelector) {
 
     //  If the result element was a 'TIBET generated' element (i.e.
     //  generated content), then we ignore it - even if it matches.
-    if (TP.isValid(anElement.tibetGenerated)) {
+    if (TP.isValid(anElement[TP.GENERATED])) {
         return false;
     }
 
@@ -55,6 +55,9 @@ function(anElement, aSelector) {
         anElement.msMatchesSelector ||
         anElement.matches;
 
+    //  If 'matchesSelector' is available and the selector doesn't have a pipe
+    //  ('|') symbol (i.e. it's not a namespaced query), then use the native
+    //  call.
     if (TP.isCallable(matchesSelector) && !TP.regex.HAS_PIPE.test(aSelector)) {
         return matchesSelector.call(anElement, aSelector);
     }
@@ -69,10 +72,9 @@ function(anElement, aSelector) {
         //  but since Sizzle functions are just aliased over to jQuery
         //  functions, we can use the original Sizzle function here).
         TP.w3.Xmlns.get('prefixes').perform(
-                    function(item) {
-
-                        TP.extern.jQuery.xmlns[item.first()] = item.last();
-                    });
+            function(item) {
+                TP.extern.jQuery.xmlns[item.first()] = item.last();
+            });
 
         TP.$$installedCSSNSCount = TP.w3.Xmlns.get('prefixes').getSize();
     }
@@ -88,35 +90,154 @@ function(anElement, aSelector) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeAncestorMatchesCSS',
-function(aNode, aSelector) {
+TP.definePrimitive('nodeAncestorMatchingCSS',
+function(aNode, aSelector, stopAncestor) {
 
     /**
-     * @method nodeAncestorMatchesCSS
+     * @method nodeAncestorMatchingCSS
      * @summary Returns the first ancestor of aNode for which aSelector matches.
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} aSelector The selector to match.
+     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
+     *     this would be identical to the document node of the document that
+     *     aNode is contained in.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
+     * @returns {?Element} The ancestor element that matches the CSS.
      */
 
-    var ancestor;
+    var elem,
+
+        matchesSelector,
+
+        closest;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    ancestor = aNode.parentNode;
-    while (TP.isElement(ancestor)) {
-
-        if (TP.elementMatchesCSS(ancestor, aSelector)) {
-            return true;
+    if (!TP.isElement(aNode)) {
+        if (TP.isAttributeNode(aNode)) {
+            elem = aNode.ownerElement;
+        } else {
+            elem = aNode.parentNode;
         }
+    } else {
+        elem = aNode.parentNode;
 
-        ancestor = ancestor.parentNode;
+        //  If the parent node was either null or a Document, then return null -
+        //  there is no ancestor matching.
+        if (!TP.isElement(elem)) {
+            return null;
+        }
     }
 
-    return false;
+    if (TP.isEmpty(aSelector)) {
+        return TP.raise(this, 'TP.sig.InvalidString',
+                        'Invalid or empty selector');
+    }
+
+    //  If the result element was a 'TIBET generated' element (i.e.
+    //  generated content), then we ignore it - even if it matches.
+    if (TP.isValid(elem[TP.GENERATED])) {
+        return null;
+    }
+
+    //  It doesn't really matter what platform we're running on - we filter
+    //  all 'browser-specific' selectors.
+    if (TP.isTrue(TP.regex.CSS_NATIVE_CUSTOM.test(aSelector))) {
+        return null;
+    }
+
+    //  If 'closest' is available and the selector doesn't have a pipe ('|')
+    //  symbol (i.e. it's not a namespaced query), and a 'stop ancestor' wasn't
+    //  supplied, then use the native call.
+    if (TP.isCallable(elem.closest) &&
+        !TP.regex.HAS_PIPE.test(aSelector) &&
+        !TP.isElement(stopAncestor)) {
+        return elem.closest(aSelector);
+    }
+
+    //  If the native version is available, use that. It may be a
+    //  vendor-prefixed version or the finally-settled-upon name of 'matches'.
+    matchesSelector = elem.mozMatchesSelector ||
+        elem.webkitMatchesSelector ||
+        elem.msMatchesSelector ||
+        elem.matches;
+
+    if (TP.isCallable(matchesSelector) && !TP.regex.HAS_PIPE.test(aSelector)) {
+
+        closest = function(startElem, selector) {
+
+            var element;
+
+            element = startElem;
+
+            while (element && element.nodeType === Node.ELEMENT_NODE) {
+                if (matchesSelector.call(element, selector)) {
+                    return element;
+                }
+
+                element = element.parentNode;
+
+                if (TP.isElement(stopAncestor) &&
+                    element === stopAncestor) {
+                    break;
+                }
+            }
+
+            return null;
+        };
+
+        return closest(elem, aSelector);
+    }
+
+    //  Cache the number of namespaces we've installed so that we don't do this
+    //  every time this method gets called.
+    if (TP.notDefined(TP.$$installedCSSNSCount) ||
+        TP.$$installedCSSNSCount !== TP.w3.Xmlns.get('prefixes').getSize()) {
+
+        //  Make sure all of the known namespaces are defined (note this is
+        //  added to the 'xmlns' property of the 'extended jQuery' - see below -
+        //  but since Sizzle functions are just aliased over to jQuery
+        //  functions, we can use the original Sizzle function here).
+        TP.w3.Xmlns.get('prefixes').perform(
+            function(item) {
+                TP.extern.jQuery.xmlns[item.first()] = item.last();
+            });
+
+        TP.$$installedCSSNSCount = TP.w3.Xmlns.get('prefixes').getSize();
+    }
+
+    //  Use the native Sizzle 'matches' call. It takes in a selector and an
+    //  Array of pre-selected Elements and returns an Array with any of them
+    //  that matched. So we supply an Array with the one element we're
+    //  testing and if we get back a non-empty Array, we know that it
+    //  matched the supplied selector.
+
+    closest = function(startElem, selector) {
+
+        var element;
+
+        element = startElem;
+
+        while (element && element.nodeType === Node.ELEMENT_NODE) {
+            if (TP.notEmpty(TP.extern.Sizzle.matches(selector, [element]))) {
+                return element;
+            }
+
+            element = element.parentNode;
+
+            if (TP.isElement(stopAncestor) &&
+                element === stopAncestor) {
+                break;
+            }
+        }
+
+        return null;
+    };
+
+    return closest(elem, aSelector);
 });
 
 //  ------------------------------------------------------------------------
@@ -177,10 +298,9 @@ function(aNode, aSelector, autoCollapse) {
         //  but since Sizzle functions are just aliased over to jQuery
         //  functions, we can use the original Sizzle function here).
         TP.w3.Xmlns.get('prefixes').perform(
-                    function(item) {
-
-                        TP.extern.jQuery.xmlns[item.first()] = item.last();
-                    });
+            function(item) {
+                TP.extern.jQuery.xmlns[item.first()] = item.last();
+            });
     }
 
     try {
@@ -201,7 +321,7 @@ function(aNode, aSelector, autoCollapse) {
     //  is exactly 1.
     if (matchResults.length === 1 && TP.isTrue(autoCollapse)) {
         result = matchResults.item(0);
-        if (TP.notValid(result.tibetGenerated)) {
+        if (TP.notValid(result[TP.GENERATED])) {
             return result;
         } else {
             return null;
@@ -219,7 +339,7 @@ function(aNode, aSelector, autoCollapse) {
         //  If the result was 'TIBET generated', that is its 'generated
         //  content', then we don't add it to the results - since its
         //  supposed to be 'hidden'.
-        if (TP.notValid(result.tibetGenerated)) {
+        if (TP.notValid(result[TP.GENERATED])) {
             resultArr.push(result);
         }
     }
@@ -368,6 +488,6 @@ function(aWindow, queryStr, watchFunction) {
     return queryResult;
 });
 
-//	------------------------------------------------------------------------
-//	end
-//	========================================================================
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

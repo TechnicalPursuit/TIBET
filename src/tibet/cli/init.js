@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -29,7 +29,9 @@ path = require('path');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -133,7 +135,8 @@ Cmd.prototype.execute = function() {
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
         dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
-        cmd.info('Initializing new ' + dna + ' project...');
+        cmd.info('Initializing new \'' + dna + '\' project ' +
+            this.getcfg('npm.name') + '...');
     } else {
         cmd.info('Initializing new project...');
     }
@@ -179,8 +182,25 @@ Cmd.prototype.execute = function() {
                 } else {
                     cmd.log('TIBET development dependency linked.');
                 }
+/*
+                cmd.log('performing initial `tibet build`.');
+                child.exec('tibet build', function(err, stdout, stderr) {
+                    if (err) {
+                        cmd.error('Failed to initialize: ' + stderr);
+                        throw new Error();
+                    }
 
-                cmd.info('Project initialized successfully.');
+                    cmd.log('project initialized successfully.');
+                    cmd.info('Use `tibet start` to run your app.');
+                });
+*/
+                cmd.log('project initialized successfully.\n');
+                cmd.info(
+                    'Use `tibet lint` to check for coding standard violations\n' +
+                    'Use `tibet test` to test your application\'s core features\n' +
+                    'Use `tibet build` to build production packages for deployment\n' +
+                    'Use `tibet start` to run your application.');
+
             });
         });
 
@@ -209,10 +229,30 @@ Cmd.prototype.execute = function() {
                 cmd.log('TIBET development dependency linked.');
             }
 
-            // If initialization worked invoke startup function.
-            cmd.info('Project initialized successfully.');
+            cmd.log('project initialized successfully.');
+            cmd.info(
+                'Use `tibet lint` to check for coding standard violations\n' +
+                'Use `tibet test` to test your application\'s core features\n' +
+                'Use `tibet build` to build production packages for deployment\n' +
+                'Use `tibet start` to run your application.');
+
+            /*
+            cmd.log('performing initial `tibet build`.');
+            child.exec('tibet build', function(childErr, childStdout, childStderr) {
+                if (childErr) {
+                    cmd.error('Failed to initialize: ' + stderr);
+                    throw new Error();
+                }
+
+                cmd.log('project initialized successfully.');
+                cmd.info('Use `tibet build` to build your app.');
+                cmd.info('Use `tibet start` to run your app.');
+            });
+            */
         });
     }
+
+    return 0;
 };
 
 module.exports = Cmd;

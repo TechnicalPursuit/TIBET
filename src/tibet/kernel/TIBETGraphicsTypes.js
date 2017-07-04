@@ -87,25 +87,39 @@ function(x, y) {
             theData = arguments[0];
             if (TP.isKindOf(theData, TP.core.Point)) {
                 theData = theData.$get('data');
-                newData = {x: theData.x,
-                            y: theData.y};
+                newData = {
+                    x: theData.x,
+                    y: theData.y
+                };
             } else if (TP.isHash(theData)) {
-                newData = {x: theData.at('x') || theData.at('left'),
-                            y: theData.at('y') || theData.at('top')};
+                newData = {
+                    x: theData.at('x') || theData.at('left'),
+                    y: theData.at('y') || theData.at('top')
+                };
             } else if (TP.isArray(theData)) {
-                newData = {x: theData.first(),
-                            y: theData.last()};
+                newData = {
+                    x: theData.first(),
+                    y: theData.last()
+                };
             } else {
-                newData = {x: theData.x,
-                            y: theData.y};
+                newData = {
+                    x: theData.x,
+                    y: theData.y
+                };
             }
         } else {
             //  Got handed two Numbers.
-            newData = {x: x, y: y};
+            newData = {
+                x: x,
+                y: y
+            };
         }
     } else {
         //  Got nothing - set everything to 0.
-        newData = {x: 0, y: 0};
+        newData = {
+            x: 0,
+            y: 0
+        };
     }
 
     this.$set('data', newData, false);
@@ -187,12 +201,14 @@ function(yDiff) {
 //  ------------------------------------------------------------------------
 
 TP.core.Point.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -999,39 +1015,59 @@ function(x, y, width, height) {
             theData = arguments[0];
             if (TP.isKindOf(theData, TP.core.Rect)) {
                 theData = theData.$get('data');
-                newData = {x: theData.x,
-                            y: theData.y,
-                            width: theData.width,
-                            height: theData.height};
+                newData = {
+                    x: theData.x,
+                    y: theData.y,
+                    width: theData.width,
+                    height: theData.height
+                };
             } else if (TP.isHash(theData)) {
-                newData = {x: theData.at('x') || theData.at('left'),
-                            y: theData.at('y') || theData.at('top'),
-                            width: theData.at('width'),
-                            height: theData.at('height')};
+                newData = {
+                    x: theData.at('x') || theData.at('left'),
+                    y: theData.at('y') || theData.at('top'),
+                    width: theData.at('width'),
+                    height: theData.at('height')
+                };
             } else if (TP.isArray(theData)) {
-                newData = {x: theData.at(0),
-                            y: theData.at(1),
-                            width: theData.at(2),
-                            height: theData.at(3)};
+                newData = {
+                    x: theData.at(0),
+                    y: theData.at(1),
+                    width: theData.at(2),
+                    height: theData.at(3)
+                };
             } else {
-                newData = {x: theData.x,
-                            y: theData.y,
-                            width: theData.width,
-                            height: theData.height};
+                newData = {
+                    x: theData.x,
+                    y: theData.y,
+                    width: theData.width,
+                    height: theData.height
+                };
             }
         } else if (arguments.length === 2) {
             //  Got handed two TP.core.Rects.
-            newData = {x: arguments[0].$get('data').x,
-                        y: arguments[0].$get('data').y,
-                        width: arguments[1].$get('data').x,
-                        height: arguments[1].$get('data').y};
+            newData = {
+                x: arguments[0].$get('data').x,
+                y: arguments[0].$get('data').y,
+                width: arguments[1].$get('data').x,
+                height: arguments[1].$get('data').y
+            };
         } else {
             //  Got handed four Numbers.
-            newData = {x: x, y: y, width: width, height: height};
+            newData = {
+                x: x,
+                y: y,
+                width: width,
+                height: height
+            };
         }
     } else {
         //  Got nothing - set everything to 0.
-        newData = {x: 0, y: 0, width: 0, height: 0};
+        newData = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        };
     }
 
     this.$set('data', newData, false);
@@ -1113,12 +1149,14 @@ function(yDiff) {
 //  ------------------------------------------------------------------------
 
 TP.core.Rect.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -1340,65 +1378,6 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('closestEdgePointFromPoint',
-function(aPoint) {
-
-    /**
-     * @method closestEdgePointFromPoint
-     * @summary Returns the 'closest edge point to the supplied point' of the
-     *     receiver.
-     * @param {TP.core.Point} aPoint The point to use to calculate the closest
-     *     edge point from.
-     * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The closest edge point of the receiver.
-     */
-
-    var data,
-
-        compassCorner,
-        centerPoint;
-
-    if (TP.notValid(aPoint)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    data = this.$get('data');
-
-    compassCorner = this.getCompassCorner(aPoint, 8);
-    centerPoint = this.getCenterPoint();
-
-    switch (compassCorner) {
-        case TP.NORTH:
-            return TP.pc(centerPoint.get('x'), 0);
-
-        case TP.NORTHEAST:
-            return TP.pc(data.x + data.width, 0);
-
-        case TP.EAST:
-            return TP.pc(data.x + data.width, centerPoint.get('y'));
-
-        case TP.SOUTHEAST:
-            return TP.pc(data.x + data.width, data.y + data.height);
-
-        case TP.SOUTH:
-            return TP.pc(centerPoint.get('x'), data.y + data.height);
-
-        case TP.SOUTHWEST:
-            return TP.pc(0, data.y + data.height);
-
-        case TP.WEST:
-            return TP.pc(0, centerPoint.get('y'));
-
-        /* jshint -W086 */
-        case TP.NORTHWEST:
-        default:
-            return TP.pc(0, 0);
-        /* jshint +W086 */
-    }
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Rect.Inst.defineMethod('constrainPoint',
 function(aPoint) {
 
@@ -1406,7 +1385,7 @@ function(aPoint) {
      * @method constrainPoint
      * @summary Constrains the supplied point to be within the bounds of the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to clamp.
+     * @param {TP.core.Point} aPoint The point to constrain.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
@@ -1423,6 +1402,53 @@ function(aPoint) {
 
     pointData.x = pointData.x.max(data.x).min(data.x + data.width);
     pointData.y = pointData.y.max(data.y).min(data.y + data.height);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Rect.Inst.defineMethod('constrainRect',
+function(aRect) {
+
+    /**
+     * @method constrainRect
+     * @summary Constrains the supplied rect to be within the bounds of the
+     *     receiver.
+     * @param {TP.core.Rect} aRect The rect to constrain.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Rect} The receiver.
+     */
+
+    var data,
+
+        rectData,
+
+        diffX,
+        diffY;
+
+    if (TP.notValid(aRect)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+    rectData = aRect.$get('data');
+
+    //  Make sure that our own rectangle isn't smaller in either width or height
+    //  than the supplied rectangle. Otherwise, just return without modifying
+    //  the supplied rectangle.
+    if (this.getWidth() < aRect.getWidth() ||
+        this.getHeight() < aRect.getHeight()) {
+        return this;
+    }
+
+    /* eslint-disable no-extra-parens */
+    diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
+    diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
+    /* eslint-enable no-extra-parens */
+
+    rectData.x -= diffX;
+    rectData.y -= diffY;
 
     return this;
 });
@@ -1658,6 +1684,63 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Rect.Inst.defineMethod('getClosestEdgePointFromPoint',
+function(aPoint) {
+
+    /**
+     * @method getClosestEdgePointFromPoint
+     * @summary Returns the 'closest edge point to the supplied point' of the
+     *     receiver.
+     * @param {TP.core.Point} aPoint The point to use to calculate the closest
+     *     edge point from.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Point} The closest edge point of the receiver.
+     */
+
+    var data,
+
+        compassCorner,
+        centerPoint;
+
+    if (TP.notValid(aPoint)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    compassCorner = this.getCompassCorner(aPoint, 8);
+    centerPoint = this.getCenterPoint();
+
+    switch (compassCorner) {
+        case TP.NORTH:
+            return TP.pc(centerPoint.get('x'), 0);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x + data.width, 0);
+
+        case TP.EAST:
+            return TP.pc(data.x + data.width, centerPoint.get('y'));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x + data.width, data.y + data.height);
+
+        case TP.SOUTH:
+            return TP.pc(centerPoint.get('x'), data.y + data.height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(0, data.y + data.height);
+
+        case TP.WEST:
+            return TP.pc(0, centerPoint.get('y'));
+
+        case TP.NORTHWEST:
+        default:
+            return TP.pc(0, 0);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Rect.Inst.defineMethod('getCompassCorner',
 function(aPoint) {
 
@@ -1696,6 +1779,74 @@ function(aPoint) {
     corner = TP.computeCompassCorner(angle, 8);
 
     return corner;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Rect.Inst.defineMethod('getEdgePoint',
+function(compassCorner) {
+
+    /**
+     * @method getEdgePoint
+     * @summary Gets the 'edge point' of the receiver matching the supplied
+     *     compass corner. For instance, TP.NORTHWEST will return the top-left
+     *     corner point and TP.SOUTHEAST will return the bottom-right corner
+     *     point.
+     * @param {Number} compassCorner A Number matching the compass corner
+     *     constant to return the edge point of. This should be one of these
+     *     constants:
+     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
+     *
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Point} The closest edge point of the receiver.
+     */
+
+    var data;
+
+    if (TP.notValid(compassCorner)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    switch (compassCorner) {
+        case TP.NORTHWEST:
+            return TP.pc(data.x, data.y);
+
+        case TP.NORTH:
+            return TP.pc(data.x + (data.width / 2), data.y);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x + data.width, data.y);
+
+        case TP.EAST:
+            return TP.pc(data.x + data.width, data.y + (data.height / 2));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x + data.width, data.y + data.height);
+
+        case TP.SOUTH:
+            return TP.pc(data.x + (data.width / 2), data.y + data.height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(data.x, data.y + data.height);
+
+        case TP.WEST:
+            return TP.pc(data.x, data.y + (data.height / 2));
+
+        default:
+            return TP.pc(0, 0);
+    }
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1986,12 +2137,15 @@ function(aPoint, offset) {
 
     /**
      * @method isOffsetFromCenterBy
-     * @summary
+     * @summary Returns whether or not the supplied point is offset from the
+     *     receiver's center point by at least the amount supplied in the offset
+     *     parameter.
      * @param {TP.core.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
      * @exception TP.sig.InvalidParameter
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the receiver's center point is offset
+     *     from the supplied point by the supplied minimum amount.
      */
 
     var centerPoint,
@@ -2010,7 +2164,7 @@ function(aPoint, offset) {
     centerPoint = this.getCenterPoint();
     distanceFromCenter = aPoint.distanceBetween(centerPoint);
 
-    cornerPoint = this.closestEdgePointFromPoint(aPoint);
+    cornerPoint = this.getClosestEdgePointFromPoint(aPoint);
     distanceFromCorner = cornerPoint.distanceBetween(centerPoint);
 
     result = false;
@@ -3414,12 +3568,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Matrix.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -4102,10 +4258,12 @@ function(red, green, blue, alpha) {
             if (TP.isKindOf(theData, TP.core.Color)) {
                 theData = theData.$get('data');
 
-                newData = {r: theData.r,
-                            g: theData.g,
-                            b: theData.b,
-                            a: theData.a};
+                newData = {
+                    r: theData.r,
+                    g: theData.g,
+                    b: theData.b,
+                    a: theData.a
+                };
             } else if (TP.isString(theData)) {
                 if (TP.notValid(theData =
                                 TP.colorStringAsArray(theData))) {
@@ -4149,7 +4307,12 @@ function(red, green, blue, alpha) {
         }
     } else {
         //  Got nothing - set everything to 0.
-        newData = {r: 0, g: 0, b: 0, a: 0};
+        newData = {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0
+        };
     }
 
     this.$set('data', newData, false);
@@ -4207,12 +4370,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Color.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -5073,12 +5238,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.LinearGradient.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -5617,12 +5784,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.RadialGradient.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -6046,12 +6215,14 @@ TP.core.Pattern.Inst.defineAttribute('height');
 //  ------------------------------------------------------------------------
 
 TP.core.Pattern.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -6490,12 +6661,14 @@ function(segmentOpConstant, occurrenceCount) {
 //  ------------------------------------------------------------------------
 
 TP.core.Path.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -6709,7 +6882,7 @@ function(segmentOpConstant, occurrenceCount) {
 
 TP.core.Path.Inst.defineMethod('insertSegment',
 function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
-occurrenceCount) {
+         occurrenceCount) {
 
     /**
      * @method insertSegment
@@ -7274,7 +7447,12 @@ function() {
     trackingPoint = TP.pc(-1, -1);
     trackingPoint.defineAttribute('absolute', false);
 
-    trackingData = {top: -1, right: -1, bottom: -1, left: -1};
+    trackingData = {
+        top: -1,
+        right: -1,
+        bottom: -1,
+        left: -1
+    };
 
     //  Note here the increment of the path by 2, processing each
     //  operator/operand pair.
@@ -7422,13 +7600,16 @@ function(controlParams, stepParams) {
 
     var ctrlParams,
         jobCtrlParams,
-
+        thisref,
         transitionJob,
-
+        param,
         oldPre,
         oldPost;
 
-    ctrlParams = TP.ifInvalid(controlParams, TP.hc());
+    ctrlParams = controlParams;
+    if (TP.notValid(ctrlParams)) {
+        ctrlParams = TP.hc();
+    }
 
     //  Some of these parameters (delay, interval, limit, count & compute)
     //  might exist on the supplied hash, but if they do not, we ask ourself
@@ -7437,23 +7618,30 @@ function(controlParams, stepParams) {
 
     //  NB: We purposely leave out: 'lastInterval', 'stats', 'freeze',
     //  'preserve' and 'restore' - they are handled below.
-    jobCtrlParams =
-            TP.hc('config', this.configure.bind(this),
-                    'pre', ctrlParams.at('pre'),
-                    'step', this.step.bind(this),
-                    'post', ctrlParams.at('post'),
-                    'compute', TP.ifInvalid(ctrlParams.at('compute'),
-                                            this.get('computeFunction')),
-                    'delay', TP.ifInvalid(ctrlParams.at('delay'),
-                                            this.get('delay')),
-                    'interval', TP.ifInvalid(ctrlParams.at('interval'),
-                                            this.get('interval')),
-                    'limit', TP.ifInvalid(ctrlParams.at('limit'),
-                                            this.get('limit')),
-                    'count', TP.ifInvalid(ctrlParams.at('count'),
-                                            this.get('count')),
-                    'isAnimation', TP.ifInvalid(ctrlParams.at('isAnimation'),
-                                            this.get('isAnimation')));
+    jobCtrlParams = TP.hc(
+        'config', this.configure.bind(this),
+        'pre', ctrlParams.at('pre'),
+        'step', this.step.bind(this),
+        'post', ctrlParams.at('post')
+    );
+
+    param = ctrlParams.at('compute');
+    if (TP.notValid(param)) {
+        param = this.get('computeFunction');
+    }
+    jobCtrlParams.atPut('compute', param);
+
+    thisref = this;
+    ['delay', 'interval', 'limit', 'count', 'isAnimation'].forEach(
+    function(key) {
+        var val;
+
+        val = ctrlParams.at(key);
+        if (TP.notValid(val)) {
+            val = thisref.get(key);
+        }
+        jobCtrlParams.atPut(key, val);
+    });
 
     //  Construct a job using those control parameters.
     transitionJob = TP.core.Job.construct(jobCtrlParams);
@@ -7559,10 +7747,9 @@ function() {
     args = TP.args(arguments);
 
     args.perform(
-            function(aJob) {
-
-                transitionJobGroup.addChild(aJob);
-            });
+        function(aJob) {
+            transitionJobGroup.addChild(aJob);
+        });
 
     return transitionJobGroup;
 });
@@ -8177,7 +8364,10 @@ function(aTarget, propertyName, aTransitionParams) {
         targets = aTarget;
     }
 
-    transitionParams = TP.ifInvalid(aTransitionParams, TP.hc());
+    transitionParams = aTransitionParams;
+    if (TP.notValid(transitionParams)) {
+        transitionParams = TP.hc();
+    }
 
     //  If the transition params haven't specified any target origins, then
     //  compute some.

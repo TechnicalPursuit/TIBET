@@ -22,8 +22,75 @@ TP.tibet.style.Type.set('uriAttrs', TP.ac('href'));
 TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * The dictionary of known global vars for less compilations.
+ * @type {Object}
+ */
+TP.tibet.style.Type.defineAttribute('lessGlobalVars');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
+
+TP.tibet.style.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.refreshLessGlobals();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Type.defineMethod('refreshLessGlobals',
+function() {
+
+    /**
+     * @method refreshLessGlobals
+     * @summary Updates the object containing global values passed to less
+     *     worker thread processes. The values typically involve 'path'
+     *     variables from the system configuration dictionary.
+     */
+
+    var cfg,
+        globalVars;
+
+    //  Get all of the cfg variables starting with 'path.'
+    cfg = TP.sys.cfg('path');
+
+    //  Create a POJO to hold vars since we'll be using via worker thread.
+    globalVars = {};
+
+    //  Iterate over all of the 'path.' variables, getting each key and slicing
+    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
+    //  replaced with '-'. Then, quote the value so that LESS doesn't have
+    //  issues with spaces, etc.
+    cfg.getKeys().forEach(
+        function(aKey) {
+            var val;
+
+            //  If the cfg data has a real value for that key, get the key and
+            //  slice off the 'path.' portion. Any remaining periods ('.') in
+            //  the key are then replaced with '-'. Then, quote the value so
+            //  that LESS doesn't have issues with spaces, etc.
+            if (TP.notEmpty(val = cfg.at(aKey))) {
+                globalVars[aKey.slice(5).replace(/\./g, '-')] =
+                    '"' + TP.uriResolveVirtualPath(val) + '"';
+            }
+        });
+
+    this.$set('lessGlobalVars', globalVars);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
@@ -94,61 +161,33 @@ function(lessLoc, lessText) {
      */
 
     var ourID,
-
-        cfg,
-        lessGlobalVars,
-
         lessParams,
         lessWorker;
 
     //  Get our local ID, assigning it if necessary.
     ourID = this.getLocalID(true);
 
-    //  Get all of the cfg variables starting with 'path.'
-    cfg = TP.sys.cfg('path');
-
-    //  Allocate a POJO for supplying the LESS compiler with global var data.
-    lessGlobalVars = {};
-
-    //  Iterate over all of the 'path.' variables, getting each key and slicing
-    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
-    //  replaced with '-'. Then, quote the value so that LESS doesn't have
-    //  issues with spaces, etc.
-    cfg.getKeys().forEach(
-        function(aKey) {
-            var val;
-
-            //  If the cfg data has a real value for that key, get the key and
-            //  slice off the 'path.' portion. Any remaining periods ('.') in
-            //  the key are then replaced with '-'. Then, quote the value so
-            //  that LESS doesn't have issues with spaces, etc.
-            if (TP.notEmpty(val = cfg.at(aKey))) {
-                lessGlobalVars[aKey.slice(5).replace(/\./g, '-')] =
-                                '"' + TP.uriResolveVirtualPath(val) + '"';
-            }
-        });
-
     TP.documentEnsureHeadElement(this.getNativeDocument());
 
     lessParams = TP.hc('filename', lessLoc,
                         'rootpath', TP.uriCollectionPath(lessLoc),
-                        'globalVars', lessGlobalVars,
-                        'elemID', ourID);
+                        'globalVars', this.getType().get('lessGlobalVars'),
+                        'elemID', ourID,
+                        'paths', TP.ac(lessLoc));
 
     //  Obtain a 'LESS worker' and ask it to compile the LESS text.
     lessWorker = TP.core.LESSWorker.getWorker();
     lessWorker.compile(lessText, lessParams).then(
             function(result) {
                 var cssText,
-                    cssImports,
                     cssElemID,
 
                     natNode,
                     natDoc,
 
-                    styleElems,
-
                     insertionPoint,
+
+                    cssImportIDs,
 
                     existingStyleElem,
                     generatedStyleElem,
@@ -160,7 +199,6 @@ function(lessLoc, lessText) {
                 }
 
                 cssText = result.at('css');
-                cssImports = result.at('imports');
 
                 //  If there were valid compilation options (as set above in the
                 //  'lessParams' variable), extract the element ID as supplied
@@ -174,151 +212,6 @@ function(lessLoc, lessText) {
 
                 natNode = this.getNativeNode();
                 natDoc = this.getNativeDocument();
-
-                //  Because of a quirk of the way that we invoke the LESSCSS
-                //  processor (running it in a worker thread rather than in the
-                //  main UI canvas document), we need to manually ensure that
-                //  all of the referenced '@imports' are actually put into the
-                //  document.
-
-                if (TP.notEmpty(cssElemID) && cssElemID.endsWith('_import')) {
-                    insertionPoint = natNode;
-                } else {
-                    //  Try to compute an insertion point for any '@import'ed
-                    //  stylesheets by first looking for any other 'html:' or
-                    //  'tibet:' style elements that contain the word 'import'
-                    //  anywhere in their ID
-                    styleElems = TP.byCSSPath('style[id*="import"]',
-                                                natDoc,
-                                                false,      //  No autocollapse
-                                                false);     //  No wrap
-                    if (TP.notEmpty(styleElems)) {
-                        //  Found one - insert after the last 'import' style
-                        //  element, which means before it's next sibling
-                        insertionPoint = styleElems.last().nextSibling;
-                    } else {
-                        //  Otherwise, there are no 'import' style elements -
-                        //  see if there are any others.
-                        styleElems = TP.byCSSPath(
-                                                'style',
-                                                natDoc,
-                                                false,      //  No autocollapse
-                                                false);     //  No wrap
-
-                        if (TP.notEmpty(styleElems)) {
-                            //  Insert before the first style element
-                            insertionPoint = styleElems.first();
-                        } else {
-                            insertionPoint = natNode;
-                        }
-                    }
-                }
-
-                //  Note here that, in order to try to preserve CSS rule order,
-                //  we try to insert the '@imported' style sheets at the top.
-
-                cssImports.forEach(
-                        function(aPath) {
-                            var isCSS,
-                                extension,
-                                styleElem,
-
-                                sheetID;
-
-                            isCSS = false;
-
-                            //  If the extension is '.css', then we're dealing
-                            //  with a non-LESS CSS file.
-                            extension = TP.uriExtension(aPath);
-                            if (extension === 'css') {
-                                isCSS = true;
-                            }
-
-                            //  Compute an ID from the last part of the path
-                            //  followed by '_import'.
-                            sheetID = TP.uriName(aPath).replace(/\./g, '_') +
-                                        '_import';
-                            styleElem = TP.byId(sheetID, natDoc, false);
-
-                            //  If there isn't an existing style element with
-                            //  that name, create one and insert it.
-                            if (!TP.isElement(styleElem)) {
-
-                                if (isCSS) {
-                                    styleElem = TP.documentConstructElement(
-                                                    natDoc,
-                                                    'style',
-                                                    TP.w3.Xmlns.XHTML);
-                                } else {
-                                    styleElem = TP.documentConstructElement(
-                                                    natDoc,
-                                                    'tibet:style',
-                                                    TP.w3.Xmlns.TIBET);
-                                }
-
-                                TP.elementSetAttribute(
-                                                    styleElem,
-                                                    'href',
-                                                    aPath);
-
-                                TP.elementSetAttribute(
-                                                    styleElem,
-                                                    'id',
-                                                    sheetID);
-
-                                //  Go ahead and insert the new element - note
-                                //  here how we *always* awaken the content.
-                                //  Because we're being called asynchronously,
-                                //  it's impossible to tell if we're already
-                                //  part of an awaken cycle or not. But, because
-                                //  of our check above to determine whether we
-                                //  already exist, we don't have to worry about
-                                //  multiple awakenings.
-                                styleElem = TP.nodeInsertBefore(
-                                                    insertionPoint.parentNode,
-                                                    styleElem,
-                                                    insertionPoint,
-                                                    true);
-                            } else {
-
-                                //  The style element was already in the
-                                //  document (because another sheet brought it
-                                //  in), but it might not be positioned
-                                //  ahead of the element that's referencing it
-                                //  ('natNode' in this case).
-                                if (TP.nodeComparePosition(
-                                    natNode, styleElem, TP.FOLLOWING_NODE)) {
-
-                                    //  Detach it and reposition it in front of
-                                    //  the node that's referencing it.
-                                    TP.nodeDetach(styleElem);
-                                    TP.nodeInsertBefore(natNode.parentNode,
-                                                        styleElem,
-                                                        natNode,
-                                                        false);
-
-                                    //  See if it also already has a generated
-                                    //  representation.
-                                    generatedStyleElem =
-                                        TP.byId(
-                                            TP.lid(styleElem) + '_generated',
-                                            natDoc,
-                                            false);
-                                    if (TP.isElement(generatedStyleElem)) {
-
-                                        //  Detach it and reposition it in front
-                                        //  of the style element that it's a
-                                        //  generated representation of.
-                                        TP.nodeDetach(generatedStyleElem);
-                                        TP.nodeInsertBefore(
-                                                    styleElem.parentNode,
-                                                    generatedStyleElem,
-                                                    styleElem.nextSibling,
-                                                    false);
-                                    }
-                                }
-                            }
-                        });
 
                 //  If there is no existing native CSS 'style' element that
                 //  would've been generated for this element, create one and set
@@ -358,6 +251,29 @@ function(lessLoc, lessText) {
                                             'for',
                                             cssElemID,
                                             true);
+
+                    //  If the original element has a 'tibet:type' attribute on
+                    //  it, copy it over to the generated version. Note that we
+                    //  do *not* do this for imported stylesheets above.
+                    if (this.hasAttribute('tibet:type')) {
+                        TP.elementSetAttribute(generatedStyleElem,
+                                                'tibet:type',
+                                                this.getAttribute('tibet:type'),
+                                                true);
+                    }
+
+                    //  If @imports were detected and we've gathered a set of
+                    //  IDs representing them, then we join those together using
+                    //  the TP.JOIN separator character and set the 'dependsOn'
+                    //  attribute to that value. This will be used by the
+                    //  generated style element to determine when all of its
+                    //  @imports have been loaded.
+                    if (TP.notEmpty(cssImportIDs)) {
+                        TP.elementSetAttribute(generatedStyleElem,
+                                                'dependsOn',
+                                                cssImportIDs.join(TP.JOIN),
+                                                true);
+                    }
                 } else {
 
                     //  Otherwise, just set the content of the existing one.
@@ -365,9 +281,15 @@ function(lessLoc, lessText) {
                 }
 
                 //  Work around Chrome (and possibly others) stupidity
-                TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
+                //  TODO: Commented out for now - doesn't seem to need it.
+                // TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
 
-            }.bind(this));
+            }.bind(this)).catch(
+            function(err) {
+                TP.ifError() ?
+                    TP.error('Error compiling LESS in: ' + lessLoc +
+                                TP.str(err)) : 0;
+            });
 
     return;
 });
@@ -417,8 +339,10 @@ function(anHref) {
             case 'less' :
 
                 //  The style is some LESS CSS. Go fetch it and, when it's
-                //  returned, compile and insert it into the document.
-                fetchRequest = TP.request('async', true, 'refresh', true);
+                //  returned, compile and insert it into the document. Note how
+                //  we *don't* specify 'refresh' here, since we want the latest
+                //  content as set into the URL.
+                fetchRequest = TP.request('async', true, 'resultType', TP.TEXT);
                 fetchRequest.defineHandler(
                         'RequestSucceeded',
                             function(aResponse) {
@@ -456,17 +380,16 @@ function(anHref) {
 
                     styleURI = TP.uc(hrefLocation);
 
-                    //  Note how we force 'refresh' to false, since we'll be
-                    //  reading from inlined content.
-                    fetchOptions = TP.hc('async', false,
-                                            'resultType', TP.TEXT,
-                                            'refresh', true);
+                    //  Note how we *don't* specify 'refresh' here, since we
+                    //  want the latest content as set into the URL.
+                    fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT);
                     inlineStyleContent =
                         styleURI.getResource(fetchOptions).get('result');
 
-                    //  Set the content of a new style element that contains the
-                    //  inlined style, resolving @import statements and possible
-                    //  rewriting CSS url(...) values.
+                    //  Set the content of an inlined XHTML style element that
+                    //  contains the inlined style, resolving @import statements
+                    //  and possible rewriting CSS url(...) values. Note that
+                    //  this will generate a new style element if it has to.
                     inlinedStyleElem = TP.documentInlineCSSURIContent(
                                             doc,
                                             styleURI,
@@ -606,6 +529,95 @@ function() {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('serializeCloseTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeCloseTag
+     * @summary Serializes the closing tag for the receiver.
+     * @description At this type level, this method, in conjunction with the
+     *     'serializeOpenTag' method, will always produce the 'XML version' of
+     *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the closing tag of the receiver.
+     */
+
+    var attrNode;
+
+    attrNode = this.getNativeNode().attributes.type;
+    if (TP.isAttributeNode(attrNode)) {
+        //  If the 'type' attribute is 'TIBET_CSS', that means it was
+        //  auto-populated and shouldn't be written.
+        if (attrNode.value === TP.ietf.Mime.TIBET_CSS) {
+            return TP.CONTINUE;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('serializeOpenTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeOpenTag
+     * @summary Serializes the opening tag for the receiver.
+     * @description At this type level, this method performs a variety of
+     *     transformations and filtering of various attributes. See the code
+     *     below for more details. One notable transformation is that this
+     *     method, in conjunction with the 'serializeCloseTag' method,  will
+     *     always produce the 'XML version' of an empty tag (i.e. '<foo/>'
+     *     rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the opening tag of the receiver.
+     */
+
+    var attrNode;
+
+    attrNode = this.getNativeNode().attributes.type;
+    if (TP.isAttributeNode(attrNode)) {
+        //  If the 'type' attribute is 'TIBET_CSS', that means it was
+        //  auto-populated and shouldn't be written.
+        if (attrNode.value === TP.ietf.Mime.TIBET_CSS) {
+            return TP.CONTINUE;
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

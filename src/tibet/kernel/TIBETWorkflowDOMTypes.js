@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.vcard.vcard}
- * @summary A VCard based on the Jabber/XEP-0054 vcard-temp specification.
+ * @summary A VCard originally based on the Jabber/XEP-0054 vcard-temp spec.
  * @description The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
  *     affiliations. By virtue of vcard association types can autoload
@@ -41,36 +41,90 @@ TP.core.ElementNode.defineSubtype('vcard:vcard');
 //  ------------------------------------------------------------------------
 
 /**
- * Flag signifying whether vcard data has been loaded.
- * @type {Boolean}
- */
-TP.vcard.vcard.Type.defineAttribute('loaded', false);
-
-/**
  * The dictionary of registered vcards.
  * @type {TP.core.Hash}
  */
-TP.vcard.vcard.Type.defineAttribute('vcards', TP.hc());
-
-/**
- * The default Guest vcard, which has no permission keys by default.
- * @type {Element}
- */
-TP.vcard.vcard.Type.defineConstant('DEFAULT',
-    TP.elementFromString(TP.join(
-        '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
-                ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
-            '<fn><text>', TP.sys.cfg('user.default_name'), '</text></fn>',
-            '<n><text>', TP.sys.cfg('user.default_name'), '</text></n>',
-            '<role><text>', TP.sys.cfg('user.default_role'), '</text></role>',
-            '<org><text>', TP.sys.cfg('user.default_org'), '</text></org>',
-            '<vcard-ext:x-orgunit>',
-                '<text>', TP.sys.cfg('user.default_org'), '</text>',
-            '</vcard-ext:x-orgunit>',
-        '</vcard>')));
+TP.vcard.vcard.Type.defineAttribute('instances', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Types Methods
+//  ------------------------------------------------------------------------
+
+TP.vcard.vcard.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    var url;
+
+    url = TP.sys.cfg('path.lib_vcards');
+    if (TP.notEmpty(url)) {
+        TP.vcard.vcard.loadVCards(url).then(function(result) {
+            TP.vcard.vcard.initVCards(result);
+        }).catch(function(err) {
+            TP.ifError() ?
+                TP.error('Error loading library vcards: ' +
+                            TP.str(err)) : 0;
+        });
+    }
+
+    url = TP.sys.cfg('path.app_vcards');
+    if (TP.notEmpty(url)) {
+        TP.vcard.vcard.loadVCards(url).then(function(result) {
+            TP.vcard.vcard.initVCards(result);
+        }).catch(function(err) {
+            TP.ifError() ?
+                TP.error('Error loading application vcards: ' +
+                            TP.str(err)) : 0;
+        });
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.vcard.vcard.Type.defineMethod('generate',
+function(userInfo) {
+
+    /**
+     * @method generate
+     * @summary Generates a new vcard instance using data contained in userInfo.
+     *     Keys can include 'fn', 'n', 'role', 'org', and 'orgunit'. Defaults
+     *     are taken from the user.default_* keys in TIBET's configuration data.
+     * @param {TP.core.Hash} userInfo The user information to build a card for.
+     * @returns {TP.vcard.vcard} The new instance.
+     */
+
+    var params,
+        node;
+
+    params = TP.hc(userInfo);
+    params.atPutIfAbsent('fn', TP.sys.cfg('user.default_name'));
+    params.atPutIfAbsent('n', params.at('fn'));
+    params.atPutIfAbsent('nickname', params.at('fn'));
+    params.atPutIfAbsent('role', TP.sys.cfg('user.default_role'));
+    params.atPutIfAbsent('org', TP.sys.cfg('user.default_org'));
+    params.atPutIfAbsent('orgunit', params.at('org'));
+
+    node = TP.elementFromString(TP.join(
+        '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
+                ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
+            '<fn><text>', params.at('fn'), '</text></fn>',
+            '<n><text>', params.at('n'), '</text></n>',
+            '<nickname><text>', params.at('nickname'), '</text></nickname>',
+            '<role><text>', params.at('role'), '</text></role>',
+            '<org><text>', params.at('org'), '</text></org>',
+            '<vcard-ext:x-orgunit>',
+                '<text>', params.at('orgunit'), '</text>',
+            '</vcard-ext:x-orgunit>',
+        '</vcard>'));
+
+    return TP.vcard.vcard.construct(node);
+});
+
+
 //  ------------------------------------------------------------------------
 
 TP.vcard.vcard.Type.defineMethod('getInstanceById',
@@ -84,85 +138,11 @@ function(anID) {
      * @returns {vcard.vcard} A vcard element wrapper.
      */
 
-    var path,
-        fname,
-        url,
-        node,
-        vcards,
-        resource,
+    var vcards,
         inst;
 
-    if (!TP.vcard.vcard.get('loaded')) {
-
-        //  We load the 'lib' vcards first.
-        path = TP.sys.cfg('path.lib_vcards');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  If data was pre-cached the content will be in the URL
-                    //  already.
-                    if (TP.isValid(resource = url.getContent())) {
-                        node = resource.getData();
-                        if (TP.isKindOf(node, TP.core.Node)) {
-                            node = node.getNativeNode();
-                        }
-                    }
-
-                    if (TP.notValid(node)) {
-                        //  NOTE: We do *not* use 'url.getNativeNode()' here
-                        //  since it causes a recursion when it tries to
-                        //  instantiate a TP.core.RESTService which then tries
-                        //  to configure itself from a vcard which then leads us
-                        //  back here...
-                        //  Note that this is a *synchronous* load.
-                        node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    }
-                    if (TP.isDocument(node)) {
-                        TP.vcard.vcard.initVCards(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading library vcards.')) : 0;
-            }
-        }
-
-        //  We load the 'app' vcards next.
-        path = TP.sys.cfg('path.app_vcards');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vcard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    if (TP.isDocument(node)) {
-                        TP.vcard.vcard.initVCards(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading application vcards.')) : 0;
-            }
-        }
-
-
-        TP.vcard.vcard.$set('loaded', true);
-    }
-
     //  NOTE the access to the top-level type here, not 'this'.
-    vcards = TP.vcard.vcard.get('vcards');
+    vcards = TP.vcard.vcard.get('instances');
 
     inst = vcards.at(anID);
     if (TP.isValid(inst)) {
@@ -171,11 +151,7 @@ function(anID) {
 
     //  Due to startup sequencing we may need to create the default instance on
     //  demand. Role/Unit initializers trigger a call to this method.
-    if (anID === TP.sys.cfg('user.default_name')) {
-        inst = this.construct(this.DEFAULT);
-    }
-
-    return inst;
+    return this.generate(TP.hc('fn', anID));
 });
 
 //  ------------------------------------------------------------------------
@@ -288,7 +264,7 @@ function(aVCard) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.vcard.vcard.get('vcards');
+    keys = TP.vcard.vcard.get('instances');
     keys.atPut(id, aVCard);
 
     return aVCard;
@@ -301,96 +277,89 @@ function(aVCard) {
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'fullname',
-        {value: TP.xpc('./$def:fn/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('fullname',
+    TP.xpc('./$def:fn/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'shortname',
-        {value: TP.xpc('./$def:n/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('shortname',
+    TP.xpc('./$def:n/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'jid',
-        {value: TP.xpc('./$def:impp/$def:uri',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('surname',
+    TP.xpc('./$def:n/$def:surname',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'url',
-        {value: TP.xpc('./$def:url/$def:uri',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('givenname',
+    TP.xpc('./$def:n/$def:given',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'role',
-        {value: TP.xpc('./$def:role/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('prefix',
+    TP.xpc('./$def:n/$def:prefix',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'orgname',
-        {value: TP.xpc('./$def:org/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('nickname',
+    TP.xpc('./$def:nickname/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'orgunit',
-        {value: TP.xpc('./vcard-ext:x-orgunit/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('jid',
+    TP.xpc('./$def:impp/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'key',
-        {value: TP.xpc('./$def:key/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('url',
+    TP.xpc('./$def:url/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'secretkey',
-        {value: TP.xpc('./vcard-ext:x-secret-key',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('email',
+    TP.xpc('./$def:email/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'username',
-        {value: TP.xpc('./vcard-ext:x-username',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('tel',
+    TP.xpc('./$def:tel/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'password',
-        {value: TP.xpc('./vcard-ext:x-password',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('url',
+    TP.xpc('./$def:url/$def:uri',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'auth',
-        {value: TP.xpc('./vcard-ext:x-auth',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('timezone',
+    TP.xpc('./$def:tz/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute(
-        'iswebdav',
-        {value: TP.xpc('./vcard-ext:x-is-webdav',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+TP.vcard.vcard.Inst.defineAttribute('role',
+    TP.xpc('./$def:role/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('orgname',
+    TP.xpc('./$def:org/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('orgunit',
+    TP.xpc('./vcard-ext:x-orgunit/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('key',
+    TP.xpc('./$def:key/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('secretkey',
+    TP.xpc('./vcard-ext:x-secret-key',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('username',
+    TP.xpc('./vcard-ext:x-username',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('password',
+    TP.xpc('./vcard-ext:x-password',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('auth',
+    TP.xpc('./vcard-ext:x-auth',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.vcard.vcard.Inst.defineAttribute('iswebdav',
+    TP.xpc('./vcard-ext:x-is-webdav',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -403,10 +372,15 @@ function(aVCard) {
      * @method  init
      * @summary Creates a new vcard instance from the input data provided.
      *     Note that if the inbound vcard has an <fn> matching one already
-     *     registered the new vcard will override the existing one.
+     *     registered the new vcard will override the existing one. Also note
+     *     that this method will update the associated resource instance if one
+     *     is found for the 'id' (fullname) portion of the vcard.
      * @param {Element} aVCard The vcard element to wrap in an instance.
      * @returns {TP.vcard.vcard} The newly created vcard instance.
      */
+
+    var id,
+        resource;
 
     this.callNextMethod();
 
@@ -416,6 +390,15 @@ function(aVCard) {
     }
 
     TP.vcard.vcard.registerVCard(this);
+
+    //  Update the associated resource to have the updated vCard instance.
+    id = this.get('fullname');
+    if (TP.notEmpty(id)) {
+        resource = TP.core.Resource.getResourceById(id);
+        if (TP.isValid(resource)) {
+            resource.setVCard(this);
+        }
+    }
 
     return this;
 });
@@ -622,26 +605,70 @@ TP.core.ElementNode.defineSubtype('tibet:keyring');
  * The dictionary of registered keyrings.
  * @type {TP.core.Hash}
  */
-TP.tibet.keyring.Type.defineAttribute('keyrings', TP.hc());
-
-/**
- * Flag signifying whether the path.lib_keyrings data has been loaded.
- * @type {Boolean}
- */
-TP.tibet.keyring.Type.defineAttribute('loaded', false);
-
-/**
- * The default Public keyring, which has no permission keys by default.
- * @type {Element}
- */
-TP.tibet.keyring.Type.defineConstant('DEFAULT',
-TP.elementFromString(TP.join(
-    '<keyring xmlns="http://www.technicalpursuit.com/1999/tibet" id="',
-    TP.sys.cfg('user.default_keyring'),
-    '"></keyring>')));
+TP.tibet.keyring.Type.defineAttribute('instances', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Types Methods
+//  ------------------------------------------------------------------------
+
+TP.tibet.keyring.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    var url;
+
+    url = TP.sys.cfg('path.app_keyrings');
+    if (TP.notEmpty(url)) {
+        TP.tibet.keyring.loadKeyrings(url).then(function(result) {
+            TP.tibet.keyring.initKeyrings(result);
+        }).catch(function(err) {
+            TP.ifError() ?
+                TP.error('Error loading application keyrings: ' +
+                            TP.str(err)) : 0;
+        });
+    }
+
+    url = TP.sys.cfg('path.lib_keyrings');
+    if (TP.notEmpty(url)) {
+        TP.tibet.keyring.loadKeyrings(url).then(function(result) {
+            TP.tibet.keyring.initKeyrings(result);
+        }).catch(function(err) {
+            TP.ifError() ?
+                TP.error('Error loading library keyrings: ' +
+                            TP.str(err)) : 0;
+        });
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.keyring.Type.defineMethod('generate',
+function(anID) {
+
+    /**
+     * @method generate
+     * @summary Generates a new keyring instance using the ID provided.
+     * @param {String} anID The keyring ID to build.
+     * @returns {TP.tibet.keyring} The new instance.
+     */
+
+    var id,
+        node;
+
+    id = TP.ifEmpty(anID, TP.sys.cfg('user.default_keyring'));
+
+    node = TP.elementFromString(
+                    '<keyring' +
+                    ' xmlns="' + TP.w3.Xmlns.TIBET + '"' +
+                    ' id="' + id + '"/>');
+
+    return TP.tibet.keyring.construct(node);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.tibet.keyring.Type.defineMethod('getInstanceById',
@@ -655,87 +682,11 @@ function(anID) {
      * @returns {tibet:keyring} A keyring element wrapper.
      */
 
-    var path,
-        fname,
-        url,
-        resource,
-        node,
-        keyrings,
+    var keyrings,
         inst;
 
-    if (!TP.tibet.keyring.get('loaded')) {
-
-        //  We load the 'lib' keyrings first.
-        path = TP.sys.cfg('path.lib_keyrings');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-
-                    //  If data was pre-cached the content will be in the URL
-                    //  already.
-                    if (TP.isValid(resource = url.getContent())) {
-                        node = resource.getData();
-                        if (TP.isKindOf(node, TP.core.Node)) {
-                            node = node.getNativeNode();
-                        }
-                    }
-
-                    if (TP.notValid(node)) {
-                        //  NOTE: We do *not* use 'url.getNativeNode()' here
-                        //  since it causes a recursion when it tries to
-                        //  instantiate a TP.core.RESTService which then tries
-                        //  to configure itself from a vcard which then leads us
-                        //  back here...
-                        //  Note that this is a *synchronous* load.
-                        node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    }
-
-                    if (TP.isDocument(node)) {
-                        TP.tibet.keyring.initKeyrings(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading library keyrings.')) : 0;
-            }
-        }
-
-        //  We load the 'app' keyrings next.
-        path = TP.sys.cfg('path.app_keyrings');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vcard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    if (TP.isDocument(node)) {
-                        TP.tibet.keyring.initKeyrings(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(
-                                e, 'Error loading application keyrings.')) : 0;
-            }
-        }
-
-        TP.tibet.keyring.$set('loaded', true);
-    }
-
     //  NOTE the access to the top-level type here, not 'this'.
-    keyrings = TP.tibet.keyring.get('keyrings');
+    keyrings = TP.tibet.keyring.get('instances');
 
     inst = keyrings.at(anID);
     if (TP.isValid(inst)) {
@@ -744,11 +695,7 @@ function(anID) {
 
     //  Due to startup sequencing we may need to create the default instance on
     //  demand. Role/Unit initializers trigger a call to this method.
-    if (anID === TP.sys.cfg('user.default_keyring')) {
-        inst = this.construct(this.DEFAULT);
-    }
-
-    return inst;
+    return this.generate(anID);
 });
 
 //  ------------------------------------------------------------------------
@@ -867,7 +814,7 @@ function(aKeyring) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.tibet.keyring.get('keyrings');
+    keys = TP.tibet.keyring.get('instances');
     keys.atPut(id, aKeyring);
 
     return aKeyring;
@@ -1048,6 +995,7 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.AttachDOMPhase',       //  Late additions to the DOM needed for
                                     //  visual structuring
     'TP.core.AttachEventsPhase',    //  ev: namespace. NOTE others can generate
+    'TP.core.AttachSignalsPhase',   //  on: namespace (for non-native events)
     'TP.core.AttachDataPhase',      //  model construct et. al.
     'TP.core.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
     'TP.core.AttachBindsPhase',     //  data bindings in the bind: namespace
@@ -1066,6 +1014,7 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.DetachDataPhase',
     'TP.core.DetachBindsPhase',
     'TP.core.DetachInfoPhase',
+    'TP.core.DetachSignalsPhase',
     'TP.core.DetachEventsPhase',
     'TP.core.DetachDOMPhase',
     'TP.core.DetachCompletePhase'
@@ -1096,6 +1045,7 @@ TP.core.TagProcessor.Type.defineConstant(
 //          a. Have a namespace - most don't
 //          b. Are not in the 'bind:' namespace
 //          c. Are not in the 'ev:' namespace
+//          d. Are not in the 'on:' namespace
 TP.core.TagProcessor.Type.defineConstant(
     'CUSTOM_NODES_QUERY',
         'descendant-or-self::*' +
@@ -1108,10 +1058,38 @@ TP.core.TagProcessor.Type.defineConstant(
         'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.ON + '"' +
         ']');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * A dictionary (hash) of tag types to tag identifiers. This is a cache so that
+ * we don't have to look up the types each time.
+ * @type {Array}
+ */
+TP.core.TagProcessor.Type.defineAttribute('$tagTypeDict');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessor.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    //  Allocate a TP.core.Hash to stick our tag types in as we find them -
+    //  speeds up lookup in later stages of the processing considerably.
+    this.set('$tagTypeDict', TP.hc());
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
@@ -1150,8 +1128,6 @@ function(phaseTypesArray) {
  */
 TP.core.TagProcessor.Inst.defineAttribute('phases');
 
-TP.core.TagProcessor.Inst.defineAttribute('$tagTypeDict');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1171,17 +1147,13 @@ function(phases) {
 
     this.set('phases', phases);
 
-    //  Allocate a TP.core.Hash to stick our tag types in as we find them -
-    //  speeds up lookup in later stages of the processing considerably.
-    this.set('$tagTypeDict', TP.hc());
-
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.TagProcessor.Inst.defineMethod('processTree',
-function(aNode, aRequest) {
+function(aNode, aRequest, allowDetached) {
 
     /**
      * @method processTree
@@ -1192,6 +1164,11 @@ function(aNode, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
+     * @param {Boolean} [allowDetached=false] Whether or not this method should
+     *     allow detached nodes to be processed. Normally, this method does not
+     *     process detached nodes, but sometimes (i.e. during node detachment
+     *     unawaken processing), whether a node is detached or not needs to be
+     *     ignored (obviously).
      * @exception TP.sig.InvalidNode
      * @returns {TP.core.TagProcessor} The receiver.
      */
@@ -1236,7 +1213,7 @@ function(aNode, aRequest) {
             parentNode = currentNode.parentNode;
         }
 
-        phases.at(i).processNode(currentNode, this, aRequest);
+        phases.at(i).processNode(currentNode, this, aRequest, allowDetached);
 
         //  If we were processing a Text node containing ACP expressions and
         //  it's now detached, then we resume the next phase at it's (former)
@@ -1244,6 +1221,14 @@ function(aNode, aRequest) {
         if (wasACPTextNode && TP.nodeIsDetached(currentNode)) {
             currentNode = parentNode;
         }
+    }
+
+    //  To reduce markup clutter, try to propagate namespaces as high
+    //  up as possible.
+    if (TP.isElement(aNode)) {
+        TP.elementBubbleXMLNSAttributesOnDescendants(aNode);
+    } else if (TP.isDocument(aNode)) {
+        TP.elementBubbleXMLNSAttributesOnDescendants(aNode.documentElement);
     }
 
     return this;
@@ -1301,7 +1286,7 @@ function(aNode, aProcessor) {
     }
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
-    tagTypeDict = aProcessor.get('$tagTypeDict');
+    tagTypeDict = aProcessor.getType().get('$tagTypeDict');
 
     //  Build a hash that will track whether certain tag types can invoke the
     //  target method for this phase.
@@ -1316,7 +1301,7 @@ function(aNode, aProcessor) {
     filteredNodes = queriedNodes.select(
         function(node) {
             var type,
-                elemName,
+                elemKey,
 
                 canInvoke;
 
@@ -1326,10 +1311,10 @@ function(aNode, aProcessor) {
             //  found once and queried as to whether it can respond to this
             //  phase's target method.
             if (TP.isElement(node)) {
-                elemName = TP.elementGetFullName(node);
-                if (tagTypeDict.hasKey(elemName) &&
-                    canInvokeInfo.hasKey(elemName)) {
-                    return canInvokeInfo.at(elemName);
+                elemKey = TP.elementComputeTIBETTypeKey(node);
+                if (tagTypeDict.hasKey(elemKey) &&
+                    canInvokeInfo.hasKey(elemKey)) {
+                    return canInvokeInfo.at(elemKey);
                 }
             }
 
@@ -1339,18 +1324,26 @@ function(aNode, aProcessor) {
                 return false;
             }
 
-            //  If we're processing an Element, elemName will have been set
-            //  above. If it's not 'processingroot', but we can't find a type
-            //  for it, then it's an unknown tag.
-            if (TP.notEmpty(elemName) &&
-                elemName !== 'processingroot' &&
-                !TP.isType(TP.sys.getTypeByName(elemName))) {
+            //  If the type is an abstract type, warn about it. It's probably
+            //  not what we're looking for.
+            if (!tagTypeDict.hasKey(elemKey) &&
+                TP.notEmpty(elemKey) &&
+                type.isAbstract()) {
+                TP.ifWarn() ?
+                    TP.warn('Abstract type: ' + TP.name(type) +
+                            ' computed for element key: ' + elemKey + '.') : 0;
+            }
+
+            //  If we're processing an Element, elemKey will have been set
+            //  above.
+            if (TP.notEmpty(elemKey) &&
+                elemKey !== 'processingroot' &&
+                type === TP.core.XMLElementNode &&
+                TP.sys.cfg('sherpa.autodefine_missing_tags')) {
 
                 //  If the Sherpa is loaded and has been configured to
                 //  automatically define missing tags, then we do so.
-                if (TP.sys.hasFeature('sherpa') &&
-                    TP.sys.cfg('sherpa.autodefine_missing_tags')) {
-
+                if (TP.sys.hasFeature('sherpa')) {
                     TP.core.Sherpa.replaceWithUnknownElementProxy(node);
                 }
             }
@@ -1362,8 +1355,8 @@ function(aNode, aProcessor) {
             //  that name for later fast lookup for the same type of element in
             //  the tree of nodes being considered.
             if (TP.isElement(node)) {
-                tagTypeDict.atPut(elemName, type);
-                canInvokeInfo.atPut(elemName, canInvoke);
+                tagTypeDict.atPut(elemKey, type);
+                canInvokeInfo.atPut(elemKey, canInvoke);
             }
 
             return canInvoke;
@@ -1392,7 +1385,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.TagProcessorPhase.Inst.defineMethod('processNode',
-function(aNode, aProcessor, aRequest) {
+function(aNode, aProcessor, aRequest, allowDetached) {
 
     /**
      * @method processNode
@@ -1404,6 +1397,11 @@ function(aNode, aProcessor, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
+     * @param {Boolean} [allowDetached=false] Whether or not this method should
+     *     allow detached nodes to be processed. Normally, this method does not
+     *     process detached nodes, but sometimes (i.e. during node detachment
+     *     unawaken processing), whether a node is detached or not needs to be
+     *     ignored (obviously).
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.TagProcessorPhase} The receiver.
@@ -1425,15 +1423,14 @@ function(aNode, aProcessor, aRequest) {
 
         result,
 
-        j,
-        resultnodes,
-        attrs,
-
         subPhases,
         subProcessor,
         subProcessingRequest,
 
-        sources;
+        sources,
+
+        nodeToProcess,
+        source;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode');
@@ -1469,18 +1466,25 @@ function(aNode, aProcessor, aRequest) {
     }
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
-    tagTypeDict = aProcessor.get('$tagTypeDict');
+    tagTypeDict = aProcessor.getType().get('$tagTypeDict');
 
     //  Any nodes that are actually newly-produced (and returned) by running the
     //  processor over the supplied content.
     producedEntries = TP.ac();
 
-    len = nodes.getSize();
-    for (i = 0; i < len; i++) {
+    //  Put a reference to all of the nodes that this phase identifier for
+    //  processing. NOTE: This Array can be modified by the phase. See note
+    //  below about why 'getSize()' is used each time through the loop.
+    processingRequest.atPut('detectedNodes', nodes);
+
+    //  NB: Do *not* change this to have a cached size - leave it as
+    //  'getSize()', since processing steps can remove nodes from this Array as
+    //  they process and this needs to be retested each time.
+    for (i = 0; i < nodes.getSize(); i++) {
         node = nodes.at(i);
 
         //  If one of the phases detached this node, then just continue on.
-        if (TP.nodeIsDetached(node)) {
+        if (TP.nodeIsDetached(node) && TP.notTrue(allowDetached)) {
             continue;
         }
 
@@ -1491,8 +1495,8 @@ function(aNode, aProcessor, aRequest) {
         //  element has already been found once. Otherwise, just go ahead and
         //  query it for it's TIBET wrapper type.
         if (TP.isElement(node)) {
-            if (!TP.isType(type =
-                            tagTypeDict.at(TP.elementGetFullName(node)))) {
+            if (!TP.isType(type = tagTypeDict.at(
+                                    TP.elementComputeTIBETTypeKey(node)))) {
                 type = TP.core.Node.getConcreteType(node);
             }
         } else {
@@ -1514,12 +1518,6 @@ function(aNode, aProcessor, aRequest) {
         //  to determine the right action to take.
         if (TP.isNode(result)) {
 
-            //  To reduce markup clutter, try to propagate namespaces as high
-            //  up as possible.
-            if (TP.isElement(result)) {
-                TP.elementBubbleXMLNSAttributes(result);
-            }
-
             //  Compare result. If identical or equal we essentially have an
             //  "unprocessed" variation of the original node as our result.
             if (result === node || TP.nodeEqualsNode(result, node)) {
@@ -1536,78 +1534,9 @@ function(aNode, aProcessor, aRequest) {
                     //  first time through.
                     continue;
                 }
-            } else {
-                //  We got back "processed" content, but that may have child
-                //  content that includes unprocessed custom tags as part of
-                //  either a template or tagCompile that generates new tags.
-
-                //  If we got back a result node of the same concrete type as
-                //  the original then we only want to process children,
-                //  otherwise we want to process new tag type.
-                if (TP.core.Node.getConcreteType(result) === type) {
-
-                    //  The tricky part is we don't want to reprocess the top
-                    //  node since it's already had it's chance to alter itself,
-                    //  we only want to descend if necessary.
-
-                    //  If the result is an Element, then we need to see if
-                    //  there are Attributes we should add to our list.
-                    if (TP.isElement(result)) {
-
-                        //  NOTE: Order is important here! We need to make sure
-                        //  to gather any Attribute nodes that might have ACP
-                        //  (i.e. templating) expressions in them first - so
-                        //  that they're processed first *before* any Element
-                        //  replacement might occur.
-                        resultnodes = TP.ac();
-                        attrs = result.attributes;
-                        for (j = 0; j < attrs.length; j++) {
-                            if (TP.regex.HAS_ACP.test(
-                                        TP.nodeGetTextContent(attrs[j]))) {
-                                resultnodes.push(attrs[j]);
-                            }
-                        }
-
-                        //  Now that we have a list of possible Attribute nodes
-                        //  to process, concatenate the list of child *nodes*
-                        //  (i.e. all kinds of Nodes - including Text nodes)
-                        //  onto the end of that.
-                        resultnodes = resultnodes.concat(
-                                                TP.nodeGetChildNodes(result));
-                    } else {
-                        //  Otherwise, we just get the child *nodes* (i.e. all
-                        //  kinds of Nodes - including Text nodes - they might
-                        //  need to be processed too).
-                        resultnodes = TP.nodeGetChildNodes(result);
-                    }
-
-                    result = resultnodes;
-
-                    if (result.getSize() === 0) {
-                        continue;
-                    } else {
-                        //  have children that need additional processing so we
-                        //  have to fall through and continue processing phases.
-                        void 0;
-                    }
-                } else {
-                    void 0;
-                }
             }
-        }
 
-        //  If either a singular Node or Array of Nodes was returned, then push
-        //  them onto our list of 'produced nodes', along with the node that
-        //  produced it/them.
-        if (TP.isNode(result)) {
             producedEntries.push(TP.ac(result, node));
-        } else if (TP.isArray(result)) {
-            /* eslint-disable no-loop-func */
-            result.forEach(
-                    function(resultNode) {
-                        producedEntries.push(TP.ac(resultNode, node));
-                    });
-            /* eslint-enable no-loop-func */
         }
     }
 
@@ -1640,13 +1569,20 @@ function(aNode, aProcessor, aRequest) {
         len = producedEntries.getSize();
         for (i = 0; i < len; i++) {
 
+            nodeToProcess = producedEntries.at(i).first();
+            source = producedEntries.at(i).last();
+
+            //  If one of the phases detached this node, then just continue on.
+            if (TP.nodeIsDetached(nodeToProcess) && TP.notTrue(allowDetached)) {
+                continue;
+            }
+
             //  Push the node that produced the node we're going to process into
             //  the sources Array. See above to see how producedEntries is
             //  populated.
-            sources.push(producedEntries.at(i).last());
+            sources.push(source);
 
-            subProcessor.processTree(producedEntries.at(i).first(),
-                                        subProcessingRequest);
+            subProcessor.processTree(nodeToProcess, subProcessingRequest);
 
             //  Pop the source that was in effect.
             sources.pop();
@@ -1685,7 +1621,7 @@ function(aNode) {
     }
 
     //  The default phase grabs *all* nodes here - not just Elements. Note that
-    //  this expression will also grab the aNode itself.
+    //  this expression will also grab aNode itself.
     query = 'descendant-or-self::node()';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -1878,23 +1814,40 @@ function(aNode) {
     }
 
     //  If the supplied node is a text node or an attribute node and has ACP
-    //  (templating) expressions, then return an Array with that node.
-    if ((TP.isTextNode(aNode) || TP.isAttributeNode(aNode)) &&
+    //  (templating) expressions, then return an Array with that node's either
+    //  ownerElement or parentNode (depending on whether it is an attribute or
+    //  text node).
+    if (TP.isAttributeNode(aNode) &&
         TP.regex.HAS_ACP.test(TP.nodeGetTextContent(aNode))) {
-        return TP.ac(aNode);
+        queriedNodes = TP.ac(aNode.ownerElement);
+    } else if (TP.isTextNode(aNode) &&
+        TP.regex.HAS_ACP.test(TP.nodeGetTextContent(aNode))) {
+        queriedNodes = TP.ac(aNode.parentNode);
+    } else {
+
+        //  Run an XPath query to find text within either attributes or elements
+        //  that has ACP expressions *and return their parent Element* (i.e.
+        //  either ownerElement or parentNode, depending on node type).
+
+        //  NB: The attribute portion of this query does *not* pick attributes
+        //  in the TP.w3.Xmlns.UI namespace - they might contain runtime
+        //  formatting instructions (i.e. 'ui:display', etc.)
+        queriedNodes = TP.nodeEvaluateXPath(
+            aNode,
+            './/@*[contains(.,"{{") and ' +
+                        'namespace-uri() != "' + TP.w3.Xmlns.UI + '"]/..' +
+            ' | ' +
+            './/text()[contains(.,"{{")]/..',
+            TP.NODESET);
     }
 
-    //  NB: The attribute portion of this query does *not* pick attributes in
-    //  the TP.w3.Xmlns.UI namespace - they might contain runtime formatting
-    //  instructions (i.e. 'ui:display', etc.)
-    queriedNodes = TP.nodeEvaluateXPath(
-    aNode,
-    './/@*[contains(.,"{{") and namespace-uri() != "' + TP.w3.Xmlns.UI + '"]' +
-    ' | ' +
-    './/text()[contains(.,"{{")]',
-    TP.NODESET);
+    if (TP.isEmpty(queriedNodes)) {
+        return queriedNodes;
+    }
 
-    return queriedNodes;
+    //  We only want the roots out of this node set - that'll give us the 'most
+    //  shallow' nodes with ACP expressions.
+    return TP.nodesGetRoots(queriedNodes);
 });
 
 //  ========================================================================
@@ -2287,6 +2240,75 @@ function() {
 });
 
 //  ========================================================================
+//  TP.core.AttachSignalsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachSignalsPhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachSignalsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachSignalsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachSignals';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachSignalsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
 //  TP.core.AttachInfoPhase
 //  ========================================================================
 
@@ -2430,7 +2452,7 @@ function(aNode) {
             '*[*|scope],' +
             '*[*|repeat]';
 
-    boundElements = TP.ac(aNode.querySelectorAll(query));
+    boundElements = TP.ac(aNode.ownerDocument.querySelectorAll(query));
 
     //  Since querySelectorAll always queries from the Document even though we
     //  messaged the Element (yet another limitation... sigh...) we have to
@@ -2443,8 +2465,21 @@ function(aNode) {
     //  Grab any standalone text nodes that have binding expressions.
     boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
             function(aTextNode) {
-                return TP.regex.BINDING_STATEMENT_DETECT.test(
-                                                aTextNode.textContent);
+
+                var textContent;
+
+                textContent = aTextNode.textContent;
+
+                //  Note here that we not only check to see if the text content
+                //  has double-bracket binding statements, but also to make sure
+                //  that it's not a JSON String - we don't want to turn whole
+                //  chunks of JSON data into the value of the 'bind:in'
+                if (TP.regex.BINDING_STATEMENT_DETECT.test(textContent) &&
+                    !TP.isJSONString(textContent)) {
+                    return true;
+                }
+
+                return false;
             });
 
     //  If any node under the context node matches, then we need to find a
@@ -2636,6 +2671,75 @@ function(aNode) {
 });
 
 //  ========================================================================
+//  TP.core.DetachSignalsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachSignalsPhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachSignalsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachSignalsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachSignals';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachSignalsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
 //  TP.core.DetachDataPhase
 //  ========================================================================
 
@@ -2808,7 +2912,7 @@ function(aNode) {
             '*[*|scope],' +
             '*[*|repeat]';
 
-    boundElements = TP.ac(aNode.querySelectorAll(query));
+    boundElements = TP.ac(aNode.ownerDocument.querySelectorAll(query));
 
     //  Since querySelectorAll always queries from the Document even though we
     //  messaged the Element (yet another limitation... sigh...) we have to
@@ -2821,8 +2925,21 @@ function(aNode) {
     //  Grab any standalone text nodes that have binding expressions.
     boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
             function(aTextNode) {
-                return TP.regex.BINDING_STATEMENT_DETECT.test(
-                                                aTextNode.textContent);
+
+                var textContent;
+
+                textContent = aTextNode.textContent;
+
+                //  Note here that we not only check to see if the text content
+                //  has double-bracket binding statements, but also to make sure
+                //  that it's not a JSON String - we don't want to turn whole
+                //  chunks of JSON data into the value of the 'bind:in'
+                if (TP.regex.BINDING_STATEMENT_DETECT.test(textContent) &&
+                    !TP.isJSONString(textContent)) {
+                    return true;
+                }
+
+                return false;
             });
 
     //  If any node under the context node matches, then we need to find a

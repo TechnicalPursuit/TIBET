@@ -140,8 +140,11 @@ function() {
     newKeymap['='] = newKeymap.Equals;
     newKeymap[','] = newKeymap.Comma;
     newKeymap['`'] = newKeymap.Grave;
+
+    //  Note: to get curly brackets, use a '[Shift]' sequence with one of these
     newKeymap['['] = newKeymap.LeftSquareBracket;
     newKeymap[']'] = newKeymap.RightSquareBracket;
+
     newKeymap['\\'] = newKeymap.Backslash;
     newKeymap['\''] = newKeymap.Apostrophe;
 
@@ -282,8 +285,8 @@ function(aURI, resultType) {
      *     available as the value of the returned promise.
      * @param {TP.core.URI} The URI to fetch the resource for.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.extern.Promise} A Promise which completes when the resource
-     *     is available.
+     * @returns {Promise} A Promise which completes when the resource is
+     *     available.
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
@@ -293,7 +296,7 @@ function(aURI, resultType) {
     //  'Then' a Function onto our internal Promise that will itself return a
     //  Promise when called upon. That Promise will await the 'RequestSucceeded'
     //  signal and resolve the Promise with the result.
-    return this.get('promiseProvider').then(
+    return this.get('promiseProvider').chain(
         function() {
             var promise;
 
@@ -323,6 +326,11 @@ function(aURI, resultType) {
                         });
 
             return promise;
+        }).chainCatch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating fetchResource Promise: ' +
+                            TP.str(err)) : 0;
         });
 });
 
@@ -385,13 +393,17 @@ function(aURI, aWindow) {
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    this.fetchResource(aURI, TP.DOM).then(
+    this.fetchResource(aURI, TP.DOM).chain(
         function(result) {
             var tpWin,
                 tpDoc,
                 tpBody;
 
-            tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
+            if (TP.isValid(aWindow)) {
+                tpWin = aWindow;
+            } else {
+                tpWin = this.get('windowContext');
+            }
 
             tpDoc = tpWin.getDocument();
             tpBody = tpDoc.getBody();
@@ -419,8 +431,8 @@ function(aURI, aWindow) {
      * @param {TP.core.Window} The Window to load the content into. This will
      *     default to the current UI canvas.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.extern.Promise} A Promise which completes when the resource
-     *     is available.
+     * @returns {Promise} A Promise which completes when the resource is
+     *     available.
      */
 
     var tpWin;
@@ -429,15 +441,19 @@ function(aURI, aWindow) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  Set the Window's location to the supplied URI. 'then()' a Function onto
+    //  Set the Window's location to the supplied URI. 'chain' a Function onto
     //  our internal Promise that will itself return a Promise when called upon.
     //  That Promise will await the 'onload' to fire from setting the location,
     //  wait 100ms (to give the GUI a chance to draw) and then resolve the
     //  Promise.
 
-    tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
+    if (TP.isValid(aWindow)) {
+        tpWin = aWindow;
+    } else {
+        tpWin = this.get('windowContext');
+    }
 
-    return this.get('promiseProvider').then(
+    return this.get('promiseProvider').chain(
         function() {
             var promise;
 
@@ -454,6 +470,11 @@ function(aURI, aWindow) {
                             });
 
             return promise;
+        }).chainCatch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating setLocation Promise: ' +
+                            TP.str(err)) : 0;
         });
 });
 
@@ -511,11 +532,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Driver.Inst.defineMethod('startSequence',
+TP.gui.Driver.Inst.defineMethod('constructSequence',
 function() {
 
     /**
-     * @method startSequence
+     * @method constructSequence
      * @summary Returns a new GUI sequence used to script actions.
      * @returns {TP.gui.Sequence} A new GUI sequence.
      */
@@ -644,8 +665,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
-     *     called).
+     *     to is executed* (which won't happen until run() is called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
@@ -716,9 +736,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -778,7 +802,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
+     *     to is executed* (which won't happen until the 'run()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
@@ -855,9 +879,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -1111,7 +1139,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
+     *     to is executed* (which won't happen until the 'run()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
@@ -1188,9 +1216,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -1210,7 +1242,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
+     *     to is executed* (which won't happen until the 'run()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
@@ -1287,9 +1319,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -1300,11 +1336,11 @@ function(mouseLocation, mouseButton) {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Sequence.Inst.defineMethod('perform',
+TP.gui.Sequence.Inst.defineMethod('run',
 function() {
 
     /**
-     * @method perform
+     * @method run
      * @summary Executes the sequence.
      * @description Note that the steps that comprise the sequence are all
      *     executed in a 'chained' manner, so that if there are asynchronous
@@ -1319,17 +1355,17 @@ function() {
 
     var provider,
 
-        thisArg;
+        thisref;
 
     provider = this.get('driver').get('promiseProvider');
 
-    thisArg = this;
+    thisref = this;
 
     //  'Then' a Function onto our internal Promise that will itself return a
     //  Promise when called upon. That Promise will execute set up a 'work'
     //  callback function that executes each entry in the sequence and then
     //  resolves the Promise after executing the last entry.
-    provider.then(
+    provider.chain(
         function() {
             var promise;
 
@@ -1343,11 +1379,11 @@ function() {
                         count,
                         workFunc;
 
-                    sequenceEntries = thisArg.get('sequenceEntries');
-                    driver = thisArg.get('driver');
+                    sequenceEntries = thisref.get('sequenceEntries');
+                    driver = thisref.get('driver');
 
                     //  'Expand' any event targets in the sequence entries
-                    sequenceEntries = thisArg.$expandSequenceEntries(
+                    sequenceEntries = thisref.$expandSequenceEntries(
                                                         sequenceEntries);
 
                     //  Set up the work function that will process a single
@@ -1394,21 +1430,20 @@ function() {
                                     'No current Element for the GUI Driver.');
                             }
 
-                            //  We fork() the work function here to give the GUI
+                            //  We fork the work function here to give the GUI
                             //  a chance to refresh before we manipulate it.
-                            //  Note that the return value from fork() is the
-                            //  timeout used to schedule it - but the callback
+                            //  Note the return value from setTimeout is the
+                            //  timeout object - but the callback
                             //  handed to $performGUISequenceStep() expects a
                             //  Function object, therefore we have to wrap it.
                             workCallback =
                                 function() {
-                                    workFunc.fork(
-                                        TP.sys.cfg(
-                                            'test.anti_starve_timeout'));
+                                    setTimeout(workFunc,
+                                        TP.sys.cfg('test.anti_starve_timeout'));
                                 };
 
                             //  Execute the individual sequence step entry.
-                            thisArg.$performGUISequenceStep(
+                            thisref.$performGUISequenceStep(
                                 seqEntry.at(1),
                                 seqEntry.at(0),
                                 seqEntry.at(2),
@@ -1421,6 +1456,11 @@ function() {
                 });
 
             return promise;
+        }).chainCatch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating GUI automation \'run\' Promise: ' +
+                            TP.str(err)) : 0;
         });
 
     return this;
@@ -1482,6 +1522,24 @@ function(target, type, args, callback, currentElement) {
                 });
 
             return synArgs;
+        } else if (TP.isArray(synArgs)) {
+
+            synArgs = synArgs.collect(
+                function(anItem) {
+                    return anItem.replace(
+                        /\[[a-zA-Z0-9-]+?\]/g,
+                        function(tibetKey) {
+                            var synKey;
+
+                            if (TP.isValid(
+                                synKey = TP.extern.syn.
+                                            tibetSpecialKeyMap[tibetKey])) {
+                                return synKey;
+                            }
+
+                            return tibetKey;
+                        });
+                });
         }
 
         synArgs.relatedTarget = null;

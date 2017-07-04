@@ -5,10 +5,13 @@
 TP.xctrls.button.Type.describe('TP.xctrls.button: manipulation',
 function() {
 
-    var unloadURI,
-        loadURI,
+    var driver,
+        windowContext,
 
-        windowContext;
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -17,10 +20,10 @@ function() {
     this.before(
         function() {
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_button.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -33,7 +36,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -41,18 +44,9 @@ function() {
 
     //  ---
 
-    this.beforeEach(
-        function() {
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(100);
-        });
-
-    //  ---
-
     this.afterEach(
         function() {
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -65,16 +59,22 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
+
+                var focusedElem;
+
                 test.assert.hasAttribute(button, 'pclass:focus');
 
                 test.assert.didSignal(button, 'TP.sig.UIFocus');
                 test.assert.didSignal(button, 'TP.sig.UIDidFocus');
+
+                focusedElem = driver.getFocusedElement();
+                test.assert.isIdenticalTo(focusedElem, button);
             });
     });
 
@@ -90,41 +90,41 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseDown(button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(button, 'pclass:active');
 
                 test.assert.didSignal(button, 'TP.sig.UIActivate');
                 test.assert.didSignal(button, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseUp(button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
                 test.assert.didSignal(button, 'TP.sig.UIDeactivate');
                 test.assert.didSignal(button, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  click
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             click(button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
 
                 //  Don't test the attribute here - it will already have been
@@ -150,25 +150,25 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyDown(button, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.assert.hasAttribute(button, 'pclass:active');
 
                 test.assert.didSignal(button, 'TP.sig.UIActivate');
                 test.assert.didSignal(button, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyUp(button, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
@@ -192,27 +192,27 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:focus');
 
                 test.refute.didSignal(button, 'TP.sig.UIFocus');
                 test.refute.didSignal(button, 'TP.sig.UIDidFocus');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseDown(button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
@@ -220,25 +220,25 @@ function() {
                 test.refute.didSignal(button, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             mouseUp(button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- click
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             click(button).
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIActivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidActivate');
@@ -246,30 +246,30 @@ function() {
                 test.refute.didSignal(button, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyDown(button, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
 
                 test.refute.didSignal(button, 'TP.sig.UIActivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        driver.constructSequence().
             keyUp(button, 'Enter').
-            perform();
+            run();
 
-        test.then(
+        test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(button, 'TP.sig.UIDidDeactivate');

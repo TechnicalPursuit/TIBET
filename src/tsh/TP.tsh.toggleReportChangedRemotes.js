@@ -59,7 +59,7 @@ function(aRequest) {
         return this.printUsage(aRequest);
     }
 
-    resourceHash = TP.core.URI.get('changedResources');
+    resourceHash = TP.core.URI.get('remoteChangeList');
 
     handler =
         function(aSignal) {
@@ -111,14 +111,14 @@ function(aRequest) {
         aRequest.stdout('Remote resource change monitoring active.');
     }
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('toggleReportChangedRemotes',
     TP.tsh.toggleReportChangedRemotes.Type.getMethod('tshExecute'),
     'Toggles whether to report remote resource changes. Requires TDS.',
     ':toggleReportChangedRemotes',

@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -31,7 +31,9 @@ minimist = require('minimist');
 /**
  * Command supertype. All individual commands inherit from this type.
  */
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 
 
 /**
@@ -141,7 +143,17 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
         }
     });
 
-    return list;
+    return (opts._ || []).concat(list);
+};
+
+
+/**
+ * Returns true if the receiver can invoke the named method.
+ * @param {String} aMethodName The name of the method to check.
+ * @returns {Boolean} True if the method is supported.
+ */
+Cmd.prototype.canInvoke = function(aMethodName) {
+    return typeof this[aMethodName] === 'function';
 };
 
 
@@ -165,7 +177,8 @@ Cmd.prototype.getArglist = function() {
 
     var arglist,
         known,
-        cmd;
+        cmd,
+        value;
 
     cmd = this;
     arglist = [];
@@ -175,10 +188,8 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.string) {
         this.PARSE_OPTIONS.string.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(CLI.getcfg(key))) {
-                arglist.push('--' + key, CLI.getcfg(key));
-            } else if (key in cmd.PARSE_OPTIONS.default) {
-                arglist.push('--' + key, cmd.PARSE_OPTIONS.default[key]);
+            if (CLI.notEmpty(cmd.getArgument(key))) {
+                arglist.push('--' + key, cmd.getArgument(key));
             }
         });
     }
@@ -187,10 +198,8 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.number) {
         this.PARSE_OPTIONS.number.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(CLI.getcfg(key))) {
-                arglist.push('--' + key, CLI.getcfg(key));
-            } else if (key in cmd.PARSE_OPTIONS.default) {
-                arglist.push('--' + key, cmd.PARSE_OPTIONS.default[key]);
+            if (CLI.notEmpty(cmd.getArgument(key))) {
+                arglist.push('--' + key, cmd.getArgument(key));
             }
         });
     }
@@ -200,8 +209,9 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
         this.PARSE_OPTIONS.boolean.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(CLI.getcfg(key))) {
-                if (CLI.getcfg(key)) {
+            value = cmd.getArgument(key);
+            if (CLI.isValid(value)) {
+                if (value === true) {
                     arglist.push('--' + key);
                 } else {
                     //  Booleans default to false normally so adding all the
@@ -211,10 +221,6 @@ Cmd.prototype.getArglist = function() {
                         arglist.push('--no-' + key);
                     }
                 }
-            } else if (key in cmd.PARSE_OPTIONS.default) {
-                //  If no value provided but it's supposed to default to true
-                //  then we need to push the flag manually.
-                arglist.push('--' + key);
             }
         });
     }
@@ -225,17 +231,78 @@ Cmd.prototype.getArglist = function() {
 
 
 /**
+ * Returns the value for a particular argument. This is taken from the parsed
+ * values of the command line.
+ * @param {String|Number} name If a string this should be a named argument or an
+ *     string of the form 'argN' such as arg0. You can also simply pass a number
+ *     to acquire that numbered argument.
+ * @returns {Array.<String>} The argv list minus executable/command.
+ */
+Cmd.prototype.getArgument = function(name) {
+    var value,
+        parts,
+        part,
+        obj;
+
+    if (this.options.hasOwnProperty(name)) {
+        return this.options[name];
+    }
+
+    //  For dotted properties we have to try to iterate.
+    if (/\./.test(name)) {
+        parts = name.split('.');
+        obj = this.options;
+        part = parts.shift();
+        try {
+            while (obj && part) {
+                obj = obj[part];
+                part = parts.shift();
+            }
+            if (CLI.isValid(obj)) {
+                return obj;
+            }
+        } catch (e) {
+            void 0;
+        }
+
+        //  Fallback for dotted argument names is to grab config value.
+        if (CLI.isValid(value = CLI.getcfg(name))) {
+            return value;
+        }
+    }
+
+    //  For properties which are not explicitly found we can look in the parse
+    //  options for a default value.
+    if (this.PARSE_OPTIONS.default.hasOwnProperty(name)) {
+        return this.PARSE_OPTIONS.default[name];
+    }
+
+    //  If it's a numbered argument reference we can look in the '_' array from
+    //  minimist's argv processing.
+    if (/^arg(\d+)$/.test(name)) {
+        return this.options._[name.slice(3)];
+    }
+
+    //  Number? Just return the numbered argument if possible.
+    if (typeof name === 'number') {
+        return this.options._[name];
+    }
+
+    return;
+};
+
+
+/**
  * Returns an array of actual arguments from the command line. This is useful
  * for comparing with the getArglist results or capturing specific arguments for
- * use in a child process. Note that items up through the command name are not
- * included in this list.
- * @returns {Array.<String>} The argv list minus executable/command.
+ * use in a child process. Note that argv[0] is the command name.
+ * @returns {Array.<String>} The argv list.
  */
 Cmd.prototype.getArgv = function() {
     var argv;
 
     argv = process.argv;
-    argv = argv.slice(3);
+    argv = argv.slice(2);
 
     return argv;
 };
@@ -291,17 +358,42 @@ Cmd.prototype.getType = function() {
     return this.constructor;
 };
 
+
+/**
+ * Tests whether the explicit command line arguments included the flag (or
+ * inverse for boolean flags). This check is used to determine what the user
+ * actually typed vs. what minimist may have parsed and defaulted.
+ * @param {String|Number} name The name of the flag or the argument number to
+ *     verify.
+ * @return {Boolean} True if the argument was explicitly provided.
+ */
+Cmd.prototype.hasArgument = function(name) {
+    var argv;
+
+    argv = this.getArgv();
+
+    if (typeof name === 'number') {
+        return CLI.isValid(argv[name]);
+    }
+
+    return argv.indexOf('--' + name) !== -1 || argv.indexOf('--no-' + name) !== -1;
+};
+
+
 /**
  * Parse the arguments and blend with default values. This routine uses parsing
  * via minimist and places the result in the receiver's options property.
+ * @param {Array} [argv] An optional arguments array to parse instead of the
+ *     default process.argv value.
  * @returns {Object} An object in minimist argument format.
  */
-Cmd.prototype.parse = function() {
+Cmd.prototype.parse = function(argv) {
     var command,
         cfg;
 
     //  Parse the command line (again) but with the command's specific args.
-    this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS || {});
+    this.options = minimist(argv || process.argv.slice(2),
+        this.PARSE_OPTIONS || {});
 
     //  Blend in any missing options provided by the CLI.PROJECT_FILE.
     command = CLI.options._[0];
@@ -310,8 +402,8 @@ Cmd.prototype.parse = function() {
         this.options = CLI.blend(this.options, cfg[command]);
     }
 
-    this.debug('process.argv: ' + JSON.stringify(process.argv));
-    this.debug('minimist.argv: ' + JSON.stringify(this.options));
+    this.trace('argv: ' + JSON.stringify(argv || process.argv));
+    this.trace('minimist.argv: ' + JSON.stringify(this.options));
 
     return this.options;
 };
@@ -347,8 +439,9 @@ Cmd.prototype.prompt = CLI.prompt;
  * Parses, checks for --usage/--help, and invokes execute() as needed. This is a
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
+ * @param {Array} [argv] An optional arguments array to be used for parse().
  */
-Cmd.prototype.run = function() {
+Cmd.prototype.run = function(argv) {
 
     var code;
 
@@ -356,9 +449,9 @@ Cmd.prototype.run = function() {
     this.config = CLI.config;
 
     // Re-parse the command line with any localized parser options.
-    this.options = this.parse();
+    this.options = this.parse(argv);
 
-    this.debug(CLI.beautify(JSON.stringify(this.config.tibet)), true);
+    this.trace(CLI.beautify(JSON.stringify(this.config.tibet)));
 
     //  Adjust any parameters after parsing.
     this.options = this.configure();
@@ -372,7 +465,7 @@ Cmd.prototype.run = function() {
         return code;
     }
 
-    this.execute();
+    return this.execute();
 };
 
 
@@ -403,9 +496,12 @@ Cmd.prototype.shexec = function(cmd) {
 
 /**
  * Dumps the receiver's usage string as a simple form of help.
+ * @param {String} msg An alternative message to override this.USAGE value.
  */
-Cmd.prototype.usage = function() {
-    this.info('\nUsage: ' + (this.USAGE || '') + '\n');
+Cmd.prototype.usage = function(msg) {
+    this.info('\nUsage: ' + (msg || this.USAGE || '') + '\n');
+
+    return 0;
 };
 
 
@@ -413,16 +509,17 @@ Cmd.prototype.usage = function() {
 //  Console logging API via invoking CLI instance.
 //  ---
 
-Cmd.prototype.log = CLI.log.bind(CLI);
-Cmd.prototype.info = CLI.info.bind(CLI);
-Cmd.prototype.warn = CLI.warn.bind(CLI);
-Cmd.prototype.error = CLI.error.bind(CLI);
+Cmd.prototype.trace = CLI.curry(CLI.$log, 'trace').bind(CLI);
+Cmd.prototype.debug = CLI.curry(CLI.$log, 'debug').bind(CLI);
+Cmd.prototype.info = CLI.curry(CLI.$log, 'info').bind(CLI);
+Cmd.prototype.warn = CLI.curry(CLI.$log, 'warn').bind(CLI);
+Cmd.prototype.error = CLI.curry(CLI.$log, 'error').bind(CLI);
+Cmd.prototype.fatal = CLI.curry(CLI.$log, 'fatal').bind(CLI);
+Cmd.prototype.system = CLI.curry(CLI.$log, 'system').bind(CLI);
+Cmd.prototype.log = CLI.curry(CLI.$log, 'log').bind(CLI);
+Cmd.prototype.verbose = CLI.curry(CLI.$log, 'verbose').bind(CLI);
 
-Cmd.prototype.debug = CLI.debug.bind(CLI);
-Cmd.prototype.verbose = CLI.verbose.bind(CLI);
-Cmd.prototype.system = CLI.system.bind(CLI);
-
-Cmd.prototype.success = CLI.success.bind(CLI);
+Cmd.prototype.colorize = CLI.colorize.bind(CLI);
 
 Cmd.prototype.lpad = CLI.lpad.bind(CLI);
 Cmd.prototype.rpad = CLI.rpad.bind(CLI);

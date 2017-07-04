@@ -73,69 +73,6 @@ TP.w3.DocType.Inst.defineAttribute('systemID');
 TP.w3.DocType.Inst.defineAttribute('dtdInfo');
 
 //  ------------------------------------------------------------------------
-
-(function() {
-
-    //  "Canonical Instances"
-
-    TP.w3.DocType.Type.defineConstant('XHTML_10_TRANSITIONAL',
-        TP.w3.DocType.construct(
-            'html',
-            '-//W3C//DTD XHTML 1.0 Transitional//EN',
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('XHTML_10_STRICT',
-        TP.w3.DocType.construct(
-            'html',
-            '-//W3C//DTD XHTML 1.0 Strict//EN',
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('XHTML_10_FRAMESET',
-        TP.w3.DocType.construct(
-            'html',
-            '-//W3C//DTD XHTML 1.0 Frameset//EN',
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_401_TRANSITIONAL',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 4.01 Transitional//EN',
-            'http://www.w3.org/TR/html4/loose.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_401_STRICT',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 4.01 Strict//EN',
-            'http://www.w3.org/TR/html4/strict.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_401_FRAMESET',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 4.01 Frameset//EN',
-            'http://www.w3.org/TR/html4/frameset.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_32_FINAL',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 3.2 Final//EN',
-            ''));   //  No system ID defined for HTML 3.2
-
-    TP.w3.DocType.Type.defineConstant('SVG_10',
-        TP.w3.DocType.construct(
-            'svg',
-            '-//W3C//DTD SVG 1.0//EN',
-            'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('MATHML_20',
-        TP.w3.DocType.construct(
-            'math',
-            '-//W3C//DTD MathML 2.0//EN',
-            'http://www.w3.org/TR/MathML2/dtd/mathml2.dtd'));
-
-    return;
-}());
-
-//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -213,26 +150,38 @@ function(docTypeName, publicID, systemID) {
 //  ------------------------------------------------------------------------
 
 TP.w3.DocType.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
 
-    var repStr,
+    var publicID,
+        systemID,
+
+        repStr,
         str;
 
-    repStr = TP.join('<!DOCTYPE ',
-                        this.get('docTypeName'),
-                        ' PUBLIC "',
-                        this.get('publicID'),
-                        '" "',
-                        this.get('systemID'),
-                        '">');
+    if (TP.notValid(repStr = this.$get('str'))) {
+
+        publicID = this.get('publicID');
+        systemID = this.get('systemID');
+
+        repStr = TP.join(
+                    '<!DOCTYPE ',
+                    this.get('docTypeName'),
+                    TP.notEmpty(publicID) ? ' PUBLIC "' + publicID + '"' : '',
+                    TP.notEmpty(systemID) ? ' "' + systemID + '"' : '',
+                    '>');
+
+        this.$set('str', repStr);
+    }
 
     str = '[' + TP.tname(this) + ' :: ';
     str += '(' + repStr + ')' + ']';
@@ -358,16 +307,22 @@ function(verbose) {
      *     format.
      */
 
-    var repStr;
+    var publicID,
+        systemID,
+
+        repStr;
 
     if (TP.notValid(repStr = this.$get('str'))) {
-        repStr = TP.join('<!DOCTYPE ',
-                        this.get('docTypeName'),
-                        ' PUBLIC "',
-                        this.get('publicID'),
-                        '" "',
-                        this.get('systemID'),
-                        '">');
+
+        publicID = this.get('publicID');
+        systemID = this.get('systemID');
+
+        repStr = TP.join(
+                    '<!DOCTYPE ',
+                    this.get('docTypeName'),
+                    TP.notEmpty(publicID) ? ' PUBLIC "' + publicID + '"' : '',
+                    TP.notEmpty(systemID) ? ' "' + systemID + '"' : '',
+                    '>');
 
         this.$set('str', repStr);
     }
@@ -398,6 +353,75 @@ function() {
                         '</systemID>' +
                     '</instance>';
 });
+
+//  ------------------------------------------------------------------------
+
+(function() {
+
+    //  "Canonical Instances"
+
+    TP.w3.DocType.Type.defineConstant('XHTML_10_TRANSITIONAL',
+        TP.w3.DocType.construct(
+            'html',
+            '-//W3C//DTD XHTML 1.0 Transitional//EN',
+            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('XHTML_10_STRICT',
+        TP.w3.DocType.construct(
+            'html',
+            '-//W3C//DTD XHTML 1.0 Strict//EN',
+            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('XHTML_10_FRAMESET',
+        TP.w3.DocType.construct(
+            'html',
+            '-//W3C//DTD XHTML 1.0 Frameset//EN',
+            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_401_TRANSITIONAL',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 4.01 Transitional//EN',
+            'http://www.w3.org/TR/html4/loose.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_401_STRICT',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 4.01 Strict//EN',
+            'http://www.w3.org/TR/html4/strict.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_401_FRAMESET',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 4.01 Frameset//EN',
+            'http://www.w3.org/TR/html4/frameset.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_32_FINAL',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 3.2 Final//EN',
+            ''));   //  No system ID defined for HTML 3.2
+
+    TP.w3.DocType.Type.defineConstant('SVG_10',
+        TP.w3.DocType.construct(
+            'svg',
+            '-//W3C//DTD SVG 1.0//EN',
+            'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('MATHML_20',
+        TP.w3.DocType.construct(
+            'math',
+            '-//W3C//DTD MathML 2.0//EN',
+            'http://www.w3.org/TR/MathML2/dtd/mathml2.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('XHTML_50',
+        TP.w3.DocType.construct(
+            'html',
+            '',
+            ''));
+
+    return;
+}());
 
 //  ========================================================================
 //  TP.core.HTTP
@@ -558,6 +582,8 @@ TP.ietf.Mime.Type.defineConstant('RSS', 'application/rss+xml');
 TP.ietf.Mime.Type.defineConstant('SOAP', TP.SOAP_ENCODED);
 TP.ietf.Mime.Type.defineConstant('XMLRPC', TP.XMLRPC_ENCODED);
 TP.ietf.Mime.Type.defineConstant('XML', TP.XML_ENCODED);
+
+TP.ietf.Mime.Type.defineConstant('VCARD', 'text/vcard');
 
 TP.ietf.Mime.Type.defineConstant('XMPP', 'application/xmpp+xml');
 
@@ -808,22 +834,26 @@ function(aMIMEType) {
      *     By registering MIME types and handlers for specific text formats you
      *     can create intelligent content handlers for your internal document
      *     formats. For this to work properly TIBET has to properly discern the
-     *     MIME type for the content. See getMIMEType for more information.
+     *     MIME type for the content. See getMIMEType() for more information.
      * @param {String} aMIMEType The MIME type to return a wrapper type for.
      * @returns {TP.lang.RootObject.<TP.ietf.Mime>} A TP.ietf.Mime subtype type
      *     object.
      */
 
     var info,
+        typeName,
         type;
 
     //  grab the hash and if we find one return the type/typename
     if (TP.isValid(info = TP.ietf.Mime.get('info').at(aMIMEType))) {
-        type = info.at('handler');
+        typeName = info.at('handler');
 
         //  dynaload handler types as needed
-        if (TP.notEmpty(type)) {
-            return TP.sys.getTypeByName(type);
+        if (TP.notEmpty(typeName)) {
+            type = TP.sys.getTypeByName(typeName);
+            if (TP.isType(type) && !type.isAbstract()) {
+                return type;
+            }
         }
     }
 
@@ -955,7 +985,11 @@ function(aContent, aURI, defaultMIME) {
         //  Try to get the 'most representative' node from the content.
         elem = TP.nodeGetBestNode(node);
 
-        if (TP.isElement(elem)) {
+        //  Make sure that this is both an Element *and it doesn't have a
+        //  prefix*. This ensures that no prefixed element will be used to
+        //  derive MIME type, since it's sort of 'out of band' of the default
+        //  content.
+        if (TP.isElement(elem) && TP.isEmpty(elem.prefix)) {
 
             //  If the element has a valid namespace, then use that to try to
             //  look up a 'mimetype' entry in the XMLNS 'info'
@@ -1359,6 +1393,9 @@ TP.w3.Xmlns.Type.defineAttribute('info', TP.hc());
 //  A list of commonly-used namespaces that get installed on new documents, etc.
 TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
 
+//  A list of implicit XHTML namespace URIs
+TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
+
 //  ------------------------------------------------------------------------
 
 (function() {
@@ -1514,7 +1551,7 @@ TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
                             'rootElement', ''),
             TP.w3.Xmlns.VCARD,
                     TP.hc('uri', TP.w3.Xmlns.VCARD,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.Mime.VCARD,
                             'prefix', 'vcard',
                             'rootElement', 'vcard'),
             TP.w3.Xmlns.VCARD_EXT,
@@ -1526,7 +1563,8 @@ TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
                             'mimetype', TP.ietf.Mime.XML,
                             'prefix', 'xctrls',
                             'rootElement', '',
-                            'procPriority', 3),
+                            'procPriority', 3,
+                            'defaultNodeType', 'TP.xctrls.GenericElement'),
             TP.w3.Xmlns.XFORMS,
                     TP.hc('uri', TP.w3.Xmlns.XFORMS,
                             'mimetype', TP.ietf.Mime.XML,
@@ -2273,6 +2311,35 @@ function(anNSURI, aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.w3.Xmlns.Type.defineMethod('getXHTMLURIs',
+function() {
+
+    /**
+     * @method getXHTMLURIs
+     * @summary Returns an array of namespace URIs which are implicitly part of
+     *     the XHTML5 specification.
+     * @returns {Array} The list of XHTML namespace URIs.
+     */
+
+    var nsURIs;
+
+    nsURIs = this.get('$xhtmlURIs');
+
+    if (TP.notEmpty(nsURIs)) {
+        return nsURIs;
+    }
+
+    nsURIs = TP.ac(TP.w3.Xmlns.XHTML,
+                    TP.w3.Xmlns.MATHML,
+                    TP.w3.Xmlns.SVG);
+
+    this.set('$xhtmlURIs', nsURIs);
+
+    return nsURIs;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.w3.Xmlns.Type.defineMethod('getXMLNSDefs',
 function() {
 
@@ -2822,13 +2889,13 @@ function(aURI, aRequest, logError) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Cookie.Type.defineMethod('nuke',
+TP.core.Cookie.Type.defineMethod('delete',
 function(aURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} aURI The URI to nuke. NOTE that this URI will not
+     * @param {TP.core.URI} aURI The URI to delete. NOTE that this URI will not
      *     have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -2904,7 +2971,10 @@ function(aURI, aRequest) {
     //  for 'save' requests), so that we get some sort of value back.
     request.atPut('resultType', TP.TEXT);
 
-    query = TP.ifInvalid(aURI.get('queryDict'), TP.hc());
+    query = aURI.get('queryDict');
+    if (TP.notValid(query)) {
+        query = TP.hc();
+    }
 
     if (!this.setCookie(aURI.get('cname'),
                                     contentToSet,
@@ -2950,7 +3020,7 @@ function(aURI, aRequest) {
  *
  *     // OR Fetch the content and ignore the URL cache, going to the
  *     // database each time.
- *     // myCookieURI.getResource(TP.hc('refresh', true)).get('result'); ->
+ *     myCookieURI.getResource(TP.hc('refresh', true)).get('result'); ->
  *     // Returns the date set.
  *
  *     // session #3. Store the data using non-default values:

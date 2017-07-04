@@ -1,4 +1,4 @@
-.TH "TIBET\-TEST" "1" "July 2016" "" ""
+.TH "TIBET\-TEST" "1" "July 2017" "" ""
 .SH "NAME"
 \fBtibet-test\fR \- runs unit/functional tests on your application
 .SH SYNOPSIS
@@ -8,17 +8,17 @@ tibet test [<target>] [\-\-suite <filter>] [\-\-cases <filter>] [\-\-karma] [\-\
 .P
 Runs unit, functional, and/or integration tests on your application\.
 .P
-If the \fB\-\-karma\fP flag is true (the default), \fBtibet test\fP checks to see if
+If the \fB\-\-karma\fP flag is true, \fBtibet test\fP checks to see if the \fBkarma\-tibet\fP
 .br
-the \fBkarma\-tibet\fP testing module and \fBkarma\fP have been installed in your
+testing module and \fBkarma\fP have been installed in your project\. If so the
 .br
-project\. If so the command delegates to \fBkarma start\fP to run your tests\.
+command delegates to \fBkarma start\fP to run your tests\.
 .P
-If \fBkarma\fP isn't installed \fBphantomjs\fP is checked and tests will run in the
+If \fBkarma\fP isn't installed or the \fB\-\-karma\fP flag is false (the default)
 .br
-context of \fBphantomjs\fP if found\. You can force PhantomJS use by using
+\fBphantomjs\fP is checked and tests will run in the context of \fBphantomjs\fP if
 .br
-\fB\-\-no\-karma\fP on the command line\.
+found\.
 .P
 In both cases (karma or phantom) you can specify a particular test target object
 .br
@@ -68,7 +68,7 @@ Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\
 .br
 \fB\-\-no\-karma\fP will force TIBET's basic PhantomJS\-driven test execution\. The
 .br
-default value is true\.
+default value is false\.
 .IP \(bu 2
 \fB\-\-suite\fP :
 .br
@@ -82,7 +82,7 @@ Assuming you've followed the installation instructions for \fBkarma\-tibet\fP (h
 .P
 .RS 2
 .nf
-$ tibet test
+$ tibet test \-\-karma
 
 30 06 2016 17:32:46\.557:INFO [karma]: Karma v1\.1\.0 server started at http://0\.0\.0\.0:9876/
 30 06 2016 17:32:46\.560:INFO [launcher]: Launching browser Chrome with unlimited concurrency
@@ -155,7 +155,7 @@ ok \- Is a templated tag\.
 .P
 .RS 2
 .nf
-$ tibet test APP\.hello\.app
+$ tibet test \-\-karma APP\.hello\.app
 
 overriding karma\.script with: :test  \-target='APP\.hello\.app'
 01 07 2016 13:56:55\.444:INFO [karma]: Karma v1\.1\.0 server started at http://0\.0\.0\.0:9876/

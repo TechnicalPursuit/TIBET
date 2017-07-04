@@ -109,7 +109,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('export',
     TP.tsh.export.Type.getMethod('tshExecute'),
     'Writes the previous buffer to a target.',
     ':export',

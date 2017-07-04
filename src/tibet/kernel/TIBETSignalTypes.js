@@ -108,6 +108,10 @@ TP.core.Monitor.Inst.defineAttribute('test');
 //  what signal should we send out when we detect a valid monitor event?
 TP.core.Monitor.Inst.defineAttribute('notifier');
 
+//  the step (function) that will be executed to acquire the target and run the
+//  test function against it.
+TP.core.Monitor.Inst.defineAttribute('stepFunction');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -122,11 +126,13 @@ function(aTarget, aTest, aSignal) {
      *     object being monitored. When an ID is used it should be a valid
      *     TP.core.URI or a String which can be resolved via the
      *     TP.sys.getObjectById() call.
-     * @param {Function} aTest A function which defines the test being run on
+     * @param {?Function} aTest A function which defines the test being run on
      *     each target object. This should return true to cause the monitor to
-     *     signal.
-     * @param {String|TP.sig.Signal} aSignal The signal to fire when/if the
-     *     test condition passes.
+     *     signal. If not supplied, the default test as defined by this type
+     *     will be used.
+     * @param {?String|TP.sig.Signal} aSignal The signal to fire when/if the
+     *     test condition passes. If not supplied, the default signal as defined
+     *     by this type will be used.
      * @returns {TP.core.Monitor} A newly initialized instance.
      */
 
@@ -138,7 +144,11 @@ function(aTarget, aTest, aSignal) {
 
     //  test can be defaulted on a type-by-type basis so that subtypes of
     //  monitor can be constructed for common cases.
-    test = TP.ifInvalid(aTest, this.getType().getDefaultTest());
+    test = aTest;
+    if (TP.notValid(test)) {
+        test = this.getType().getDefaultTest();
+    }
+
     if (!TP.isCallable(test)) {
         this.raise('TP.sig.InvalidParameter',
                     'Test must be a runnable function.');
@@ -150,7 +160,11 @@ function(aTarget, aTest, aSignal) {
 
     //  signal type can be defaulted on a type-by-type basis so subtypes can
     //  avoid requiring a signal name during instance construction
-    signal = TP.ifInvalid(aSignal, this.getType().getDefaultSignal());
+    signal = aSignal;
+    if (TP.notValid(signal)) {
+        signal = this.getType().getDefaultSignal();
+    }
+
     if (TP.notValid(signal)) {
         this.raise('TP.sig.InvalidParameter',
                     'Signal must be valid signal name or type.');
@@ -201,21 +215,88 @@ function(aTarget) {
     len = targets.getSize();
     for (i = 0; i < len; i++) {
         target = targets.at(i);
-
-        if (!TP.isString(target) &&
-            !TP.isCallable(target) &&
-            !TP.isKindOf(target, TP.core.URI)) {
-            this.raise(
-                'TP.sig.InvalidParameter',
-                'Target must be string ID, URI, or acquisition function.');
-
-            continue;
-        }
-
         this.$get('targets').add(target);
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Monitor.Inst.defineMethod('cleanupResolvedTarget',
+function(aTarget) {
+
+    /**
+     * @method cleanupResolvedTarget
+     * @summary Cleans up any 'instance programmed' state that the monitor might
+     *     have placed on the supplied resolved target. At this level, this
+     *     method does nothing.
+     * @param {Object} aTarget The resolved target (i.e. the Object that was
+     *     found by using a piece of targeting information) to clean up.
+     * @returns {TP.core.Monitor} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Monitor.Inst.defineMethod('cleanupResolvedTargets',
+function() {
+
+    /**
+     * @method cleanupResolvedTargets
+     * @summary Iterates over the receiver's target, resolves them to an Object
+     *     of some type and messages the receiver with the
+     *     'cleanupResolvedTarget()' message and that resolved object to clean
+     *     up any 'instance programmed' state data that the monitor might have
+     *     placed on it.
+     * @returns {TP.core.Monitor} The receiver.
+     */
+
+    var targets,
+
+        len,
+        i,
+        target,
+
+        obj;
+
+    targets = this.get('targets');
+
+    //  since we're dealing with a reference type in the form of an
+    //  array here the size may vary if add/remove was called between
+    //  invocations of the step function
+    len = targets.getSize();
+    for (i = 0; i < len; i++) {
+        target = targets.at(i);
+        if (TP.isCallable(target)) {
+            try {
+                obj = target();
+            } catch (e) {
+                //  empty
+                //  ignore errors in acquisition functions
+            }
+        } else if (TP.isString(target)) {
+            obj = TP.sys.getObjectById(target);
+        } else if (TP.isKindOf(target, TP.core.URI)) {
+            //  NB: We assume 'async' of false here.
+            obj = target.getResource().get('result');
+        } else {
+            obj = target;
+        }
+
+        //  ignore targets we can't find, it's the same as having not
+        //  met the conditional requirements since the monitor might be
+        //  testing for existence as the condition to signal for
+        if (TP.notValid(obj)) {
+            continue;
+        }
+
+        this.cleanupResolvedTarget(obj);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -292,9 +373,11 @@ function() {
                 }
             } else if (TP.isString(target)) {
                 obj = TP.sys.getObjectById(target);
-            } else {
+            } else if (TP.isKindOf(target, TP.core.URI)) {
                 //  NB: We assume 'async' of false here.
                 obj = target.getResource().get('result');
+            } else {
+                obj = target;
             }
 
             //  ignore targets we can't find, it's the same as having not
@@ -352,18 +435,7 @@ function(aTarget) {
     len = targets.getSize();
     for (i = 0; i < len; i++) {
         target = targets.at(i);
-
-        if (!TP.isString(target) &&
-            !TP.isCallable(target) &&
-            !TP.isKindOf(target, TP.core.URI)) {
-            this.raise(
-                'TP.sig.InvalidParameter',
-                'Target must be string ID, URI, or acquisition function.');
-
-            continue;
-        }
-
-        this.$get('targets').remove(target);
+        this.$get('targets').remove(target, TP.IDENTITY);
     }
 
     return this;
@@ -456,6 +528,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.Monitor} The receiver.
      */
 
+    this.cleanupResolvedTargets();
+
     this.getJob().cancel(aFaultString, aFaultCode, aFaultInfo);
 
     return this;
@@ -473,6 +547,8 @@ function(aResult) {
      *     job.
      * @returns {TP.core.Monitor} The receiver.
      */
+
+    this.cleanupResolvedTargets();
 
     this.getJob().complete(aResult);
 
@@ -494,6 +570,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     additional information about the failure.
      * @returns {TP.core.Monitor} The receiver.
      */
+
+    this.cleanupResolvedTargets();
 
     this.getJob().fail(aFaultString, aFaultCode, aFaultInfo);
 
@@ -520,25 +598,286 @@ function(stepParameters) {
 });
 
 //  ========================================================================
-//  TP.core.ResizeMonitor
+//  TP.core.DOMElementMonitor
 //  ========================================================================
 
 /**
- * @type {TP.core.ResizeMonitor}
- * @summary A TP.core.Monitor specific to monitoring elements for size changes
- *     which might be triggered via CSS shifts or other activity which won't
- *     normally trigger a native event.
+ * @type {TP.core.DOMElementMonitor}
+ * @summary A TP.core.Monitor subtype that monitors elements for a variety of
+ *     changes which might be triggered via CSS shifts or other activity which
+ *     won't normally trigger a native event.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Monitor.defineSubtype('ResizeMonitor');
+TP.core.Monitor.defineSubtype('DOMElementMonitor');
+
+//  need a monitor of a specific subtype
+TP.core.DOMElementMonitor.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeMonitor.Type.defineAttribute('defaultSignal', 'TP.sig.DOMResize');
+//  the monitor singleton instance that we're managing.
+TP.core.DOMElementMonitor.Type.defineAttribute('$monitor');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.Type.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        monitor,
+
+        ourDefaultSignalName,
+
+        len,
+        i,
+        signal,
+
+        len2,
+        j,
+
+        obj;
+
+    if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    //  Get the singleton instance that we manage for 'auto monitoring' when the
+    //  consumer is using this through the signaling interface.
+    monitor = this.get('$monitor');
+
+    ourDefaultSignalName = this.getDefaultSignal().getSignalName();
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        signal = signals.at(i).getSignalName();
+
+        //  The only signals we're interested in are our own kind of signals
+        if (signal !== ourDefaultSignalName) {
+            continue;
+        }
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            obj = origins.at(j);
+
+            if (TP.isString(obj)) {
+                obj = TP.sys.getObjectById(obj);
+            }
+
+            obj = TP.elem(TP.unwrap(obj));
+
+            //  We didn't get an Element, even after resolving and unwrapping -
+            //  that's a problem.
+            if (!TP.isElement(obj)) {
+                return this.raise('TP.sig.InvalidElement');
+            }
+
+            //  No valid singleton instance? Create one here and start here
+            //  (supplying the target).
+            if (TP.notValid(monitor)) {
+
+                monitor = this.construct(obj);
+                monitor.start();
+
+                this.set('$monitor', monitor);
+            } else {
+
+                //  We already have a running singleton instance - just add the
+                //  target.
+                monitor.addTarget(obj);
+            }
+        }
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        monitor,
+
+        ourDefaultSignalName,
+
+        len,
+        i,
+        signal,
+
+        len2,
+        j,
+
+        obj;
+
+    if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    //  Get the singleton instance that we manage for 'auto monitoring' when the
+    //  consumer is using this through the signaling interface.
+    monitor = this.get('$monitor');
+
+    //  No valid singleton instance? Exit here and return false to not have the
+    //  main observation system unregister the observer - it won't be there.
+    if (TP.notValid(monitor)) {
+        return false;
+    }
+
+    ourDefaultSignalName = this.getDefaultSignal().getSignalName();
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        signal = signals.at(i).getSignalName();
+
+        //  The only signals we're interested in are our own kind of signals
+        if (signal !== ourDefaultSignalName) {
+            continue;
+        }
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            obj = origins.at(j);
+
+            if (TP.isString(obj)) {
+                obj = TP.sys.getObjectById(obj);
+            }
+
+            obj = TP.elem(TP.unwrap(obj));
+
+            //  We didn't get an Element, even after resolving and unwrapping -
+            //  that's a problem.
+            if (!TP.isElement(obj)) {
+                return this.raise('TP.sig.InvalidElement');
+            }
+
+            //  Remove the Element from the singleton.
+            monitor.removeTarget(obj);
+        }
+    }
+
+    //  If there are no targets left in the monitor, we shut it down and
+    //  set our instance attribute to null
+    if (TP.isValid(monitor) && TP.isEmpty(monitor.get('targets'))) {
+        monitor.complete();
+        this.set('$monitor', null);
+    }
+
+    return true;
+});
+
+//  ========================================================================
+//  TP.core.ResizeMonitor
+//  ========================================================================
+
+/**
+ * @type {TP.core.ResizeMonitor}
+ * @summary A TP.core.DOMElementMonitor subtype that monitors elements for size
+ *     changes which might be triggered via CSS shifts or other activity which
+ *     won't normally trigger a native event.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.defineSubtype('ResizeMonitor');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Type.defineAttribute('defaultInterval', 50);
+TP.core.ResizeMonitor.Type.defineAttribute('defaultSignal', 'TP.sig.DOMMonitoredResize');
 
 TP.core.ResizeMonitor.Type.defineAttribute(
     'defaultTest',
@@ -557,14 +896,18 @@ TP.core.ResizeMonitor.Type.defineAttribute(
             return;
         }
 
-        oldHeight = TP.elementGetAttribute(elem, 'tibet:old_height', true);
-        oldWidth = TP.elementGetAttribute(elem, 'tibet:old_width', true);
+        oldWidth = elem[TP.OLD_WIDTH];
+        oldHeight = elem[TP.OLD_HEIGHT];
 
-        newHeight = TP.elementGetHeight(elem);
-        newWidth = TP.elementGetWidth(elem);
+        //  NB: Since all we're interested in here is a *difference* in width
+        //  and height, regular offsetWidth and offsetHeight are fine and are
+        //  much faster than the more complete
+        //  TP.elementGetWidth()/TP.elementGetHeight() calls.
+        newHeight = elem.offsetHeight;
+        newWidth = elem.offsetWidth;
 
-        TP.elementSetAttribute(elem, 'tibet:old_height', newHeight, true);
-        TP.elementSetAttribute(elem, 'tibet:old_width', newWidth, true);
+        elem[TP.OLD_WIDTH] = newWidth;
+        elem[TP.OLD_HEIGHT] = newHeight;
 
         //  don't signal the first time through
         if (TP.isEmpty(oldHeight)) {
@@ -578,17 +921,254 @@ TP.core.ResizeMonitor.Type.defineAttribute(
         return false;
     });
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Type.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @description This method is overridden on this type because the
+     *     TP.sig.DOMMonitoredResize signal is a 'dual purpose' signal in that,
+     *     if you observe a Window or Document for 'resized', you will use the
+     *     native browser's machinery but if you observe an Element for 'resized',
+     *     there is no native browser event for such a thing and so you will use
+     *     a shared TP.core.Monitor to monitor the Element(s) for sizing
+     *     changes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origin;
+
+    //  Unwrap the supplied origin.
+    origin = TP.unwrap(anOrigin);
+
+    //  If its a String, it might be a GID, so try to resolve it.
+    if (TP.isString(origin)) {
+        origin = TP.sys.getObjectById(origin);
+        origin = TP.unwrap(origin);
+    }
+
+    //  If it's a Window or Document, just return true to tell the signaling
+    //  system to add the observation to the main notification engine.
+    if (TP.isWindow(origin) || TP.isDocument(origin)) {
+        return true;
+    }
+
+    //  Otherwise, it's probably an Element, so do what our supertype does (i.e.
+    //  use the singleton Monitor to monitor the element, etc.)
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var origin;
+
+    //  Unwrap the supplied origin.
+    origin = TP.unwrap(anOrigin);
+
+    //  If its a String, it might be a GID, so try to resolve it.
+    if (TP.isString(origin)) {
+        origin = TP.sys.getObjectById(origin);
+        origin = TP.unwrap(origin);
+    }
+
+    //  If it's a Window or Document, just return true to tell the signaling
+    //  system to remove the observation from the main notification engine.
+    if (TP.isWindow(origin) || TP.isDocument(origin)) {
+        return true;
+    }
+
+    //  Otherwise, it's probably an Element, so do what our supertype does (i.e.
+    //  remove the element from the singleton Monitor, etc.)
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Inst.defineMethod('cleanupResolvedTarget',
+function(aTarget) {
+
+    /**
+     * @method cleanupResolvedTarget
+     * @summary Cleans up any 'instance programmed' state that the monitor might
+     *     have placed on the supplied resolved target.
+     * @param {Object} aTarget The resolved target (i.e. the Object that was
+     *     found by using a piece of targeting information) to clean up.
+     * @returns {TP.core.ResizeMonitor} The receiver.
+     */
+
+    aTarget[TP.OLD_WIDTH] = null;
+    aTarget[TP.OLD_HEIGHT] = null;
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.core.RepositionMonitor
+//  ========================================================================
+
+/**
+ * @type {TP.core.RepositionMonitor}
+ * @summary A TP.core.DOMElementMonitor subtype that monitors elements for
+ *     position changes which might be triggered via CSS shifts or other
+ *     activity which won't normally trigger a native event.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.defineSubtype('RepositionMonitor');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.RepositionMonitor.Type.defineAttribute('defaultInterval', 50);
+TP.core.RepositionMonitor.Type.defineAttribute('defaultSignal',
+                                                'TP.sig.DOMMonitoredReposition');
+
+TP.core.RepositionMonitor.Type.defineAttribute(
+    'defaultTest',
+    function(target) {
+
+        var elem,
+
+            win,
+            frameOffsetXAndY,
+
+            oldTop,
+            oldLeft,
+
+            newTop,
+            newLeft;
+
+        elem = TP.elem(target);
+        if (!TP.isElement(elem)) {
+            return;
+        }
+
+        //  This monitor checks global position - if the target element's Window
+        //  is not 'top', then we need to make sure to compute the offset.
+        win = TP.nodeGetWindow(elem);
+        if (win !== top) {
+            frameOffsetXAndY = TP.windowComputeWindowOffsets(top, win);
+        } else {
+            frameOffsetXAndY = TP.ac(0, 0);
+        }
+
+        oldLeft = elem[TP.OLD_LEFT];
+        oldTop = elem[TP.OLD_TOP];
+
+        //  NB: Since all we're interested in here is a *difference* in left
+        //  and/or top, regular offsetLeft and offsetTop are fine and are
+        //  much faster than the more complete TP.elementGetBorderBox() calls.
+        newLeft = elem.offsetLeft + frameOffsetXAndY.first();
+        newTop = elem.offsetTop + frameOffsetXAndY.last();
+
+        elem[TP.OLD_LEFT] = newLeft;
+        elem[TP.OLD_TOP] = newTop;
+
+        //  don't signal the first time through
+        if (TP.isEmpty(oldTop)) {
+            return false;
+        }
+
+        if (oldTop !== newTop || oldLeft !== newLeft) {
+            return true;
+        }
+
+        return false;
+    });
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RepositionMonitor.Inst.defineMethod('cleanupResolvedTarget',
+function(aTarget) {
+
+    /**
+     * @method cleanupResolvedTarget
+     * @summary Cleans up any 'instance programmed' state that the monitor might
+     *     have placed on the supplied resolved target.
+     * @param {Object} aTarget The resolved target (i.e. the Object that was
+     *     found by using a piece of targeting information) to clean up.
+     * @returns {TP.core.RepositionMonitor} The receiver.
+     */
+
+    aTarget[TP.OLD_LEFT] = null;
+    aTarget[TP.OLD_TOP] = null;
+
+    return this;
+});
+
 //  ========================================================================
 //  TAG PROCESSING SIGNALS
 //  ========================================================================
 
 TP.sig.Signal.defineSubtype('ProcessingComplete');
 
-TP.sig.ProcessingComplete.Type.isControllerRoot(true);
-
 TP.sig.ProcessingComplete.defineSubtype('CompileComplete');
 TP.sig.ProcessingComplete.defineSubtype('AttachComplete');
 TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
+
+//  ========================================================================
+//  MUTATION SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('MutationComplete');
+
+TP.sig.MutationComplete.defineSubtype('MutationAttach');
+TP.sig.MutationComplete.defineSubtype('MutationDetach');
+
+TP.sig.MutationComplete.defineSubtype('MutationStyleChange');
+
+//  ========================================================================
+//  SYSTEM SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('ScriptImported');
+
+TP.sig.Signal.defineSubtype('TypeAdded');
+TP.sig.Signal.defineSubtype('MethodAdded');
 
 //  ========================================================================
 //  CHANGE SIGNALS
@@ -602,9 +1182,6 @@ TP.sig.Change.defineSubtype('AttributeChange');
 
 TP.sig.Signal.defineSubtype('BINDSignal');
 
-// Don't rotate above BINDSignal for signal names.
-TP.sig.BINDSignal.isSignalingRoot(true);
-
 TP.sig.BINDSignal.Type.defineAttribute('defaultPolicy', TP.BIND_FIRING);
 
 TP.sig.BINDSignal.Type.defineAttribute('bubbling', true);
@@ -612,7 +1189,9 @@ TP.sig.BINDSignal.Type.defineAttribute('cancelable', true);
 
 TP.sig.BINDSignal.defineSubtype('BINDItemSignal');
 
-TP.sig.BINDItemSignal.defineSubtype('CreateItem');
+TP.sig.BINDItemSignal.defineSubtype('SetContent');
+TP.sig.BINDItemSignal.defineSubtype('CloneItem');
+TP.sig.BINDItemSignal.defineSubtype('InsertItem');
 TP.sig.BINDItemSignal.defineSubtype('DeleteItem');
 
 TP.sig.BINDSignal.defineSubtype('BINDSelectionSignal');
@@ -628,8 +1207,38 @@ TP.sig.Signal.defineSubtype('ResponderSignal');
 
 TP.sig.ResponderSignal.Type.defineAttribute('defaultPolicy', TP.RESPONDER_FIRING);
 
+//  ResponderSignals should traverse the controller chain...but not
+//  ResponderSignal itself. NOTE that being a controller signal is inherited but
+//  acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.ResponderSignal.Type.isControllerSignal(true);
+TP.sig.ResponderSignal.isControllerRoot(true);
+
 TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
 TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Type.defineMethod('defineSubtype',
+function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.ResponderSignal serve as signaling roots,
+     *     meaning that you never signal a raw TP.sig.ResponderSignal.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.ResponderSignal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -650,18 +1259,61 @@ function() {
      * @returns {TP.core.UIElementNode} The DOM target of the receiver.
      */
 
+    var trigger,
+        evt,
+
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
+
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getTarget();
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getResolvedDOMTarget',
+function() {
+
+    /**
+     * @method getResolvedDOMTarget
+     * @summary Returns the *resolved* DOM target of the receiver. If the
+     *     receiver was triggered because of a DOM signal, this method will
+     *     return the *resolved* *DOM* target of the signal. See DOM signals for
+     *     more information on the difference between targets and resolved
+     *     targets.
+     * @description When triggered via a DOM signal, Responder signals set their
+     *     target to their origin so that responder chain semantics work
+     *     properly. This method allows access to the original *resolved* *DOM*
+     *     target of the signal.
+     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     */
+
     var evt,
         domSignal;
 
     //  Responder signals are *not* DOM signals, but if they've been triggered
     //  because of a DOM signal, they should have the low-level event in their
     //  payload.
-    if (TP.isEvent(evt = this.at('event'))) {
+    if (TP.isEvent(evt = this.at('trigger').getEvent())) {
 
         //  Wrap the event into a TIBET DOM signal of some type.
         domSignal = TP.wrap(evt);
 
-        return domSignal.getTarget();
+        return domSignal.getResolvedTarget();
     }
 
     return null;
@@ -804,6 +1456,9 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIStateChange');
 
+TP.sig.UIStateChange.defineSubtype('UIFocused');
+TP.sig.UIStateChange.defineSubtype('UIBlurred');
+
 TP.sig.UIStateChange.defineSubtype('UIValid');          //  XForms
 TP.sig.UIStateChange.defineSubtype('UIInvalid');        //  XForms
 
@@ -826,7 +1481,6 @@ TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
 TP.sig.ResponderSignal.defineSubtype('ApplicationSignal');
 
 TP.sig.ApplicationSignal.shouldUseSingleton(true);
-TP.sig.ApplicationSignal.isSignalingRoot(true);
 
 TP.sig.ApplicationSignal.defineSubtype('AppWillInitialize');
 TP.sig.ApplicationSignal.defineSubtype('AppInitialize');
@@ -835,6 +1489,11 @@ TP.sig.ApplicationSignal.defineSubtype('AppDidInitialize');
 TP.sig.ApplicationSignal.defineSubtype('AppWillStart');
 TP.sig.ApplicationSignal.defineSubtype('AppStart');
 TP.sig.ApplicationSignal.defineSubtype('AppDidStart');
+
+TP.sig.ApplicationSignal.defineSubtype('AppStop');
+
+TP.sig.ApplicationSignal.defineSubtype('AppWillShutdown');
+TP.sig.AppWillShutdown.Type.defineAttribute('cancelable', true);
 
 TP.sig.ApplicationSignal.defineSubtype('AppShutdown');
 
@@ -1076,16 +1735,27 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
         return;
     }
 
-    context = TP.ifInvalid(windowContext, TP.nodeGetWindow(anOrigin));
-    context = TP.ifInvalid(context, TP.sys.getUICanvas(true));
+    context = windowContext;
+    if (TP.notValid(context)) {
+        context = TP.nodeGetWindow(anOrigin);
+        if (TP.notValid(context)) {
+            context = TP.sys.getUICanvas(true);
+        }
+    }
 
     if (TP.isDocument(context)) {
         context = TP.nodeGetWindow(context);
     }
 
-    handler = TP.ifInvalid(aHandler, this.get('armingHandler'));
+    handler = aHandler;
+    if (TP.notValid(handler)) {
+        handler = this.get('armingHandler');
+    }
 
-    policy = TP.ifInvalid(aPolicy, this.get('defaultPolicy'));
+    policy = aPolicy;
+    if (TP.notValid(policy)) {
+        policy = this.get('defaultPolicy');
+    }
 
     TP.windowArmNode(context,
                         TP.byId(anOrigin, context, false),
@@ -1122,14 +1792,23 @@ function(anOrigin, aHandler, windowContext) {
         return;
     }
 
-    context = TP.ifInvalid(windowContext, TP.nodeGetWindow(anOrigin));
-    context = TP.ifInvalid(context, TP.sys.getUICanvas(true));
+    context = windowContext;
+    if (TP.notValid(context)) {
+        context = TP.nodeGetWindow(anOrigin);
+        if (TP.notValid(context)) {
+            context = TP.sys.getUICanvas(true);
+        }
+    }
+
 
     if (TP.isDocument(context)) {
         context = TP.nodeGetWindow(context);
     }
 
-    handler = TP.ifInvalid(aHandler, this.get('armingHandler'));
+    handler = aHandler;
+    if (TP.notValid(handler)) {
+        handler = this.get('armingHandler');
+    }
 
     TP.windowDisarmNode(context,
                         TP.byId(anOrigin, context, false),
@@ -1475,11 +2154,11 @@ function() {
     /**
      * @method getWindow
      * @summary Returns the window object that the native event occurred in.
-     * @returns {Window} The window containing the source element that generated
-     *     the event.
+     * @returns {TP.core.Window} The window containing the source element that
+     *     generated the event.
      */
 
-    return TP.eventGetWindow(this.getEvent());
+    return TP.tpwin(TP.eventGetWindow(this.getEvent()));
 });
 
 //  ------------------------------------------------------------------------
@@ -1629,10 +2308,48 @@ TP.sig.DOMReset.Type.defineConstant('NATIVE_NAME', 'reset');
 
 //  ---
 
-TP.sig.DOMUISignal.defineSubtype('DOMResize');
-TP.sig.DOMResize.Type.defineConstant('NATIVE_NAME', 'resize');
+TP.sig.DOMUISignal.defineSubtype('DOMMonitoredResize');
+TP.sig.DOMMonitoredResize.Type.defineConstant('NATIVE_NAME', 'resize');
 
-//  ---
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMonitoredResize.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.core.ResizeMonitor;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMUISignal.defineSubtype('DOMResize');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMResize.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.sig.ResizeSignalSource;
+});
+
+//  ------------------------------------------------------------------------
 
 TP.sig.DOMUISignal.defineSubtype('DOMScroll');
 TP.sig.DOMScroll.Type.defineConstant('NATIVE_NAME', 'scroll');
@@ -1651,6 +2368,29 @@ TP.sig.DOMTransitionEnd.Type.defineConstant('NATIVE_NAME', 'transitionend');
 
 TP.sig.DOMUISignal.defineSubtype('DOMUnload');
 TP.sig.DOMUnload.Type.defineConstant('NATIVE_NAME', 'unload');
+
+//  ========================================================================
+//  DOM REPOSITION SIGNAL
+//  ========================================================================
+
+TP.sig.DOMUISignal.defineSubtype('DOMMonitoredReposition');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMonitoredReposition.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.core.RepositionMonitor;
+});
 
 //  ========================================================================
 //  DOM Level 3 Event Signals
@@ -2505,23 +3245,28 @@ function() {
      * @summary Returns the 'signal names' to use when dispatching signals of
      *     this type.
      * @description TP.sig.DOMKeySignals have a bit of complexity when providing
-     * their signal names. First, there is the 'virtual key' signal name (i.e.
-     *     'TP.sig.DOM_b_Up', which is the default value. Next, there is
+     *     their signal names. First, there is the 'virtual key' signal name
+     *     (i.e. 'TP.sig.DOM_b_Up', which is the default value. Next, there is
      *     (sometimes) a 'Unicode literal' signal name (i.e.
-     *     'TP.sig.DOM_U0062_Up'). Lastly, there is the real type name of this
-     *     signal (i.e. 'TP.sig.DOMKeyUp').
+     *     'TP.sig.DOM_U0062_Up'). Last, there is hierarchy of real type names
+     *     of this signal (i.e. 'TP.sig.DOMKeyUp' and higher).
      * @returns {Array} An Array of signal names.
      */
 
-    var unicodeSigName;
+    var sigNames,
+        unicodeSigName;
 
+    sigNames = this.callNextMethod();
+
+    //  If we can compute a Unicode signal name, we splice it in just after the
+    //  signal name (i.e. the specific, spoofed signal name that contains the
+    //  exact key in its name) and the signal type name.
     if (TP.notEmpty(unicodeSigName = this.getUnicodeSignalName())) {
-        return TP.ac(this.getSignalName(),
-                        unicodeSigName,
-                        this.getTypeName());
+        sigNames = TP.copy(sigNames);
+        sigNames.splice(1, 0, unicodeSigName);
     }
 
-    return TP.ac(this.getSignalName(), this.getTypeName());
+    return sigNames;
 });
 
 //  ------------------------------------------------------------------------
@@ -2615,12 +3360,12 @@ function() {
      *     this type.
      * @description Normally, DOMKeySignals return an Array of signal names that
      *     include both their signal name (which will correspond to a particular
-     *     key) and the type name. But we want DOMKeyModifierChange signals to
-     *     only return their type name so that observers have to observe this
-     *     type name directly. If observers want to observe things like the
-     *     Shift key going up, they should observe 'DOM_Shift_Up', etc. which
-     *     will be sent directly as a result of the Shift key going up, not as a
-     *     manufactured event like this one.
+     *     key) and the hierarchy of type names. But we want
+     *     DOMKeyModifierChange signals to only return their type name so that
+     *     observers have to observe this type name directly. If observers want
+     *     to observe things like the Shift key going up, they should observe
+     *     'DOM_Shift_Up', etc. which will be sent directly as a result of the
+     *     Shift key going up, not as a manufactured event like this one.
      * @returns {Array} An Array of signal names.
      */
 
@@ -2714,6 +3459,42 @@ function() {
         domSignal = TP.wrap(evt);
 
         return domSignal.getTarget();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMDNDTargetSignal.Inst.defineMethod('getResolvedDOMTarget',
+function() {
+
+    /**
+     * @method getResolvedDOMTarget
+     * @summary Returns the *resolved* DOM target of the receiver. If the
+     *     receiver was triggered because of a DOM signal, this method will
+     *     return the *resolved* *DOM* target of the signal. See DOM signals for
+     *     more information on the difference between targets and resolved
+     *     targets.
+     * @description When triggered via a DOM signal, Responder signals set their
+     *     target to their origin so that responder chain semantics work
+     *     properly. This method allows access to the original *resolved* *DOM*
+     *     target of the signal.
+     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     */
+
+    var evt,
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    if (TP.isEvent(evt = this.at('event'))) {
+
+        //  Wrap the event into a TIBET DOM signal of some type.
+        domSignal = TP.wrap(evt);
+
+        return domSignal.getResolvedTarget();
     }
 
     return null;
@@ -2912,6 +3693,12 @@ TP.sig.Exception.defineSubtype('ServiceException');
 
 TP.sig.ServiceException.defineSubtype('ServiceUnavailable');
 TP.sig.ServiceException.defineSubtype('RequestNotFound');
+
+//  ------------------------------------------------------------------------
+//  RENDERING SIGNALS/EXCEPTIONS
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.defineSubtype('DidRender');
 
 //  ------------------------------------------------------------------------
 //  VALIDATION SIGNALS/EXCEPTIONS

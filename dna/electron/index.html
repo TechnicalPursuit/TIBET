@@ -34,7 +34,7 @@ html,body,iframe {
 //<![CDATA[
 function init() {
     if (window['TP'] && TP.boot) {
-        TP.boot.launch();
+        TP.boot.launch({boot: {context: 'electron'}});
         return;
     }
 
@@ -42,7 +42,7 @@ function init() {
     //  that in a reasonable fashion so the UI doesn't just look hung.
     if (top.UIBOOT && top.UIBOOT.contentDocument) {
         top.UIBOOT.contentDocument.getElementById('BOOT-IMAGE').src =
-            '../media/alert.png'
+            './media/alert.png'
         top.UIBOOT.contentDocument.getElementById('BOOT-SUBHEAD').innerHTML =
             'Error loading. Was the project initialized via `tibet init`?'
     }

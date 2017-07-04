@@ -496,14 +496,12 @@ function(startIndexOrSpec, endIndex, aStep) {
      *          myArr = TP.ac(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
      *          myArr.vslice(6, 1, -2).perform(
      *          function(item) {
-     *
-     *          TP.info(item);
+     *              TP.info(item);
      *          });
      *          <samp>6 4 2</samp>
      *          myArr.vslice('[2:6:2]').perform(
      *          function(item) {
-     *
-     *          TP.info(item);
+     *              TP.info(item);
      *          });
      *          <samp>2 4</samp>
      *     </code>
@@ -727,7 +725,6 @@ function(aCollection) {
         thisref = this;
         aCollection.perform(
             function(item) {
-
                 thisref.push(item);
             });
     }
@@ -1013,16 +1010,11 @@ function() {
      * @summary Returns the "simplest" form of the receiver possible, meaning
      *     that when the receiver has only one item that item is returned,
      *     otherwise the receiver is returned.
-     * @returns {Array|Object|null} The receiver or its single item or null if
-     *     empty.
+     * @returns {Array|Object} The receiver or its single item.
      */
 
     if (this.getSize() === 1) {
         return this.at(0);
-    }
-
-    if (TP.isEmpty(this)) {
-        return null;
     }
 
     return this;
@@ -1612,7 +1604,6 @@ function(aCollection, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 deleted += thisref.remove(item, aTest);
             });
     } finally {
@@ -1746,7 +1737,6 @@ function(aCollection, newValue, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 replaced += thisref.replace(item, newValue, aTest);
             });
     } finally {
@@ -1953,7 +1943,6 @@ function(aCollection) {
 
     arr.perform(
         function(item, index) {
-
             //  the at call here will normalize index
             tmparr.push(thisref.at(item));
         });
@@ -2006,7 +1995,6 @@ function(aCollection, anItem) {
 
     arr.perform(
         function(item, index) {
-
             //  only count true changes
             if (!TP.equal(thisref.at(item), anItem)) {
                 altered++;
@@ -2247,34 +2235,24 @@ function(anItem, startIndex, aTest) {
      */
 
     var tmparr,
-        start;
+        start,
+        test,
+        len,
+        i;
 
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
 
     this.$sortIfNeeded();
 
     tmparr = TP.ac();
+    test = aTest === TP.IDENTITY ? TP.identical : TP.equal;
 
-    this.perform(
-        function(item, index) {
-
-            if (index < start) {
-                return;
-            }
-
-            switch (aTest) {
-                case TP.IDENTITY:
-                    if (TP.identical(item, anItem)) {
-                        tmparr.push(index);
-                    }
-                    break;
-                default:
-                    if (TP.equal(item, anItem)) {
-                        tmparr.push(index);
-                    }
-                    break;
-            }
-        });
+    len = this.length;
+    for (i = start; i < len; i++) {
+        if (test(this.at(i), anItem)) {
+            tmparr.push(i);
+        }
+    }
 
     return tmparr;
 });
@@ -2415,7 +2393,6 @@ function(aCollection) {
 
     arr.perform(
         function(index) {
-
             thisref.splice(thisref.normalizeIndex(index) - deleted, 1);
             deleted++;
         });
@@ -2730,30 +2707,24 @@ function(anItem, startIndex, aTest) {
      * @returns {Number} The last index of the element equal to anItem.
      */
 
-    var found;
+    var found,
+        item,
+        i,
+        len,
+        test;
 
     found = TP.NOT_FOUND;
 
-    this.perform(
-        function(item, index) {
+    test = aTest === TP.IDENTITY ? TP.identical : TP.equal;
 
-            switch (aTest) {
-                case TP.IDENTITY:
-                    if (TP.identical(item, anItem)) {
-                        found = index;
-                        return TP.BREAK;
-                    }
-                    break;
-                default:
-                    if (TP.equal(item, anItem)) {
-                        found = index;
-                        return TP.BREAK;
-                    }
-                    break;
-            }
-        },
-        null,
-        true);      //  reverse the order
+    len = this.getSize();
+    for (i = len - 1; i >= 0; i--) {
+        item = this.at(i);
+        if (test(item, anItem)) {
+            found = i;
+            break;
+        }
+    }
 
     return found;
 });
@@ -3064,6 +3035,7 @@ function(aCount, inline) {
         return TP.isFalse(inline) ? this.copy() : this;
     }
 
+    /* eslint-disable consistent-this */
     if (TP.isFalse(inline)) {
         dat = this;
         arr = this.copy();
@@ -3071,10 +3043,10 @@ function(aCount, inline) {
         dat = this.copy();
         arr = this;
     }
+    /* eslint-enable consistent-this */
 
     (aCount - 1).perform(
             function() {
-
                 arr.addAll(dat);
             });
 
@@ -3133,7 +3105,6 @@ function() {
 
     this.perform(
         function(item, index) {
-
             dict.atPut(item.first(), item.last(), false);
         });
 
@@ -3194,7 +3165,10 @@ function(aKeyArray) {
      */
 
     var changed,
-        thisref;
+        len,
+        i,
+        key,
+        slot;
 
     if (TP.notValid(aKeyArray)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -3202,28 +3176,24 @@ function(aKeyArray) {
 
     changed = false;
 
-    thisref = this;
+    len = aKeyArray.getSize();
+    for (i = 0; i < len; i++) {
+        key = aKeyArray.at(i);
+        slot = this.at(key);
 
-    aKeyArray.perform(
-        function(aKey) {
+        if (TP.notDefined(slot)) {
+            continue;
+        }
 
-            var k;
+        if (TP.isMethod(slot)) {
+            this.raise('TP.sig.InvalidOperation',
+                'Attempt to replace/remove method: ' + slot);
+            break;
+        }
 
-            k = thisref.at(aKey);
-            if (TP.notDefined(k)) {
-                return;
-            }
-
-            if (TP.isMethod(k)) {
-                thisref.raise('TP.sig.InvalidOperation',
-                    'Attempt to replace/remove method: ' + k);
-
-                return TP.BREAK;
-            }
-
-            changed = true;
-            delete thisref[aKey];
-        });
+        changed = true;
+        delete this[key];
+    }
 
     if (changed) {
         this.changed('value', TP.DELETE);
@@ -3678,28 +3648,26 @@ function(aFunction, startIndex) {
      * @returns {Object} The element detected or undefined.
      */
 
-    var retVal,
-        start;
+    var retval,
+        start,
+        len,
+        i,
+        c;
 
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
 
-    retVal = undefined;
+    retval = undefined;
 
-    this.perform(
-        function(item, index) {
+    len = this.length;
+    for (i = start; i < len; i++) {
+        c = this.charAt(i);
+        if (aFunction(c, i)) {
+            retval = c;
+            break;
+        }
+    }
 
-            if (index < start) {
-                return;
-            }
-
-            if (aFunction(item, index)) {
-                retVal = item;
-
-                return TP.BREAK;
-            }
-        });
-
-    return retVal;
+    return retval;
 });
 
 //  ------------------------------------------------------------------------
@@ -4510,6 +4478,28 @@ function(anObject) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Hash.Type.defineMethod('fromOrphan',
+function(anObject) {
+
+    /**
+     * @method fromOrphan
+     * @summary Constructs a new hash from the orphan object (i.e. one with no
+     *     prototype) provided.
+     * @param {Object} anObject An orphan source object.
+     * @returns {TP.core.Hash} A new instance.
+     */
+
+    var newInst;
+
+    newInst = this.construct();
+
+    newInst.$set('$$hash', TP.copy(anObject), false);
+
+    return newInst;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -4528,7 +4518,7 @@ function() {
         attrs,
         len,
         val,
-        inst;
+        thisref;
 
     this.callNextMethod();
 
@@ -4542,88 +4532,101 @@ function() {
         case 0:
             this.$set('$$hash', TP.constructOrphanObject(), false);
             break;
+
         case 1:
             obj = arguments[0];
+
             if (TP.notValid(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
-            } else if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-                inst = this;
-                TP.objectGetKeys(obj).forEach(
-                        function(key) {
-                            var value;
-
-                            value = obj[key];
-                            if (TP.isPlainObject(value) &&
-                                !TP.isPrototype(value)) {
-                                value = TP.core.Hash.construct(value);
-                            }
-
-                            inst.atPut(
-                                key,
-                                TP.notDefined(value) ? null : value);
-                        });
-            } else if (TP.isArray(obj)) {
-                //  allocate internal hash - note that it is a prototype-less
-                //  object.
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-
-                if (TP.isPair(obj[0])) {
-                    //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
-                    for (i = 0; i < obj.length; i++) {
-                        pair = obj[i];
-                        val = pair[1];
-                        this.atPut(
-                            pair[0],
-                            TP.notDefined(val) ? null : val,
-                            false);
-                    }
-                } else {
-                    //  array syntax ['a', 1, 'b', 2, 'c', 3]
-                    for (i = 0; i < obj.length; i += 2) {
-                        val = obj[i + 1];
-                        this.atPut(
-                            obj[i],
-                            TP.notDefined(val) ? null : val,
-                            false);
-                    }
-                }
-            } else if (TP.isString(obj)) {
-                return TP.core.Hash.fromString(obj);
-            } else if (TP.isElement(obj)) {
-                //  allocate internal hash - note that it is a prototype-less
-                //  object.
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-
-                attrs = obj.attributes;
-                len = attrs.length;
-
-                for (i = 0; i < len; i++) {
-                    this.atPut(attrs[i].name, attrs[i].value);
-                }
-            } else if (TP.isHash(obj)) {
-                return obj;
             } else {
 
-                //  JSON conversions can fail so protect against that.
-                try {
-                    val = TP.js2json(obj);
-                    if (TP.isValid(val)) {
-                        val = TP.json2js(val);
-                        if (TP.isValid(val)) {
-                            //  Note how we grab the '$$hash' prototype-less
-                            //  object and make that *our* $$hash.
-                            this.$set('$$hash', val.$$hash, false);
-                        } else {
-                            this.$set('$$hash', TP.constructOrphanObject(),
-                                    false);
+                //  If the supplied object is a primitive Hash, just grab the
+                //  POJO that's its Hash and process that below.
+                if (obj.$$prototype &&
+                    obj.$$prototype.constructor === TP.boot.PHash) {
+                    obj = obj.$$hash;
+                }
+
+                if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
+                    thisref = this;
+                    TP.objectGetKeys(obj).forEach(
+                            function(key) {
+                                var value;
+
+                                value = obj[key];
+                                if (TP.isPlainObject(value) &&
+                                    !TP.isPrototype(value)) {
+                                    value = TP.core.Hash.construct(value);
+                                }
+
+                                thisref.atPut(
+                                    key,
+                                    TP.notDefined(value) ? null : value);
+                            });
+                } else if (TP.isArray(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
+
+                    if (TP.isPair(obj[0])) {
+                        //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
+                        for (i = 0; i < obj.length; i++) {
+                            pair = obj[i];
+                            val = pair[1];
+                            this.atPut(
+                                pair[0],
+                                TP.notDefined(val) ? null : val,
+                                false);
+                        }
+                    } else {
+                        //  array syntax ['a', 1, 'b', 2, 'c', 3]
+                        for (i = 0; i < obj.length; i += 2) {
+                            val = obj[i + 1];
+                            this.atPut(
+                                obj[i],
+                                TP.notDefined(val) ? null : val,
+                                false);
                         }
                     }
-                } catch (e) {
-                    return;
+                } else if (TP.isString(obj)) {
+                    return TP.core.Hash.fromString(obj);
+                } else if (TP.isElement(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
+
+                    attrs = obj.attributes;
+                    len = attrs.length;
+
+                    for (i = 0; i < len; i++) {
+                        this.atPut(attrs[i].name, attrs[i].value);
+                    }
+                } else if (TP.isHash(obj)) {
+                    return obj;
+                } else {
+
+                    //  JSON conversions can fail so protect against that.
+                    try {
+                        val = TP.js2json(obj);
+                        if (TP.isValid(val)) {
+                            val = TP.json2js(val);
+                            if (TP.isValid(val)) {
+                                //  Note how we grab the '$$hash' prototype-less
+                                //  object and make that *our* $$hash.
+                                this.$set('$$hash', val.$$hash, false);
+                            } else {
+                                this.$set('$$hash', TP.constructOrphanObject(),
+                                        false);
+                            }
+                        }
+                    } catch (e) {
+                        return;
+                    }
                 }
             }
             break;
+
         default:
             //  allocate internal hash - note that it is a prototype-less
             //  object.
@@ -4718,12 +4721,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -4735,7 +4740,9 @@ function() {
         len,
         i,
         val,
-        str;
+        str,
+        $depth,
+        $level;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -4755,6 +4762,10 @@ function() {
     }
 
     str = '[' + TP.tname(this) + ' :: ';
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     joinArr = TP.ac();
 
     try {
@@ -4773,7 +4784,13 @@ function() {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                joinArr.push(TP.join(keys.at(i), ' => ', TP.dump(val)));
+                if ($level > $depth && TP.isMutable(val)) {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        '@' + TP.id(val)));
+                } else {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        TP.dump(val, $depth, $level + 1)));
+                }
             }
         }
 
@@ -5012,7 +5029,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('asQueryString',
-function(aSeparator) {
+function(aSeparator, undefVal) {
 
     /**
      * @method asQueryString
@@ -5022,27 +5039,43 @@ function(aSeparator) {
      * @description This method automatically encodes query values by calling
      *     encodeURIComponent() on them.
      * @param {String} aSeparator The default is '&'.
+     * @param {String} undefVal The value to use when a key's value is
+     *     undefined.
      * @returns {String} The receiver as a valid query string.
      */
 
     var delim,
         arr,
-        func;
+        keys,
+        thisref,
+        len,
+        undef;
 
     if (!TP.isString(delim = aSeparator)) {
         delim = '&';
     }
 
-    arr = TP.ac();
+    undef = TP.ifInvalid(undefVal, '');
 
-    func = function(item, accum, index) {
-        arr.push(item.first(), '=', encodeURIComponent(item.last()));
-        if (!func.atEnd()) {
+    arr = TP.ac();
+    thisref = this;
+
+    keys = this.getKeys();
+    len = keys.getSize();
+    keys.forEach(function(key, index) {
+        var val;
+
+        arr.push(key);
+        val = thisref.at(key);
+        if (TP.isValid(val)) {
+            arr.push('=', encodeURIComponent(thisref.at(key)));
+        } else if (TP.notEmpty(undef)) {
+            arr.push('=', encodeURIComponent(undef));
+        }
+        if (index < len - 1) {
             arr.push(delim);
         }
-    };
-
-    this.injectInto(arr, func);
+    });
 
     return arr.join('');
 });
@@ -5170,7 +5203,10 @@ function() {
      * @fires Change
      */
 
-    this.convert(function(it, ind) {return it.first(); });
+    this.convert(
+        function(it, ind) {
+            return it.first();
+        });
 
     return this;
 });
@@ -5336,7 +5372,7 @@ function(attributeName) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -5348,7 +5384,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -5429,6 +5465,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Hash.Inst.defineMethod('getPayload',
+function() {
+
+    /**
+     * @method getPayload
+     * @summary Returns the receiver.
+     * @returns {TP.core.Hash} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Hash.Inst.defineMethod('hasKey',
 function(aKey) {
 
@@ -5484,8 +5534,6 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
      * @example:
             hash.populate(TP.hc('uri', TP.ac('uri', 'Enter Service URI'),
      *                          'password', 'Enter password');
-     *
-     *
      * @fires Change
      */
 
@@ -5527,7 +5575,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
         //  NOTE that we're accessing the value of the property hash here
         //  and getting either the prompt (last) or
-        newval = TP.prompt(query, defval);
+        newval = prompt(query, defval);
 
         this.atPut(key, newval);
     }
@@ -5768,7 +5816,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -5782,7 +5830,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }
@@ -6013,14 +6061,12 @@ function(aCollection, aFunction) {
     if (!TP.isCallable(aFunction)) {
         aCollection.perform(
             function(item, index) {
-
                 thisref.atPut(item.first(), item.last(), false);
                 count++;
             });
     } else {
         aCollection.perform(
             function(item, index) {
-
                 var val,
                     newval;
 
@@ -6382,7 +6428,10 @@ function(aFilter) {
 
         thisref;
 
-    filter = aFilter || function(item) {return TP.notValid(item.last()); };
+    filter = aFilter ||
+                function(item) {
+                    return TP.notValid(item.last());
+                };
 
     items = this.select(
         function(item, index) {
@@ -6400,7 +6449,6 @@ function(aFilter) {
 
     items.perform(
         function(item) {
-
             thisref.removeKey(item.first());
         });
 
@@ -6442,7 +6490,7 @@ function(anInterface, inline) {
             this.select(
                     function(item) {
 
-                        return TP.canInvoke(item, anInterface);
+                        return TP.canInvokeInterface(item, anInterface);
                     }));
     }
 
@@ -6453,10 +6501,9 @@ function(anInterface, inline) {
     //  (since they don't conform to any interface)
     this.perform(
         function(item, index) {
-
             //  NOTE the use of last() here, which is where this differs
             //  from array processing
-            if (!TP.canInvoke(item.last(), anInterface)) {
+            if (!TP.canInvokeInterface(item.last(), anInterface)) {
                 thisref.atPut(index, null, false);
             }
         });
@@ -6530,7 +6577,8 @@ function(aCollection, aTest) {
 
     var arr,
         retval,
-        thisref;
+        len,
+        i;
 
     if (TP.isArray(aCollection)) {
         arr = aCollection;
@@ -6547,17 +6595,14 @@ function(aCollection, aTest) {
     }
 
     retval = true;
-    thisref = this;
 
-    arr.perform(
-        function(item, index) {
-
-            if (!thisref.contains(item, aTest)) {
-                retval = false;
-
-                return TP.BREAK;
-            }
-        });
+    len = arr.getSize();
+    for (i = 0; i < len; i++) {
+        if (!this.contains(arr.at(i), aTest)) {
+            retval = false;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -6583,7 +6628,8 @@ function(aCollection, aTest) {
 
     var arr,
         retval,
-        thisref;
+        len,
+        i;
 
     if (TP.isArray(aCollection)) {
         arr = aCollection;
@@ -6600,16 +6646,14 @@ function(aCollection, aTest) {
     }
 
     retval = false;
-    thisref = this;
 
-    arr.perform(
-        function(item, index) {
-
-            if (thisref.contains(item, aTest)) {
-                retval = true;
-                return TP.BREAK;
-            }
-        });
+    len = arr.getSize();
+    for (i = 0; i < len; i++) {
+        if (this.contains(arr.at(i), aTest)) {
+            retval = true;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -6656,7 +6700,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             thisref.atPut(item.first(), aFunction(item, index));
         });
 
@@ -6712,45 +6755,48 @@ function(aHash, aTest) {
         sourceItem,
         targetItem,
         changeSet,
-        source;
+        thisref;
 
     if (!TP.isHash(aHash)) {
         return this.raise('InvalidHash', aHash);
     }
 
-    source = this;
+    thisref = this;
     changeSet = TP.ac();
     sourceKeys = this.getKeys();
     targetKeys = aHash.getKeys();
 
     //  Things in the source missing from target were "deleted".
-    sourceKeys.difference(targetKeys).forEach(function(key) {
-        changeSet.push(TP.ac(key, source.at(key), TP.DELETE));
-    });
+    sourceKeys.difference(targetKeys).forEach(
+        function(key) {
+            changeSet.push(TP.ac(key, thisref.at(key), TP.DELETE));
+        });
 
     //  Things in the target missing from the source were "inserted".
-    targetKeys.difference(sourceKeys).forEach(function(key) {
-        changeSet.push(TP.ac(key, aHash.at(key), TP.INSERT));
-    });
+    targetKeys.difference(sourceKeys).forEach(
+        function(key) {
+            changeSet.push(TP.ac(key, aHash.at(key), TP.INSERT));
+        });
 
     //  Keys in both are compared by value equality/identity for "updates"
-    sourceKeys.intersection(targetKeys).forEach(function(key) {
-        sourceItem = source.at(key);
-        targetItem = aHash.at(key);
+    sourceKeys.intersection(targetKeys).forEach(
+        function(key) {
+            sourceItem = thisref.at(key);
+            targetItem = aHash.at(key);
 
-        switch (aTest) {
-            case TP.IDENTITY:
-                if (!TP.identical(sourceItem, targetItem)) {
-                    changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
-                }
-                break;
-            default:
-                if (!TP.equal(sourceItem, targetItem)) {
-                    changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
-                }
-                break;
-        }
-    });
+            switch (aTest) {
+                case TP.IDENTITY:
+                    if (!TP.identical(sourceItem, targetItem)) {
+                        changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
+                    }
+                    break;
+                default:
+                    if (!TP.equal(sourceItem, targetItem)) {
+                        changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
+                    }
+                    break;
+            }
+        });
 
     return changeSet;
 });
@@ -6772,16 +6818,26 @@ function(aFunction) {
      * @returns {Object} The element detected or undefined.
      */
 
-    var retval;
+    var retval,
+        keys,
+        len,
+        i,
+        key,
+        value,
+        item;
 
-    this.perform(
-        function(item, index) {
+    keys = this.getKeys();
+    len = keys.getSize();
 
-            if (aFunction(item, index)) {
-                retval = item;
-                return TP.BREAK;
-            }
-        });
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+        value = this.at(key);
+        item = [key, value];
+        if (aFunction(item, i)) {
+            retval = item;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -7212,7 +7268,6 @@ function(aCollection, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 //  turn off change signaling - 'remove' will reset this
                 //  setting, so redo each time through loop.
                 thisref.shouldSignalChange(false);
@@ -7325,7 +7380,6 @@ function(aCollection, newItem, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 //  turn off change signaling - 'replace' will reset this
                 //  setting, so redo each time through loop.
                 thisref.shouldSignalChange(false);
@@ -7555,10 +7609,7 @@ function(aCollection) {
 
     aCollection.perform(
         function(item, index) {
-
             arr.push(thisref.at(item));
-
-            return;
         });
 
     return arr;
@@ -7598,7 +7649,6 @@ function(aCollection, aValue) {
 
     aCollection.perform(
         function(item, index) {
-
             if (!TP.equal(thisref.at(item), aValue)) {
                 thisref.atPut(item, aValue, false);
                 count++;
@@ -7730,6 +7780,7 @@ function(anIndex) {
         return;
     }
 
+    /* eslint-disable consistent-this */
     entry = this;
 
     indices = anIndex.split('.');
@@ -7754,6 +7805,7 @@ function(anIndex) {
             entry = item;
         }
     }
+    /* eslint-enable consistent-this */
 
     return null;
 });
@@ -7803,6 +7855,7 @@ function(anIndex, aValue) {
         return;
     }
 
+    /* eslint-disable consistent-this */
     entry = this;
 
     indices = anIndex.split('.');
@@ -7852,6 +7905,7 @@ function(anIndex, aValue) {
             entry = item;
         }
     }
+    /* eslint-enable consistent-this */
 
     //  set change signaling back to its previous setting
     this.shouldSignalChange(shouldSignal);
@@ -8110,7 +8164,10 @@ function(aValue, aTest) {
         });
 
     //  return the keys from our itemset, those are our 'indexes'
-    return items.collect(function(item) {return item.first(); });
+    return items.collect(
+                    function(item) {
+                        return item.first();
+                    });
 });
 
 //  ------------------------------------------------------------------------
@@ -8168,7 +8225,6 @@ function(aCollection) {
     try {
         aCollection.perform(
             function(item, index) {
-
                 //  duplicate test, but we want to know if we should count
                 if (TP.isDefined(thisref.at(item))) {
                     //  turn off change signaling - 'removeKey' will reset
@@ -8448,26 +8504,39 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
  * @description TP.core.Iterator implements the TP.api.IterationAPI protocol as
  *     well as defining some basic constants and function implementions.
  * @example
- // to alert out a collection's elements var it =
- *     aCollection.asIterator(); while (!it.atEnd()) { TP.alert(it.nextValue());
- *     };
+ *     //  to print out a collection's elements
+ *     var it = aCollection.asIterator();
+ *     while (!it.atEnd()) {
+ *         TP.info(it.nextValue());
+ *     }
  *
- *     // to do it in reverse var it = aCollection.asIterator(); it.reverse();
- *     while (!it.atEnd()) { TP.alert(it.nextValue()); };
+ *     //   to do it in reverse
+ *     var it = aCollection.asIterator();
+ *     it.reverse();
+ *     while (!it.atEnd()) {
+ *         TP.info(it.nextValue());
+ *     }
  *
- *     // to locate a value and get the index of it while(!it.atEnd()) { if
- *     (it.nextValue() == aValue) { return it.currentKey(); }; };
+ *     //  to locate a value and get the index of it
+ *     while (!it.atEnd()) {
+ *         if (it.nextValue() == aValue) {
+ *             return it.currentKey();
+ *         }
+ *     }
  *
- *     // slicing it.seek(start); while (!it.atEnd() && (it.currentKey() !=
- *     end) { arr.push(it.nextValue()); };
+ *     //  slicing
+ *     it.seek(start);
+ *     while (!it.atEnd() && (it.currentKey() != end) {
+ *         arr.push(it.nextValue());
+ *     }
  *
- *     // get current value (what nextValue() last returned) it.currentValue();
- * @todo
+ *     // get current value (what nextValue() last returned)
+ *     it.currentValue();
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Iterator');
+TP.lang.Object.defineSubtype('core.Iterator');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -8501,7 +8570,7 @@ function(aCollection, aStep) {
      * @param {TP.api.CollectionAPI} aCollection The collection to iterate over.
      * @param {Number} aStep The step size to use. Iteration can occur in
      *     "steps" by setting a size other than 1. The default is 1.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {TP.core.Iterator} A new instance.
      * @todo
      */
@@ -8741,7 +8810,7 @@ function() {
      *     returns undefined. If the iterator has a step value > 1 this method
      *     returns undefined -- use currentValues() for iterators with larger
      *     step sizes.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} An object or undefined.
      */
 
@@ -8902,7 +8971,7 @@ function() {
      * @summary Returns the next available element from the iterator or
      *     undefined if the element doesn't exist. This method also returns
      *     undefined if the iterator has a step size > 1.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} An object or undefined.
      * @signals PositionChange
      * @todo
@@ -8932,7 +9001,7 @@ function() {
      * @summary Returns an array containing the next "step" number of elements
      *     from the collection. This is the preferred method to call when using
      *     a step size other than 1.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Array} An array or undefined.
      * @signals PositionChange
      * @todo
@@ -9567,9 +9636,6 @@ function(aFunction) {
         step,
         start,
         end,
-
-        instrument,
-
         i;
 
     count = 0;
@@ -9578,39 +9644,17 @@ function(aFunction) {
     start = this.get('start');
     end = this.get('end');
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
     /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     if (step.isPositive()) {
         for (i = start; i <= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             if (aFunction(i, count) === TP.BREAK) {
                 break;
             }
-
             count++;
         }
     } else {
         //  still adding step, it's negative...
         for (i = start; i >= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             if (aFunction(i, count) === TP.BREAK) {
                 break;
             }
@@ -9644,15 +9688,10 @@ function(aFunction, terminateFunction) {
 
     var f,
         tst,
-
         count,
-
         step,
         start,
         end,
-
-        instrument,
-
         i;
 
     f = TP.RETURN_FALSE;
@@ -9668,47 +9707,21 @@ function(aFunction, terminateFunction) {
     start = this.get('start');
     end = this.get('end');
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     if (step.isPositive()) {
         for (i = start; i <= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             aFunction(i, count);
-
             if (tst(i, count)) {
                 break;
             }
-
             count++;
         }
     } else {
         //  still adding step, it's negative...
         for (i = start; i >= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             aFunction(i, count);
-
             if (tst(i, count)) {
                 break;
             }
-
             count++;
         }
     }
@@ -9737,13 +9750,9 @@ function(aFunction, terminateFunction) {
      */
 
     var count,
-
         step,
         start,
         end,
-
-        instrument,
-
         i;
 
     count = 0;
@@ -9752,29 +9761,12 @@ function(aFunction, terminateFunction) {
     start = this.get('start');
     end = this.get('end');
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     if (step.isPositive()) {
         for (i = start; i <= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             if (TP.notTrue(terminateFunction(i, count))) {
                 break;
             }
-
             aFunction(i, count);
-
             count++;
         }
     } else {
@@ -9783,14 +9775,6 @@ function(aFunction, terminateFunction) {
             if (TP.notTrue(terminateFunction(i, count))) {
                 break;
             }
-
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             aFunction(i, count);
             count++;
         }

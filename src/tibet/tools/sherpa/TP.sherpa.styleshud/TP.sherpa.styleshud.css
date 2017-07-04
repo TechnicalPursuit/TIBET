@@ -1,0 +1,96 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+sherpa|styleshud {
+
+    width: 100%;
+    height: 100%;
+}
+
+sherpa|styleshud > ul {
+
+    position: absolute;
+
+    top: 36px;
+    right: 0;
+    bottom: 30px;
+    left: 0;
+
+    height: auto;
+    width: auto;
+
+    margin: 0;
+    padding: 0;
+
+    line-height: 18px;
+
+    color: #666;
+
+    font-size: 60%;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-weight: normal;
+
+    overflow: auto;
+}
+
+sherpa|styleshud > ul.content > li {
+
+    height: 18px;
+
+    padding-left: 0.25em;
+
+    margin: 0.5em;
+
+    border: 1px solid #666;
+    border-radius: 9px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+}
+
+sherpa|styleshud > ul.content > li:hover {
+
+    background-color: rgba(255, 215, 0, 0.5);
+
+    color: #666;
+}
+
+sherpa|styleshud > ul.content > li[pclass|selected] {
+
+    background-color: gold;
+}
+
+sherpa|styleshud > ul.content > li[pclass|selected]:hover {
+
+    background-color: gold;
+}
+
+/* We omitted 'sherpa|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
+
+#StyleSummary_Tile {
+
+    min-width: 200px;
+    min-height: 200px;
+}
+
+#StyleSummary_Tile > .body {
+
+    bottom: 0;
+
+    font-family: monospace;
+    font-size: 11px;
+}
+
+#StyleSummary_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+#StyleSummary_Tile > .footer {
+
+    display: none;
+}

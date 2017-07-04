@@ -43,15 +43,6 @@
         ]]>
     </script>
 
-    <script src="~lib_deps/forge-tpi.min.js" no-minify="no-minify" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.extern.forge = window.forge;
-        delete window.forge;
-        ]]>
-    </script>
-    <script src="TIBETCryptoPost.js"/>
-
     <script src="~lib_deps/sprintf-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/sprintf-tpi.js"
@@ -109,6 +100,8 @@
     <script src="TIBETCSSPrimitivesPlatform.js"/>
     <script src="TIBETCSSPrimitivesPost.js"/>
 
+    <script src="TIBETCSSParser.js"/>
+
     <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
@@ -143,12 +136,17 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.extern.JsDiff = JsDiff;
+        ]]>
+    </script>
+
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
     <script src="TIBETHTTPPrimitivesPost.js"/>
-
-    <script src="TIBETWebSocketPrimitives.js"/>
 
     <script src="TIBETURIPrimitivesPre.js"/>
     <script src="TIBETURIPrimitivesBase.js"/>
@@ -199,6 +197,7 @@
     <script src="TIBETUICanvasTypesPost.js"/>
 
     <script src="TIBETSignalTypes.js"/>
+    <script src="TIBETSourceTypes.js"/>
 
     <script src="TIBETWorkflowTypes.js"/>
     <script src="TIBETStateMachineTypes.js"/>
@@ -206,7 +205,6 @@
     <script src="TIBETDeviceTypes.js"/>
 
     <script src="TIBETHTTPTypes.js"/>
-    <script src="TIBETWebSocketTypes.js"/>
 
     <!-- NB: This must come after TIBETHTTPTypes -->
     <script src="TIBETContentTypes.js"/>
@@ -234,7 +232,7 @@
     <script src="TIBETFinalization.js"/>
 
     <script src="~lib_dat/TP.core.URI.default_urimap.js"/>
-    <script src="~lib_dat/TP.core.UIElementNode.default_keymap.js"/>
+    <script src="~lib_dat/TP.core.UIElementNode.default_keybindings.js"/>
 
     <script src="~lib_dat/TP.dat.COUNTRYCODES.js"/>
     <script src="~lib_dat/TP.dat.STATECODES.js"/>

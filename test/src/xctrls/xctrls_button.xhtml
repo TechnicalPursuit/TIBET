@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-		xmlns:ev="http://www.w3.org/2001/xml-events"
-		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-		xmlns:pclass="urn:tibet:pseudoclass">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 	<title></title>
@@ -42,17 +38,9 @@
 				</td>
 			</tr>
 			<tr>
-				<td>:focus</td>
-				<td>
-					<xctrls:button pclass:focus="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:button>
-				</td>
-			</tr>
-			<tr>
 				<td>:disabled</td>
 				<td>
-					<xctrls:button pclass:disabled="true">
+					<xctrls:button pclass:disabled="true" disabled="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:button>
 				</td>
@@ -76,7 +64,8 @@
 
 		<br/>
 
-		<button onclick="TP.byId('button1').signal('UIFocus');">Focus button #1</button>
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('button1').signal('UIFocused');}, 100)">Focus button #1</button>
 	</div>
 
 </body>

@@ -1,19 +1,18 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|dispenser {
 
     display: block;
     position: absolute;
 
-    right: 0;
     bottom: 0;
+    left: 32px;
 
-    width: 96px;
+    width: 68px;
     height: 18px;
 
-    margin-right: 30px;
     margin-bottom: 5px;
 
     line-height: 18px;
@@ -29,7 +28,7 @@ sherpa|dispenseritem {
     position: relative;
 
     height: 14px;
-    width: 86px;
+    width: 58px;
 
     margin: 3px 4px;
 
@@ -38,13 +37,13 @@ sherpa|dispenseritem {
 
     box-shadow: 1px 1px 1px #aaa;
 
-    background: white;
+    background-color: white;
 
     cursor: pointer;
 }
 
 sherpa|dispenseritem:hover {
 
-    background: gold;
+    background-color: rgba(255, 215, 0, 0.5);
 }
 

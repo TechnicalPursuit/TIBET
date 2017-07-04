@@ -27,7 +27,9 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -72,6 +74,8 @@ Cmd.prototype.execute = function() {
         this.info('Options:');
         this.info(CLI.beautify(JSON.stringify(this.options)));
     }
+
+    return 0;
 };
 
 

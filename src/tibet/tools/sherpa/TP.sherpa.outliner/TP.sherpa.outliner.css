@@ -1,0 +1,199 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+.outlined {
+
+    transform-style: preserve-3d;
+
+    outline: dashed 1px blue;
+
+    overflow: visible;
+}
+
+.outlined::before {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    content: attr(tagname);
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: blue;
+}
+
+.outlined > * {
+
+    /* Need to force opacity, or otherwise 'extrusion' won't work. See:
+     * https://bugs.chromium.org/p/chromium/issues/detail?id=646993
+     */
+    opacity: 1 !important;
+}
+
+.outlined * {
+
+    transform: translate3d(0, 0, 50px);
+    transform-style: preserve-3d;
+
+    outline: dashed 1px red;
+
+    background-color: white;
+}
+
+.outlined b,
+.outlined big,
+.outlined i,
+.outlined small,
+.outlined tt,
+.outlined abbr,
+.outlined acronym,
+.outlined cite,
+.outlined code,
+.outlined dfn,
+.outlined em,
+.outlined kbd,
+.outlined strong,
+.outlined samp,
+.outlined var,
+.outlined a,
+.outlined bdo,
+.outlined br,
+.outlined img,
+.outlined map,
+.outlined object,
+.outlined q,
+.outlined script,
+.outlined span,
+.outlined sub,
+.outlined sup,
+.outlined button,
+.outlined input,
+.outlined label,
+.outlined select,
+.outlined textarea {
+
+    display: inline-block !important;
+}
+
+.outlined *.sherpa_containingblock {
+
+    outline-style: solid;
+}
+
+.outlined *::before {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    content: attr(tagname);
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: red;
+}
+
+.outlined .sherpa_droptarget::after {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: black;
+}
+
+.outlined[position="BeforeBegin"] .sherpa_droptarget::after {
+
+    bottom: 0;
+    left: -2em;
+
+    content: "\2190 PREV SIB";
+}
+
+.outlined[position="AfterBegin"] .sherpa_droptarget::after {
+
+    top: 0;
+    left: 0;
+
+    content: "FIRST CHILD \2192";
+}
+
+.outlined[position="BeforeEnd"] .sherpa_droptarget::after {
+
+    bottom: 0;
+    right: 0;
+
+    content: "\2190 LAST CHILD";
+}
+
+.outlined[position="AfterEnd"] .sherpa_droptarget::after {
+
+    bottom: 0;
+    right: -2em;
+
+    content: "NEXT SIB \2192";
+}
+
+.outlined.sherpa_droptarget::after {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: black;
+}
+
+.outlined[position="BeforeBegin"].sherpa_droptarget::after {
+
+    bottom: 0;
+    left: -2em;
+
+    content: "\2190 PREV SIB";
+}
+
+.outlined[position="AfterBegin"].sherpa_droptarget::after {
+
+    top: 0;
+    left: 0;
+
+    content: "FIRST CHILD \2192";
+}
+
+.outlined[position="BeforeEnd"].sherpa_droptarget::after {
+
+    bottom: 0;
+    right: 0;
+
+    content: "\2190 LAST CHILD";
+}
+
+.outlined[position="AfterEnd"].sherpa_droptarget::after {
+
+    bottom: 0;
+    right: -2em;
+
+    content: "NEXT SIB \2192";
+}
+

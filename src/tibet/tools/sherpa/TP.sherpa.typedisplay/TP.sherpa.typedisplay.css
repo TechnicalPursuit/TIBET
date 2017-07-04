@@ -1,15 +1,15 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|typedisplay {
 
     display: block;
     position: absolute;
 
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 
     overflow: auto;
 }
@@ -72,7 +72,13 @@ sherpa|typedisplay .content td {
 
 sherpa|typedisplay .content td:hover {
 
-    background-color: gold;
+    background-color: rgba(255, 215, 0, 0.5);
     cursor: pointer;
+}
+
+sherpa|inspectoritem[contenttype="sherpa:typedisplay"] {
+
+    /* CSS custom property */
+    --sherpa-inspector-width: 2;
 }
 

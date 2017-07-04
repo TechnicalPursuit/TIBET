@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -31,7 +31,9 @@ sh = require('shelljs');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -86,25 +88,31 @@ Cmd.prototype.execute = function() {
     var shipitpath,
         command;
 
-    this.debug('checking for shipitjs support...');
+    this.info('checking for shipit support...');
     if (sh.which(Cmd.SHIPIT_COMMAND)) {
 
-        this.debug('found shipit command...');
+        this.info('found shipit command...');
 
         shipitpath = path.join(CLI.getAppHead(), Cmd.SHIPIT_FILE);
         if (sh.test('-e', shipitpath)) {
             //  Found shipit and shipitfile.js. Delegate to those.
-            this.debug('found shipit file...');
+            this.info('found shipit file...');
             return this.executeViaShipit();
         } else {
-            this.debug('no shipit file found...');
+            this.info('no shipit file found...');
         }
+    } else {
+        this.info('shipit not installed');
     }
 
-    this.debug('checking for makefile.js target...');
+    this.info('checking for makefile.js target...');
 
-    command = 'deploy';
-    if (this.getMakeTargets().indexOf('deploy') !== -1) {
+    if (CLI.hasMakeTarget('deploy')) {
+        command = 'deploy';
+        this.warn('Delegating to \'tibet make ' + command + '\'');
+        return CLI.runViaMake(command);
+    } else if (CLI.hasMakeTarget('_deploy')) {
+        command = '_deploy';
         this.warn('Delegating to \'tibet make ' + command + '\'');
         return CLI.runViaMake(command);
     }
@@ -123,12 +131,14 @@ Cmd.prototype.executeViaShipit = function() {
     var cmd,
         proc,
         child,
-        args,
+        argv,
         target;
 
     cmd = this;
-    args = this.getArgv();
-    target = args[0];
+    argv = this.getArgv();
+
+    //  NOTE argv[0] is the command name.
+    target = argv[1];
 
     proc = require('child_process');
 
@@ -139,9 +149,9 @@ Cmd.prototype.executeViaShipit = function() {
         return 1;
     }
 
-    args.push('deploy');
+    argv.push('deploy');
 
-    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), args);
+    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), argv);
 
     child.stdout.on('data', function(data) {
         var msg;
@@ -195,36 +205,6 @@ Cmd.prototype.executeViaShipit = function() {
         process.exit(code);
         /* eslint-enable no-process-exit */
     });
-};
-
-
-/**
- * Returns a list of custom make targets found in any TIBET-style `makefile` for
- * the current project.
- * @returns {Array.<string>} The list of targets.
- */
-Cmd.prototype.getMakeTargets = function() {
-    var targets,
-        cmds;
-
-    cmds = [];
-
-    // Note that despite the name this isn't a list of targets in the form we're
-    // looking for here. We want target names, this is a handle to the wrapper
-    // object whose 'methods' define the targets.
-    targets = CLI.getMakeTargets();
-    if (!targets) {
-        return cmds;
-    }
-
-    Object.keys(targets).forEach(function(target) {
-        if (typeof targets[target] === 'function') {
-            cmds.push(target);
-        }
-    });
-    cmds.sort();
-
-    return cmds;
 };
 
 

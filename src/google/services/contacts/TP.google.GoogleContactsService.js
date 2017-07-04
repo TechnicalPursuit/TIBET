@@ -83,7 +83,7 @@ function(aRequest) {
     /**
      * @method finalizeRequest
      * @summary Perform any final updates or processing on the request to make
-     *     sure it is ready to send to TP.httpCall() for processing.
+     *     sure it is ready to send to TP.httpCall for processing.
      * @param {TP.google.GoogleContactsRequest} aRequest The request being
      *     finalized.
      * @returns {TP.google.GoogleContactsRequest} The request to send. NOTE that

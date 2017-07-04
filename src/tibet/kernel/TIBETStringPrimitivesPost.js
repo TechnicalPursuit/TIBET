@@ -11,10 +11,6 @@
 /*
 */
 
-/* JSHint checking */
-
-/* jshint bitwise:false */
-
 //  ------------------------------------------------------------------------
 
 /*
@@ -238,7 +234,7 @@ TP.definePrimitive('btoa',
         out = '';
         end = 0;
 
-        /* eslint-disable no-constant-condition,no-nested-ternary,no-extra-parens */
+        /* eslint-disable no-constant-condition,no-nested-ternary,no-extra-parens,brace-style,max-statements-per-line */
         while (end === 0) {
             c = TP.isDefined(arr[++ndx]) ? arr[ndx].charCodeAt(0) :
                                         ((end = 1) ? 0 : 0);
@@ -255,7 +251,7 @@ TP.definePrimitive('btoa',
             if (end === 2) { w = '='; }
             if (end < 3) { out += u + v + w + x; }
         }
-        /* eslint-enable no-constant-condition,no-nested-ternary,no-extra-parens */
+        /* eslint-enable no-constant-condition,no-nested-ternary,no-extra-parens,brace-style,max-statements-per-line */
 
         //  Don't do 76 step as a) Mozilla doesn't and b) the XML Schema
         //  spec doesn't allow for it... just return 'out'.
@@ -611,6 +607,46 @@ function(aString, left, right, flags) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('stringSplitSlashesAndRejoin',
+function(aPath, joinStr) {
+
+    /**
+     * @method stringSplitSlashesAndRejoin
+     * @summary Splits the supplied String on '/' and rejoins using the supplied
+     *     joining String.
+     * @description This method respects '/'s escaped with '\'s such that they
+     *     will be treated as 'one component' and will not be split on.
+     * @param {String} aPath The path String to split.
+     * @param {String} joinStr The String to use to join the parts back
+     *     together.
+     * @returns {String} The supplied path string, split on '/' (but not escaped
+     *     '/'s) and rejoined using the supplied join string.
+     */
+
+    var pathParts;
+
+    if (!TP.isString(aPath) || !TP.isString(joinStr)) {
+        return this.raise('InvalidParameter');
+    }
+
+    //  Split on '/', but avoiding quoted ones (i.e. backslashed '/'s).
+    pathParts = aPath.match(/([^\\\][^/]|\\\/)+/g);
+
+    if (TP.notValid(pathParts)) {
+        return aPath;
+    }
+
+    //  Now, go through each component and convert the '\/' sequence into '/'
+    pathParts = pathParts.convert(
+                        function(item) {
+                            return item.replace(/\\\//g, '/');
+                        });
+
+    return pathParts.join(joinStr);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('stringRegExpComponents',
 function(pattern) {
 
@@ -766,7 +802,6 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
                                     endDelim;
                         });
 });
-
 
 //  ------------------------------------------------------------------------
 //  Fuzzy match library

@@ -12,7 +12,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint-disable no-console */
+/* eslint-disable no-console, no-process-exit */
 
 (function() {
 
@@ -20,49 +20,27 @@
 
     var app,                // Express application instance.
         argv,               // The argument list.
+        certFile,           // Name of the certificate file.
+        certKey,            // Name of the key file for certs.
+        certPath,           // Directory containing cert data.
         env,                // Current execution environment.
         express,            // Express web framework.
+        fs,                 // File system module.
         http,               // Web server baseline.
+        https,              // Secure server baseline.
+        httpsOpts,          // Options for HTTPS server.
         logger,             // Configured logger instance.
-        logo,               // Text logo.
+        meta,               // Logger metadata.
         minimist,           // Argument processing.
         options,            // Common options block.
+        path,               // Path utility module.
+        plugins,            // TDS server plugin list to load.
         port,               // Port to listen on.
-        project,            // Project name.
+        protocol,           // HTTP or HTTPS.
         TDS,                // TIBET Data Server baseline.
-        version;            // TIBET version.
-
-    //  ---
-    //  Logo
-    //  ---
-
-    /* eslint-disable quotes */
-    logo = "\n" +
-        "                                 ,`\n" +
-        "                           __,~//`\n" +
-        "  ,///,_            .~////////'`\n" +
-        " '///////,       //////''`\n" +
-        "        '//,   ///'`\n" +
-        "           '/_/'\n" +
-        "             `\n" +
-        "   ////////////////////     ///////////////////  ////\n" +
-        "   `//'````````````///      `//'```````````````  '''\n" +
-        "    /`              //       /'\n" +
-        "   /                //      '/\n" +
-        "  ,/____             /'    ,/_____\n" +
-        " ////////;,,,_       //   ,//////////;,_\n" +
-        "            '`'/,_   '/              `'///,_\n" +
-        "                `'/,_ /                   '//,\n" +
-        "                   '/,/,                    '/_\n" +
-        "                     `/,                     `/,\n" +
-        "                       '                      `/\n" +
-        "                                              '/\n" +
-        "                                               /\n" +
-        "                                               '";
-    /* eslint-enable: quotes, no-multi-str */
-
-    //  Log it now so the user gets immediate feedback the server is starting.
-    console.log(logo);
+        shutdown,           // Exit hook function.
+        called,             // Trap in shutdown to avoid running twice.
+        useHttps;           // Should this be an HTTPS server.
 
     //  ---
     //  Baseline require()'s
@@ -70,9 +48,15 @@
 
     express = require('express');
     http = require('http');
+    https = require('https');
     minimist = require('minimist');
+    fs = require('fs');
+    path = require('path');
 
-    TDS = require('tibet/etc/tds/tds-base');
+    //  Always bring in the baseline TDS, even if we don't load the 'tds' plugin
+    //  (which loads any tds.plugins.tds list which might be defined). This
+    //  gives access to utilities like getcfg etc.
+    TDS = require('tibet/etc/tds/tds_base');
 
     //  ---
     //  APP/TDS Config
@@ -93,66 +77,84 @@
     //  how we access all of TIBET's configuration data and functionality.
     TDS.initPackage(argv);
 
-    //  Map TDS slot onto app instance for reference during plugin loading and
-    //  configuration. This provides plugins access to TIBET config data.
+    //  Write the server announcement string.
+    TDS.announceTIBET(argv.env);
+
+    //  Map TDS and app to each other so they have easy access to configuration
+    //  data or other functionality.
     app.TDS = TDS;
+    TDS.app = app;
+
+    //  Ensure we update the HTTPS settings before we load any plugins.
+    useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');
+    TDS.setcfg('tds.https', useHttps);
 
     //  ---
-    //  Plugins
+    //  Middleware
     //  ---
+
+    //  Note that TDS properties are adjusted by environment so this can cause a
+    //  different configuration between development and prod (no mocks etc).
+    plugins = TDS.getcfg('tds.plugins.core');
+    if (!plugins) {
+        plugins = [
+            'body-parser',
+            'logger',
+            'compression',
+            'reconfig',
+            'public-static',
+            'session',
+            'security',
+            'view-engine',
+            'authenticate',
+            'private-static',
+            'routes',
+            'tds',
+            'tds-vcards',
+            'proxy',
+            'fallback',
+            'errors'];
+    }
 
     //  Shared options which allow modules to essentially share values like the
     //  logger, authentication handler, etc.
-    options = {app: app, argv: argv, env: env};
+    options = {
+        app: app,
+        argv: argv,
+        env: env
+    };
 
-    require('./plugins/preload')(options);
+    //  Should always be a preload plugin we can load/run ourselves.
+    require(path.join(__dirname, 'plugins', 'preload'))(options);
 
-    require('./plugins/body-parser')(options);
+    //  Trigger loading of all the individual plugins in the list.
+    TDS.loadPlugins(path.join(__dirname, 'plugins'), plugins, options);
 
-    require('./plugins/logger')(options);
-
-    require('./plugins/compression')(options);
-
-    require('./plugins/reconfig')(options);
-
-    require('./plugins/public-static')(options);
-
-    require('./plugins/session')(options);
-
-    require('./plugins/security')(options);
-
-    require('./plugins/view-engine')(options);
-
-    require('./plugins/authenticate')(options);
-
-    require('./plugins/private-static')(options);
-
-    require('./plugins/mocks')(options);
-
-    require('./plugins/routes')(options);
-
-    require('./plugins/pouchdb')(options);
-
-    require('./plugins/tds')(options);
-
-    require('./plugins/proxy')(options);
-
-    require('./plugins/fallback')(options);
-
-    require('./plugins/errors')(options);
-
-    //  ---
-    //  Post-Plugins
-    //  ---
-
+    //  Capture logger reference now that plugins have loaded.
     logger = options.logger;
+    if (!logger) {
+        console.error('Missing logger middleware or export.');
+        /* eslint-disable no-process-exit */
+        process.exit(1);
+        /* eslint-enable no-process-exit */
+    }
 
     //  ---
     //  Backstop
     //  ---
 
-    //  Always maintain at least the uncaught exception handler internally.
-    process.on('uncaughtException', function(err) {
+    //  Configure common error reporting metadata so we style properly.
+    meta = {
+        comp: 'TDS',
+        type: 'tds',
+        name: 'server',
+        style: 'error'
+    };
+
+    //  Always maintain at least the uncaught exception handler. If the consumer
+    //  puts one onto the shared options object use that, otherwise use default.
+    process.on('uncaughtException', options.uncaughtException || function(err) {
+        var stack;
 
         //  These happen due to mal-ordered middleware but they log and we
         //  shouldn't be killing the server over it.
@@ -161,7 +163,21 @@
             return;
         }
 
-        logger.error('Process error: \n' + err.stack);
+        if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
+            //  These happen due to port defaults below 1024 (which require perms)
+            console.error('Possible permission error for server port: ' + port);
+        } else if (err.message && err.message.indexOf('EADDRINUSE') !== -1) {
+            //  These happen because you forget you're already running one.
+            console.error('Server start failed. Port ' + (err.port || port) +
+                ' is busy.');
+        } else if (app.get('env') === 'development') {
+            stack = err.stack || '';
+            TDS.logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
+        } else {
+            TDS.logger.error('Uncaught: \n' + err.message, meta);
+        }
+
+        TDS.logger.flush(true);
 
         if (TDS.cfg('tds.stop_onerror')) {
             /* eslint-disable no-process-exit */
@@ -169,6 +185,66 @@
             /* eslint-enable no-process-exit */
         }
     });
+
+    //  ---
+    //  Graceful Shutdown Hook
+    //  ---
+
+    called = false;
+    shutdown = function() {
+
+        if (called) {
+            return;
+        }
+        called = true;
+
+        TDS.logger.system();    //  blank to get past ctrl char etc.
+        TDS.logger.system('processing shutdown request', meta);
+
+        if (TDS.httpsServer) {
+
+            TDS.logger.system('shutting down HTTPS server', meta);
+
+            TDS.httpsServer.close(function(err) {
+                if (err) {
+                    TDS.logger.error('HTTPS server: ' + err.message, meta);
+                }
+                //  NOTE we don't exit process from here...we rely on the
+                //  httpServer to do that so they don't fight over it. We have
+                //  this close() operation just to get server to stop any new
+                //  connections from coming in.
+                return;
+            });
+        }
+
+        TDS.logger.system('shutting down HTTP server', meta);
+
+        TDS.httpServer.close(function(err) {
+            var code;
+
+            if (err) {
+                TDS.logger.error('HTTP server: ' + err.message, meta);
+            }
+
+            //  This will call process.exit();
+            code = TDS.shutdown(err, meta);
+
+            TDS.logger.system('shutdown complete', meta);
+
+            TDS.logger.flush(true);
+
+            process.exit(code);
+        });
+
+        //  Force connections to become aware of a timeout so they drop.
+        TDS.timeoutConnections();
+    };
+
+    process.on('SIGINT', shutdown);
+    process.on('SIGHUP', shutdown);
+    process.on('SIGQUIT', shutdown);
+    process.on('SIGTERM', shutdown);
+    process.on('exit', shutdown);
 
     //  ---
     //  Run That Baby!
@@ -186,32 +262,40 @@
     //  Update to set the current runtime value to reflect actual port.
     TDS.setcfg('tds.port', port);
 
-    //  If running via Passenger (a good choice for serious production work)
-    //  we need to start the server with slightly different logic.
-    if (typeof PhusionPassenger !== 'undefined') {
-        http.createServer(app).listen('passenger');
+    //  Default to https for the site and require it to be forced off via flag.
+    if (useHttps) {
+        protocol = 'https';
+
+        certPath = TDS.getcfg('tds.cert.path') || 'etc';
+        certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
+        certFile = TDS.getcfg('tds.cert.file') || 'ssl.crt';
+
+        httpsOpts = {
+            key: fs.readFileSync(path.join(certPath, certKey)),
+            cert: fs.readFileSync(path.join(certPath, certFile))
+        };
+
+        TDS.httpServer = http.createServer(app);
+        TDS.httpServer.listen(port);
+
+        port = argv.https_port ||
+            TDS.cfg('tds.https_port') || TDS.cfg('https_port') ||
+            process.env.HTTPS_PORT ||
+            443;   //  default https port
+
+        TDS.httpsServer = https.createServer(httpsOpts, app);
+        TDS.httpsServer.listen(port);
+
     } else {
-        http.createServer(app).listen(port);
+        protocol = 'http';
+        TDS.httpServer = http.createServer(app);
+        TDS.httpServer.listen(port);
     }
 
-    env = argv.env;
-    project = TDS.cfg('npm.name') || '';
-    project += ' ' + TDS.cfg('npm.version') || '0.0.1';
-
-    version = TDS.cfg('tibet.version') || '';
-
-    logger.info(project + ' (' + env + ') running on ' +
-            'TIBET ' + (version ? version + ' ' : '') +
-            'at http://127.0.0.1' +
-        (port === 80 ? '' : ':' + port));
-
-    //  For debugging purposes it can be helpful to see which routes are
-    //  actually loaded and active.
-    if (TDS.cfg('tds.log.routes')) {
-        logger.debug(app._router.stack);
-    }
+    //  Tell the TDS to register servers. This supports clean shutdown process.
+    TDS.registerServers();
 
     require('./plugins/poststart')(options);
 
+    TDS.announceStart(logger, protocol, port);
 }());
-

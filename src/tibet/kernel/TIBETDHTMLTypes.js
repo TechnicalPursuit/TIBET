@@ -254,9 +254,10 @@ function(aDragResponder, aSignal, xyPoint) {
             'maxFittedRect'))) {
         target = aDragResponder.get('actionElement');
 
-        targetContainer = TP.ifInvalid(kallee.modifierData.at(
-                                                    'container'),
-                                TP.elementGetOffsetParent(target));
+        targetContainer = kallee.modifierData.at('container');
+        if (TP.notValid(targetContainer)) {
+            targetContainer = TP.elementGetOffsetParent(target);
+        }
 
         coords = TP.elementGetPageBox(target,
                                         TP.BORDER_BOX,
@@ -297,7 +298,7 @@ function(aDragResponder, aSignal, xyPoint) {
         maxWidth;
 
     actionElem = aDragResponder.get('actionElement');
-    styleVals = TP.elementGetStyleValuesInPixels(
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
                     TP.ac('minWidth', 'maxWidth'));
 
     if (!TP.isNumber(minWidth = styleVals.at('minWidth'))) {
@@ -329,7 +330,7 @@ function(aDragResponder, aSignal, xyPoint) {
         maxHeight;
 
     actionElem = aDragResponder.get('actionElement');
-    styleVals = TP.elementGetStyleValuesInPixels(
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
                     actionElem,
                     TP.ac('minHeight', 'maxHeight'));
 
@@ -451,6 +452,8 @@ TP.core.DragResponder.Inst.defineAttribute('currentPoint');
 //  The target element the drag machine will be watching for drag events.
 TP.core.DragResponder.Inst.defineAttribute('targetElement');
 
+TP.core.DragResponder.Inst.defineAttribute('infoAttrs');
+
 //  The action element the drag machine will be modifying for drag events.
 TP.core.DragResponder.Inst.defineAttribute('actionElement');
 
@@ -460,6 +463,7 @@ TP.core.DragResponder.Inst.defineAttribute('actionWindow');
 TP.core.DragResponder.Inst.defineAttribute('$frameOffsetPoint');
 
 TP.core.DragResponder.Inst.defineAttribute('modifiers');
+TP.core.DragResponder.Inst.defineAttribute('workers');
 
 TP.core.DragResponder.Inst.defineAttribute('dragCorner');
 
@@ -495,6 +499,8 @@ function() {
     this.set('actionElement', null);
 
     this.set('modifiers', TP.ac());
+    this.set('workers', TP.ac());
+
     this.set('$frameOffsetPoint', TP.pc(0, 0));
 
     return this;
@@ -531,6 +537,32 @@ function(aModifierFunc, modifierData) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DragResponder.Inst.defineMethod('addDragWorker',
+function(aWorkerFunc) {
+
+    /**
+     * @method addDragWorker
+     * @summary Adds a 'drag worker' function to the receiver's list of worker
+     *     functions. Worker functions allow a different behavior rather than
+     *     the standard 'move' or 'resize' behavior to be processed using the
+     *     values computed by the responder engine.
+     * @param {Function} aWorkerFunc The modifier function to add to the
+     *     receiver's list.
+     * @returns {TP.core.DragResponder} The receiver.
+     */
+
+    if (!TP.isFunction(aWorkerFunc)) {
+        return this.raise('TP.sig.InvalidFunction',
+                            'Invalid worker function: ' + aWorkerFunc);
+    }
+
+    this.get('workers').push(aWorkerFunc);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DragResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
@@ -558,6 +590,8 @@ function() {
         offsetX,
         offsetY,
 
+        marginOffsets,
+
         corner,
 
         borderXOffset,
@@ -578,10 +612,18 @@ function() {
     startX = startPoint.getX();
     startY = startPoint.getY();
 
+    //  Subtract off the offset from the container to the action element from
+    //  our start position.
     containerOffsets = TP.elementGetOffsetFromContainer(actionElem);
 
     offsetX = startX - containerOffsets.first();
     offsetY = startY - containerOffsets.last();
+
+    //  Take into account the margin of the action element.
+    marginOffsets = TP.elementGetMarginInPixels(actionElem);
+
+    offsetX += marginOffsets.at(3);
+    offsetY += marginOffsets.at(0);
 
     //  If the user specified a 'drag corner', then we'll be snapping over to
     //  that corner before we begin manipulation of the active element.
@@ -916,6 +958,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrs = infoTPElement.getAttributes();
     }
 
+    this.set('infoAttrs', attrs);
+
     if (TP.notEmpty(attrVal = infoTPElement.getAttribute('drag:item'))) {
 
         lastDown = TP.core.Mouse.get('lastDown');
@@ -960,7 +1004,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                 'No elements found for drag:item path: ' + attrVal);
         }
 
-        attrs.removeKey('drag:item');
     } else {
         actionElem = evtTPElement.getNativeNode();
     }
@@ -997,8 +1040,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     if (TP.notEmpty(attrVal = attrs.at('drag:corner'))) {
         this.set('dragCorner', TP[attrVal]);
-
-        attrs.removeKey('drag:corner');
     }
 
     //  If the author has configured a drag offset, set our values for that
@@ -1012,8 +1053,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                 actionElem, attrVals.at('left'), 'width'));
         this.set('yOffset', TP.elementGetPixelValue(
                                 actionElem, attrVals.at('top'), 'height'));
-
-        attrs.removeKey('drag:offset');
     }
 
     //  If the author has configured a set of drag insets, set our values
@@ -1035,32 +1074,10 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.set('insetLeft',
                     TP.elementGetPixelValue(
                             actionElem, attrVals.at('left'), 'width'));
-
-        attrs.removeKey('drag:insets');
     }
 
-    //  If the author has configured a set of drag constraint function
-    //  names, use them to configure the modifier functions
-
-    if (TP.notEmpty(attrVal = attrs.at('drag:constraints'))) {
-        //  The author can define multiple values.
-        attrVal = attrVal.split(' ');
-
-        attrVal.perform(
-                function(aConstraintVal) {
-
-                    var constraintFunc;
-
-                    //  If the value names a constant on the
-                    //  TP.core.DragResponder type that points to a callable
-                    //  Function, then add it as a data modifier.
-                    if (TP.isCallable(
-                            constraintFunc =
-                                    TP.core.DragResponder[aConstraintVal])) {
-                        this.addDataModifier(constraintFunc);
-                    }
-                }.bind(this));
-    }
+    //  NB: We process 'drag:constraints' in the various subtypes version of
+    //  this method.
 
     //  initialSignal will be the DOMDragDown signal that started us dragging
 
@@ -1278,8 +1295,14 @@ function(aSignal) {
 
         styleObj,
 
+        workerFuncs,
+        infoAttrs,
+
         computedX,
-        computedY;
+        computedY,
+
+        topVal,
+        leftVal;
 
     this.callNextMethod();
 
@@ -1301,6 +1324,9 @@ function(aSignal) {
 
     styleObj = TP.elementGetStyleObj(actionElem);
 
+    workerFuncs = this.get('workers');
+    infoAttrs = this.get('infoAttrs');
+
     computedX = currentX - offsetPoint.getX();
     computedY = currentY - offsetPoint.getY();
 
@@ -1309,8 +1335,23 @@ function(aSignal) {
     computedX = computedPoint.getX();
     computedY = computedPoint.getY();
 
-    styleObj.top = computedY + 'px';
-    styleObj.left = computedX + 'px';
+    topVal = computedY;
+    leftVal = computedX;
+
+    if (TP.notEmpty(workerFuncs)) {
+        workerFuncs.forEach(
+            function(aFunc) {
+                aFunc(actionElem,
+                        styleObj,
+                        TP.hc(
+                            'top', topVal,
+                            'left', leftVal),
+                        infoAttrs);
+            });
+    } else {
+        styleObj.top = computedY + 'px';
+        styleObj.left = computedX + 'px';
+    }
 
     return;
 });
@@ -1342,7 +1383,11 @@ function(aSignal) {
 
         startPoint,
         startX,
-        startY;
+        startY,
+
+        styleObj,
+
+        bodyElem;
 
     startSignal = this.get('startSignal');
     actionElem = this.get('actionElement');
@@ -1374,9 +1419,8 @@ function(aSignal) {
 
     this.set('$overlayElement', overlayElem);
 
-    //  Append the overlay element to the element we're performing the
-    //  action on. This will prevent spurious events from the action
-    //  element.
+    //  Append the overlay element to the element we're performing the action
+    //  on. This will allow us to 'hit test' with the insets we computed above.
     TP.nodeAppendChild(actionElem, overlayElem, false);
 
     //  Grab the start point and make sure that the overlay element contains
@@ -1397,6 +1441,21 @@ function(aSignal) {
 
         return;
     }
+
+    //  Now we repurpose the overlay element to overlay the whole body for
+    //  dragging purposes. This will prevent spurious events from affecting the
+    //  dragging action.
+
+    //  First, reset all of the style position/sizes to 0
+    styleObj = TP.elementGetStyleObj(overlayElem);
+    styleObj.top = '0px';
+    styleObj.right = '0px';
+    styleObj.bottom = '0px';
+    styleObj.left = '0px';
+
+    //  Then (re)append the overlay element onto the body.
+    bodyElem = TP.documentGetBody(TP.nodeGetDocument(actionElem));
+    TP.nodeAppendChild(bodyElem, overlayElem, false);
 
     //  Make sure and disable the user select on the body element so that we
     //  don't get weird selection behavior from the host platform.
@@ -1451,9 +1510,13 @@ function(aSignal) {
     //  data.
     this.teardownDataModifiers();
 
+    //  Empty out any workers that got added
+    this.get('workers').empty();
+
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+    this.set('targetElement', null);
 
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -1518,8 +1581,57 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
+    }
 
-        attrs.removeKey('drag:container');
+    //  If the author has configured a set of drag constraint function names,
+    //  use them to configure the modifier functions
+
+    if (TP.notEmpty(attrVal = attrs.at('drag:constraints'))) {
+
+        //  The author can define multiple values.
+        attrVal = attrVal.split(' ');
+
+        attrVal.perform(
+                function(aConstraintVal) {
+                    var constraintFunc;
+
+                    //  If the value names a constant on the
+                    //  TP.core.MoveResponder or the TP.core.DragResponder
+                    //  type that points to a callable Function, then add it
+                    //  as a data modifier.
+                    if (TP.isCallable(
+                            constraintFunc =
+                                TP.core.MoveResponder[aConstraintVal]) ||
+                        TP.isCallable(
+                            constraintFunc =
+                                TP.core.DragResponder[aConstraintVal])) {
+                        this.addDataModifier(constraintFunc);
+                    }
+                }.bind(this));
+    }
+
+    if (TP.notEmpty(attrVal = attrs.at('drag:workers'))) {
+
+        //  The author can define multiple values.
+        attrVal = attrVal.split(' ');
+
+        attrVal.perform(
+                function(aConstraintVal) {
+                    var workerFunc;
+
+                    //  If the value names a constant on the
+                    //  TP.core.MoveResponder or the TP.core.DragResponder
+                    //  type that points to a callable Function, then add it
+                    //  as a data modifier.
+                    if (TP.isCallable(
+                            workerFunc =
+                                TP.core.MoveResponder[aConstraintVal]) ||
+                        TP.isCallable(
+                            workerFunc =
+                                TP.core.DragResponder[aConstraintVal])) {
+                        this.addDragWorker(workerFunc);
+                    }
+                }.bind(this));
     }
 
     //  Need to do this since we might have generated 'attrs' here and want
@@ -1571,8 +1683,10 @@ function(aDragResponder, aSignal, xyPoint) {
                                                     null,
                                                     false));
 
-        targetContainer = TP.ifInvalid(kallee.modifierData.at('container'),
-                                        TP.elementGetOffsetParent(target));
+        targetContainer = kallee.modifierData.at('container');
+        if (TP.notValid(targetContainer)) {
+            targetContainer = TP.elementGetOffsetParent(target);
+        }
 
         containerRect = TP.rtc(TP.elementGetPageBox(targetContainer,
                                                     TP.CONTENT_BOX,
@@ -2005,11 +2119,14 @@ function(aSignal) {
 
         side,
 
+        borderTop,
+        borderLeft,
+
         parentBorderTop,
         parentBorderLeft,
 
-        borderTop,
-        borderLeft,
+        workerFuncs,
+        infoAttrs,
 
         computedX,
         computedY,
@@ -2018,7 +2135,12 @@ function(aSignal) {
         dimensionY,
 
         clampXVal,
-        clampYVal;
+        clampYVal,
+
+        topVal,
+        leftVal,
+        heightVal,
+        widthVal;
 
     this.callNextMethod();
 
@@ -2058,6 +2180,9 @@ function(aSignal) {
                                 TP.elementGetOffsetParent(actionElem),
                                 TP.LEFT);
 
+    workerFuncs = this.get('workers');
+    infoAttrs = this.get('infoAttrs');
+
     switch (side) {
         case TP.TOP:
 
@@ -2084,14 +2209,28 @@ function(aSignal) {
 
             if (computedY < clampYVal) {
 
-                styleObj.top = computedY + 'px';
-
+                topVal = computedY;
                 if (computedY > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.height = (dimensionY - parentBorderTop) + 'px';
+                    heightVal = (dimensionY - parentBorderTop);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.height = dimensionY + 'px';
+                    heightVal = dimensionY;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'top', topVal,
+                                        'height', heightVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.top = topVal + 'px';
+                    styleObj.height = heightVal + 'px';
                 }
             }
 
@@ -2124,18 +2263,35 @@ function(aSignal) {
 
             if (computedY < clampYVal) {
 
-                styleObj.top = computedY + 'px';
+                topVal = computedY;
 
                 if (computedY > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.height = (dimensionY - parentBorderTop) + 'px';
+                    heightVal = (dimensionY - parentBorderTop);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.height = dimensionY + 'px';
+                    heightVal = dimensionY;
+                }
+
+                widthVal = computedX;
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'top', topVal,
+                                        'height', heightVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.top = topVal + 'px';
+                    styleObj.height = heightVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
-
-            styleObj.width = computedX + 'px';
 
             break;
 
@@ -2147,7 +2303,20 @@ function(aSignal) {
             this.modifyResponderData(currentSignal, computedPoint);
             computedX = computedPoint.getX();
 
-            styleObj.width = computedX + 'px';
+            widthVal = computedX;
+
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'width', widthVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.width = widthVal + 'px';
+            }
 
             break;
 
@@ -2161,8 +2330,23 @@ function(aSignal) {
             computedX = computedPoint.getX();
             computedY = computedPoint.getY();
 
-            styleObj.width = computedX + 'px';
-            styleObj.height = computedY + 'px';
+            widthVal = computedX;
+            heightVal = computedY;
+
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'height', heightVal,
+                                    'width', widthVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.width = widthVal + 'px';
+                styleObj.height = heightVal + 'px';
+            }
 
             break;
 
@@ -2174,7 +2358,20 @@ function(aSignal) {
             this.modifyResponderData(currentSignal, computedPoint);
             computedY = computedPoint.getY();
 
-            styleObj.height = computedY + 'px';
+            heightVal = computedY;
+
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'height', heightVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.height = heightVal + 'px';
+            }
 
             break;
 
@@ -2205,18 +2402,35 @@ function(aSignal) {
 
             if (computedX < clampXVal) {
 
-                styleObj.left = computedX + 'px';
+                leftVal = computedX;
 
                 if (computedX > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.width = (dimensionX - parentBorderLeft) + 'px';
+                    widthVal = (dimensionX - parentBorderLeft);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.width = dimensionX + 'px';
+                    widthVal = dimensionX;
+                }
+
+                heightVal = computedY;
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'left', leftVal,
+                                        'height', heightVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.left = leftVal + 'px';
+                    styleObj.height = heightVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
-
-            styleObj.height = computedY + 'px';
 
             break;
 
@@ -2245,14 +2459,29 @@ function(aSignal) {
 
             if (computedX < clampXVal) {
 
-                styleObj.left = computedX + 'px';
+                leftVal = computedX;
 
                 if (computedX > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.width = (dimensionX - parentBorderLeft) + 'px';
+                    widthVal = (dimensionX - parentBorderLeft);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.width = dimensionX + 'px';
+                    widthVal = dimensionX;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'left', leftVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.left = leftVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
 
@@ -2285,14 +2514,29 @@ function(aSignal) {
 
             if (computedY < clampYVal) {
 
-                styleObj.top = computedY + 'px';
+                topVal = computedY;
 
                 if (computedY > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.height = (dimensionY - parentBorderTop) + 'px';
+                    heightVal = (dimensionY - parentBorderTop);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.height = dimensionY + 'px';
+                    heightVal = dimensionY;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'top', topVal,
+                                        'height', heightVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.top = topVal + 'px';
+                    styleObj.height = heightVal + 'px';
                 }
             }
 
@@ -2313,14 +2557,29 @@ function(aSignal) {
 
             if (computedX < clampXVal) {
 
-                styleObj.left = computedX + 'px';
+                leftVal = computedX;
 
                 if (computedX > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.width = (dimensionX - parentBorderLeft) + 'px';
+                    widthVal = (dimensionX - parentBorderLeft);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.width = dimensionX + 'px';
+                    widthVal = dimensionX;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'left', leftVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.left = leftVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
 
@@ -2360,7 +2619,11 @@ function(aSignal) {
 
         startPoint,
         startX,
-        startY;
+        startY,
+
+        styleObj,
+
+        bodyElem;
 
     startSignal = this.get('startSignal');
     actionElem = this.get('actionElement');
@@ -2392,7 +2655,7 @@ function(aSignal) {
     this.set('$overlayElement', overlayElem);
 
     //  Append the overlay element to the element we're performing the action
-    //  on. This will prevent spurious events from the action element.
+    //  on. This will allow us to 'hit test' with the insets we computed above.
     TP.nodeAppendChild(actionElem, overlayElem, false);
 
     //  Grab the start point and make sure that the overlay element contains it.
@@ -2413,6 +2676,21 @@ function(aSignal) {
 
         return;
     }
+
+    //  Now we repurpose the overlay element to overlay the whole body for
+    //  dragging purposes. This will prevent spurious events from affecting the
+    //  dragging action.
+
+    //  First, reset all of the style position/sizes to 0
+    styleObj = TP.elementGetStyleObj(overlayElem);
+    styleObj.top = '0px';
+    styleObj.right = '0px';
+    styleObj.bottom = '0px';
+    styleObj.left = '0px';
+
+    //  Then (re)append the overlay element onto the body.
+    bodyElem = TP.documentGetBody(TP.nodeGetDocument(actionElem));
+    TP.nodeAppendChild(bodyElem, overlayElem, false);
 
     //  Make sure and disable the user select on the body element so that we
     //  don't get weird selection behavior from the host platform.
@@ -2471,9 +2749,13 @@ function(aSignal) {
     //  data.
     this.teardownDataModifiers();
 
+    //  Empty out any workers that got added
+    this.get('workers').empty();
+
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+    this.set('targetElement', null);
 
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -2538,8 +2820,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER,
                 TP.hc('container', containerElem));
-
-        attrs.removeKey('drag:container');
     }
 
     //  If the author has configured a resize side, set our value for that and
@@ -2547,8 +2827,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     if (TP.notEmpty(attrVal = attrs.at('drag:side'))) {
         this.set('dragSide', TP[attrVal]);
-
-        attrs.removeKey('drag:side');
     }
 
     //  If the author has configured a set of drag constraint function names,
@@ -2561,7 +2839,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
         attrVal.perform(
                 function(aConstraintVal) {
-
                     var constraintFunc;
 
                     //  If the value names a constant on the
@@ -2575,6 +2852,30 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                             constraintFunc =
                                 TP.core.DragResponder[aConstraintVal])) {
                         this.addDataModifier(constraintFunc);
+                    }
+                }.bind(this));
+    }
+
+    if (TP.notEmpty(attrVal = attrs.at('drag:workers'))) {
+
+        //  The author can define multiple values.
+        attrVal = attrVal.split(' ');
+
+        attrVal.perform(
+                function(aConstraintVal) {
+                    var workerFunc;
+
+                    //  If the value names a constant on the
+                    //  TP.core.ResizeResponder or the TP.core.DragResponder
+                    //  type that points to a callable Function, then add it
+                    //  as a data modifier.
+                    if (TP.isCallable(
+                            workerFunc =
+                                TP.core.ResizeResponder[aConstraintVal]) ||
+                        TP.isCallable(
+                            workerFunc =
+                                TP.core.DragResponder[aConstraintVal])) {
+                        this.addDragWorker(workerFunc);
                     }
                 }.bind(this));
     }
@@ -2625,9 +2926,10 @@ function(aDragResponder, aSignal, xyPoint) {
 
         target = aDragResponder.get('itemElement');
 
-        targetContainer = TP.ifInvalid(
-                kallee.modifierData.at('container'),
-                TP.elementGetOffsetParent(target));
+        targetContainer = kallee.modifierData.at('container');
+        if (TP.notValid(targetContainer)) {
+            targetContainer = TP.elementGetOffsetParent(target);
+        }
 
         coords = TP.elementGetPageBox(target,
                                         TP.BORDER_BOX,
@@ -2741,7 +3043,6 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         //  from each vend value
         vendVals.perform(
             function(aVal) {
-
                 var typ;
 
                 if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
@@ -2773,7 +3074,6 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         //  from each accept value
         acceptVals.perform(
             function(aVal) {
-
                 var typ;
 
                 if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
@@ -3142,6 +3442,7 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+    this.set('targetElement', null);
 
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -3201,7 +3502,10 @@ function(anElement) {
         ' z-index: ' + TP.DRAG_DROP_TIER + ';' +
         ' pointer-events: none');
 
-    dragElement._tibetGenerated = true;
+    //  Mark this element as one that was generated by TIBET and shouldn't be
+    //  considered in CSS queries, etc.
+    dragElement[TP.GENERATED] = true;
+
     TP.nodeAppendChild(TP.documentGetBody(dragDoc), dragElement, false);
 
     //  Note that we don't worry about reassignment here
@@ -3283,6 +3587,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrs = infoTPElement.getAttributes();
     }
 
+    this.set('infoAttrs', attrs);
+
     //  If the author has configured a drag container, install our own
     //  modifier function for that and remove the key so that supertypes
     //  won't install anything else for that.
@@ -3301,8 +3607,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
-
-        attrs.removeKey('drag:container');
     }
 
     //  NB: We do *not* call up to the TP.core.MoveResponder's method here,
@@ -3412,6 +3716,10 @@ function(aTargetElem, anEvent) {
     //  it and exit.
     if (evtTargetTPElem.willMove()) {
         if (TP.isValid(moveResponder = TP.bySystemId('MoveService'))) {
+
+            //  Cache the target element - we'll need this ondragup
+            moveResponder.set('targetElement', aTargetElem);
+
             //  Ask the wrapped event target element for its 'drag source'
             //  TP.core.ElementNode. If it can't find one, then it acts as it's
             //  own.
@@ -3445,6 +3753,10 @@ function(aTargetElem, anEvent) {
     //  activate it and exit.
     if (evtTargetTPElem.willResize()) {
         if (TP.isValid(resizeResponder = TP.bySystemId('ResizeService'))) {
+
+            //  Cache the target element - we'll need this ondragup
+            resizeResponder.set('targetElement', aTargetElem);
+
             //  Ask the wrapped event target element for its 'drag source'
             //  TP.core.ElementNode
             sourceTPElem = evtTargetTPElem.getDragSource();
@@ -3503,6 +3815,9 @@ function(aTargetElem, anEvent) {
                 //  and event target native elements
 
                 initialSignal = TP.wrap(anEvent);
+
+                //  Cache the target element - we'll need this ondragup
+                dndResponder.set('targetElement', aTargetElem);
 
                 //  Note here how we make the 'action element' be the rep
                 //  element that was computed from the item element.
@@ -3578,7 +3893,10 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var dragStateMachine;
+    var dragStateMachine,
+
+        responder,
+        targetElement;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -3586,9 +3904,29 @@ function(aTargetElem, anEvent) {
 
     dragStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
+    //  Grab the target element before we deactivate.
+    //  TODO: This is a little cheesy - we should have another way to get back
+    //  to the responders
+    responder = TP.bySystemId('MoveService');
+    targetElement = responder.get('targetElement');
+
+    if (!TP.isElement(targetElement)) {
+        responder = TP.bySystemId('ResizeService');
+        targetElement = responder.get('targetElement');
+    }
+
+    if (!TP.isElement(targetElement)) {
+        responder = TP.bySystemId('DNDService');
+        targetElement = responder.get('targetElement');
+    }
+
     dragStateMachine.transition('idle');
 
     dragStateMachine.deactivate();
+
+    if (TP.isElement(targetElement)) {
+        return this.onmouseup(targetElement, anEvent);
+    }
 
     return this;
 });
@@ -4808,566 +5146,6 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.core.SelectingUIElementNode
-//  ========================================================================
-
-TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
-
-//  This type is intended to be used as a trait type only, so we don't allow
-//  instance creation
-TP.core.SelectingUIElementNode.isAbstract(true);
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineAttribute('$currentValue');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
-function(aValue, elementProperty, attributeName) {
-
-    /**
-     * @method addSelection
-     * @summary Adds a selection to the grouping of elements that the receiver
-     *     is a part of (as matched by their 'name' attribute) matching the
-     *     criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
-     *      be the property used with each grouped element to determine which of
-     *      them will be selected.
-     *          'value'     ->  The value of the element (the default)
-     *          'label'     ->  The label of the element
-     *          'id'        ->  The id of the element
-     *          'index'     ->  The numerical index of the element
-     *          'attr'      ->  The value of an attribute on the element.
-     * @param {Object|Array} aValue The value to use when determining the
-     *      elements to add to the selection. Note that this can be an Array.
-     * @param {String} elementProperty The property of the elements to use to
-     *      determine which elements should be selected.
-     * @param {String} attributeName The name of the attribute that should be
-     *      queried to determine which elements should be selected if the
-     *      'elementProperty' parameter is 'attr'.
-     * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
-     * @returns {Boolean} Whether or not a selection was added.
-     */
-
-    var separator,
-        value,
-        valueTPElems,
-
-        aspect,
-        dict,
-        dirty,
-
-        len,
-        i,
-        item,
-        val;
-
-    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
-                            TP.sys.cfg('bind.value_separator'));
-
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
-    }
-
-    //  watch for multiple selection issues
-    if (TP.isArray(value) && !this.allowsMultiples()) {
-        return this.raise(
-                'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
-                ' multiple selection');
-    }
-
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    //  Generate a selection hash. This should populate the hash with keys that
-    //  match 1...n values in the supplied value.
-    dict = this.$generateSelectionHashFrom(value);
-
-    //  We default the aspect to 'value'
-    aspect = TP.ifInvalid(elementProperty, 'value');
-
-    dirty = false;
-
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
-
-        item = valueTPElems.at(i);
-
-        switch (aspect) {
-            case 'label':
-                val = item.getLabelText();
-                break;
-
-            case 'id':
-                val = item.getLocalID();
-                break;
-
-            case 'index':
-                val = i;
-                break;
-
-            case 'attr':
-                val = item.getAttribute(attributeName);
-                break;
-
-            case 'value':
-            default:
-                val = item.$getPrimitiveValue();
-                break;
-        }
-
-        //  NOTE that we don't clear ones that don't match, we just add the
-        //  new items to the selection
-        if (dict.containsKey(val)) {
-            if (!item.$getVisualToggle()) {
-                dirty = true;
-            }
-
-            item.$setVisualToggle(true);
-        }
-    }
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return dirty;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
-function() {
-
-    /**
-     * @method allowsMultiples
-     * @summary Returns true by default.
-     * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     */
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
-function(aValue) {
-
-    /**
-     * @method deselect
-     * @summary De-selects (clears) the element which has the provided value.
-     * @param {Object} aValue The value to de-select. Note that this can be an
-     *     array. Also note that if no value is provided this will deselect
-     *     (clear) all selected items.
-     * @exception TP.sig.InvalidValueElements
-     * @returns {Boolean} Whether or not a selection was deselected.
-     */
-
-    if (TP.isEmpty(aValue)) {
-        return this.deselectAll();
-    }
-
-    //  If we're using a singular value for selection, then clear it.
-    if (aValue === this.get('$currentValue')) {
-        this.set('$currentValue', null);
-    }
-
-    return this.removeSelection(aValue, 'value');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
-function() {
-
-    /**
-     * @method deselectAll
-     * @summary Clears any current selection(s).
-     * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    var valueTPElems,
-        dirty,
-        len,
-        i,
-
-        item;
-
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    dirty = false;
-
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
-
-        item = valueTPElems.at(i);
-
-        if (item.$getVisualToggle()) {
-            dirty = true;
-            item.$setVisualToggle(false);
-        }
-    }
-
-    //  If we're using a singular value for selection, then clear it.
-    this.set('$currentValue', null);
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
-function(aValue) {
-
-    /**
-     * @method $generateSelectionHashFrom
-     * @summary Returns a Hash that is driven off of the supplied value which
-     *     can then be used to set the receiver's selection.
-     * @returns {TP.core.Hash} A Hash that is populated with data from the
-     *     supplied value that can be used for manipulating the receiver's
-     *     selection.
-     */
-
-    var dict,
-        keys,
-        len,
-        i;
-
-    //  avoid MxN iterations by creating a hash of aValues
-    if (TP.isArray(aValue)) {
-        dict = TP.hc().addAllKeys(aValue, '');
-    } else if (TP.isHash(aValue)) {
-        dict = TP.hc().addAllKeys(aValue.getValues());
-    } else if (TP.isMemberOf(aValue, Object)) {
-        dict = TP.hc();
-        keys = TP.keys(aValue);
-        len = keys.getSize();
-        for (i = 0; i < len; i++) {
-            dict.atPut(aValue[keys.at(i)], i);
-        }
-    } else if (TP.isNodeList(aValue)) {
-        dict = TP.hc();
-        len = aValue.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(aValue[keys.at(i)]), i);
-        }
-    } else if (TP.isNamedNodeMap(aValue)) {
-        dict = TP.hc();
-        len = aValue.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(aValue.item(i)), i);
-        }
-    } else {
-        dict = TP.hc(aValue, '');
-    }
-
-    return dict;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('getSelectedElements',
-function() {
-
-    /**
-     * @method getSelectedElements
-     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
-     *     within the receiver.
-     * @returns {TP.core.UIElementNode[]} The Array of selected
-     *     TP.core.UIElementNodes.
-     */
-
-    var valueTPElems,
-        selectedTPElems,
-        len,
-        i,
-
-        item;
-
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    selectedTPElems = TP.ac();
-
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
-
-        item = valueTPElems.at(i);
-
-        if (item.isSelected()) {
-            selectedTPElems.push(item);
-        }
-    }
-
-    return selectedTPElems;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('getValueElements',
-function() {
-
-    /**
-     * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
-     *     'value object' with the receiver. That is, a change to the 'value' of
-     *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
-     *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
-     */
-
-    var valueTPElems,
-        ourCanonicalName;
-
-    valueTPElems = this.getGroupElements();
-
-    if (TP.isEmpty(valueTPElems)) {
-        valueTPElems.push(this);
-    } else {
-        //  We want to filter out all of the elements that *aren't* of the same
-        //  kind as the receiver
-        ourCanonicalName = this.getCanonicalName();
-
-        valueTPElems =
-            valueTPElems.select(
-                    function(aTPElem) {
-                        return aTPElem.getCanonicalName() === ourCanonicalName;
-                    });
-    }
-
-    return valueTPElems;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
-function(aValue, elementProperty, attributeName) {
-
-    /**
-     * @method removeSelection
-     * @summary Removes a selection from the grouping of elements that the
-     *     receiver is a part of (as matched by their 'name' attribute) matching
-     *     the criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
-     *      be the property used with each grouped element to determine which of
-     *      them will be deselected.
-     *          'value'     ->  The value of the element (the default)
-     *          'label'     ->  The label of the element
-     *          'id'        ->  The id of the element
-     *          'index'     ->  The numerical index of the element
-     * @param {Object|Array} aValue The value to use when determining the
-     *      elements to remove from the selection. Note that this can be an
-     *      Array.
-     * @param {String} elementProperty The property of the elements to use to
-     *      determine which elements should be deselected.
-     * @param {String} attributeName The name of the attribute that should be
-     *      queried to determine which elements should be selected if the
-     *      'elementProperty' parameter is 'attr'.
-     * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
-     * @returns {Boolean} Whether or not a selection was removed.
-     */
-
-    var separator,
-        value,
-        valueTPElems,
-
-        aspect,
-        dict,
-        dirty,
-
-        len,
-        i,
-        item,
-        val;
-
-    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
-                            TP.sys.cfg('bind.value_separator'));
-
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
-    }
-
-    //  watch for multiple selection issues
-    if (TP.isArray(value) && !this.allowsMultiples()) {
-        return this.raise(
-                'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
-                ' multiple selection');
-    }
-
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    //  Generate a selection hash. This should populate the hash with keys that
-    //  match 1...n values in the supplied value.
-    dict = this.$generateSelectionHashFrom(value);
-
-    //  We default the aspect to 'value'
-    aspect = TP.ifInvalid(elementProperty, 'value');
-
-    dirty = false;
-
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
-
-        item = valueTPElems.at(i);
-
-        switch (aspect) {
-            case 'label':
-                val = item.getLabelText();
-                break;
-
-            case 'id':
-                val = item.getLocalID();
-                break;
-
-            case 'index':
-                val = i;
-                break;
-
-            case 'attr':
-                val = item.getAttribute(attributeName);
-                break;
-
-            case 'value':
-            default:
-                val = item.$getPrimitiveValue();
-                break;
-        }
-
-        //  NOTE that we don't clear ones that don't match, we just add the
-        //  new items to the selection
-        if (dict.containsKey(val)) {
-            if (item.$getVisualToggle()) {
-                dirty = true;
-            }
-
-            item.$setVisualToggle(false);
-        }
-    }
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return dirty;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('select',
-function(aValue) {
-
-    /**
-     * @method select
-     * @summary Selects the element which has the provided value (if found).
-     *     Note that this method is roughly identical to setDisplayValue() with
-     *     the exception that this method does not clear existing selections
-     *     when processing the value(s) provided. When no specific values are
-     *     provided this method will selectAll.
-     * @param {Object} aValue The value to select. Note that this can be an
-     *     array.
-     * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
-     * @returns {Boolean} Whether or not a selection was selected.
-     */
-
-    var oldValue;
-
-    //  If allowMultiples is false, then we can use a reference to a singular
-    //  value that will be used as the selected value.
-    if (!this.allowsMultiples()) {
-
-        if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
-            this.deselect(oldValue);
-        }
-
-        this.set('$currentValue', aValue);
-    }
-
-    return this.addSelection(aValue, 'value');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
-function() {
-
-    /**
-     * @method selectAll
-     * @summary Selects all elements with the same 'name' attribute as the
-     *     receiver. Note that for groupings of controls that don't allow
-     *     multiple selections (such as radiobuttons), this will raise an
-     *     'InvalidOperation' exception.
-     * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    var valueTPElems,
-        dirty,
-        len,
-        i,
-
-        item;
-
-    if (!this.allowsMultiples()) {
-        return this.raise(
-                'TP.sig.InvalidOperation',
-                'Target does not allow multiple selection');
-    }
-
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    dirty = false;
-
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
-
-        item = valueTPElems.at(i);
-
-        if (!item.$getVisualToggle()) {
-            dirty = true;
-        }
-
-        item.$setVisualToggle(true);
-    }
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return this;
-});
-
-//  ========================================================================
 //  TP.core.SelectableItemUIElementNode
 //  ========================================================================
 
@@ -5462,13 +5240,550 @@ function(aToggleValue) {
     /**
      * @method $setVisualToggle
      * @summary Sets the low-level primitive 'toggle value' used by the receiver
-     *     to display a 'selected' state.
+     *     to display a 'checked' or 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
-     *     'checked' state.
+     *     'checked' or 'selected' state.
      * @returns {TP.core.SelectableItemUIElementNode} The receiver.
      */
 
     return TP.override();
+});
+
+//  ========================================================================
+//  TP.core.SelectingUIElementNode
+//  ========================================================================
+
+TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
+
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.core.SelectingUIElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * The selection model. This consists of a Hash where the keys are the selection
+ * 'aspects' and the values are an Array of values of that aspect that at least
+ * one of the items of the receiver needs to match in order for that item of the
+ * receiver to be considered 'selected'.
+ * @type {TP.core.Hash}
+ */
+TP.core.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
+function(aValue, anAspect) {
+
+    /**
+     * @method addSelection
+     * @summary Adds a selection to the receiver. Note that this method does not
+     *     clear existing selections when processing the value(s) provided
+     *     unless the receiver is not one that 'allows multiples'.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to add to the selection. Note that this can be an Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was added.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        dirty,
+
+        selectionModel,
+
+        len,
+        i;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    dirty = false;
+
+    //  Grab the selection model. If it doesn't allow multiples, then empty it.
+    selectionModel = this.$getSelectionModel();
+    if (!this.allowsMultiples()) {
+        selectionModel.empty();
+    }
+
+    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
+    //  we just place the whole Array that we got above by splitting the value
+    //  under the aspect key in the selection model and mark ourselves as dirty.
+    valueEntry = selectionModel.at(aspect);
+    if (TP.notValid(valueEntry)) {
+        this.$getSelectionModel().atPut(aspect, value);
+        dirty = true;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it isn't, push it in
+        //  and mark ourselves as dirty.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            if (!valueEntry.contains(value.at(i))) {
+                valueEntry.push(value.at(i));
+                dirty = true;
+            }
+        }
+    }
+
+    this.render();
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @method allowsMultiples
+     * @summary Returns true by default.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method deselect
+     * @summary De-selects (clears) the element which has the provided value (if
+     *     found) or is at the provided index. Also note that if no value is
+     *     provided this will deselect (clear) all selected items.
+     * @param {Object} [aValue] The value to de-select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was deselected.
+     */
+
+    var dirty;
+
+    if (TP.isEmpty(aValue)) {
+        return this.deselectAll();
+    }
+
+    dirty = this.removeSelection(aValue, 'value');
+
+    if (dirty && TP.notFalse(shouldSignal)) {
+        this.dispatch('TP.sig.UIDeselect');
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
+function() {
+
+    /**
+     * @method deselectAll
+     * @summary Clears any current selection(s).
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    var selectionModel,
+        oldSize,
+
+        dirty;
+
+    selectionModel = this.$getSelectionModel();
+
+    //  Capture the size of the selection model before we empty it.
+    oldSize = selectionModel.getSize();
+
+    selectionModel.empty();
+
+    //  We're dirty if the selection model had content before we emptied it.
+    dirty = oldSize > 0;
+
+    this.render();
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
+function() {
+
+    /**
+     * @method $getSelectionModel
+     * @summary Returns the current selection model (and creates a new one if it
+     *     doesn't exist).
+     * @returns {TP.core.Hash} The selection model.
+     */
+
+    var selectionModel;
+
+    if (TP.notValid(selectionModel = this.$get('selectionModel'))) {
+        selectionModel = TP.hc();
+        this.set('selectionModel', selectionModel);
+    }
+
+    return selectionModel;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
+function(aValue, anAspect) {
+
+    /**
+     * @method isSelected
+     * @summary Checks to see if a control within the receiver containing the
+     *     supplied value is selected.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      whether a particular element is selected. Note that this can be an
+     *      Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements are selected.
+     * @returns {Boolean} Whether or not a control within the receiver is
+            selected.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        selected,
+
+        selectionModel,
+
+        len,
+        i;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    selected = false;
+
+    //  Grab the selection model.
+    selectionModel = this.$getSelectionModel();
+
+    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
+    //  there is no selection and we'll return false.
+    valueEntry = selectionModel.at(aspect);
+    if (TP.isValid(valueEntry)) {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it isn't, mark
+        //  ourselves as not selected and break.
+        selected = true;
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            if (!valueEntry.contains(value.at(i))) {
+                selected = false;
+                break;
+            }
+        }
+    }
+
+    return selected;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+function(anAspect) {
+
+    /**
+     * @method $refreshSelectionModelFor
+     * @summary Refreshes the underlying selection model based on state settings
+     *     in the UI.
+     * @description Note that the aspect can be one of the following:
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     *     Note that, for this trait type, this method does nothing. Other types
+     *     that mix in this trait should implement this if necessary.
+     * @param {String} anAspect The property of the elements to use to
+     *      determine which elements should be selected.
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
+function(aValue, anAspect) {
+
+    /**
+     * @method removeSelection
+     * @summary Removes a selection from the receiver. Note that this method
+     *     does not clear existing selections when processing the value(s)
+     *     provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be deselected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to remove from the selection. Note that this can be an
+     *      Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be deselected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was removed.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        dirty,
+
+        len,
+        i,
+
+        valIndex;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    dirty = false;
+
+    //  Grab the entry in the selection model at the aspect provided. If the
+    //  entry doesn't exist, then we just return false. There was no selection
+    //  and we're not dirty.
+    valueEntry = this.$getSelectionModel().at(aspect);
+    if (TP.notValid(valueEntry)) {
+        return false;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it is, splice it out of
+        //  the Array and mark ourselves as dirty.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            valIndex = valueEntry.getPosition(value.at(i));
+
+            if (valIndex !== TP.NOT_FOUND) {
+                valueEntry.splice(valIndex, 1);
+                dirty = true;
+            }
+        }
+    }
+
+    if (dirty) {
+        this.$getSelectionModel().removeKey(TP.ALL);
+    }
+
+    this.render();
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('select',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aValue] The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var dirty;
+
+    //  If allowMultiples is false, then we can use a reference to a singular
+    //  value that will be used as the selected value.
+    if (!this.allowsMultiples()) {
+        this.$getSelectionModel().empty();
+    }
+
+    dirty = this.addSelection(aValue, 'value');
+
+    if (dirty && TP.notFalse(shouldSignal)) {
+        this.dispatch('TP.sig.UISelect');
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
+function() {
+
+    /**
+     * @method selectAll
+     * @summary Selects all elements with the same 'name' attribute as the
+     *     receiver. Note that for groupings of controls that don't allow
+     *     multiple selections (such as radiobuttons), this will raise an
+     *     'InvalidOperation' exception.
+     * @exception TP.sig.InvalidOperation
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    var selectionModel,
+        dirty;
+
+    if (!this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target does not allow multiple selection');
+    }
+
+    selectionModel = this.$getSelectionModel();
+
+    //  If the selection model already has the special key 'TP.ALL', then
+    //  everything is already selected.
+    if (selectionModel.hasKey(TP.ALL)) {
+        return this;
+    }
+
+    selectionModel.empty();
+    selectionModel.atPut(TP.ALL, true);
+
+    this.render();
+
+    //  TODO: Can we always assume 'true' here? If all of the items of the
+    //  receiver were selected individually, then this method was invoked, the
+    //  special TP.ALL key won't be in selection model, but everything was
+    //  already in the model.
+    dirty = true;
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
 });
 
 //  ========================================================================
@@ -5489,6 +5804,114 @@ TP.core.TogglingUIElementNode.isAbstract(true);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.TogglingUIElementNode.Inst.defineMethod('deselect',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method deselect
+     * @summary De-selects (clears) the element which has the provided value (if
+     *     found) or is at the provided index. Also note that if no value is
+     *     provided this will deselect (clear) all selected items.
+     * @param {Object} [aValue] The value to de-select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was deselected.
+     */
+
+    var valueTPElems,
+
+        len,
+        i,
+        item,
+
+        value,
+
+        matches;
+
+    //  If aValue is a RegExp, then we use it to test against all of the value
+    //  elements 'primitive value'. If we find one that matches, then we use
+    //  that as the value to remove from our selection.
+
+    if (TP.isRegExp(aValue)) {
+        if (TP.notValid(valueTPElems = this.getValueElements())) {
+            return this.raise('TP.sig.InvalidValueElements');
+        }
+
+        matches = TP.ac();
+
+        len = valueTPElems.getSize();
+        for (i = 0; i < len; i++) {
+
+            item = valueTPElems.at(i);
+
+            value = item.$getPrimitiveValue();
+
+            if (aValue.test(value)) {
+                matches.push(value);
+            }
+        }
+
+        return this.callNextMethod(matches, anIndex, shouldSignal);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
+function(aValue) {
+
+    /**
+     * @method $generateSelectionHashFrom
+     * @summary Returns a Hash that is driven off of the supplied value which
+     *     can then be used to set the receiver's selection.
+     * @returns {TP.core.Hash} A Hash that is populated with data from the
+     *     supplied value that can be used for manipulating the receiver's
+     *     selection.
+     */
+
+    var dict,
+        keys,
+        len,
+        i;
+
+    //  avoid MxN iterations by creating a hash of aValues
+    if (TP.isArray(aValue)) {
+        dict = TP.hc().addAllKeys(aValue, '');
+    } else if (TP.isHash(aValue)) {
+        dict = TP.hc().addAllKeys(aValue.getValues());
+    } else if (TP.isPlainObject(aValue)) {
+        dict = TP.hc();
+        keys = TP.keys(aValue);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(aValue[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue.item(i)), i);
+        }
+    } else {
+        dict = TP.hc(aValue, '');
+    }
+
+    return dict;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
 function() {
 
@@ -5496,6 +5919,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
+     * @exception TP.sig.InvalidValueElements
      * @returns {String|Array} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
@@ -5607,6 +6031,43 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TogglingUIElementNode.Inst.defineMethod('getValueElements',
+function() {
+
+    /**
+     * @method getValueElements
+     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     *     'value object' with the receiver. That is, a change to the 'value' of
+     *     the receiver will also change the value of one of these other
+     *     TP.core.UIElementNodes. By default, this method will return other
+     *     elements that are part of the same 'tibet:group'.
+     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     */
+
+    var valueTPElems,
+        ourCanonicalName;
+
+    valueTPElems = this.getGroupElements();
+
+    if (TP.isEmpty(valueTPElems)) {
+        valueTPElems.push(this);
+    } else {
+        //  We want to filter out all of the elements that *aren't* of the same
+        //  kind as the receiver
+        ourCanonicalName = this.getCanonicalName();
+
+        valueTPElems =
+            valueTPElems.select(
+                    function(aTPElem) {
+                        return aTPElem.getCanonicalName() === ourCanonicalName;
+                    });
+    }
+
+    return valueTPElems;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
 function(aspectName) {
 
@@ -5617,7 +6078,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For input types, this returns true.
+     * @returns {Boolean} For most UI element types, this returns true.
      */
 
     return true;
@@ -5675,6 +6136,202 @@ function(aspectName, aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TogglingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+function(anAspect) {
+
+    /**
+     * @method $refreshSelectionModelFor
+     * @summary Refreshes the underlying selection model based on state settings
+     *     in the UI.
+     * @description Note that the aspect can be one of the following:
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {String} anAspect The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidValueElements
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+
+        selectionModel,
+        aspect,
+
+        valueEntry,
+
+        allCount,
+
+        len,
+        i,
+
+        item,
+
+        val;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    selectionModel = this.$getSelectionModel();
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    selectionModel.empty();
+
+    valueEntry = TP.ac();
+    selectionModel.atPut(aspect, valueEntry);
+
+    allCount = 0;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (item.$getVisualToggle()) {
+
+            switch (aspect) {
+                case 'label':
+                    val = item.getLabelText();
+                    break;
+
+                case 'id':
+                    val = item.getLocalID();
+                    break;
+
+                case 'index':
+                    val = i;
+                    break;
+
+                case 'value':
+                default:
+                    val = item.$getPrimitiveValue();
+                    break;
+            }
+
+            valueEntry.push(val);
+
+            allCount++;
+        }
+    }
+
+    if (allCount === len) {
+        selectionModel.atPut(TP.ALL, true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TogglingUIElementNode.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @description In the case of this type, this method will properly
+     *     configure the receiver's 'value elements' based on the current
+     *     selection model.
+     * @exception TP.sig.InvalidValueElements
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+
+        selectionModel,
+        aspectKeys,
+
+        leni,
+        i,
+
+        item,
+
+        lenj,
+        j,
+
+        aspect,
+
+        val;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    selectionModel = this.$getSelectionModel();
+    aspectKeys = selectionModel.getKeys();
+
+    leni = valueTPElems.getSize();
+
+    if (TP.isEmpty(selectionModel)) {
+        //  If the selection model is empty, then we deselect everything.
+        for (i = 0; i < leni; i++) {
+            item = valueTPElems.at(i);
+            item.$setVisualToggle(false);
+        }
+    } else if (selectionModel.hasKey(TP.ALL)) {
+        //  If the selection model has the special key of 'TP.ALL', then we
+        //  select everything.
+        for (i = 0; i < leni; i++) {
+            item = valueTPElems.at(i);
+            item.$setVisualToggle(true);
+        }
+    } else {
+
+        //  Iterate over all of the value elements and the various aspects that
+        //  might have values in the selection model (i.e. 'value', 'id',
+        //  'index', 'label', etc.), select or deselect each value element if
+        //  that aspect matches the value in the selection model.
+        for (i = 0; i < leni; i++) {
+
+            item = valueTPElems.at(i);
+
+            lenj = aspectKeys.getSize();
+            for (j = 0; j < lenj; j++) {
+
+                aspect = aspectKeys.at(j);
+
+                switch (aspect) {
+                    case 'label':
+                        val = item.getLabelText();
+                        break;
+
+                    case 'id':
+                        val = item.getLocalID();
+                        break;
+
+                    case 'index':
+                        val = i;
+                        break;
+
+                    case 'value':
+                    default:
+                        val = item.$getPrimitiveValue();
+                        break;
+                }
+
+                //  NOTE that we don't clear ones that don't match, we just add
+                //  the new items to the selection
+                if (selectionModel.at(aspect).contains(val)) {
+                    item.$setVisualToggle(true);
+                } else {
+                    item.$setVisualToggle(false);
+                }
+            }
+        }
+    }
+
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TogglingUIElementNode.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
@@ -5687,6 +6344,7 @@ function(aValue) {
      *     existing selection.
      * @param {Object} aValue The value to set (select) in the receiver. For a
      *     select list this might be an array.
+     * @exception TP.sig.InvalidValueElements
      * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
@@ -5699,6 +6357,7 @@ function(aValue) {
         i,
 
         dirty,
+        deselectCount,
 
         item;
 
@@ -5756,6 +6415,7 @@ function(aValue) {
     dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
+    deselectCount = 0;
 
     len = valueTPElems.getSize();
     for (i = 0; i < len; i++) {
@@ -5772,7 +6432,17 @@ function(aValue) {
                 dirty = true;
             }
             item.$setVisualToggle(false);
+            deselectCount++;
         }
+    }
+
+    //  If we 'deselected' all of the items
+    if (deselectCount === i) {
+        //  Empty the selection model to keep it in sync
+        this.$getSelectionModel().empty();
+    } else {
+        //  Keep the selection model in sync with the selected values.
+        this.$getSelectionModel().atPut('value', dict.getKeys());
     }
 
     if (dirty) {
@@ -5780,6 +6450,67 @@ function(aValue) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TogglingUIElementNode.Inst.defineMethod('select',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aValue] The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var valueTPElems,
+
+        len,
+        i,
+        item,
+
+        value,
+
+        matches;
+
+    //  If aValue is a RegExp, then we use it to test against all of the value
+    //  elements 'primitive value'. If we find one that matches, then we use
+    //  that as the value to add to our selection.
+
+    if (TP.isRegExp(aValue)) {
+        if (TP.notValid(valueTPElems = this.getValueElements())) {
+            return this.raise('TP.sig.InvalidValueElements');
+        }
+
+        matches = TP.ac();
+
+        len = valueTPElems.getSize();
+        for (i = 0; i < len; i++) {
+
+            item = valueTPElems.at(i);
+
+            value = item.$getPrimitiveValue();
+
+            if (aValue.test(value)) {
+                matches.push(value);
+            }
+        }
+
+        return this.callNextMethod(matches, null, shouldSignal);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -5819,15 +6550,10 @@ function(aValue, shouldSignal) {
             oldValue = TP.ac(oldValue);
         }
 
-        //  If newValue is not value, then we're 'subtracting' it from the old
-        //  value.
+        //  If newValue is not value, then we're just setting the value to an
+        //  empty Array.
         if (TP.notValid(newValue)) {
-
-            //  Copy the old Array and remove our value.
-            newValue = TP.copy(oldValue);
-            newValue.remove(this.$getPrimitiveValue());
-        } else if (this.getValueElements().getSize() > 1) {
-            newValue = oldValue.concat(newValue);
+            newValue = TP.ac();
         } else if (!TP.isArray(newValue)) {
             newValue = TP.ac(newValue);
         }
@@ -5864,34 +6590,33 @@ function(aValue, shouldSignal) {
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
+    //  If the element is bound, then update its bound value.
+    this.setBoundValueIfBound(this.getDisplayValue());
+
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('toggleValue',
-function() {
+function(aValue) {
 
     /**
      * @method toggleValue
      * @summary Toggles the value to the inverse of its current value.
+     * @param {Object} aValue The value to toggle.
      * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
-    var newVal;
+    var isSelected;
 
-    //  This is simply a matter of setting the value to our markup value or to
-    //  null, depending on whether we're already checked or not and therefore
-    //  whether we want to be.
-    if (this.$getVisualToggle()) {
-        //  Already checked? We're going to switch off. Set our newVal to null.
-        newVal = null;
+    isSelected = this.isSelected(aValue, 'value');
+
+    if (isSelected) {
+        this.removeSelection(aValue, 'value');
     } else {
-        //  Otherwise set our value to our markup value.
-        newVal = this.$getMarkupValue();
+        this.addSelection(aValue, 'value');
     }
-
-    this.set('value', newVal);
 
     return this;
 });

@@ -5,7 +5,7 @@
  */
 
 body {
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     margin: 36px auto;
 }
 
@@ -20,29 +20,31 @@ body {
 }
 
 #header {
-  display: block;
-  position: absolute;
-  margin: 36px auto;
+    display: block;
+    position: absolute;
+    margin: 36px auto;
 }
+
 #header .lead {
     margin-left: 112px;
     font-size: 138.5%;
     font-weight: bold;
 }
+
 #header .follow {
     margin-left: 112px;
 }
-#header a.image-link img {
-  margin-bottom: 36px;
-  float: left;
-  border: 1px solid #666;
-  border-radius: 5px;
-  box-shadow: 0 0 2px 2px #999;
-  width: 64px;
-  height: 64px;
-  cursor: pointer;
-}
 
+#header a.image-link img {
+    margin-bottom: 36px;
+    float: left;
+    border: 1px solid #666;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 2px #999;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+}
 
 #content {
     display: block;
@@ -55,30 +57,37 @@ body {
     height: auto;
     margin: auto;
     overflow: auto;
-    background: url(../media/tibet_world.gif) center center no-repeat;
+    background: url("../media/tibet_world.gif") center center no-repeat;
     font-size: 93%;
 }
+
 h1 {
     font-size: 123.1%;
-    margin: 1em 0 2em 0;
+    margin: 1em 0 2em;
 }
-h2, h3 {
+
+h2,
+h3 {
     font-size: 100%;
     color: #555;
     margin-top: 2em;
 }
+
 code {
     font-size: 108%;
 }
+
 a.crossref {
     color: #910;
 }
+
 .toc dt {
     line-height: 2em;
     float: left;
     clear: left;
     width: 20%;
 }
+
 .toc dd {
     line-height: 2em;
     float: left;

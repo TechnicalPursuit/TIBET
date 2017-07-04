@@ -33,10 +33,9 @@ TP.sherpa.console.Inst.defineAttribute('conceal', false);
 //  Is the command line currently concealed from view?
 TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
-TP.sherpa.console.Inst.defineAttribute(
-        'consoleInput',
-        {value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput',
-                                TP.hc('shouldCollapse', true))});
+TP.sherpa.console.Inst.defineAttribute('consoleInput',
+    TP.cpc('xctrls|codeeditor#SherpaConsoleInput',
+        TP.hc('shouldCollapse', true)));
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
@@ -47,7 +46,8 @@ TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
 
 TP.sherpa.console.Inst.defineAttribute('currentCompletionMarker');
 
-TP.sherpa.console.Inst.defineAttribute('currentPromptMarker');
+//  The number of 'new' items since we evaluated last
+TP.sherpa.console.Inst.defineAttribute('newOutputCount');
 
 //  A timer that will flip the status readout back to mouse coordinates after a
 //  period of time.
@@ -62,6 +62,8 @@ function() {
 
     /**
      * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleInputTPElem,
@@ -74,7 +76,9 @@ function() {
 
         hudTPElem,
 
-        isHidden;
+        isHidden,
+
+        consoleDrawerTPElem;
 
     consoleInputTPElem = this.get('consoleInput');
 
@@ -86,7 +90,7 @@ function() {
     editorObj.setOption('theme', 'elegant');
     editorObj.setOption('mode', 'javascript');
     editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', false);
+    editorObj.setOption('lineNumbers', true);
     editorObj.setOption('viewportMargin', Infinity);
     editorObj.setOption('electricChars', false);
     editorObj.setOption('smartIndent', false);
@@ -146,12 +150,12 @@ function() {
                 function() {
 
                     var currentEditorVal,
-                        mode,
 
-                        consoleOutput;
+                        consoleOutput,
+                        mode;
 
+                    //  This should only work if the input is empty.
                     currentEditorVal = consoleInputTPElem.getValue();
-
                     if (TP.notEmpty(currentEditorVal)) {
                         return TP.extern.CodeMirror.Pass;
                     }
@@ -160,13 +164,41 @@ function() {
 
                     mode = consoleOutput.getAttribute('mode');
 
+                    //  If we're not showing cells at all, then set the mode to
+                    //  growl and force toggle the display to expose the last
+                    //  cell.
                     if (mode === 'none') {
                         consoleOutput.setAttribute('mode', 'growl');
-                        mode = 'growl';
+                        consoleOutput.growlModeForceDisplayToggle();
+
+                        //  Return false so that CodeMirror will *not* process
+                        //  this as a regular keystroke.
+                        return false;
                     }
 
+                    //  Otherwise, if we're in growl mode, then there are 2
+                    //  possibilities.
                     if (mode === 'growl') {
-                        consoleOutput.growlModeToggle();
+
+                        //  If we were already toggling from before (as shown by
+                        //  having either 'exposed' or 'concealed' attributes),
+                        //  and we were exposed, then we set the mode back to
+                        //  'none' and remove the 'exposed' attribute so that
+                        //  subsequent outputting will still work.
+                        if (consoleOutput.hasAttribute('exposed')) {
+                            consoleOutput.setAttribute('mode', 'none');
+                            consoleOutput.removeAttribute('exposed');
+                        } else {
+
+                            //  Otherwise, we're in growl mode because the
+                            //  *user* (not the toggling code above) put us
+                            //  there and so we just force toggle the display to
+                            //  expose the last cell.
+                            consoleOutput.growlModeForceDisplayToggle();
+                        }
+
+                        //  Return false so that CodeMirror will *not* process
+                        //  this as a regular keystroke.
                         return false;
                     }
 
@@ -179,54 +211,75 @@ function() {
                     var consoleOutput,
                         mode;
 
+                    //  Shift-Space does the exact same thing as Space does
+                    //  above, but will work whether the input cell is empty or
+                    //  not.
+
                     consoleOutput = this.get('consoleOutput');
 
                     mode = consoleOutput.getAttribute('mode');
 
+                    //  If we're not showing cells at all, then set the mode to
+                    //  growl and force toggle the display to expose the last
+                    //  cell.
                     if (mode === 'none') {
                         consoleOutput.setAttribute('mode', 'growl');
-                        mode = 'growl';
-                    }
+                        consoleOutput.growlModeForceDisplayToggle();
 
-                    if (mode === 'growl') {
-                        consoleOutput.growlModeToggle();
+                        //  Return false so that CodeMirror will *not* process
+                        //  this as a regular keystroke.
                         return false;
                     }
 
+                    //  Otherwise, if we're in growl mode, then there are 2
+                    //  possibilities.
+                    if (mode === 'growl') {
+
+                        //  If we were already toggling from before (as shown by
+                        //  having either 'exposed' or 'concealed' attributes),
+                        //  and we were exposed, then we set the mode back to
+                        //  'none' and remove the 'exposed' attribute so that
+                        //  subsequent outputting will still work.
+                        if (consoleOutput.hasAttribute('exposed')) {
+                            consoleOutput.setAttribute('mode', 'none');
+                            consoleOutput.removeAttribute('exposed');
+                        } else {
+
+                            //  Otherwise, we're in growl mode because the
+                            //  *user* (not the toggling code above) put us
+                            //  there and so we just force toggle the display to
+                            //  expose the last cell.
+                            consoleOutput.growlModeForceDisplayToggle();
+                        }
+
+                        //  Return false so that CodeMirror will *not* process
+                        //  this as a regular keystroke.
+                        return false;
+                    }
                     return TP.extern.CodeMirror.Pass;
                 }.bind(this),
 
-            //  Scroll long output cells
+            //  Scroll long output items
             'Down'              :
                 function() {
-                    if (!consoleInputTPElem.hasAttribute('showingHint')) {
-                        return true;
-                    }
-
                     return TP.extern.CodeMirror.Pass;
                 },
 
             'Up'                :
                 function() {
-                    if (!consoleInputTPElem.hasAttribute('showingHint')) {
-                        return true;
-                    }
-
                     return TP.extern.CodeMirror.Pass;
                 }
         });
 
     /* eslint-enable no-dupe-keys,quote-props,key-spacing */
 
-
+    //  A CodeMirror-specific event handler that triggers when its viewport
+    //  changes. In that case, we adjust our input size.
     consoleInputTPElem.setEditorEventHandler('viewportChange',
             function() {
-                this.adjustInputSize();
+                //  Adjust the input size *without* animating the drawer.
+                this.adjustInputSize(false);
             }.bind(this));
-
-    //  NB: We need to create the log view *before* we set up the console
-    //  service.
-    // this.setupLogView();
 
     //  Grab the consoleOutput TP.core.Element and set it up. Note that we need
     //  to do this *after* we set up the console input above.
@@ -235,22 +288,31 @@ function() {
 
     this.set('consoleOutput', consoleOutputTPElem);
 
+    //  Set the number of 'new' output items to 0, to start. Note this *must* be
+    //  done before we set up the ConsoleService.
+    this.set('newOutputCount', 0);
+
     //  Now we can set up the ConsoleService
 
-    //  NB: We have to set up the ConsoleService this *after* we put in
-    //  the output view.
+    //  NB: We have to set up the ConsoleService this *after* we put in the
+    //  output view.
     this.setupConsoleService();
 
+    //  Observe the HUD for when it opens/closes
     hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
-    this.observe(hudTPElem, 'HiddenChange');
+    this.observe(hudTPElem, 'ClosedChange');
 
-    //  Use the HUD's current value to set whether we are hidden or
-    //  not.
+    //  Use the HUD's current value to set whether we are hidden or not.
     isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
     this.setAttribute('hidden', isHidden);
 
+    //  Hide the Sherpa's busy message... getting ready for use.
     contentTPElem = TP.byId('content', this.getNativeWindow());
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
+
+    //  Observe the HUD's south drawer for when it opens/closes
+    consoleDrawerTPElem = TP.byId('south', TP.win('UIROOT'));
+    this.observe(consoleDrawerTPElem, 'ClosedChange');
 
     return this;
 });
@@ -264,6 +326,9 @@ function() {
 
     /**
      * @method getCurrentEvalMarker
+     * @summary Returns the input cell's current 'eval marker'.
+     * @returns {Object} An Object specific to CodeMirror that represents a
+     *     'mark'.
      */
 
     var marker;
@@ -272,6 +337,8 @@ function() {
         return null;
     }
 
+    //  If the marker cannot be 'resolved', then clear it and clear it's caching
+    //  variable.
     if (TP.notValid(marker.find())) {
         marker.clear();
         this.set('currentEvalMarker', null);
@@ -289,6 +356,9 @@ function() {
 
     /**
      * @method getCurrentInputMarker
+     * @summary Returns the input cell's current 'input marker'.
+     * @returns {Object} An Object specific to CodeMirror that represents a
+     *     'mark'.
      */
 
     var marker;
@@ -297,6 +367,8 @@ function() {
         return null;
     }
 
+    //  If the marker cannot be 'resolved', then clear it and clear it's caching
+    //  variable.
     if (TP.notValid(marker.find())) {
         marker.clear();
         this.set('currentInputMarker', null);
@@ -308,40 +380,19 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('getCurrentPromptMarker',
-function() {
-
-    /**
-     * @method getCurrentPromptMarker
-     */
-
-    var marker;
-
-    if (TP.notValid(marker = this.$get('currentPromptMarker'))) {
-        return null;
-    }
-
-    if (TP.notValid(marker.find())) {
-        marker.clear();
-        this.set('currentPromptMarker', null);
-
-        return null;
-    }
-
-    return marker;
-});
-
-//  ------------------------------------------------------------------------
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaHUD'},
+TP.sherpa.console.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handleClosedChange
+     * @summary Handles when the HUD's 'closed' state changes. We track that by
+     *     showing/hiding ourself.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var isHidden;
@@ -349,6 +400,91 @@ function(aSignal) {
     isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
 
     this.setAttribute('hidden', isHidden);
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles when the HUD's 'south drawer' 'closed' state changes.
+     *     We track that by adjusting the size of our input cell area.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var isClosed,
+
+        southDrawer,
+        drawerIsOpenFunc;
+
+    isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (!isClosed) {
+
+        southDrawer = aSignal.getOrigin();
+
+        drawerIsOpenFunc = function(transitionSignal) {
+
+            var consoleInput;
+
+            //  Turn off any future notifications.
+            drawerIsOpenFunc.ignore(southDrawer, 'TP.sig.DOMTransitionEnd');
+
+            if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+                consoleInput.refreshEditor();
+            }
+
+        }.bind(this);
+
+        drawerIsOpenFunc.observe(southDrawer, 'TP.sig.DOMTransitionEnd');
+
+        TP.elementGetStyleObj(TP.unwrap(southDrawer)).height = '';
+        TP.elementGetStyleObj(TP.unwrap(this)).height = '';
+
+    } else {
+        //  Adjust the input size and animate the drawer if it's configured to
+        //  do so.
+        this.adjustInputSize(true);
+    }
+
+    return this;
+}, {
+    origin: 'south'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineHandler('AddSnippet',
+function(aSignal) {
+
+    /**
+     * @method handleAddSnippet
+     * @summary Handles when the user wants to add a snippet.
+     * @param {TP.sig.AddSnippet} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var consoleService,
+        cmdText;
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+    cmdText = this.getInputContent();
+
+    if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
+
+        cmdText = ':snippet \'' + cmdText + '\'';
+
+        consoleService.sendConsoleRequest(cmdText);
+    }
 
     return this;
 });
@@ -362,6 +498,8 @@ function() {
 
     /**
      * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleInput;
@@ -370,7 +508,14 @@ function() {
         consoleInput.refreshEditor();
     }
 
-    this.adjustInputSize();
+    //  Adjust the input size *without* animating the drawer.
+    this.adjustInputSize(false);
+
+    //  This will refresh the new output counter. See the setter.
+    this.set('newOutputCount', this.get('newOutputCount'));
+
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
 
     return this;
 });
@@ -382,6 +527,11 @@ function(beHidden) {
 
     /**
      * @method setAttrHidden
+     * @summary Sets the 'hidden' attribute of the receiver. This method causes
+     *     the console output to show or hide itself as well and manages
+     *     activation and deactivation of the input cell.
+     * @param {Boolean} beHidden Whether or not the console should be hidden.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var wasHidden,
@@ -392,6 +542,8 @@ function(beHidden) {
     wasHidden = TP.bc(this.getAttribute('hidden'));
 
     if (wasHidden === beHidden) {
+        //  Exit here - no need to call up to our supertype to toggle the
+        //  attribute, since it already has the value we desire.
         return this;
     }
 
@@ -437,6 +589,9 @@ function() {
 
     /**
      * @method setupConsoleService
+     * @summary Sets up the console service that the receiver interacts with to
+     *     control user input and execution.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var tsh;
@@ -451,72 +606,26 @@ function() {
     return this;
 });
 
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setupLogView',
-function() {
-
-    /**
-     * @method setupLogView
-     */
-
-    var sherpaFrameBody,
-        logviewTPElem;
-
-    sherpaFrameBody = TP.documentGetBody(
-                            TP.win('UIROOT.SHERPA_FRAME').document);
-
-    logviewTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.logview.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
-
-    logviewTPElem.setup();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('toggleLog',
-function() {
-
-    /**
-     * @method toggleLog
-     */
-
-    var logviewTPElem;
-
-    logviewTPElem = TP.byId('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME'));
-    logviewTPElem.toggle('hidden');
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('clear',
-function(resetPrompt, newPrompt) {
+function() {
 
     /**
      * @method clear
      * @summary Clears the receiver's content, removing all output and
      *     resetting the console input to an empty input field.
-     * @param {Boolean} [resetPrompt=false] Whether or not to reset the prompt.
-     * @param {String} [newPrompt] The text to reset the prompt to.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
-    //  Refocus the input cell and set its cursor to the end.
+    //  Clear both input and output.
     this.clearAllContent();
 
+    //  Refocus the input cell and set its cursor to the end.
     this.focusInput();
     this.setInputCursorToEnd();
-
-    if (resetPrompt) {
-        this.setPrompt(newPrompt);
-    }
 
     return this;
 });
@@ -528,11 +637,9 @@ function() {
 
     /**
      * @method clearAllContent
-     * @summary Clears the input cell.
+     * @summary Clears both the input cell and the console output.
      * @returns {TP.sherpa.console} The receiver.
      */
-
-    var marker;
 
     //  Clear the input and it's marks
     this.get('consoleInput').clearValue();
@@ -540,11 +647,7 @@ function() {
     this.teardownInputMark();
     this.teardownEvalMark();
 
-    if (TP.isValid(marker = this.get('currentPromptMarker'))) {
-        marker.clear();
-        this.set('currentPromptMarker', null);
-    }
-
+    //  Clear any status information that we automatically update for the user.
     this.clearStatus();
 
     //  Clear the output
@@ -562,6 +665,14 @@ function(aRange, completionContent) {
 
     /**
      * @method generateCompletionMarkAt
+     * @summary Generates a CodeMirror 'mark' at the supplied range with the
+     *     supplied content for use by the 'autocomplete' functionality.
+     * @param {Object} aRange An object specific to CodeMirror that represents a
+     *     textual 'range'.
+     * @param {String} completionContent The XHTML content to place within the
+     *     'mark'.
+     * @returns {Object} An Object specific to CodeMirror that represents a
+     *     'mark'.
      */
 
     var doc,
@@ -598,6 +709,9 @@ function() {
 
     /**
      * @method teardownCompletionMark
+     * @summary Tears down the 'completion mark' by clearing it and resetting
+     *     it's caching instance variable.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var marker;
@@ -612,192 +726,19 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Prompt Methods
-//  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('getPrompt',
-function() {
-
-    /**
-     * @method getPrompt
-     * @summary Returns the prompt text used for the input cell.
-     * @returns {String} The current prompt text or the empty String if that
-     *     cannot be computed.
-     */
-
-    var marker,
-
-        range,
-        editor,
-        promptText;
-
-    //  If we have a valid prompt marker
-    if (TP.isValid(marker = this.get('currentPromptMarker'))) {
-
-        //  Find the marker in the input and grab its text.
-        range = marker.find();
-        editor = this.get('consoleInput').$get('$editorObj');
-        promptText = editor.getRange(range.from, range.to);
-
-        return promptText;
-    }
-
-    return '';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('generatePromptMarkAt',
-function(range, cssClass, promptText) {
-
-    /**
-     * @method generatePromptMarkAt
-     */
-
-    var consoleInput,
-
-        content,
-
-        doc,
-        elem,
-
-        marker,
-
-        contentNode;
-
-    consoleInput = this.get('consoleInput');
-
-    content =
-            '<div name="outputmode" class="indicator" onclick="TP.byId(\'SherpaConsole\', TP.win(\'UIROOT\')).increaseOutputDisplayMode()">' +
-                '&#160;' +
-            '</div>' +
-            '<div name="autocomplete" class="indicator">' +
-                '&#160;' +
-            '</div>' +
-            '<span class="text">' +
-                TP.xmlEntitiesToLiterals(promptText) +
-            '</span>';
-
-    doc = this.getNativeDocument();
-
-    elem = TP.documentConstructElement(doc, 'span', TP.w3.Xmlns.XHTML);
-    TP.elementSetClass(elem, cssClass);
-    TP.elementAddClass(elem, 'noselect');
-    TP.elementSetAttribute(elem, 'id', TP.sys.cfg('sherpa.console_prompt'));
-
-    marker = consoleInput.$get('$editorObj').markText(
-        range.from,
-        range.to,
-        {
-            atomic: true,
-            readOnly: true,
-            collapsed: true,
-            replacedWith: elem,
-            inclusiveLeft: true,        //  do not allow the cursor to be
-                                        //  placed before the prompt mark
-            inclusiveRight: false,
-            clearWhenEmpty: false       //  don't require a character for this
-                                        //  mark to span.
-        }
-    );
-
-    //  Wire a reference to the marker back onto our output element
-    elem.marker = marker;
-
-    //  'innerHTML' seems to throw exceptions in XHTML documents on Firefox
-    // elem.innerHTML = content;
-    contentNode = TP.xhtmlnode(content);
-    TP.nodeAppendChild(elem, contentNode, false);
-
-    return marker;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setPrompt',
-function(aPrompt, aCSSClass) {
-
-    /**
-     * @method setPrompt
-     * @summary Sets the text prompt used for the input cell.
-     * @param {String} aPrompt The prompt to define.
-     * @param {String} aCSSClass An optional CSS class name to use for display
-     *     of the prompt string.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var cssClass,
-        promptStr,
-
-        consoleInput,
-
-        editor,
-
-        doc,
-
-        elem,
-        cursorRange,
-        range,
-        marker,
-
-        textElem;
-
-    cssClass = TP.ifInvalid(aCSSClass, 'console_prompt');
-
-    promptStr = TP.ifInvalid(aPrompt, this.getType().DEFAULT_PROMPT);
-
-    consoleInput = this.get('consoleInput');
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    doc = this.getNativeDocument();
-
-    //  If we can't find a current prompt, then the input field must've been
-    //  cleared at some point. Reconstruct the prompt.
-    if (!TP.isElement(elem = TP.byId(
-                        TP.sys.cfg('sherpa.console_prompt'), doc, false))) {
-
-        cursorRange = consoleInput.getCursor();
-
-        range = {
-            from: {line: cursorRange.line, ch: cursorRange.ch},
-            to: {line: cursorRange.line, ch: cursorRange.ch + 1}
-        };
-
-        marker = this.generatePromptMarkAt(range, cssClass, promptStr);
-        this.set('currentPromptMarker', marker);
-
-        editor.setCursor(range.to);
-
-        //  Make sure to reset the prompt indicator for output mode.
-        this.setPromptIndicatorAttribute(
-                        'outputmode',
-                        'mode',
-                        this.get('consoleOutput').getAttribute('mode'));
-    } else {
-
-        //  Otherwise, just set the text content of the current prompt.
-        textElem = TP.byCSSPath('.text', elem, true, false);
-        TP.elementSetContent(textElem, TP.xmlEntitiesToLiterals(promptStr));
-    }
-
-    //  We probably resized the prompt mark - tell the editor to refresh.
-    editor.refresh();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setPromptIndicatorAttribute',
+TP.sherpa.console.Inst.defineMethod('setIndicatorAttribute',
 function(indicatorName, indicatorAttrName, indicatorAttrVal) {
 
     /**
-     * @method setPromptIndicatorState
-     * @summary
-     * @param {String} indicatorName The indicator to set the state of.
-     * @param {String} indicatorAttrName
-     * @param {String} indicatorAttrVal
+     * @method setIndicatorAttribute
+     * @summary Sets the named attribute of the named indicator to the value
+     *     supplied.
+     * @param {String} indicatorName The name of the indicator element to set
+     *     the attribute on.
+     * @param {String} indicatorAttrName The name of the attribute on the
+     *     indicator element to set the value of.
+     * @param {String} indicatorAttrVal The value to set the attribute to.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -810,21 +751,27 @@ function(indicatorName, indicatorAttrName, indicatorAttrVal) {
         return this;
     }
 
-    indicatorTPElem.setAttribute(indicatorAttrName, indicatorAttrVal);
+    //  If the method was supplied null or undefined, then remove the attribute.
+    if (TP.notValid(indicatorAttrVal)) {
+        indicatorTPElem.removeAttribute(indicatorAttrName);
+    } else {
+        indicatorTPElem.setAttribute(indicatorAttrName, indicatorAttrVal);
+    }
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('togglePromptIndicator',
+TP.sherpa.console.Inst.defineMethod('toggleIndicatorVisibility',
 function(indicatorName, shouldBeVisible) {
 
     /**
-     * @method togglePromptIndicator
-     * @summary
-     * @param {String} indicatorName The indicator to toggle.
-     * @param {Boolean} shouldBeVisible
+     * @method toggleIndicatorVisibility
+     * @summary Toggles the named indicator's visibility.
+     * @param {String} indicatorName The name of the indicator to toggle.
+     * @param {Boolean} shouldBeVisible Whether or not the indicator should be
+     *     visible.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -847,6 +794,25 @@ function(indicatorName, shouldBeVisible) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setPrompt',
+function(aPrompt, aCSSClass) {
+
+    /**
+     * @method setPrompt
+     * @summary Sets the text prompt used for the input cell.
+     * @param {String} aPrompt The prompt to define.
+     * @param {String} aCSSClass An optional CSS class name to use for display
+     *     of the prompt string.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    //  TODO: Do something here.
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Status Management Methods
 //  ------------------------------------------------------------------------
 
@@ -861,6 +827,7 @@ function(statusOutID) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    /*
     var statID,
 
         hudWin,
@@ -873,16 +840,15 @@ function(statusOutID) {
     hudWin = this.getNativeWindow();
 
     if (statID === 'keyboardInfo' || statID === TP.ALL) {
-        keyboardStatusTPElem =
-            TP.byCSSPath('#keyAndMouseReadout .keyboard', hudWin, true);
+        keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
         keyboardStatusTPElem.setRawContent('');
     }
 
     if (statID === 'mouseInfo' || statID === TP.ALL) {
-        mouseStatusTPElem =
-            TP.byCSSPath('#keyAndMouseReadout .mouse', hudWin, true);
+        mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
         mouseStatusTPElem.setRawContent('');
     }
+    */
 
     return this;
 });
@@ -901,9 +867,10 @@ function(aSignal, statusOutID) {
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
      * @param {String} statusOutID The ID of the status readout to update.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
+    /*
     var statID,
 
         hudWin,
@@ -917,13 +884,16 @@ function(aSignal, statusOutID) {
         evt,
 
         keyboardStatusTPElem,
-        mouseStatusTPElem;
+        mouseStatusTPElem,
+
+        virtKey;
 
     statID = TP.ifEmpty(statusOutID, TP.ALL);
 
     hudWin = this.getNativeWindow();
 
-    /*
+    //  TODO: This was disabled in original version
+
     //  ---
     //  status context ID (execution window's global ID)
     //  ---
@@ -945,7 +915,6 @@ function(aSignal, statusOutID) {
 
         TP.byId('logLevelInfo', hudWin).setRawContent(str);
     }
-    */
 
     //  Note that we use $set() to manage the statusReadoutTimer here - this is
     //  a big performance win because the keyboard / mouse stuff is so
@@ -958,10 +927,10 @@ function(aSignal, statusOutID) {
         this.$set('statusReadoutTimer', null, false);
     }
 
-    keyboardStatusTPElem =
-        TP.byCSSPath('#keyAndMouseReadout .keyboard', hudWin, true);
-    mouseStatusTPElem =
-        TP.byCSSPath('#keyAndMouseReadout .mouse', hudWin, true);
+    //  TODO-END
+
+    keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
+    mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
 
     //  ---
     //  keyboard key pressed
@@ -974,15 +943,32 @@ function(aSignal, statusOutID) {
 
             arr = TP.ac();
 
+            //  Sometimes the virtual key name will have 'Ctrl', 'Shift', etc.
+            //  as part of the name - we don't want to repeat it. So we use this
+            //  set of case-insensitive RegExps below.
+            virtKey = TP.core.Keyboard.getEventVirtualKey(evt);
+            if (!/Ctrl/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null);
+            }
+            if (!/Alt/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null);
+            }
+            if (!/Meta/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null);
+            }
+            if (!/Shift/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null);
+            }
+
             arr.push(
-                TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null,
-                TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null,
-                TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null,
-                TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null,
                 TP.core.Keyboard.getEventVirtualKey(evt),
-                evt.keyCode,
+                TP.eventGetKeyCode(evt),
                 evt.$unicodeCharCode);
             arr.compact();
+
+            if (TP.isEmpty(arr.last())) {
+                arr.pop();
+            }
 
             str = arr.join(' : ');
 
@@ -1008,7 +994,7 @@ function(aSignal, statusOutID) {
                                 'mouseInfo');
                     }
 
-                }.bind(this).fork(
+                }.bind(this).fork(      //  TODO: fork is obsolete. redo.
                     TP.ifInvalid(
                         TP.sys.cfg('sherpa.readout_mouse_reset_time'),
                         1000));
@@ -1043,6 +1029,7 @@ function(aSignal, statusOutID) {
 
         mouseStatusTPElem.show();
     }
+    */
 
     return this;
 });
@@ -1082,64 +1069,93 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('adjustInputSize',
-function() {
+function(shouldAnimate) {
 
     /**
      * @method adjustInputSize
      * @summary Adjusts the height of the input cell based on its contents.
+     * @param {Boolean} [shouldAnimate=false] True to animate the drawer that
+     *     the console is placed in. By default, this is false to allow quick
+     *     response when the drawer is 'closed' (i.e. in elastic mode).
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var consoleInput,
+    var consoleDrawer,
+
+        consoleInput,
         editorHeight,
 
         styleVals,
 
-        drawerElement;
+        drawerElement,
+
+        panelboxElem;
+
+    consoleDrawer = TP.byId('south', TP.win('UIROOT'));
+
+    if (!consoleDrawer.hasAttribute('pclass:closed')) {
+        return this;
+    }
 
     consoleInput = this.get('consoleInput');
     editorHeight = consoleInput.getEditorHeight();
 
-    styleVals = TP.elementGetStyleValuesInPixels(
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
                     this.getNativeNode(),
-                    TP.ac('borderTopWidth', 'borderBottomWidth',
-                            'marginTop', 'marginBottom',
-                            'paddingTop', 'paddingBottom',
-                            'bottom'));
+                    TP.ac('paddingTop', 'paddingBottom'));
 
-    this.setHeight(editorHeight -
-                    (styleVals.at('borderBottomWidth') +
-                     styleVals.at('paddingBottom')));
+    this.setHeight(editorHeight);
 
-    //  Set the south drawer to *not* transition. Note that it seems we have to
-    //  do this by setting the style String directly as setting the 'transition'
-    //  property of the style object has no effect (at least on Chrome).
     drawerElement = TP.byId('south', this.getNativeWindow(), false);
-    TP.elementSetStyleString(drawerElement, 'transition: none');
 
-    TP.elementSetHeight(drawerElement,
-                        editorHeight +
-                        styleVals.at('borderTopWidth') +
-                        styleVals.at('borderBottomWidth') +
-                        styleVals.at('marginTop') +
-                        styleVals.at('marginBottom') +
-                        styleVals.at('paddingTop') +
-                        styleVals.at('paddingBottom') +
-                        styleVals.at('bottom'));
+    if (TP.isFalse(shouldAnimate)) {
+        //  Set the south drawer to *not* transition. Note that it seems we have
+        //  to do this by setting the style String directly as setting the
+        //  'transition' property of the style object has no effect (at least on
+        //  Chrome).
+        TP.elementSetStyleString(drawerElement, 'transition: none');
+    }
 
-    (function() {
-        var styleStr;
+    //  Add in the padding offsets from ourself.
+    editorHeight += styleVals.at('paddingTop') + styleVals.at('paddingBottom');
 
-        //  We can only do this after letting the GUI thread service, otherwise
-        //  it has no effect.
+    //  Grab the xctrls:panelbox element that we're contained in
+    panelboxElem = TP.byCSSPath('xctrls|panelbox', consoleDrawer, true, false);
 
-        //  Set the style String to whatever it is minus the 'transition: none'
-        //  value that we put on it above.
-        styleStr = TP.elementGetStyleString(drawerElement);
-        styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
+    //  Add in the top, bottom, borderTop, borderBottom offsets from ourself.
 
-        TP.elementSetStyleString(drawerElement, styleStr);
-    }).fork(5);
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
+                    panelboxElem,
+                    TP.ac('borderTopWidth', 'borderBottomWidth',
+                            'top', 'bottom'));
+
+    editorHeight += styleVals.at('top') +
+                    styleVals.at('bottom') +
+                    styleVals.at('borderBottomWidth') +
+                    styleVals.at('borderTopWidth');
+
+    //  Add a 1-pixel fudge factor here. This is probably compensating for the
+    //  fact that the xctrls:codeeditor has a 1 pixel margin on top and bottom
+    //  or that the CodeMirror code imposes some sort of overlap.
+    editorHeight += 1;
+
+    TP.elementSetHeight(drawerElement, editorHeight);
+
+    if (TP.isFalse(shouldAnimate)) {
+        (function() {
+            var styleStr;
+
+            //  We can only do this after letting the GUI thread service,
+            //  otherwise it has no effect.
+
+            //  Set the style String to whatever it is minus the 'transition:
+            //  none' value that we put on it above.
+            styleStr = TP.elementGetStyleString(drawerElement);
+            styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
+
+            TP.elementSetStyleString(drawerElement, styleStr);
+        }).queueForNextRepaint(this.getNativeWindow());
+    }
 
     return this;
 });
@@ -1177,7 +1193,7 @@ function() {
 
     this.teardownInputMark();
 
-    //  Hide any 'pinned' cells that are in 'growl' mode, but exposed. We do
+    //  Hide any 'pinned' items that are in 'growl' mode, but exposed. We do
     //  this by setting the output display mode to 'none'.
     if (this.get('consoleOutput').getAttribute('mode') === 'growl') {
         this.setOutputDisplayMode('none');
@@ -1209,18 +1225,6 @@ function() {
     consoleInput.unsetCurrentKeyHandler();
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('eventIsInInput',
-function(anEvent) {
-
-    /**
-     * @method eventInInput
-     */
-
-    return this.get('consoleInput').$get('$editorObj').hasFocus();
 });
 
 //  ------------------------------------------------------------------------
@@ -1259,7 +1263,7 @@ function() {
 
     /**
      * @method getInputContent
-     * @summary Returns the value currently considered the 'input value'
+     * @summary Returns the value currently considered the 'input value'.
      * @returns {String} The user's input.
      */
 
@@ -1371,14 +1375,19 @@ function(anObject, shouldAppend) {
 
     //  Reset the current input marker to encompass all of the new content.
     this.set('currentInputMarker',
-                this.generateInputMarkAt({anchor: start, head: end}));
+                this.generateInputMarkAt(
+                    {
+                        anchor: start,
+                        head: end
+                    }));
 
+    //  Focus and set the cursor to the end on the next browser repaint.
     (function() {
 
         this.focusInput();
         this.setInputCursorToEnd();
 
-    }.bind(this)).afterUnwind();
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -1390,6 +1399,9 @@ function() {
 
     /**
      * @method setupInputMarkForExistingContent
+     * @summary Sets up a CodeMirror 'mark' that tracks the input cell's current
+     *     input.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleInput,
@@ -1406,7 +1418,12 @@ function() {
 
     this.set('currentInputMarker',
                 this.generateInputMarkAt(
-                    {anchor: {line: 0, ch: 0}, head: end}));
+                    {
+                        anchor: {
+                            line: 0, ch: 0
+                        },
+                        head: end
+                    }));
 
     return this;
 });
@@ -1418,6 +1435,9 @@ function() {
 
     /**
      * @method teardownInputMark
+     * @summary Tears down the 'input mark' by clearing it and resetting
+     *     it's caching instance variable.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     if (TP.isValid(this.get('currentInputMarker'))) {
@@ -1435,6 +1455,12 @@ function(aRange) {
 
     /**
      * @method generateInputMarkAt
+     * @summary Generates a CodeMirror 'mark' at the supplied range that tracks
+     *     the input cell's current input.
+     * @param {Object} aRange An object specific to CodeMirror that represents a
+     *     textual 'range'.
+     * @returns {Object} An Object specific to CodeMirror that represents a
+     *     'mark'.
      */
 
     var marker;
@@ -1456,56 +1482,26 @@ function(aRange) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('shouldConcealInput',
-function(aFlag) {
-
-    /**
-     * @method shouldConcealInput
-     */
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-//  Output management methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('clearOutput',
-function() {
-
-    /**
-     * @method clearOutput
-     */
-
-    //  Clear the output
-    this.get('consoleOutput').clear();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('createOutputEntry',
-function(uniqueID, dataRecord) {
-
-    /**
-     * @method createOutputEntry
-     */
-
-    return this.get('consoleOutput').createOutputEntry(uniqueID, dataRecord);
-});
-
+//  Output display mode management methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('decreaseOutputDisplayMode',
 function() {
 
+    /**
+     * @method decreaseOutputDisplayMode
+     * @summary 'Decreases' the setting of the output display mode. This
+     *     direction moves from 'all' to 'one' to 'growl'.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
     var outputModeVal,
         newOutputModeVal;
 
+    //  Grab the current setting.
     outputModeVal = this.getOutputDisplayMode();
 
+    //  Based on the current setting, 'decrease' the setting by one increment.
     switch (outputModeVal) {
         case 'all':
             newOutputModeVal = 'one';
@@ -1521,9 +1517,13 @@ function() {
             break;
     }
 
+    //  If we actually made a change, then the new output mode won't be empty.
     if (TP.notEmpty(newOutputModeVal)) {
         this.setOutputDisplayMode(newOutputModeVal);
     }
+
+    //  This will refresh the new output counter. See the setter.
+    this.set('newOutputCount', this.get('newOutputCount'));
 
     return this;
 });
@@ -1535,6 +1535,11 @@ function() {
 
     /**
      * @method getOutputDisplayMode
+     * @summary Returns the output display mode. This value will be one of:
+     *     'all'
+     *     'one'
+     *     'growl'
+     * @returns {String} The current output display mode.
      */
 
     return this.get('consoleOutput').getAttribute('mode');
@@ -1545,11 +1550,20 @@ function() {
 TP.sherpa.console.Inst.defineMethod('increaseOutputDisplayMode',
 function() {
 
+    /**
+     * @method increaseOutputDisplayMode
+     * @summary 'Increases' the setting of the output display mode.
+     *     This direction moves from 'growl' to 'one' to 'all'.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
     var outputModeVal,
         newOutputModeVal;
 
+    //  Grab the current setting.
     outputModeVal = this.getOutputDisplayMode();
 
+    //  Based on the current setting, 'decrease' the setting by one increment.
     switch (outputModeVal) {
         case 'none':
         case 'growl':
@@ -1566,9 +1580,13 @@ function() {
             break;
     }
 
+    //  If we actually made a change, then the new output mode won't be empty.
     if (TP.notEmpty(newOutputModeVal)) {
         this.setOutputDisplayMode(newOutputModeVal);
     }
+
+    //  This will refresh the new output counter. See the setter.
+    this.set('newOutputCount', this.get('newOutputCount'));
 
     return this;
 });
@@ -1580,35 +1598,159 @@ function(displayModeVal) {
 
     /**
      * @method setOutputDisplayMode
+     * @summary Sets the output display mode.
+     * @param {String} displayModeVal The new output display mode. This should
+     *     be one of 'all', 'one', 'growl'.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
-    var consoleOutput;
+    var consoleOutput,
+
+        outputModeVal;
 
     consoleOutput = this.get('consoleOutput');
 
+    //  Grab the current setting.
+    outputModeVal = this.getOutputDisplayMode();
+
+    //  If its been set to 'growl', then make sure to remove the 'fade_out'
+    //  class. Otherwise, the output will continue to fade out no matter what
+    //  our new setting is here.
+    if (outputModeVal === 'growl') {
+        consoleOutput.removeClass('fade_out');
+    }
+
+    //  Remove these management classes from the console output. They will be
+    //  re-populated by machinery in the TP.sherpa.consoleoutput type as
+    //  necessary.
     consoleOutput.removeAttribute('exposed');
     consoleOutput.removeAttribute('concealed');
     consoleOutput.removeAttribute('sticky');
 
+    //  Set the console output's 'mode' attribute to our new display mode value.
     consoleOutput.setAttribute('mode', displayModeVal);
 
-    this.setPromptIndicatorAttribute('outputmode', 'mode', displayModeVal);
+    //  If we're shifting to 'all' mode, make sure that the output is scrolled
+    //  to the end.
+    if (displayModeVal === 'all') {
+        consoleOutput.scrollOutputToEnd();
+    }
+
+    //  Set our 'mode' attribute to our new display mode value.
+    this.setIndicatorAttribute('outputmode', 'mode', displayModeVal);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('updateOutputEntry',
+TP.sherpa.console.Inst.defineMethod('shouldCoalesceLogMessages',
+function() {
+
+    /**
+     * @method shouldCoalesceLogMessages
+     * @summary Whether or not to coalesce logging messages.
+     * @returns {Boolean} Whether or not to coalesce logging messages.
+     */
+
+    var outputModeVal;
+
+    //  If the Sherpa isn't open, then any logging messages were not produced by
+    //  user input, so it's ok to coalesce logging messages no matter what our
+    //  current display mode setting.
+    if (!TP.core.Sherpa.isOpen()) {
+        return true;
+    }
+
+    //  Grab the current setting.
+    outputModeVal = this.getOutputDisplayMode();
+
+    //  Only coalesce log messages if our output mode is 'all'. Otherwise,
+    //  logging messages will get hidden because it will be reusing items that
+    //  are already hidden.
+    return outputModeVal === 'all';
+});
+
+//  ------------------------------------------------------------------------
+//  Output management methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('createOutputItem',
 function(uniqueID, dataRecord) {
 
     /**
-     * @method updateOutputEntry
+     * @method createOutputItem
+     * @summary Creates an output item within the overall console output element
+     *     that will be used to hold the output of a single command processed by
+     *     the console (and very likely an underlying shell).
+     * @param {String} uniqueID A unique ID that will be used to look up for an
+     *     existing output item. This is usually supplied by the caller when the
+     *     intent is to reuse an existing output item for a new command. In the
+     *     case when an existing output item can be found, this method just
+     *     returns without creating a new one.
+     * @param {TP.core.Hash} dataRecord A hash containing the data that will be
+     *     used for the output. At this stage, this includes:
+     *          'hid'       The shell history ID
+     *          'cssClass'  Any desired additional CSS classes *for the output
+     *                      item itself* (the output content very well might
+     *                      contain CSS classes to style it's output in a
+     *                      special way).
+     *          'cmdText'   The command that was executed to produce the output
+     *                      that this item is being created for.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    this.get('consoleOutput').createOutputItem(uniqueID, dataRecord);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('updateOutputItem',
+function(uniqueID, dataRecord) {
+
+    /**
+     * @method updateOutputItem
+     * @summary Updates the output item specified by the supplied unique ID with
+     *     the data contained in the supplied data record.
+     * @discussion The supplied unique ID will be used to look up an existing
+     *     output item. If an output item does not exist with this ID, this
+     *     method will try to create one using the createOutputItem(). If one
+     *     still cannot be created, this method will raise an error.
+     * @param {String} uniqueID A unique ID that will be used to look up for an
+     *     existing output item.
+     * @param {TP.core.Hash} dataRecord A hash containing the data that will be
+     *     used for the output. At this stage, this includes:
+     *          'hid'       The shell history ID
+     *          'cssClass'  Any desired additional CSS classes *for the output
+     *                      item itself* (the output content very well might
+     *                      contain CSS classes to style it's output in a
+     *                      special way).
+     *          'cmdText'   The command that was executed to produce the output
+     *                      that this item is being created for.
+     *          'typeinfo'  Type information for the 'top-level' object that is
+     *                      being output. This can also contain the semaphore
+     *                      text of 'LOG' to let this method know that the data
+     *                      being output is part of a logging sequence.
+     *          'stats'     Execution statistics from the shell that indicate
+     *                      how long it took to produce the output.
+     *          'rawData'   The raw data produced by the shell. It is different
+     *                      than the 'output' field in that 'output' may have
+     *                      already undergone some kind of formatting through a
+     *                      pipeline or some other mechanism. If 'output' is
+     *                      empty, then this raw data is used as the visual
+     *                      output.
+     *          'output'    The fully formatted data. If this is empty, then the
+     *                      content in 'rawData' is used.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     this.teardownInputMark();
 
-    return this.get('consoleOutput').updateOutputEntry(uniqueID, dataRecord);
+    this.get('consoleOutput').updateOutputItem(uniqueID, dataRecord);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1626,7 +1768,68 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Eval marking/value retrieval
+
+TP.sherpa.console.Inst.defineMethod('setNewOutputCount',
+function(outputCount) {
+
+    /**
+     * @method setNewOutputCount
+     * @summary A setter for the number of output items that there currently are
+     *     in total. This allows the output mode indicator to adjust to let the
+     *     user know if there is more output that is being hidden because of the
+     *     mode that they're in.
+     * @param {Number} outputCount The number of output items in total.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var outputModeVal;
+
+    this.$set('newOutputCount', outputCount);
+
+    //  If the outputCount is 0, remove the 'newoutput' attribute and return.
+    //  None of the modes need to show highlighting if the count is 0.
+    if (outputCount === 0) {
+        this.setIndicatorAttribute('outputmode', 'newoutput', null);
+        return this;
+    }
+
+    //  From here on out, the outputCount is always at least 1
+
+    outputModeVal = this.getOutputDisplayMode();
+
+    switch (outputModeVal) {
+        case 'none':
+        case 'growl':
+            //  If the current mode is 'none'/'growl', then we always need to
+            //  highlight
+            this.setIndicatorAttribute('outputmode', 'newoutput', true);
+            break;
+        case 'one':
+
+            //  If the current mode is 'one', and we have more than 1 new output
+            //  item, then we need to highlight. Otherwise, we make sure that
+            //  the highlight is turned off.
+            if (outputCount > 1) {
+                this.setIndicatorAttribute('outputmode', 'newoutput', true);
+            } else {
+                this.setIndicatorAttribute('outputmode', 'newoutput', null);
+            }
+            break;
+        case 'all':
+            //  If the current mode is 'all', then we just leave the counter
+            //  alone and we make sure that the newoutput prompt indicator
+            //  attribute is removed
+            this.setIndicatorAttribute('outputmode', 'newoutput', null);
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Eval marking/value retrieval (EXPERIMENTAL)
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeAnchor',
@@ -1636,11 +1839,7 @@ function() {
      * @method computeEvalMarkRangeAnchor
      */
 
-    var promptMark,
-
-        range,
-
-        editor,
+    var editor,
 
         head,
 
@@ -1649,60 +1848,58 @@ function() {
         searchCursor,
         retVal;
 
-    if (TP.isValid(promptMark = this.get('currentPromptMarker'))) {
-        range = promptMark.find();
-        retVal = range.to;
-    } else {
-        editor = this.get('consoleInput').$get('$editorObj');
+    editor = this.get('consoleInput').$get('$editorObj');
 
-        //  Look for the following, in this order (at the beginning of a line)
-        //      - The current prompt (preceded by zero-or-more whitespace)
-        //      - A newline
-        //      - One of the TSH characters
-        head = editor.getCursor();
+    //  Look for the following, in this order (at the beginning of a line)
+    //      - The current prompt (preceded by zero-or-more whitespace)
+    //      - A newline
+    //      - One of the TSH characters
+    head = editor.getCursor();
 
-        if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
-            matcher = TP.rc('^(\\s*' +
-                            '\\n' + '|' +
-                            TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
-                            ')');
-            this.set('evalMarkAnchorMatcher', matcher);
-        }
-
-        searchCursor = editor.getSearchCursor(matcher, head);
-
-        if (searchCursor.findPrevious()) {
-            //  We want the 'to', since that's the end of the '^\s*>' match
-            retVal = searchCursor.to();
-        } else {
-            //  Couldn't find a starting '>', so we just use the beginning of
-            //  the editor
-            retVal = {line: 0, ch: 0};
-        }
-
-        /*
-        //  See if there are any output marks between the anchor and head
-        marks = this.findOutputMarks(retVal, head);
-        if (marks.length > 0) {
-            retVal = marks[marks.length - 1].find().to;
-        }
-
-        //  If the 'ch' is at the end of the line, increment the line and set
-        //  the 'ch' to 0
-        lineInfo = editor.lineInfo(retVal.line);
-
-        //  If we matched one of the TSH operator characters then it was a TSH
-        //  command and we want that character included.
-        if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
-            retVal.ch -= 1;
-        }
-
-        if (retVal.ch === lineInfo.text.length) {
-            retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
-                        ch: 0};
-        }
-        */
+    if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
+        matcher = TP.rc('^(\\s*' +
+                        '\\n' + '|' +
+                        TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
+                        ')');
+        this.set('evalMarkAnchorMatcher', matcher);
     }
+
+    searchCursor = editor.getSearchCursor(matcher, head);
+
+    if (searchCursor.findPrevious()) {
+        //  We want the 'to', since that's the end of the '^\s*>' match
+        retVal = searchCursor.to();
+    } else {
+        //  Couldn't find a starting '>', so we just use the beginning of
+        //  the editor
+        retVal = {
+            line: 0,
+            ch: 0
+        };
+    }
+
+    /*
+    //  See if there are any output marks between the anchor and head
+    marks = this.findOutputMarks(retVal, head);
+    if (marks.length > 0) {
+        retVal = marks[marks.length - 1].find().to;
+    }
+
+    //  If the 'ch' is at the end of the line, increment the line and set
+    //  the 'ch' to 0
+    lineInfo = editor.lineInfo(retVal.line);
+
+    //  If we matched one of the TSH operator characters then it was a TSH
+    //  command and we want that character included.
+    if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
+        retVal.ch -= 1;
+    }
+
+    if (retVal.ch === lineInfo.text.length) {
+        retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
+                    ch: 0};
+    }
+    */
 
     return retVal;
 });
@@ -1734,7 +1931,10 @@ function() {
     } else {
         //  Couldn't find an ending '<', so we just use the end of the editor
         lineInfo = editor.lineInfo(editor.lastLine());
-        retVal = {line: lineInfo.line, ch: lineInfo.text.length};
+        retVal = {
+            line: lineInfo.line,
+            ch: lineInfo.text.length
+        };
     }
 
     /*
@@ -1778,8 +1978,10 @@ function() {
         return editor.listSelections()[0];
     }
 
-    range = {anchor: this.computeEvalMarkRangeAnchor(),
-                head: this.computeEvalMarkRangeHead()};
+    range = {
+        anchor: this.computeEvalMarkRangeAnchor(),
+        head: this.computeEvalMarkRangeHead()
+    };
 
     return range;
 });
@@ -1839,8 +2041,10 @@ function() {
         if (TP.isValid(
                 currentInputRange = this.get('currentInputMarker').find())) {
 
-            newEvalRange = {anchor: currentInputRange.from,
-                            head: currentInputRange.to};
+            newEvalRange = {
+                anchor: currentInputRange.from,
+                head: currentInputRange.to
+            };
 
             this.set('currentEvalMarker',
                         this.generateEvalMarkAt(newEvalRange));
@@ -1854,8 +2058,11 @@ function() {
         newEvalRange = this.computeEvalMarkRange();
 
         this.set('currentInputMarker',
-                    this.generateInputMarkAt({anchor: newEvalRange.anchor,
-                                                head: newEvalRange.head}));
+                    this.generateInputMarkAt(
+                        {
+                            anchor: newEvalRange.anchor,
+                            head: newEvalRange.head
+                        }));
         this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
     }
 

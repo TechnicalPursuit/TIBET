@@ -45,7 +45,7 @@ must complete successfully. The default is 15 seconds (15000).
     $ tibet make clean
 
     cleaning...
-    Task success: 7ms.
+    Task complete: 7ms.
 
 ### Run a make target implicitly
 
@@ -53,7 +53,7 @@ must complete successfully. The default is 15 seconds (15000).
 
     Delegating to 'tibet make clean'
     cleaning...
-    Task success: 4ms.
+    Task complete: 4ms.
 
 ## SEE ALSO
 
