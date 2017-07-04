@@ -104,6 +104,12 @@ xctrls|content {
     z-index: 27000;
 }
 
+.HUD_TILE_TIER,
+*[class~="HUD_TILE_TIER"] {
+
+    z-index: 27250;
+}
+
 .CONSOLE_OUTPUT_TIER,
 *[class~="CONSOLE_OUTPUT_TIER"] {
 
