@@ -235,6 +235,9 @@
 
             process.exit(code);
         });
+
+        //  Force connections to become aware of a timeout so they drop.
+        TDS.timeoutConnections();
     };
 
     process.on('SIGINT', shutdown);
@@ -288,6 +291,9 @@
         TDS.httpServer = http.createServer(app);
         TDS.httpServer.listen(port);
     }
+
+    //  Tell the TDS to register servers. This supports clean shutdown process.
+    TDS.registerServers();
 
     require('./plugins/poststart')(options);
 

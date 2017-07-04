@@ -208,12 +208,35 @@
                     cookies;
 
                 if (err) {
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.status(400);
+                        res.json({
+                            ok: false,
+                            message: 'login failed'
+                        });
+                        return;
+                    }
+
                     logger.error('Redirecting to login: ' + err);
                     return res.redirect('/login');
                 }
 
                 if (!user) {
-                    logger.error('No user provided. Redirecting to login.');
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.status(400);
+                        res.json({
+                            ok: false,
+                            message: 'login failed'
+                        });
+                        return;
+                    }
+
+                    logger.error(
+                        'Redirecting to login: user/pass mismatch.');
                     return res.redirect('/login');
                 }
 
@@ -245,15 +268,6 @@
                         return next(err2);
                     }
 
-                    //  Special handling for xhr and/or curl. We just want to
-                    //  send back JSON in those cases.
-                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
-                        res.json({
-                            ok: true
-                        });
-                        return;
-                    }
-
                     //  User authenticated but we need to decide which
                     //  result page to send.
 
@@ -266,13 +280,22 @@
                         //  the other route handler that we're done with
                         //  phase one and need to render the phasetwo page.
                         req.session.render = 'phasetwo';
-                        res.redirect('/');
 
                     } else {
                         //  NOTE: we set session state to communicate with
                         //  the other route handler that we're just getting
                         //  started and need to render the phase one page.
                         req.session.render = 'phaseone';
+                    }
+
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.json({
+                            ok: true
+                        });
+                        return;
+                    } else {
                         res.redirect('/');
                     }
                 });

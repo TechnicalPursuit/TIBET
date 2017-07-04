@@ -220,6 +220,13 @@ function() {
                 TP.boot.$stderr('Initialization failure.', TP.FATAL);
 
                 throw e;
+            } finally {
+
+                //  One tricky part is that we can sometimes trigger application
+                //  instance creation during parallel booting. When that happens
+                //  we want to clear the singleton instance before we try
+                //  anything that would depend on routes etc.
+                TP.core.Application.set('singleton', null);
             }
         }).then(
         function() {
@@ -423,11 +430,15 @@ function() {
     //  If we're supposed to grab a different type that'll happen here.
     appType = TP.sys.getTypeByName(typeName);
 
+    //  May be paused or booting in two phases, so only warn if we're fully
+    //  loaded.
     if (TP.notValid(appType)) {
-        TP.ifWarn() ?
-            TP.warn('Unable to locate application controller type: ' +
+        if (TP.sys.hasLoaded()) {
+            TP.ifWarn() ?
+                TP.warn('Unable to locate application controller type: ' +
                     typeName + '. ' +
                     'Defaulting to TP.core.Application.') : 0;
+        }
         appType = TP.sys.getTypeByName('TP.core.Application');
     }
 

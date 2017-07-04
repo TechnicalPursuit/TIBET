@@ -68,6 +68,12 @@
         //  server.js.
         setcfg('tds.port', null);
 
+        //  How long before connections normally time out (15 minutes)
+        setcfg('tds.connection_timeout', 15 * 60 * 1000);
+
+        //  How long before connections time out after a shutdown request.
+        setcfg('tds.shutdown_timeout', 3000);
+
         setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
         setcfg('tds.session.key', 'T1B3TS3SS10N');   //  change this too :)
         setcfg('tds.session.store', 'memory');
