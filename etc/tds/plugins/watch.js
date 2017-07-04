@@ -149,16 +149,20 @@
             watcher.consumers += 1;
             watcher.channels = [];
 
-            logger.debug('TDS FileWatch interface sharing file watcher.');
+            logger.info('TDS FileWatch interface sharing file watcher.');
+
+            watchRoot = watcher.options.cwd;
+
+            logger.debug('TDS FileWatch interface rooted at: ' + watchRoot);
 
         } else {
 
-            logger.debug('TDS FileWatch interface creating file watcher.');
+            logger.info('TDS FileWatch interface creating file watcher.');
 
             //  Expand out the path we'll be watching. This should almost always
             //  be the application root.
             watchRoot = path.resolve(TDS.expandPath(
-                TDS.getcfg('tds.watch.root', '~app')));
+                TDS.getcfg('tds.watch.root') || '~app'));
 
             logger.debug('TDS FileWatch interface rooted at: ' + watchRoot);
 
