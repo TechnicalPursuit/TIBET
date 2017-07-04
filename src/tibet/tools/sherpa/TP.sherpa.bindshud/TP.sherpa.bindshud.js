@@ -16,14 +16,6 @@
 
 TP.sherpa.hudsidebar.defineSubtype('bindshud');
 
-TP.sherpa.bindshud.addTraits(TP.core.D3Tag);
-
-TP.sherpa.bindshud.Inst.defineAttribute('listcontent',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.bindshud.Inst.defineAttribute('listitems',
-    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -75,153 +67,6 @@ function(aTPElement) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('buildNewContent',
-function(enterSelection) {
-
-    /**
-     * @method buildNewContent
-     * @summary Builds new content onto the receiver by appending or inserting
-     *     content into the supplied d3.js 'enter selection'.
-     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
-     *     that new content should be appended to.
-     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
-     *     selection containing any new content that was added.
-     */
-
-    var newContent;
-
-    newContent = enterSelection.append('li');
-    newContent.attr(
-            'pclass:selected',
-            function(d) {
-                if (TP.isTrue(d[2])) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'title',
-            function(d) {
-                return d[1];
-            }).attr(
-            'peerID',
-            function(d, i) {
-                return d[0];
-            }).text(
-            function(d) {
-                return d[1];
-            });
-
-    return newContent;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('getKeyFunction',
-function() {
-
-    /**
-     * @method getKeyFunction
-     * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set.
-     * @description This Function should take a single argument, an individual
-     *     item from the receiver's data set, and return a value that will act
-     *     as that item's key in the overall data set. The default version
-     *     returns the item itself.
-     * @returns {Function} A Function that provides a key for the supplied data
-     *     item.
-     */
-
-    var keyFunc;
-
-    keyFunc =
-        function(d) {
-            return d[0];
-        };
-
-    return keyFunc;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('getRootUpdateSelection',
-function(containerSelection) {
-
-    /**
-     * @method getRootUpdateSelection
-     * @summary Creates the 'root' update selection that will be used as the
-     *     starting point to begin d3.js drawing operations.
-     * @param {TP.extern.d3.selection} containerSelection The selection made by
-     *     having d3.js select() the receiver's 'selection container'.
-     * @returns {TP.extern.d3.Selection} The receiver.
-     */
-
-    return containerSelection.selectAll('li');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('getSelectionContainer',
-function() {
-
-    /**
-     * @method getSelectionContainer
-     * @summary Returns the Element that will be used as the 'root' to
-     *     add/update/remove content to/from using d3.js functionality. By
-     *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as the container for d3.js
-     *     enter/update/exit selections.
-     */
-
-    return TP.unwrap(this.get('listcontent'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('updateExistingContent',
-function(updateSelection) {
-
-    /**
-     * @method updateExistingContent
-     * @summary Updates any existing content in the receiver by altering the
-     *     content in the supplied d3.js 'update selection'.
-     * @param {TP.extern.d3.selection} updateSelection The d3.js update
-     *     selection that existing content should be altered in.
-     * @returns {TP.extern.d3.selection} The supplied update selection.
-     */
-
-    updateSelection.attr(
-            'pclass:selected',
-            function(d) {
-                if (TP.isTrue(d[2])) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'title',
-            function(d) {
-                return d[1];
-            }).attr(
-            'peerID',
-            function(d, i) {
-                return d[0];
-            }).text(
-            function(d) {
-                return d[1];
-            });
-
-    return updateSelection;
-});
-
-//  ------------------------------------------------------------------------
 //  Handlers
 //  ------------------------------------------------------------------------
 
@@ -238,126 +83,44 @@ function(aSignal) {
      * @return {TP.sherpa.bindshud} The receiver.
      */
 
-    var targetElem,
-        peerID,
+    var data,
+
+        targetElem,
+
+        indexInData,
+        itemData,
+
         target;
 
-    //  Grab the target lozenge tile and get the value of its peerID attribute.
-    //  This will be the ID of the element that we're trying to focus.
+    //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
-    //  No peerID? Exit here.
-    if (TP.isEmpty(peerID)) {
+    if (!TP.elementHasClass(targetElem, 'item')) {
         return this;
     }
 
-    //  Probably a controller, not an element.
-    target = TP.bySystemId(peerID);
+    //  Grab our data.
+    data = this.get('data');
 
-    //  Not an element so focus inspector, not halo.
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    target = TP.bySystemId(itemData.at(0));
+
+    //  Signal to inspect the object with the rule matcher as 'extra targeting
+    //  information' under the 'findContent' key.
     this.signal('InspectObject',
-            TP.hc('targetObject', target,
-                    'targetAspect', TP.id(target),
-                    'showBusy', true));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineHandler('HaloDidFocus',
-function(aSignal) {
-
-    /**
-     * @method handleHaloDidFocus
-     * @summary Handles notifications of when the halo focuses on an object.
-     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.bindshud} The receiver.
-     */
-
-    var haloTarget;
-
-    haloTarget = aSignal.at('haloTarget');
-
-    this.focusOnTarget(haloTarget);
-
-    this.observe(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineHandler('HaloDidBlur',
-function(aSignal) {
-
-    /**
-     * @method handleHaloDidBlur
-     * @summary Handles notifications of when the halo blurs on an object.
-     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.bindshud} The receiver.
-     */
-
-    this.setValue(null);
-
-    this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineHandler('MutationAttach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationAttach
-     * @summary Handles notifications of node attachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.bindshud} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineHandler('MutationDetach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationDetach
-     * @summary Handles notifications of node detachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @return {TP.sherpa.bindshud} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
+                TP.hc('targetObject', target,
+                        'targetAspect', TP.id(target),
+                        'showBusy', true));
 
     return this;
 });
