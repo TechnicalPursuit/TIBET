@@ -304,6 +304,8 @@ CLI.isJSIdentifier = function(aString) {
         return false;
     }
 
+    //  Strictly speaking the '.' here is not part of a valid individual
+    //  identifier name...but we allow for JS identifier "paths".
     return /^[a-zA-Z_$]{1}[.a-zA-Z0-9_$]*$/.test(aString);
 };
 
