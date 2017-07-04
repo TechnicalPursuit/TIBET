@@ -815,8 +815,8 @@
                 TDS.levels[obj.level.toLowerCase()], style);
             msg += TDS.colorize('] ', style);
 
-            //  For non-error levels we stick with a dim message chunk default.
-            if (TDS.levels[obj.level] < TDS.levels.error) {
+            //  For less-than-warning levels we stick with a dim message body.
+            if (TDS.levels[obj.level] < TDS.levels.warn) {
                 style = 'dim';
             } else if (TDS.levels[obj.level] >= TDS.levels.system) {
                 //  But don't force 'system' to be used for message text.
