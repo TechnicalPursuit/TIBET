@@ -293,7 +293,7 @@ Cmd.prototype.phaseOne = function() {
     result = this.shexec(cmd);
     cmd = 'git rev-parse @{u}';
     result2 = this.shexec(cmd);
-    if (result !== result2 && !this.options.local) {
+    if (result.output !== result2.output && !this.options.local) {
         throw new Error('Cannot release from out-of-date local branch.');
     }
 
