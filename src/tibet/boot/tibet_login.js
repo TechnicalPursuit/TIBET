@@ -13,7 +13,9 @@
     root.login = function() {
         var form,
             loc,
-            hash;
+            hash,
+            xhr,
+            dat;
 
         if (!top.sessionStorage) {
             return;
@@ -30,9 +32,33 @@
             if (hash) {
                 top.sessionStorage.setItem('TIBET.boot.fragment', hash);
             }
+            loc = loc.slice(0, loc.indexOf('#'));
         }
 
-        form.submit('/login');
+        xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== 4) {
+                return;
+            }
+
+            if (xhr.status === 200) {
+                window.location.replace('/');
+            } else {
+                window.location.replace('/login');
+            }
+        };
+
+        dat = JSON.stringify({
+            username: form[0].value.trim(),
+            password: form[1].value.trim()
+        });
+
+        xhr.open('POST', loc, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.send(dat);
+
+        return false;
     };
 
 }(this));

@@ -12,14 +12,14 @@
 
     <div id="LOGIN-SPLASH">
         <div id="LOGIN-FORM">
-        <form id="login" method="post">
+        <form id="login" method="post" onsubmit="login(); return false;">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username"
                 value="\{{username}}"
                 autofocus="autofocus"/>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password"/>
-            <button onclick="login()">Login</button>
+            <button type="submit">Login</button>
         </form>
         </div>
     </div>
