@@ -1,5 +1,6 @@
 @namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 @namespace pclass url("urn:tibet:pseudoclass");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 sherpa|respondershud {
 
@@ -58,9 +59,60 @@ sherpa|respondershud > ul.content > li:hover {
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected] {
+
     background-color: gold;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected]:hover {
+
     background-color: gold;
+}
+
+/* We omitted 'sherpa|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
+
+#ResponderSummary_Tile {
+
+    min-width: 300px;
+    min-height: 200px;
+}
+
+#ResponderSummary_Tile > .body {
+
+    bottom: 0;
+
+    font-family: monospace;
+    font-size: 11px;
+}
+
+#ResponderSummary_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+#ResponderSummary_Tile > .footer {
+
+    display: none;
+}
+
+#ResponderSummary_Tile > .body > #ResponderMethodList {
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 0;
+
+    line-height: inherit;
+
+    /* The item height *with* borders */
+    --xctrls-item-height: 18px;
+
+    /* The border height (top and bottom added together) */
+    --xctrls-item-border-height: 2px;
+}
+
+#ResponderSummary_Tile > .body > #ResponderMethodList | xctrls|textitem {
+
+    border: none;
 }
