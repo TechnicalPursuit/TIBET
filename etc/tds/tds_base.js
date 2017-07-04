@@ -315,6 +315,7 @@
      */
     TDS.announceStart = function(logger, protocol, port) {
         var project,
+            builddir,
             artifacts;
 
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
@@ -323,13 +324,17 @@
         //  First output the 'default' or 'prod' or 'build' version which should
         //  be the one all projects default to without any '#' parameters....but
         //  only if we see build artifacts.
-        artifacts = sh.ls(TDS.expandPath('~app_build'));
-        if (artifacts.length) {
-            logger.system(project +
-                TDS.colorize(' @ ', 'dim') +
-                TDS.colorize(protocol + '://127.0.0.1' +
-                    (port === 80 ? '' : ':' + port), 'host'),
-                {comp: 'TDS', type: 'tds', name: 'build'});
+        builddir = TDS.expandPath('~app_build');
+        if (sh.test('-d', builddir)) {
+            artifacts = sh.ls(builddir);
+            if (artifacts.length) {
+                logger.system(project +
+                    TDS.colorize(' @ ', 'dim') +
+                    TDS.colorize(protocol + '://127.0.0.1' +
+                        (port === 80 ? '' : ':' + port), 'host') +
+                    TDS.colorize(' (production build)', 'dim'),
+                    {comp: 'TDS', type: 'tds', name: 'build'});
+            }
         }
 
         //  Also output a 'development link' that will ensure app source and
