@@ -222,16 +222,26 @@ function() {
                 throw e;
             } finally {
 
+                //  If we're running inside of a Karma environment, we don't
+                //  reset the Application object even in parallel booting mode.
+                //  This is because data that Karma needs has already been
+                //  placed in the Application object and we aren't doing a
+                //  'routing-based' app when running Karma test anyway.
                 if (TP.sys.hasFeature('karma')) {
-                    return;
-                }
-
-                if (TP.sys.cfg('boot.parallel')) {
+                    //  empty
+                } else if (TP.sys.cfg('boot.parallel')) {
                     //  One tricky part is that we can sometimes trigger
-                    //  application instance creation during parallel booting.
-                    //  When that happens we want to clear the singleton
-                    //  instance before we try anything that would depend on
-                    //  routes etc.
+                    //  application instance creation during phase one of
+                    //  parallel booting. Because of that, it will be an
+                    //  instance of the common TP.core.Application type and not
+                    //  the specific subtype of TP.core.Application that we'll
+                    //  want for the rest of the life of running the app.
+
+                    //  So, when that happens we want to clear the singleton
+                    //  instance now that phase two has loaded and before we try
+                    //  anything that would depend on routes etc. This singleton
+                    //  instance will be re-created as an instance of our
+                    //  application-specific subtype.
                     TP.core.Application.set('singleton', null);
                 }
             }
