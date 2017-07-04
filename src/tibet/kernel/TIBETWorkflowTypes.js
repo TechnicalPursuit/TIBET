@@ -7100,7 +7100,15 @@ function() {
      * @returns {String[]} The current history list.
      */
 
-    return this.$get('history');
+    var history;
+
+    history = this.$get('history');
+    if (TP.notValid(history)) {
+        history = TP.ac();
+        this.$set('history', history);
+    }
+
+    return history;
 });
 
 //  ------------------------------------------------------------------------
