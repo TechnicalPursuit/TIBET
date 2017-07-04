@@ -4035,7 +4035,13 @@ function(aRequest, aResult, aResource) {
         result.set('content', aResource);
         this.observe(result, 'Change');
 
-        isDirty = this.isDirty();
+        // isDirty = this.isDirty();
+
+        isDirty = this.isDirty(true);
+
+        if (this.$get('resource') !== result) {
+            this.$set('resource', result);
+        }
 
         //  Then, we broadcast change from ourself as if we were re-broadcasting
         //  a Change notification from our resource.
