@@ -194,9 +194,12 @@ Cmd.prototype.execute = function() {
                     cmd.info('Use `tibet start` to run your app.');
                 });
 */
-                cmd.log('project initialized successfully.');
-                cmd.info('Use `tibet build` to build your app.');
-                cmd.info('Use `tibet start` to run your app.');
+                cmd.log('project initialized successfully.\n');
+                cmd.info(
+                    'Use `tibet lint` to check for coding standard violations\n' +
+                    'Use `tibet test` to test your application\'s core features\n' +
+                    'Use `tibet build` to build production packages for deployment\n' +
+                    'Use `tibet start` to run your application.');
 
             });
         });
@@ -227,8 +230,11 @@ Cmd.prototype.execute = function() {
             }
 
             cmd.log('project initialized successfully.');
-            cmd.info('Use `tibet build` to build your app.');
-            cmd.info('Use `tibet start` to run your app.');
+            cmd.info(
+                'Use `tibet lint` to check for coding standard violations\n' +
+                'Use `tibet test` to test your application\'s core features\n' +
+                'Use `tibet build` to build production packages for deployment\n' +
+                'Use `tibet start` to run your application.');
 
             /*
             cmd.log('performing initial `tibet build`.');
