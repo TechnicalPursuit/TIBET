@@ -116,7 +116,6 @@
         setcfg('tds.couch.watch.max_retry_seconds', 360);
         setcfg('tds.couch.watch.response_grace_time', 5000);
         setcfg('tds.couch.watch.root', '~app');
-        setcfg('tds.couch.watch.since', 'now');
 
         setcfg('tds.couch.watch.couch2fs', true);
         setcfg('tds.couch.watch.fs2couch', true);
@@ -140,7 +139,6 @@
         setcfg('tds.tasks.watch.initial_retry_delay', 1000);
         setcfg('tds.tasks.watch.max_retry_seconds', 360);
         setcfg('tds.tasks.watch.response_grace_time', 5000);
-        setcfg('tds.tasks.watch.since', 'now');
 
         //  NOTE these are off here. We want to force them to be turned on via
         //  the tds.json file which will enforce an environment-based setting.

@@ -25,6 +25,7 @@
         Color,
         Promise,
         hasAnsi,
+        sh,
         TDS;
 
     beautify = require('js-beautify');
@@ -34,6 +35,7 @@
     handlebars = require('handlebars');
     Promise = require('bluebird');
     util = require('util');
+    sh = require('shelljs');
     winston = require('winston');
 
     // Load the package support to help with option/configuration data.
@@ -1162,6 +1164,69 @@
         }
 
         return aString;
+    };
+
+    /**
+     * Reads the currently stored version of
+     */
+    TDS.readWatchSince = function(app, plugin) {
+        var fullpath,
+            env,
+            dat,
+            obj;
+
+        fullpath = TDS.expandPath('~/since.json');
+        if (!sh.test('-e', fullpath)) {
+            return 'now';
+        }
+
+        //  NOTE this is called during server/plugin startup so a sync read here
+        //  isn't the end of the world.
+        dat = sh.cat(fullpath);
+        try {
+            obj = JSON.parse(dat);
+        } catch (e) {
+            return 'now';
+        }
+
+        env = app.get('env');
+        if (!obj[env]) {
+            return 'now';
+        }
+
+        return obj[env][plugin] || 'now';
+    };
+
+
+    /**
+     */
+    TDS.writeWatchSince = function(app, plugin, sequence) {
+        var fullpath,
+            env,
+            dat,
+            obj;
+
+        fullpath = TDS.expandPath('~/since.json');
+        if (!sh.test('-e', fullpath)) {
+            //  file doesn't exist...we'll create it shortly...
+            obj = {};
+        } else {
+            dat = sh.cat(fullpath);
+
+            //  NOTE if this throws we're fine...we can't save anyway so no attempt
+            //  to try/catch here.
+            obj = JSON.parse(dat);
+        }
+
+        env = app.get('env');
+        if (!obj[env]) {
+            obj[env] = {};
+        }
+
+        obj[env][plugin] = sequence;
+
+        //  TODO: replace with something async...
+        TDS.beautify(JSON.stringify(obj)).to(fullpath);
     };
 
     /**

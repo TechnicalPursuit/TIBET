@@ -173,7 +173,7 @@
         //    initial_retry_delay: TDS.getcfg('tds.couch.watch.initial_retry_delay') || 1000,
         //    max_retry_seconds: TDS.getcfg('tds.couch.watch.max_retry_seconds') || 360,
         //    response_grace_time: TDS.getcfg('tds.couch.watch.response_grace_time') || 5000,
-            since: TDS.getcfg('tds.couch.watch.since') || 'now'
+            since: TDS.readWatchSince(app, 'couch') || 'now'
         };
 
         feed = new follow.Feed(feedopts);
@@ -330,8 +330,7 @@
                     //  Save the change.seq number so we watch based on that
                     //  sequence during any restarts etc. rather than doing all
                     //  the work from the start, or missing work via 'now'.
-                    TDS.savecfg('tds.couch.watch.since', change.seq,
-                        app.get('env'));
+                    TDS.writeWatchSince(app, 'couch', change.seq);
                     TDS.workflow(change.doc);
                 });
             }
