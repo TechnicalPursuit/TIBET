@@ -67,13 +67,17 @@ sherpa|styleshud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }
 
-sherpa|tile#StyleSummary_Tile {
+/* We omitted 'sherpa|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
+
+#StyleSummary_Tile {
 
     min-width: 200px;
     min-height: 200px;
 }
 
-sherpa|tile#StyleSummary_Tile > .body {
+#StyleSummary_Tile > .body {
 
     bottom: 0;
 
@@ -81,12 +85,12 @@ sherpa|tile#StyleSummary_Tile > .body {
     font-size: 11px;
 }
 
-sherpa|tile#StyleSummary_Tile > .header > .minimize_mark {
+#StyleSummary_Tile > .header > .minimize_mark {
 
     visibility: hidden;
 }
 
-sherpa|tile#StyleSummary_Tile > .footer {
+#StyleSummary_Tile > .footer {
 
     display: none;
 }
