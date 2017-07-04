@@ -115,7 +115,7 @@ Cmd.prototype.execute = function() {
         user = this.options._[1];
     }
 
-    file = CLI.expandPath('~tds_file');
+    file = CLI.expandPath('~user_file');
     json = require(file);
     if (!json) {
         this.error('Unable to load tds config file: ' + file);
@@ -132,11 +132,7 @@ Cmd.prototype.execute = function() {
 
     pass = this.options.pass;
 
-    users = env.users;
-    if (CLI.notValid(users)) {
-        users = {};
-        env.users = users;
-    }
+    users = env;
 
     if (CLI.isEmpty(pass)) {
         //  User lookup.
@@ -163,8 +159,9 @@ Cmd.prototype.execute = function() {
 
         salt = process.env.TDS_CRYPTO_SALT || CLI.getcfg('tds.crypto.salt');
         if (!salt) {
-            throw new Error(
-                'Missing TDS_CRYPTO_SALT or tds.crypto.salt for encryption.');
+            this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            this.warn('Defaulting to encryption salt default value');
+            salt = 'mmm...salty';
         }
 
         //  Password update.

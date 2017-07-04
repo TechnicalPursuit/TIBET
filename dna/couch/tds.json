@@ -4,7 +4,7 @@
         "https_port": 1443,
         "port": 1407,
         "crypto": {
-            "salt": "salty"
+            "salt": "mmm...salty"
         },
         "plugins": {
             "tds": ["couch", "tasks"]
@@ -22,9 +22,6 @@
     "development": {
         "plugins": {
             "tds": ["cli", "couch", "patch", "tasks", "watch"]
-        },
-        "users": {
-            "guest": "e99069ac4a190193b359321eab6330ee86e8e9c35539cbc07c41f89cdf46497f"
         }
     }
 }

@@ -304,6 +304,14 @@
 
 
     /**
+     * The configuration file used to store any user data for the auth-tds
+     * plugin and 'tibet user' command.
+     * @type {string}
+     */
+    Package.USER_FILE = 'users.json';
+
+
+    /**
      * A list of the options which are considered standard. Any option values not in
      * this list are treated as configuration parameters.
      */
@@ -463,6 +471,12 @@
      * @type {Object.<string, object>}
      */
     Package.prototype.tds = null;
+
+    /**
+     * Contents of any USER_FILE (user.json) relative to the project.
+     * @type {Object.<string, object>}
+     */
+    Package.prototype.users = null;
 
 
     //  ---
@@ -1578,6 +1592,15 @@
 
 
     /**
+     * Returns any user configuration data from the USER_FILE.
+     * @returns {Object} Returns the user.json content.
+     */
+    Package.prototype.getUserConfig = function() {
+        return this.users;
+    };
+
+
+    /**
      * Return the primitive value from a string value in "source code" form meaning
      * numbers, booleans, regular expressions etc. are returns as those values but
      * string values are returned with quotes and appropriate escaping of any
@@ -2522,6 +2545,21 @@
             }
         }
 
+        fullpath = this.expandPath(path.join(head, Package.USER_FILE));
+        if (sh.test('-f', fullpath)) {
+            try {
+                this.users = require(fullpath) || {
+                    users: {}
+                };
+            } catch (e) {
+                msg = 'Error loading user file: ' + e.message;
+                if (this.options.stack === true) {
+                    msg += ' ' + e.stack;
+                }
+                throw new Error(msg);
+            }
+        }
+
         fullpath = this.expandPath(path.join(head, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
@@ -2541,8 +2579,9 @@
         //  TIBET project file (mostly client but some shared values).
         this.overlayProperties(this.tibet);
 
-        //  Process the TDS configuration data last. We do this in two steps to load
-        //  any default section followed by any data that's environment-specific.
+        //  Process the TDS configuration data last. We do this in two steps to
+        //  load any default section followed by any data that's
+        //  environment-specific.
         if (this.tds) {
             if (this.tds.default) {
                 this.overlayProperties(this.tds.default, 'tds');
@@ -2551,6 +2590,20 @@
             env = this.getcfg('env') || this.options.env || 'development';
             if (this.tds[env]) {
                 this.overlayProperties(this.tds[env], 'tds');
+            }
+        }
+
+        //  Process user configuration data last. We do this in two steps to
+        //  load any default section followed by any data that's
+        //  environment-specific.
+        if (this.users) {
+            if (this.users.default) {
+                this.overlayProperties(this.users.default, 'users');
+            }
+
+            env = this.getcfg('env') || this.options.env || 'development';
+            if (this.users[env]) {
+                this.overlayProperties(this.users[env], 'users');
             }
         }
 

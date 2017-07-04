@@ -44,7 +44,7 @@
         if (!salt) {
             logger.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
             logger.warn('Defaulting to encryption salt default value');
-            salt = 'salty';
+            salt = 'mmm...salty';
         }
 
         //  ---
@@ -62,7 +62,7 @@
                     hex;
 
                 //  Simple authentication is a hash check against TDS data.
-                pass = TDS.cfg('tds.users.' + username);
+                pass = TDS.cfg('users.' + username);
                 if (pass) {
 
                     //  Compute a simple hash to compare against the stored

@@ -152,7 +152,7 @@ Cmd.prototype.execute = function() {
     if (!this.options.users) {
         try {
             keys = Object.keys(cfg).filter(function(key) {
-                return key.indexOf('tds.users') !== 0;
+                return key.indexOf('users') !== 0;
             });
             newcfg = {};
             keys.forEach(function(key) {
