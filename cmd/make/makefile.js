@@ -16,7 +16,8 @@
 
         Make.loadTasks();
 
-        Make.defineTaskOptions('build', {timeout: 300000});
+        Make.defineTaskOptions('build', {timeout: 600000});
+        Make.defineTaskOptions('build_tibet', {timeout: 600000});
         Make.defineTaskOptions('build_all', {timeout: 1200000});
     };
 
