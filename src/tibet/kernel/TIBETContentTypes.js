@@ -498,7 +498,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Type.defineMethod('$getEqualityValue',
+TP.core.Content.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
@@ -508,7 +508,15 @@ function() {
      * @returns {Object} A value appropriate for use in equality comparisons.
      */
 
-    return this.get('data').$getEqualityValue();
+    var data;
+
+    data = this.get('data');
+
+    if (TP.canInvoke(data, '$getEqualityValue')) {
+        return data.$getEqualityValue();
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
