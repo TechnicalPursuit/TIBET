@@ -314,18 +314,23 @@
      * @param {Number} port The port number the server is listening on.
      */
     TDS.announceStart = function(logger, protocol, port) {
-        var project;
+        var project,
+            artifacts;
 
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
         project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
 
         //  First output the 'default' or 'prod' or 'build' version which should
-        //  be the one all projects default to without any '#' parameters.
-        logger.system(project +
-            TDS.colorize(' @ ', 'dim') +
-            TDS.colorize(protocol + '://127.0.0.1' +
-                (port === 80 ? '' : ':' + port), 'host'),
-            {comp: 'TDS', type: 'tds', name: 'build'});
+        //  be the one all projects default to without any '#' parameters....but
+        //  only if we see build artifacts.
+        artifacts = sh.ls(TDS.expandPath('~app_build'));
+        if (artifacts.length) {
+            logger.system(project +
+                TDS.colorize(' @ ', 'dim') +
+                TDS.colorize(protocol + '://127.0.0.1' +
+                    (port === 80 ? '' : ':' + port), 'host'),
+                {comp: 'TDS', type: 'tds', name: 'build'});
+        }
 
         //  Also output a 'development link' that will ensure app source and
         //  sherpa are loaded and ready for development.
