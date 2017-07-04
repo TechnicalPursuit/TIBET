@@ -107,6 +107,13 @@
     TDS._buffer = [];
 
     /**
+     * Dictionary of currently active connections. Used to manage graceful
+     * shutdown processing.
+     * @type {Object}
+     */
+    TDS._connections = {};
+
+    /**
      * The package instance assisting with configuration data loading/lookup.
      * @type {Package} A TIBET CLI package instance.
      */
@@ -961,6 +968,38 @@
     };
 
     /**
+     * @method registerServers
+     * @summary Used to set up connection tracking so we can time out
+     *     connnections if we receive a request to shutdown gracefully.
+     */
+    TDS.registerServers = function() {
+        var connect;
+
+        //  Helper function which ensures new connections are tracked and
+        //  properly removed from tracking when they close.
+        connect = function(connection) {
+            var addr;
+
+            addr = connection.remoteAddress + ':' + connection.remotePort;
+            TDS._connections[addr] = connection;
+
+            connection.on('close', function() {
+                delete TDS._connections[addr];
+            });
+
+            connection.setTimeout(TDS.getcfg('tds.connection_timeout'));
+        };
+
+        if (TDS.httpsServer) {
+            TDS.httpsServer.on('connection', connect);
+        }
+
+        if (TDS.httpServer) {
+            TDS.httpServer.on('connection', connect);
+        }
+    };
+
+    /**
      * @method rpad
      * @summary Returns a new String representing the obj with a trailing number
      *     of padChar characters according to the supplied length.
@@ -1076,6 +1115,30 @@
         TDS.logger.system('TDS middleware shut down', meta);
 
         return code;
+    };
+
+    /**
+     * @method timeoutConnections
+     * @summary Notifies any active connections they should time out based on
+     *     the tds.shutdown_timeout setting. This is only used during shutdown
+     *     and can differ from any tds.connection_timeout value.
+     */
+    TDS.timeoutConnections = function() {
+        var timeout;
+
+        timeout = TDS.getcfg('tds.shutdown_timeout');
+
+        Object.keys(TDS._connections).forEach(function(key) {
+            var connection;
+
+            connection = TDS._connections[key];
+
+            connection.setTimeout(timeout, function() {
+                if (TDS._connections[key]) {
+                    TDS._connections[key].destroy();
+                }
+            });
+        });
     };
 
     /**
