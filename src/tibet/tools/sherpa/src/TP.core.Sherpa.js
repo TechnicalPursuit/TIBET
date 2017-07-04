@@ -1791,7 +1791,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('showTileAt',
-function(tileID, title, contentElem, aPoint) {
+function(tileID, title, existedHandler, newHandler) {
 
     /**
      * @method showTileAt
@@ -1801,14 +1801,18 @@ function(tileID, title, contentElem, aPoint) {
      *     cannot be found in the same document as the sidebar, then a new tile
      *     will be created.
      * @param {String} title The title of the tile.
-     * @param {Element} contentElem The element to set as the content of the
-     *     body of the tile.
-     * @param {TP.core.Point} aPoint The point to show the tile at, in *page*
-     *     coordinates.
+     * @param {Function} [existedHandler] If supplied, this Function is executed
+     *     after the tile is shown on screen when the tile already existed and
+     *     wasn't created again.
+     * @param {Function} [newHandler] If supplied, this Function is executed
+     *     after the tile is shown on screen when the tile was newly created.
      * @return {TP.core.Sherpa} The receiver.
      */
 
-    var tileTPElem;
+    var alreadyExisted,
+        tileTPElem;
+
+    alreadyExisted = false;
 
     //  Look for an existing tile.
     tileTPElem = TP.byId(tileID, this.get('vWin'));
@@ -1820,14 +1824,21 @@ function(tileID, title, contentElem, aPoint) {
         tileTPElem = this.makeTile(tileID, title);
     } else {
         tileTPElem.setHeaderText(title);
+        alreadyExisted = true;
     }
-
-    tileTPElem.setContent(contentElem);
-
-    tileTPElem.setPagePosition(aPoint);
 
     //  Show the tile.
     tileTPElem.setAttribute('hidden', false);
+
+    if (alreadyExisted) {
+        if (TP.isCallable(existedHandler)) {
+            existedHandler(tileTPElem);
+        }
+    } else {
+        if (TP.isCallable(newHandler)) {
+            newHandler(tileTPElem);
+        }
+    }
 
     return this;
 });
