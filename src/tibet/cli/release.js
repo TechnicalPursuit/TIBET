@@ -77,7 +77,7 @@ Cmd.TEMPLATE_FILE = '~lib/src/tibet/kernel/TIBETVersionTemplate.js';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['major', 'minor', 'patch', 'build', 'check',
+        'boolean': ['major', 'minor', 'patch', 'build', 'test',
             'local', 'dry-run', 'quick'],
         'string': ['suffix', 'version'],
         'number': ['increment'],
@@ -90,7 +90,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             quick: false,
             dirty: false,
             build: true,
-            check: true,
+            test: true,
             'dry-run': false
         }
     },
@@ -112,7 +112,7 @@ Cmd.prototype.SUFFIXES = ['beta', 'dev', 'final', 'hotfix', 'pre', 'rc'];
  * @type {string}
  */
 Cmd.prototype.USAGE = 'tibet release [--major|--minor|--patch]' +
-    ' --local --build --check --dry-run' +
+    ' --local --build --test --dry-run' +
     ' [--version <version>] [--suffix <suffix>]';
 
 
@@ -424,8 +424,8 @@ Cmd.prototype.phaseOne = function() {
  * Performs the second phase of release processing. This phase involves editing
  * the kernel's version file and the npm package.json file to update them with
  * the proposed build identification data. Once all edits are complete a full
- * 'tibet checkup' is run to lint and test the content before any commit.
- * If the asynchronous check process passes phaseThree is invoked.
+ * 'tibet test' is run to lint and test the content before any commit.
+ * If the asynchronous test process passes phaseThree is invoked.
  */
 Cmd.prototype.phaseTwo = function(source) {
 
@@ -526,12 +526,12 @@ Cmd.prototype.phaseTwo = function(source) {
     }
 
     //  ---
-    //  Run 'tibet checkup' to lint and test the resulting package.
+    //  Run 'tibet test' to test the resulting package.
     //  ---
 
-    if (this.options.check && !this.options['dry-run'] && !this.options.quick) {
+    if (this.options.test && !this.options['dry-run'] && !this.options.quick) {
         sh = require('shelljs');
-        cmd = 'tibet checkup';
+        cmd = 'tibet test';
 
         release = this;
 
@@ -539,7 +539,7 @@ Cmd.prototype.phaseTwo = function(source) {
             if (code !== 0) {
                 release.error(output);
                 result = release.prompt.question(
-                    'tibet checkup detected errors. Continue anyway?' +
+                    'tibet test detected errors. Continue anyway?' +
                     ' Enter \'yes\' after inspection: ');
                 if (!/^y/i.test(result)) {
                     release.log('Release cancelled. Revert uncommitted branch changes.');
@@ -551,7 +551,7 @@ Cmd.prototype.phaseTwo = function(source) {
         });
     } else {
         if (this.options['dry-run']) {
-            this.warn('dry-run. bypassing \'tibet checkup\'');
+            this.warn('dry-run. bypassing \'tibet test\'');
         }
         this.phaseThree({content: content, source: source});
     }
