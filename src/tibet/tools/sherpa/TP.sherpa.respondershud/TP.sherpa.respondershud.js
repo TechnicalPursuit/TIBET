@@ -135,7 +135,9 @@ function(aSignal) {
         indexInData,
         itemData,
 
-        target;
+        target,
+
+        tile;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -162,11 +164,21 @@ function(aSignal) {
     //  in the Array.
     target = TP.sys.getTypeByName(itemData.at(1));
 
-    //  Not an element so focus inspector, not halo.
-    this.signal('InspectObject',
-                TP.hc('targetObject', target,
-                        'targetAspect', TP.id(target),
-                        'showBusy', true));
+    //  Hide the tile.
+    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
+
+    //  Fire the inspector signal on the next repaint (which will ensure the
+    //  tile is closed before navigating).
+    (function() {
+        //  Not an element so focus inspector, not halo.
+        this.signal('InspectObject',
+                    TP.hc('targetObject', target,
+                            'targetAspect', TP.id(target),
+                            'showBusy', true));
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });
