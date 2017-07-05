@@ -2168,32 +2168,23 @@ function(aStylesheet) {
      * @returns {String} The location URL of the source of the stylesheet.
      */
 
-    var parentSS,
-        loc;
+    var loc;
 
     if (TP.notValid(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    //  Iterate (if necessary) to find the stylesheet associated with the actual
-    //  node (link, style, etc. element) that inserted it (because of @import,
-    //  the supplied style sheet's 'parentStyleSheet' might not be that sheet).
-    parentSS = aStylesheet;
-    while (parentSS.parentStyleSheet) {
-        parentSS = parentSS.parentStyleSheet;
-    }
-
     //  If there is an 'href', use it.
-    loc = parentSS.href;
+    loc = aStylesheet.href;
     if (TP.notEmpty(loc)) {
         return loc;
     }
 
     //  Otherwise, if we can get to the stylesheet's owner node, return whatever
     //  is stored in 'tibet:originalHref'.
-    if (TP.isElement(parentSS.ownerNode)) {
+    if (TP.isElement(aStylesheet.ownerNode)) {
         return TP.elementGetAttribute(
-                    parentSS.ownerNode, 'tibet:originalHref', true);
+                    aStylesheet.ownerNode, 'tibet:originalHref', true);
     }
 
     return null;
