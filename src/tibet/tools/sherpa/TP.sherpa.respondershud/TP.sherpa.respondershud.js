@@ -89,6 +89,32 @@ function(aTPElement) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var tile;
+
+    this.callNextMethod();
+
+    //  Hide the tile.
+    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineHandler('InspectResponderSource',
 function(aSignal) {
 
@@ -180,6 +206,33 @@ function(aSignal) {
                         TP.hc('targetObject', target,
                                 'showBusy', true));
         }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var tile;
+
+    this.callNextMethod();
+
+    //  Hide the tile.
+    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
     }
 
     return this;
