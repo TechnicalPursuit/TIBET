@@ -92,7 +92,7 @@
         /* eslint-enable no-useless-escape */
 
         if (!sh.test('-e', logfile)) {
-            "".to(logfile);
+            ''.to(logfile);
         }
 
         //  ---
