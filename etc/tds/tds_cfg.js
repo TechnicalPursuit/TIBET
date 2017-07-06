@@ -143,6 +143,7 @@
         //  NOTE these are off here. We want to force them to be turned on via
         //  the tds.json file which will enforce an environment-based setting.
         setcfg('tds.use_admin', false);
+        setcfg('tds.use_couch', false);
         setcfg('tds.use_mocks', false);
         setcfg('tds.use_proxy', false);
         setcfg('tds.use_tasks', false);

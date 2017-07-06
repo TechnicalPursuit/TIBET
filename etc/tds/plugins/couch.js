@@ -80,6 +80,12 @@
             name: 'couch'
         };
 
+        //  Even when loaded we need explicit configuration to activate the TWS.
+        if (!TDS.cfg('tds.use_couch')) {
+            logger.warn('tds couch plugin disabled', meta);
+            return;
+        }
+
         //  ---
         //  Requires
         //  ---
