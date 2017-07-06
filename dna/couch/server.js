@@ -127,6 +127,18 @@
     //  Should always be a preload plugin we can load/run ourselves.
     require(path.join(__dirname, 'plugins', 'preload'))(options);
 
+    //  Some environments will use HTTPS in front and HTTP behind, meaning the
+    //  server doesn't know it's HTTPS but it should force redirects that way.
+    if (!TDS.getcfg('tds.https') && TDS.getcfg('tds.secure_requests')) {
+        app.use(function(req, res, next) {
+            if (req.header('x-forwarded-proto') !== 'https') {
+                res.redirect('https://' + req.header('host') + req.url);
+            } else {
+                next();
+            }
+        });
+    }
+
     //  Trigger loading of all the individual plugins in the list.
     TDS.loadPlugins(path.join(__dirname, 'plugins'), plugins, options);
 

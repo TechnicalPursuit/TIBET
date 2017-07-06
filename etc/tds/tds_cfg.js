@@ -49,7 +49,11 @@
         setcfg('tds.cookie.key1', 'T1B3TC00K13');   //   change this too :)
         setcfg('tds.cookie.key2', '31K00CT3B1T');   //   change this too :)
 
+        //  true will cause the server to start with HTTPS server/port info.
         setcfg('tds.https', false);
+
+        //  true will cause redirection in some environments when HTTPS is off.
+        setcfg('tds.secure_requests', false);
 
         //  NOTE we don't set this here but provide it as a reminder that you
         //  can choose to map https TDS operations to a non-priviledged port
