@@ -104,5 +104,5 @@
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
     "preferGlobal": true,
-    "private": true
+    "private": false
 }
