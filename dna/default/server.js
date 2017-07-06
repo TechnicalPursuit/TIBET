@@ -264,11 +264,12 @@
 
     require('./plugins/prestart')(options);
 
-    //  Lots of options for where to get a port number but try to leverage TDS
-    //  first. Our registered IANA port is the last option and is hard-coded.
-    port = argv.port || TDS.cfg('tds.port') || TDS.cfg('port') ||
+    //  Lots of options for where to get a port number but rely on arg list,
+    //  env settings, and then cfg data. Our registered IANA port is the last
+    //  option and is hard-coded.
+    port = argv.port || process.env.PORT ||
+        TDS.cfg('tds.port') || TDS.cfg('port') ||
         process.env.npm_package_config_port ||
-        process.env.PORT ||
         1407;   //  registered TIBET Data Server port.
 
     //  Update to set the current runtime value to reflect actual port.
@@ -290,9 +291,8 @@
         TDS.httpServer = http.createServer(app);
         TDS.httpServer.listen(port);
 
-        port = argv.https_port ||
+        port = argv.https_port || process.env.HTTPS_PORT ||
             TDS.cfg('tds.https_port') || TDS.cfg('https_port') ||
-            process.env.HTTPS_PORT ||
             443;   //  default https port
 
         TDS.httpsServer = https.createServer(httpsOpts, app);
