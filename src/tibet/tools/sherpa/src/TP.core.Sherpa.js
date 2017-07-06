@@ -1272,35 +1272,48 @@ function() {
         }, 1000);
     }
 
+    //  ---
+
     //  Set up mutation observers that will watch for the resizers to
     //  become/resign being active and manage the 'transition' property of the
-    //  '#center' element appropriately.
+    //  '#center' element appropriately. This is so that when the user is
+    //  resizing, the transitions don't try to execute.
 
     centerElem = TP.byId('center', win, false);
 
+    //  Define a handling function that will alter the transition property
     resizingHandler = function(mutationRecords) {
 
-        var i,
+        var styleObj,
+
+            i,
             len,
             record;
 
-        len = mutationRecords.getSize();
+        styleObj = TP.elementGetStyleObj(centerElem);
 
+        len = mutationRecords.getSize();
         for (i = 0; i < len; i++) {
             record = mutationRecords.at(i);
 
+            //  If we're altering the 'active' (i.e. 'pclass:active') attribute,
+            //  then locally change the transition depending on whether the
+            //  target element already has the 'pclass:active' attribute or not.
             if (record.attributeName === 'active') {
 
                 if (TP.elementHasAttribute(
                         record.target, 'pclass:active', true)) {
 
-                    centerElem.style.transition = 'none';
+                    styleObj.transition = 'none';
                 } else {
-                    centerElem.style.transition = '';
+                    styleObj.transition = '';
                 }
             }
         }
     };
+
+    //  Now, set up managed mutation observer machinery that uses the above
+    //  handler to manage the transitions.
 
     observerConfig = {
         subtree: true,
@@ -1317,6 +1330,8 @@ function() {
             resizer, resizingHandler, observerConfig, 'S_RESIZING_OBSERVER');
     TP.activateMutationObserver('S_RESIZING_OBSERVER');
 
+    //  ---
+
     //  Set up resizing worker functions and value gathering.
 
     framingStyleElement = TP.byCSSPath(
@@ -1329,6 +1344,8 @@ function() {
                         TP.cssElementGetStyleSheet(framingStyleElement),
                         'body').first();
 
+    //  Install a custom function on the TP.core.DragResponder type that can be
+    //  referenced in the markup.
     TP.core.DragResponder.Type.defineConstant(
         'ALTER_SHERPA_CUSTOM_PROPERTY',
         function(anElement, styleObj, computedVals, infoAttrs) {

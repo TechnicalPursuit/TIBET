@@ -6129,6 +6129,12 @@ function(targetNode, recordsHandler, observerConfig, observerID) {
         TP.$$mutationObserverRegistry = registry;
     }
 
+    if (registry.hasKey(observerID)) {
+        TP.ifWarn() ?
+            TP.warn('Existing managed mutation observer already registered: ',
+                                                                observerID) : 0;
+    }
+
     registryRecord = TP.hc(
                 'targetNode', targetNode,
                 'recordsHandler', recordsHandler,
@@ -6256,22 +6262,21 @@ function(observerID) {
 
     observerCallback = function(mutationRecords, observer) {
 
-        var records;
+        var handledSlotName,
+            records;
+
+        //  Compute a 'handled' slot based on the ID of the observer
+        //  that we're processing.
+        handledSlotName = 'HANDLED_FOR_' +
+                            observer.registryRecord.at('observerID');
 
         records = mutationRecords.filter(
             function(aRecord) {
 
-                var handledSlotName,
-
-                    filterFuncs,
+                var filterFuncs,
 
                     len,
                     i;
-
-                //  Compute a 'handled' slot based on the ID of the observer
-                //  that we're processing.
-                handledSlotName = 'HANDLED_FOR_' +
-                                    observer.registryRecord.at('observerID');
 
                 //  If the record has already been handled by this observer,
                 //  return false to filter it out. This fixes the Webkit bug
@@ -6279,10 +6284,6 @@ function(observerID) {
                 if (aRecord[handledSlotName]) {
                     return false;
                 }
-
-                //  We go ahead and stamp this record as 'handled' for this
-                //  observer.
-                aRecord[handledSlotName] = true;
 
                 //  Grab the filter functions, iterate through them and if *any
                 //  one* of them returns false, return false from here, thereby
@@ -6305,6 +6306,14 @@ function(observerID) {
         if (TP.notEmpty(records)) {
             observer.registryRecord.at('recordsHandler')(records);
         }
+
+        records.forEach(
+            function(aRecord) {
+
+                //  We go ahead and stamp this record as 'handled' for this
+                //  observer.
+                aRecord[handledSlotName] = true;
+            });
     };
 
     //  Go ahead and install the callback using the native Mutation Observer

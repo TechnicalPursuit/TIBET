@@ -347,8 +347,7 @@ function(aSignal) {
         oldScreen.setSelected(false);
         oldInfo.setSelected(false);
 
-        consoleService.get('model').setVariable(
-                    'UICANVAS', null);
+        consoleService.get('model').setVariable('UICANVAS', null);
     }
 
     if (TP.isValid(newScreen)) {
