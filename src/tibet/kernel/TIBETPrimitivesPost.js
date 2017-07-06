@@ -6129,6 +6129,12 @@ function(targetNode, recordsHandler, observerConfig, observerID) {
         TP.$$mutationObserverRegistry = registry;
     }
 
+    if (registry.hasKey(observerID)) {
+        TP.ifWarn() ?
+            TP.warn('Existing managed mutation observer already registered: ',
+                                                                observerID) : 0;
+    }
+
     registryRecord = TP.hc(
                 'targetNode', targetNode,
                 'recordsHandler', recordsHandler,
