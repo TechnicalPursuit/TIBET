@@ -20,7 +20,12 @@
     module.exports = function(options) {
         var app,
             TDS,
+            provider,
+            url,
+            host,
+            port,
             sessionstore,
+            store,
             params,
             pass;
 
@@ -32,8 +37,25 @@
         params = {};
         params.type = 'redis';
 
-        params.host = TDS.cfg('tds.session.host') || '127.0.0.1';
-        params.port = TDS.cfg('tds.session.port') || 6379;
+        //  Process any REDIS environment variables to get preferred settings.
+        provider = process.env.REDIS_PROVIDER || 'REDIS_URL';
+        url = process.env[provider];
+        if (url) {
+            if (/:\/\//.test(url)) {
+                url = url.slice(url.indexOf('://') + 3);
+            }
+
+            if (/:\d+$/.test(url)) {
+                port = url.slice(url.lastIndexOf(':') + 1);
+                host = url.slice(0, url.lastIndexOf(':'));
+            } else {
+                host = url;
+            }
+        }
+
+        params.host = host || TDS.cfg('tds.session.host') || '127.0.0.1';
+        params.port = port || TDS.cfg('tds.session.port') || 6379;
+
         params.prefix = TDS.cfg('tds.session.db') || 0;
         params.prefix = TDS.cfg('tds.session.prefix') || 'sess';
         params.timeout = TDS.cfg('tds.session.timeout') || 15000;
@@ -44,7 +66,9 @@
             params.password = pass;
         }
 
-        return sessionstore.createSessionStore(params);
+        store = sessionstore.createSessionStore(params);
+
+        return store;
     };
 
 }(this));
