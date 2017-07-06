@@ -39,7 +39,7 @@ and government web application projects that need a turnkey solution.
 
 **If you're building a true application**, a call center, an HR app, a
 back-office app, the kind of application you'd have formerly built in
-VisualBasic, Delphi, or PowerBuilder, using the web as your
+VisualBasic, Delphi, or PowerBuilder, and using the web as your
 development/deployment platform, **we built TIBET for you**.
 
 
