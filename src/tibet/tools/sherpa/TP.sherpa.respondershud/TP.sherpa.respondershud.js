@@ -89,6 +89,32 @@ function(aTPElement) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var tile;
+
+    this.callNextMethod();
+
+    //  Hide the tile.
+    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineHandler('InspectResponderSource',
 function(aSignal) {
 
@@ -109,7 +135,9 @@ function(aSignal) {
         indexInData,
         itemData,
 
-        target;
+        target,
+
+        tile;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -136,11 +164,21 @@ function(aSignal) {
     //  in the Array.
     target = TP.sys.getTypeByName(itemData.at(1));
 
-    //  Not an element so focus inspector, not halo.
-    this.signal('InspectObject',
-                TP.hc('targetObject', target,
-                        'targetAspect', TP.id(target),
-                        'showBusy', true));
+    //  Hide the tile.
+    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
+
+    //  Fire the inspector signal on the next repaint (which will ensure the
+    //  tile is closed before navigating).
+    (function() {
+        //  Not an element so focus inspector, not halo.
+        this.signal('InspectObject',
+                    TP.hc('targetObject', target,
+                            'targetAspect', TP.id(target),
+                            'showBusy', true));
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -150,22 +188,63 @@ function(aSignal) {
 TP.sherpa.respondershud.Inst.defineHandler('InspectResponderMethod',
 function(aSignal) {
 
+    /**
+     * @method handleInspectResponderMethod
+     * @summary Handles notifications of when the receiver wants to inspect the
+     *     selected responder method in the Sherpa inspector.
+     * @param {TP.sig.InspectResponderMethod} aSignal The TIBET signal which
+     *     triggered this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
     var val,
         target;
 
     val = TP.wrap(aSignal.getSignalOrigin()).get('value');
     if (TP.notEmpty(val)) {
 
+        //  Grab the method by going to the '.Inst' of our current target (which
+        //  should be a type) and looking for that slot.
         target = this.get('currentTarget').Inst[val];
 
+        //  Hide the tile.
         TP.byId('ResponderSummary_Tile', this.getNativeWindow()).setAttribute(
                                                                 'hidden', true);
 
+        //  Fire the inspector signal on the next repaint (which will ensure the
+        //  tile is closed before navigating).
         (function() {
             this.signal('InspectObject',
                         TP.hc('targetObject', target,
                                 'showBusy', true));
         }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.respondershud} The receiver.
+     */
+
+    var tile;
+
+    this.callNextMethod();
+
+    //  Hide the tile.
+    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
     }
 
     return this;
@@ -309,6 +388,12 @@ function(aType) {
 
     /**
      * @method getHandlerMethodsFor
+     * @summary Retrieves the (instance-level) handler methods for the supplied
+     *     type.
+     * @param {TP.lang.RootObject} aType The type to produce the handler methods
+     *     for.
+     * @return {Array[]} An Array of Arrays containing the names of the
+     *     instance-level 'handler only' methods for the supplied type.
      */
 
     var sourceType,
@@ -329,6 +414,8 @@ function(aType) {
 
     //  ---
 
+    //  Methods introduced on the type itself.
+
     result.push(TP.GROUPING_PREFIX + ' - Introduced');
 
     rawData = instProto.getInterface(
@@ -342,6 +429,8 @@ function(aType) {
     result.push(rawData);
 
     //  ---
+
+    //  Methods overridden from a supertype on the type.
 
     result.push(TP.GROUPING_PREFIX + ' - Overridden');
 
@@ -369,6 +458,8 @@ function(aType) {
             });
 
     //  ---
+
+    //  Methods inherited from a supertype on the type.
 
     result.push(TP.GROUPING_PREFIX + ' - Inherited');
 

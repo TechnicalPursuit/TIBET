@@ -64,6 +64,32 @@ function(aTPElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
+     */
+
+    var tile;
+
+    this.callNextMethod();
+
+    //  Hide the tile.
+    tile = TP.byId('StyleSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineHandler('InspectStyleSource',
 function(aSignal) {
 
@@ -86,7 +112,9 @@ function(aSignal) {
 
         target,
 
-        ruleMatcher;
+        ruleMatcher,
+
+        tile;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -119,14 +147,51 @@ function(aSignal) {
                         TP.regExpEscape(TP.wrap(targetElem).getTextContent()) +
                         '\\w*{');
 
-    //  Signal to inspect the object with the rule matcher as 'extra targeting
-    //  information' under the 'findContent' key.
-    this.signal('InspectObject',
-                TP.hc('targetObject', target,
-                        'targetAspect', TP.id(target),
-                        'showBusy', true,
-                        'extraTargetInfo',
-                            TP.hc('findContent', ruleMatcher)));
+    //  Hide the tile.
+    tile = TP.byId('StyleSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
+
+    //  Fire the inspector signal on the next repaint (which will ensure the
+    //  tile is closed before navigating).
+    (function() {
+        //  Signal to inspect the object with the rule matcher as 'extra
+        //  targeting information' under the 'findContent' key.
+        this.signal('InspectObject',
+                    TP.hc('targetObject', target,
+                            'targetAspect', TP.id(target),
+                            'showBusy', true,
+                            'extraTargetInfo',
+                                TP.hc('findContent', ruleMatcher)));
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @return {TP.sherpa.styleshud} The receiver.
+     */
+
+    var tile;
+
+    this.callNextMethod();
+
+    //  Hide the tile.
+    tile = TP.byId('StyleSummary_Tile', this.getNativeWindow());
+    if (TP.isValid(tile)) {
+        tile.setAttribute('hidden', true);
+    }
 
     return this;
 });

@@ -26,6 +26,8 @@ TP.sherpa.halo.Inst.defineAttribute('$dontSignalBlurFocus');
 TP.sherpa.halo.Inst.defineAttribute('$lastTargetTPElem');
 
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
+TP.sherpa.halo.Inst.defineAttribute('currentTargetParentTPElem');
+
 TP.sherpa.halo.Inst.defineAttribute('haloRect');
 
 TP.sherpa.halo.Inst.defineAttribute('lastCorner');
@@ -93,6 +95,7 @@ function() {
 
     if (TP.isValid(currentTargetTPElem)) {
         this.set('currentTargetTPElem', null);
+        this.set('currentTargetParentTPElem', null);
     }
 
     //  If we haven't set the 'don't signal blur/focus signals' flag, then go
@@ -296,6 +299,9 @@ function() {
 
     //  Now, we have to make sure that we can delete the target
     if (!currentTargetTPElem.haloCanDelete(this)) {
+
+        TP.alert('The halo\'ed element cannot be deleted');
+
         return TP.TSH_NO_VALUE;
     }
 
@@ -366,7 +372,8 @@ function(newTargetTPElem) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var currentTargetTPElem;
+    var currentTargetTPElem,
+        currentTargetParentTPElem;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
@@ -410,6 +417,19 @@ function(newTargetTPElem) {
         this.blur();
     } else {
         //  Empty. No existing target
+    }
+
+    //  If we have a current target at the end of this process (either existing
+    //  or now), then calculate the halo parent for it and stash it away. Having
+    //  the halo parent is useful in other scenarios when we're deleting the
+    //  current target, etc.
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    if (TP.isValid(currentTargetTPElem)) {
+        currentTargetParentTPElem = currentTargetTPElem.getHaloParent(this);
+        this.set('currentTargetParentTPElem', currentTargetParentTPElem);
+    } else {
+        this.set('currentTargetParentTPElem', null);
     }
 
     return this;
@@ -476,6 +496,9 @@ function(aSignal) {
         mutatedIDs,
 
         currentTargetGlobalID,
+
+        currentTargetParentTPElem,
+
         newTargetTPElem;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
@@ -509,6 +532,9 @@ function(aSignal) {
         //      refocus onto the new version of the node.
         if (mutatedIDs.contains(currentTargetGlobalID)) {
 
+            //  Capture this before we blur.
+            currentTargetParentTPElem = this.get('currentTargetParentTPElem');
+
             //  Blur off of the 'old' target element. It's no longer part of our
             //  DOM anyway.
             this.blur();
@@ -528,8 +554,14 @@ function(aSignal) {
                 this.setAttribute('hidden', false);
             } else {
 
-                //  This will 'hide' the halo.
-                this.setAttribute('hidden', true);
+                //  If we have a reference to the deleting element's halo
+                //  parent, then focus on that. Otherwise, hide the halo.
+                if (TP.isValid(currentTargetParentTPElem)) {
+                    this.focusOn(currentTargetParentTPElem);
+                } else {
+                    //  This will 'hide' the halo.
+                    this.setAttribute('hidden', true);
+                }
             }
 
             //  We handled this detachment signal - exit
@@ -544,6 +576,16 @@ function(aSignal) {
 
     if (!currentTargetTPElem.isDetached()) {
         this.moveAndSizeToTarget(currentTargetTPElem);
+
+        //  We handled this detachment signal - exit
+        return this;
+    }
+
+    //  If we have a reference to the deleting element's halo parent, then focus
+    //  on that.
+    currentTargetParentTPElem = this.get('currentTargetParentTPElem');
+    if (TP.isValid(currentTargetTPElem)) {
+        this.focusOn(currentTargetTPElem);
 
         //  We handled this detachment signal - exit
         return this;
