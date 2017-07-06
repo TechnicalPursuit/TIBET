@@ -338,7 +338,7 @@ Cmd.prototype.phaseOne = function() {
     // Read the current version...should be in npm.version unless provided
     // explicitly on the command line.
     version = this.options.version || this.getcfg('npm.version');
-    match = version.match(/(v)*(\d+)\.(\d+)\.(\d+)(.*?)/);
+    match = version.match(/(v)*(\d)+\.(\d)+\.(\d)+(.*)/);
     if (CLI.isEmpty(match)) {
         throw new Error('Unable to parse version string: ' + version);
     }
@@ -365,7 +365,7 @@ Cmd.prototype.phaseOne = function() {
         if (this.options.increment) {
             increment = this.options.increment;
         } else {
-            match = version.match(/(v)*(\d+)\.(\d+)\.(\d+)\-([a-z]*)+\.(\d+)(.*?)/);
+            match = version.match(/(v)*(\d)+\.(\d)+\.(\d)+\-([a-z]*)+\.(\d)+(.*)/);
             if (CLI.notEmpty(match)) {
                 increment = match[6];
                 increment = parseInt(increment, 10) + 1;
