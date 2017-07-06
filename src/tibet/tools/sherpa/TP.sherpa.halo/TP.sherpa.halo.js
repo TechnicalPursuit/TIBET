@@ -261,8 +261,9 @@ function() {
     //  it's document unloads & loads so that we can manage our click & context
     //  menu observations.
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.observe(world, 'ToggleScreen');
 
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
     this.observe(currentScreenTPWin,
                     TP.ac('DocumentLoaded', 'DocumentUnloaded'));
 
@@ -1111,6 +1112,45 @@ function(aSignal) {
 
         //  Null out any previously captured target.
         this.set('$lastTargetTPElem', null);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    /**
+     * @method handleToggleScreen
+     * @summary Handles notifications of screen toggle signals.
+     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var world,
+        oldScreenTPWin,
+
+        newScreen,
+        newScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the old screen TP.core.Window and ignore
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    //  Grab the new screen TP.core.Window and observe
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    newScreen = world.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(newScreen)) {
+        newScreenTPWin = newScreen.getContentWindow();
+        this.observe(newScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
     }
 
     return this;
