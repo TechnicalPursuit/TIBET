@@ -218,8 +218,10 @@ function(lessLoc, lessText) {
                 //  its content.
                 if (!TP.isElement(
                     existingStyleElem =
-                    TP.byCSSPath(
-                        '[for="' + cssElemID + '"]', natDoc, true, false))) {
+                    TP.byCSSPath('[tibet|for="' + cssElemID + '"]',
+                                    natDoc,
+                                    true,
+                                    false))) {
 
                     insertionPoint = natNode.nextSibling;
 
@@ -248,7 +250,7 @@ function(lessLoc, lessText) {
                     //  Set an attribute on our newly created style element that
                     //  links it back to the source element.
                     TP.elementSetAttribute(generatedStyleElem,
-                                            'for',
+                                            'tibet:for',
                                             cssElemID,
                                             true);
 
@@ -412,8 +414,10 @@ function(anHref) {
                     //  set its content.
                     if (!TP.isElement(
                             existingStyleElem =
-                            TP.byCSSPath(
-                                '[for="' + ourID + '"]', doc, true, false))) {
+                            TP.byCSSPath('[tibet|for="' + ourID + '"]',
+                                            doc,
+                                            true,
+                                            false))) {
 
                         //  Just some CSS - link it in.
                         newStyleElem = TP.documentAddCSSLinkElement(
@@ -426,7 +430,10 @@ function(anHref) {
 
                         //  Set an attribute on our newly created style element
                         //  that links it back to the source element.
-                        TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
+                        TP.elementSetAttribute(newStyleElem,
+                                                'tibet:for',
+                                                ourID,
+                                                true);
 
                     } else {
 
@@ -507,8 +514,10 @@ function() {
             //  its content.
             if (!TP.isElement(
                     existingStyleElem =
-                    TP.byCSSPath(
-                        '[for="' + ourID + '"]', doc, true, false))) {
+                    TP.byCSSPath('[tibet|for="' + ourID + '"]',
+                                    doc,
+                                    true,
+                                    false))) {
 
                 //  Just some CSS
                 newStyleElem = TP.documentAddCSSStyleElement(
@@ -521,7 +530,7 @@ function() {
 
                 //  Set an attribute on our newly created style element that
                 //  links it back to the source element.
-                TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
+                TP.elementSetAttribute(newStyleElem, 'tibet:for', ourID, true);
             } else {
                 //  Otherwise, just set the content of the existing one.
                 TP.cssStyleElementSetContent(existingStyleElem, resourceStr);
