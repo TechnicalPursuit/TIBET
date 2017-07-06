@@ -29,6 +29,7 @@
             logtheme,           // The log colorizing theme.
             logger,             // The app logger instance.
             meta,               // Reusable logger metadata.
+            sh,                 // ShellJS for file utilities.
             logsize,            // The app log file size per file.
             TDS,                // The TIBET Data Server instance.
             fileTransport,      // Logger-to-file transport.
@@ -52,6 +53,7 @@
         //  Requires
         //  ---
 
+        sh = require('shelljs');
         winston = require('winston');
         expressWinston = require('express-winston');
 
@@ -88,6 +90,10 @@
             logfile = logfile.replace(/\{{env}}/g, options.env);
         }
         /* eslint-enable no-useless-escape */
+
+        if (!sh.test('-e', logfile)) {
+            ''.to(logfile);
+        }
 
         //  ---
         //  Logger Plugins

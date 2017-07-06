@@ -179,8 +179,9 @@ Cmd.prototype.execute = function() {
 
         msg = libver;
         if (project && project !== library) {
-            msg = CLI.getcfg('npm.name') + ' ' + project.split('+')[0] +
-                ' running on TIBET ' + libver;
+            msg = libver + ' (' +
+                CLI.getcfg('npm.name') + ' ' + project.split('+')[0] +
+            ')';
         }
         this.info(msg);
     }
