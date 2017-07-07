@@ -2731,43 +2731,48 @@ function(aRequest) {
 
         socket = shell.get('cliSocket');
 
-        socket.defineMethod('onopen', function() {
-            request.stdout('CLI socket connection opened.');
-            socket.send(str);
-        });
+        //  When a connection is opened
+        socket.defineMethod('onopen',
+            function(evt) {
 
-        // When data is received
-        socket.defineMethod('onmessage', function(event) {
+                request.stdout('CLI socket connection opened.');
+                socket.send(str);
+            });
 
-            var result;
+        //  When data is received
+        socket.defineMethod('onmessage',
+            function(evt) {
 
-            try {
-                result = JSON.parse(event.data);
-                process(result, request);
-            } catch (e) {
-                request.stderr(e.message);
-                result = event.data;
-                request.stdout(result);
-            }
-        });
+                var result;
 
-        // A connection could not be made
-        socket.defineMethod('onerror', function(event) {
+                try {
+                    result = JSON.parse(evt.data);
+                    process(result, request);
+                } catch (e) {
+                    request.stderr(e.message);
+                    result = evt.data;
+                    request.stdout(result);
+                }
+            });
 
-            shell.set('cliSocket', null);
+        //  When a connection could not be made
+        socket.defineMethod('onerror',
+            function(evt) {
 
-            request.stderr(event);
-            request.fail(event);
-        });
+                shell.set('cliSocket', null);
 
-        // A connection was closed
-        socket.defineMethod('onclose', function(event) {
+                request.stderr(evt);
+                request.fail(evt);
+            });
 
-            shell.set('cliSocket', null);
+        //  When a connection is closed
+        socket.defineMethod('onclose',
+            function(evt) {
 
-            request.complete();
-        });
+                shell.set('cliSocket', null);
 
+                request.complete();
+            });
     };
 
     //  ---
