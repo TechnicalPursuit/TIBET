@@ -104,13 +104,16 @@ TP.sig.SignalSource.Inst.defineMethod('hasObservers',
 function() {
 
     /**
+     * @method hasObservers
+     * @summary Returns whether or not the receiver has observers.
+     * @returns {Boolean} Whether or not the receiver has observers.
      */
 
     var observers;
 
     observers = this.$get('observers');
 
-    return TP.isValid(observers) && !TP.isEmpty(observers);
+    return !TP.isEmpty(observers);
 });
 
 //  ------------------------------------------------------------------------
@@ -134,7 +137,6 @@ function(aSignal, aHandler, aPolicy) {
 
     TP.override();
 });
-
 
 //  ========================================================================
 //  TP.sig.URISignalSource
@@ -183,7 +185,6 @@ function(aURI) {
     return this;
 });
 
-
 //  ========================================================================
 //  TP.sig.MessageSource
 //  ========================================================================
@@ -208,7 +209,6 @@ TP.sig.MessageSource.Inst.defineAttribute('$customEventHandlers');
 TP.sig.MessageSource.Inst.defineAttribute('errorCount', 0);
 
 TP.sig.MessageSource.Inst.defineAttribute('source');
-
 
 //  ------------------------------------------------------------------------
 //  Inst Methods
@@ -286,22 +286,24 @@ function(aSignal, aHandler, aPolicy) {
 
     //  Process the signal array into an array of all signal types that are
     //  being requested including their subtypes for inheritance firing.
-    sigTypes = sigTypes.collect(function(aSignalType) {
-        var sigType,
-            subs;
+    sigTypes = sigTypes.collect(
+                function(aSignalType) {
+                    var sigType,
+                        subs;
 
-        //  Convert any signal names to the actual type objects.
-        sigType = TP.isType(aSignalType) ?
-            aSignalType :
-            TP.sys.getTypeByName(aSignalType);
+                    //  Convert any signal names to the actual type objects.
+                    sigType = TP.isType(aSignalType) ?
+                        aSignalType :
+                        TP.sys.getTypeByName(aSignalType);
 
-        //  To support "inheritance firing" we need any subtypes.
-        if (TP.notValid(subs = sigType.getSubtypes())) {
-            return sigType;
-        }
+                    //  To support "inheritance firing" we need any subtypes.
+                    if (TP.notValid(subs = sigType.getSubtypes())) {
+                        return sigType;
+                    }
 
-        return TP.ac(sigType, subs);
-    });
+                    return TP.ac(sigType, subs);
+                });
+
     sigTypes = sigTypes.flatten();
 
     //  Configure any custom event handlers necessary for the signals given.
@@ -318,9 +320,10 @@ function(closed) {
 
     /**
      * @method deactivate
-     * @summary Closes the connection to the remote server-sent events server.
-     * @param {Boolean} [closed=false] True to tell deactivate the connection
-     *     is already closed so skip any internal close call.
+     * @summary Deactivates observation of the message source.
+     * @param {Boolean} [closed=false] True to tell deactivate any remote
+     *     connection that the receiver is managing is already closed so skip
+     *     any internal close call.
      * @returns {Boolean} Whether or not the connection closed successfully.
      */
 
@@ -364,7 +367,7 @@ function(aFlag) {
 
     /**
      * @method isActive
-     * @summary A source is active if activate() has been called an no
+     * @summary A source is active if activate() has been called and no
      *     corresponding deactivate() call has been made.
      * @param {Boolean} [aFlag] If present, sets the state rather than gets it.
      * @returns {Boolean} Whether or not the source is open.
@@ -416,21 +419,22 @@ function(aSignal, aHandler, aPolicy) {
 
     //  Convert any string-based signals/instances into signal types including
     //  any subtypes to support inheritance-style observe/ignore semantics.
-    sigTypes = sigTypes.collect(function(aSignalType) {
-        var sigType,
-            subs;
+    sigTypes = sigTypes.collect(
+                function(aSignalType) {
+                    var sigType,
+                        subs;
 
-        //  Grab the real type object if it wasn't supplied.
-        sigType = TP.isType(aSignalType) ?
-            aSignalType :
-            TP.sys.getTypeByName(aSignalType);
+                    //  Grab the real type object if it wasn't supplied.
+                    sigType = TP.isType(aSignalType) ?
+                        aSignalType :
+                        TP.sys.getTypeByName(aSignalType);
 
-        if (TP.notValid(subs = sigType.getSubtypes())) {
-            return sigType;
-        }
+                    if (TP.notValid(subs = sigType.getSubtypes())) {
+                        return sigType;
+                    }
 
-        return TP.ac(sigType, subs);
-    });
+                    return TP.ac(sigType, subs);
+                });
     sigTypes = sigTypes.flatten();
 
     //  Remove any custom handlers we installed for proper signaling.
@@ -452,7 +456,8 @@ function(signalTypes) {
 
     /**
      * @method setupCustomHandlers
-     * @summary Configures handlers for custom events from the server.
+     * @summary Configures handlers for custom messages coming from a remote
+     *     connection.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @returns {TP.sig.MessageSource} The receiver.
@@ -468,8 +473,8 @@ function() {
 
     /**
      * @method setupStandardHandlers
-     * @summary Sets up the 'standard' Server-Side Events handlers for our
-     *     event source object.
+     * @summary Sets up the 'standard' handlers for messages coming from a
+     *     remote connection.
      * @exception TP.sig.InvalidSource
      * @returns {TP.sig.MessageSource} The receiver.
      */
@@ -478,6 +483,7 @@ function() {
         thisref;
 
     source = this.get('source');
+
     if (TP.notValid(source)) {
         this.raise('TP.sig.InvalidSource');
         return this;
@@ -486,13 +492,14 @@ function() {
     thisref = this;
 
     //  Connect our local 'on*' methods to their related native listeners.
-    ['open', 'close', 'error', 'message'].forEach(function(op) {
-        if (TP.canInvoke(thisref, 'on' + op)) {
-            //  Replace method with bound version to support removal.
-            thisref['on' + op] = thisref['on' + op].bind(thisref);
-            source.addEventListener(op, thisref['on' + op], false);
-        }
-    });
+    TP.ac('open', 'close', 'error', 'message').forEach(
+        function(op) {
+            if (TP.canInvoke(thisref, 'on' + op)) {
+                //  Replace method with bound version to support removal.
+                thisref['on' + op] = thisref['on' + op].bind(thisref);
+                source.addEventListener(op, thisref['on' + op], false);
+            }
+        });
 
     return this;
 });
@@ -504,7 +511,8 @@ function(signalTypes) {
 
     /**
      * @method teardownCustomHandlers
-     * @summary Tears down handlers for custom events from the server.
+     * @summary Tears down the 'standard' handlers for messages coming from a
+     *     remote connection.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @returns {TP.sig.MessageSource} The receiver.
@@ -520,7 +528,8 @@ function(signalTypes) {
 
     /**
      * @method teardownStandardHandlers
-     * @summary Tears down handlers for standard events from the server.
+     * @summary Tears down the 'standard' handlers for messages coming from a
+     *     remote connection.
      * @returns {TP.sig.MessageSource} The receiver.
      */
 
@@ -536,11 +545,12 @@ function(signalTypes) {
     thisref = this;
 
     //  Connect our local 'on*' methods to their related native listeners.
-    ['open', 'close', 'error', 'message'].forEach(function(op) {
-        if (TP.canInvoke(thisref, 'on' + op)) {
-            source.removeEventListener(op, thisref['on' + op]);
-        }
-    });
+    TP.ac('open', 'close', 'error', 'message').forEach(
+        function(op) {
+            if (TP.canInvoke(thisref, 'on' + op)) {
+                source.removeEventListener(op, thisref['on' + op]);
+            }
+        });
 
     return this;
 });
@@ -638,7 +648,6 @@ function(message) {
     return JSON.stringify(message);
 });
 
-
 //  ========================================================================
 //  TP.sig.RemoteMessageSource
 //  ========================================================================
@@ -646,10 +655,6 @@ function(message) {
 TP.sig.MessageSource.defineSubtype('sig.RemoteMessageSource');
 
 TP.sig.RemoteMessageSource.addTraits(TP.sig.URISignalSource);
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -661,8 +666,8 @@ function(aURI) {
     /**
      * @method init
      * @summary Initialize a new signal instance.
-     * @param {TP.core.URI} aURI The endpoint URI representing the source of
-     *     server-sent events.
+     * @param {TP.core.URI} aURI The endpoint URI representing the remote
+     *     messaging source.
      * @returns {TP.sig.RemoteMessageSource} A new instance.
      */
 
@@ -681,9 +686,10 @@ function() {
 
     /**
      * @method activate
-     * @summary Opens the connection to the remote server-sent events server.
+     * @summary Opens the connection to a remote messaging source.
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.InvalidSource
+     * @exception TP.sig.InvalidSourceType
      * @returns {Boolean} Whether or not the connection opened successfully.
      */
 
@@ -699,7 +705,11 @@ function() {
     this.set('errorCount', 0);
 
     sourceType = this.getSourceType();
+
+    //  NB: We use a TP.notValid check here because the type we get back from
+    //  getSourceType is (or should be) a native platform constructor.
     if (TP.notValid(sourceType)) {
+
         this.raise('InvalidSourceType');
         return false;
     }
@@ -711,18 +721,28 @@ function() {
         return false;
     }
 
+    //  Couldn't construct an instance of our source type? Raise an exception
+    //  and exit here.
     if (TP.notValid(source)) {
+
         this.raise('TP.sig.InvalidSource');
         return false;
     }
 
-    window.addEventListener('beforeunload', function() {
-        source.close();
-    }, false);
+    //  Install an unload observer on the main window to close the source before
+    //  leaving.
+    //  TODO: Shouldn't this be moved to an AppShutdown handler like the
+    //  TP.sig.MessageSource defines above... and then it needs to subscribe to
+    //  those.
+    window.addEventListener('unload',
+        function() {
+            source.close();
+        }, false);
 
     this.set('source', source);
     this.setupStandardHandlers();
 
+    //  The receiver is now active.
     this.isActive(true);
 
     return true;
@@ -734,12 +754,18 @@ TP.sig.RemoteMessageSource.Inst.defineMethod('constructSource',
 function() {
 
     /**
+     * @method constructSource
+     * @summary Constructs an instance of the underlying system-level object
+     *     that is going to be sending and receiving remote messages.
+     * @returns {Object} The system object that will send and receive messages.
      */
 
     var srcType;
 
     srcType = this.getSourceType();
 
+    //  NB: We use old-style JS syntax here because the type we get back from
+    //  getSourceType is (or should be) a native platform constructor.
     return new srcType(this.get('uri').asString());
 });
 
@@ -749,6 +775,11 @@ TP.sig.RemoteMessageSource.Inst.defineMethod('getSourceType',
 function() {
 
     /**
+     * @method getSourceType
+     * @summary The JavaScript constructor of the underlying system-level object
+     *     that is going to be sending and receiving remote messages.
+     * @returns {Function} The constructor of the system object that will send
+     *     and receive messages.
      */
 
     TP.override();
@@ -757,9 +788,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.RemoteMessageSource.Inst.defineMethod('onopen',
-function() {
+function(evt) {
 
     /**
+     * @method onopen
+     * @summary The method that is invoked when the remote messaging source that
+     *     the receiver is managing has opened a connection to its remote
+     *     server.
+     * @param {MessageEvent} evt The event sent by the underlying system.
      */
 
     var source,
@@ -791,6 +827,10 @@ TP.core.SSE.Type.defineMethod('isSupported',
 function() {
 
     /**
+     * @method isSupported
+     * @summary Whether or not the Server-Sent Events system is supported in the
+     *     current environment.
+     * @returns {Boolean} Whether or not Server-Sent Events are supported.
      */
 
     return TP.isValid(TP.global.EventSource);
@@ -804,6 +844,11 @@ TP.core.SSE.Inst.defineMethod('getSourceType',
 function() {
 
     /**
+     * @method getSourceType
+     * @summary The JavaScript constructor of the Server-Sent Events system
+     *     object.
+     * @returns {EventSource} The constructor of the Server-Sent Events system
+     *     object.
      */
 
     return TP.global.EventSource;
@@ -815,6 +860,10 @@ TP.core.SSE.Inst.defineMethod('onerror',
 function(evt) {
 
     /**
+     * @method onerror
+     * @summary The default method that is invoked when the server-sent events
+     *     system that the receiver is managing has generated an error.
+     * @param {ErrorEvent} evt The event sent by the underlying system.
      */
 
     var payload,
@@ -833,17 +882,17 @@ function(evt) {
 
     this.set('errorCount', errorCount++);
 
-    //  If the readyState is set to EventSource.CLOSED, then the browser
-    //  is 'failing the connection'. In this case, we signal a
+    //  If the readyState is set to EventSource.CLOSED, then the browser is
+    //  'failing the connection'. In this case, we signal a
     //  'TP.sig.SourceClosed' and return.
     if (source.readyState === EventSource.CLOSED) {
         this.deactivate();
         return;
     }
 
-    //  If the readyState is set to EventSource.CONNECTING, then the
-    //  browser is trying to 'reestablish the connection'. In this case,
-    //  we signal a 'TP.sig.SourceReconnecting' and return.
+    //  If the readyState is set to EventSource.CONNECTING, then the browser is
+    //  trying to 'reestablish the connection'. In this case, we signal a
+    //  'TP.sig.SourceReconnecting' and return.
     if (source.readyState === EventSource.CONNECTING) {
         this.signal('TP.sig.SourceReconnecting', payload);
         return;
@@ -870,6 +919,11 @@ TP.core.SSE.Inst.defineMethod('onmessage',
 function(evt) {
 
     /**
+     * @method onmessage
+     * @summary The default method that is invoked when the server-sent events
+     *     system that the receiver is managing has received data and has posted
+     *     a message back into this content containing that data.
+     * @param {MessageEvent} evt The event sent by the underlying system.
      */
 
     var source,
@@ -907,12 +961,12 @@ function(signalTypes) {
     /**
      * @method setupCustomHandlers
      * @summary Sets up handlers for 'custom' server-side events.
-     * @description The Server-Sent Events specification does not
-     *     specify that the 'onmessage' handler will fire when there is a
-     *     custom 'event' (as specified by the 'event:' tag in the received
-     *     data). We check the signal types being observed for a REMOTE_NAME
-     *     which allows it to adapt to server event names which should map
-     *     to that signal type and register a low-level handler accordingly.
+     * @description The Server-Sent Events specification does not specify that
+     *     the 'onmessage' handler will fire when there is a custom 'event' (as
+     *     specified by the 'event:' tag in the received data). We check the
+     *     signal types being observed for a REMOTE_NAME which allows it to
+     *     adapt to server event names which should map to that signal type and
+     *     register a low-level handler accordingly.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @exception TP.sig.InvalidSource
@@ -933,41 +987,43 @@ function(signalTypes) {
 
     thisref = this;
 
-    signalTypes.perform(function(aSignalType) {
-        var eventName,
-            signalName,
-            handlerFunc;
+    signalTypes.perform(
+            function(aSignalType) {
+                var eventName,
+                    signalName,
+                    handlerFunc;
 
-        signalName = aSignalType.getSignalName();
+                signalName = aSignalType.getSignalName();
 
-        eventName = TP.ifEmpty(aSignalType.REMOTE_NAME, signalName);
+                eventName = TP.ifEmpty(aSignalType.REMOTE_NAME, signalName);
 
-        //  If there's already a handler registered for this native
-        //  event type then just return here. We don't want multiple
-        //  handlers for the same native event.
-        if (handlerRegistry.hasKey(eventName)) {
-            return;
-        }
+                //  If there's already a handler registered for this native
+                //  event type then just return here. We don't want multiple
+                //  handlers for the same native event.
+                if (handlerRegistry.hasKey(eventName)) {
+                    return;
+                }
 
-        //  Look for a method to match the eventName to use as the handler.
-        if (TP.canInvoke(thisref, 'on' + eventName)) {
-            handlerFunc = thisref['on' + eventName].bind(thisref);
-        } else {
-            //  No special handler so rely on a wrapped copy of onmessage that
-            //  we pass the specific signal name to.
-            handlerFunc = function(evt) {
-                evt.signalName = signalName;
-                this.onmessage(evt);
-            }.bind(thisref);
-        }
+                //  Look for a method to match the eventName to use as the
+                //  handler.
+                if (TP.canInvoke(thisref, 'on' + eventName)) {
+                    handlerFunc = thisref['on' + eventName].bind(thisref);
+                } else {
+                    //  No special handler so rely on a wrapped copy of
+                    //  onmessage that we pass the specific signal name to.
+                    handlerFunc = function(evt) {
+                        evt.signalName = signalName;
+                        this.onmessage(evt);
+                    }.bind(thisref);
+                }
 
-        //  Put it in the handler registry in case we went to unregister
-        //  it interactively later.
-        handlerRegistry.atPut(eventName, handlerFunc);
+                //  Put it in the handler registry in case we went to
+                //  unregister it interactively later.
+                handlerRegistry.atPut(eventName, handlerFunc);
 
-        //  Add the custom event listener to the event source.
-        source.addEventListener(eventName, handlerFunc, false);
-    });
+                //  Add the custom event listener to the event source.
+                source.addEventListener(eventName, handlerFunc, false);
+            });
 
     return this;
 });
@@ -1022,16 +1078,13 @@ function(signalTypes) {
                                     handlerRegistry.atPut(customName))) {
 
                     handlerRegistry.removeKey(customName);
-                    source.removeEventListener(customName,
-                                                    handlerFunc,
-                                                    false);
+                    source.removeEventListener(customName, handlerFunc, false);
                 }
             }
         });
 
     return this;
 });
-
 
 //  ========================================================================
 //  TP.core.Socket
@@ -1046,7 +1099,7 @@ TP.core.Socket.addTraits(TP.sig.MessageConnection);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Socket.defineConstant('DEFAULT_PROTOCOLS', []);
+TP.core.Socket.defineConstant('DEFAULT_PROTOCOLS', TP.ac());
 
 TP.core.Socket.defineConstant('STATES', {
     CONNECTING: 0,
@@ -1063,6 +1116,10 @@ TP.core.Socket.Type.defineMethod('isSupported',
 function() {
 
     /**
+     * @method isSupported
+     * @summary Whether or not WebSockets are supported in the current
+     *     environment.
+     * @returns {Boolean} Whether or not WebSockets are supported.
      */
 
     return TP.isValid(TP.global.WebSocket);
@@ -1074,7 +1131,6 @@ function() {
 
 TP.core.Socket.Inst.defineAttribute('protocols');
 
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1083,6 +1139,13 @@ TP.core.Socket.Inst.defineMethod('init',
 function(aURI, protocols) {
 
     /**
+     * @method init
+     * @summary Initialize a new signal instance.
+     * @param {TP.core.URI} aURI The endpoint URI representing the WebSocket
+     *     messaging source.
+     * @param {Array} protocols An Array of custom WebSocket protocols that the
+     *     connection should be configured for.
+     * @returns {TP.core.Socket} A new instance.
      */
 
     this.callNextMethod();
@@ -1100,6 +1163,10 @@ TP.core.Socket.Inst.defineMethod('constructSource',
 function() {
 
     /**
+     * @method constructSource
+     * @summary Constructs an instance of the underlying system-level object
+     *     that is going to be sending and receiving remote messages.
+     * @returns {Object} The system object that will send and receive messages.
      */
 
     var type,
@@ -1107,7 +1174,9 @@ function() {
         protocols;
 
     type = this.getSourceType();
+
     uri = this.get('uri').asString();
+
     protocols = this.getProtocols();
 
     if (TP.notEmpty(protocols)) {
@@ -1123,6 +1192,11 @@ TP.core.Socket.Inst.defineMethod('getProtocols',
 function() {
 
     /**
+     * @method getProtocols
+     * @summary The custom protocols that the receiver's WebSocket connection
+     *     should be configured for.
+     * @returns {Array} An Array of custom WebSocket protocols that the
+     *     connection is configured for.
      */
 
     var list;
@@ -1138,6 +1212,9 @@ TP.core.Socket.Inst.defineMethod('getSourceType',
 function() {
 
     /**
+     * @method getSourceType
+     * @summary The JavaScript constructor of the WebSockets system object.
+     * @returns {WebSocket} The constructor of the WebSockets system object.
      */
 
     return TP.global.WebSocket;
@@ -1147,6 +1224,14 @@ function() {
 
 TP.core.Socket.Inst.defineMethod('isClosed',
 function() {
+
+    /**
+     * @method isClosed
+     * @summary Whether or not the underlying WebSocket connection is closed.
+     * @returns {Boolean} Whether or not the underlying WebSocket connection
+     *     is closed.
+     */
+
     var source;
 
     source = this.$get('source');
@@ -1155,15 +1240,19 @@ function() {
     }
 
     return source.readyState !== TP.core.Socket.STATES.CLOSED ||
-        source.readyState !== TP.core.Socket.STATES.CLOSING;
+            source.readyState !== TP.core.Socket.STATES.CLOSING;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.Socket.Inst.defineMethod('onclose',
-function(code, reason) {
+function(evt) {
 
     /**
+     * @method onclose
+     * @summary The method that is invoked when the web socket that the receiver
+     *     is managing has closed.
+     * @param {CloseEvent} evt The event sent by the underlying system.
      */
 
     var source,
@@ -1171,9 +1260,11 @@ function(code, reason) {
 
     source = this.get('source');
 
+    //  Repackage WebSocket data into a hash to use as the payload for the
+    //  SourceClosed signal.
     payload = TP.hc(
-                'code', code,
-                'reason', reason,
+                'code', evt.code,
+                'reason', evt.reason,
                 'sourceURL', source.url
                 );
 
@@ -1191,6 +1282,13 @@ function(code, reason) {
 TP.core.Socket.Inst.defineMethod('onerror',
 function(evt) {
 
+    /**
+     * @method onerror
+     * @summary The method that is invoked when the web socket that the receiver
+     *     is managing has encountered an error.
+     * @param {ErrorEvent} evt The event sent by the underlying system.
+     */
+
     TP.error(evt);
 
     return;
@@ -1200,6 +1298,13 @@ function(evt) {
 
 TP.core.Socket.Inst.defineMethod('onmessage',
 function(evt) {
+
+    /**
+     * @method onmessage
+     * @summary The method that is invoked when the web socket that the receiver
+     *     is managing has data ready to be processed.
+     * @param {MessageEvent} evt The event sent by the underlying system.
+     */
 
     TP.info(evt.data);
 
@@ -1216,6 +1321,7 @@ function(message) {
      * @summary Sends a string to the remote end of the connection. This method
      *     does not serialize content. Use send() if you want serialization.
      * @param {String} message The string to send to the end of the connection.
+     * @returns TP.core.Socket The receiver.
      */
 
     var source;
@@ -1223,6 +1329,8 @@ function(message) {
     source = this.get('source');
 
     source.send(message);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1261,7 +1369,6 @@ function(signalTypes) {
     return this;
 });
 
-
 //  ========================================================================
 //  TP.sig.GeolocationSignal
 //  ========================================================================
@@ -1269,7 +1376,6 @@ function(signalTypes) {
 TP.sig.Signal.defineSubtype('GeolocationSignal');
 TP.sig.GeolocationSignal.defineSubtype('GeolocationChange');
 TP.sig.GeolocationSignal.defineSubtype('GeolocationError');
-
 
 //  ========================================================================
 //  TP.core.Geolocation
@@ -1338,74 +1444,74 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  Set up the 'watch' with a success callback that signals a
         //  GeolocationChange and an error callback that signals a
         //  GeolocationError
-        geoWatch = origin.navigator.geolocation.watchPosition(function(position) {
-            var coords,
-                data;
+        geoWatch = origin.navigator.geolocation.watchPosition(
+            function(position) {
+                var coords,
+                    data;
 
-            coords = position.coords;
+                coords = position.coords;
 
-            //  Break up the returned data into a well structured
-            //  hash data structure.
-            data = TP.hc(
-                    'latitude', coords.latitude,
-                    'longitude', coords.longitude,
-                    'altitude', coords.altitude,
-                    'accuracy', coords.accuracy,
-                    'altitudeAccuracy', coords.altitudeAccuracy,
-                    'heading', coords.heading,
-                    'speed', coords.speed,
-                    'timestamp', position.timestamp
-                    );
+                //  Break up the returned data into a well structured
+                //  hash data structure.
+                data = TP.hc(
+                        'latitude', coords.latitude,
+                        'longitude', coords.longitude,
+                        'altitude', coords.altitude,
+                        'accuracy', coords.accuracy,
+                        'altitudeAccuracy', coords.altitudeAccuracy,
+                        'heading', coords.heading,
+                        'speed', coords.speed,
+                        'timestamp', position.timestamp
+                        );
 
-            TP.signal(origin, 'TP.sig.GeolocationChange', data);
-        },
-        function(error) {
-            var errorMsg;
+                TP.signal(origin, 'TP.sig.GeolocationChange', data);
+            },
+            function(error) {
+                var errorMsg;
 
-            errorMsg = '';
+                errorMsg = '';
 
-            //  Check for known errors
-            switch (error.code) {
+                //  Check for known errors
+                switch (error.code) {
 
-                case error.PERMISSION_DENIED:
-                    errorMsg = TP.sc('This website does not have ',
-                                        'permission to use ',
-                                        'the Geolocation API');
-                    break;
+                    case error.PERMISSION_DENIED:
+                        errorMsg = TP.sc('This website does not have ',
+                                            'permission to use ',
+                                            'the Geolocation API');
+                        break;
 
-                case error.POSITION_UNAVAILABLE:
-                    errorMsg = TP.sc('The current position could ',
-                                        'not be determined.');
-                    break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg = TP.sc('The current position could ',
+                                            'not be determined.');
+                        break;
 
-                case error.PERMISSION_DENIED_TIMEOUT:
-                    errorMsg = TP.sc('The current position could ',
-                                        'not be determined ',
-                                        'within the specified ',
-                                        'timeout period.');
-                    break;
+                    case error.PERMISSION_DENIED_TIMEOUT:
+                        errorMsg = TP.sc('The current position could ',
+                                            'not be determined ',
+                                            'within the specified ',
+                                            'timeout period.');
+                        break;
 
-                default:
-                    break;
-            }
+                    default:
+                        break;
+                }
 
-            //  If it's an unknown error, build a errorMsg that
-            //  includes information that helps identify the
-            //  situation so that the error handler can be updated.
-            if (errorMsg === '') {
-                errorMsg = TP.sc('The position could not be ',
-                                    'determined due to an unknown ',
-                                    'error (Code: ') +
-                                    error.code.toString() +
-                                    ').';
-            }
+                //  If it's an unknown error, build a errorMsg that
+                //  includes information that helps identify the
+                //  situation so that the error handler can be updated.
+                if (errorMsg === '') {
+                    errorMsg = TP.sc('The position could not be ',
+                                        'determined due to an unknown ',
+                                        'error (Code: ') +
+                                        error.code.toString() +
+                                        ').';
+                }
 
-            TP.signal(origin, 'TP.sig.GeolocationError', errorMsg);
-        });
+                TP.signal(origin, 'TP.sig.GeolocationError', errorMsg);
+            });
 
         map.atPut(originID, geoWatch);
     }
-
 
     //  Always tell the notification system to register our handler, etc.
     return true;
@@ -1465,7 +1571,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     return true;
 });
 
-
 //  ========================================================================
 //  TP.core.MediaQuery
 //  ========================================================================
@@ -1508,9 +1613,17 @@ TP.core.MediaQuery.Inst.defineAttribute('$window');
 //  Inst Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MediaQuery.Inst.defineMethod('init', function(query, win) {
+TP.core.MediaQuery.Inst.defineMethod('init',
+function(query, win) {
 
     /**
+     * @method init
+     * @summary Initializes a new instance of the receiver.
+     * @param {String} query The query to use when observing changes to the
+     *     document associated with the supplied Window.
+     * @param {Window} win The window that the supplied media query should
+     *     execute in.
+     * @returns {TP.core.MediaQuery} A new instance.
      */
 
     var source;
@@ -1586,9 +1699,9 @@ function(aSignal, aHandler, aPolicy) {
     };
     this.$set('$hook', handler);
 
-    //  Perform the query and get the MediaQueryList back. Note that
-    //  this will also register the handler so that the callback fires
-    //  when the environment changes.
+    //  Perform the query and get the MediaQueryList back. Note that this will
+    //  also register the handler so that the callback fires when the
+    //  environment changes.
     mediaQuery = TP.windowQueryCSSMedia(origin, query, handler);
     this.$set('$mediaQuery', mediaQuery);
 
@@ -1642,7 +1755,6 @@ function(aSignal, aHandler, aPolicy) {
     //  Always tell the notification system to remove our handler, etc.
     return true;
 });
-
 
 //  ========================================================================
 //  TP.sig.MutationSignalSource
@@ -2706,7 +2818,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     return true;
 });
 
-
 //  ========================================================================
 //  TP.core.Worker
 //  ========================================================================
@@ -2879,21 +2990,27 @@ function(aURI, onmessage, onerror) {
 
     this.callNextMethod(uri);
 
-
     try {
+
+        //  Spin off a new Worker thread.
         thread = new Worker(uri.getLocation());
 
+        //  Set up the onmessage handler by either using the supplied one or
+        //  binding to our method.
         handler = onmessage;
         if (TP.notValid(handler)) {
             handler = this.onmessage.bind(this);
         }
         thread.onmessage = handler;
 
+        //  Set up the onerror handler by either using the supplied one or
+        //  binding to our method.
         handler = onerror;
         if (TP.notValid(handler)) {
             handler = this.onerror.bind(this);
         }
         thread.onerror = handler;
+
     } catch (e) {
         return this.raise('WorkerError', e);
     }
@@ -2905,14 +3022,24 @@ function(aURI, onmessage, onerror) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Worker.Inst.defineMethod('onerror', function(e) {
+TP.core.Worker.Inst.defineMethod('onerror',
+function(evt) {
+
+    /**
+     * @method onerror
+     * @summary The default method that is invoked when the worker thread that
+     *     the receiver is managing has posted a error back into this context.
+     * @param {ErrorEvent} evt The event sent by the underlying system.
+     */
 
     var err;
 
     //  Convert from an ErrorEvent into a real Error object
-    err = new Error(e.message, e.filename, e.lineno);
+    err = new Error(evt.message, evt.filename, evt.lineno);
 
     TP.error(err);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -2921,9 +3048,14 @@ TP.core.Worker.Inst.defineMethod('onmessage',
 function(evt) {
 
     /**
+     * @method onmessage
+     * @summary The default method that is invoked when the worker thread that
+     *     the receiver is managing has posted a message back into this context.
+     * @param {MessageEvent} evt The event sent by the underlying system.
      */
 
     TP.info(evt.data);
+
     return;
 });
 
@@ -2953,6 +3085,7 @@ function(message) {
      * @summary Sends a string to the remote end of the connection. This method
      *     does not serialize content. Use send() if you want serialization.
      * @param {String} message The string to send to the end of the connection.
+     * @returns TP.core.Worker The receiver.
      */
 
     var thread;
