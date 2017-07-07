@@ -23,35 +23,31 @@
 
 ### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
-We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
-our way of saying TIBET is a seamlessly integrated solution, not an à la carte
-mashup.
+**TIBET is a seamlessly integrated web platform, not an à la carte
+mashup**, a solution offering **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the most comprehensive
+client stack available</a>** coupled with **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
 
-**TIBET reduces <a target="_blank"
+**TIBET is built for projects that need a turnkey <a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client</a> or
+<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
+platform** and the confidence that comes from using **a <a target="_blank"
+href="http://www.technicalpursuit.com/support.xhtml">fully supported</a>
+single-vendor solution**.
+
+**TIBET is built for business, reducing **<a target="_blank"
 href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical
-complexity</a>, improves tooling, and lowers costs** with a single-vendor
-stack that's <a target="_blank"
-href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> from
-client to server, CLI to IDE.
+complexity</a>,** improving tooling, and lowering costs** so you get more done in
+less time with a smaller and more efficient team.
 
-**Fully-integrated, fully-tooled, fully-supported;** TIBET is built for business
-and government web application projects that need a turnkey solution.
-
-**If you're building a true application**, a call center, an HR app, a
-back-office app, the kind of application you'd have formerly built in
-VisualBasic, Delphi, or PowerBuilder, and using the web as your
-development/deployment platform, **we built TIBET for you**.
-
+#### **Building a desktop-class web application? We built TIBET for you**.
 
 ---
 
-## Get your hands dirty: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
+### Experience TIBET yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
 
-## See TIBET in action:
+### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./lib/media/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a>
 
-### Check out more video on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
 
 ---
 
@@ -74,6 +70,7 @@ npm install -g tibet
 
 The installation process can take several minutes depending on the speed of your
 network connection and the particular version and dependencies being installed.
+Be patient :).
 
 Once the installation completes you're ready to start building with TIBET.
 
@@ -149,13 +146,6 @@ For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
 
 # Documentation
 
-#### Command Line
-
-Use `tibet help` for more information on the TIBET CLI and the available command
-set for your version, or check out the full <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Command-Line"
-target="_blank">TIBET CLI</a> documentation on the wiki.
-
 #### Concepts
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
@@ -171,6 +161,13 @@ href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
 target="_blank">Quickstart Guide</a> is the best place to start your
 journey with TIBET. You'll have your first TIBET application running in just a
 few minutes with this guide.
+
+#### Command Line
+
+Use `tibet help` for more information on the TIBET CLI and the available command
+set for your version, or check out the full <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Command-Line"
+target="_blank">TIBET CLI</a> documentation on the wiki.
 
 #### API Reference
 
@@ -226,16 +223,6 @@ If you see errors from any npm-based operations mentioning `cb() never called!`
 you'll want to perform the step above, or the appropriate step for your
 operating system. See <a target="_blank"
 href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
-
-#### Install PhantomJS (optional)
-
-A few commands in the TIBET CLI rely on PhantomJS to operate properly (test,
-tsh, reflect). <em>You can skip this step for now if you like</em>, those
-commands will simply prompt you to install PhantomJS if you run them
-without PhantomJS installed.
-
-To install PhantomJS follow the instructions at <a
-target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
 
 ---
 
