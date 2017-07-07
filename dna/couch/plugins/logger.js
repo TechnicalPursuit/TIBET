@@ -176,7 +176,7 @@
          * Constructs an object with proper handlers for the various logging
          * methods which ensure the data block provided is used as metadata.
          * @param {Object} data An object containing specific metadata.
-         * @return {Object} An object with trace, debug, etc. functions.
+         * @returns {Object} An object with trace, debug, etc. functions.
          */
         logger.getContextualLogger = function(data) {
             var obj;

@@ -239,7 +239,7 @@
      * to test each step in a path for common JSON request or parameter lookups.
      * @param {Object} obj The object whose properties should be traversed.
      * @param {String} objpath The dot-separated path to traverse.
-     * @return {Object} The value found at the end of the path.
+     * @returns {Object} The value found at the end of the path.
      */
     TDS.access = function(obj, objpath) {
         var steps,
@@ -566,7 +566,7 @@
      * @param {Object} options A parameter block suitable for the
      *     getCouchParameters call which defines any couch and TIBET parameters
      *     necessary.
-     * @return {Object} An object implementing the 'use' command for DB access.
+     * @returns {Object} An object implementing the 'use' command for DB access.
      */
     TDS.getCouchConnection = function(options) {
         var opts;
@@ -584,7 +584,7 @@
      * @param {Object} options A parameter block suitable for the
      *     getCouchParameters call which defines any couch and TIBET parameters
      *     necessary.
-     * @return {Object} A database object implementing promisified versions of
+     * @returns {Object} A database object implementing promisified versions of
      *     all nano database object methods.
      */
     TDS.getCouchDatabase = function(options) {
@@ -600,7 +600,7 @@
      * Computes the common parameters needed by nano and/or other interfaces to
      * CouchDB. This includes the CouchDB URL, the target database name, and the
      * target design doc application name.
-     * @return {Object} An object with db_url, db_name, and db_app values.
+     * @returns {Object} An object with db_url, db_name, and db_app values.
      */
     TDS.getCouchParameters = function(options) {
         var opts;
@@ -613,7 +613,7 @@
 
     /**
      * Computes the URL needed by nano and/or other interfaces to access CouchDB.
-     * @return {String} The CouchDB URL including any basic auth information.
+     * @returns {String} The CouchDB URL including any basic auth information.
      */
     TDS.getCouchURL = function(options) {
         var opts;
@@ -634,7 +634,7 @@
 
     /**
      * Returns a list of non-internal IPv4 addresses for the current host.
-     * @return {Array.<String>} The best external IPv4 addresses found.
+     * @returns {Array.<String>} The best external IPv4 addresses found.
      */
     TDS.getNodeIPs = function() {
         var os,
@@ -1094,7 +1094,7 @@
      * Set a configuration property to a specific value.
      * @param {String} property The property name to set.
      * @param {Object} value The property value to set.
-     * @return {Object} The value upon completion.
+     * @returns {Object} The value upon completion.
      */
     TDS.setcfg = function(property, value) {
         this.initPackage();
@@ -1156,7 +1156,7 @@
     /**
      * Removes any outer quotes from the string value provided.
      * @param {String} aString The string to unquote.
-     * @return {String} The unquoted string.
+     * @returns {String} The unquoted string.
      */
     TDS.unquote = function(aString) {
         if (aString.length < 2) {

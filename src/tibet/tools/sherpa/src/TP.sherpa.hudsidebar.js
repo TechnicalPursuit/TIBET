@@ -115,7 +115,7 @@ function(aTPElement) {
      * @summary Focuses the receiver onto the supplied target.
      * @param {TP.core.UIElementNode} aTPElement The element to focus the
      *     receiver on.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     TP.override();
@@ -133,7 +133,7 @@ function(aSignal) {
      * @summary Handles notifications of HUD closed change signals.
      * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     return this;
@@ -151,7 +151,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     var haloTarget;
@@ -177,7 +177,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     this.setValue(null);
@@ -200,7 +200,7 @@ function(aSignal) {
      *     canvas.
      * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     var halo,
@@ -225,7 +225,7 @@ function(aSignal) {
      *     canvas.
      * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     var halo,
@@ -247,7 +247,7 @@ function() {
     /**
      * @method setup
      * @summary Perform the initial setup for the receiver.
-     * @return {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),

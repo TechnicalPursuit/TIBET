@@ -1121,7 +1121,7 @@ Cmd.prototype.executeValidate = function() {
  * Checks a job state and returns true if that state is a 'final' state, meaning
  * the job's state should not be altered further.
  * @param {String} state The job state to check.
- * @return {Boolean} true if the state is a final state.
+ * @returns {Boolean} true if the state is a final state.
  */
 Cmd.prototype.isFinalState = function(state) {
     switch (state) {

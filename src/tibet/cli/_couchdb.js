@@ -86,7 +86,7 @@ boolean: ['confirm'],
 * @param {String} id The document ID to retrieve from CouchDB.
 * @param {Object} [options] A nano-compatible db.get options object.
 * @param {Object} [params] Couch parameters if available.
-* @return {Promise} A promise with 'then' and 'catch' options.
+* @returns {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.dbGet = function(id, options, params) {
     var server,
@@ -125,7 +125,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
 * @param {Object} doc The JavaScript object to be inserted.
 * @param {Object} [options] nano-compatible options db.insert.
 * @param {Object} [params] Couch parameters if available.
-* @return {Promise} A promise with 'then' and 'catch' options.
+* @returns {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.dbInsert = function(doc, options, params) {
     var server,
@@ -164,7 +164,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
 * @param {String} viewname The view to execute to produce results.
 * @param {Object} [options] nano-compatible options db.view.
 * @param {Object} [params] Couch parameters if available.
-* @return {Promise} A promise with 'then' and 'catch' options.
+* @returns {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.dbView = function(viewname, options, params) {
     var server,

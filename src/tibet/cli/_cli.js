@@ -329,7 +329,7 @@ CLI.isObject = function(obj) {
  * JSON.stringify call since keys aren't ordered.
  * @param {Object} objOne The first object in the comparison.
  * @param {Object} objTwo The second object in the comparison.
- * @return {Boolean} true if the objects have the same key/value content.
+ * @returns {Boolean} true if the objects have the same key/value content.
  */
 CLI.isSameJSON = function(objOne, objTwo) {
     var first,
@@ -822,7 +822,7 @@ CLI.getCommandPath = function(command) {
 /**
  * Returns a sorted list of known command names from the application and library
  * command locations.
- * @return {Array.<string>} An array of command names.
+ * @returns {Array.<string>} An array of command names.
  */
 CLI.getCommands = function() {
     var base,

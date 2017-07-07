@@ -26,7 +26,7 @@
      * require() call etc).
      * @param {Object} options Configuration options which assist the receiver
      *     in computing paths and locating configuration resources.
-     * @return {Config} A newly constructed config instance.
+     * @returns {Config} A newly constructed config instance.
      */
     Config = function(options) {
         var origTP,

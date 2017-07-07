@@ -197,7 +197,7 @@ function(content, aURI) {
      * @summary Returns the type to use for a particular access path.
      * @param {Object} content The data to find a concrete type for.
      * @param {TP.core.URI} [aURI] The source URI.
-     * @return {TP.core.Content} A viable subtype for enclosing the content.
+     * @returns {TP.core.Content} A viable subtype for enclosing the content.
      */
 
     if (TP.isNode(content) || TP.isKindOf(content, TP.core.Node)) {

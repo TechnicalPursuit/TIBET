@@ -121,7 +121,7 @@ Cmd.prototype.TEMPLATE_KEY = 'appname';
 
 /**
  * Check arguments and configure default values prior to running prereqs.
- * @return {Object}
+ * @returns {Object}
  */
 Cmd.prototype.configure = function() {
     throw new Error('MissingOverride');

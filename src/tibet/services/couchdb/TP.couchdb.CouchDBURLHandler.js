@@ -102,7 +102,7 @@ function(options) {
      * @summary Computes the proper CouchDB URL for use as a base URL.
      * @param {Object} [options] A parameter block with possible user/pass data
      *     if using basic authentication to access CouchDB.
-     * @return {String} The database url.
+     * @returns {String} The database url.
      */
 
     var opts,

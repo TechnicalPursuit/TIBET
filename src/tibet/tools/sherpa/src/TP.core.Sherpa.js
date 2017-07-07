@@ -1823,7 +1823,7 @@ function(tileID, title, existedHandler, newHandler) {
      *     wasn't created again.
      * @param {Function} [newHandler] If supplied, this Function is executed
      *     after the tile is shown on screen when the tile was newly created.
-     * @return {TP.core.Sherpa} The receiver.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var alreadyExisted,

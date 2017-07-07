@@ -2277,7 +2277,7 @@ TP.functionNeedsCallee = function(aFunction, aName) {
      *     callNextMethod which requires the function to be proxied with a
      *     wrapper to handle callee management.
      * @param {Function} aFunction The function to test.
-     * @return {Boolean} True if the function should be patched.
+     * @returns {Boolean} True if the function should be patched.
      */
 
     var str,

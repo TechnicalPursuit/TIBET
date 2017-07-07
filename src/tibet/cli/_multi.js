@@ -135,7 +135,7 @@ Cmd.prototype.onlyOne = function(flags) {
  * @param {Array.<String>} flags The list of flags which can specialize the
  *     root to create a more fine-grained method name.
  * @param {Object} [defaults] An optional object forcing specific defaults.
- * @return {Object} The return value of the specialized method if found.
+ * @returns {Object} The return value of the specialized method if found.
  */
 Cmd.prototype.redispatch = function(root, flags, defaults) {
     var subcmd,
@@ -163,7 +163,7 @@ Cmd.prototype.redispatch = function(root, flags, defaults) {
 /**
  * Reparses the command line arguments using the parse options provided.
  * @param {Object} options A minimist-compatible set of parse options.
- * @return {Array} The arglist after reparsing.
+ * @returns {Array} The arglist after reparsing.
  */
 Cmd.prototype.reparse = function(options) {
     var opts;
@@ -187,7 +187,7 @@ Cmd.prototype.reparse = function(options) {
  * method name for invocation.
  * @param {String} root The root method name such as 'executeJob'.
  * @param {String} subcmd The subcommand used to specialize the operation.
- * @return {String} The specialized command name.
+ * @returns {String} The specialized command name.
  */
 Cmd.prototype.specialize = function(root, command, subcmd) {
     return root +
@@ -201,7 +201,7 @@ Cmd.prototype.specialize = function(root, command, subcmd) {
  * Note that this method will throw an exception if more than one flag is found.
  * @param {Array.<String>} flags The list of flags to check and filter.
  * @throws {Error} Incompatible command options.
- * @return {String} The flag provided, if only one is found.
+ * @returns {String} The flag provided, if only one is found.
  */
 Cmd.prototype.whichOne = function(flags) {
     var found,

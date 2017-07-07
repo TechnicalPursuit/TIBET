@@ -41,7 +41,7 @@ helpers = {};
  * ignored. by this routine.
  * @param {Object} target The target object to augment, or null to create one.
  * @param {String} root The directory path containing the files to gather from.
- * @return {Object} The key/value pairs generated from file names and content.
+ * @returns {Object} The key/value pairs generated from file names and content.
  */
 helpers.gatherDesignDocFunctions = function(target, root) {
     var obj,
@@ -87,7 +87,7 @@ helpers.gatherDesignDocFunctions = function(target, root) {
  * function value.
  * @param {Object} target The target object to augment, or null to create one.
  * @param {String} root The directory path containing the files to gather from.
- * @return {Object} The key/value pairs generated from file names and content.
+ * @returns {Object} The key/value pairs generated from file names and content.
  */
 helpers.gatherDesignDocObjects = function(target, root) {
     var obj,
@@ -133,7 +133,7 @@ helpers.gatherDesignDocObjects = function(target, root) {
  * returned by the 'server' method on this object. See @server for more info.
  * @param {Object} options A parameter block suitable for the getCouchParameters
  *     call which defines any couch and TIBET parameters necessary.
- * @return {Object} An object implementing the 'use' command for DB access.
+ * @returns {Object} An object implementing the 'use' command for DB access.
  */
 helpers.getCouchConnection = function(options) {
     var opts,
@@ -165,7 +165,7 @@ helpers.getCouchConnection = function(options) {
  *     versions all end in 'Async'. See nano documentation for the API.
  * @param {Object} options A parameter block suitable for the getCouchParameters
  *     call which defines any couch and TIBET parameters necessary.
- * @return {Object} A database object implementing promisified versions of all
+ * @returns {Object} A database object implementing promisified versions of all
  *     nano database object methods.
  */
 helpers.getCouchDatabase = function(options) {
@@ -203,7 +203,7 @@ helpers.getCouchDatabase = function(options) {
  * @param {Object} options A parameter block with at least a 'requestor'. You
  *     can optionally specify 'needsapp' as false to turn off any prompting
  *     specific to an application name (aka design document name).
- * @return {Object} An object with db_url, db_name, and db_app values.
+ * @returns {Object} An object with db_url, db_name, and db_app values.
  */
 helpers.getCouchParameters = function(options) {
     var opts,
@@ -298,7 +298,7 @@ helpers.getCouchParameters = function(options) {
  * COUCH_USER and COUCH_PASS environment settings. All other data is pulled from
  * tds configuration parameters.
  * @param {Object} options A parameter block with at least a 'requestor'.
- * @return {String} The database url.
+ * @returns {String} The database url.
  */
 helpers.getCouchURL = function(options) {
     var opts,
@@ -408,7 +408,7 @@ helpers.maskCouchAuth = function(url) {
  *     template data.
  * @param {Object} [params] The couch parameters to use. If not provided the
  *     getCouchParameters call will be invoked to provide them.
- * @return {Object} The updated/populated design document object.
+ * @returns {Object} The updated/populated design document object.
  */
 helpers.populateDesignDoc = function(doc, root, params) {
     var obj,

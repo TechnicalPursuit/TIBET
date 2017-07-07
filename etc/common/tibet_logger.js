@@ -26,7 +26,7 @@
      * @param {Object} options Options for controlling the new instance. Common
      *     values of interest to the logger include 'level', 'debug',
      *     and those required by the 'Color' object found in tibet_color.js.
-     * @return {Logger} The primitive logger instance.
+     * @returns {Logger} The primitive logger instance.
      */
     Logger = function(options) {
         var level;
@@ -75,7 +75,7 @@
 
     /**
      * Returns the currently set logging level for this instance.
-     * @return {Number} The logging level as a numeric value.
+     * @returns {Number} The logging level as a numeric value.
      */
     Logger.prototype.getLevel = function() {
         return this.level;
@@ -87,7 +87,7 @@
      * representation. Used to ensure level values are always numeric internally
      * to the logger and other methods.
      * @param {String|Number} aLevel The numeric or string level to normalize.
-     * @return {Number} The numeric level value for the input level.
+     * @returns {Number} The numeric level value for the input level.
      */
     Logger.prototype.getLevelValue = function(aLevel) {
         var lvl;
@@ -133,7 +133,7 @@
     /**
      * Sets the current logging level for this instance.
      * @param {String|Number} aLevel The numeric or string level to set.
-     * @return {Number} The newly set logging level as a numeric value.
+     * @returns {Number} The newly set logging level as a numeric value.
      */
     Logger.prototype.setLevel = function(aLevel) {
         var lvl;
