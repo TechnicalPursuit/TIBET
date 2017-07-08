@@ -28,7 +28,7 @@ function(aTPElement) {
      * @summary Focuses the receiver onto the supplied target.
      * @param {TP.core.UIElementNode} aTPElement The element to focus the
      *     receiver on.
-     * @return {TP.sherpa.bindshud} The receiver.
+     * @returns {TP.sherpa.bindshud} The receiver.
      */
 
     var node,
@@ -80,7 +80,7 @@ function(aSignal) {
      *     target.
      * @param {TP.sig.InspectTarget} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.bindshud} The receiver.
+     * @returns {TP.sherpa.bindshud} The receiver.
      */
 
     var data,

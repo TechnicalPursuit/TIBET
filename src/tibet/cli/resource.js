@@ -193,7 +193,7 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 /**
  * Use package and configuration data to produce and return a list of specified
  * resources for the particular profile.
- * @return {Array.<string>} The list of specified resources found.
+ * @returns {Array.<string>} The list of specified resources found.
  */
 Cmd.prototype.generateResourceList = function() {
 

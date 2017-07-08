@@ -799,7 +799,7 @@ Cmd.prototype.getProjectName = function() {
  * individual tasks to check for command line flags.
  * @param {Object} options An object containing minimist-compliant parse
  *     options and their defaults.
- * @return {Object} A minimist parse result object.
+ * @returns {Object} A minimist parse result object.
  */
 Cmd.prototype.reparse = function(options) {
     var opts;

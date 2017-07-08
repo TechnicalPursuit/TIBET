@@ -2082,7 +2082,7 @@ function(expression) {
      * @summary Returns a viable regular expression built from the string source
      *     provided. If the regexp has previously been assembled it is reused.
      * @param {String} expression The regular expression source value.
-     * @return {RegExp} The handler name scanning regexp.
+     * @returns {RegExp} The handler name scanning regexp.
      */
 
     var regex;

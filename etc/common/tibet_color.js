@@ -31,7 +31,7 @@
      * operation as well as configuration of a current color scheme and theme.
      * @param {Object} options Configuration options. Key values here are the
      *     'theme' and 'scheme' which allow each instance to color differently.
-     * @return {Color} A new instance ready for colorizing.
+     * @returns {Color} A new instance ready for colorizing.
      */
     Color = function(options) {
 
@@ -92,7 +92,7 @@
      *     value found in the system's configuration under the current theme.
      *     For example, 'bracket' implies 'theme.' + currentTheme + '.' +
      *     bracket (theme.default.bracket) as one possible specification.
-     * @return {String} The ANSI-escaped string.
+     * @returns {String} The ANSI-escaped string.
      */
     Color.prototype.colorize = function(aString, aSpec) {
         var parts,
@@ -177,7 +177,7 @@
      * is provided it is verified and the receiver's color scheme values are
      * updated. If no value is provided the current scheme name is returned.
      * @param {String} [aName] The optional scheme name to set.
-     * @return {String} The current scheme name after optional update.
+     * @returns {String} The current scheme name after optional update.
      */
     Color.prototype.scheme = function(aName) {
         var cfg,
@@ -202,7 +202,7 @@
      * is provided it is verified and the receiver's color theme values are
      * updated. If no value is provided the current theme name is returned.
      * @param {String} [aName] The optional theme name to set.
-     * @return {String} The current theme name after optional update.
+     * @returns {String} The current theme name after optional update.
      */
     Color.prototype.theme = function(aName) {
         var cfg,

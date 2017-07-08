@@ -28,7 +28,7 @@ function(aTPElement) {
      * @summary Focuses the receiver onto the supplied target.
      * @param {TP.core.UIElementNode} aTPElement The element to focus the
      *     receiver on.
-     * @return {TP.sherpa.styleshud} The receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
      */
 
     var info,
@@ -72,7 +72,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.styleshud} The receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
      */
 
     var tile;
@@ -100,7 +100,7 @@ function(aSignal) {
      *     focus it on that target.
      * @param {TP.sig.InspectStyleSource} aSignal The TIBET signal which
      *     triggered this method.
-     * @return {TP.sherpa.styleshud} The receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
      */
 
     var data,
@@ -180,7 +180,7 @@ function(aSignal) {
      *     canvas.
      * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.styleshud} The receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
      */
 
     var tile;
@@ -207,7 +207,7 @@ function(aSignal) {
      *     rule text in a side popup panel.
      * @param {TP.sig.ShowRuleText} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.styleshud} The receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
      */
 
     var data,

@@ -352,7 +352,7 @@ Cmd.prototype.getCompletionOptions = function() {
 /**
  * Returns the 'type' responsible for the receiver. This will be the 'Cmd'
  * object relative to the current instance.
- * @return {Function} The receiver's type object.
+ * @returns {Function} The receiver's type object.
  */
 Cmd.prototype.getType = function() {
     return this.constructor;
@@ -365,7 +365,7 @@ Cmd.prototype.getType = function() {
  * actually typed vs. what minimist may have parsed and defaulted.
  * @param {String|Number} name The name of the flag or the argument number to
  *     verify.
- * @return {Boolean} True if the argument was explicitly provided.
+ * @returns {Boolean} True if the argument was explicitly provided.
  */
 Cmd.prototype.hasArgument = function(name) {
     var argv;

@@ -30,7 +30,7 @@ function(aTPElement) {
      * @summary Focuses the receiver onto the supplied target.
      * @param {TP.core.UIElementNode} aTPElement The element to focus the
      *     receiver on.
-     * @return {TP.sherpa.respondershud} The receiver.
+     * @returns {TP.sherpa.respondershud} The receiver.
      */
 
     var node,
@@ -97,7 +97,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.respondershud} The receiver.
+     * @returns {TP.sherpa.respondershud} The receiver.
      */
 
     var tile;
@@ -125,7 +125,7 @@ function(aSignal) {
      *     target.
      * @param {TP.sig.ResponderSource} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.respondershud} The receiver.
+     * @returns {TP.sherpa.respondershud} The receiver.
      */
 
     var data,
@@ -194,7 +194,7 @@ function(aSignal) {
      *     selected responder method in the Sherpa inspector.
      * @param {TP.sig.InspectResponderMethod} aSignal The TIBET signal which
      *     triggered this method.
-     * @return {TP.sherpa.respondershud} The receiver.
+     * @returns {TP.sherpa.respondershud} The receiver.
      */
 
     var val,
@@ -234,7 +234,7 @@ function(aSignal) {
      *     canvas.
      * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.respondershud} The receiver.
+     * @returns {TP.sherpa.respondershud} The receiver.
      */
 
     var tile;
@@ -261,7 +261,7 @@ function(aSignal) {
      *     rule text in a side popup panel.
      * @param {TP.sig.ShowHandlerList} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.respondershud} The receiver.
+     * @returns {TP.sherpa.respondershud} The receiver.
      */
 
     var data,
@@ -392,7 +392,7 @@ function(aType) {
      *     type.
      * @param {TP.lang.RootObject} aType The type to produce the handler methods
      *     for.
-     * @return {Array[]} An Array of Arrays containing the names of the
+     * @returns {Array[]} An Array of Arrays containing the names of the
      *     instance-level 'handler only' methods for the supplied type.
      */
 

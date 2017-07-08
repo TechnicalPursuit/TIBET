@@ -30,7 +30,7 @@ function(aTPElement) {
      * @summary Focuses the receiver onto the supplied target.
      * @param {TP.core.UIElementNode} aTPElement The element to focus the
      *     receiver on.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var info,
@@ -107,7 +107,7 @@ function() {
      * @method focusOnUICanvasRoot
      * @summary Focuses the receiver on the UI canvas's 'root' (i.e. document)
      *     element.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var root,
@@ -273,7 +273,7 @@ function(aSignal) {
      * @summary Handles notifications of HUD closed change signals.
      * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var hud,
@@ -303,7 +303,7 @@ function(aSignal) {
      *     halo.
      * @param {TP.sig.FocusHalo} aSignal The TIBET signal which triggered this
      *     method.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var targetElem,
@@ -352,7 +352,7 @@ function(aSignal) {
      *     target.
      * @param {TP.sig.FocusHaloAndInspect} aSignal The TIBET signal which
      *     triggered this method.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var targetElem,
@@ -406,7 +406,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     this.focusOnUICanvasRoot();
@@ -434,7 +434,7 @@ function(aSignal) {
      *     hovers over elements in the sidebar the corresponding element in
      *     the canvas gets a 'hud-highlight' class addd/removed.
      * @param {TP.sig.Signal} aSignal The over/out signal with the target.
-     * @return {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var targetElem,

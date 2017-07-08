@@ -90,7 +90,7 @@ Cmd.prototype.USAGE =
 
 /**
  * Check arguments and configure default values prior to running prereqs.
- * @return {Object}
+ * @returns {Object}
  */
 Cmd.prototype.configure = function() {
     var options,

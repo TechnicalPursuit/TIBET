@@ -7844,7 +7844,7 @@ function(aNode, aNamespaceURI) {
      *     nodeGetAncestorsWithNS.
      * @param {Node} aNode The node to start traversal from.
      * @param {String} aNamespaceURI The URI for the namespace to check.
-     * @return {Array.<Element>} An array of ancestors.
+     * @returns {Array.<Element>} An array of ancestors.
      */
 
     var arr,
@@ -7883,7 +7883,7 @@ function(aNode, aNamespaceURI) {
      *     provided.
      * @param {Node} aNode The node to start traversal from.
      * @param {String} aNamespaceURI The URI for the namespace to check.
-     * @return {Array.<Element>} An array of ancestors.
+     * @returns {Array.<Element>} An array of ancestors.
      */
 
     var arr,
