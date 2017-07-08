@@ -7,7 +7,7 @@
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet deploy' command. Searches for shipitjs-related files
  *     and invokes them if found, otherwise searches for a 'deploy' target in
- *     TIBET's makefile.js for the current project and invokes that if found.
+ *     TIBET's make commands for the current project and invokes that if found.
  */
 //  ========================================================================
 
@@ -80,7 +80,7 @@ Cmd.prototype.USAGE = 'tibet deploy [options]';
 
 /**
  * Runs the deploy command, checking for shipit-related support and then
- * makefile.js support in that order.
+ * tibet make support in that order.
  * @returns {Number} A return code.
  */
 Cmd.prototype.execute = function() {
@@ -105,7 +105,7 @@ Cmd.prototype.execute = function() {
         this.info('shipit not installed');
     }
 
-    this.info('checking for makefile.js target...');
+    this.info('checking for `tibet make` target...');
 
     if (CLI.hasMakeTarget('deploy')) {
         command = 'deploy';

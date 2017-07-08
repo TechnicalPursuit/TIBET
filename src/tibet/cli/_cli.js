@@ -8,7 +8,7 @@
  * @overview The TIBET command-line harness. Logic here is focused on command
  *     identification, initial argument processing, command file loading, and
  *     common utilities for commands. If a command isn't found the CLI will
- *     check for a TIBET-style makefile.js target followed by a grunt or gulp
+ *     check for a TIBET-style make target followed by a grunt or gulp
  *     task to perform the work.
  */
 //  ========================================================================

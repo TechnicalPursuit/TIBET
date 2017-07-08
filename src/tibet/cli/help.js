@@ -8,7 +8,7 @@
  * @overview The 'tibet help' command. Displays the usage and/or help text for a
  *     command, or for the entire TIBET CLI if no command name is given. Note
  *     that if `tibet help` is invoked within a project any custom commands or
- *     makefile.js targets for that application are also listed.
+ *     tibet make targets for that application are also listed.
  */
 //  ========================================================================
 
@@ -580,8 +580,8 @@ Cmd.prototype.executeIntro = function() {
 
     intro =
         '\nThe tibet command can invoke TIBET built-ins, custom commands,\n' +
-        'tibet makefile.js targets, grunt targets, or gulp targets based\n' +
-        'on your project configuration and your specific customizations.';
+        'tibet make targets, grunt targets, or gulp targets based on your\n' +
+        'project configuration and your specific customizations.';
 
     this.info(intro);
 
@@ -609,7 +609,7 @@ Cmd.prototype.executeIntro = function() {
         cmds = CLI.getMakeTargets();
 
         if (cmds.length > 0) {
-            this.info('\nmakefile.js targets include:\n');
+            this.info('\n`tibet make` targets include:\n');
             this.logCommands(cmds);
         }
     }
