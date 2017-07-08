@@ -21,11 +21,12 @@
 
 ---
 
+<br/>
+
 ### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 **TIBET is a seamlessly integrated web platform, not an à la carte
-mashup**, a solution offering **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the most comprehensive
-client stack available</a>** coupled with **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
+mashup**, a solution offering **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
 
 **TIBET is built for projects that need a turnkey <a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client</a> or
 <a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
@@ -36,18 +37,23 @@ single-vendor solution**.
 **TIBET is built for business, reducing **<a target="_blank"
 href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical
 complexity</a>,** improving tooling, and lowering costs** so you get more done in
-less time with a smaller and more efficient team.
+less time with a smaller more efficient team.
 
 #### **Building a desktop-class web application? We built TIBET for you**.
 
+<br/>
+
 ---
 
-### Experience TIBET yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
+### Explore TIBET's unique design goals: <a href="https://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf" target="_blank">The Zen Of TIBET</a>
 
-### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
+### Experience TIBET for yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
+
+### Learn TIBET coding with the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./lib/media/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a>
 
+<br/>
 
 ---
 
@@ -72,14 +78,11 @@ The installation process can take several minutes depending on the speed of your
 network connection and the particular version and dependencies being installed.
 Be patient :).
 
-Once the installation completes you're ready to start building with TIBET.
-
 ---
 
-# Quickstart
+<br/>
 
-With TIBET installed the `tibet` command gives you access to TIBET-aware
-tools to help streamline your development workflow.
+# Quickstart
 
 The `tibet quickstart` command outputs version-specific instructions on how
 to clone, initialize, and start a TIBET application (your output may vary by
@@ -110,8 +113,9 @@ name so it should be a valid directory name on your platform.
 
 Type 'tibet clone {appname}', replacing {appname} with your project name:
 
-    $ tibet clone test
-    TIBET dna 'default' cloned to test as app 'test'.
+    $ tibet clone hello
+    ...
+    Application DNA 'default' cloned to ./hello as 'hello'.
 
 INITIALIZE THE PROJECT
 
@@ -119,21 +123,21 @@ With your new project in place you need to initialize it to install any code
 dependencies specific to the template you cloned (we used the default here).
 Navigate to your project and then type 'tibet init' to initialize it:
 
-    $ cd test
+    $ cd hello
     $ tibet init
-    Initializing new default project...
-    installing project dependencies via `npm install`.
-    Project initialized successfully.
+    ...
+    project initialized successfully.
 
-START THE DEMO SERVER
+START THE SERVER
 
-The 'default' template used by clone includes a simple Node.js-based HTTP
-server we call the TIBET Data Server or TDS. By default the TDS will use
-port 1407 so assuming that port isn't busy on your system you can start
-the server using 'tibet start' without any parameters:
+The 'default' template used by clone includes a Node.js-based HTTP server
+we call the TIBET Data Server or TDS. By default the TDS will use port 1407
+so assuming that port isn't busy on your system you can start the server
+using 'tibet start' without any parameters:
 
     $ tibet start
-    Starting server at http://127.0.0.1:1407/index.html
+    ...
+    1498043782937 [7] TDS hello 0.1.0 @ http://127.0.0.1:1407#?boot.config=developer (sherpa)
 
 Congratulations! Your new TIBET project is running. Open the web address
 for your project in an HTML5 browser and you should see text directing you
@@ -143,6 +147,8 @@ For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
 </pre>
 
 ---
+
+<br/>
 
 # Documentation
 
@@ -156,11 +162,37 @@ recommend you take a few minutes to scan it.
 <a name="tutorials" href="#"></a>
 #### Tutorials
 
-The <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
-target="_blank">Quickstart Guide</a> is the best place to start your
-journey with TIBET. You'll have your first TIBET application running in just a
-few minutes with this guide.
+- <a href="TIBET-Quickstart-Guide"
+  target="_blank">TIBET Quickstart Guide</a> - Hello World! for TIBET developers.
+
+
+<a name="guidelines" href="#"></a>
+#### Guidelines
+
+- <a href="TIBET-FAQ" target="_blank">TIBET FAQ</a> - Answers to common
+  TIBET-related questions.
+- <a href="TIBET-For-JavaScript-Programmers"
+  target="_blank">TIBET For JS Programmers</a> - JavaScript: the TIBET
+parts&#8482;.
+- <a href="TIBET-Coding-Standards"
+  target="_blank">TIBET Coding Standards</a> - The coding standard used in
+TIBET source.
+- <a href="TIBET-Troubleshooting" target="_blank">TIBET Troubleshooting</a> -
+  Solutions to keep you developing smoothly.
+
+<a name="whitepapers" href="#"></a>
+#### White Papers
+
+- <a href="http://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf"
+  target="_blank">The Zen Of TIBET</a> - The problems, principles, and
+priorities behind TIBET.
+- <a
+  href="http://www.technicalpursuit.com/docs/TheAxesOfTIBET.pdf"
+target="_blank">The Axes Of TIBET</a> - Comparing web architecture and authoring models.
+- <a
+  href="http://www.technicalpursuit.com/docs/TheOriginsOfTIBET.pdf"
+target="_blank">The Origins Of TIBET</a> - The evolution of TIBET from 1997 to
+the present.
 
 #### Command Line
 
@@ -169,7 +201,7 @@ set for your version, or check out the full <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Command-Line"
 target="_blank">TIBET CLI</a> documentation on the wiki.
 
-#### API Reference
+#### API Docs
 
 ##### `tibet reflect`
 
@@ -188,7 +220,21 @@ target="_blank">TIBET Shell</a>. The `apropos` feature scans method names and
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
 
+#### Your Docs
+
+**`tibet reflect` and `tibet apropos` work on your code as well.**
+
+TIBET's tools use runtime metadata and their knowledge of your code to produce
+documentation for both the library and your application code. All you need to do
+is use jsdoc3 comment syntax and <a target="_blank"
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Coding-Standards#commentinside">place
+your comments inside the method body</a>.
+
+See TIBET source code for examples on how to author for live runtime docs.
+
 ---
+
+<br/>
 
 <a name="prereqs" href="#"></a>
 # Prerequisites
@@ -225,6 +271,8 @@ operating system. See <a target="_blank"
 href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
 
 ---
+
+<br/>
 
 <a name="gitinstall" href="#"></a>
 # Installing TIBET via Git
@@ -298,6 +346,8 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 
 ---
 
+<br/>
+
 # Feedback
 
 The best way to communicate an issue, feature request, or code-related
@@ -311,6 +361,8 @@ href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
 
 ---
 
+<br/>
+
 # License
 
 TIBET is Open Source under the OSI-approved <a target="_blank"
@@ -320,7 +372,14 @@ href="http://opensource.org/licenses/RPL-1.5">Reciprocal Public License
 You should read the license but, in short, the RPL requires those who deploy
 applications incorporating RPL'd code to reciprocate by open sourcing their code.
 
-Technical Pursuit Inc., the company behind TIBET, offers privacy waivers which
-allow you to keep your source code private while helping to fund further TIBET
-development. Read more about privacy waivers at <a target="_blank"
+If you are unable to open source your TIBET-related code you can purchase a
+privacy waiver which allows you to keep your source code private while helping
+fund further TIBET development. Read more about privacy waivers at <a
+target="_blank"
 href="http://www.technicalpursuit.com/license.xhtml">http://www.technicalpursuit.com/license.xhtml</a>.
+
+---
+
+<img alt="The Pup" src="./lib/media/thepup.jpg" width="20%" height="20%"/>
+
+<a href="mailto:tibet@technicalpursuit.com?subject=TIBET&amp;body=Hi,%0A%0APlease%20contact%20me%20regarding%20a%20possible%20TIBET%20project.%0A%0A%0AThanks!%0A%0A">Contact us</a> for more information, or to discuss how we can assist you.
