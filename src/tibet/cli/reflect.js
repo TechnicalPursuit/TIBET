@@ -70,11 +70,11 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['owners', 'types',
             'methods', 'attributes',
-            'known', 'hidden', 'lib', 'app',
+            'known', 'hidden',
             'unique', 'inherited', 'introduced', 'local', 'overridden'],
-        'string': ['target', 'filter', 'interface'],
+        'string': ['context', 'target', 'filter', 'interface'],
         'default': {
-            app: true
+            context: 'app'
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -210,14 +210,16 @@ Cmd.prototype.getScript = function() {
         //  Default to dumping the type list but filtered to APP and LIB.
         this.options.types = true;
         if (!this.options.filter) {
-            if (this.options.app && this.options.lib) {
+            if (this.options.context === 'all') {
             /* eslint-disable no-useless-escape */
             this.options.filter = '/^(TP|APP)\./';
             /* eslint-enable no-useless-escape */
-            } else if (this.options.app) {
+            } else if (this.options.context === 'app') {
                 this.options.filter = '/^APP\./';
-            } else {
+            } else if (this.options.context === 'lib') {
                 this.options.filter = '/^TP\./';
+            } else {
+                throw new Error('InvalidContext');
             }
         }
     }
