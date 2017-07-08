@@ -42,6 +42,7 @@ function(aRequest) {
         methods,
         results,
         context,
+        missing,
         filter,
         arg0,
         target,
@@ -71,7 +72,10 @@ function(aRequest) {
 
     //  TODO:   migrate the actual checking code to a more reusable location.
 
-    aRequest.atPut('cmdTAP', true);
+    aRequest.atPut('cmdTAP',
+        shell.getArgument(aRequest, 'tsh:tap', null, true));
+
+    missing = shell.getArgument(aRequest, 'tsh:missing', null, false);
 
     results = TP.ac();
 
@@ -202,8 +206,6 @@ function(aRequest) {
             //  never be minified and that's what we check below.
             file = TP.objectGetLoadPath(func);
 
-            lines = func.getCommentLines();
-            source = func.getSourceText();
             error = {
                 file: file,
                 name: name,
@@ -243,6 +245,9 @@ function(aRequest) {
                 fileDict.atPut(file, null);
             }
 
+            lines = func.getCommentLines();
+            source = func.getSourceText();
+
             if (TP.notValid(lines)) {
                 //  Most common issue here is running against a system that's
                 //  loading minified code.
@@ -270,6 +275,12 @@ function(aRequest) {
             } else {
 
                 // Comment. Question is, is it viable?
+
+                //  If we're only interested in missing/empty comment blocks
+                //  don't worry about processing details in ones that exist.
+                if (missing) {
+                    return;
+                }
 
                 //  ---
                 //  tag validity and aliasing

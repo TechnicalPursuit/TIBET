@@ -68,7 +68,7 @@ Cmd.NAME = 'doclint';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['tap'],
+        'boolean': ['tap', 'missing'],
         'string': ['target', 'filter', 'context'],
         'default': {
             tap: true,
@@ -95,7 +95,7 @@ Cmd.prototype.getProfileConfig = function() {
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet doclint [<target>] [--filter <filter>] [--context <app|lib|all>]';
+    'tibet doclint [<target>] [--filter <filter>] [--context <app|lib|all>] [--tap] [--missing]';
 
 //  ---
 //  Instance Methods
@@ -153,6 +153,14 @@ Cmd.prototype.getScript = function() {
 
     if (CLI.notEmpty(this.options.context)) {
         prefix += ' --context=' + this.options.context;
+    }
+
+    if (CLI.isTrue(this.options.missing)) {
+        prefix += ' --missing=' + this.options.missing;
+    }
+
+    if (CLI.isFalse(this.options.tap)) {
+        prefix += ' --tap=' + this.options.tap;
     }
 
     return prefix;
