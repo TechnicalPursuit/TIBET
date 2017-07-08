@@ -70,10 +70,12 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['owners', 'types',
             'methods', 'attributes',
-            'known', 'hidden',
+            'known', 'hidden', 'lib', 'app',
             'unique', 'inherited', 'introduced', 'local', 'overridden'],
         'string': ['target', 'filter', 'interface'],
-        'default': {}
+        'default': {
+            app: true
+        }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
@@ -202,15 +204,21 @@ Cmd.prototype.getScript = function() {
     }
 
     //  Client command requires either a target or a 'top level metadata' name.
-    //  If we don't see anything else we default to listing APP and LIB types.
+    //  If we don't see anything else we default to listing APP and/or LIB.
     if (CLI.isEmpty(target) && !this.options.types &&
             !this.options.methods && !this.options.attributes) {
         //  Default to dumping the type list but filtered to APP and LIB.
         this.options.types = true;
         if (!this.options.filter) {
+            if (this.options.app && this.options.lib) {
             /* eslint-disable no-useless-escape */
             this.options.filter = '/^(TP|APP)\./';
             /* eslint-enable no-useless-escape */
+            } else if (this.options.app) {
+                this.options.filter = '/^APP\./';
+            } else {
+                this.options.filter = '/^TP\./';
+            }
         }
     }
 
@@ -283,7 +291,9 @@ Cmd.prototype.getScript = function() {
     //  relative to the user's current location for easy cut/paste.
     script += ' --pwd=\'' + process.cwd() + '\'';
 
-    this.log(script);
+    if (this.options.verbose) {
+        this.log(script);
+    }
 
     return script;
 };
