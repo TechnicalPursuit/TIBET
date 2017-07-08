@@ -7709,7 +7709,9 @@ function(aURL) {
      * @method replaceLocation
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
-     * @param
+     * @param {String} aURL The location to use to replace the state on the
+     *     native history object.
+     * @returns {TP.core.History} The receiver.
      */
 
     return this.replaceState({}, '', aURL);
@@ -7731,6 +7733,7 @@ function(stateObj, aTitle, aURL) {
      * @param {String} aURL The location to use when displaying this history
      *     entry in the URL bar.
      * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
+     * @returns {TP.core.History} The receiver.
      */
 
     var url,
@@ -7744,7 +7747,7 @@ function(stateObj, aTitle, aURL) {
 
     if (!TP.isURIString(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
-        return;
+        return this;
     }
 
     url = TP.str(aURL);
@@ -7756,7 +7759,7 @@ function(stateObj, aTitle, aURL) {
 
     //  Dampen changes that aren't really changes.
     if (current === url) {
-        return;
+        return this;
     }
 
     this.set('direction', 'replace', false);
