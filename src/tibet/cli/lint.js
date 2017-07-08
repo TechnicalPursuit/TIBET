@@ -79,8 +79,9 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['scan', 'stop', 'list', 'nodes', 'quiet',
             'style', 'js', 'json', 'xml', 'only'],
         'string': ['esconfig', 'esrules', 'esignore', 'styleconfig',
-            'package', 'config', 'phase', 'filter'],
+            'package', 'config', 'phase', 'filter', 'context'],
         'default': {
+            context: 'app',
             style: true,
             js: true,
             json: true,
@@ -118,7 +119,7 @@ Cmd.prototype.XML_EXTENSIONS = ['atom', 'gpx', 'kml', 'rdf', 'rss', 'svg',
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
+    'tibet lint [[--filter] <filter>] [--context=app|lib|all] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
 
 
 //  ---
@@ -255,9 +256,16 @@ Cmd.prototype.execute = function() {
             return result.errors;
         }
 
+        if (this.options.xml !== true) {
+            //  RESET result to avoid counting config files in final output.
+            result = {linty: 0, errors: 0, warnings: 0, files: 0};
+        }
+
         this.verbose('reading package list...');
         list = this.getPackageAssetList();
     }
+
+    list = this.filterAssetList(list);
 
     // Once we have a list we need to pull it apart into lists we can pass to
     // each of the unique parsers. This is a bit more efficient than trying to
@@ -329,8 +337,6 @@ Cmd.prototype.execute = function() {
 Cmd.prototype.executeForEach = function(list) {
 
     var cmd,
-        filter,
-        pattern,
         files,
         jsexts,
         styleexts,
@@ -350,18 +356,6 @@ Cmd.prototype.executeForEach = function(list) {
         cmd.STYLE_EXTENSIONS);
     xmlexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.xml_extensions')),
         cmd.XML_EXTENSIONS);
-
-    if (CLI.notEmpty(this.options.filter)) {
-        filter = this.options.filter;
-    }
-
-    if (CLI.notEmpty(filter)) {
-        //  Simple directory search requires a leading '.' to signify.
-        if (filter.charAt(0) === '.') {
-            filter = path.join(process.cwd(), filter);
-        }
-        pattern = CLI.stringAsRegExp(filter);
-    }
 
     try {
         list.forEach(function(item) {
@@ -383,21 +377,6 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
             if (src) {
-                //  Filter files based on input pattern/filter data.
-                if (CLI.notEmpty(filter)) {
-                    if (CLI.notEmpty(pattern)) {
-                        if (!pattern.test(src)) {
-                            cmd.verbose(src + ' # filtered');
-                            return;
-                        }
-                    } else {
-                        if (src.indexOf(filter) === -1) {
-                            cmd.verbose(src + ' # filtered');
-                            return;
-                        }
-                    }
-                }
-
                 // Skip minified files regardless of their type.
                 if (src.match(/\.min\./)) {
                     cmd.verbose(src + ' # minified');
@@ -465,6 +444,83 @@ Cmd.prototype.getCompletionOptions = function() {
     plist = Cmd.Parent.prototype.getCompletionOptions();
 
     return CLI.subtract(plist, list);
+};
+
+
+/**
+ * Filters an asset list for context and pattern restrictions.
+ * @param {Array.<string>} list The asset list to be filtered.
+ * @returns {Array.<string>} The filtered list.
+ */
+Cmd.prototype.filterAssetList = function(list) {
+    var filter,
+        pattern,
+        prefix,
+        cmd;
+
+    if (!Array.isArray(list) || list.length < 1) {
+        return [];
+    }
+
+    if (CLI.notEmpty(this.options.filter)) {
+        filter = this.options.filter;
+    } else {
+        // The options._ object holds non-qualified parameters. [0] is the
+        // command name. [1] should be the "filter" if any.
+        filter = this.options._[1];
+    }
+
+    if (CLI.notEmpty(filter)) {
+        //  Simple directory search requires a leading '.' to signify.
+        if (filter.charAt(0) === '.') {
+            filter = path.join(process.cwd(), filter);
+        }
+        pattern = CLI.stringAsRegExp(filter);
+    }
+
+    //  Use context to set a file prefix we can compare against.
+    if (this.options.context === 'app') {
+        prefix = CLI.expandPath('~');
+    } else if (this.options.context === 'lib') {
+        prefix = CLI.expandPath('~lib');
+    }
+
+    cmd = this;
+
+    return list.filter(function(item) {
+        var src;
+
+        if (cmd.options.nodes) {
+            // Depending on the nature of the resource there are two
+            // canonical attributes likely to point to the source file.
+            src = item.getAttribute('src') || item.getAttribute('href');
+        } else {
+            src = item;
+        }
+
+        src = CLI.expandPath(src);
+        if (CLI.notEmpty(prefix) && src.indexOf(prefix) !== 0) {
+            cmd.verbose(src + ' # filtered (context)');
+            return false;
+        }
+
+        //  Filter files based on input pattern/filter data.
+        if (CLI.notEmpty(filter)) {
+            if (CLI.notEmpty(pattern)) {
+                if (!pattern.test(src)) {
+                    cmd.verbose(src + ' # filtered (pattern)');
+                    return false;
+                }
+            } else {
+                if (src.indexOf(filter) === -1) {
+                    cmd.verbose(src + ' # filtered (filter)');
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    });
 };
 
 
