@@ -1721,7 +1721,9 @@ function(aTargetElem, anEvent) {
         item,
         bindAttrNodes,
 
-        bindInfoTPElem;
+        bindInfoTPElem,
+
+        val;
 
     tpElem = TP.wrap(aTargetElem);
 
@@ -1762,12 +1764,21 @@ function(aTargetElem, anEvent) {
                                 TP.str(tpElem));
         }
 
+        val = tpElem.getDisplayValue();
+
+        //  If the wrapped element doesn't allow multiple values, make sure to
+        //  collapse it down.
+        if (!tpElem.allowsMultiples()) {
+            val = TP.collapse(val);
+        }
+
         //  Set our bound value, but using the binding information found on one
         //  of our 'value elements' (which might be the targeted element, but
         //  might not be).
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                bindInfoTPElem.getBindingScopeValues(),
-                                bindInfoTPElem.getAttribute('bind:io'));
+        tpElem.setBoundValue(
+                        val,
+                        bindInfoTPElem.getBindingScopeValues(),
+                        bindInfoTPElem.getAttribute('bind:io'));
     }
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
