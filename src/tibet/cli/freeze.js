@@ -103,7 +103,6 @@ Cmd.prototype.execute = function() {
         libbase,
         libsrc,
         srcroot,
-        srcpath,
         lnflags,
         lnerr,
         file,
