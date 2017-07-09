@@ -2382,7 +2382,7 @@
 
         //  Repeat for the TDS configuration data. NOTE we have to pass in the
         //  setcfg call to force actual execution/setting of TDS config data.
-        lib_path = path.join(lib_root, 'etc/tds/tds_cfg');
+        lib_path = path.join(lib_root, 'tds/tds_cfg');
         require.uncache(lib_path);
         require(lib_path)(this.setcfg.bind(this));
     };

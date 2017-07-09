@@ -24,7 +24,7 @@ var CLI,
 CLI = require('./_cli');
 
 //  Bring in the TDS code so we can reference command line options.
-TDS = require('../../../etc/tds/tds_base');
+TDS = require('../../../tds/tds_base');
 
 //  ---
 //  Type Construction

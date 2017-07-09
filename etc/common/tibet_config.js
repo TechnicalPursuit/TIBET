@@ -104,7 +104,7 @@
                 root = root.slice(1, -1);
             }
             require(root + '/src/tibet/boot/tibet_cfg');
-            require(root + '/etc/tds/tds_cfg')(TP.sys.setcfg);
+            require(root + '/tds/tds_cfg')(TP.sys.setcfg);
 
             try {
                 root = this.options['app-head'];
@@ -188,8 +188,8 @@
             require.uncache('../../src/tibet/boot/tibet_cfg');
             require('../../src/tibet/boot/tibet_cfg');
 
-            require.uncache('../../etc/tds/tds_cfg');
-            require('../../etc/tds/tds_cfg')(TP.sys.setcfg);
+            require.uncache('../../tds/tds_cfg');
+            require('../../tds/tds_cfg')(TP.sys.setcfg);
 
             head = this.getAppHead();
             app = this.getAppRoot();
