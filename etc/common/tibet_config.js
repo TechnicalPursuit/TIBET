@@ -103,8 +103,11 @@
             if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
                 root = root.slice(1, -1);
             }
+
             require(root + '/src/tibet/boot/tibet_cfg');
-            require(root + '/tds/tds_cfg')(TP.sys.setcfg);
+
+            //  Our phantom operations don't require TDS data.
+            //  require(root + '/tds/tds_cfg')(TP.sys.setcfg);
 
             try {
                 root = this.options['app-head'];
@@ -131,7 +134,14 @@
                 if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
                     root = root.slice(1, -1);
                 }
-                this.tds = require(root + '/' + Config.SERVER_FILE);
+
+                //  Our phantom operations don't require TDS data.
+                if (typeof phantom === 'undefined') {
+                    this.tds = require(root + '/' + Config.SERVER_FILE);
+                } else {
+                    // Make sure we default to some value.
+                    this.tds = this.tds || {};
+                }
             } catch (e) {
                 // Make sure we default to some value.
                 this.tds = this.tds || {};
@@ -184,12 +194,14 @@
 
             //  NOTE below we uncache to be sure we get a clean/refreshed load
             //  for each Config instance created.
-
             require.uncache('../../src/tibet/boot/tibet_cfg');
             require('../../src/tibet/boot/tibet_cfg');
 
-            require.uncache('../../tds/tds_cfg');
-            require('../../tds/tds_cfg')(TP.sys.setcfg);
+            //  Our phantom operations don't require TDS data.
+            if (typeof phantom === 'undefined') {
+                require.uncache('../../tds/tds_cfg');
+                require('../../tds/tds_cfg')(TP.sys.setcfg);
+            }
 
             head = this.getAppHead();
             app = this.getAppRoot();
@@ -207,7 +219,13 @@
                 this.tibet = this.tibet || {};
             }
             try {
-                this.tds = require(path.join(head, Config.SERVER_FILE));
+                //  Our phantom operations don't require TDS data.
+                if (typeof phantom === 'undefined') {
+                    this.tds = require(path.join(head, Config.SERVER_FILE));
+                } else {
+                    // Make sure we default to some value.
+                    this.tds = this.tds || {};
+                }
             } catch (e) {
                 // Make sure we default to some value.
                 this.tds = this.tds || {};
