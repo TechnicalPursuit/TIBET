@@ -213,15 +213,8 @@
             // issues, either we don't have a valid lib_root or there's a syntax
             // error or other path issue relative to the baseline config file.
             if (this.getLibRoot()) {
-                // Short-term patch for running prior to a full publication to the
-                // public npm repository. Until then you must use tibet init --link.
-                if (/node_modules\/tibet/.test(e.message)) {
-                    this.error('Error loading baseline config. ' +
-                        'Did you `tibet init --link` ?');
-                } else {
-                    this.error('Error loading baseline config: ' +
-                        e.message);
-                }
+                this.error('Error loading baseline config: ' +
+                    e.message);
             }
             return this;
         } finally {
@@ -1951,7 +1944,7 @@
                         }
 
                         approot = file;
-                        fullpath = '.' + path.sep + path.join(file, tibet);
+                        fullpath = path.join(cwd, file, tibet);
                         return sh.test('-f', fullpath);
                     });
                     /* eslint-enable no-loop-func */
