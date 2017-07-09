@@ -1553,7 +1553,7 @@
         [
             ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
             ['Remote Data Sources',
-                'TP.sherpa.TIBETRemoteDataSourcesInspectorSource']
+                'TP.sherpa.TIBETRemoteSourcesListInspectorSource']
         ]);
 
     //  the initial location to load into screen_0 in the Sherpa. Note this
