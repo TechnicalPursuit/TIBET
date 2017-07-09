@@ -583,6 +583,30 @@ function(pathParts, methodPrefix, args) {
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
+    /**
+     * @method getConfigForInspector
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
+     */
+
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getConfigForInspectorFor',
                                         arguments);
@@ -592,6 +616,26 @@ function(options) {
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForInspector',
 function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
+     */
 
     var data,
         dataURI;
@@ -611,6 +655,24 @@ function(options) {
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForToolbar',
 function(options) {
 
+    /**
+     * @method getContentForToolbar
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     toolbar.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     toolbar.
+     */
+
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getContentForToolbarFor',
                                         arguments);
@@ -620,6 +682,27 @@ function(options) {
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getDataForInspector',
 function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
 
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getDataForInspectorFor',
@@ -654,6 +737,21 @@ function(methodName, regExpParts) {
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
 
     return this;
 });
@@ -770,7 +868,9 @@ function(pathParts) {
         }
 
         newPathParts = TP.ac('TIBET', 'Types', typeName, trackName, methodName);
+
     } else {
+
         newPathParts = TP.ac();
 
         aliases = this.ALIASES;
@@ -1396,7 +1496,8 @@ function(aSignal) {
 
     /**
      * @method handleDetachContent
-     * @summary
+     * @summary Handles notifications of when an item in the inspector has been
+     *     detached into a separate tile.
      * @param {TP.sig.DetachContent} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
@@ -1523,6 +1624,26 @@ function(aSignal) {
 
 TP.sherpa.inspector.Inst.defineMethod('focusUsingInfo',
 function(anInfo) {
+
+    /**
+     * @method focusUsingInfo
+     * @summary Focuses the receiver using the information provided in anInfo.
+     * @param {TP.core.Hash} options A hash of data available to the receiver to
+     *     focus. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object to be
+     *                              focused.
+     *          'targetAspect':     The property of the target object to be
+     *                              focused.
+     *          'targetPath':       A specific path to navigate the receiver to.
+     *          'showBusy':         Whether or not show the 'busy' animation
+     *                              while focusing.
+     *          'extraTargetInfo':  Extra target information to pass along to
+     *                              the focusing process.
+     *          'addTargetAsRoot':  Whether or not to add the target object as a
+     *                              'root' level entry in the receiver.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
     var currentBayIndex,
 
@@ -2778,7 +2899,8 @@ function() {
     if (totalSlotCount <= this.get('visibleSlotCount')) {
         firstVisibleSlotPosition = 0;
     } else {
-        firstVisibleSlotPosition = totalSlotCount - this.get('visibleSlotCount');
+        firstVisibleSlotPosition = totalSlotCount -
+                                    this.get('visibleSlotCount');
     }
 
     //  Scroll the computed bay into the first visible position after converting
@@ -3664,7 +3786,8 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETConfigInspectorSource.Inst.defineMethod('resolveAspectForInspector',
+TP.sherpa.TIBETConfigInspectorSource.Inst.defineMethod(
+    'resolveAspectForInspector',
 function(anAspect, options) {
 
     /**

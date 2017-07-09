@@ -10721,7 +10721,8 @@ function(aURIOrPushState, aDirection) {
         lastParams,
         paramDiff,
         bootParams,
-        route;
+        route,
+        histIndex;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -11018,10 +11019,43 @@ function(aURIOrPushState, aDirection) {
     //  this is the first route (no last route in history) it has to be one that
     //  is flagged as a deeproot.
     if (TP.notValid(last)) {
+
         if (configInfo.at(routeKey + '.deeproot') !== true) {
-            TP.go2('/');
+
+            //  If session storage has a TIBET session history, possibly move
+            //  back using 'go' call with a numeric index.
+            if (TP.isValid(TP.global.sessionStorage.getItem(
+                                            'tibet_sessionHistory'))) {
+
+                //  The number we want to move back (to get to 0) is the history
+                //  index that will have been restored from session storage.
+                histIndex = TP.core.History.get('index');
+
+                //  Make sure this is greater than 0. Otherwise, the go() call
+                //  has issues.
+                if (histIndex > 0) {
+                    TP.global.history.go(-histIndex);
+
+                    //  Make sure to 0 out the index to start fresh.
+                    TP.core.History.set('index', 0);
+                }
+            } else {
+                TP.go2('/');
+            }
+
+            //  Make sure that, either way we navigate, that the history's last
+            //  valid index also gets set to 0. This way, any movement forward
+            //  will be trapped.
+            TP.core.History.set('lastValidIndex', 0);
+
             return;
+        } else {
+
+            //  The current route is a deeproot. Make sure that the history's
+            //  last valid index is the same as its index.
+            TP.core.History.set('lastValidIndex', TP.core.History.get('index'));
         }
+
     }
 
     //  If the route changed be sure to refresh the controller list.

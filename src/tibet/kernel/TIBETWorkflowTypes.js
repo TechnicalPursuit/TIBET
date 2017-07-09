@@ -6923,6 +6923,12 @@ TP.core.History.Type.defineAttribute('history');
 //  the actual browser's view of the world if low-level API has been used.
 TP.core.History.Type.defineAttribute('index', 0);
 
+//  the 'last valid' index at the end of history that the user can move to.
+//  Sometimes if the user has reloaded and we had stored history, and the user
+//  tries to move forward in that history, checks for the last valid index can
+//  prevent this
+TP.core.History.Type.defineAttribute('lastValidIndex', 0);
+
 //  an index offset used to help track direction of any operation in progress.
 //  Should be null when computation of an offset can't be done properly.
 TP.core.History.Type.defineAttribute('offset', null);
@@ -6943,17 +6949,35 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
+    var sessionHistory;
+
     //  Install a popstate handler to catch changes due to history API.
     window.addEventListener('popstate',
                             function(evt) {
                                 this.onpopstate(evt);
                             }.bind(this), false);
 
-    //  Create a history list the size of the current native list.
-    this.$set('history', TP.ac());
+    //  See if the session storage had a stored session history. If so, restore
+    //  our history from that.
+    sessionHistory = TP.global.sessionStorage.getItem('tibet_sessionHistory');
+    if (TP.isValid(sessionHistory)) {
 
-    //  Capture initial history location as our starting point.
-    this.captureHistory();
+        //  Restore the session history from the (JSON) value stored in session
+        //  storage.
+        this.restoreSessionHistory(sessionHistory);
+    } else {
+
+        //  Otherwise, we're starting fresh.
+
+        //  Create a history list the size of the current native list.
+        this.$set('history', TP.ac());
+
+        //  Capture initial history location as our starting point.
+        this.captureHistory();
+
+        //  Store off the session history in the browser's session storage.
+        this.saveSessionHistory();
+    }
 
     return;
 });
@@ -7404,6 +7428,18 @@ function(anEvent) {
         return;
     }
 
+    //  If there is a valid state, then make sure to check its index against the
+    //  last valid index. If it's greater than the last valid index, then the
+    //  user is trying to move forward in history using the forward arrow or
+    //  keystroke to a place 'beyond' where we want them to go. Force them back
+    //  using the history object's 'go()' call.
+    if (TP.isValid(state)) {
+        if (state.index > this.get('lastValidIndex')) {
+            TP.global.history.go(-state.index);
+            return;
+        }
+    }
+
     //  The popstate event can come from a number of sources so we need to
     //  ensure we get the right index adjustments in our internal history.
     this.updateIndex(anEvent);
@@ -7568,7 +7604,9 @@ function(stateObj, aTitle, aURL, fromDoc) {
     entry = TP.ac(state, title, url);
     history.push(entry);
 
+    //  Make sure to bump both of these.
     this.set('index', index + 1);
+    this.set('lastValidIndex', index + 1);
 
     //  work around bug(s) on chrome et. al. which fire popstate on pushState
     try {
@@ -7632,6 +7670,9 @@ function(stateObj, aTitle, aURL, fromDoc) {
         //  the "routable" value but not the actual canvas URI in some cases.
         this.getNativeWindow().history.pushState(state, title, pushable);
 
+        //  Store off the session history in the browser's session storage.
+        this.saveSessionHistory();
+
         //  If we're here due to a direct change via a document being loaded
         //  don't allow further processing.
         if (TP.isTrue(fromDoc)) {
@@ -7668,7 +7709,9 @@ function(aURL) {
      * @method replaceLocation
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
-     * @param
+     * @param {String} aURL The location to use to replace the state on the
+     *     native history object.
+     * @returns {TP.core.History} The receiver.
      */
 
     return this.replaceState({}, '', aURL);
@@ -7690,6 +7733,7 @@ function(stateObj, aTitle, aURL) {
      * @param {String} aURL The location to use when displaying this history
      *     entry in the URL bar.
      * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
+     * @returns {TP.core.History} The receiver.
      */
 
     var url,
@@ -7703,7 +7747,7 @@ function(stateObj, aTitle, aURL) {
 
     if (!TP.isURIString(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
-        return;
+        return this;
     }
 
     url = TP.str(aURL);
@@ -7715,7 +7759,7 @@ function(stateObj, aTitle, aURL) {
 
     //  Dampen changes that aren't really changes.
     if (current === url) {
-        return;
+        return this;
     }
 
     this.set('direction', 'replace', false);
@@ -7767,7 +7811,10 @@ function(stateObj, aTitle, aURL) {
         this.reportLocation();
     }
 
-    return;
+    //  Store off the session history in the browser's session storage.
+    this.saveSessionHistory();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7817,6 +7864,57 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('restoreSessionHistory',
+function(aJSONString) {
+
+    /**
+     * @method restoreSessionHistory
+     * @summary Restores the session history (the history index and entries)
+     *     from the supplied JSON string.
+     * @param {String} aJSONString The JSON-ified history information that was
+     *     generated and stored using the saveSessionHistory method.
+     * @returns {TP.core.History} The receiver.
+     */
+
+    var obj;
+
+    obj = TP.json2js(aJSONString);
+
+    this.$set('index', obj.at('index'));
+    this.$set('history', obj.at('entries'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('saveSessionHistory',
+function() {
+
+    /**
+     * @method saveSessionHistory
+     * @summary Saves the session history (the history index and entries) to the
+     *     browser's session storage.
+     * @returns {TP.core.History} The receiver.
+     */
+
+    var info,
+        str;
+
+    info = TP.hc(
+            'index', this.get('index'),
+            'entries', this.get('history')
+            );
+
+    str = TP.js2json(info);
+
+    TP.global.sessionStorage.setItem('tibet_sessionHistory', str);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('setIndex',
 function(anIndex) {
 
@@ -7838,6 +7936,9 @@ function(anIndex) {
     }
 
     this.$set('index', anIndex);
+
+    //  Store off the session history in the browser's session storage.
+    this.saveSessionHistory();
 
     return this;
 });
@@ -7986,7 +8087,12 @@ function(anEvent) {
         }
     }
 
-    this.captureHistory();
+    //  If the session storage is *not* storing a session history, then we can
+    //  go ahead and capture history here. Otherwise, we do *not* want to do
+    //  this or it messes up our history values.
+    if (TP.notValid(TP.global.sessionStorage.getItem('tibet_sessionHistory'))) {
+        this.captureHistory();
+    }
 
     return this.get('index');
 });
