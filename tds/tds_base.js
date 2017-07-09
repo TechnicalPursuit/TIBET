@@ -39,13 +39,13 @@
     winston = require('winston');
 
     // Load the package support to help with option/configuration data.
-    Package = require('../common/tibet_package');
+    Package = require('../etc/common/tibet_package');
 
     //  CouchDB utilities for couch and task processing.
-    couch = require('../helpers/couch_helpers.js');
+    couch = require('../etc/helpers/couch_helpers.js');
 
     // Load color utilities for colorizing log messages etc.
-    Color = require('../common/tibet_color');
+    Color = require('../etc/common/tibet_color');
     hasAnsi = require('has-ansi');
 
     //  ---
