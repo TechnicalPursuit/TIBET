@@ -591,7 +591,9 @@ function() {
 
         testRep = TP.ac(1, 2, 'that\'s cool').as('html:ul',
                      TP.hc('repeat', true,
-                            'infos', TP.ac(TP.hc('$attrInfo', 'baz="goo"'))));
+                            'infos', TP.ac(
+                                        TP.hc('repeat', true,
+                                                '$attrInfo', 'baz="goo"'))));
 
         correctRep = '<ul>' +
                         '<li baz="goo">1</li>' +
