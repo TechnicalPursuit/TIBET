@@ -45,7 +45,7 @@ Cmd.prototype = new Cmd.Parent();
  * The command execution context.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 
 /**
  * The command name for this type.
@@ -98,7 +98,7 @@ Cmd.prototype.execute = function() {
     sh = require('shelljs');
     child = require('child_process');
 
-    if (!CLI.isInitialized() && !CLI.inLibrary()) {
+    if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 
