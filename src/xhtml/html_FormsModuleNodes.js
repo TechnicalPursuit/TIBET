@@ -1324,7 +1324,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_',
+    return TP.join('<html:input id="field_',
                     fieldNum,
                     '" type="checkbox" value="', val, '"/>');
 });
@@ -1363,7 +1363,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_', fieldNum,
+    return TP.join('<html:input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
 });
 
@@ -1396,7 +1396,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_', fieldNum,
+    return TP.join('<html:input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
 });
 
@@ -1435,7 +1435,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_', fieldNum,
+    return TP.join('<html:input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
 });
 
@@ -1478,18 +1478,18 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     if (TP.isArray(anObject)) {
         template = TP.join(
-                    '<label for="field_{{$INDEX}}">',
+                    '<html:label for="field_{{$INDEX}}">',
                     'Field #{{$INDEX}}:',
-                    '</label>',
+                    '</html:label>',
                     '{{.%TP.html.input}}');
     } else {
         //  Otherwise, the object that will be handed to the iteration
         //  mechanism will be [key,value] pairs, so we can use that fact
         //  to generate item tags around each one.
         template = TP.join(
-                    '<label for="field_{{$INDEX}}">',
+                    '<html:label for="field_{{$INDEX}}">',
                     '{{0}}:',
-                    '</label>',
+                    '</html:label>',
                     '{{1.%TP.html.input}}');
     }
 

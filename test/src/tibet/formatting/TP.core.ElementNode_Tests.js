@@ -409,7 +409,7 @@ function() {
 
                 test.assert.isEqualTo(
                     elem.getValue(),
-                    '&lt;li&gt;1&lt;/li&gt;&lt;li&gt;2&lt;/li&gt;&lt;li&gt;3&lt;/li&gt;');
+                    '&lt;html:li&gt;1&lt;/html:li&gt;&lt;html:li&gt;2&lt;/html:li&gt;&lt;html:li&gt;3&lt;/html:li&gt;');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -887,7 +887,7 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             textArea.get('value'),
-                            '&lt;li&gt;foo&lt;/li&gt;&lt;li&gt;bar&lt;/li&gt;&lt;li&gt;baz&lt;/li&gt;');
+                            '&lt;html:li&gt;foo&lt;/html:li&gt;&lt;html:li&gt;bar&lt;/html:li&gt;&lt;html:li&gt;baz&lt;/html:li&gt;');
                     });
             },
             function(error) {

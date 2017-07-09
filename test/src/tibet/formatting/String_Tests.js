@@ -621,7 +621,7 @@ function() {
         //  ---
 
         testRep = TP.ac(1, 2, 'that\'s cool').format('The list is {{value.%*html:ul}}');
-        correctRep = 'The list is <ul><li>1</li><li>2</li><li>that\'s cool</li></ul>';
+        correctRep = 'The list is <html:ul><html:li>1</html:li><html:li>2</html:li><html:li>that\'s cool</html:li></html:ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -632,7 +632,7 @@ function() {
 
         //  Spaces on either side of the formatting separator
         testRep = TP.ac(1, 2, 'that\'s cool').format('The list is {{value .%* html:ul}}');
-        correctRep = 'The list is <ul><li>1</li><li>2</li><li>that\'s cool</li></ul>';
+        correctRep = 'The list is <html:ul><html:li>1</html:li><html:li>2</html:li><html:li>that\'s cool</html:li></html:ul>';
 
         test.assert.isEqualTo(
             testRep,

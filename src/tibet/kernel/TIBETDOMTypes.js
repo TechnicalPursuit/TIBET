@@ -9827,7 +9827,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getLocalName();
+    tagName = this.getCanonicalName();
 
     //  Don't generate markup annotated with the data expression
     theRequest.atPut('annotateMarkup', false);

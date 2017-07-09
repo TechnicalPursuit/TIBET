@@ -571,11 +571,11 @@ function() {
 
         testRep = TP.ac(1, 2, 'that\'s cool').as('html:ul', TP.hc('repeat', true));
 
-        correctRep = '<ul>' +
-                        '<li>1</li>' +
-                        '<li>2</li>' +
-                        '<li>that\'s cool</li>' +
-                        '</ul>';
+        correctRep = '<html:ul>' +
+                        '<html:li>1</html:li>' +
+                        '<html:li>2</html:li>' +
+                        '<html:li>that\'s cool</html:li>' +
+                        '</html:ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -588,18 +588,17 @@ function() {
         //  information that goes with each 'li'
         //  ---
 
-
         testRep = TP.ac(1, 2, 'that\'s cool').as('html:ul',
                      TP.hc('repeat', true,
                             'infos', TP.ac(
                                         TP.hc('repeat', true,
                                                 '$attrInfo', 'baz="goo"'))));
 
-        correctRep = '<ul>' +
-                        '<li baz="goo">1</li>' +
-                        '<li baz="goo">2</li>' +
-                        '<li baz="goo">that\'s cool</li>' +
-                        '</ul>';
+        correctRep = '<html:ul>' +
+                        '<html:li baz="goo">1</html:li>' +
+                        '<html:li baz="goo">2</html:li>' +
+                        '<html:li baz="goo">that\'s cool</html:li>' +
+                        '</html:ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -624,20 +623,20 @@ function() {
                         'html:form', TP.hc('repeat', true));
 
         correctRep =
-                '<form>' +
-                    '<label for="field_0">Emp Number:</label>' +
-                    '<input id="field_0" type="text" value="1"/>' +
-                    '<label for="field_1">First Name:</label>' +
-                    '<input id="field_1" type="text" value="Bill"/>' +
-                    '<label for="field_2">Last Name:</label>' +
-                    '<input id="field_2" type="text" value="Edney"/>' +
-                    '<label for="field_3">Hire Date:</label>' +
-                    '<input id="field_3" type="text" value="' + dateVal.toISOString() + '"/>' +
-                    '<label for="field_4">Emp Level:</label>' +
-                    '<select>' +
-                        '<option>1, 2, 3</option>' +
-                   '</select>' +
-               '</form>';
+                '<html:form>' +
+                    '<html:label for="field_0">Emp Number:</html:label>' +
+                    '<html:input id="field_0" type="text" value="1"/>' +
+                    '<html:label for="field_1">First Name:</html:label>' +
+                    '<html:input id="field_1" type="text" value="Bill"/>' +
+                    '<html:label for="field_2">Last Name:</html:label>' +
+                    '<html:input id="field_2" type="text" value="Edney"/>' +
+                    '<html:label for="field_3">Hire Date:</html:label>' +
+                    '<html:input id="field_3" type="text" value="' + dateVal.toISOString() + '"/>' +
+                    '<html:label for="field_4">Emp Level:</html:label>' +
+                    '<html:select>' +
+                        '<html:option>1, 2, 3</html:option>' +
+                   '</html:select>' +
+               '</html:form>';
 
 
         test.assert.isEqualTo(
