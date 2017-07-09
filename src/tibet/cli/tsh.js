@@ -412,30 +412,35 @@ Cmd.prototype.prereqs = function() {
     pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
     if (!sh.test('-e', pathToPhantom)) {
 
-        //  If phantomjs was on path phantomjs-prebuilt uses a different path to
-        //  the binary (sigh...what is it with consistency (or lack of it) ?)
+        //  If phantomjs was on path then phantomjs-prebuilt uses a different
+        //  path to binary. sigh.
         pathToPhantom = path.join(CLI.getNpmPath(),
             'phantomjs-prebuilt/bin/phantomjs');
 
         if (!sh.test('-e', pathToPhantom)) {
 
-            //  If phantomjs-prebuilt not installed perhaps phantomjs is...
-            pathToPhantom = sh.which('phantomjs');
-            if (!pathToPhantom) {
-                this.warn('This command requires PhantomJS to be installed.\n' +
-                      'Try using \'npm install --save-dev phantomjs-prebuilt\'.\n' +
-                      'See https://github.com/Medium/phantomjs for more info.');
-                return 1;
-            } else {
-                Cmd.PHANTOM_PATH = pathToPhantom;
-                this.warn('Preferred PhantomJS module phantomjs-prebuilt not found.\n' +
-                    'We recommend \'npm install --save-dev phantomjs-prebuilt\'.\n' +
-                    'Defaulting to PhantomJS binary at ' + pathToPhantom + '.');
+            //  Last chance for prebuilt...we might be frozen...look around.
+            pathToPhantom = path.join(CLI.getNpmPath(),
+                'tibet/phantomjs-prebuilt/bin/phantomjs');
+
+            if (!sh.test('-e', pathToPhantom)) {
+                //  If phantomjs-prebuilt not installed perhaps phantomjs is...
+                pathToPhantom = sh.which('phantomjs');
+                if (!pathToPhantom) {
+                    this.warn('This command requires PhantomJS to be installed.\n' +
+                          'Try using \'npm install --save-dev phantomjs-prebuilt\'.\n' +
+                          'See https://github.com/Medium/phantomjs for more info.');
+                    return 1;
+                } else {
+                    this.warn('Preferred PhantomJS module phantomjs-prebuilt not found.\n' +
+                        'We recommend \'npm install --save-dev phantomjs-prebuilt\'.\n' +
+                        'Defaulting to PhantomJS binary at ' + pathToPhantom + '.');
+                }
             }
-        } else {
-            Cmd.PHANTOM_PATH = pathToPhantom;
         }
     }
+
+    Cmd.PHANTOM_PATH = pathToPhantom;
 
     return 0;
 };
