@@ -36,7 +36,7 @@ sherpa|changes > .header > sherpa|count[name="server"] {
 
     left: 50%;
 
-    margin-left: -50px;
+    margin-left: -52px;
 }
 
 sherpa|changes > .header > sherpa|sync {
@@ -45,7 +45,7 @@ sherpa|changes > .header > sherpa|sync {
 
     left: 50%;
 
-    margin-left: -12px;
+    margin-left: -11px;
 }
 
 sherpa|changes > .header > sherpa|count[name="client"] {
@@ -54,7 +54,7 @@ sherpa|changes > .header > sherpa|count[name="client"] {
 
     left: 50%;
 
-    margin-left: 16px;
+    margin-left: 20px;
 }
 
 sherpa|changes > .content {
@@ -84,7 +84,7 @@ sherpa|changes > .content > xctrls|list {
     position: absolute;
     top: 2em;
     right: 0;
-    bottom: 0;
+    bottom: 24px;
     left: 0;
     width: auto;
     height: auto;
