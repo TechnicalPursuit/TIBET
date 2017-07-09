@@ -460,7 +460,12 @@ function(options) {
     data = TP.str(targetObj);
     if (data.getSize() < TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
         if (TP.notEmpty(data)) {
-            data = TP.sherpa.pp.fromString(data);
+
+            if (TP.canInvoke(data, 'as')) {
+                data = data.as('TP.sherpa.pp');
+            } else {
+                data = TP.sherpa.pp.fromString(data);
+            }
         }
     }
 
