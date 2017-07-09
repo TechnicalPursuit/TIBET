@@ -58,8 +58,23 @@
     <script src="./TP.sherpa.consoleoutput/TP.sherpa.consoleoutput.js"/>
     <script src="./TP.sherpa.halocontextmenu/TP.sherpa.halocontextmenu.js"/>
     <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
+
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
+
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETRemoteSourcesListInspectorSource.js"/>
+
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETConfigListInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETLocalStorageListInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETSessionStorageListInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETSignalMapListInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETRouteListInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETTypeListInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETURIListInspectorSource.js"/>
+
+    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETRouteEntryInspectorSource.js"/>
+
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
+
     <script src="./TP.sherpa.outliner/TP.sherpa.outliner.js"/>
     <script src="./TP.sherpa.changes/TP.sherpa.changes.js"/>
     <script src="./TP.sherpa.count/TP.sherpa.count.js"/>

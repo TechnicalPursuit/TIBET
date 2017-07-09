@@ -56,12 +56,12 @@ function(aRequest) {
 
     //  Make sure to run the setter for this, if it has a value, as that's where
     //  the watch/unwatch happens.
-    if (tpElem.hasAttribute('autorefresh')) {
-        tpElem.setAttrAutorefresh(TP.bc(tpElem.getAttribute('autorefresh')));
+    if (tpElem.hasAttribute('watched')) {
+        tpElem.setAttrWatched(TP.bc(tpElem.getAttribute('watched')));
     } else {
-        //  If we didn't have an autorefresh attribute, then just set a blank
+        //  If we didn't have an watched attribute, then just set a blank
         //  one in case anyone is binding to it.
-        tpElem.setAttribute('autorefresh', '');
+        tpElem.setAttribute('watched', '');
     }
 
     tpElem.shouldSignalChange(true);
@@ -628,13 +628,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('setAttrAutorefresh',
-function(refreshValue) {
+TP.tibet.service.Inst.defineMethod('setAttrWatched',
+function(watchedValue) {
 
     /**
-     * @method setAttrAutorefresh
-     * @summary Sets the 'autorefresh' value for the receiver.
-     * @param {String} refreshValue
+     * @method setAttrWatched
+     * @summary Sets the 'watched' value for the receiver.
+     * @param {String} watchedValue A value of 'true' or 'false' as to whether
+     *     the remote URI on the receiver should be 'watched' for changes.
      */
 
     var href,
@@ -653,8 +654,8 @@ function(refreshValue) {
         return this;
     }
 
-    val = TP.bc(refreshValue);
-    uri.set('autoRefresh', val);
+    val = TP.bc(watchedValue);
+    uri.set('watched', val);
 
     if (val) {
         this.observe(uri, 'TP.sig.ValueChange');
@@ -662,7 +663,7 @@ function(refreshValue) {
         this.ignore(uri, 'TP.sig.ValueChange');
     }
 
-    this.$setAttribute('autorefresh', val);
+    this.$setAttribute('watched', val);
 
     //  setting an attribute returns void according to the spec
     return;

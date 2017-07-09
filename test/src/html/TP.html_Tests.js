@@ -1104,12 +1104,12 @@ function() {
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at(TP.UNDEF)));
+        test.assert.isEqualTo(value, TP.str(''));
 
         //  null
         tpElem.set('value', testData.at(TP.NULL));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at(TP.NULL)));
+        test.assert.isEqualTo(value, TP.str(''));
 
         //  String
         tpElem.set('value', testData.at('String'));
@@ -1250,12 +1250,12 @@ function() {
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at(TP.UNDEF)));
+        test.assert.isEqualTo(value, TP.str(''));
 
         //  null
         tpElem.set('value', testData.at(TP.NULL));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at(TP.NULL)));
+        test.assert.isEqualTo(value, TP.str(''));
 
         //  String
         tpElem.set('value', testData.at('String'));

@@ -962,6 +962,35 @@ function(aText) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.textUtilities.Inst.defineMethod('produceValue',
+function(aspectName, aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method works together with the 'isSingleValued()' and
+     *     'isScalarValued()' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued() for more
+     *     information.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    //  If the content that we're trying to compute a value from is not valid,
+    //  then we return the empty String. That way, we don't end up with a bunch
+    //  of controls that have the word 'undefined' as their value.
+    if (TP.notValid(aContentObject)) {
+        return '';
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.textUtilities.Inst.defineMethod('replaceSelection',
 function(aText) {
 
@@ -1295,7 +1324,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_',
+    return TP.join('<html:input id="field_',
                     fieldNum,
                     '" type="checkbox" value="', val, '"/>');
 });
@@ -1334,7 +1363,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_', fieldNum,
+    return TP.join('<html:input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
 });
 
@@ -1367,7 +1396,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_', fieldNum,
+    return TP.join('<html:input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
 });
 
@@ -1406,7 +1435,7 @@ function(anObject, aRequest) {
         fieldNum = TP.genID().slice(10);
     }
 
-    return TP.join('<input id="field_', fieldNum,
+    return TP.join('<html:input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
 });
 
@@ -1449,18 +1478,18 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     if (TP.isArray(anObject)) {
         template = TP.join(
-                    '<label for="field_{{$INDEX}}">',
+                    '<html:label for="field_{{$INDEX}}">',
                     'Field #{{$INDEX}}:',
-                    '</label>',
+                    '</html:label>',
                     '{{.%TP.html.input}}');
     } else {
         //  Otherwise, the object that will be handed to the iteration
         //  mechanism will be [key,value] pairs, so we can use that fact
         //  to generate item tags around each one.
         template = TP.join(
-                    '<label for="field_{{$INDEX}}">',
+                    '<html:label for="field_{{$INDEX}}">',
                     '{{0}}:',
-                    '</label>',
+                    '</html:label>',
                     '{{1.%TP.html.input}}');
     }
 
@@ -1692,7 +1721,9 @@ function(aTargetElem, anEvent) {
         item,
         bindAttrNodes,
 
-        bindInfoTPElem;
+        bindInfoTPElem,
+
+        val;
 
     tpElem = TP.wrap(aTargetElem);
 
@@ -1733,12 +1764,21 @@ function(aTargetElem, anEvent) {
                                 TP.str(tpElem));
         }
 
+        val = tpElem.getDisplayValue();
+
+        //  If the wrapped element doesn't allow multiple values, make sure to
+        //  collapse it down.
+        if (!tpElem.allowsMultiples()) {
+            val = TP.collapse(val);
+        }
+
         //  Set our bound value, but using the binding information found on one
         //  of our 'value elements' (which might be the targeted element, but
         //  might not be).
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                bindInfoTPElem.getBindingScopeValues(),
-                                bindInfoTPElem.getAttribute('bind:io'));
+        tpElem.setBoundValue(
+                        val,
+                        bindInfoTPElem.getBindingScopeValues(),
+                        bindInfoTPElem.getAttribute('bind:io'));
     }
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
@@ -1951,6 +1991,40 @@ function() {
      */
 
     return this.$getVisualToggle();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('produceValue',
+function(aspectName, aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method works together with the 'isSingleValued()' and
+     *     'isScalarValued()' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued() for more
+     *     information.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    //  If the content that we're trying to compute a value from is not valid,
+    //  then we return either an Array with false as it's first value or just
+    //  false, depending on whether we allow multiple values.
+    if (TP.notValid(aContentObject)) {
+
+        if (this.allowsMultiples()) {
+            return TP.ac(false);
+        }
+
+        return false;
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

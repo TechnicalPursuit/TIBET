@@ -9571,6 +9571,8 @@ function(anObject, aRequest) {
         currentLevel,
         infos,
         levelInfo,
+        i,
+        reqCopy,
 
         attrInfo,
         attrStr,
@@ -9597,24 +9599,68 @@ function(anObject, aRequest) {
     //  not we have info for that level.
     if (TP.isNumber(currentLevel = theRequest.at('currentLevel'))) {
         if (currentLevel === 0) {
-            //  We're at 'level 0'
-            levelInfo = theRequest;
-        } else if (TP.notValid(infos = theRequest.at('infos')) ||
-            TP.notValid(levelInfo = infos.at(currentLevel - 1))) {
-            levelInfo = TP.hc();
+            //  We're at 'level 0' - use a copy of the supplied request.
+            levelInfo = TP.copy(theRequest);
+        } else {
+
+            //  See if there's an Array of 'infos' hashes. These will be used to
+            //  communicate parameters 'further down' into the recursion.
+            infos = theRequest.at('infos');
+
+            //  No infos - just use a copy of the supplied request.
+            if (TP.notValid(infos)) {
+                levelInfo = TP.copy(theRequest);
+            } else {
+
+                //  Otherwise, grab the info hash representing our level (which
+                //  will be the one at our current level minus 1).
+                levelInfo = infos.at(currentLevel - 1);
+
+                //  If there is none, then we need to search for one.
+                if (TP.notValid(levelInfo)) {
+
+                    //  Start two levels up from our current level.
+                    i = currentLevel - 2;
+
+                    //  Back up through all of the level numbers, looking for a
+                    //  valid info hash.
+                    while (i > -1) {
+                        if (TP.isValid(infos.at(i))) {
+                            levelInfo = infos.at(i);
+                            break;
+                        }
+                        i--;
+                    }
+
+                    //  If we still didn't find an info hash, just use a copy of
+                    //  the supplied request.
+                    if (TP.notValid(levelInfo)) {
+                        levelInfo = TP.copy(theRequest);
+                    } else {
+
+                        //  Otherwise, copy the supplied request (to get the
+                        //  most specific values) and then add in any values
+                        //  that we got from the info hash we computed.
+                        reqCopy = TP.copy(theRequest.getPayload());
+                        reqCopy.addAllIfAbsent(levelInfo);
+                        levelInfo = reqCopy;
+                    }
+                }
+            }
         }
     } else {
-        //  We must be at 'level 0' - there not even a 'currentLevel' set.
-        levelInfo = theRequest;
+        //  We must be at 'level 0' - there not even a 'currentLevel' set. Use a
+        //  copy of the supplied request.
+        levelInfo = TP.copy(theRequest);
     }
 
     //  If 'currentLevel' wasn't defined before, that means that we're at
     //  level 0 (the caller's entry point). Define it to be 'level 1'.
     //  Otherwise, increment the level count.
-    if (TP.notValid(theRequest.at('currentLevel'))) {
-        theRequest.atPut('currentLevel', 1);
+    if (TP.notValid(levelInfo.at('currentLevel'))) {
+        levelInfo.atPut('currentLevel', 1);
     } else {
-        theRequest.atPut('currentLevel', theRequest.at('currentLevel') + 1);
+        levelInfo.atPut('currentLevel', levelInfo.at('currentLevel') + 1);
     }
 
     //  Note that for these configuration parameters, 'levelInfo' very well
@@ -9639,7 +9685,7 @@ function(anObject, aRequest) {
         itemFormat = 'String';
         formatArgs = null;
     } else {
-        formatArgs = theRequest;
+        formatArgs = levelInfo;
     }
 
     if (!shouldAutoWrap) {
@@ -9671,7 +9717,7 @@ function(anObject, aRequest) {
         retVal = this.generateMarkup(anObject, attrStr,
                                         itemFormat, shouldAutoWrap,
                                         formatArgs,
-                                        theRequest);
+                                        levelInfo);
     } else {
         //  No attribute info? Then we can just use the tag name and the
         //  item format.
@@ -9685,17 +9731,17 @@ function(anObject, aRequest) {
 
                 if (TP.isString(attrInfo)) {
                     //  It's a String - just use it.
-                    theRequest.atPut(
+                    levelInfo.atPut(
                                 '$attrStr',
                                 attrInfo);
                 } else if (TP.isValid(attrInfo)) {
                     //  It should be a TP.core.Hash at this point - convert
                     //  to a String.
-                    theRequest.atPut('$attrStr',
+                    levelInfo.atPut('$attrStr',
                                         attrInfo.asAttributeString());
                 } else {
                     //  Otherwise, its not valid so its the empty String.
-                    theRequest.atPut('$attrStr', '');
+                    levelInfo.atPut('$attrStr', '');
                 }
             } else {
                 attrStr = ' {{.%$attrInfo}}';
@@ -9706,12 +9752,8 @@ function(anObject, aRequest) {
         retVal = this.generateMarkup(anObject, attrStr,
                                         itemFormat, shouldAutoWrap,
                                         formatArgs,
-                                        theRequest);
+                                        levelInfo);
     }
-
-    //  Decrement the level count by 1, now that we've returned from our
-    //  formatting invocation.
-    theRequest.atPut('currentLevel', theRequest.at('currentLevel') - 1);
 
     return retVal;
 });
@@ -9785,7 +9827,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getLocalName();
+    tagName = this.getCanonicalName();
 
     //  Don't generate markup annotated with the data expression
     theRequest.atPut('annotateMarkup', false);
