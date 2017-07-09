@@ -962,6 +962,35 @@ function(aText) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.textUtilities.Inst.defineMethod('produceValue',
+function(aspectName, aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method works together with the 'isSingleValued()' and
+     *     'isScalarValued()' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued() for more
+     *     information.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    //  If the content that we're trying to compute a value from is not valid,
+    //  then we return the empty String. That way, we don't end up with a bunch
+    //  of controls that have the word 'undefined' as their value.
+    if (TP.notValid(aContentObject)) {
+        return '';
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.textUtilities.Inst.defineMethod('replaceSelection',
 function(aText) {
 
@@ -1951,6 +1980,40 @@ function() {
      */
 
     return this.$getVisualToggle();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('produceValue',
+function(aspectName, aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method works together with the 'isSingleValued()' and
+     *     'isScalarValued()' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued() for more
+     *     information.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    //  If the content that we're trying to compute a value from is not valid,
+    //  then we return either an Array with false as it's first value or just
+    //  false, depending on whether we allow multiple values.
+    if (TP.notValid(aContentObject)) {
+
+        if (this.allowsMultiples()) {
+            return TP.ac(false);
+        }
+
+        return false;
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
