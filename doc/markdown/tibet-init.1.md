@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet init [--link]
+tibet init [--static]
 
 ## DESCRIPTION
 
@@ -13,17 +13,16 @@ This command must be run prior to most activity within a TIBET
 project. Many of the TIBET cli commands will fail to run until
 you have run a `tibet init` command.
 
-The optional `--link` parameter will use `npm link tibet` to link
-TIBET into the project rather than attempting to install it via
-the current npm package.
+The optional `--static` parameter will cause TIBET to make a static copy of
+the current globally installed version in the project and update the
+package.json to refer to that version. Normally the current running release is
+simply linked into position via `npm link tibet`.
 
 ## OPTIONS
 
-  * `--link` :
-    Necessary when you are working with a copy of TIBET cloned from the
-public repository. For `--link` to work properly you need to have a local TIBET
-repository and you need to have run `npm link .` in that repository prior to
-tibet init.
+  * `--static` :
+    Used to lock your project to a specific version of TIBET within the
+package.json and node_modules locations.
 
 ## EXAMPLES
 
@@ -33,16 +32,16 @@ tibet init.
 
     Initializing new default project...
     installing project dependencies via `npm install`.
+    linking TIBET into project via `npm link tibet`.
     TIBET development dependency linked.
     Project initialized successfully.
 
-### Initialize a fresh project by linking a local TIBET install
+### Initialize a fresh project and lock TIBET to the current version.
 
-    $ tibet init --link
-
+    $ tibet init --static
     Initializing new default project...
-    linking TIBET into project via `npm link tibet`.
     installing dependencies via `npm install`, be patient.
+    installing static TIBET version v5.0.0-pre.1 via `cp -R`.
     TIBET development dependency linked.
     Project initialized successfully.
 
