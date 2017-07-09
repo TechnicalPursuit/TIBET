@@ -1678,11 +1678,12 @@ function(anInfo) {
 
         historyPathParts;
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
-
     targetAspect = anInfo.at('targetAspect');
     target = anInfo.at('targetObject');
     targetPath = anInfo.at('targetPath');
+
+    //  Grab all of the inspector bays in the receiver.
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
     //  Pass along any extra targeting information that editors or property
     //  panels would want by putting that onto one of our slots.
@@ -1776,20 +1777,13 @@ function(anInfo) {
         //  Now that we have more inspector items, obtain the list again.
         inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
-    } else if (TP.isValid(resolver)) {
+    } else if (TP.isValid(target) && TP.isValid(resolver)) {
+
+        //  No target object was supplied, but the current bay had a resolver
+        //  that it resolved the target aspect against to get the target object.
 
         if (TP.isNumber(currentBayIndex)) {
             info.atPut('bayIndex', currentBayIndex + 1);
-        }
-
-        if (TP.notValid(target)) {
-            //  Resolve the targetAspect to a target object
-            target = TP.resolveAspectForTool(
-                            resolver,
-                            'inspector',
-                            targetAspect,
-                            TP.hc('pathParts',
-                                    this.get('selectedItems')));
         }
 
         info.atPut('targetObject', target);
@@ -1801,7 +1795,7 @@ function(anInfo) {
         this.signal('InspectorDidFocus');
 
         return this;
-    } else if (TP.isEmpty(targetPath)) {
+    } else if (TP.isValid(target) && TP.isEmpty(targetPath)) {
 
         //  We're not going to add as dynamic root, but try to traverse to
         //  instead.
@@ -1813,8 +1807,18 @@ function(anInfo) {
                                 TP.hc('pathParts',
                                         this.get('selectedItems')));
 
+        if (TP.isEmpty(originalPathParts)) {
+            //  TODO: Raise an exception
+            return this;
+        }
+
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(originalPathParts);
+
+        if (TP.isEmpty(pathParts)) {
+            //  TODO: Raise an exception
+            return this;
+        }
 
         //  Compute the root resolver
 
