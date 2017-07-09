@@ -336,8 +336,8 @@ Cmd.prototype.executePushapp = function() {
                         return;
                     }
 
-                    cmd.log('application loaded at ' +
-                        couch.maskCouchAuth(doc_url));
+                    cmd.log('application ready at ' +
+                        couch.maskCouchAuth(doc_url) + '/index.html');
                     resolve();
                 });
         });
@@ -550,8 +550,8 @@ Cmd.prototype.executePushapp = function() {
                             return;
                         }
 
-                        cmd.log('application updated at ' +
-                            couch.maskCouchAuth(doc_url));
+                        cmd.log('application ready at ' +
+                            couch.maskCouchAuth(doc_url) + '/index.html');
                         resolve();
                     });
             });
