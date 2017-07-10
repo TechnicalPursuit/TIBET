@@ -67,7 +67,15 @@ function(aTPElement) {
     //  Add controller stack so we see those as well.
     TP.sys.getApplication().getControllers().perform(
         function(item) {
-            info.push(TP.ac(TP.lid(item, true), TP.tname(item)));
+
+            var tname;
+
+            tname = TP.tname(item);
+
+            //  NB: We filter out the Sherpa here
+            if (tname !== 'TP.core.Sherpa') {
+                info.push(TP.ac(TP.lid(item, true), TP.tname(item)));
+            }
         });
 
     //  The list is from 'most specific to least specific' but we want to
