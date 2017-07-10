@@ -456,6 +456,10 @@ function(aHalo, aSignal) {
     generatorTPElem = this;
     /* eslint-enable consistent-this */
 
+    if (TP.isKindOf(generatorTPElem, TP.core.TemplatedTag)) {
+        return generatorTPElem;
+    }
+
     while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
 
         if (TP.isKindOf(generatorTPElem, TP.core.TemplatedTag)) {
