@@ -7677,6 +7677,7 @@ TP.boot.$getAppHead = function() {
     var path,
         node,
         head,
+        index,
         parts,
         keys,
         key,
@@ -7726,9 +7727,18 @@ TP.boot.$getAppHead = function() {
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.phantom_offset'));
-        if (head.charAt(head.length - 1) === '/') {
-            head = head.slice(0, -1);
+
+        //  try to locate node_modules on the path...app head should be the
+        //  container of that directory
+        index = path.indexOf('/node_modules');
+        if (index !== -1) {
+            head = path.slice(0, index);
+        } else {
+            //  Try to use offset.
+            head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.phantom_offset'));
+            if (head.charAt(head.length - 1) === '/') {
+                head = head.slice(0, -1);
+            }
         }
         TP.boot.$$apphead = head;
         return TP.boot.$$apphead;
@@ -10097,7 +10107,7 @@ TP.boot.$expandPath = function(aPath) {
             parts = aPath.split('/');
             virtual = parts.shift();
 
-            //  If the path was ~/...something it's app_root prefixed.
+            //  If the path was ~/...something it's app_head prefixed.
             if (virtual === '~') {
                 path = TP.boot.$getAppHead();
             } else if (virtual === '~app' ||

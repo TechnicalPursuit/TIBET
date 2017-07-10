@@ -573,7 +573,9 @@ Cmd.prototype.executePushapp = function() {
             //  TODO:   add configuration-driven ignore checks here.
             //  Remove any files which don't pass our ignore criteria.
             return !sh.test('-d', fname) &&
-                !fname.match(/node_modules/) && !fname.match(/\.DS_Store/);
+                !fname.match(/node_modules/) &&
+                !fname.match(/tds\/tds_cfg/) &&
+                !fname.match(/\.DS_Store/);
         });
         err = sh.error();
         if (sh.error()) {

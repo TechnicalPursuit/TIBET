@@ -51,7 +51,7 @@
             throw new Error('Invalid tds.plugins.tds specification: ' + plugins);
         }
 
-        pluginDir = TDS.expandPath('~lib/etc/tds/plugins');
+        pluginDir = TDS.expandPath('~lib/tds/plugins');
 
         //  * means load them all...but we need to build the list via scan.
         if (plugins === '*') {

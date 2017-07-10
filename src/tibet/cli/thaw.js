@@ -6,8 +6,9 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet thaw' command reverses the effect of 'tibet freeze',
- *     removing the TIBET-INF/tibet directory and resetting the default lib_root
- *     value in tibet.json to ~/node_modules/tibet.
+ *     resetting TIBET-INF/tibet to a link and resetting the lib_root value
+ *     in tibet.json to ~/node_modules/tibet. After a thaw the project will
+ *     be in the same state it is in after tibet init is first run.
  */
 //  ========================================================================
 
@@ -85,6 +86,7 @@ Cmd.prototype.execute = function() {
 
         err,
         app_inf,
+        app_npm,
         infroot,
 
         lnflags,
@@ -99,9 +101,12 @@ Cmd.prototype.execute = function() {
 
     app_inf = CLI.expandPath('~app_inf');
 
-    // Verify our intended target directory exists.
+    app_npm = CLI.expandPath('~app_npm');
+
+    // Verify our intended target directory exists. The TIBET-INF directory
+    // should be there or we have nothing to thaw.
     if (!sh.test('-e', app_inf)) {
-        this.error('Cannot find app_inf: ' + app_inf);
+        this.error('Unable to thaw. Cannot find app_inf directory: ' + app_inf);
         return -1;
     }
 
@@ -126,7 +131,7 @@ Cmd.prototype.execute = function() {
 
     err = sh.rm('-rf', infroot);
     if (err) {
-        this.error('Error removing target directory: ' + err);
+        this.error('Error removing ~app_inf/tibet directory: ' + err);
         return 1;
     }
 
@@ -135,11 +140,10 @@ Cmd.prototype.execute = function() {
     if (this.options.force) {
         lnflags += 'f';
     }
+
     this.log('relinking development library resources...');
-    sh.ln(lnflags, path.join(
-        CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
-        path.join(
-        CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
+
+    sh.ln(lnflags, path.join(app_npm, 'tibet'), infroot);
     lnerr = sh.error();
     if (lnerr) {
         this.error('Error relinking library resources: ' + lnerr);
@@ -164,13 +168,16 @@ Cmd.prototype.execute = function() {
     file = CLI.expandPath('~tibet_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to update lib_root in: ' + file);
+        this.error('Unable to load and update lib_root in: ' + file);
         return 1;
     }
-    if (!json.path) {
-        json.path = {};
+
+    //  Make sure json.path is clear, back to initial default state.
+    if (json.path) {
+        delete json.path.lib_root;
     }
-    json.path.lib_root = '~/node_modules/tibet';
+
+    //  SAVE the file (note the 'to()' call here...
     CLI.beautify(JSON.stringify(json)).to(file);
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');

@@ -23,8 +23,15 @@
         ansiStyles;
 
     //  Colors are used for RGB index lookups. Styles are used for modifiers.
-    ansi256 = require('ansi-256-colors');
-    ansiStyles = require('ansi-styles');
+    if (typeof phantom !== 'undefined') {
+        ansi256 = require(phantom.libraryPath +
+            '/../../node_modules/ansi-256-colors');
+        ansiStyles = require(phantom.libraryPath +
+            '/../../node_modules/ansi-styles');
+    } else {
+        ansi256 = require('ansi-256-colors');
+        ansiStyles = require('ansi-styles');
+    }
 
     /**
      * The base color object. Supports a colorize method which is the primary

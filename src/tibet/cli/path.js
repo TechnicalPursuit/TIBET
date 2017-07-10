@@ -76,9 +76,17 @@ Cmd.prototype.execute = function() {
     args = this.getArgv().slice(1);
 
     args.forEach(function(item) {
+        var vpath;
+
+        if (item.charAt(0) !== '~') {
+            vpath = '~' + item;
+        } else {
+            vpath = item;
+        }
+
         //  NOTE true flag here to silence errors and just return undef for
         //  paths that aren't found.
-        thisref.info(item + ' => ' + CLI.expandPath(item, true));
+        thisref.info(vpath + ' => ' + CLI.expandPath(vpath, true));
     });
 
     return 0;

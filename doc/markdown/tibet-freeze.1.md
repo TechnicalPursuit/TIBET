@@ -30,12 +30,6 @@ of `tibet_base.min.js` along with the load and hook files needed to boot.
 will freeze the `tibet_full` bundle. This flag defaults to the value `base` so
 `tibet_base` is frozen.
 
-  * `--link` :
-    Attempt to use symbolic links rather than a full recursive copy. This is
-useful if you are working with a live TIBET installation and need a frozen
-structure to boot properly but do not want to have your library code truly
-frozen for development.
-
   * `--minify` :
     Controls whether you freeze minified source code and is used in conjunction
 with the `--tibet` flag to filter bundles. The default value is true, so only

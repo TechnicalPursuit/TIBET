@@ -1142,7 +1142,7 @@ CLI.lpad = function(obj, length, padChar) {
  * by commands that require project initialization to run properly.
  */
 CLI.notInitialized = function() {
-    this.error('Project not initialized. Run `tibet init [--link]` first.');
+    this.error('Project may not be initialized. Run `tibet init` and retry.');
     process.exit(1);
 };
 
@@ -1381,7 +1381,7 @@ CLI.run = function(config) {
         console.log(
             path.join(__dirname,
                 '..', '..', '..',
-                'etc', 'scripts', 'tibetinit.sh'));
+                'bin', 'tibetinit.sh'));
         /* eslint-enable no-console */
         process.exit(0);
     }
@@ -1410,7 +1410,7 @@ CLI.run = function(config) {
             this.log(
                 path.join(__dirname,
                     '..', '..', '..',
-                    'etc', 'scripts', 'tibetinit.sh'),
+                    'bin', 'tibetinit.sh'),
                 'no-color');    //  NOTE we turn off any colorizing since this
                                 //  is often invoked by the shell autocomplete
                                 //  configuration scripts which parse output.

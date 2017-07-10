@@ -3,6 +3,5 @@
     "name": "sample",
     "owner": "Team TIBET",
     "plugin": "sample",
-    "params": {
-    }
+    "params": {}
 }

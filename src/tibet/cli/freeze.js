@@ -9,7 +9,7 @@
  *     version of TIBET currently used by an application into the application's
  *     TIBET-INF directory. This allows the library to be added via Git or
  *     similar tools which might normally ignore node_modules and avoids
- *     bringing over dependencies which aren't needed for deployment.
+ *     the need for pushing node_modules content into TIBET+CouchDB databases.
  */
 //  ========================================================================
 
@@ -63,7 +63,7 @@ Cmd.NAME = 'freeze';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['minify', 'raw', 'all', 'zipped', 'link'],
+        'boolean': ['minify', 'raw', 'all', 'zipped'],
         'string': ['tibet'],
         'default': {
             all: true,
@@ -103,8 +103,8 @@ Cmd.prototype.execute = function() {
         libbase,
         libsrc,
         srcroot,
-        srcpath,
-
+        lnflags,
+        lnerr,
         file,
         json,
         list,
@@ -152,190 +152,202 @@ Cmd.prototype.execute = function() {
 
     infroot = path.join(app_inf, 'tibet');
 
-    if (this.options.link) {
-        this.log('linking packaged library resources...');
-        srcpath = path.join(app_npm, 'tibet');
-        if (sh.test('-L', srcpath)) {
-            this.info('Project library resources already linked.');
-            return 0;
-        }
-
-        sh.ln('-s', path.join(app_npm, 'tibet'), infroot);
-        err = sh.error();
+    //  If the target is a link that's the `tibet init` state, so we'll skip
+    //  prompting and move directly to removing it so we can mkdir below.
+    if (sh.test('-L', infroot)) {
+        err = sh.rm('-rf', infroot);
         if (err) {
-            if (!this.options.force) {
-                if (/file exists/i.test(err)) {
-                    this.warn('Project already frozen. Use --force to re-freeze.');
-                } else {
-                    this.error('Error linking target directory. ' +
-                        'Use --force to attempt to rebuild.');
-                }
+            this.error('Error removing target link: ' + err);
+            return 1;
+        }
+    } else if (sh.test('-d', infroot)) {
+
+        //  Apparently already a true directory. Need the force option to remove
+        //  "real files" from that location.
+        if (!this.options.force) {
+            this.warn('Project already frozen. Use --force to re-freeze.');
+            return 1;
+        } else {
+            //  Exists but force is true...remove it.
+            err = sh.rm('-rf', infroot);
+            if (err) {
+                this.error('Error removing target directory: ' + err);
                 return 1;
             }
+        }
+    }
+
+    //  Either it doesn't exist or force is true and it was removed...
+    sh.mkdir(infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error creating target directory: ' + err);
+        return 1;
+    }
+
+    this.log('freezing packaged library resources...');
+    sh.cp('-R', libbase, infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning ' + libbase + ': ' + err);
+        return 1;
+    }
+
+    srcroot = path.join(infroot, 'lib', 'src');
+    list = sh.ls('-A', srcroot);
+    err = sh.error();
+    if (sh.error()) {
+        this.error('Error listing ' + srcroot + ': ' + err);
+        this.warn('Verify `tibet build` has run and built library packages.');
+        return 1;
+    }
+
+    this.log('freezing library dependencies...');
+    sh.cp('-R', path.join(app_npm, 'tibet', 'deps'), infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning tibet/deps: ' + err);
+        return 1;
+    }
+
+    this.log('freezing library support resources...');
+    sh.cp('-R', path.join(app_npm, 'tibet', 'etc'), infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning tibet/etc: ' + err);
+        return 1;
+    }
+
+    this.log('freezing standard library docs...');
+    sh.cp('-R', path.join(app_npm, 'tibet', 'doc'), infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning tibet/doc: ' + err);
+        return 1;
+    }
+
+    if (this.options.raw) {
+        this.log('freezing raw library source...');
+        sh.cp('-R', path.join(app_npm, 'tibet', 'src'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/src: ' + err);
+            return 1;
+        }
+
+        this.log('freezing raw library tests...');
+        sh.cp('-R', path.join(app_npm, 'tibet', 'test'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/test: ' + err);
+            return 1;
+        }
+
+        this.log('freezing raw library demos...');
+        sh.cp('-R', path.join(app_npm, 'tibet', 'demo'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/demo: ' + err);
+            return 1;
         }
     } else {
+        this.log('freezing developer boot resources...');
+        sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'boot'));
+        sh.cp('-R', path.join(app_npm, 'tibet', 'src', 'tibet', 'boot'),
+            path.join(infroot, 'src', 'tibet'));
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet boot: ' + err);
+            return 1;
+        }
 
-        if (sh.test('-d', infroot)) {
-            if (!this.options.force) {
-                this.warn('Project already frozen. Use --force to re-freeze.');
-                return 1;
+        this.log('freezing developer tool resources...');
+        sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
+        sh.cp('-R', path.join(app_npm, 'tibet', 'src', 'tibet', 'tools'),
+            path.join(infroot, 'src', 'tibet'));
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet tools: ' + err);
+            return 1;
+        }
+    }
+
+    //  Raw or not, we need to link a node_modules reference from TIBET into
+    //  location so things like `tibet test` and `tibet reflect` will run on a
+    //  frozen project.
+    lnflags = '-s';
+    if (this.options.force) {
+        lnflags += 'f';
+    }
+
+    //  We want the project's node_modules/tibet/node_modules dir linked into
+    //  place so CLI commands using phantomjs will find their dependencies. This
+    //  is largely due to phantomjs using its own 'require' call.
+    sh.ln(lnflags, path.join(app_npm, 'tibet', 'node_modules'),
+        path.join(infroot, 'node_modules'));
+    lnerr = sh.error();
+    if (lnerr) {
+        this.error('Error relinking npm resources: ' + lnerr);
+    }
+
+    //  ---
+    //  prune unwanted/unused files
+    //  ---
+
+    if (!this.options.all) {
+
+        this.log('pruning unnecessary source rollups...');
+
+        bundle = this.options.tibet;
+
+        list.forEach(function(fname) {
+
+            // TODO: come up with a better solution. For now the one file we
+            // don't want to remove by default is tibet_developer.min.js
+            // since the various tsh-related commands use that one.
+            if (/tibet_developer\.min\.js/.test(fname)) {
+                if (/\.gz$/.test(fname)) {
+                    sh.rm('-f', path.join(srcroot, fname));
+                }
+                return;
+            }
+
+            // Remove any minified/unminified copies we don't want.
+            if (cmd.options.minify) {
+                if (/\.min\./.test(fname) !== true) {
+                    sh.rm('-f', path.join(srcroot, fname));
+                }
             } else {
-                //  Exists but force is true...remove it.
-                err = sh.rm('-rf', infroot);
-                if (err) {
-                    this.error('Error removing target directory: ' + err);
-                    return 1;
-                }
-            }
-        }
-
-        //  Either it doesn't exist or force is true and it was removed...
-        sh.mkdir(infroot);
-        err = sh.error();
-        if (err) {
-            this.error('Error creating target directory: ' + err);
-            return 1;
-        }
-
-        this.log('freezing packaged library resources...');
-        sh.cp('-R', libbase, infroot);
-        err = sh.error();
-        if (err) {
-            this.error('Error cloning ' + libbase + ': ' + err);
-            return 1;
-        }
-
-        srcroot = path.join(infroot, 'lib', 'src');
-        list = sh.ls('-A', srcroot);
-        err = sh.error();
-        if (sh.error()) {
-            this.error('Error listing ' + srcroot + ': ' + err);
-            this.warn('Verify `tibet build` has run and built library packages.');
-            return 1;
-        }
-
-        this.log('freezing library dependencies...');
-        sh.cp('-R', path.join(app_npm, 'tibet', 'deps'), infroot);
-        err = sh.error();
-        if (err) {
-            this.error('Error cloning tibet/deps: ' + err);
-            return 1;
-        }
-
-        /*
-        this.log('freezing runtime library resources...');
-        sh.cp('-R', path.join(app_npm, 'tibet', 'etc'), infroot);
-        err = sh.error();
-        if (err) {
-            this.error('Error cloning tibet/etc: ' + err);
-            return 1;
-        }
-        */
-
-        this.log('freezing standard library docs...');
-        sh.cp('-R', path.join(app_npm, 'tibet', 'doc'), infroot);
-        err = sh.error();
-        if (err) {
-            this.error('Error cloning tibet/doc: ' + err);
-            return 1;
-        }
-
-        if (this.options.raw) {
-            this.log('freezing raw library source...');
-            sh.cp('-R', path.join(app_npm, 'tibet', 'src'), infroot);
-            err = sh.error();
-            if (err) {
-                this.error('Error cloning tibet/src: ' + err);
-                return 1;
-            }
-
-            this.log('freezing raw library tests...');
-            sh.cp('-R', path.join(app_npm, 'tibet', 'test'), infroot);
-            err = sh.error();
-            if (err) {
-                this.error('Error cloning tibet/test: ' + err);
-                return 1;
-            }
-
-            this.log('freezing raw library demos...');
-            sh.cp('-R', path.join(app_npm, 'tibet', 'demo'), infroot);
-            err = sh.error();
-            if (err) {
-                this.error('Error cloning tibet/demo: ' + err);
-                return 1;
-            }
-        } else {
-            this.log('freezing developer tool resources...');
-            sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
-            sh.cp('-R', path.join(app_npm, 'tibet', 'src', 'tibet', 'tools'),
-                path.join(infroot, 'src', 'tibet'));
-            err = sh.error();
-            if (err) {
-                this.error('Error cloning tibet tools: ' + err);
-                return 1;
-            }
-        }
-
-        //  ---
-        //  prune unwanted/unused files
-        //  ---
-
-        if (!this.options.all) {
-
-            this.log('pruning unnecessary source rollups...');
-
-            bundle = this.options.tibet;
-
-            list.forEach(function(fname) {
-
-                // TODO: come up with a better solution. For now the one file we
-                // don't want to remove by default is tibet_developer.min.js
-                // since the various tsh-related commands use that one.
-                if (/tibet_developer\.min\.js/.test(fname)) {
-                    if (/\.gz$/.test(fname)) {
-                        sh.rm('-f', path.join(srcroot, fname));
-                    }
-                    return;
-                }
-
-                // Remove any minified/unminified copies we don't want.
-                if (cmd.options.minify) {
-                    if (/\.min\./.test(fname) !== true) {
-                        sh.rm('-f', path.join(srcroot, fname));
-                    }
-                } else {
-                    if (/\.min\./.test(fname) === true) {
-                        sh.rm('-f', path.join(srcroot, fname));
-                    }
-                }
-
-                // Remove any zipped/unzipped copies we don't want.
-                if (cmd.options.zipped) {
-                    if (/\.gz$/.test(fname) !== true) {
-                        sh.rm('-f', path.join(srcroot, fname));
-                    }
-                } else {
-                    if (/\.gz$/.test(fname) === true) {
-                        sh.rm('-f', path.join(srcroot, fname));
-                    }
-                }
-
-                // Never prune any remaining hook or loader file.
-                if (/_hook\./.test(fname) || /_loader\./.test(fname)) {
-                    return;
-                }
-
-                // Note that when raw is specified no copies of bundled code are
-                // kept, only the hook and loader files which are always pulled from
-                // bundles. (NOTE phantom-based commands retain tibet_developer).
-                if (cmd.options.raw) {
-                    sh.rm('-f', path.join(srcroot, fname));
-                } else if (fname.indexOf('tibet_' + bundle + '.') === -1) {
+                if (/\.min\./.test(fname) === true) {
                     sh.rm('-f', path.join(srcroot, fname));
                 }
-            });
-        }
+            }
 
+            // Remove any zipped/unzipped copies we don't want.
+            if (cmd.options.zipped) {
+                if (/\.gz$/.test(fname) !== true) {
+                    sh.rm('-f', path.join(srcroot, fname));
+                }
+            } else {
+                if (/\.gz$/.test(fname) === true) {
+                    sh.rm('-f', path.join(srcroot, fname));
+                }
+            }
+
+            // Never prune any remaining hook or loader file.
+            if (/_hook\./.test(fname) || /_loader\./.test(fname)) {
+                return;
+            }
+
+            // Note that when raw is specified no copies of bundled code are
+            // kept, only the hook and loader files which are always pulled from
+            // bundles. (NOTE phantom-based commands retain tibet_developer).
+            if (cmd.options.raw) {
+                sh.rm('-f', path.join(srcroot, fname));
+            } else if (fname.indexOf('tibet_' + bundle + '.') === -1) {
+                sh.rm('-f', path.join(srcroot, fname));
+            }
+        });
     }
 
     //  ---
