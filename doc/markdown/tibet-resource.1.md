@@ -3,13 +3,13 @@
 
 ## SYNOPSIS
 
-tibet resources [--build] [--list] [<package-opts>]
+tibet resource [--build] [--list] [<package-opts>]
 
 ## DESCRIPTION
 
 Reflects on application resource requirements and builds rollup resources.
 
-The `tibet resources` command is used to build JavaScript-based versions of
+The `tibet resource` command is used to build JavaScript-based versions of
 various resources such as templates, style sheets, JSON data files, etc. The
 resulting files can be rolled up into build packages, significantly
 reducing the number of HTTP calls necessary to load application resources.
@@ -39,11 +39,11 @@ information.
 
 ### Listing application resource data
 
-By default the `tibet resources` command will list concrete resources it
+By default the `tibet resource` command will list concrete resources it
 believes should be processed and will display an example of the `<config/>`
 entries it would build:
 
-    $ tibet resources
+    $ tibet resource
     Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 09:45:14 MDT
     TIBET loaded in 3064 ms. Starting execution.
     Filtering 927 potential resources...
@@ -59,7 +59,7 @@ entries it would build:
 
 To build resources add the `--build` flag:
 
-    $ tibet resources --build
+    $ tibet resource --build
     Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 09:43:01 MDT
     TIBET loaded in 3680 ms. Starting execution.
     Filtering 927 potential resources...
@@ -79,7 +79,7 @@ Note that if you build multiple times the `(added)` qualifier will show
 
 For larger applications or applications which need to load resources in
 different bundles you can use nested `<config/>` elements. To accomplish
-this run the `tibet resources` command once to load the initial set of
+this run the `tibet resource` command once to load the initial set of
 resources, then partition them into separate `<config/>` elements:
 
     <config id="resources" if="boot.phase_two boot.resourced">

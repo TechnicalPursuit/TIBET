@@ -1,14 +1,14 @@
-.TH "TIBET\-RESOURCES" "1" "July 2017" "" ""
+.TH "TIBET\-RESOURCE" "1" "July 2017" "" ""
 .SH "NAME"
-\fBtibet-resources\fR \- builds template/css/resource files and config entries
+\fBtibet-resource\fR \- builds template/css/resource files and config entries
 .SH SYNOPSIS
 .P
-tibet resources [\-\-build] [\-\-list] [<package\-opts>]
+tibet resource [\-\-build] [\-\-list] [<package\-opts>]
 .SH DESCRIPTION
 .P
 Reflects on application resource requirements and builds rollup resources\.
 .P
-The \fBtibet resources\fP command is used to build JavaScript\-based versions of
+The \fBtibet resource\fP command is used to build JavaScript\-based versions of
 .br
 various resources such as templates, style sheets, JSON data files, etc\. The
 .br
@@ -52,7 +52,7 @@ information\.
 .SH EXAMPLES
 .SS Listing application resource data
 .P
-By default the \fBtibet resources\fP command will list concrete resources it
+By default the \fBtibet resource\fP command will list concrete resources it
 .br
 believes should be processed and will display an example of the \fB<config/>\fP
 .br
@@ -60,7 +60,7 @@ entries it would build:
 .P
 .RS 2
 .nf
-$ tibet resources
+$ tibet resource
 Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 09:45:14 MDT
 TIBET loaded in 3064 ms\. Starting execution\.
 Filtering 927 potential resources\.\.\.
@@ -79,7 +79,7 @@ To build resources add the \fB\-\-build\fP flag:
 .P
 .RS 2
 .nf
-$ tibet resources \-\-build
+$ tibet resource \-\-build
 Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 09:43:01 MDT
 TIBET loaded in 3680 ms\. Starting execution\.
 Filtering 927 potential resources\.\.\.
@@ -103,7 +103,7 @@ For larger applications or applications which need to load resources in
 .br
 different bundles you can use nested \fB<config/>\fP elements\. To accomplish
 .br
-this run the \fBtibet resources\fP command once to load the initial set of
+this run the \fBtibet resource\fP command once to load the initial set of
 .br
 resources, then partition them into separate \fB<config/>\fP elements:
 .P
