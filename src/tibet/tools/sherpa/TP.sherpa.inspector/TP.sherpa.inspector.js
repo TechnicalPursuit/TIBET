@@ -1312,321 +1312,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getBayFromSlotPosition',
-function(aSlotPosition) {
-
-    /**
-     * @method getBayFromSlotPosition
-     * @summary Returns the bay from the supplied 'slot' position.
-     * @description Because bays can take more than 1 'slot' in the inspector
-     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
-     *     be a way to translate between bays and slot numbers.
-     * @param {Number} aSlotPosition The slot position to return the bay for.
-     * @returns {TP.sherpa.inspectoritem} The bay occupying the supplied slot
-     *     position.
-     */
-
-    var inspectorBays,
-        currentSlotCount,
-
-        len,
-        i;
-
-    if (!TP.isNumber(aSlotPosition)) {
-        return null;
-    }
-
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
-    if (aSlotPosition === 0) {
-        return inspectorBays.first();
-    }
-
-    //  Grab the first bay 'multiplier'
-    currentSlotCount = inspectorBays.first().getBayMultiplier();
-
-    //  Iterate over the remaining bays, summing up the bay 'multiplier's across
-    //  them.
-    len = inspectorBays.getSize();
-    for (i = 1; i < len; i++) {
-        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
-
-        //  If we're at a bay where we're more than the slot position (the bay
-        //  numbers are 0-based, but the count is 1-based), then return that
-        //  bay.
-        if (currentSlotCount > aSlotPosition) {
-            return inspectorBays.at(i);
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('getInspectorBayContentItem',
-function(bayNum) {
-
-    /**
-     * @method getInspectorBayContentItem
-     * @summary Retrieves the content item under the bay at the supplied bay
-     *     number.
-     * @param {Number} bayNum The bay number to retrieve the content for.
-     * @returns {TP.core.ElementNode} The content element under the inspector
-     *     item representing the bay at the supplied bay number.
-     */
-
-    var inspectorBayContentItems;
-
-    if (!TP.isNumber(bayNum)) {
-        return null;
-    }
-
-    if (TP.notEmpty(inspectorBayContentItems =
-                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
-
-        return inspectorBayContentItems.at(bayNum);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromBay',
-function(aBay) {
-
-    /**
-     * @method getSlotPositionFromBay
-     * @summary Returns the starting 'slot' position from the supplied bay.
-     * @description Because bays can take more than 1 'slot' in the inspector
-     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
-     *     be a way to translate between bays and slot numbers.
-     * @param {TP.sherpa.inspectoritem} aBay The bay element to return the slot
-     *     position for.
-     * @returns {Number} The starting slot position for the supplied bay.
-     */
-
-    var inspectorBays,
-
-        bay0Multiplier,
-        currentSlotCount,
-
-        len,
-        i;
-
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
-    if (aBay === inspectorBays.first()) {
-        return 0;
-    }
-
-    bay0Multiplier = inspectorBays.first().getBayMultiplier();
-
-    currentSlotCount = bay0Multiplier;
-
-    //  Get the total number of slots in the inspector
-    len = this.getTotalSlotCount();
-
-    //  Iterate over the remaining number of slots (starting at the first bay
-    //  multiplier), adding each bay multiplier to the slot count. When we reach
-    //  the bay we're looking for, we subtract the first bay multiplier
-    for (i = bay0Multiplier; i < len; i++) {
-        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
-
-        if (inspectorBays.at(i) === aBay) {
-            return currentSlotCount - bay0Multiplier;
-        }
-    }
-
-    return -1;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('getTotalSlotCount',
-function() {
-
-    /**
-     * @method getTotalSlotCount
-     * @summary Returns the total number of 'slots' in the receiver.
-     * @description Because bays can take more than 1 'slot' in the inspector
-     *     (i.e. they can be 'double wide' and take up 2 slots), there is a
-     *     difference between 'bays' and 'slots'. This returns the total number
-     *     of slots.
-     * @returns {Number} The total number of slots.
-     */
-
-    var totalSlotCount;
-
-    totalSlotCount = 0;
-
-    TP.byCSSPath('sherpa|inspectoritem', this).forEach(
-            function(inspectorBay, index) {
-                totalSlotCount += inspectorBay.getBayMultiplier();
-            });
-
-    return totalSlotCount;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('BreadcrumbSelected',
-function(aSignal) {
-
-    /**
-     * @method handleBreadcrumbSelected
-     * @summary Handles notifications of when an item in the inspector
-     *     breadcrumb has been selected.
-     * @param {TP.sig.BreadcrumbSelected} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var items;
-
-    //  The breadcrumb puts it's path into an Array of items in the signal when
-    //  it triggers the signal.
-    items = aSignal.at('items');
-
-    if (TP.notEmpty(items)) {
-        this.traversePath(items);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('DetachContent',
-function(aSignal) {
-
-    /**
-     * @method handleDetachContent
-     * @summary Handles notifications of when an item in the inspector has been
-     *     detached into a separate tile.
-     * @param {TP.sig.DetachContent} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var inspectorBay,
-        tpDetachingContent,
-
-        srcID,
-        tileID,
-
-        tileTPElem,
-        tileBody,
-
-        newInspectorBayContent;
-
-    inspectorBay = TP.byCSSPath('sherpa|inspectoritem', this).last();
-
-    tpDetachingContent = inspectorBay.getFirstChildElement();
-
-    srcID = tpDetachingContent.getLocalID();
-
-    //  NB: Because we don't supply a parent here, the Sherpa will use the
-    //  'common tile layer'.
-    tileID = srcID + '_Tile';
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID, srcID);
-
-    //  Stamp the 'current path' onto the tile for future retrieval purposes
-    tileTPElem.setAttribute(
-                'path',
-                this.get('selectedItems').join(' :: '));
-
-    tileBody = tileTPElem.get('body');
-
-    TP.nodeAppendChild(
-            tileBody.getNativeNode(),
-            TP.unwrap(tpDetachingContent),
-            false);
-
-    if (TP.canInvoke(tpDetachingContent, 'setDetached')) {
-        tpDetachingContent.setDetached(true);
-    }
-
-    tileTPElem.toggle('hidden');
-
-    newInspectorBayContent = TP.xhtmlnode(
-            '<span>' + TP.sc('This content is open in a tile.') +
-            ' <button onclick="' +
-            'tile = TP.byId(\'' + tileID + '\',' +
-                ' TP.win(\'UIROOT\'), true);' +
-            'if (TP.isValid(tile)) {tile.setAttribute(\'hidden\', false)}">' +
-            'Open Tile' +
-            '</button></span>');
-
-    TP.wrap(inspectorBay).setContent(newInspectorBayContent);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('DOMResize',
-function(aSignal) {
-
-    /**
-     * @method handleDOMResize
-     * @summary Handles notifications of when the document containing the
-     *     receiver or one of its elements resizes.
-     * @param {TP.sig.DOMResize} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var doc,
-        targetElem,
-
-        currentFirstVisiblePosition;
-
-    doc = this.getNativeDocument();
-
-    //  We only resize if the actual *document* resizes (which TIBET sends as a
-    //  resize happening on the document element).
-
-    //  The target will be the element that caused the resize.
-    targetElem = TP.byId(aSignal.at('elementLocalID'), doc, false);
-
-    //  In this case, we're only interested in resize events that originated on
-    //  the document element.
-    if (targetElem !== doc.documentElement) {
-        return this;
-    }
-
-    //  Size the bays, but note here that this call will *not* re-render the
-    //  bays themselves. They have their own resize handlers that will cause
-    //  them to re-render if necessary.
-    this.sizeBays();
-
-    //  Grab the first visible slot position and scroll to it.
-    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
-    this.scrollBayToFirstVisiblePosition(
-            this.getBayFromSlotPosition(currentFirstVisiblePosition));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForEditing',
-function(aSignal) {
-
-    /**
-     * @method handleFocusInspectorForEditing
-     * @summary Handles notifications of when the inspector should be focused to
-     *     edit an object.
-     * @param {TP.sig.FocusInspectorForEditing} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineMethod('focusUsingInfo',
 function(anInfo) {
 
@@ -2110,6 +1795,321 @@ function(anInfo) {
     this.finishUpdateAfterNavigation(info);
 
     this.signal('InspectorDidFocus');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getBayFromSlotPosition',
+function(aSlotPosition) {
+
+    /**
+     * @method getBayFromSlotPosition
+     * @summary Returns the bay from the supplied 'slot' position.
+     * @description Because bays can take more than 1 'slot' in the inspector
+     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
+     *     be a way to translate between bays and slot numbers.
+     * @param {Number} aSlotPosition The slot position to return the bay for.
+     * @returns {TP.sherpa.inspectoritem} The bay occupying the supplied slot
+     *     position.
+     */
+
+    var inspectorBays,
+        currentSlotCount,
+
+        len,
+        i;
+
+    if (!TP.isNumber(aSlotPosition)) {
+        return null;
+    }
+
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    if (aSlotPosition === 0) {
+        return inspectorBays.first();
+    }
+
+    //  Grab the first bay 'multiplier'
+    currentSlotCount = inspectorBays.first().getBayMultiplier();
+
+    //  Iterate over the remaining bays, summing up the bay 'multiplier's across
+    //  them.
+    len = inspectorBays.getSize();
+    for (i = 1; i < len; i++) {
+        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
+
+        //  If we're at a bay where we're more than the slot position (the bay
+        //  numbers are 0-based, but the count is 1-based), then return that
+        //  bay.
+        if (currentSlotCount > aSlotPosition) {
+            return inspectorBays.at(i);
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getInspectorBayContentItem',
+function(bayNum) {
+
+    /**
+     * @method getInspectorBayContentItem
+     * @summary Retrieves the content item under the bay at the supplied bay
+     *     number.
+     * @param {Number} bayNum The bay number to retrieve the content for.
+     * @returns {TP.core.ElementNode} The content element under the inspector
+     *     item representing the bay at the supplied bay number.
+     */
+
+    var inspectorBayContentItems;
+
+    if (!TP.isNumber(bayNum)) {
+        return null;
+    }
+
+    if (TP.notEmpty(inspectorBayContentItems =
+                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+
+        return inspectorBayContentItems.at(bayNum);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromBay',
+function(aBay) {
+
+    /**
+     * @method getSlotPositionFromBay
+     * @summary Returns the starting 'slot' position from the supplied bay.
+     * @description Because bays can take more than 1 'slot' in the inspector
+     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
+     *     be a way to translate between bays and slot numbers.
+     * @param {TP.sherpa.inspectoritem} aBay The bay element to return the slot
+     *     position for.
+     * @returns {Number} The starting slot position for the supplied bay.
+     */
+
+    var inspectorBays,
+
+        bay0Multiplier,
+        currentSlotCount,
+
+        len,
+        i;
+
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    if (aBay === inspectorBays.first()) {
+        return 0;
+    }
+
+    bay0Multiplier = inspectorBays.first().getBayMultiplier();
+
+    currentSlotCount = bay0Multiplier;
+
+    //  Get the total number of slots in the inspector
+    len = this.getTotalSlotCount();
+
+    //  Iterate over the remaining number of slots (starting at the first bay
+    //  multiplier), adding each bay multiplier to the slot count. When we reach
+    //  the bay we're looking for, we subtract the first bay multiplier
+    for (i = bay0Multiplier; i < len; i++) {
+        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
+
+        if (inspectorBays.at(i) === aBay) {
+            return currentSlotCount - bay0Multiplier;
+        }
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getTotalSlotCount',
+function() {
+
+    /**
+     * @method getTotalSlotCount
+     * @summary Returns the total number of 'slots' in the receiver.
+     * @description Because bays can take more than 1 'slot' in the inspector
+     *     (i.e. they can be 'double wide' and take up 2 slots), there is a
+     *     difference between 'bays' and 'slots'. This returns the total number
+     *     of slots.
+     * @returns {Number} The total number of slots.
+     */
+
+    var totalSlotCount;
+
+    totalSlotCount = 0;
+
+    TP.byCSSPath('sherpa|inspectoritem', this).forEach(
+            function(inspectorBay, index) {
+                totalSlotCount += inspectorBay.getBayMultiplier();
+            });
+
+    return totalSlotCount;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('BreadcrumbSelected',
+function(aSignal) {
+
+    /**
+     * @method handleBreadcrumbSelected
+     * @summary Handles notifications of when an item in the inspector
+     *     breadcrumb has been selected.
+     * @param {TP.sig.BreadcrumbSelected} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var items;
+
+    //  The breadcrumb puts it's path into an Array of items in the signal when
+    //  it triggers the signal.
+    items = aSignal.at('items');
+
+    if (TP.notEmpty(items)) {
+        this.traversePath(items);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('DetachContent',
+function(aSignal) {
+
+    /**
+     * @method handleDetachContent
+     * @summary Handles notifications of when an item in the inspector has been
+     *     detached into a separate tile.
+     * @param {TP.sig.DetachContent} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorBay,
+        tpDetachingContent,
+
+        srcID,
+        tileID,
+
+        tileTPElem,
+        tileBody,
+
+        newInspectorBayContent;
+
+    inspectorBay = TP.byCSSPath('sherpa|inspectoritem', this).last();
+
+    tpDetachingContent = inspectorBay.getFirstChildElement();
+
+    srcID = tpDetachingContent.getLocalID();
+
+    //  NB: Because we don't supply a parent here, the Sherpa will use the
+    //  'common tile layer'.
+    tileID = srcID + '_Tile';
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID, srcID);
+
+    //  Stamp the 'current path' onto the tile for future retrieval purposes
+    tileTPElem.setAttribute(
+                'path',
+                this.get('selectedItems').join(' :: '));
+
+    tileBody = tileTPElem.get('body');
+
+    TP.nodeAppendChild(
+            tileBody.getNativeNode(),
+            TP.unwrap(tpDetachingContent),
+            false);
+
+    if (TP.canInvoke(tpDetachingContent, 'setDetached')) {
+        tpDetachingContent.setDetached(true);
+    }
+
+    tileTPElem.toggle('hidden');
+
+    newInspectorBayContent = TP.xhtmlnode(
+            '<span>' + TP.sc('This content is open in a tile.') +
+            ' <button onclick="' +
+            'tile = TP.byId(\'' + tileID + '\',' +
+                ' TP.win(\'UIROOT\'), true);' +
+            'if (TP.isValid(tile)) {tile.setAttribute(\'hidden\', false)}">' +
+            'Open Tile' +
+            '</button></span>');
+
+    TP.wrap(inspectorBay).setContent(newInspectorBayContent);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    /**
+     * @method handleDOMResize
+     * @summary Handles notifications of when the document containing the
+     *     receiver or one of its elements resizes.
+     * @param {TP.sig.DOMResize} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var doc,
+        targetElem,
+
+        currentFirstVisiblePosition;
+
+    doc = this.getNativeDocument();
+
+    //  We only resize if the actual *document* resizes (which TIBET sends as a
+    //  resize happening on the document element).
+
+    //  The target will be the element that caused the resize.
+    targetElem = TP.byId(aSignal.at('elementLocalID'), doc, false);
+
+    //  In this case, we're only interested in resize events that originated on
+    //  the document element.
+    if (targetElem !== doc.documentElement) {
+        return this;
+    }
+
+    //  Size the bays, but note here that this call will *not* re-render the
+    //  bays themselves. They have their own resize handlers that will cause
+    //  them to re-render if necessary.
+    this.sizeBays();
+
+    //  Grab the first visible slot position and scroll to it.
+    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
+    this.scrollBayToFirstVisiblePosition(
+            this.getBayFromSlotPosition(currentFirstVisiblePosition));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForEditing',
+function(aSignal) {
+
+    /**
+     * @method handleFocusInspectorForEditing
+     * @summary Handles notifications of when the inspector should be focused to
+     *     edit an object.
+     * @param {TP.sig.FocusInspectorForEditing} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
     return this;
 });
