@@ -895,7 +895,7 @@ function(uniqueID, dataRecord) {
         if (TP.isEmpty(msgLevel)) {
             msgLevel = '';
         } else {
-            msgLevel = ' (' + msgLevel + ')';
+            msgLevel = ' (' + msgLevel.get('name') + ')';
         }
 
         TP.nodeSetTextContent(
