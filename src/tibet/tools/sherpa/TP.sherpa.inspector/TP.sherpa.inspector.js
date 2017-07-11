@@ -902,6 +902,7 @@ function(pathParts) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineAttribute('$haloAddedTarget');
+TP.sherpa.inspector.Inst.defineAttribute('$lastHaloTargetGID');
 
 TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
 
@@ -2178,6 +2179,16 @@ function(aSignal) {
     //  inspector will use.
 
     haloTarget = aSignal.at('haloTarget');
+
+    //  If the halo is focusing on the same element (as compared by GIDs - the
+    //  element may be being recast, so it might not be '==='), then just
+    //  return. We *don't* want to navigate ourself in this case.
+    if (haloTarget.getID() === this.get('$lastHaloTargetGID')) {
+        return this;
+    }
+
+    //  Cache the global ID of the element that the halo is focusing.
+    this.set('$lastHaloTargetGID', haloTarget.getID());
 
     haloTarget.defineMethod(
                 'getSherpaInspectorLabel',
