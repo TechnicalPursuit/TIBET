@@ -353,14 +353,14 @@ function() {
 
     sourceURI = this.get('sourceURI');
 
-    if (TP.isValid(sourceURI)) {
+    if (TP.isURI(sourceURI)) {
         sourceResult =
             sourceURI.getResource(
                 TP.hc('async', false, 'resultType', TP.core.Content)
             ).get('result');
     }
 
-    if (TP.notValid(sourceURI) ||
+    if (!TP.isURI(sourceURI) ||
         TP.isEmpty(sourceResult)) {
         this.set('localSourceContent', '');
         editor.setDisplayValue('');
