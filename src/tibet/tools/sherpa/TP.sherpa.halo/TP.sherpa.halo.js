@@ -87,12 +87,6 @@ function() {
         return this;
     }
 
-    //  If the current target has been marked as 'refreshing' by TIBET, then we
-    //  don't bother to send blur/focus signals.
-    if (currentTargetTPElem.hasAttribute('tibet:refreshing')) {
-        this.set('$dontSignalBlurFocus', true);
-    }
-
     if (TP.isValid(currentTargetTPElem)) {
         this.set('currentTargetTPElem', null);
         this.set('currentTargetParentTPElem', null);
@@ -403,13 +397,6 @@ function(newTargetTPElem) {
             this.signal('TP.sig.HaloDidFocus',
                         TP.hc('haloTarget', newTargetTPElem),
                         TP.OBSERVER_FIRING);
-        }
-
-        //  If the current target has been marked as 'refreshing' by TIBET,
-        //  then we've set a flag to not bother to send blur/focus signals. We
-        //  need to put that flag back so that we start resending them again.
-        if (newTargetTPElem.hasAttribute('tibet:refreshing')) {
-            this.set('$dontSignalBlurFocus', false);
         }
 
     } else if (TP.isValid(currentTargetTPElem)) {

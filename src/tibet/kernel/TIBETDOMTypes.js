@@ -3448,21 +3448,21 @@ function(aDocument) {
                     if (TP.isNode(authoredElem)) {
                         authoredElem = TP.nodeCloneNode(authoredElem);
 
-                        //  Note here how we set the 'tibet:refreshing'
+                        //  Note here how we set the 'tibet:recasting'
                         //  attribute to let the system know that we're
-                        //  refreshing the current, in place, element. This flag
+                        //  recasting the current, in place, element. This flag
                         //  will be removed by the 'mutation added' method.
 
                         //  Compile and awaken the content, supplying the
                         //  authored node as the 'alternate element' to compile.
-                        aTPElem.setAttribute('tibet:refreshing', true);
+                        aTPElem.setAttribute('tibet:recasting', true);
                         aTPElem.compile(null, true, authoredElem);
 
                         //  The native node might have changed under the covers
                         //  during compilation, so we need to set the attribute
                         //  again.
-                        aTPElem.setAttribute('tibet:refreshing', true);
                         aTPElem.awaken();
+                        aTPElem.setAttribute('tibet:recasting', true);
                     }
                 });
 
@@ -4744,6 +4744,35 @@ function() {
      */
 
     return TP.nodeGetChildNodes(this.getNativeNode()).getSize() === 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('isRecasting',
+function() {
+
+    /**
+     * @method isRecasting
+     * @summary Returns whether or not the receiver is considered to be in state
+     *     of 'recasting' - that is, TIBET's compilation and rendering machinery
+     *     are re-processing it (probably in a Sherpa development session).
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    var elem,
+        ans;
+
+    elem = this.getNativeNode();
+
+    //  True if we ourself are being recast.
+    if (TP.elementHasAttribute(elem, 'tibet:recasting', true)) {
+        return true;
+    }
+
+    //  Or if one of our ancestors is being recast.
+    ans = TP.nodeAncestorMatchingCSS(elem, '*[tibet|recasting]');
+
+    return TP.isElement(ans);
 });
 
 //  ------------------------------------------------------------------------
@@ -10793,10 +10822,6 @@ function(anElement, nodesAdded) {
 
         mutatedGIDs.push(TP.gid(root));
 
-        if (TP.isElement(root)) {
-            TP.elementRemoveAttribute(root, 'tibet:refreshing', true);
-        }
-
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
         if (root.$$awakened) {
@@ -10832,6 +10857,12 @@ function(anElement, nodesAdded) {
         TP.signal(TP.wrap(root),
                     'TP.sig.AttachComplete',
                     TP.hc('mutatedNodeIDs', mutatedGIDs));
+
+        //  If the node is an element, then remove any 'tibet:recasting' flag
+        //  that might have been put on the element by our redraw machinery.
+        if (TP.isElement(root)) {
+            TP.elementRemoveAttribute(root, 'tibet:recasting', true);
+        }
     }
 
     //  Signal from our target element's document that we attached nodes due to
