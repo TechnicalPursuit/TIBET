@@ -4106,6 +4106,14 @@ function(storageInfo) {
 
                     break;
 
+                case Node.CDATA_SECTION_NODE:
+
+                    str = nonElementNode.nodeValue;
+
+                    storageInfo.at('result').push('<![CDATA[' + str + ']]>');
+
+                    break;
+
                 default:
                     break;
             }
