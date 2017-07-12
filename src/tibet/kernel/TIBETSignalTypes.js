@@ -1161,6 +1161,9 @@ TP.sig.MutationComplete.defineSubtype('MutationDetach');
 
 TP.sig.MutationComplete.defineSubtype('MutationStyleChange');
 
+TP.sig.Signal.defineSubtype('NodeWillRecast');
+TP.sig.Signal.defineSubtype('NodeDidRecast');
+
 //  ========================================================================
 //  SYSTEM SIGNALS
 //  ========================================================================

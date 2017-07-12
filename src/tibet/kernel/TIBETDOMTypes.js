@@ -3439,32 +3439,94 @@ function(aDocument) {
 
     //  Iterate over the instances that were found.
     instances.forEach(
-                function(aTPElem) {
-                    var authoredElem;
+        function(aTPElem) {
 
-                    //  Grab the originally authored representation of the node.
-                    authoredElem = originals.at(aTPElem.getLocalID());
+            var authoredElem,
+                gid,
+                recastTPDoc,
+                handler;
 
-                    if (TP.isNode(authoredElem)) {
-                        authoredElem = TP.nodeCloneNode(authoredElem);
+            //  Grab the originally authored representation of the node.
+            authoredElem = originals.at(aTPElem.getLocalID());
 
-                        //  Note here how we set the 'tibet:refreshing'
-                        //  attribute to let the system know that we're
-                        //  refreshing the current, in place, element. This flag
-                        //  will be removed by the 'mutation added' method.
+            if (TP.isNode(authoredElem)) {
+                authoredElem = TP.nodeCloneNode(authoredElem);
 
-                        //  Compile and awaken the content, supplying the
-                        //  authored node as the 'alternate element' to compile.
-                        aTPElem.setAttribute('tibet:refreshing', true);
+                //  Note here how we set the 'tibet:recasting' attribute to let
+                //  the system know that we're recasting the current, in place,
+                //  element. This flag will be removed by the 'mutation added'
+                //  method.
+
+                gid = aTPElem.getID();
+
+                //  Signal that we're going to recast the node.
+                TP.signal(null,
+                            'TP.sig.NodeWillRecast',
+                            TP.hc('recastTarget', aTPElem));
+
+                //  This is all being done in a 50ms setTimeout, so that any GUI
+                //  updating that happens as part of the NodeWillRecast signal
+                //  can be rendered.
+                setTimeout(
+                    function() {
+
+                        //  Compile the content, supplying the authored node as
+                        //  the 'alternate element' to compile. This is the core
+                        //  of 'recasting'. Note that awaken will happen via the
+                        //  core TIBET Mutation Observer when the new node is
+                        //  attached to the DOM. It will send a MutationAttach
+                        //  signal that we install a handler for below.
+                        aTPElem.setAttribute('tibet:recasting', true);
                         aTPElem.compile(null, true, authoredElem);
 
                         //  The native node might have changed under the covers
                         //  during compilation, so we need to set the attribute
                         //  again.
-                        aTPElem.setAttribute('tibet:refreshing', true);
-                        aTPElem.awaken();
-                    }
-                });
+                        aTPElem.setAttribute('tibet:recasting', true);
+
+                        recastTPDoc = TP.tpdoc(aTPElem);
+
+                        //  Install a handler looking for a MutationAttach
+                        //  signal that will have the global ID for the element
+                        //  being recast.
+                        handler = function(aSignal) {
+
+                            var recastTPElem;
+
+                            //  If one of the mutated nodes was our recast
+                            //  Element, then the GIDs will be the same (but its
+                            //  a 'new element' insofar as the DOM is concerned,
+                            //  so we can't use '===' comparing).
+                            if (aSignal.at('mutatedNodeIDs').contains(gid)) {
+
+                                //  Make sure to uninstall the handler.
+                                handler.ignore(recastTPDoc,
+                                                'TP.sig.MutationAttach');
+
+                                //  Grab the wrapped element by using the GID to
+                                //  get a reference back to it.
+                                recastTPElem = TP.bySystemId(gid);
+
+                                //  Refresh any data bindings that are a part of
+                                //  or are under the recast element.
+                                recastTPElem.refresh();
+
+                                //  Signal that we did recast the node.
+                                TP.signal(null,
+                                            'TP.sig.NodeDidRecast',
+                                            TP.hc('recastTarget',
+                                                    recastTPElem));
+                            }
+                        };
+
+                        //  Set up the MutationAttach observation on the
+                        //  original Element's Document. This will stay the
+                        //  same throughout the recasting process, so we're safe
+                        //  to do that.
+                        handler.observe(recastTPDoc, 'TP.sig.MutationAttach');
+                    }, 50);
+            }
+        });
 
     return;
 });
@@ -3963,9 +4025,13 @@ function(storageInfo) {
      *     tag for the element by calling 'serializeCloseTag'.
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
-     *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
-     *          The default is false.
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
@@ -4103,6 +4169,14 @@ function(storageInfo) {
                     //  Push on content that has the proper leading and
                     //  trailing comment characters.
                     storageInfo.at('result').push('<!--' + commentText + '-->');
+
+                    break;
+
+                case Node.CDATA_SECTION_NODE:
+
+                    str = nonElementNode.nodeValue;
+
+                    storageInfo.at('result').push('<![CDATA[' + str + ']]>');
 
                     break;
 
@@ -4744,6 +4818,35 @@ function() {
      */
 
     return TP.nodeGetChildNodes(this.getNativeNode()).getSize() === 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('isRecasting',
+function() {
+
+    /**
+     * @method isRecasting
+     * @summary Returns whether or not the receiver is considered to be in state
+     *     of 'recasting' - that is, TIBET's compilation and rendering machinery
+     *     are re-processing it (probably in a Sherpa development session).
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    var elem,
+        ans;
+
+    elem = this.getNativeNode();
+
+    //  True if we ourself are being recast.
+    if (TP.elementHasAttribute(elem, 'tibet:recasting', true)) {
+        return true;
+    }
+
+    //  Or if one of our ancestors is being recast.
+    ans = TP.nodeAncestorMatchingCSS(elem, '*[tibet|recasting]');
+
+    return TP.isElement(ans);
 });
 
 //  ------------------------------------------------------------------------
@@ -10793,10 +10896,6 @@ function(anElement, nodesAdded) {
 
         mutatedGIDs.push(TP.gid(root));
 
-        if (TP.isElement(root)) {
-            TP.elementRemoveAttribute(root, 'tibet:refreshing', true);
-        }
-
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
         if (root.$$awakened) {
@@ -10832,6 +10931,12 @@ function(anElement, nodesAdded) {
         TP.signal(TP.wrap(root),
                     'TP.sig.AttachComplete',
                     TP.hc('mutatedNodeIDs', mutatedGIDs));
+
+        //  If the node is an element, then remove any 'tibet:recasting' flag
+        //  that might have been put on the element by our redraw machinery.
+        if (TP.isElement(root)) {
+            TP.elementRemoveAttribute(root, 'tibet:recasting', true);
+        }
     }
 
     //  Signal from our target element's document that we attached nodes due to
@@ -12811,9 +12916,13 @@ function(storageInfo) {
      *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
-     *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
-     *          The default is false.
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
@@ -12861,9 +12970,13 @@ function(storageInfo) {
      *     rather than '<foo></foo>').
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
-     *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
-     *          The default is false.
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
@@ -12899,6 +13012,8 @@ function(storageInfo) {
         currentNSURI,
         currentNSPrefixes,
 
+        wantsPrefixedXMLNSAttrs,
+
         mimeType,
 
         storageLoc;
@@ -12927,6 +13042,9 @@ function(storageInfo) {
     computedElemLocalName = computedElemNameParts.last();
 
     currentNSPrefixes = TP.ac();
+
+    wantsPrefixedXMLNSAttrs = storageInfo.atIfInvalid(
+                                    'wantsPrefixedXMLNSAttrs', true);
 
     //  Start the tag
     result.push('<', elemTagName);
@@ -12964,7 +13082,7 @@ function(storageInfo) {
                     //  If the prefix has a matching URI, then it's a 'built in'
                     //  (or has been registered), so we skip it. Otherwise, it
                     //  needs to be printed.
-                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrPrefix))) {
+                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrName))) {
                         continue;
                     }
 
@@ -12978,12 +13096,15 @@ function(storageInfo) {
                     if (!currentNSPrefixes.contains(attrPrefix)) {
                         currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
 
-                        if (TP.notEmpty(currentNSURI)) {
-                            result.push(' ', 'xmlns:', attrPrefix,
-                                    '="', currentNSURI, '"');
-                        } else {
-                            result.push(' ', 'xmlns:', attrPrefix,
-                                    '="urn:tibet:unrecognizednamespace"');
+                        if (wantsPrefixedXMLNSAttrs) {
+
+                            if (TP.notEmpty(currentNSURI)) {
+                                result.push(' ', 'xmlns:', attrPrefix,
+                                        '="', currentNSURI, '"');
+                            } else {
+                                result.push(' ', 'xmlns:', attrPrefix,
+                                        '="urn:tibet:unrecognizednamespace"');
+                            }
                         }
 
                         //  Remember that we processed this prefix for this
@@ -15272,8 +15393,11 @@ function(storageInfo) {
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
      *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
+     *          include an 'XML declaration' at the start of its serialization.
      *          The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not element nodes in the
+     *          document should generate prefixed (i.e. 'xmlns:foo') attributes
+     *          to support their proper serialization. The default is true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result

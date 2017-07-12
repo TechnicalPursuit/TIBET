@@ -51,6 +51,13 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
+    //  If the element is being 'recast' (i.e. recompiled in place, usually when
+    //  developing with the Sherpa), then just return here. We don't want to do
+    //  any further processing to process/register/unregister data.
+    if (tpElem.isRecasting()) {
+        return;
+    }
+
     tpElem.setAttribute('statuscode', '');
     tpElem.setAttribute('statustext', '');
 
@@ -96,6 +103,15 @@ function(aRequest) {
         return;
     }
 
+    tpElem = TP.wrap(elem);
+
+    //  If the element is being 'recast' (i.e. recompiled in place, usually when
+    //  developing with the Sherpa), then just return here. We don't want to do
+    //  any further processing to process/register/unregister data.
+    if (tpElem.isRecasting()) {
+        return;
+    }
+
     if (TP.notEmpty(resultHref = TP.elementGetAttribute(elem, 'result'))) {
         if (!TP.isURI(resultURI = TP.uc(resultHref))) {
             //  Raise an exception
@@ -117,8 +133,6 @@ function(aRequest) {
     }
 
     resultURI.unregister();
-
-    tpElem = TP.wrap(elem);
 
     //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
     tpElem.signal('TP.sig.UIDataDestruct');
@@ -165,6 +179,13 @@ function() {
         bodyContent,
 
         dataWillSendSignal;
+
+    //  If the element is being 'recast' (i.e. recompiled in place, usually when
+    //  developing with the Sherpa), then just return here. We don't want to do
+    //  any further processing to process/register/unregister data.
+    if (this.isRecasting()) {
+        return;
+    }
 
     //  Make sure that a main href is available and a URI can be created from
     //  it.

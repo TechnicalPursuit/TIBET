@@ -53,6 +53,13 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
+    //  If the element is being 'recast' (i.e. recompiled in place, usually when
+    //  developing with the Sherpa), then just return here. We don't want to do
+    //  any further processing to process/register/unregister data.
+    if (tpElem.isRecasting()) {
+        return;
+    }
+
     //  Start off by 'resetting' the element. This will set up all of the data
     //  structures, etc.
     tpElem.reset();
@@ -87,6 +94,15 @@ function(aRequest) {
         return;
     }
 
+    tpElem = TP.wrap(elem);
+
+    //  If the element is being 'recast' (i.e. recompiled in place, usually when
+    //  developing with the Sherpa), then just return here. We don't want to do
+    //  any further processing to process/register/unregister data.
+    if (tpElem.isRecasting()) {
+        return;
+    }
+
     //  If we're not empty, then we use our child content as our 'named'
     //  resource's content and ignore any 'remote' URI attribute.
     if (TP.notEmpty(elem.childNodes)) {
@@ -112,8 +128,6 @@ function(aRequest) {
         }
 
         namedURI.unregister();
-
-        tpElem = TP.wrap(elem);
 
         //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
         tpElem.signal('TP.sig.UIDataDestruct');

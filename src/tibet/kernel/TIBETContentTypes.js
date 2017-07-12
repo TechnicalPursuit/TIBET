@@ -361,16 +361,26 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.Inst.defineMethod('asCleanString',
-function() {
+function(storageInfo) {
 
     /**
      * @method asCleanString
      * @summary Returns the 'clean' string representation of the receiver.
      *     This may have transformations in it to 'clean' the String, such as
      *     removing unnecessary namespace definitions, etc.
+     * @param {TP.core.Hash} [storageInfo] A hash containing various flags for
+     *     and results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      * @returns {String} The content object in clean string form.
      */
 
+    //  At this level, we just return the String representation.
     return this.asString();
 });
 
@@ -3124,36 +3134,55 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLContent.Inst.defineMethod('asCleanString',
-function() {
+function(storageInfo) {
 
     /**
      * @method asCleanString
      * @summary Returns the 'clean' string representation of the receiver.
      *     This may have transformations in it to 'clean' the String, such as
      *     removing unnecessary namespace definitions, etc.
+     * @param {TP.core.Hash} [storageInfo] A hash containing various flags for
+     *     and results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      * @returns {String} The content object in clean string form.
      */
 
-    var data,
+    var serializationStorage,
+
+        data,
 
         uri,
         loc,
 
-        serializationStorage,
-
         str;
+
+    if (TP.isHash(storageInfo)) {
+        serializationStorage = TP.copy(storageInfo);
+    } else {
+        serializationStorage = TP.hc();
+    }
 
     data = this.get('data');
 
     uri = this.get('sourceURI');
     loc = uri.getLocation();
 
-    serializationStorage = TP.hc();
-
+    //  Set a location for the 'store' based on our URI location. This is the
+    //  'top-level' store in the serialization mechanism, so it should be
+    //  representative of the 'whole document'.
     serializationStorage.atPut('store', loc);
 
+    //  Message the TP.core.Document to begin the serialization.
     data.serializeForStorage(serializationStorage);
 
+    //  The representation we're interested in will be the one at our URI, since
+    //  we're interested in the 'whole document'.
     str = serializationStorage.at('stores').at(loc);
 
     return str;

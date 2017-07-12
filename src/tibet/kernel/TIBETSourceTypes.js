@@ -1239,8 +1239,8 @@ function() {
         return true;
     }
 
-    return source.readyState !== TP.core.Socket.STATES.CLOSED ||
-            source.readyState !== TP.core.Socket.STATES.CLOSING;
+    return source.readyState === TP.core.Socket.STATES.CLOSED ||
+            source.readyState === TP.core.Socket.STATES.CLOSING;
 });
 
 //  ------------------------------------------------------------------------

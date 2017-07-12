@@ -272,6 +272,7 @@
                     }
                 } else {
                     channel.send(JSON.stringify(msg));
+                    channel.close();
                 }
             });
 

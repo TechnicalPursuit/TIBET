@@ -21,6 +21,7 @@
         util,
         couch,
         winston,
+        ip,
         Package,
         Color,
         Promise,
@@ -37,6 +38,7 @@
     util = require('util');
     sh = require('shelljs');
     winston = require('winston');
+    ip = require('ip');
 
     // Load the package support to help with option/configuration data.
     Package = require('../etc/common/tibet_package');
@@ -315,11 +317,29 @@
      */
     TDS.announceStart = function(logger, protocol, port) {
         var project,
+
+            allNodeIPs,
+            v4NodeIPs,
+            nodeIP,
+
             builddir,
             artifacts;
 
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
-        project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
+        project += ' ' + TDS.colorize(
+                            TDS.cfg('npm.version') || '0.0.1', 'version');
+
+        //  Find the first Node IP address that is IPv4 compliant. If one is
+        //  found, use it. Otherwise default to '127.0.0.1'.
+        allNodeIPs = TDS.getNodeIPs();
+        v4NodeIPs = allNodeIPs.filter(
+                        function(anAddr) {
+                            return ip.isV4Format(anAddr);
+                        });
+        nodeIP = v4NodeIPs[0];
+        if (!nodeIP) {
+            nodeIP = '127.0.0.1';
+        }
 
         //  First output the 'default' or 'prod' or 'build' version which should
         //  be the one all projects default to without any '#' parameters....but
@@ -330,7 +350,7 @@
             if (artifacts.length) {
                 logger.system(project +
                     TDS.colorize(' @ ', 'dim') +
-                    TDS.colorize(protocol + '://127.0.0.1' +
+                    TDS.colorize(protocol + '://' + nodeIP +
                         (port === 80 ? '' : ':' + port), 'host') +
                     TDS.colorize(' (production build)', 'dim'),
                     {comp: 'TDS', type: 'tds', name: 'build'});
@@ -341,7 +361,7 @@
         //  sherpa are loaded and ready for development.
         logger.system(project +
             TDS.colorize(' @ ', 'dim') +
-            TDS.colorize(protocol + '://127.0.0.1' +
+            TDS.colorize(protocol + '://' + nodeIP +
                 (port === 80 ? '' : ':' + port + '#?boot.config=developer'),
                 'host'),
             {comp: 'TDS', type: 'tds', name: 'sherpa'});

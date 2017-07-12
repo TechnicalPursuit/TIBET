@@ -92,7 +92,8 @@ function(targetURI, aRequest) {
     //  If that was successful, use 'asCleanString()'. This gives a more
     //  'TIBETan' representation (especially if it's markup).
     if (TP.isKindOf(localResult, TP.core.Content)) {
-        localContent = localResult.asCleanString();
+        localContent = localResult.asCleanString(
+                                    aRequest.at('serializationParams'));
     } else {
 
         //  Otherwise, just use the raw text.

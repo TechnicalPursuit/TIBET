@@ -36,11 +36,40 @@ function(aRequest) {
      *     TP.BREAK.
      */
 
+    var shell;
+
+    shell = aRequest.at('cmdShell');
+
     TP.signal(null, 'RemoteConsoleCommand',
-        TP.hc('originalRequest', aRequest,
+        TP.hc(
+            'originalRequest', aRequest,
             'timeout', 60000,
             TP.ONSUCCESS, function(aResponse) {
-                //  empty
+
+                var linkOutputReq,
+                    locStr;
+
+                //  Grab the location and trim off any trailing '/'.
+
+                locStr = TP.uc('~app').getLocation();
+                if (locStr.endsWith('/')) {
+                    locStr = locStr.slice(0, -1);
+                }
+
+                //  Construct a UserOutputRequest, with our location wrapped in
+                //  an anchor targeting a blank page.
+                linkOutputReq =
+                    TP.sig.UserOutputRequest.construct(
+                        TP.hc(
+                        'output',
+                            'Click to launch your app: ' +
+                            '<a href="' + locStr + '" target="_blank">' +
+                            locStr +
+                            '</a>',
+                        'async', true,
+                        'cmdAsIs', true));
+
+                linkOutputReq.fire(shell);
             },
             TP.ONFAIL, function(aResponse) {
                 //  empty

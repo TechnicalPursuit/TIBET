@@ -57,7 +57,7 @@ function(aRequest) {
         return;
     }
 
-    TP.wrap(elem).configure();
+    TP.wrap(elem).setup();
 
     return;
 });
@@ -85,12 +85,6 @@ function() {
     currentTargetTPElem = this.get('currentTargetTPElem');
     if (TP.notValid(currentTargetTPElem)) {
         return this;
-    }
-
-    //  If the current target has been marked as 'refreshing' by TIBET, then we
-    //  don't bother to send blur/focus signals.
-    if (currentTargetTPElem.hasAttribute('tibet:refreshing')) {
-        this.set('$dontSignalBlurFocus', true);
     }
 
     if (TP.isValid(currentTargetTPElem)) {
@@ -239,48 +233,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('configure',
-function() {
-
-    /**
-     * @method configure
-     * @summary Configure the halo as part of the startup process.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var world,
-        currentScreenTPWin;
-
-    this.observe(TP.ANY, 'SherpaHaloToggle');
-
-    //  Observe the current UI canvas document for click & context menu
-    this.observe(TP.sys.uidoc(),
-                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
-
-    //  Grab the world's current screen TP.core.Window and observe it for when
-    //  it's document unloads & loads so that we can manage our click & context
-    //  menu observations.
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    this.observe(world, 'ToggleScreen');
-
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
-    this.observe(currentScreenTPWin,
-                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
-    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
-                    'ClosedChange');
-
-    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
-
-    //  Make sure to initialize this to whatever our 'pclass:hidden' value is
-    //  initially.
-    this.set('$wasShowing', false);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.halo.Inst.defineMethod('deleteTarget',
 function() {
 
@@ -403,13 +355,6 @@ function(newTargetTPElem) {
             this.signal('TP.sig.HaloDidFocus',
                         TP.hc('haloTarget', newTargetTPElem),
                         TP.OBSERVER_FIRING);
-        }
-
-        //  If the current target has been marked as 'refreshing' by TIBET,
-        //  then we've set a flag to not bother to send blur/focus signals. We
-        //  need to put that flag back so that we start resending them again.
-        if (newTargetTPElem.hasAttribute('tibet:refreshing')) {
-            this.set('$dontSignalBlurFocus', false);
         }
 
     } else if (TP.isValid(currentTargetTPElem)) {
@@ -626,6 +571,62 @@ function(aSignal) {
         currentTargetTPElem = this.get('currentTargetTPElem');
         this.moveAndSizeToTarget(currentTargetTPElem);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('NodeDidRecast',
+function(aSignal) {
+
+    /**
+     * @method handleNodeDidRecast
+     * @summary Handles notifications of when a node is finished being 'recast'
+     *     by the TIBET tag processor. This allows the halo to provide feedback
+     *     to the user that this is happening.
+     * @param {TP.sig.NodeDidRecast} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var recastTPNode;
+
+    //  Hide the busy layer.
+    this.hideBusy();
+
+    //  Blur ourself. This will remove any focusing that might exist on previous
+    //  DOM content that is now gone.
+    this.blur();
+
+    //  See if we can get a recasting target from the signal. If so, and it's a
+    //  type of TP.core.Node, then focus ourself on it.
+    recastTPNode = aSignal.at('recastTarget');
+    if (TP.isKindOf(recastTPNode, TP.core.Node)) {
+
+        this.focusOn(recastTPNode);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('NodeWillRecast',
+function(aSignal) {
+
+    /**
+     * @method handleNodeWillRecast
+     * @summary Handles notifications of when a node is about to be 'recast' by
+     *     the TIBET tag processor. This allows the halo to provide feedback to
+     *     the user that this is happening.
+     * @param {TP.sig.NodeWillRecast} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    //  Show the busy layer. We'll do more when we get the NodeDidRecast
+    this.displayBusy();
 
     return this;
 });
@@ -1404,6 +1405,50 @@ function(beHidden) {
 
     //  Need to 'call up' to make sure the attribute value is actually captured.
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin;
+
+    this.observe(TP.ANY, 'SherpaHaloToggle');
+
+    //  Observe the current UI canvas document for click & context menu
+    this.observe(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    //  Grab the world's current screen TP.core.Window and observe it for when
+    //  it's document unloads & loads so that we can manage our click & context
+    //  menu observations.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    this.observe(world, 'ToggleScreen');
+
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.observe(currentScreenTPWin,
+                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+                    'ClosedChange');
+
+    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
+
+    this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+
+    //  Make sure to initialize this to whatever our 'pclass:hidden' value is
+    //  initially.
+    this.set('$wasShowing', false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
