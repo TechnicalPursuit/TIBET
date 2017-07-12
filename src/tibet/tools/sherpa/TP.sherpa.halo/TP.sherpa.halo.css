@@ -127,3 +127,12 @@ sherpa|halo > sherpa|breadcrumb {
     pointer-events: auto;
 }
 
+/* We want the halo's busy layer to be lower than the HUD drawers. This doesn't
+ * correspond to any official "TIER", but should be higher than
+ * TP.HALO_POPUP_TIER and lower than TP.HUD_POPUP_TIER */
+
+div[busyFor="SherpaHalo"] {
+
+    z-index: 15000;
+}
+
