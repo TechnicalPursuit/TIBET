@@ -57,7 +57,7 @@ function(aRequest) {
         return;
     }
 
-    TP.wrap(elem).configure();
+    TP.wrap(elem).setup();
 
     return;
 });
@@ -227,50 +227,6 @@ function(aSignal) {
             TP.documentClearSelection(newTargetTPElem.getNativeDocument());
         }
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineMethod('configure',
-function() {
-
-    /**
-     * @method configure
-     * @summary Configure the halo as part of the startup process.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var world,
-        currentScreenTPWin;
-
-    this.observe(TP.ANY, 'SherpaHaloToggle');
-
-    //  Observe the current UI canvas document for click & context menu
-    this.observe(TP.sys.uidoc(),
-                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
-
-    //  Grab the world's current screen TP.core.Window and observe it for when
-    //  it's document unloads & loads so that we can manage our click & context
-    //  menu observations.
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    this.observe(world, 'ToggleScreen');
-
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
-    this.observe(currentScreenTPWin,
-                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
-    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
-                    'ClosedChange');
-
-    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
-
-    this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
-
-    //  Make sure to initialize this to whatever our 'pclass:hidden' value is
-    //  initially.
-    this.set('$wasShowing', false);
 
     return this;
 });
@@ -1449,6 +1405,50 @@ function(beHidden) {
 
     //  Need to 'call up' to make sure the attribute value is actually captured.
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin;
+
+    this.observe(TP.ANY, 'SherpaHaloToggle');
+
+    //  Observe the current UI canvas document for click & context menu
+    this.observe(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    //  Grab the world's current screen TP.core.Window and observe it for when
+    //  it's document unloads & loads so that we can manage our click & context
+    //  menu observations.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    this.observe(world, 'ToggleScreen');
+
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.observe(currentScreenTPWin,
+                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+                    'ClosedChange');
+
+    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
+
+    this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+
+    //  Make sure to initialize this to whatever our 'pclass:hidden' value is
+    //  initially.
+    this.set('$wasShowing', false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
