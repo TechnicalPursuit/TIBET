@@ -266,6 +266,8 @@ function() {
 
     this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
 
+    this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+
     //  Make sure to initialize this to whatever our 'pclass:hidden' value is
     //  initially.
     this.set('$wasShowing', false);
@@ -613,6 +615,62 @@ function(aSignal) {
         currentTargetTPElem = this.get('currentTargetTPElem');
         this.moveAndSizeToTarget(currentTargetTPElem);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('NodeDidRecast',
+function(aSignal) {
+
+    /**
+     * @method handleNodeDidRecast
+     * @summary Handles notifications of when a node is finished being 'recast'
+     *     by the TIBET tag processor. This allows the halo to provide feedback
+     *     to the user that this is happening.
+     * @param {TP.sig.NodeDidRecast} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var recastTPNode;
+
+    //  Hide the busy layer.
+    this.hideBusy();
+
+    //  Blur ourself. This will remove any focusing that might exist on previous
+    //  DOM content that is now gone.
+    this.blur();
+
+    //  See if we can get a recasting target from the signal. If so, and it's a
+    //  type of TP.core.Node, then focus ourself on it.
+    recastTPNode = aSignal.at('recastTarget');
+    if (TP.isKindOf(recastTPNode, TP.core.Node)) {
+
+        this.focusOn(recastTPNode);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('NodeWillRecast',
+function(aSignal) {
+
+    /**
+     * @method handleNodeWillRecast
+     * @summary Handles notifications of when a node is about to be 'recast' by
+     *     the TIBET tag processor. This allows the halo to provide feedback to
+     *     the user that this is happening.
+     * @param {TP.sig.NodeWillRecast} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    //  Show the busy layer. We'll do more when we get the NodeDidRecast
+    this.displayBusy();
 
     return this;
 });

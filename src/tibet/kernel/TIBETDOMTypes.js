@@ -3439,32 +3439,94 @@ function(aDocument) {
 
     //  Iterate over the instances that were found.
     instances.forEach(
-                function(aTPElem) {
-                    var authoredElem;
+        function(aTPElem) {
 
-                    //  Grab the originally authored representation of the node.
-                    authoredElem = originals.at(aTPElem.getLocalID());
+            var authoredElem,
+                gid,
+                recastTPDoc,
+                handler;
 
-                    if (TP.isNode(authoredElem)) {
-                        authoredElem = TP.nodeCloneNode(authoredElem);
+            //  Grab the originally authored representation of the node.
+            authoredElem = originals.at(aTPElem.getLocalID());
 
-                        //  Note here how we set the 'tibet:recasting'
-                        //  attribute to let the system know that we're
-                        //  recasting the current, in place, element. This flag
-                        //  will be removed by the 'mutation added' method.
+            if (TP.isNode(authoredElem)) {
+                authoredElem = TP.nodeCloneNode(authoredElem);
 
-                        //  Compile and awaken the content, supplying the
-                        //  authored node as the 'alternate element' to compile.
+                //  Note here how we set the 'tibet:recasting' attribute to let
+                //  the system know that we're recasting the current, in place,
+                //  element. This flag will be removed by the 'mutation added'
+                //  method.
+
+                gid = aTPElem.getID();
+
+                //  Signal that we're going to recast the node.
+                TP.signal(null,
+                            'TP.sig.NodeWillRecast',
+                            TP.hc('recastTarget', aTPElem));
+
+                //  This is all being done in a 50ms setTimeout, so that any GUI
+                //  updating that happens as part of the NodeWillRecast signal
+                //  can be rendered.
+                setTimeout(
+                    function() {
+
+                        //  Compile the content, supplying the authored node as
+                        //  the 'alternate element' to compile. This is the core
+                        //  of 'recasting'. Note that awaken will happen via the
+                        //  core TIBET Mutation Observer when the new node is
+                        //  attached to the DOM. It will send a MutationAttach
+                        //  signal that we install a handler for below.
                         aTPElem.setAttribute('tibet:recasting', true);
                         aTPElem.compile(null, true, authoredElem);
 
                         //  The native node might have changed under the covers
                         //  during compilation, so we need to set the attribute
                         //  again.
-                        aTPElem.awaken();
                         aTPElem.setAttribute('tibet:recasting', true);
-                    }
-                });
+
+                        recastTPDoc = TP.tpdoc(aTPElem);
+
+                        //  Install a handler looking for a MutationAttach
+                        //  signal that will have the global ID for the element
+                        //  being recast.
+                        handler = function(aSignal) {
+
+                            var recastTPElem;
+
+                            //  If one of the mutated nodes was our recast
+                            //  Element, then the GIDs will be the same (but its
+                            //  a 'new element' insofar as the DOM is concerned,
+                            //  so we can't use '===' comparing).
+                            if (aSignal.at('mutatedNodeIDs').contains(gid)) {
+
+                                //  Make sure to uninstall the handler.
+                                handler.ignore(recastTPDoc,
+                                                'TP.sig.MutationAttach');
+
+                                //  Grab the wrapped element by using the GID to
+                                //  get a reference back to it.
+                                recastTPElem = TP.bySystemId(gid);
+
+                                //  Refresh any data bindings that are a part of
+                                //  or are under the recast element.
+                                recastTPElem.refresh();
+
+                                //  Signal that we did recast the node.
+                                TP.signal(null,
+                                            'TP.sig.NodeDidRecast',
+                                            TP.hc('recastTarget',
+                                                    recastTPElem));
+                            }
+                        };
+
+                        //  Set up the MutationAttach observation on the
+                        //  original Element's Document. This will stay the
+                        //  same throughout the recasting process, so we're safe
+                        //  to do that.
+                        handler.observe(recastTPDoc, 'TP.sig.MutationAttach');
+                    }, 50);
+            }
+        });
 
     return;
 });
