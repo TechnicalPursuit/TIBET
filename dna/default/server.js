@@ -56,7 +56,7 @@
     //  Always bring in the baseline TDS, even if we don't load the 'tds' plugin
     //  (which loads any tds.plugins.tds list which might be defined). This
     //  gives access to utilities like getcfg etc.
-    TDS = require('tibet/tds/tds_base');
+    TDS = require('tibet').TDS;
 
     //  ---
     //  APP/TDS Config
