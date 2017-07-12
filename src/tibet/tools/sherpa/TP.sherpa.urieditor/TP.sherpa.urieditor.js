@@ -368,7 +368,11 @@ function() {
         return this;
     }
 
-    sourceStr = sourceResult.asCleanString();
+    //  For these serializations, we do *not* want 'xmlns:' attributes to be
+    //  output. TIBET handles prefixed markup very well through its
+    //  'auto-prefixing' mechanism.
+    sourceStr = sourceResult.asCleanString(
+                                TP.hc('wantsPrefixedXMLNSAttrs', false));
 
     if (TP.notValid(sourceStr)) {
         editor.setDisplayValue('');
