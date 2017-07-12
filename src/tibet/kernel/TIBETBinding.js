@@ -4075,7 +4075,13 @@ function(shouldRender) {
                 }
 
                 if (!TP.equal(result, oldVal)) {
-                    this.set(aspectName, result);
+
+                    if (aspectName === 'value') {
+                        this.setValue(result, true);
+                    } else {
+                        this.setFacet(aspectName, 'value', result, true);
+                    }
+
                     valChanged = true;
                 }
             }
