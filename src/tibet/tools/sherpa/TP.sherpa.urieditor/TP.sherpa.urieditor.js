@@ -16,29 +16,6 @@
 
 TP.sherpa.Element.defineSubtype('urieditor');
 
-TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
-TP.sherpa.urieditor.Inst.defineAttribute('$changingSourceObject');
-
-TP.sherpa.urieditor.Inst.defineAttribute('sourceURI');
-
-TP.sherpa.urieditor.Inst.defineAttribute('dirty');
-
-TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
-
-TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
-
-TP.sherpa.urieditor.Inst.defineAttribute('head',
-    TP.cpc('> .head', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.urieditor.Inst.defineAttribute('body',
-    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.urieditor.Inst.defineAttribute('foot',
-    TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.urieditor.Inst.defineAttribute('editor',
-    TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true)));
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -64,7 +41,7 @@ function(aRequest) {
         return;
     }
 
-    TP.wrap(elem).configure();
+    TP.wrap(elem).setup();
 
     return;
 });
@@ -99,11 +76,43 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineAttribute('$changingSourceContent');
+
+TP.sherpa.urieditor.Inst.defineAttribute('sourceURI');
+
+TP.sherpa.urieditor.Inst.defineAttribute('dirty');
+
+TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
+
+TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
+
+TP.sherpa.urieditor.Inst.defineAttribute('head',
+    TP.cpc('> .head', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.urieditor.Inst.defineAttribute('body',
+    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.urieditor.Inst.defineAttribute('foot',
+    TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.urieditor.Inst.defineAttribute('editor',
+    TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.urieditor.Inst.defineMethod('applyResource',
 function() {
+
+    /**
+     * @method applyResource
+     * @summary Applies changes from the editor text down into the resource.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
 
     var editor,
 
@@ -113,6 +122,9 @@ function() {
 
     editor = this.get('editor');
 
+    //  If the editor doesn't have a valid display value, make sure to set it to
+    //  the empty String, mark it as not dirty and return. Nothing else to do
+    //  here.
     if (TP.notValid(newSourceText = editor.getDisplayValue())) {
         editor.setDisplayValue('');
 
@@ -123,35 +135,27 @@ function() {
 
     sourceURI = this.get('sourceURI');
 
-    this.set('$changingURIs', true);
+    //  Make sure to set a flag that we're changing the content out from under
+    //  the source URI. That way, ValueChange notifications, et. al. won't
+    this.set('$changingSourceContent', true);
 
+    //  Set the content of our source URI to the source text extracted from the
+    //  editor.
     sourceURI.setContent(newSourceText,
                             TP.request('resultType', TP.core.Content));
+
+    //  Capture this into the 'local' version of the source content. This is
+    //  used to compare against what is currently in the source URI to determine
+    //  whether the editor content is currently dirty.
     this.set('localSourceContent', newSourceText);
+
+    //  We mark the editor as not dirty since we just propagated the changes
+    //  down into the markup.
     this.isDirty(false);
 
-    this.set('$changingURIs', false);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('configure',
-function() {
-
-    var editorObj;
-
-    editorObj = this.get('editor').$get('$editorObj');
-
-    editorObj.setOption('theme', 'elegant');
-    editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', true);
-    editorObj.setOption('lineWrapping', true);
-
-    this.set('changeHandler', this.updateEditorState.bind(this));
-
-    editorObj.on('change', this.get('changeHandler'));
+    //  Now that we've set the content and various flags to false, we can unset
+    //  the 'changing content' flag.
+    this.set('$changingSourceContent', false);
 
     return this;
 });
@@ -221,8 +225,19 @@ function() {
 TP.sherpa.urieditor.Inst.defineHandler('ResourceApply',
 function(aSignal) {
 
+    /**
+     * @method handleResourceApply
+     * @summary Handles when the user has clicked the 'Apply' button to apply
+     *     changes to the resource we are currently editing.
+     * @param {TP.sig.ResourceApply} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    //  Apply the changes from the editor to the resource.
     this.applyResource();
 
+    //  Update the editor's state, including its dirty state.
     this.updateEditorState(this.get('editor').$get('$editorObj'));
 
     return this;
@@ -233,8 +248,19 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
 function(aSignal) {
 
+    /**
+     * @method handleResourcePush
+     * @summary Handles when the user has clicked the 'Push' button to push
+     *     changes that have been applied to the resource to the remote endpoint
+     *     denoted by our source URI.
+     * @param {TP.sig.ResourcePush} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     this.pushResource();
 
+    //  Update the editor's state, including its dirty state.
     this.updateEditorState(this.get('editor').$get('$editorObj'));
 
     return this;
@@ -244,6 +270,17 @@ function(aSignal) {
 
 TP.sherpa.urieditor.Inst.defineHandler('ResourceRevert',
 function(aSignal) {
+
+    /**
+     * @method handleResourceRevert
+     * @summary Handles when the user has clicked the 'Revert' button to revert
+     *     changes to the resource we are currently editing to the state when
+     *     changes were last applied (or the original state as retrieved from
+     *     the remote endpoint if no changes have been applied).
+     * @param {TP.sig.ResourceRevert} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
 
     this.revertResource();
 
@@ -255,11 +292,30 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
-    if (this.get('$changingURIs')) {
+    /**
+     * @method handleValueChange
+     * @summary Handles when the underlying value of the resource we are
+     *     currently editing changes.
+     * @param {TP.sig.ValueChange} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    //  If the 'changing content' flag is set, that means that the receiver is
+    //  doing the changing of the value, so we don't want to proceed any
+    //  further. Endless recursion and other nasty things are down that road.
+    if (this.get('$changingSourceContent')) {
         return this;
     }
 
+    //  If we're dirty, that means that we have applied, but unpushed, changes.
+    //  Make sure the user wants to abandon those.
+
+    //  NB: If the user cancels this operation, that means that the content of
+    //  the underlying resource and what is currently displayed in the editor
+    //  are different, but then again that just means that the editor is dirty.
     if (this.isDirty()) {
+
         TP.confirm('Remote content changed. Abandon local changes?').then(
             function(abandonChanges) {
 
@@ -267,10 +323,12 @@ function(aSignal) {
                     //  NB: This will reset both the localSourceContent cache
                     //  and our editor to whatever is in the URI and set the
                     //  URI's 'dirty' flag to false.
+                    //  NB: render could be an asynchronous operation
                     this.render();
                 }
             }.bind(this));
     } else {
+        //  NB: render could be an asynchronous operation
         this.render();
     }
 
@@ -298,17 +356,27 @@ function(aFlag) {
 TP.sherpa.urieditor.Inst.defineMethod('pushResource',
 function() {
 
+    /**
+     * @method pushResource
+     * @summary Pushes changes that have been made to the editor's underlying
+     *     resource to the remote endpoint denoted by our source URI.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     var sourceURI,
 
         putParams,
-        putRequest;
+        saveRequest;
 
     sourceURI = this.get('sourceURI');
 
+    //  We start out by configuring the HTTP method on the save request to be an
+    //  HTTP PUT, but if we're pushing to the TDS, this very well might be reset
+    //  to be an HTTP PATCH.
     putParams = TP.hc('method', TP.HTTP_PUT);
-    putRequest = sourceURI.constructRequest(putParams);
+    saveRequest = sourceURI.constructRequest(putParams);
 
-    putRequest.defineHandler('RequestSucceeded',
+    saveRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
             //  We need to signal that we are not dirty - we're not really dirty
             //  anyway, since the applyResource() above set us to not be dirty,
@@ -319,17 +387,23 @@ function() {
                             TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
         }.bind(this));
 
-    putRequest.defineHandler('RequestFailed',
+    saveRequest.defineHandler('RequestFailed',
         function(aResponse) {
             //  empty
         });
 
-    putRequest.defineHandler('RequestCompleted',
+    saveRequest.defineHandler('RequestCompleted',
         function(aResponse) {
             //  empty
         });
 
-    sourceURI.save(putRequest);
+    //  Make sure to let the save request know that we're not interested in
+    //  serializing 'xmlns:' attributes.
+    saveRequest.atPut('serializationParams',
+                        TP.hc('wantsPrefixedXMLNSAttrs', false));
+
+    //  Do the deed.
+    sourceURI.save(saveRequest);
 
     return this;
 });
@@ -339,80 +413,117 @@ function() {
 TP.sherpa.urieditor.Inst.defineMethod('render',
 function() {
 
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     var editor,
 
         sourceURI,
-        sourceResult,
-        sourceStr,
 
-        editorObj,
+        sourceResource;
 
-        mimeType;
-
+    //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
 
     sourceURI = this.get('sourceURI');
 
-    if (TP.isURI(sourceURI)) {
-        sourceResult =
-            sourceURI.getResource(
-                TP.hc('async', false, 'resultType', TP.core.Content)
-            ).get('result');
-    }
+    //  If we don't have a valid source URI, then just set both our local
+    //  version of the source content and the editor display value to the empty
+    //  String and return. Nothing else to do here.
+    if (!TP.isURI(sourceURI)) {
 
-    if (!TP.isURI(sourceURI) ||
-        TP.isEmpty(sourceResult)) {
         this.set('localSourceContent', '');
         editor.setDisplayValue('');
 
         return this;
     }
 
-    //  For these serializations, we do *not* want 'xmlns:' attributes to be
-    //  output. TIBET handles prefixed markup very well through its
-    //  'auto-prefixing' mechanism.
-    sourceStr = sourceResult.asCleanString(
-                                TP.hc('wantsPrefixedXMLNSAttrs', false));
+    //  Grab our source URI's resource. Note that this may be an asynchronous
+    //  fetch. Note also that we specify that we want the result wrapped in some
+    //  sort of TP.core.Content instance.
+    sourceResource =
+            sourceURI.getResource(TP.hc('resultType', TP.core.Content));
 
-    if (TP.notValid(sourceStr)) {
-        editor.setDisplayValue('');
-        this.set('localSourceContent', '');
+    sourceResource.then(
+        function(sourceResult) {
 
-        this.isDirty(false);
+            var sourceStr,
+                editorObj,
+                mimeType;
 
-        return this;
-    }
+            //  If we don't have a valid result, then just set both our local
+            //  version of the source content and the editor display value to
+            //  the empty String and return. Nothing else to do here.
+            if (TP.isEmpty(sourceResult)) {
 
-    this.set('localSourceContent', sourceStr);
-    this.isDirty(false);
+                this.set('localSourceContent', '');
+                editor.setDisplayValue('');
 
-    editorObj = this.get('editor').$get('$editorObj');
+                return this;
+            }
 
-    //  Try to get a MIME type from the URI - if we can't, then we just treat
-    //  the content as plain text.
-    if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
-        mimeType = TP.PLAIN_TEXT_ENCODED;
-    }
+            //  Grab a 'clean String' from the underlying content. This will be
+            //  the 'most canonicalized' version that TIBET can produce. For
+            //  these serializations, we do *not* want 'xmlns:' attributes to be
+            //  output. TIBET handles prefixed markup very well through its
+            //  'auto-prefixing' mechanism.
+            sourceStr = sourceResult.asCleanString(
+                                    TP.hc('wantsPrefixedXMLNSAttrs', false));
 
-    //  CodeMirror won't understand XHTML as distinct from XML.
-    if (mimeType === TP.XHTML_ENCODED) {
-        mimeType = TP.XML_ENCODED;
-    }
+            //  If the source String isn't valid (not even the empty String),
+            //  then set our editor's display value to the empty String, our
+            //  local copy of the content to the empty String and mark ourself
+            //  as not dirty. Nothing else to do here.
+            if (TP.notValid(sourceStr)) {
 
-    //  Set the editor's 'mode' to the computed MIME type
-    editorObj.setOption('mode', mimeType);
+                editor.setDisplayValue('');
+                this.set('localSourceContent', '');
 
-    editorObj.setValue(sourceStr);
+                this.isDirty(false);
 
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editor.refreshEditor();
+                return this;
+            }
 
-        //  Signal to observers that this control has rendered.
-        this.signal('TP.sig.DidRender');
+            //  Initialize our local copy of the content with the source String
+            //  and set the dirty flag to false.
+            this.set('localSourceContent', sourceStr);
+            this.isDirty(false);
 
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
-    /* eslint-enable no-extra-parens */
+            //  Grab the real underlying editor object beneath the
+            //  xctrls:codeeditor. This is an instance of CodeMirror.
+            editorObj = this.get('editor').$get('$editorObj');
+
+            //  Try to get a MIME type from the URI - if we can't, then we just
+            //  treat the content as plain text.
+            if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
+                mimeType = TP.PLAIN_TEXT_ENCODED;
+            }
+
+            //  CodeMirror won't understand XHTML as distinct from XML.
+            if (mimeType === TP.XHTML_ENCODED) {
+                mimeType = TP.XML_ENCODED;
+            }
+
+            //  Set the editor's 'mode' to the computed MIME type.
+            editorObj.setOption('mode', mimeType);
+
+            //  Set the CodeMirror object's value to the source string.
+            editorObj.setValue(sourceStr);
+
+            /* eslint-disable no-extra-parens */
+            (function() {
+                editor.refreshEditor();
+
+                //  Signal to observers that this control has rendered.
+                this.signal('TP.sig.DidRender');
+
+            }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+            /* eslint-enable no-extra-parens */
+
+        }.bind(this));
 
     return this;
 });
@@ -422,57 +533,102 @@ function() {
 TP.sherpa.urieditor.Inst.defineMethod('revertResource',
 function() {
 
+    /**
+     * @method revertResource
+     * @summary Reverts any changes in the editor text since the last 'accept'
+     *     to the value as it was then.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     var editor,
 
         sourceURI,
-        sourceResult,
-        sourceStr,
 
-        editorObj;
+        sourceResource;
 
+    //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
 
-    //  Now, update the local content to match what the remote content has
     sourceURI = this.get('sourceURI');
 
-    if (TP.isValid(sourceURI)) {
-        sourceResult =
-            sourceURI.getResource(
-                TP.hc('async', false, 'resultType', TP.core.Content)
-            ).get('result');
-    }
+    //  If we don't have a valid source URI, then just set both our local
+    //  version of the source content and the editor display value to the empty
+    //  String and return. Nothing else to do here.
+    if (!TP.isURI(sourceURI)) {
 
-    if (TP.notValid(sourceURI) ||
-        TP.isEmpty(sourceResult)) {
         this.set('localSourceContent', '');
         editor.setDisplayValue('');
 
         return this;
     }
 
-    sourceStr = sourceResult.asCleanString();
+    //  Grab our source URI's resource. Note that this may be an asynchronous
+    //  fetch. Note also that we specify that we want the result wrapped in some
+    //  sort of TP.core.Content instance.
+    sourceResource =
+            sourceURI.getResource(TP.hc('resultType', TP.core.Content));
 
-    if (TP.notValid(sourceStr)) {
-        editor.setDisplayValue('');
-        this.set('localSourceContent', '');
+    sourceResource.then(
+        function(sourceResult) {
 
-        this.isDirty(false);
+            var sourceStr,
+                editorObj;
 
-        return this;
-    }
+            //  If we don't have a valid result, then just set both our local
+            //  version of the source content and the editor display value to
+            //  the empty String and return. Nothing else to do here.
+            if (TP.isEmpty(sourceResult)) {
 
-    this.set('localSourceContent', sourceStr);
-    this.isDirty(false);
+                this.set('localSourceContent', '');
+                editor.setDisplayValue('');
 
-    editorObj = this.get('editor').$get('$editorObj');
+                return this;
+            }
 
-    editorObj.setValue(sourceStr);
+            //  Grab a 'clean String' from the underlying content. This will be
+            //  the 'most canonicalized' version that TIBET can produce. For
+            //  these serializations, we do *not* want 'xmlns:' attributes to be
+            //  output. TIBET handles prefixed markup very well through its
+            //  'auto-prefixing' mechanism.
+            sourceStr = sourceResult.asCleanString(
+                                    TP.hc('wantsPrefixedXMLNSAttrs', false));
 
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editor.refreshEditor();
-    }).queueForNextRepaint(this.getNativeWindow());
-    /* eslint-enable no-extra-parens */
+            //  If the source String isn't valid (not even the empty String),
+            //  then set our editor's display value to the empty String, our
+            //  local copy of the content to the empty String and mark ourself
+            //  as not dirty. Nothing else to do here.
+            if (TP.notValid(sourceStr)) {
+
+                editor.setDisplayValue('');
+                this.set('localSourceContent', '');
+
+                this.isDirty(false);
+
+                return this;
+            }
+
+            //  Initialize our local copy of the content with the source String
+            //  and set the dirty flag to false.
+            this.set('localSourceContent', sourceStr);
+            this.isDirty(false);
+
+            //  Grab the real underlying editor object beneath the
+            //  xctrls:codeeditor. This is an instance of CodeMirror.
+            editorObj = this.get('editor').$get('$editorObj');
+
+            //  Set the CodeMirror object's value to the source string.
+            editorObj.setValue(sourceStr);
+
+            /* eslint-disable no-extra-parens */
+            (function() {
+                editor.refreshEditor();
+
+                //  Signal to observers that this control has rendered.
+                this.signal('TP.sig.DidRender');
+
+            }).queueForNextRepaint(this.getNativeWindow());
+            /* eslint-enable no-extra-parens */
+        }.bind(this));
 
     return this;
 });
@@ -502,9 +658,9 @@ function(isDetached, aNewURI) {
             newURI = TP.uc('urn:tibet:' + this.getLocalID());
         }
 
-        this.set('$changingURIs', true);
+        this.set('$changingSourceContent', true);
         oldURI.setResource(null);
-        this.set('$changingURIs', false);
+        this.set('$changingSourceContent', false);
 
         this.setAttribute('bind:in', newURI.getLocation());
 
@@ -515,6 +671,7 @@ function(isDetached, aNewURI) {
         this.setAttribute('detached', true);
     }
 
+    //  NB: render could be an asynchronous operation
     this.render();
 
     return this;
@@ -525,8 +682,19 @@ function(isDetached, aNewURI) {
 TP.sherpa.urieditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
+    /**
+     * @method setSourceObject
+     * @summary Sets the source object (a URI) of the receiver to the supplied
+     *     object.
+     * @param {TP.core.URI} anObj The object to set as the source object that
+     *     the receiver will edit.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     var sourceURI;
 
+    //  Grab the current source URI and ignore it for changes. This is important
+    //  because we observe the source URI whenever it gets set on the receiver.
     if (TP.isURI(sourceURI = this.get('sourceURI'))) {
         this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
@@ -534,18 +702,55 @@ function(anObj) {
     sourceURI = anObj;
 
     if (!TP.isURI(sourceURI)) {
+
+        //  NB: render could be an asynchronous operation
         this.render();
 
         return this;
     }
 
+    //  Observe the source URI for changes.
     this.observe(sourceURI, 'TP.sig.ValueChange');
 
+    //  Note the use of '$set' to avoid recursion.
     this.$set('sourceURI', sourceURI);
 
-    this.set('$changingSourceObject', true);
+    //  NB: render could be an asynchronous operation
     this.render();
-    this.set('$changingSourceObject', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var editorObj;
+
+    //  Grab the underlying editor's editor ;-), which is a CodeMirror object.
+    editorObj = this.get('editor').$get('$editorObj');
+
+    //  Set the various CodeMirror options to the themes and modes that TIBET
+    //  uses.
+    editorObj.setOption('theme', 'elegant');
+    editorObj.setOption('tabMode', 'indent');
+    editorObj.setOption('lineNumbers', true);
+    editorObj.setOption('lineWrapping', true);
+
+    //  Set a change handler that will be installed on our underlying editor
+    //  object that will pdate the editor's state, including its dirty state,
+    //  when the user changes the content of the editor.
+    this.set('changeHandler', this.updateEditorState.bind(this));
+
+    //  Install that handler onto CodeMirror.
+    editorObj.on('change', this.get('changeHandler'));
 
     return this;
 });
@@ -565,7 +770,7 @@ function(aValue, shouldSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    if (this.get('$changingURIs')) {
+    if (this.get('$changingSourceContent')) {
         return this;
     }
 
@@ -613,6 +818,13 @@ function(aValue, shouldSignal) {
 TP.sherpa.urieditor.Inst.defineMethod('updateEditorState',
 function() {
 
+    /**
+     * @method updateEditorState
+     * @summary Updates the editor's state, such as its dirty state, to reflect
+     *     the state of the editor vis-a-vis the resource it is editing.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     var editorObj,
         currentEditorStr,
 
@@ -622,6 +834,8 @@ function() {
 
     currentEditorStr = editorObj.getValue();
 
+    //  Make sure we have a local copy of the source content to compare against,
+    //  (i.e. it's valid) or we'll always show as 'dirty' ;-).
     if (TP.notValid(localSourceStr = this.get('localSourceContent'))) {
         return this;
     }
@@ -636,14 +850,26 @@ function() {
 TP.sherpa.urieditor.Inst.defineMethod('teardown',
 function() {
 
+    /**
+     * @method teardown
+     * @summary Tears down the receiver by performing housekeeping cleanup, like
+     *     ignoring signals it's observing, etc.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
     var sourceURI,
         editorObj;
 
+    //  Grab the current source URI and ignore it for changes. This is important
+    //  because we observe the source URI whenever it gets set on the receiver.
     if (TP.isURI(sourceURI = this.get('sourceURI'))) {
         this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
+    //  Grab the underlying editor's editor ;-), which is a CodeMirror object.
     editorObj = this.get('editor').$get('$editorObj');
+
+    //  Uninstall the change handler we put onto it in the setup method.
     editorObj.off('change', this.get('changeHandler'));
 
     this.$set('editor', null, false);
