@@ -4025,9 +4025,13 @@ function(storageInfo) {
      *     tag for the element by calling 'serializeCloseTag'.
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
-     *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
-     *          The default is false.
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
@@ -12912,9 +12916,13 @@ function(storageInfo) {
      *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
-     *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
-     *          The default is false.
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
@@ -12962,9 +12970,13 @@ function(storageInfo) {
      *     rather than '<foo></foo>').
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
-     *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
-     *          The default is false.
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
@@ -13000,6 +13012,8 @@ function(storageInfo) {
         currentNSURI,
         currentNSPrefixes,
 
+        wantsPrefixedXMLNSAttrs,
+
         mimeType,
 
         storageLoc;
@@ -13028,6 +13042,9 @@ function(storageInfo) {
     computedElemLocalName = computedElemNameParts.last();
 
     currentNSPrefixes = TP.ac();
+
+    wantsPrefixedXMLNSAttrs = storageInfo.atIfInvalid(
+                                    'wantsPrefixedXMLNSAttrs', true);
 
     //  Start the tag
     result.push('<', elemTagName);
@@ -13065,7 +13082,7 @@ function(storageInfo) {
                     //  If the prefix has a matching URI, then it's a 'built in'
                     //  (or has been registered), so we skip it. Otherwise, it
                     //  needs to be printed.
-                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrPrefix))) {
+                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrName))) {
                         continue;
                     }
 
@@ -13079,12 +13096,15 @@ function(storageInfo) {
                     if (!currentNSPrefixes.contains(attrPrefix)) {
                         currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
 
-                        if (TP.notEmpty(currentNSURI)) {
-                            result.push(' ', 'xmlns:', attrPrefix,
-                                    '="', currentNSURI, '"');
-                        } else {
-                            result.push(' ', 'xmlns:', attrPrefix,
-                                    '="urn:tibet:unrecognizednamespace"');
+                        if (wantsPrefixedXMLNSAttrs) {
+
+                            if (TP.notEmpty(currentNSURI)) {
+                                result.push(' ', 'xmlns:', attrPrefix,
+                                        '="', currentNSURI, '"');
+                            } else {
+                                result.push(' ', 'xmlns:', attrPrefix,
+                                        '="urn:tibet:unrecognizednamespace"');
+                            }
                         }
 
                         //  Remember that we processed this prefix for this
@@ -15373,8 +15393,11 @@ function(storageInfo) {
      * @param {TP.core.Hash} storageInfo A hash containing various flags for and
      *     results of the serialization process. Notable keys include:
      *          'wantsXMLDeclaration': Whether or not the document node should
-     *          include an 'XML declaration' at the start of it's serialization.
+     *          include an 'XML declaration' at the start of its serialization.
      *          The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not element nodes in the
+     *          document should generate prefixed (i.e. 'xmlns:foo') attributes
+     *          to support their proper serialization. The default is true.
      *          'result': The current serialization result as it's being built
      *          up.
      *          'store': The key under which the current serialization result
