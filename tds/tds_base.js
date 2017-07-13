@@ -362,7 +362,7 @@
         logger.system(project +
             TDS.colorize(' @ ', 'dim') +
             TDS.colorize(protocol + '://' + nodeIP +
-                (port === 80 ? '' : ':' + port + '#?boot.config=developer'),
+                (port === 80 ? '' : ':' + port + '#?boot.profile=development'),
                 'host'),
             {comp: 'TDS', type: 'tds', name: 'sherpa'});
     };
