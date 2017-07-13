@@ -20,7 +20,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.defineSubtype('ev:listener');
+TP.core.InfoTag.defineSubtype('ev:listener');
 
 //  ------------------------------------------------------------------------
 //  end

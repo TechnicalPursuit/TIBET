@@ -30,8 +30,8 @@ function() {
 //  ========================================================================
 
 /**
- * @type {TP.core.CompiledTag}
- * @summary A common supertype for compiled UI tags.
+ * @type {TP.core.CustomTag}
+ * @summary A common supertype for custom UI tags.
  */
 
 //  ------------------------------------------------------------------------

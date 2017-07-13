@@ -17005,12 +17005,12 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.InfoElementNode
+//  TP.core.InfoTag
 //  ========================================================================
 
 /**
- * @type {TP.core.InfoElementNode}
- * @summary TP.core.InfoElementNode is the supertype for all 'info' elements in
+ * @type {TP.core.InfoTag}
+ * @summary TP.core.InfoTag is the supertype for all 'info' elements in
  *     the TIBET framework. Examples of info elements are acl:info, bind:info,
  *     drag:info, ev:info, and similar items which provide processing
  *     information but don't typically perform direct action in the way that a
@@ -17018,16 +17018,16 @@ function() {
  */
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('InfoElementNode');
+TP.core.ElementNode.defineSubtype('InfoTag');
 
 //  Can't construct concrete instances of this type.
-TP.core.InfoElementNode.isAbstract(true);
+TP.core.InfoTag.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('cmdAddContent',
+TP.core.InfoTag.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -17041,7 +17041,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('cmdFilterInput',
+TP.core.InfoTag.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -17055,7 +17055,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('cmdGetContent',
+TP.core.InfoTag.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -17069,7 +17069,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('cmdRunContent',
+TP.core.InfoTag.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
@@ -17119,7 +17119,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('cmdSetContent',
+TP.core.InfoTag.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -17133,7 +17133,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('cmdTransformInput',
+TP.core.InfoTag.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -17147,7 +17147,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('tagCompile',
+TP.core.InfoTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**

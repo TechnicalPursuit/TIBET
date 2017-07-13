@@ -631,7 +631,8 @@ Cmd.prototype.phaseThree = function(meta) {
         'git checkout master',
         'git merge develop',
         'git tag -a \'' + mastertag + '\' -m ' + '\'Release ' + mastertag + '\'',
-        'git push origin master --tags'
+        'git push origin master --tags',
+        'git checkout develop'
     ];
 
     this.info('Preparing to: ');
