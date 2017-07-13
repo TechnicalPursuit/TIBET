@@ -4482,7 +4482,7 @@ function(methodName, methodBody) {
 //  -----------------------------------------------------------------------
 
 TP.definePrimitive('defineAttributeSlot',
-function(target, name, value, track, desc, owner) {
+function(target, name, value, track, descriptor, owner) {
 
     /**
      * @method defineAttributeSlot
@@ -4504,20 +4504,20 @@ function(target, name, value, track, desc, owner) {
      * @param {Object} value The attribute value or a property descriptor
      *     object.
      * @param {String} track The attribute track (Inst, Type, Local).
-     * @param {Object} desc An optional 'property descriptor'.
+     * @param {Object} descriptor An optional 'property descriptor'.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined attribute value.
      */
 
     var own,
         trk,
-        descriptor,
+        desc,
         finalDesc,
         attribute,
 
         val;
 
-    descriptor = desc;
+    desc = descriptor;
 
     //  Typically try to define only once. We test code change flag to avoid
     //  warning during source operations during development.
@@ -4538,22 +4538,22 @@ function(target, name, value, track, desc, owner) {
 
     own = owner === undefined ? target : owner;
     trk = track === undefined ? TP.LOCAL_TRACK : track;
-    if (descriptor === undefined) {
-        descriptor = {};
+    if (desc === undefined) {
+        desc = {};
     }
     val = value;
     if (val === undefined || val === null) {
-        val = descriptor.value;
+        val = desc.value;
     }
 
-    attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, descriptor);
+    attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, desc);
 
-    descriptor[TP.NAME] = name;
-    descriptor.value = val;
+    desc[TP.NAME] = name;
+    desc.value = val;
 
     // Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
-        TP.sys.addMetadata(own, descriptor, TP.ATTRIBUTE, trk);
+        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
     }
 
     return attribute;
@@ -4562,7 +4562,7 @@ function(target, name, value, track, desc, owner) {
 //  -----------------------------------------------------------------------
 
 TP.definePrimitive('defineConstantSlot',
-function(target, name, value, track, desc, owner) {
+function(target, name, value, track, descriptor, owner) {
 
     /**
      * @method defineConstantSlot
@@ -4572,19 +4572,22 @@ function(target, name, value, track, desc, owner) {
      * @param {Object} value The constant value or a property descriptor object.
      * @param {String} track The constant track (Inst, Type, Local). Default is
      *     TP.TYPE_TRACK.
-     * @param {Object} desc An optional 'property descriptor'.
+     * @param {Object} descriptor An optional 'property descriptor'.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined constant value.
      */
 
     var own,
         trk,
-        descriptor,
+        desc,
         constant,
+
         val;
 
-    // Typically try to define only once. We test code change flag to avoid
-    // warning during source operations during development.
+    desc = descriptor;
+
+    //  Typically try to define only once. We test code change flag to avoid
+    //  warning during source operations during development.
     if (target && TP.owns(target, name)) {
         // TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
          //   TP.warn('Ignoring duplicate constant definition: ' + name) : 0;
@@ -4594,23 +4597,23 @@ function(target, name, value, track, desc, owner) {
 
     own = owner === undefined ? target : owner;
     trk = track === undefined ? TP.LOCAL_TRACK : track;
-    if (TP.notValid(descriptor)) {
-        descriptor = {};
+    if (TP.notValid(desc)) {
+        desc = {};
     }
     val = value;
     if (val === undefined || val === null) {
-        val = descriptor.value;
+        val = desc.value;
     }
 
-    constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, descriptor);
+    constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, desc);
 
-    descriptor[TP.NAME] = name;
-    descriptor.value = val;
+    desc[TP.NAME] = name;
+    desc.value = val;
 
     // Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         //  NB: We register constants as 'TP.ATTRIBUTE's
-        TP.sys.addMetadata(own, descriptor, TP.ATTRIBUTE, trk);
+        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
     }
 
     return constant;
