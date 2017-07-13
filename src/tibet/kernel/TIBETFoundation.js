@@ -2608,6 +2608,9 @@ function(signalName, aHandler, aDescriptor) {
         name = TP.composeHandlerName(desc);
 
     } else if (TP.isString(signalName)) {
+        desc = {
+            signal: signalName
+        };
         name = TP.composeHandlerName(signalName);
     } else {
         desc = {
