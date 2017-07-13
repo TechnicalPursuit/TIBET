@@ -288,7 +288,7 @@ Cmd.prototype.executeList = function() {
 
     dir = path.join(module.filename, this.DNA_ROOT);
     if (CLI.sh.test('-d', dir)) {
-        list = CLI.sh.ls('-RA', dir);
+        list = CLI.sh.ls('-A', dir);
         err = CLI.sh.error();
         if (CLI.sh.error()) {
             this.error('Error checking dna directory: ' + err);
