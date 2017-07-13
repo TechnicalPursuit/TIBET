@@ -118,8 +118,6 @@ TIBET-INF/tibet/src/tibet/tools/sherpa/cm_theme/elegant.css
 
 TIBET-INF/tibet/lib/xhtml/blank.xhtml
 
-TIBET-INF/tibet/lib/xaml/tp_xamlinit.xml
-
 TIBET-INF/tibet/lib/xsl/tp_activeview.xsl
 TIBET-INF/tibet/lib/xsl/tp_arr2xhtmllist.xsl
 TIBET-INF/tibet/lib/xsl/tp_arr2xhtmltable.xsl
