@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.apropos}
- * @summary A subtype of TP.core.ActionElementNode that knows how to
+ * @summary A subtype of TP.core.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:apropos');
+TP.core.ActionTag.defineSubtype('tsh:apropos');
 
 TP.tsh.apropos.addTraits(TP.tsh.Element);
 

@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:uri');
+TP.core.ActionTag.defineSubtype('tsh:uri');
 
 TP.tsh.uri.addTraits(TP.tsh.Element);
 

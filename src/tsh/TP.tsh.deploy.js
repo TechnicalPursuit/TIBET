@@ -10,12 +10,12 @@
 
 /**
  * @type {TP.tsh.deploy}
- * @summary A subtype of TP.core.ActionElementNode used to trigger a deploy.
+ * @summary A subtype of TP.core.ActionTag used to trigger a deploy.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:deploy');
+TP.core.ActionTag.defineSubtype('tsh:deploy');
 
 TP.tsh.deploy.addTraits(TP.tsh.Element);
 

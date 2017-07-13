@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.dump}
- * @summary A subtype of TP.core.ActionElementNode that knows how to
+ * @summary A subtype of TP.core.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:dump');
+TP.core.ActionTag.defineSubtype('tsh:dump');
 
 TP.tsh.dump.addTraits(TP.tsh.Element);
 

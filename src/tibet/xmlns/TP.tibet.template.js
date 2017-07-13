@@ -19,7 +19,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tibet:template');
+TP.core.ActionTag.defineSubtype('tibet:template');
 
 TP.tibet.template.Type.set('uriAttrs', TP.ac('src'));
 

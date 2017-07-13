@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:keys');
+TP.core.ActionTag.defineSubtype('tsh:keys');
 
 TP.tsh.keys.addTraits(TP.tsh.Element);
 

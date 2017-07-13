@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tibet.transform}
- * @summary A subtype of TP.core.ActionElementNode that knows how to transform
+ * @summary A subtype of TP.core.ActionTag that knows how to transform
  *     source data (supplied by stdin) against registered templates (or
  *     templates embedded as child nodes) and write it to stdout.
  * @todo This entire type needs to be reviewed and updated.
@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tibet:transform');
+TP.core.ActionTag.defineSubtype('tibet:transform');
 
 TP.tibet.transform.addTraits(TP.core.PipeSegmentElementNode);
 

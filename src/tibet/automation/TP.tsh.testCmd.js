@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:testCmd');
+TP.core.ActionTag.defineSubtype('tsh:testCmd');
 
 TP.tsh.testCmd.addTraits(TP.tsh.Element);
 

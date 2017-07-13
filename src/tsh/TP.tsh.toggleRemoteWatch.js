@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:toggleRemoteWatch');
+TP.core.ActionTag.defineSubtype('tsh:toggleRemoteWatch');
 
 TP.tsh.toggleRemoteWatch.addTraits(TP.tsh.Element);
 

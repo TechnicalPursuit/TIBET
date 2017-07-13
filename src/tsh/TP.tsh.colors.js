@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.colors}
- * @summary A subtype of TP.core.ActionElementNode that knows how to
+ * @summary A subtype of TP.core.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:colors');
+TP.core.ActionTag.defineSubtype('tsh:colors');
 
 TP.tsh.colors.addTraits(TP.tsh.Element);
 

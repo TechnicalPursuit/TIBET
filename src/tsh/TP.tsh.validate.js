@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.validate}
- * @summary A subtype of TP.core.ActionElementNode that knows how to
+ * @summary A subtype of TP.core.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:validate');
+TP.core.ActionTag.defineSubtype('tsh:validate');
 
 TP.tsh.validate.addTraits(TP.tsh.Element);
 

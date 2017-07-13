@@ -16307,12 +16307,12 @@ TP.core.Node.defineSubtype('DocumentTypeNode');
 TP.core.Node.defineSubtype('NotationNode');
 
 //  ========================================================================
-//  TP.core.ActionElementNode
+//  TP.core.ActionTag
 //  ========================================================================
 
 /**
- * @type {TP.core.ActionElementNode}
- * @summary TP.core.ActionElementNode is the supertype for all action elements
+ * @type {TP.core.ActionTag}
+ * @summary TP.core.ActionTag is the supertype for all action elements
  *     in the TIBET framework. Action nodes are found most typically in
  *     association with XControls and the various TIBET shells where they serve
  *     as "xml macros" for various JavaScript operations or commands.
@@ -16330,26 +16330,26 @@ TP.core.Node.defineSubtype('NotationNode');
  */
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('ActionElementNode');
+TP.core.ElementNode.defineSubtype('ActionTag');
 
 //  can't construct concrete instances of this
-TP.core.ActionElementNode.isAbstract(true);
+TP.core.ActionTag.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  the default request type to use for construction of a request
-TP.core.ActionElementNode.Type.defineAttribute('requestType', 'TP.sig.Request');
+TP.core.ActionTag.Type.defineAttribute('requestType', 'TP.sig.Request');
 
 //  an optional name which refines the request by altering its name
-TP.core.ActionElementNode.Type.defineAttribute('requestName');
+TP.core.ActionTag.Type.defineAttribute('requestName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('canAct',
+TP.core.ActionTag.Type.defineMethod('canAct',
 function(aNode) {
 
     /**
@@ -16435,7 +16435,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('cmdAddContent',
+TP.core.ActionTag.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -16449,7 +16449,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('cmdFilterInput',
+TP.core.ActionTag.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -16463,7 +16463,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('cmdGetContent',
+TP.core.ActionTag.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -16477,7 +16477,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('cmdRunContent',
+TP.core.ActionTag.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
@@ -16527,7 +16527,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('cmdSetContent',
+TP.core.ActionTag.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -16541,7 +16541,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('cmdTransformInput',
+TP.core.ActionTag.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -16555,7 +16555,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('getActionInput',
+TP.core.ActionTag.Type.defineMethod('getActionInput',
 function(aRequest) {
 
     /**
@@ -16588,7 +16588,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('getActionParam',
+TP.core.ActionTag.Type.defineMethod('getActionParam',
 function(aRequest, parameterName) {
 
     /**
@@ -16615,7 +16615,7 @@ function(aRequest, parameterName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('getPrimaryArgument',
+TP.core.ActionTag.Type.defineMethod('getPrimaryArgument',
 function(aRequest) {
 
     /**
@@ -16647,7 +16647,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('getPrimaryArgumentName',
+TP.core.ActionTag.Type.defineMethod('getPrimaryArgumentName',
 function() {
 
     /**
@@ -16664,7 +16664,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('tagCompile',
+TP.core.ActionTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -16689,7 +16689,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('tshExecute',
+TP.core.ActionTag.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
@@ -16709,7 +16709,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('act',
+TP.core.ActionTag.Inst.defineMethod('act',
 function(aSignal) {
 
     /**
@@ -16723,7 +16723,7 @@ function(aSignal) {
      *     as the first argument.
      * @param {TP.sig.Signal} aSignal The signal instance which triggered this
      *     activity. Only valid when being invoked in response to a handle call.
-     * @returns {TP.core.ActionElementNode} The receiver.
+     * @returns {TP.core.ActionTag} The receiver.
      */
 
     var request,
@@ -16744,7 +16744,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('constructActRequest',
+TP.core.ActionTag.Inst.defineMethod('constructActRequest',
 function(aSignal) {
 
     /**
@@ -16770,7 +16770,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('getActionParam',
+TP.core.ActionTag.Inst.defineMethod('getActionParam',
 function(aRequest, parameterName) {
 
     /**
@@ -16787,7 +16787,7 @@ function(aRequest, parameterName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('getRequestName',
+TP.core.ActionTag.Inst.defineMethod('getRequestName',
 function() {
 
     /**
@@ -16802,7 +16802,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('getRequestType',
+TP.core.ActionTag.Inst.defineMethod('getRequestType',
 function() {
 
     /**
@@ -16830,14 +16830,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('getDownstreamSegment',
+TP.core.ActionTag.Inst.defineMethod('getDownstreamSegment',
 function() {
 
     /**
      * @method getUpstreamSegment
      * @summary Returns the 'downstream' segment for this action - that is, any
      *     following action element in a command sequence.
-     * @returns {TP.core.ActionElementNode|null} The downstream segment of this
+     * @returns {TP.core.ActionTag|null} The downstream segment of this
      *     action or null if it's the last segment.
      */
 
@@ -16859,14 +16859,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('getUpstreamSegment',
+TP.core.ActionTag.Inst.defineMethod('getUpstreamSegment',
 function() {
 
     /**
      * @method getUpstreamSegment
      * @summary Returns the 'upstream' segment for this action - that is, any
      *     preceding action element in a command sequence.
-     * @returns {TP.core.ActionElementNode|null} The upstream segment of this
+     * @returns {TP.core.ActionTag|null} The upstream segment of this
      *     action or null if it's the first segment.
      */
 
@@ -16888,7 +16888,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('getRedirectionType',
+TP.core.ActionTag.Inst.defineMethod('getRedirectionType',
 function() {
 
     /**
@@ -16920,7 +16920,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('isLastSegment',
+TP.core.ActionTag.Inst.defineMethod('isLastSegment',
 function() {
 
     /**
@@ -16935,7 +16935,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineHandler('Signal',
+TP.core.ActionTag.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -16968,7 +16968,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('isOutermostAction',
+TP.core.ActionTag.Inst.defineMethod('isOutermostAction',
 function() {
 
     /**
@@ -17014,7 +17014,7 @@ function() {
  *     the TIBET framework. Examples of info elements are acl:info, bind:info,
  *     drag:info, ev:info, and similar items which provide processing
  *     information but don't typically perform direct action in the way that a
- *     TP.core.ActionElementNode might.
+ *     TP.core.ActionTag might.
  */
 //  ------------------------------------------------------------------------
 
@@ -17180,7 +17180,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('PipeSegmentElementNode');
+TP.core.ActionTag.defineSubtype('PipeSegmentElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation

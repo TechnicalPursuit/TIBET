@@ -10,12 +10,12 @@
 
 /**
  * @type {TP.tsh.build}
- * @summary A subtype of TP.core.ActionElementNode used to trigger a build.
+ * @summary A subtype of TP.core.ActionTag used to trigger a build.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:build');
+TP.core.ActionTag.defineSubtype('tsh:build');
 
 TP.tsh.build.addTraits(TP.tsh.Element);
 
