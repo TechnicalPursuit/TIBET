@@ -8659,7 +8659,7 @@ function(aRequest, replaceNode, alternateNode) {
      *     replace its native node in that node's hierarchy. Note that,
      *     depending on the receiver's compilation process, this might have
      *     already been done.
-     * @param {Node} alternateNode An alternate node to use in place of the
+     * @param {Node} [alternateNode] An alternate node to use in place of the
      *     native node of the receiver when compiling. This parameter is
      *     optional.
      * @returns {TP.core.CollectionNode} The receiver or a new object if the
