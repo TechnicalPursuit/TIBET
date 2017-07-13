@@ -526,6 +526,30 @@ Cmd.prototype.phaseTwo = function(source) {
     }
 
     //  ---
+    //  Run 'tibet build_docs' to update doc verions.
+    //  ---
+
+    if (this.options.test && !this.options['dry-run'] && !this.options.quick) {
+        sh = require('shelljs');
+        cmd = 'tibet build_docs';
+
+        release = this;
+
+        sh.exec(cmd, function(code, output) {
+            if (code !== 0) {
+                release.error(output);
+            }
+
+            release.phaseThree({content: content, source: source});
+        });
+    } else {
+        if (this.options['dry-run']) {
+            this.warn('dry-run. bypassing \'tibet build_docs\'');
+        }
+        this.phaseThree({content: content, source: source});
+    }
+
+    //  ---
     //  Run 'tibet test' to test the resulting package.
     //  ---
 
