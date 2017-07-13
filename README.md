@@ -26,10 +26,10 @@
 ### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 **TIBET is a seamlessly integrated web platform, not an à la carte
-mashup**, a solution offering **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
+mashup**, a solution offering **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
 
-**TIBET is built for projects that need a turnkey <a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client</a> or
-<a targt="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
+**TIBET is built for projects that need a <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">turnkey client</a> OR
+<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
 platform** and the confidence that comes from using **a <a target="_blank"
 href="http://www.technicalpursuit.com/support.xhtml">fully supported</a>
 single-vendor solution**.
