@@ -17,7 +17,7 @@
 var CLI,
     Cmd;
 
-CLI = require('tibet/src/tibet/cli/_cli');
+CLI = require('./_cli');
 
 //  ---
 //  Type Construction
@@ -26,7 +26,7 @@ CLI = require('tibet/src/tibet/cli/_cli');
 Cmd = function() {
     //  empty
 };
-Cmd.Parent = require('tibet/src/tibet/cli/_cmd');
+Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
 
