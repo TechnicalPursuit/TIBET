@@ -11029,6 +11029,8 @@ function(aFunction, copySourceInfo) {
     var track,
         owner,
 
+        isHandler,
+
         newMethod;
 
     if (TP.notValid(aFunction)) {
@@ -11062,9 +11064,16 @@ function(aFunction, copySourceInfo) {
         owner = this[TP.OWNER][this[TP.TRACK]];
     }
 
+    isHandler = /^handle/.test(this.getName());
+
     //  Redefine the method.
     try {
-        newMethod = owner.defineMethod(this.getName(), aFunction);
+        newMethod = owner.defineMethod(
+                                this.getName(),
+                                aFunction,
+                                this[TP.DESCRIPTOR],
+                                this[TP.DISPLAY],
+                                isHandler);
     } catch (e) {
         return this.raise(
             'TP.sig.InvalidFunction',
