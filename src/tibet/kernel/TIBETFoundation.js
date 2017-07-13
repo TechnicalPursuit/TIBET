@@ -1159,7 +1159,9 @@ function() {
     //  If the descriptor has valid 'phase', 'origin' or 'state' slots on it,
     //  then it's a handler that needs to be followed by a descriptor of these
     //  additional properties.
-    if (TP.isValid(descriptor.signal)) {
+    if (TP.isValid(descriptor.phase) ||
+        TP.isValid(descriptor.origin) ||
+        TP.isValid(descriptor.state)) {
 
         str.push(',', ' {');
 
