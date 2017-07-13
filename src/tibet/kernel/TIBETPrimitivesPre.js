@@ -2107,7 +2107,7 @@ TP.registerLoadInfo(TP.sys.addMetadata);
 //  SLOT AND METHOD DEFINITION
 //  -----------------------------------------------------------------------
 
-TP.defineSlot = function(target, name, value, type, track, desc) {
+TP.defineSlot = function(target, name, value, type, track, descriptor) {
 
     /**
      * @method defineSlot
@@ -2117,8 +2117,8 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
      * @param {Object} value The slot value.
      * @param {String} type The slot type (attribute, method, etc).
      * @param {String} track The slot track (type, inst, local, etc).
-     * @param {Object} desc An ECMA5-ish property descriptor, notable for not
-     *     having 'value', 'get' and 'set' slots like a real ECMA5 property
+     * @param {Object} descriptor An ECMA5-ish property descriptor, notable for
+     *     not having 'value', 'get' and 'set' slots like a real ECMA5 property
      *     descriptor would. NOTE that this object is _NOT_ passed to the ECMA5
      *     Object.defineProperty() call.
      * @returns {Object} The assigned slot value.
@@ -2126,9 +2126,9 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
 
     //  If we were handed a descriptor, then try to use ECMA5's defineProperty()
     //  call
-    if (TP.isValid(desc)) {
+    if (TP.isValid(descriptor)) {
 
-        if (desc.writable === false && value !== undefined) {
+        if (descriptor.writable === false && value !== undefined) {
             //  We send in a different object to make sure that if 'get' or
             //  'set' was defined on the supplied descriptor that it won't be
             //  forwarded. Note here that, since this slot is being configured
@@ -2138,9 +2138,9 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
                 target,
                 name,
                 {
-                    writable: desc.writable !== false,
-                    enumerable: desc.enumerable !== false,
-                    configurable: desc.configurable !== false,
+                    writable: descriptor.writable !== false,
+                    enumerable: descriptor.enumerable !== false,
+                    configurable: descriptor.configurable !== false,
                     value: value
                 });
         } else {
@@ -2151,9 +2151,9 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
                 target,
                 name,
                 {
-                    writable: desc.writable !== false,
-                    enumerable: desc.enumerable !== false,
-                    configurable: desc.configurable !== false
+                    writable: descriptor.writable !== false,
+                    enumerable: descriptor.enumerable !== false,
+                    configurable: descriptor.configurable !== false
                 });
 
             //  Try to set the value if its real.
@@ -2352,7 +2352,7 @@ TP.registerLoadInfo(TP.functionNeedsCallee);
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot =
-function(target, name, value, track, desc, display, owner, $isHandler) {
+function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     /**
      * @method defineMethodSlot
@@ -2362,9 +2362,9 @@ function(target, name, value, track, desc, display, owner, $isHandler) {
      * @param {Object} value The method value (aka method 'body').
      * @param {String} track The method track (Inst, Type, Local). Default is
      *     TP.LOCAL_TRACK.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the value parameter to
-     *     this method.
+     * @param {Object} descriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the value
+     *     parameter to this method.
      * @param {String} display The method display name. Defaults to the owner
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
@@ -2392,7 +2392,9 @@ function(target, name, value, track, desc, display, owner, $isHandler) {
         if (value === TP.REQUIRED) {
 
             TP.defineSlot(target, name, value, TP.METHOD, trk,
-                    desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR);
+                            descriptor && descriptor.$$isPDC ?
+                                                    descriptor :
+                                                    TP.DEFAULT_DESCRIPTOR);
 
         } else {
             TP.ifError() ?
@@ -2422,9 +2424,9 @@ function(target, name, value, track, desc, display, owner, $isHandler) {
     //  even if the RegExp passes or 'patchCallee' to true which forces the
     //  system to install a patch, even if the RegExp fails.
     if (value.toString().match(TP.regex.NEEDS_CALLEE)) {
-        if (desc && desc.patchCallee === true) {
+        if (descriptor && descriptor.patchCallee === true) {
             installCalleePatch = true;
-        } else if (desc && desc.patchCallee === false) {
+        } else if (descriptor && descriptor.patchCallee === false) {
             installCalleePatch = false;
         } else {
             installCalleePatch = TP.functionNeedsCallee(value, name);
@@ -2501,7 +2503,9 @@ function(target, name, value, track, desc, display, owner, $isHandler) {
 
     /* eslint-disable no-extra-parens */
     TP.defineSlot(target, name, method, TP.METHOD, trk,
-            (desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR));
+                    (descriptor && descriptor.$$isPDC ?
+                                            descriptor :
+                                            TP.DEFAULT_DESCRIPTOR));
     /* eslint-enable no-extra-parens */
 
     //  we don't wrap 'self' level methods so we need to patch on the load node
@@ -2535,7 +2539,7 @@ TP.registerLoadInfo(TP.defineMethodSlot);
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'definePrimitive',
-function(name, bodyOrConditionals, desc, display, owner) {
+function(name, bodyOrConditionals, descriptor, display, owner) {
 
     /**
      * @method definePrimitive
@@ -2551,9 +2555,9 @@ function(name, bodyOrConditionals, desc, display, owner) {
      * @param {Function|Object} bodyOrConditionals The actual function
      *     implementation or an object containing tests and associated
      *     implementations.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the bodyOrConditionals
-     *     parameter to this method.
+     * @param {Object} descriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     bodyOrConditionals parameter to this method.
      * @param {String} display The method display name. Defaults to the owner
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
@@ -2606,7 +2610,7 @@ function(name, bodyOrConditionals, desc, display, owner) {
     }
 
     return TP.defineMethodSlot(
-            TP, name, method, TP.PRIMITIVE_TRACK, desc, display, owner);
+            TP, name, method, TP.PRIMITIVE_TRACK, descriptor, display, owner);
 
 }, TP.PRIMITIVE_TRACK, null, 'TP.definePrimitive');
 
