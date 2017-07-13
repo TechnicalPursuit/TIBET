@@ -208,9 +208,18 @@ Cmd.prototype.getLibVersion = function(data) {
  * @returns {String} The processed suffix value.
  */
 Cmd.prototype.getSuffix = function(suffix) {
+    var data,
+        re,
+        match;
 
     // If empty default to 'dev'.
     if (CLI.isEmpty(suffix)) {
+        re = new RegExp('\-' + this.SUFFIXES.join('|') + '\.');
+        data = CLI.config.npm.version;
+        match = re.exec(data);
+        if (CLI.notEmpty(match)) {
+            return match[0];
+        }
         return 'dev';
     }
 
@@ -405,7 +414,7 @@ Cmd.prototype.phaseOne = function() {
 
         sh.exec(cmd, function(code, output) {
             if (code !== 0) {
-                release.error(output);
+                // release.error(output);
                 return;
             }
 
@@ -459,7 +468,8 @@ Cmd.prototype.phaseTwo = function(source) {
     //  Run the version update process to update the kernel version.
     //  ---
 
-    file = CLI.expandPath(Cmd.TEMPLATE_FILE);
+    file = CLI.expandPath(
+            CLI.getcfg('path.release_version_template') || Cmd.TEMPLATE_FILE);
     try {
         data = fs.readFileSync(file, {encoding: 'utf8'});
         if (!data) {
@@ -492,7 +502,8 @@ Cmd.prototype.phaseTwo = function(source) {
         return;
     }
 
-    file = CLI.expandPath(Cmd.TARGET_FILE);
+    file = CLI.expandPath(
+            CLI.getcfg('path.release_version_target') || Cmd.TARGET_FILE);
     if (this.options['dry-run']) {
         this.warn('dry-run. bypassing writing: ' + file);
     } else {
@@ -529,7 +540,7 @@ Cmd.prototype.phaseTwo = function(source) {
     //  Run 'tibet build_docs' to update doc verions.
     //  ---
 
-    if (this.options.test && !this.options['dry-run'] && !this.options.quick) {
+    if (!this.options['dry-run']) {
         sh = require('shelljs');
         cmd = 'tibet build_docs';
 
@@ -537,44 +548,40 @@ Cmd.prototype.phaseTwo = function(source) {
 
         sh.exec(cmd, function(code, output) {
             if (code !== 0) {
-                release.error(output);
+                // release.error(output);
+                return;
             }
 
-            release.phaseThree({content: content, source: source});
+            //  ---
+            //  Run 'tibet test' to test the resulting package.
+            //  ---
+
+            cmd = 'tibet test';
+
+            if (release.options.test && !release.options.quick) {
+                sh.exec(cmd, function(code2, output2) {
+                    if (code2 !== 0) {
+                        release.error(output2);
+                        result = release.prompt.question(
+                            'tibet test detected errors. Continue anyway?' +
+                            ' Enter \'yes\' after inspection: ');
+                        if (!/^y/i.test(result)) {
+                            release.log(
+                                'Release cancelled. Revert uncommitted branch changes.');
+                            return;
+                        }
+                    }
+
+                    release.phaseThree({content: content, source: source});
+                });
+            } else {
+                release.phaseThree({content: content, source: source});
+            }
         });
+
     } else {
         if (this.options['dry-run']) {
             this.warn('dry-run. bypassing \'tibet build_docs\'');
-        }
-        this.phaseThree({content: content, source: source});
-    }
-
-    //  ---
-    //  Run 'tibet test' to test the resulting package.
-    //  ---
-
-    if (this.options.test && !this.options['dry-run'] && !this.options.quick) {
-        sh = require('shelljs');
-        cmd = 'tibet test';
-
-        release = this;
-
-        sh.exec(cmd, function(code, output) {
-            if (code !== 0) {
-                release.error(output);
-                result = release.prompt.question(
-                    'tibet test detected errors. Continue anyway?' +
-                    ' Enter \'yes\' after inspection: ');
-                if (!/^y/i.test(result)) {
-                    release.log('Release cancelled. Revert uncommitted branch changes.');
-                    return;
-                }
-            }
-
-            release.phaseThree({content: content, source: source});
-        });
-    } else {
-        if (this.options['dry-run']) {
             this.warn('dry-run. bypassing \'tibet test\'');
         }
         this.phaseThree({content: content, source: source});

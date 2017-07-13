@@ -15,17 +15,19 @@
     //  --- latest.js start ---
     /* eslint-disable quote-props,quotes */
     release({
-        "describe": "{{describe}}",
+        //  new release
+        "semver": "{{semver}}",
         "major": "{{major}}",
         "minor": "{{minor}}",
         "patch": "{{patch}}",
         "suffix": "{{suffix}}",
         "increment": "{{increment}}",
+        "time": "{{time}}",
+        //  prior semver
+        "describe": "{{describe}}",
         "ptag": "{{ptag}}",
         "commits": "{{commits}}",
-        "phash": "{{phash}}",
-        "time": "{{time}}",
-        "semver": "{{semver}}"
+        "phash": "{{phash}}"
     });
     /* eslint-enable quote-props,quotes */
     //  --- latest.js end ---
