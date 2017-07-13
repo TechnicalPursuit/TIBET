@@ -1065,14 +1065,16 @@ function() {
      * @summary Returns a String that is a representation of the 'source head'
      *     of the canonical TIBET way of adding a method to the system.
      * @description NOTE: this method produces a representation which *must* be
-     *     followed with a Function statement (i.e. 'function() {...}') and a
-     *     closing ')'.
+     *     followed with a Function statement (i.e. 'function() {...}') and the
+     *     method tail.
      * @returns {String} A representation of the 'source method head' of the
      *     receiver in TIBET.
      */
 
     var owner,
         track,
+        descriptor,
+
         str,
         ownerName;
 
@@ -1083,30 +1085,106 @@ function() {
 
     owner = this[TP.OWNER];
     track = this[TP.TRACK];
+    descriptor = this[TP.DESCRIPTOR];
 
     str = TP.ac();
 
     //  We need to have both a valid owner and track to generate the header.
     if (TP.isValid(owner) && TP.isValid(track)) {
+
         ownerName = owner.getName();
 
-        if (track === TP.GLOBAL_TRACK) {
-            str.push('TP.defineGlobalMethod(');
-        } else if (track === TP.PRIMITIVE_TRACK) {
-            str.push('TP.definePrimitive(');
-        } else if (track === TP.META_TYPE_TRACK) {
-            str.push('TP.defineMetaTypeMethod(');
-        } else if (track === TP.META_INST_TRACK) {
-            str.push('TP.defineMetaInstMethod(');
-        } else if (track === TP.TYPE_LOCAL_TRACK ||
-                    track === TP.LOCAL_TRACK) {
-            str.push(ownerName, '.defineMethod(');
+        //  If the descriptor has a valid 'signal' slot on it, then it's a
+        //  handler.
+        if (TP.isValid(descriptor.signal)) {
+
+            if (track === TP.TYPE_LOCAL_TRACK ||
+                track === TP.LOCAL_TRACK) {
+                str.push(ownerName, '.defineHandler(');
+            } else {
+                str.push(ownerName, '.', track, '.defineHandler(');
+            }
+
+            str.push('\'', descriptor.signal.getSignalName() + '\',\n');
         } else {
-            str.push(ownerName, '.', track, '.defineMethod(');
+
+            if (track === TP.GLOBAL_TRACK) {
+                str.push('TP.defineGlobalMethod(');
+            } else if (track === TP.PRIMITIVE_TRACK) {
+                str.push('TP.definePrimitive(');
+            } else if (track === TP.META_TYPE_TRACK) {
+                str.push('TP.defineMetaTypeMethod(');
+            } else if (track === TP.META_INST_TRACK) {
+                str.push('TP.defineMetaInstMethod(');
+            } else if (track === TP.TYPE_LOCAL_TRACK ||
+                        track === TP.LOCAL_TRACK) {
+                str.push(ownerName, '.defineMethod(');
+            } else {
+                str.push(ownerName, '.', track, '.defineMethod(');
+            }
+
+            str.push('\'', this.getName() + '\',\n');
+        }
+    }
+
+    return str.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getMethodSourceTail',
+function() {
+
+    /**
+     * @method getMethodSourceTail
+     * @summary Returns a String that is a representation of the 'source tail'
+     *     of the canonical TIBET way of adding a method to the system.
+     * @returns {String} A representation of the 'source method head' of the
+     *     receiver in TIBET.
+     */
+
+    var descriptor,
+
+        str;
+
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getMethodSourceTail();
+    }
+
+    descriptor = this[TP.DESCRIPTOR];
+
+    str = TP.ac();
+
+    //  If the descriptor has valid 'phase', 'origin' or 'state' slots on it,
+    //  then it's a handler that needs to be followed by a descriptor of these
+    //  additional properties.
+    if (TP.isValid(descriptor.signal)) {
+
+        str.push(',', ' {');
+
+        //  We like to use the TP.CAPTURING constant
+        if (TP.isValid(descriptor.phase)) {
+            if (descriptor.phase === TP.CAPTURING) {
+                str.push('phase: TP.CAPTURING', ', ');
+            } else {
+                str.push('phase: ', descriptor.phase, ', ');
+            }
+        }
+        if (TP.isValid(descriptor.origin)) {
+            str.push('origin: \'', descriptor.origin, '\'', ', ');
+        }
+        if (TP.isValid(descriptor.state)) {
+            str.push('state: \'', descriptor.state, '\'', ', ');
         }
 
-        str.push('\'', this.getName() + '\',\n');
+        //  Pop off the last ', '
+        str.pop();
+
+        str.push('}');
     }
+
+    str.push(')');
 
     return str.join('');
 });
@@ -5156,6 +5234,7 @@ function(aFilterName, aLevel) {
         src,
 
         head,
+        tail,
         str;
 
     //  The only way to discern between Function objects that are one of the
@@ -5198,15 +5277,16 @@ function(aFilterName, aLevel) {
 
     if (TP.isMethod(this)) {
 
-        //  Generate the 'method header' - this gives us a String that is a
-        //  representation of the canonical TIBET way to add methods to the
-        //  system. Note that this produces a representation which *must* be
-        //  followed with a Function statement (i.e. 'function() {...}') and a
-        //  closing ')'.
+        //  Generate the 'method header' and 'method tail' - this gives us a
+        //  String that is a representation of the canonical TIBET way to add
+        //  methods to the system. Note that this produces a representation of
+        //  the head which *must* be followed with a Function statement (i.e.
+        //  'function() {...}') and the method tail.
         head = this.getMethodSourceHead();
+        tail = this.getMethodSourceTail();
 
-        //  Add that head, our source and a trailing ')' to the representation.
-        str.push(head, src, ')');
+        //  Add that head, our source and that tail to the representation.
+        str.push(head, src, tail);
     } else {
         str.push(src);
     }
