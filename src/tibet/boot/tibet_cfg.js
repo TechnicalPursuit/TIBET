@@ -872,11 +872,19 @@
 
     //  path to the json file (which avoids x-domain security issues) with the
     //  latest TIBET release data for version checking the root library.
-    // TP.sys.setcfg('path.lib_version_file',
+    // TP.sys.setcfg('path.lib_version_latest',
     //  'http://127.0.0.1:1234/tibet/latest.js');
-    TP.sys.setcfg('path.lib_version_file',
+    TP.sys.setcfg('path.lib_version_latest',
         'http://www.technicalpursuit.com/tibet/latest.js');
 
+    //  path to file used as handlebars template for semver data by the tibet
+    //  release CLI command.
+    TP.sys.setcfg('path.release_version_template',
+        '~lib/src/tibet/kernel/TIBETVersionTemplate.js');
+
+    //  path to file used to store semver data from the tibet release command.
+    TP.sys.setcfg('path.release_version_target',
+        '~lib/src/tibet/kernel/TIBETVersion.js');
 
     //  ---
     //  virtual paths
