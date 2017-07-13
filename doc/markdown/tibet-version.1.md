@@ -17,8 +17,8 @@ version of TIBET has been published.
 
   * `--check` :
     Tell TIBET to check the current project TIBET version against the latest
-released version. The URL used is whatever value is found in
-`path.lib_version_file`.
+released version. This operation relies on `npm info tibet --json` to return
+data about publicly available TIBET releases.
 
 ## EXAMPLES
 
@@ -41,7 +41,7 @@ If a new version is available you'll see something similar to:
 
 ### View the current mapping for the TIBET latest-release file
 
-    $ tibet config path.lib_version_file
+    $ tibet config path.lib_version_latest
 
     http://www.technicalpursuit.com/tibet/latest.js
 
