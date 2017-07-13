@@ -1,0 +1,22 @@
+.TH "TIBET\-PATH" "1" "July 2017" "" ""
+.SH "NAME"
+\fBtibet-path\fR \- resolve and print expanded virtual path value
+.SH SYNOPSIS
+.P
+tibet path <virtual_path>
+.SH DESCRIPTION
+.P
+Produces the fully expanded value for a TIBET virtual path\. Note that virtual
+.br
+paths normally start with a '~' which can cause issues with certain shells so
+.br
+this command lets you leave the leading '~' off\.
+.SH EXAMPLES
+.P
+.RS 2
+.nf
+$ tibet path app_cfg
+~app_cfg => /Users/ss/dev/TPI/TIBET/TIBET\-INF/cfg
+.fi
+.RE
+
