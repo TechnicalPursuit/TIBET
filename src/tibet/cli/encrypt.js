@@ -93,6 +93,7 @@ Cmd.prototype.execute = function() {
     var key,
         cipher,
         text,
+        salt,
         encrypted;
 
     //  NOTE argv[0] is the command name.
@@ -106,7 +107,14 @@ Cmd.prototype.execute = function() {
         throw new Error('No TDS_CRYPTO_KEY found for encryption.');
     }
 
-    cipher = crypto.createCipher(Cmd.CRYPTO_ALGORITHM, key);
+    salt = process.env.TDS_CRYPTO_SALT || CLI.getcfg('tds.crypto.salt');
+    if (!salt) {
+        this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+        this.warn('Defaulting to encryption salt default value');
+        salt = 'mmm...salty';
+    }
+
+    cipher = crypto.createCipher(Cmd.CRYPTO_ALGORITHM, key + salt);
 
     encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
