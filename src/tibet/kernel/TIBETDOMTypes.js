@@ -8688,6 +8688,27 @@ function(aRequest, replaceNode, alternateNode) {
     //  If an alternate node was supplied, use it (and set it as our native node
     //  so that the compilation machinery will work properly).
     if (TP.isNode(alternateNode)) {
+
+        //  Remove all TP.GLOBAL_ID and TP.EVENT_IDs slots from the original and
+        //  alternate nodes, so that these are recomputed when being swapped
+        //  around the DOM.
+        delete originalNode[TP.EVENT_IDS];
+        delete originalNode[TP.GLOBAL_ID];
+
+        delete alternateNode[TP.EVENT_IDS];
+        delete alternateNode[TP.GLOBAL_ID];
+
+        //  Remove all TP.GLOBAL_ID and TP.EVENT_IDs slots from any elements
+        //  under the alternate node that have them - this will cause them to
+        //  reset.
+        if (TP.isCollectionNode(alternateNode)) {
+            TP.ac(alternateNode.getElementsByTagName('*')).forEach(
+                    function(anElem) {
+                        delete anElem[TP.EVENT_IDS];
+                        delete anElem[TP.GLOBAL_ID];
+                    });
+        }
+
         node = alternateNode;
         this.setNativeNode(alternateNode);
     } else {
