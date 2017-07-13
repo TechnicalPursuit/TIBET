@@ -17,7 +17,7 @@ var expect,
     CLI;
 
 expect = require('chai').expect;
-CLI = require('tibet/src/tibet/cli/_cli');
+CLI = require('../../src/tibet/cli/_cli');
 
 describe('_cli.js', function() {
 
