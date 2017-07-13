@@ -64,6 +64,7 @@ TP.NAME = '$$name';
 TP.ID = '$$id';
 TP.OWNER = '$$owner';
 TP.TRACK = '$$track';
+TP.DESCRIPTOR = '$$descriptor';
 
 //  track constants
 

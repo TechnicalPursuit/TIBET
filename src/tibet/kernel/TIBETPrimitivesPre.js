@@ -2375,6 +2375,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     var own,
         trk,
+        desc,
 
         installCalleePatch,
 
@@ -2391,10 +2392,12 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         //  used during traits multiple-inheritance composition.
         if (value === TP.REQUIRED) {
 
-            TP.defineSlot(target, name, value, TP.METHOD, trk,
-                            descriptor && descriptor.$$isPDC ?
-                                                    descriptor :
-                                                    TP.DEFAULT_DESCRIPTOR);
+            desc = descriptor ? descriptor : TP.DEFAULT_DESCRIPTOR;
+
+            TP.defineSlot(target, name, value, TP.METHOD, trk, desc);
+
+            //  capture the descriptor on the value (method body)
+            value[TP.DESCRIPTOR] = desc;
 
         } else {
             TP.ifError() ?
@@ -2502,10 +2505,13 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     }
 
     /* eslint-disable no-extra-parens */
-    TP.defineSlot(target, name, method, TP.METHOD, trk,
-                    (descriptor && descriptor.$$isPDC ?
-                                            descriptor :
-                                            TP.DEFAULT_DESCRIPTOR));
+    desc = descriptor ? descriptor : TP.DEFAULT_DESCRIPTOR;
+
+    TP.defineSlot(target, name, method, TP.METHOD, trk, desc);
+
+    //  capture the descriptor on the value (method body)
+    value[TP.DESCRIPTOR] = desc;
+
     /* eslint-enable no-extra-parens */
 
     //  we don't wrap 'self' level methods so we need to patch on the load node
