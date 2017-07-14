@@ -804,9 +804,15 @@ Cmd.prototype.getProjectName = function() {
 Cmd.prototype.reparse = function(options) {
     var opts;
 
-    opts = CLI.blend(options || {}, CLI.PARSE_OPTIONS);
+    if (this.hasOwnProperty('PARSE_OPTIONS')) {
+        opts = CLI.blend(options || {}, this.PARSE_OPTIONS);
+    } else {
+        opts = options || {};
+    }
 
-    return minimist(this.getArgv(), opts);
+    opts = CLI.blend(opts, CLI.PARSE_OPTIONS);
+
+    return CLI.blend(minimist(this.getArgv(), opts), this.options);
 };
 
 
