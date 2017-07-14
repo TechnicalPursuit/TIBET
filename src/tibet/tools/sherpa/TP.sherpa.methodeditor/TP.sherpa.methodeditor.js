@@ -173,7 +173,9 @@ function() {
         serverSourceObject,
         sourceObject,
 
+        patchResults,
         diffPatch,
+        newContent,
 
         patchPromise;
 
@@ -189,7 +191,10 @@ function() {
 
     //  Compute a diff patch by comparing the server source object against the
     //  new source text.
-    diffPatch = serverSourceObject.getMethodPatch(newSourceText);
+
+    patchResults = serverSourceObject.getMethodPatch(newSourceText);
+    diffPatch = patchResults.first();
+    newContent = patchResults.last();
 
     if (TP.notEmpty(diffPatch)) {
 
@@ -200,12 +205,18 @@ function() {
         patchPromise.then(
             function(successfulPatch) {
 
+                var sourceURI;
+
                 if (successfulPatch) {
                     this.set('serverSourceObject', sourceObject);
 
+                    sourceURI = this.get('sourceURI');
+                    sourceURI.$set('resource', newContent, false);
+                    sourceURI.isLoaded(true);
+
                     //  Mark our source URI as *not* dirty, since we just pushed
                     //  it's new content to the server.
-                    this.get('sourceURI').isDirty(false);
+                    sourceURI.isDirty(false);
 
                     //  We need to signal that we are not dirty - we're not
                     //  really dirty anyway, since the applyResource() above set
