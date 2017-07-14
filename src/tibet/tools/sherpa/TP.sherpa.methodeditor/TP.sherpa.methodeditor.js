@@ -158,6 +158,24 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.methodeditor.Inst.defineMethod('isSourceDirty',
+function() {
+
+    /**
+     * @method isSourceDirty
+     * @summary Returns true if the receiver's *source* has changed since it was
+     *     last loaded. For this type, this effectively means whether the source
+     *     object (the client side version of a method) and the server source
+     *     object (the server side version of a method) are not the same.
+     * @returns {Boolean} Whether or not the *source* of the receiver is
+     *     'dirty'.
+     */
+
+    return this.get('sourceObject') !== this.get('serverSourceObject');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.methodeditor.Inst.defineMethod('pushResource',
 function() {
 

@@ -133,9 +133,8 @@ function(aSignal) {
      * @returns {TP.sherpa.uriEditorToolbarContent} The receiver.
      */
 
-    this.refreshControls(
-            aSignal.at(TP.NEWVAL),
-            aSignal.getSource().get('sourceURI').isDirty());
+    //  Our editor changed - refresh our controls.
+    this.refreshControls();
 
     aSignal.stopPropagation();
 
@@ -165,7 +164,7 @@ function(editorIsDirty, uriIsDirty) {
 
     editorTPElem = TP.byId('inspectorEditor', this.getNativeDocument());
 
-    isDirty = TP.ifInvalid(editorIsDirty, editorTPElem.isDirty());
+    isDirty = editorTPElem.isDirty();
     if (isDirty) {
         this.get('applyButton').removeAttribute('disabled');
         this.get('revertButton').removeAttribute('disabled');
@@ -174,7 +173,7 @@ function(editorIsDirty, uriIsDirty) {
         this.get('revertButton').setAttribute('disabled', true);
     }
 
-    isDirty = TP.ifInvalid(uriIsDirty, editorTPElem.get('sourceURI').isDirty());
+    isDirty = editorTPElem.isSourceDirty();
     if (isDirty) {
         this.get('pushButton').removeAttribute('disabled');
         this.get('refreshButton').removeAttribute('disabled');

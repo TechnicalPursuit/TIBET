@@ -324,6 +324,23 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('isSourceDirty',
+function() {
+
+    /**
+     * @method isSourceDirty
+     * @summary Returns true if the receiver's *source* has changed since it was
+     *     last loaded. For this type, this effectively means whether the source
+     *     URI is dirty.
+     * @returns {Boolean} Whether or not the *source* of the receiver is
+     *     'dirty'.
+     */
+
+    return this.get('sourceURI').isDirty();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('pushResource',
 function() {
 
