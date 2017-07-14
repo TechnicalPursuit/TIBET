@@ -321,20 +321,27 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.methodeditor.Inst.defineMethod('revertResource',
-function() {
+function(shouldRefresh) {
 
     /**
      * @method revertResource
      * @summary Reverts any changes in the editor text since the last 'accept'
      *     to the value as it was then.
+     * @param {Boolean} [shouldRefresh=false] Whether or not to revert the
+     *     content from the remote resource. The default is false.
      * @returns {TP.sherpa.methodeditor} The receiver.
      */
 
     var editor,
-        sourceText,
-        editorObj,
+
         sourceObj,
-        serverSourceObj;
+        serverSourceObj,
+
+        refresh,
+
+        sourceText,
+
+        editorObj;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
@@ -342,9 +349,16 @@ function() {
     sourceObj = this.get('sourceObject');
     serverSourceObj = this.get('serverSourceObject');
 
+    refresh = TP.ifInvalid(shouldRefresh, false);
+
     //  Grab our source text that we want to transition (back) to by converting
-    //  the server source object to text.
-    sourceText = TP.src(serverSourceObj);
+    //  the either the source object or server source object to text, depending
+    //  on whether we're refreshing (from server) or not.
+    if (refresh) {
+        sourceText = TP.src(serverSourceObj);
+    } else {
+        sourceText = TP.src(sourceObj);
+    }
 
     //  If we don't have a valid source URI, then just set both our local
     //  version of the source content and the editor display value to the empty
@@ -378,6 +392,13 @@ function() {
     //  NB: We use '$set()' here to avoid calling our setter and blowing other
     //  references away.
     this.$set('sourceObject', sourceObj);
+
+    //  Force an update of the 'dirty' flag here. Because of how apply vs. push
+    //  vs. revert vs. refresh works, the dirty flag might have already been
+    //  false when we set isDirty(false) above, but we need other components,
+    //  like the toolbar, to refresh based on not just our dirty state, but our
+    //  source's dirty state.
+    this.changed('dirty');
 
     /* eslint-disable no-extra-parens */
     (function() {
