@@ -13,7 +13,7 @@
             indexbody,
             indexpath,
             list,
-            params,
+            cmdopts,
             options,
             splitter,
             manpath,
@@ -144,7 +144,7 @@
         year = new Date().getFullYear();
         version = make.CLI.cfg('tibet.version');
 
-        params = make.reparse({boolean: 'force'});
+        cmdopts = make.reparse({boolean: 'force'});
 
         //  Create an array we can keep the list of content in.
         index = [];
@@ -189,7 +189,7 @@
             destfile = make.path.join(manpath, 'man' + options.section, file);
             destfile = destfile.slice(0, destfile.lastIndexOf('.'));
 
-            if (!params.force && !make.CLI.isFileNewer(srcfile, destfile)) {
+            if (!cmdopts.force && !make.CLI.isFileNewer(srcfile, destfile)) {
                 return;
             } else {
                 make.info('processing ' +
