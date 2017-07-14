@@ -530,6 +530,11 @@ function() {
         return this;
     }
 
+    //  Make sure to set a flag that we're changing the content out from under
+    //  the source URI. That way, ValueChange notifications, et. al. won't cause
+    //  strange recursions, etc.
+    this.set('$changingSourceContent', true);
+
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
@@ -541,6 +546,10 @@ function() {
 
             var sourceStr,
                 editorObj;
+
+            //  Now that we're done reverting the content, we can unset the
+            //  'changing content' flag.
+            this.set('$changingSourceContent', false);
 
             //  If we don't have a valid result, then just set both our local
             //  version of the source content and the editor display value to
@@ -596,6 +605,13 @@ function() {
 
             }).queueForNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
+        }.bind(this),
+        function(error) {
+
+            //  We had an error reverting the content, but make sure we unset
+            //  the 'changing content' flag.
+            this.set('$changingSourceContent', false);
+
         }.bind(this));
 
     return this;
