@@ -216,6 +216,8 @@ function() {
 
     if (TP.notEmpty(diffPatch)) {
 
+        //  Send the patch to the TDS and get a Promise back that we can wait on
+        //  to see if the patch was successful.
         patchPromise = TP.tds.TDSURLHandler.sendPatch(
                             this.get('sourceURI'),
                             diffPatch);
@@ -228,6 +230,9 @@ function() {
                 if (successfulPatch) {
                     this.set('serverSourceObject', sourceObject);
 
+                    //  Make sure to update the source URI's resource with the
+                    //  new content generated for the whole file to keep things
+                    //  in sync with what just happened on the server.
                     sourceURI = this.get('sourceURI');
                     sourceURI.$set('resource', newContent, false);
                     sourceURI.isLoaded(true);
