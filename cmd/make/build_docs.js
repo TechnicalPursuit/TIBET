@@ -78,7 +78,7 @@
                     make.sh.mkdir(destdir);
                 }
 
-                result = make.nodecli.exec('marked-man', '--breaks', '--format html',
+                result = make.nodecli.exec('marked-man', '--format html',
                     srcfile, {silent: true});
 
                 if (result.code !== 0) {
@@ -122,7 +122,7 @@
                     make.sh.mkdir(destdir);
                 }
 
-                result = make.nodecli.exec('marked-man', '--breaks', '--roff',
+                result = make.nodecli.exec('marked-man', '--roff',
                     srcfile, {silent: true});
 
                 if (result.code !== 0) {
