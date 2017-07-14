@@ -250,7 +250,11 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    this.revertResource();
+    var refresh;
+
+    refresh = TP.bc(aSignal.at('refresh'));
+
+    this.revertResource(refresh);
 
     return this;
 });
@@ -499,18 +503,22 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.urieditor.Inst.defineMethod('revertResource',
-function() {
+function(shouldRefresh) {
 
     /**
      * @method revertResource
      * @summary Reverts any changes in the editor text since the last 'accept'
      *     to the value as it was then.
+     * @param {Boolean} [shouldRefresh=false] Whether or not to revert the
+     *     content from the remote resource. The default is false.
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
     var editor,
 
         sourceURI,
+
+        refresh,
 
         sourceResource;
 
@@ -530,6 +538,8 @@ function() {
         return this;
     }
 
+    refresh = TP.ifInvalid(shouldRefresh, false);
+
     //  Make sure to set a flag that we're changing the content out from under
     //  the source URI. That way, ValueChange notifications, et. al. won't cause
     //  strange recursions, etc.
@@ -538,8 +548,9 @@ function() {
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
-    sourceResource =
-            sourceURI.getResource(TP.hc('resultType', TP.core.Content));
+    sourceResource = sourceURI.getResource(
+                                TP.hc('resultType', TP.core.Content,
+                                        'refresh', refresh));
 
     sourceResource.then(
         function(sourceResult) {
@@ -581,6 +592,9 @@ function() {
 
                 this.isDirty(false);
 
+                //  Update the editor's state, including its dirty state.
+                this.updateEditorState();
+
                 return this;
             }
 
@@ -588,6 +602,9 @@ function() {
             //  and set the dirty flag to false.
             this.set('localSourceContent', sourceStr);
             this.isDirty(false);
+
+            //  Update the editor's state, including its dirty state.
+            this.updateEditorState();
 
             //  Grab the real underlying editor object beneath the
             //  xctrls:codeeditor. This is an instance of CodeMirror.

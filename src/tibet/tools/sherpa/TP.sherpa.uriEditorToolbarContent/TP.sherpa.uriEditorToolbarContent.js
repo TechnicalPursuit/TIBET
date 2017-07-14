@@ -31,6 +31,9 @@ TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('pushButton',
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('revertButton',
     TP.cpc('> button[action="revert"]', TP.hc('shouldCollapse', true)));
 
+TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('refreshButton',
+    TP.cpc('> button[action="refresh"]', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -76,7 +79,6 @@ function(aRequest) {
     // tpElem.observe(editorTPElem, TP.ac('DirtyChange', 'SourceURIChange'));
 
     tpElem.observe(editorTPElem, 'DirtyChange');
-    tpElem.observe(editorTPElem, 'SourceURIChange');
 
     tpElem.refreshControls();
 
@@ -107,7 +109,6 @@ function(aRequest) {
     tpElem = TP.wrap(elem);
 
     tpElem.ignore(tpElem.$get('$editor'), 'DirtyChange');
-    tpElem.ignore(tpElem.$get('$editor'), 'SourceURIChange');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -123,26 +124,18 @@ function(aRequest) {
 TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('DirtyChange',
 function(aSignal) {
 
-    var isDirty,
-        sourceURI;
+    /**
+     * @method handleDirtyChange
+     * @summary Handles when the editor has been dirtied and we need to update
+     *     ourself based on that change.
+     * @param {TP.sig.DirtyChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.uriEditorToolbarContent} The receiver.
+     */
 
-    isDirty = aSignal.at(TP.NEWVAL);
-
-    if (isDirty) {
-        this.get('applyButton').removeAttribute('disabled');
-        this.get('revertButton').removeAttribute('disabled');
-    } else {
-        this.get('applyButton').setAttribute('disabled', true);
-        this.get('revertButton').setAttribute('disabled', true);
-    }
-
-    sourceURI = aSignal.getSource().get('sourceURI');
-
-    if (sourceURI.isDirty()) {
-        this.get('pushButton').removeAttribute('disabled');
-    } else {
-        this.get('pushButton').setAttribute('disabled', true);
-    }
+    this.refreshControls(
+            aSignal.at(TP.NEWVAL),
+            aSignal.getSource().get('sourceURI').isDirty());
 
     aSignal.stopPropagation();
 
@@ -153,43 +146,26 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('SourceURIChange',
-function(aSignal) {
-
-    var uri;
-
-    uri = TP.uc(aSignal.at(TP.OLDVAL));
-
-    if (TP.isURI(uri)) {
-        this.ignore(uri, 'Change');
-    }
-
-    uri = TP.uc(aSignal.at(TP.NEWVAL));
-
-    if (TP.isURI(uri)) {
-
-        //  Update our reference to the latest URI object.
-        this.$set('$editorURI', uri);
-
-        this.observe(uri, 'Change');
-
-        this.refreshControls();
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.uriEditorToolbarContent.Inst.defineMethod('refreshControls',
-function(aSignal) {
+function(editorIsDirty, uriIsDirty) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {Boolean} [editorIsDirty] Whether or not the editor is dirty. If
+     *     not supplied, this defaults by querying the editor directly.
+     * @param {Boolean} [uriIsDirty] Whether or not the URI the editor is
+     *     editing is dirty. If not supplied, this defaults by querying the URI
+     *     directly.
+     * @returns {TP.sherpa.uriEditorToolbarContent} The receiver.
+     */
 
     var editorTPElem,
         isDirty;
 
     editorTPElem = TP.byId('inspectorEditor', this.getNativeDocument());
-    isDirty = editorTPElem.isDirty();
 
+    isDirty = TP.ifInvalid(editorIsDirty, editorTPElem.isDirty());
     if (isDirty) {
         this.get('applyButton').removeAttribute('disabled');
         this.get('revertButton').removeAttribute('disabled');
@@ -198,12 +174,13 @@ function(aSignal) {
         this.get('revertButton').setAttribute('disabled', true);
     }
 
-    isDirty = editorTPElem.get('sourceURI').isDirty();
-
+    isDirty = TP.ifInvalid(uriIsDirty, editorTPElem.get('sourceURI').isDirty());
     if (isDirty) {
         this.get('pushButton').removeAttribute('disabled');
+        this.get('refreshButton').removeAttribute('disabled');
     } else {
         this.get('pushButton').setAttribute('disabled', true);
+        this.get('refreshButton').setAttribute('disabled', true);
     }
 
     return this;
