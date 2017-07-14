@@ -963,7 +963,7 @@ function(newMethodText, loadedFromSourceFile) {
 
     /**
      * @method getMethodPatch
-     * @summary Returns patch file content suitable for applying to the
+     * @summary Returns patch information suitable for applying to the
      *     receiver's source file. The JsDiff package must be loaded for this
      *     operation to work. The JsDiff package is typically loaded by the
      *     Sherpa config.
@@ -971,8 +971,11 @@ function(newMethodText, loadedFromSourceFile) {
      * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
      *     was loaded from a source file on startup or is being dynamically
      *     patched during runtime.
-     * @returns {String} The patch as computed between the current method text
-     *     and the supplied method text in 'unified diff' format.
+     * @returns {String[]} An Array of Strings consisting of a) the patch as
+     *     computed between the current method text and the supplied method text
+     *     in 'unified diff' format and b) the new content text of the method's
+     *     source file as computed by splicing the current method text into the
+     *     source file (effectively updating it).
      */
 
     var path,
@@ -1010,8 +1013,10 @@ function(newMethodText, loadedFromSourceFile) {
     //  the server for the latest version of the file. This is so that we can
     //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    resp = url.getResource(
-            TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true));
+    resp = url.getResource(TP.hc('async', false,
+                                    'resultType', TP.TEXT,
+                                    'refresh', true,
+                                    'signalChange', false));
     currentContent = resp.get('result');
 
     if (TP.isEmpty(currentContent)) {
@@ -1052,7 +1057,7 @@ function(newMethodText, loadedFromSourceFile) {
     //  NOTE we use the original srcPath string here to retain relative address.
     patch = TP.extern.JsDiff.createPatch(path, currentContent, newContent);
 
-    return patch;
+    return TP.ac(patch, newContent);
 });
 
 //  ------------------------------------------------------------------------
