@@ -5546,12 +5546,27 @@ function(signalData, originElem, triggerSignal, signalType) {
             target = TP.byId(orgid, doc, false);
         }
 
+        sigName = sigParams.at('signal');
+
         //  If a signal was supplied, use it as the signal name instead of the
         //  name of the original DOM signal that was fired.
-        sigName = TP.ifInvalid(sigParams.at('signal'), sigName);
+        if (TP.isEmpty(sigName) && TP.isValid(triggerSignal)) {
+            sigName = TP.ifInvalid(sigParams.at('signal'),
+                                    triggerSignal.getSignalName());
+        }
+
+        //  If there is no signal name, warn and exit.
+        if (TP.isEmpty(sigName)) {
+            TP.ifError() ?
+                TP.error('No signal name when dispatching \'on\' handler') : 0;
+            return;
+        }
 
         //  Just in case it was supplied in the signal params as a quoted value
         sigName = sigName.unquoted();
+
+        //  If there is no target, then default it to the origin Element
+        target = TP.ifInvalid(target, originElem);
 
         //  Grab whatever payload was specified.
         sigPayload = sigParams.at('payload');
