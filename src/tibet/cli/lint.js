@@ -775,7 +775,6 @@ Cmd.prototype.processStylelintResult = function(result) {
     var cmd,
         file,
         messages,
-        recheck,
         summary;
 
     cmd = this;
@@ -985,7 +984,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
             if (!text) {
                 res.linty += 1;
                 res.errors += 1;
-                res.recheck.push(current);
+                res.recheck.push(file);
                 cmd.error('Unable to read ' + file);
             } else {
                 //  Watch out for files that serve as templates. These will have
@@ -998,7 +997,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
                 } catch (e) {
                     res.linty += 1;
                     res.errors += 1;
-                    res.recheck.push(current);
+                    res.recheck.push(file);
                     cmd.log(file);
                     cmd.error(e);
                 }
