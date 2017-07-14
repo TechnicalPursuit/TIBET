@@ -2,13 +2,16 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
+        var targets,
+            options;
+
         make.log('building TIBET packages...');
 
         if (!make.sh.test('-d', './lib/src')) {
             make.sh.mkdir('./lib/src');
         }
 
-        make.chain('_rollup_loader',
+        targets = ['_rollup_loader',
             '_rollup_hook',
             '_rollup_login',
             '_rollup_worker',
@@ -17,8 +20,17 @@
             '_rollup_base',
             '_rollup_full',
             '_rollup_developer',
-            '_rollup_contributor',
-            'build_docs').then(resolve, reject);
+            '_rollup_contributor'
+        ];
+
+        options = make.reparse({boolean: 'clean'});
+
+        if (options.clean) {
+            targets.push('clean_docs');
+        }
+        targets.push('build_docs');
+
+        make.chain(targets).then(resolve, reject);
     };
 
 }());

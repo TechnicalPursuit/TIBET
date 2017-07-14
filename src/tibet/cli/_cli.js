@@ -36,6 +36,7 @@
 'use strict';
 
 var path,
+    fs,
     sh,
     beautify,
     minimist,
@@ -45,6 +46,7 @@ var path,
     Package,
     CLI;
 
+fs = require('fs');
 path = require('path');
 sh = require('shelljs');
 minimist = require('minimist');
@@ -321,6 +323,78 @@ CLI.isObject = function(obj) {
         Object.prototype.toString.call(obj) === '[object Object]';
 };
 
+CLI.isTrue = function(aReference) {
+    return aReference === true;
+};
+
+CLI.isValid = function(aReference) {
+    return aReference !== null && aReference !== undefined;
+};
+
+CLI.notEmpty = function(aReference) {
+    return aReference !== null && aReference !== undefined &&
+        aReference.length !== 0;
+};
+
+CLI.notValid = function(aReference) {
+    return aReference === null || aReference === undefined;
+};
+
+//  ---
+//  Value comparisons
+//  ---
+
+/**
+ * Compares two file modification times and returns true if the first file is
+ * newer than the second. This routine is often used to check whether a target
+ * generated file needs to be refreshed from a source file.
+ * @param {String} fileOne The "source" file in most comparisons.
+ * @param {String|Date} fileTwoOrDate The "target" file in most comparisons, or
+ *     a date to compare fileOne against.
+ * @returns {Boolean} true if fileOne has changed more recently than the
+ *     fileTwoOrDate value provided.
+ */
+CLI.isFileNewer = function(fileOne, fileTwoOrDate) {
+    var pathOne,
+        pathTwo,
+        statsOne,
+        statsTwo,
+        dateOne,
+        dateTwo;
+
+    try {
+        pathOne = CLI.expandPath(fileOne);
+        statsOne = fs.statSync(pathOne);
+    } catch (e) {
+        CLI.error('Unable to stat file: ' + e.message);
+
+        //  NOTE that we default to true here. Most callers care about
+        //  regenerating a target file so we assume the work needs to be done
+        //  any time we can't be sure.
+        return true;
+    }
+    dateOne = new Date(statsOne.mtime);
+
+    if (typeof fileTwoOrDate === 'string') {
+        pathTwo = CLI.expandPath(fileTwoOrDate);
+        try {
+            statsTwo = fs.statSync(pathTwo);
+        } catch (e) {
+            //  NOTE we don't even report an error here...a lot of times the
+            //  target file may not exist (it's often a generated target).
+            return true;
+        }
+        dateTwo = new Date(statsTwo.mtime);
+    } else if (typeof fileTwoOrDate.getTime === 'function') {
+        dateTwo = fileTwoOrDate;
+    } else {
+        CLI.error('Invalid parameter for fileTwoOrDate: ' + fileTwoOrDate);
+        return true;
+    }
+
+    return dateOne.getTime() > dateTwo.getTime();
+};
+
 /**
  * Compares two object structures and attempts to determine if they are a rough
  * match in JSON terms by iterating over keys and checking values. NOTE that the
@@ -400,24 +474,6 @@ CLI.isSameJSON = function(objOne, objTwo) {
         return !CLI.isSameJSON(first[key], second[key]);
     });
 };
-
-CLI.isTrue = function(aReference) {
-    return aReference === true;
-};
-
-CLI.isValid = function(aReference) {
-    return aReference !== null && aReference !== undefined;
-};
-
-CLI.notEmpty = function(aReference) {
-    return aReference !== null && aReference !== undefined &&
-        aReference.length !== 0;
-};
-
-CLI.notValid = function(aReference) {
-    return aReference === null || aReference === undefined;
-};
-
 
 //  ---
 //  Utilities
