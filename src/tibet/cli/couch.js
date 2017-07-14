@@ -88,7 +88,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet couch <compactdb|createapp|createdb|pushapp|removeapp|removedb> [<flags>]';
+Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|pushapp|removeapp|removedb|view> [<flags>]';
 
 
 //  ---
@@ -752,7 +752,7 @@ Cmd.prototype.executeView = function() {
     this.reparse({
         boolean: ['docs', 'keys', 'values', 'rows'],
         default: {
-            docs: true,
+            docs: false,
             rows: false,
             keys: false,
             values: false
@@ -793,7 +793,7 @@ Cmd.prototype.executeView = function() {
         }
     }
 
-    viewParams.include_docs = true;
+    viewParams.include_docs = this.options.docs;
 
     db = couch.getCouchDatabase(dbParams);
 

@@ -542,7 +542,9 @@ Cmd.prototype.phaseTwo = function(source) {
 
     if (!this.options['dry-run']) {
         sh = require('shelljs');
-        cmd = 'tibet build_docs';
+
+        //  NOTE we pass --clean here to ensure all docs regen with version.
+        cmd = 'tibet build_docs --clean';
 
         release = this;
 

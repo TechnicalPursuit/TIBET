@@ -1,0 +1,29 @@
+.TH "TIBET\-DECRYPT" "1" "July 2017" "" ""
+.SH "NAME"
+\fBtibet-decrypt\fR \- decrypt a string using the TDS\.decrypt approach
+.SH SYNOPSIS
+.P
+tibet decrypt <string>
+.SH DESCRIPTION
+.P
+Decrypts a string using the same approach used by the TDS\. This command is
+.br
+provided as a convenience allowing you to read a TDS_CRYPTO_KEY environment
+.br
+value and then decrypt passwords or API keys to verify them\.
+.P
+Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the
+.br
+encryption and decryption processes\.
+.SH EXAMPLES
+.P
+.RS 2
+.nf
+$ export TDS_CRYPTO_KEY='TOPsecretKEY'
+$ tibet encrypt 'myrestserviceapikey'
+d82d954e44ec4843aeae9846895ad4979b9ff4
+$ tibet decrypt d82d954e44ec4843aeae9846895ad4979b9ff4
+myrestserviceapikey
+.fi
+.RE
+

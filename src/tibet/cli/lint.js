@@ -64,6 +64,12 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.NAME = 'lint';
 
+/**
+ * The file path used to track last run timestamp.
+ * @type {String}
+ */
+Cmd.LAST_RUN_DATA = '~/.tibetlint.json';
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -77,7 +83,7 @@ Cmd.NAME = 'lint';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['scan', 'stop', 'list', 'nodes', 'quiet',
-            'style', 'js', 'json', 'xml', 'only'],
+            'style', 'js', 'json', 'xml', 'only', 'force'],
         'string': ['esconfig', 'esrules', 'esignore', 'styleconfig',
             'package', 'config', 'phase', 'filter', 'context'],
         'default': {
@@ -254,9 +260,7 @@ Cmd.prototype.execute = function() {
         result = this.validateConfigFiles();
         if (result.errors !== 0) {
             return result.errors;
-        }
-
-        if (this.options.xml !== true) {
+        } else {
             //  RESET result to avoid counting config files in final output.
             result = {linty: 0, errors: 0, warnings: 0, files: 0};
         }
@@ -456,6 +460,9 @@ Cmd.prototype.filterAssetList = function(list) {
     var filter,
         pattern,
         prefix,
+        data,
+        lastpath,
+        lastrun,
         cmd;
 
     if (!Array.isArray(list) || list.length < 1) {
@@ -487,6 +494,26 @@ Cmd.prototype.filterAssetList = function(list) {
 
     cmd = this;
 
+    //  If we're not forcing lint we can skip files not changed since the last
+    //  run...if we know when the last run occurred.
+    if (!this.options.force) {
+        lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
+        if (CLI.sh.test('-e', lastpath)) {
+            data = CLI.sh.cat(lastpath);
+            if (data) {
+                try {
+                    data = JSON.parse(data);
+                    lastrun = data.lastrun;
+                } catch (e) {
+                    CLI.error('Unable to parse last run info: ' + e.message);
+                    lastrun = 0;
+                }
+            }
+        }
+        lastrun = lastrun === void 0 ? 0 : lastrun;
+        lastrun = new Date(lastrun);
+    }
+
     return list.filter(function(item) {
         var src;
 
@@ -517,6 +544,17 @@ Cmd.prototype.filterAssetList = function(list) {
                     return false;
                 }
             }
+        }
+
+        //  Check modified times if appropriate
+        if (!cmd.options.force) {
+            //  If the file didn't pass cleanly on the last pass we always
+            //  recheck. Yes, the source may not have changed, but this is an
+            //  easy way to ensure each run reminds you what's broken/linty.
+            if (data && data.recheck && data.recheck.indexOf(src) !== -1) {
+                return true;
+            }
+            return CLI.isFileNewer(src, lastrun);
         }
 
         return true;
@@ -631,11 +669,14 @@ Cmd.prototype.processEslintResult = function(result) {
         errors,
         warnings,
         results,
+        recheck,
         summary;
 
     cmd = this;
     errors = 0;
     warnings = 0;
+
+    recheck = [];
 
     results = result.results;
 
@@ -658,6 +699,11 @@ Cmd.prototype.processEslintResult = function(result) {
         });
         errors = messages.length;
         warnings = entry.messages.length - errors;
+
+        //  Add any file that doesn't pass cleanly to the recheck list.
+        if (errors + warnings > 0) {
+            recheck.push(file);
+        }
 
         if (cmd.options.quiet) {
             // If we're only doing output when an error exists we're done if no
@@ -706,7 +752,7 @@ Cmd.prototype.processEslintResult = function(result) {
         });
     });
 
-    summary = {warnings: warnings, errors: errors, linty: 0};
+    summary = {warnings: warnings, errors: errors, linty: 0, recheck: recheck};
     if (warnings + errors > 0) {
         summary.linty = 1;
     }
@@ -735,7 +781,8 @@ Cmd.prototype.processStylelintResult = function(result) {
     summary = {
         errors: 0,
         warnings: 0,
-        linty: 0
+        linty: 0,
+        recheck: []
     };
 
     file = result.source;
@@ -753,6 +800,11 @@ Cmd.prototype.processStylelintResult = function(result) {
     });
     summary.errors = messages.length;
     summary.warnings = result.warnings.length - summary.errors;
+
+    //  Add any file that doesn't pass cleanly to the recheck list.
+    if (summary.errors + summary.warnings > 1) {
+        summary.recheck.push(file);
+    }
 
     if (cmd.options.quiet) {
         // If we're only doing output when an error exists we're done if no
@@ -817,7 +869,8 @@ Cmd.prototype.processStylelintResult = function(result) {
  */
 Cmd.prototype.summarize = function(results) {
 
-    var msg;
+    var msg,
+        lastpath;
 
     if (!this.options.list) {
         msg = '' + results.errors + ' errors, ' +
@@ -836,6 +889,10 @@ Cmd.prototype.summarize = function(results) {
             this.log(msg);
         }
     }
+
+    results.lastrun = Date.now();
+    lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
+    CLI.beautify(JSON.stringify(results)).to(lastpath);
 
     //  If any errors the ultimate return value will be non-zero.
     return results.errors;
@@ -909,7 +966,9 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         jsonFiles;
 
     cmd = this;
-    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+    res = results ||
+        {linty: 0, errors: 0, warnings: 0, files: 0};
+    res.recheck = res.recheck || [];
 
     jsonFiles = Array.isArray(files) ? files : [files];
     res.files += jsonFiles.length;
@@ -925,6 +984,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
             if (!text) {
                 res.linty += 1;
                 res.errors += 1;
+                res.recheck.push(file);
                 cmd.error('Unable to read ' + file);
             } else {
                 //  Watch out for files that serve as templates. These will have
@@ -937,6 +997,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
                 } catch (e) {
                     res.linty += 1;
                     res.errors += 1;
+                    res.recheck.push(file);
                     cmd.log(file);
                     cmd.error(e);
                 }
@@ -976,6 +1037,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     engine = new eslint.CLIEngine(opts);
 
     res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+    res.recheck = res.recheck || [];
 
     srcFiles = Array.isArray(files) ? files : [files];
     res.files += srcFiles.length;
@@ -999,6 +1061,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                 res.errors = res.errors + summary.errors;
                 res.warnings = res.warnings + summary.warnings;
                 res.linty = res.linty + summary.linty;
+                res.recheck = res.recheck.concat(summary.recheck);
 
                 // True will end the loop but we only do that if we're doing
                 // stop-on-first processing.
@@ -1045,6 +1108,7 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
 
     cmd = this;
     res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+    res.recheck = res.recheck || [];
 
     styleFiles = Array.isArray(files) ? files : [files];
     res.files += files.length;
@@ -1087,6 +1151,7 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
             res.errors = res.errors + summary.errors;
             res.warnings = res.warnings + summary.warnings;
             res.linty = res.linty + summary.linty;
+            res.recheck = res.recheck.concat(summary.recheck);
 
             if (res.errors > 0 && cmd.options.stop) {
                 deferred.resolve(res);
@@ -1142,6 +1207,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 parseString(currentText, function(err, result) {
                     if (err) {
                         res.errors += 1;
+                        res.recheck.push(current);
                         cmd.error('Error in ' + current + ': ' + err);
                     }
                 });
@@ -1150,6 +1216,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 parseString(currentText, function(err, result) {
                     if (err) {
                         res.warnings += 1;
+                        res.recheck.push(current);
                         if (!cmd.options.quiet) {
                             cmd.warn('Warning in ' + current + ': ' + msg);
                         }
@@ -1175,6 +1242,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 cmd.error('Unable to read ' + file);
                 res.linty += 1;
                 res.errors += 1;
+                res.recheck.push(file);
             }
 
             try {
@@ -1187,6 +1255,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                             res.linty += 1;
                             res.errors += 1;
                             cmd.error('Error in ' + file + ': ' + err);
+                            res.recheck.push(file);
                         }
                     });
                 }
@@ -1195,6 +1264,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 cmd.error(e.message);
                 res.linty += 1;
                 res.errors += 1;
+                res.recheck.push(file);
             }
 
             // True will end the loop but we only do that if we're doing
