@@ -20,9 +20,9 @@ version of TIBET has been published\.
 .br
 Tell TIBET to check the current project TIBET version against the latest
 .br
-released version\. The URL used is whatever value is found in
+released version\. This operation relies on \fBnpm info tibet \-\-json\fP to return
 .br
-\fBpath\.lib_version_file\fP\|\.
+data about publicly available TIBET releases\.
 
 .RE
 .SH EXAMPLES
@@ -56,7 +56,7 @@ Version v5\.0\.0\-dev\.11 is available\. You have v5\.0\.0\-dev\.7
 .P
 .RS 2
 .nf
-$ tibet config path\.lib_version_file
+$ tibet config path\.lib_version_latest
 
 http://www\.technicalpursuit\.com/tibet/latest\.js
 .fi

@@ -984,7 +984,6 @@ function(aURI) {
      *     method will either refresh the URI (via refreshFromRemoteResource) or
      *     it will put an entry for the supplied URI into a hash that tracks
      *     URIs that have had their remote resources changed without refreshing.
-     *     The 'refreshChangedURIs()' method can then be used to process them.
      * @param {TP.core.URI|String} aURI The URI that had its remote resource
      *     changed.
      * @returns {Promise} A promise which resolves based on success.
@@ -6619,7 +6618,6 @@ function() {
         //  Trigger post-processing for specific URIs.
         url.processRefreshedContent();
     };
-
 
     //  If the receiver refers to a file that was loaded (meaning it's mentioned
     //  in a TIBET package config) we source it back in rather than just

@@ -112,7 +112,7 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
     --xctrls-item-border-height: 2px;
 }
 
-#ResponderSummary_Tile > .body > #ResponderMethodList | xctrls|textitem {
+#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem {
 
     border: none;
 }

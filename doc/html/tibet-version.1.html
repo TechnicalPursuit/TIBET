@@ -27,7 +27,7 @@
 <p>Use --check to request this command to check whether a newer<br>version of TIBET has been published.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><code>--check</code> :<br>Tell TIBET to check the current project TIBET version against the latest<br>released version. The URL used is whatever value is found in<br><code>path.lib_version_file</code>.</li>
+<li><code>--check</code> :<br>Tell TIBET to check the current project TIBET version against the latest<br>released version. This operation relies on <code>npm info tibet --json</code> to return<br>data about publicly available TIBET releases.</li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="display-the-current-application-and-tibet-version-data">Display the current application and TIBET version data</h3>
@@ -41,7 +41,7 @@ Your current version v5.0.0-dev.7 is the latest.
 </code></pre><p>If a new version is available you&#39;ll see something similar to:</p>
 <pre><code>Version v5.0.0-dev.11 is available. You have v5.0.0-dev.7
 </code></pre><h3 id="view-the-current-mapping-for-the-tibet-latest-release-file">View the current mapping for the TIBET latest-release file</h3>
-<pre><code>$ tibet config path.lib_version_file
+<pre><code>$ tibet config path.lib_version_latest
 
 http://www.technicalpursuit.com/tibet/latest.js
 </code></pre><h2 id="see-also">SEE ALSO</h2>
@@ -51,7 +51,7 @@ http://www.technicalpursuit.com/tibet/latest.js
 
 </div>
 <div id="footer">
-    TIBET v5.0.0-pre.2 - Copyright (C) 2017 Technical Pursuit Inc.
+    TIBET v5.0.0-pre.4 - Copyright (C) 2017 Technical Pursuit Inc.
 </div>
 </div>
 </body>

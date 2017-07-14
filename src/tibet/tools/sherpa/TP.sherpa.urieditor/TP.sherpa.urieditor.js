@@ -136,7 +136,8 @@ function() {
     sourceURI = this.get('sourceURI');
 
     //  Make sure to set a flag that we're changing the content out from under
-    //  the source URI. That way, ValueChange notifications, et. al. won't
+    //  the source URI. That way, ValueChange notifications, et. al. won't cause
+    //  strange recursions, etc.
     this.set('$changingSourceContent', true);
 
     //  Set the content of our source URI to the source text extracted from the
@@ -185,39 +186,6 @@ function(aProperty, aFlag) {
     }
 
     return this.$get(aProperty);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('getSourceID',
-function() {
-
-    var sourceURI;
-
-    if (TP.isValid(sourceURI = this.get('sourceURI'))) {
-        return sourceURI.getLocation();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('getToolbar',
-function() {
-
-    var toolbar;
-
-    //  This is different depending on whether we're embedded in the inspector
-    //  or in a tile
-
-    if (TP.isTrue(this.hasAttribute('detached'))) {
-        toolbar = TP.byCSSPath('> .foot', this, true);
-    } else {
-        toolbar = TP.byId('SherpaToolbar', this.getWindow());
-    }
-
-    return toolbar;
 });
 
 //  ------------------------------------------------------------------------
