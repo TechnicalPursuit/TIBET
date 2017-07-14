@@ -140,7 +140,7 @@ function(aRequest) {
 
     methodSrc = '\n' + TP.src(newMethod);
 
-    patchText = newMethod.getMethodPatch(methodSrc, false);
+    patchText = newMethod.getMethodPatch(methodSrc, false).first();
 
     if (TP.notEmpty(patchText)) {
 
