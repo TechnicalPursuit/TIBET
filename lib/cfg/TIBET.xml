@@ -203,8 +203,10 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.console.TP.sherpa.console.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.halo.TP.sherpa.halo.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.halo.TP.sherpa.halo.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.customTagContextMenuContent.TP.sherpa.customTagContextMenuContent.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.customTagContextMenuContent.TP.sherpa.customTagContextMenuContent.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.compiledTagContextMenuContent.TP.sherpa.compiledTagContextMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.compiledTagContextMenuContent.TP.sherpa.compiledTagContextMenuContent.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.templatedTagContextMenuContent.TP.sherpa.templatedTagContextMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.templatedTagContextMenuContent.TP.sherpa.templatedTagContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.hud.TP.sherpa.hud.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.hud.TP.sherpa.hud.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.world.TP.sherpa.world.css.js"/>

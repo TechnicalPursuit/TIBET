@@ -224,34 +224,6 @@ function(options) {
     return data;
 });
 
-//  ------------------------------------------------------------------------
-//  Context Menu API
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Inst.defineMethod('getContentForContextMenu',
-function(options) {
-
-    /**
-     * @method getContentForContextMenu
-     * @summary Returns the source's content that will be hosted in a Sherpa
-     *     context menu.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the content. This will have the following keys, amongst
-     *     others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     * @returns {Element} The Element that will be used as the content for the
-     *     context menu.
-     */
-
-    return TP.elem('<sherpa:customTagContextMenuContent/>');
-});
-
 //  ========================================================================
 //  TP.core.TemplatedTag Additions
 //  ========================================================================
@@ -299,6 +271,34 @@ function(anAspect, options) {
         default:
             return this.callNextMethod();
     }
+});
+
+//  ------------------------------------------------------------------------
+//  Context Menu API
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Inst.defineMethod('getContentForContextMenu',
+function(options) {
+
+    /**
+     * @method getContentForContextMenu
+     * @summary Returns the source's content that will be hosted in a Sherpa
+     *     context menu.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     context menu.
+     */
+
+    return TP.elem('<sherpa:templatedTagContextMenuContent/>');
 });
 
 //  ========================================================================
@@ -352,6 +352,34 @@ function(anAspect, options) {
         default:
             return this.callNextMethod();
     }
+});
+
+//  ------------------------------------------------------------------------
+//  Context Menu API
+//  ------------------------------------------------------------------------
+
+TP.core.CompiledTag.Inst.defineMethod('getContentForContextMenu',
+function(options) {
+
+    /**
+     * @method getContentForContextMenu
+     * @summary Returns the source's content that will be hosted in a Sherpa
+     *     context menu.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     context menu.
+     */
+
+    return TP.elem('<sherpa:compiledTagContextMenuContent/>');
 });
 
 //  ========================================================================
