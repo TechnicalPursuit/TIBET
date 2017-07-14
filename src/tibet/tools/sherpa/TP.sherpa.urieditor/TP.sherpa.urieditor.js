@@ -226,10 +226,8 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
+    //  NB: This is an asynchronous operation.
     this.pushResource();
-
-    //  Update the editor's state, including its dirty state.
-    this.updateEditorState();
 
     return this;
 });
@@ -254,6 +252,7 @@ function(aSignal) {
 
     refresh = TP.bc(aSignal.at('refresh'));
 
+    //  NB: This is an asynchronous operation.
     this.revertResource(refresh);
 
     return this;
@@ -463,6 +462,9 @@ function() {
             //  and set the dirty flag to false.
             this.set('localSourceContent', sourceStr);
             this.isDirty(false);
+
+            //  Update the editor's state, including its dirty state.
+            this.updateEditorState();
 
             //  Grab the real underlying editor object beneath the
             //  xctrls:codeeditor. This is an instance of CodeMirror.
