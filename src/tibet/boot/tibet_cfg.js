@@ -640,7 +640,7 @@
     //  remote resources that we should try to watch. NOTE that these should
     //  be provided as virtual paths or wildcard expressions to match since
     //  they're shared between client and server.
-    TP.sys.setcfg('tds.watch.exclude', ['~app/TIBET-INF/tibet']);
+    TP.sys.setcfg('tds.watch.exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
 
     //  what url does client use to connect to the TDS watch SSE endpoint (and
     //  where does the TDS watch plugin configure its route to listen).
