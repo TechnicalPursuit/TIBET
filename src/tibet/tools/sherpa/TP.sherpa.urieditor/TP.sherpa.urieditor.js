@@ -206,7 +206,7 @@ function(aSignal) {
     this.applyResource();
 
     //  Update the editor's state, including its dirty state.
-    this.updateEditorState(this.get('editor').$get('$editorObj'));
+    this.updateEditorState();
 
     return this;
 });
@@ -229,7 +229,7 @@ function(aSignal) {
     this.pushResource();
 
     //  Update the editor's state, including its dirty state.
-    this.updateEditorState(this.get('editor').$get('$editorObj'));
+    this.updateEditorState();
 
     return this;
 });
