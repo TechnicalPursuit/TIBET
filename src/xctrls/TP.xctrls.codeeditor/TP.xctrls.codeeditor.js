@@ -118,6 +118,8 @@ function(aRequest) {
 TP.xctrls.codeeditor.Inst.defineAttribute('$oldSelectionLength');
 TP.xctrls.codeeditor.Inst.defineAttribute('$currentKeyHandler');
 
+TP.xctrls.codeeditor.Inst.defineAttribute('$currentScrollInfo');
+
 TP.xctrls.codeeditor.Inst.defineAttribute('$editorObj');
 
 //  ------------------------------------------------------------------------
@@ -251,6 +253,29 @@ function(line, ch) {
     /* eslint-disable new-cap */
     return TP.extern.CodeMirror.Pos(line, ch);
     /* eslint-enable new-cap */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('captureCurrentScrollInfo',
+function() {
+
+    /**
+     * @method captureCurrentScrollInfo
+     * @summary Captures the current scroll position for use later by the
+     *     scrollUsingLastScrollInfo method.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editor,
+        currentScrollInfo;
+
+    editor = this.$get('$editorObj');
+
+    currentScrollInfo = editor.getScrollInfo();
+    this.set('$currentScrollInfo', currentScrollInfo);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -509,6 +534,33 @@ function() {
         });
 
     this.focus();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('scrollUsingLastScrollInfo',
+function() {
+
+    /**
+     * @method scrollUsingLastScrollInfo
+     * @summary Scrolls the editor left and top based on scroll position that
+     *     was captured by the captureCurrentScrollInfo method.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editor,
+        currentScrollInfo;
+
+    editor = this.$get('$editorObj');
+
+    currentScrollInfo = this.get('$currentScrollInfo');
+    if (TP.notValid(currentScrollInfo)) {
+        return this;
+    }
+
+    editor.scrollTo(currentScrollInfo.left, currentScrollInfo.top);
 
     return this;
 });
