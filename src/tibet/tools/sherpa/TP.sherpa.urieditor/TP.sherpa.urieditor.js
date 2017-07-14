@@ -564,6 +564,12 @@ function(shouldRefresh) {
     //  strange recursions, etc.
     this.set('$changingSourceContent', true);
 
+    //  Capture the current scroll position so that we can try restoring it
+    //  below after we refresh the editor. This attempts to prevent the 'scroll
+    //  jumping' that happens when the editor refreshes and sets the scroll
+    //  position back to 0,0.
+    editor.captureCurrentScrollInfo();
+
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
@@ -634,7 +640,14 @@ function(shouldRefresh) {
 
             /* eslint-disable no-extra-parens */
             (function() {
+
+                //  Refresh the editor and try to put the scroll position back
+                //  to what it was before we refreshed it. This is an attempt to
+                //  prevent 'scroll jumping'.
+
                 editor.refreshEditor();
+
+                editor.scrollUsingLastScrollInfo();
 
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');
