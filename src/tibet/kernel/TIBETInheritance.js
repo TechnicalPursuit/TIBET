@@ -11031,7 +11031,12 @@ function(aFunction, copySourceInfo) {
 
         isHandler,
 
-        newMethod;
+        newMethod,
+
+        loadPath,
+        sourcePath,
+        loadPackage,
+        loadConfig;
 
     if (TP.notValid(aFunction)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -11064,6 +11069,17 @@ function(aFunction, copySourceInfo) {
         owner = this[TP.OWNER][this[TP.TRACK]];
     }
 
+    //  If the caller hasn't supplied false to the copySourceInfo parameter
+    //  capture the 'path information' slots about this method. We need to do
+    //  this because when we redefine the method below, this information will be
+    //  lost.
+    if (TP.notFalse(copySourceInfo)) {
+        loadPath = this[TP.LOAD_PATH];
+        sourcePath = this[TP.LOAD_PATH];
+        loadPackage = this[TP.LOAD_PACKAGE];
+        loadConfig = this[TP.LOAD_CONFIG];
+    }
+
     isHandler = /^handle/.test(this.getName());
 
     //  Redefine the method.
@@ -11081,12 +11097,12 @@ function(aFunction, copySourceInfo) {
     }
 
     //  If the caller hasn't supplied false to the copySourceInfo parameter
-    //  copy over the 'path information' slots about this method
+    //  copy over the 'path information' slots about this method.
     if (TP.notFalse(copySourceInfo)) {
-        newMethod[TP.LOAD_PATH] = this[TP.LOAD_PATH];
-        newMethod[TP.SOURCE_PATH] = this[TP.SOURCE_PATH];
-        newMethod[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
-        newMethod[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
+        newMethod[TP.LOAD_PATH] = loadPath;
+        newMethod[TP.SOURCE_PATH] = sourcePath;
+        newMethod[TP.LOAD_PACKAGE] = loadPackage;
+        newMethod[TP.LOAD_CONFIG] = loadConfig;
     }
 
     //  Return the new method object here - the caller already has a handle to
