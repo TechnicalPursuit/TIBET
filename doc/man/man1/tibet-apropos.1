@@ -9,49 +9,34 @@ tibet apropros <terms> [\-\-comments] [\-\-limit=N] [\-\-no\-ignorecase]
 Runs the TSH \fB:apropos\fP command to find methods related to one or more topics\.
 .P
 This is a good command to use when you know what you'd like to do conceptually
-.br
 but are unsure of what options TIBET may offer to support your goals\.
 .P
 By default this command searches method names for matches to search terms\.
-.br
 The terms provided can be simple strings or JavaScript\-style RegExp literals\.
-.br
 When you provide more than one term the terms are combined using \fBand\fP semantics
-.br
 meaning that all terms must match a result for it to be presented\. You can use
-.br
 RegExp literal syntax with vertical bars (|) to create \fBor\fP conditions\.
 .P
 Output from this command is produced in a format compatible with copy/paste into
-.br
 a \fBtibet reflect\fP command to explore individual entries more deeply\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBterms\fP :
-.br
 A space\-separated list of separate terms to match\. Each term can be either a
-.br
 simple string or a JavaScript RegExp literal\.
 .IP \(bu 2
 \fB\-\-comments\fP :
-.br
 Search comment text in addition to the method name\. This will greatly expand
-.br
 the set of returned values depending on the term in question\.
 .IP \(bu 2
 \fB\-\-limit\fP :
-.br
 Set a minimum match count for success\. Items which don't match the search
-.br
 term at least \fB\-\-limit\fP number of times will be discarded\. The default value is
-.br
 2\.
 .IP \(bu 2
 \fB\-\-no\-ignorecase\fP :
-.br
 Use a case\-sensitive search\. Searches are normally case\-insensitive to
-.br
 improve the chances you will find appropriate suggestions in the result list\.
 
 .RE

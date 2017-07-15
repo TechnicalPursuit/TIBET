@@ -9,65 +9,43 @@ tibet freeze [\-\-tibet <bundle>] [\-\-minify] [\-\-all] [\-\-raw] [\-\-zipped]
 Freezes the current application's TIBET library in \fB~app_inf\fP\|\.
 .P
 By default \fB~app_inf\fP refers to \fBTIBET\-INF\fP, the default location for
-.br
 package data, custom commands, etc\. TIBET is configured to allow
-.br
 a version of TIBET to be frozen into \fBTIBET\-INF/tibet\fP rather than
-.br
 in \fBnode_modules/tibet\fP to support deployments where the use of the
-.br
 \fBnode_modules\fP directory would be unnecessary or excessive\.
 .P
 Flags allow you to control the scope of what is frozen\. Since the
-.br
 freeze command is only concerned with the TIBET library these flags
-.br
 focus on whether you want minified TIBET bundles, all TIBET bundles,
-.br
 raw source for dynamic development, or some combination of those\.
 .P
 Using \fBtibet freeze\fP without parameters will freeze the current copy
-.br
 of \fBtibet_base\.min\.js\fP along with the load and hook files needed to boot\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fB\-\-tibet\fP :
-.br
 Takes a bundle name minus any \fBtibet_\fP prefix For example, \fB\-\-tibet full\fP
-.br
 will freeze the \fBtibet_full\fP bundle\. This flag defaults to the value \fBbase\fP so
-.br
 \fBtibet_base\fP is frozen\.
 .IP \(bu 2
 \fB\-\-minify\fP :
-.br
 Controls whether you freeze minified source code and is used in conjunction
-.br
 with the \fB\-\-tibet\fP flag to filter bundles\. The default value is true, so only
-.br
 minified code is frozen by default\.
 .IP \(bu 2
 \fB\-\-zipped\fP :
-.br
 Controls whether zipped copies are preserved or pruned\. This flag works
-.br
 after any minify processing so if you set both minify and zipped you will retain
-.br
 \fB\|\.min\.js\.gz\fP files\.
 .IP \(bu 2
 \fB\-\-all\fP :
-.br
 Overrides any filtering of bundle content and preserves all bundles of TIBET
-.br
 source found in the \fB~lib_build\fP directory\.
 .IP \(bu 2
 \fB\-\-raw\fP :
-.br
 Causes the current TIBET source tree to be copied into the target directory\.
-.br
 This option supports dynamic development with TIBET source code but does have a
-.br
 performance impact\.
 
 .RE

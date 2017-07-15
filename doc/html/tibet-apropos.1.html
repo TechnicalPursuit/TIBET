@@ -24,18 +24,33 @@
 <p>tibet apropros &lt;terms&gt; [--comments] [--limit=N] [--no-ignorecase]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH <code>:apropos</code> command to find methods related to one or more topics.</p>
-<p>This is a good command to use when you know what you&#39;d like to do conceptually<br>but are unsure of what options TIBET may offer to support your goals.</p>
-<p>By default this command searches method names for matches to search terms.<br>The terms provided can be simple strings or JavaScript-style RegExp literals.<br>When you provide more than one term the terms are combined using <code>and</code> semantics<br>meaning that all terms must match a result for it to be presented. You can use<br>RegExp literal syntax with vertical bars (|) to create <code>or</code> conditions.</p>
-<p>Output from this command is produced in a format compatible with copy/paste into<br>a <code>tibet reflect</code> command to explore individual entries more deeply.</p>
+<p>This is a good command to use when you know what you&#39;d like to do conceptually
+but are unsure of what options TIBET may offer to support your goals.</p>
+<p>By default this command searches method names for matches to search terms.
+The terms provided can be simple strings or JavaScript-style RegExp literals.
+When you provide more than one term the terms are combined using <code>and</code> semantics
+meaning that all terms must match a result for it to be presented. You can use
+RegExp literal syntax with vertical bars (|) to create <code>or</code> conditions.</p>
+<p>Output from this command is produced in a format compatible with copy/paste into
+a <code>tibet reflect</code> command to explore individual entries more deeply.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>terms</code> :<br>A space-separated list of separate terms to match. Each term can be either a<br>simple string or a JavaScript RegExp literal.</p>
+<li><p><code>terms</code> :
+A space-separated list of separate terms to match. Each term can be either a
+simple string or a JavaScript RegExp literal.</p>
 </li>
-<li><p><code>--comments</code> :<br>Search comment text in addition to the method name. This will greatly expand<br>the set of returned values depending on the term in question.</p>
+<li><p><code>--comments</code> :
+Search comment text in addition to the method name. This will greatly expand
+the set of returned values depending on the term in question.</p>
 </li>
-<li><p><code>--limit</code> :<br>Set a minimum match count for success. Items which don&#39;t match the search<br>term at least <code>--limit</code> number of times will be discarded. The default value is<br>2.</p>
+<li><p><code>--limit</code> :
+Set a minimum match count for success. Items which don&#39;t match the search
+term at least <code>--limit</code> number of times will be discarded. The default value is
+2.</p>
 </li>
-<li><p><code>--no-ignorecase</code> :<br>Use a case-sensitive search. Searches are normally case-insensitive to<br>improve the chances you will find appropriate suggestions in the result list.</p>
+<li><p><code>--no-ignorecase</code> :
+Use a case-sensitive search. Searches are normally case-insensitive to
+improve the chances you will find appropriate suggestions in the result list.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>

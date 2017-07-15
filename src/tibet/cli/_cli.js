@@ -323,6 +323,28 @@ CLI.isObject = function(obj) {
         Object.prototype.toString.call(obj) === '[object Object]';
 };
 
+/**
+ * Check an object to see if it's truly a plain object and not an instance of
+ * some more complex prototype chain.
+ */
+CLI.isPlainObject = function(obj) {
+
+    if (obj === null ||
+        obj === undefined ||
+        typeof obj !== 'object' ||
+        obj.nodeType ||
+        obj.moveBy) {
+        return false;
+    }
+
+    if (obj.constructor && !Object.prototype.hasOwnProperty.call(
+            obj.constructor.prototype, 'isPrototypeOf')) {
+        return false;
+    }
+
+    return true;
+};
+
 CLI.isTrue = function(aReference) {
     return aReference === true;
 };
@@ -549,6 +571,12 @@ CLI.blend = function(target, source) {
     } else {
         // Target not valid, source should overlay.
         return JSON.parse(JSON.stringify(source));
+    }
+
+    //  We only want to iterate on keys (essentially descend) if the object
+    //  provide is a POJO, not an instance of some more complex type.
+    if (!CLI.isPlainObject(source)) {
+        return source;
     }
 
     Object.keys(source).forEach(function(key) {

@@ -24,13 +24,41 @@
 <p>phantomjs phantomtsh.js [--script &lt;script&gt;] [--url &lt;url&gt;] [--profile &lt;profile&gt;] [--timeout &lt;timeout&gt;] [--help] [&lt;flags&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs phantomjs to load TIBET and execute a TIBET Shell (TSH) script.</p>
-<p>Leveraged by other TIBET command-line utilities such as &#39;tibet tsh&#39; or<br>&#39;tibet test&#39; to access TIBET Shell functionality from the command line.</p>
-<p>Use --script to define the TSH script to run, quoting as needed for your<br>particular shell. For example, --script &#39;:echo &quot;Hi&quot;&#39;</p>
-<p>You can use --profile to alter the profile used regardless of the boot URL.<br>Using a different boot profile is the best way to alter what code TIBET will<br>load prior to running your script. The profile value should match the form<br>used on a TIBET launch URL: namely a config.xml#id pattern pointing to the<br>manifest file and config tag you want to use as your boot profile.</p>
-<p>You should not normally need to alter the url used to boot TIBET however<br>use --url to point to a different boot URL if you find that necessary.<br>The URL must point to a valid TIBET-enabled boot file to work properly.<br>A good test is trying to load your intended boot URL directly from an HTML5<br>browser. If TIBET can boot it into a supported browser from the file system<br>it should function properly inside of PhantomJS.</p>
-<p>--params allows you to provide a URL-encoded string suitable for use as<br>a set of parameters for the URL to be used. Examples might be adding a<br>logging level by using --params &#39;boot.level=debug&#39; as a param string.</p>
-<p>--timeout allows you to change the default idle timeout from 5 seconds to<br>some other value specified in milliseconds (5000 is 5 seconds). Note that<br>the timeout is an idle timeout meaning it is reset any time output is sent<br>to PhantomJS. There is no maximum amount of time an operation can run but<br>output must be sent to PhantomJS within the timeout period.</p>
-<p>Additional &lt;flags&gt; for this command include:<br>    [--color]   - Colorizes the output in the terminal. [true]<br>    [--errimg]  - Capture PhantomError_{ts}.png onError. [false]<br>    [--errexit] - Exit the PhantomJS execution onError. [false]<br>    [--ok]      - When outputting TAP form, include &#39;ok&#39;. [true]<br>    [--tap]     - Specifies test anything protocol format. [false]<br>    [--debug]   - Activates additional debugging output. [false]<br>    [--quiet]   - Silences startup/finish message display. [false]<br>    [--system]  - Activates system-level message display. [false]<br>    [--level]   - Sets the TIBET logging level filter. [ERROR]<br>    [--help]    - Outputs this content along with the usage string.<br>    [--usage]   - Outputs the usage string.</p>
+<p>Leveraged by other TIBET command-line utilities such as &#39;tibet tsh&#39; or
+&#39;tibet test&#39; to access TIBET Shell functionality from the command line.</p>
+<p>Use --script to define the TSH script to run, quoting as needed for your
+particular shell. For example, --script &#39;:echo &quot;Hi&quot;&#39;</p>
+<p>You can use --profile to alter the profile used regardless of the boot URL.
+Using a different boot profile is the best way to alter what code TIBET will
+load prior to running your script. The profile value should match the form
+used on a TIBET launch URL: namely a config.xml#id pattern pointing to the
+manifest file and config tag you want to use as your boot profile.</p>
+<p>You should not normally need to alter the url used to boot TIBET however
+use --url to point to a different boot URL if you find that necessary.
+The URL must point to a valid TIBET-enabled boot file to work properly.
+A good test is trying to load your intended boot URL directly from an HTML5
+browser. If TIBET can boot it into a supported browser from the file system
+it should function properly inside of PhantomJS.</p>
+<p>--params allows you to provide a URL-encoded string suitable for use as
+a set of parameters for the URL to be used. Examples might be adding a
+logging level by using --params &#39;boot.level=debug&#39; as a param string.</p>
+<p>--timeout allows you to change the default idle timeout from 5 seconds to
+some other value specified in milliseconds (5000 is 5 seconds). Note that
+the timeout is an idle timeout meaning it is reset any time output is sent
+to PhantomJS. There is no maximum amount of time an operation can run but
+output must be sent to PhantomJS within the timeout period.</p>
+<p>Additional &lt;flags&gt; for this command include:
+    [--color]   - Colorizes the output in the terminal. [true]
+    [--errimg]  - Capture PhantomError_{ts}.png onError. [false]
+    [--errexit] - Exit the PhantomJS execution onError. [false]
+    [--ok]      - When outputting TAP form, include &#39;ok&#39;. [true]
+    [--tap]     - Specifies test anything protocol format. [false]
+    [--debug]   - Activates additional debugging output. [false]
+    [--quiet]   - Silences startup/finish message display. [false]
+    [--system]  - Activates system-level message display. [false]
+    [--level]   - Sets the TIBET logging level filter. [ERROR]
+    [--help]    - Outputs this content along with the usage string.
+    [--usage]   - Outputs the usage string.</p>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
 <li><a class="crossref" href="./tsh.1.html">tsh(1)</a></li>

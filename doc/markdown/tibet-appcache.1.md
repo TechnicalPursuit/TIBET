@@ -3,7 +3,8 @@
 
 ## SYNOPSIS
 
-tibet appcache [--file <cachefile>] [--enable|--disable|--status] [--missing] [--develop] [--rebuild] [--touch] [--context <app|lib|all>]
+tibet appcache [--file <cachefile>] [--enable|--disable|--status]
+    [--missing] [--develop] [--rebuild] [--touch] [--context <app|lib|all>]
 
 ## DESCRIPTION
 
@@ -66,9 +67,9 @@ cannot tell you if a particular browser is still relying on cached data. This is
 the default option.
 
   * `--touch` :
-    Update the embedded ID: {timestamp} value provided by the
-default cache template. This effectively changes the cache content which
-should have the effect of causing your browser to refresh the cache.
+    Update the embedded ID: {timestamp} value provided by the default cache
+template. This effectively changes the cache content which should have the
+effect of causing your browser to refresh the cache.
 
 ## EXAMPLES
 

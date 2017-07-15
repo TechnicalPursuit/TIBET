@@ -175,7 +175,7 @@ Cmd.prototype.executeCancel = function() {
     thisref = this;
 
     //  Make sure our non-flag parameters (from _ array) contain a doc ID.
-    doc_id = this.getArgument(2);
+    doc_id = this.getArgument(0);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -277,7 +277,7 @@ Cmd.prototype.executeDisableFlow = function() {
 
     thisref = this;
 
-    doc_id = this.getArgument(2);
+    doc_id = this.getArgument(0);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -386,7 +386,7 @@ Cmd.prototype.executeEnableFlow = function() {
 
     thisref = this;
 
-    doc_id = this.getArgument(2);
+    doc_id = this.getArgument(0);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -650,7 +650,7 @@ Cmd.prototype.executeList = function() {
 
     thisref = this;
 
-    doc_id = this.getArgument(2);
+    doc_id = this.getArgument(0);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -680,9 +680,9 @@ Cmd.prototype.executeListFlows = function() {
             thisref.log(CLI.beautify(result));
         } else {
             result.forEach(function(item) {
-                thisref.log(item.name + '::' + item.owner + ' => ' +
-                    JSON.stringify(item.tasks.sequence) +
-                    thisref.colorize(' (' + item._id + ')', 'gray'));
+                thisref.log(item.value.name + '::' + item.value.owner + ' => ' +
+                    JSON.stringify(item.value.tasks.sequence) +
+                    thisref.colorize(' (' + item.id + ')', 'gray'));
             });
         }
     }).catch(function(err) {
@@ -722,9 +722,9 @@ Cmd.prototype.executeListJobs = function() {
             thisref.log(CLI.beautify(result));
         } else {
             result.forEach(function(item) {
-                thisref.log(item.flow + '::' + item.owner + ' => ' +
-                    (item.state || '$$undefined') +
-                    thisref.colorize(' (' + item._id + ')', 'gray'));
+                thisref.log(item.value.flow + '::' + item.value.owner + ' => ' +
+                    (item.value.state || '$$undefined') +
+                    thisref.colorize(' (' + item.id + ')', 'gray'));
             });
         }
     }).catch(function(err) {
@@ -749,15 +749,15 @@ Cmd.prototype.executeListTasks = function() {
             result.forEach(function(item) {
                 var target;
 
-                if (item.flow) {
-                    target = 'flow ' + item.flow;
+                if (item.value.flow) {
+                    target = 'flow ' + item.value.flow;
                 } else {
-                   target = 'plugin ' + (item.plugin || item.name);
+                   target = 'plugin ' + (item.value.plugin || item.value.name);
                 }
 
                 //  TODO:   add owner when ready
-                thisref.log(item.name + ' => ' + target +
-                    thisref.colorize(' (' + item._id + ')', 'gray'));
+                thisref.log(item.value.name + ' => ' + target +
+                    thisref.colorize(' (' + item.id + ')', 'gray'));
             });
         }
     }).catch(function(err) {
@@ -854,7 +854,7 @@ Cmd.prototype.executePush = function() {
         boolean: flags.slice(0) // slice to copy since parse will modify.
     });
 
-    id = this.getArgument(2);
+    id = this.getArgument(0);
 
     if (CLI.notEmpty(id)) {
         fullpath = CLI.expandPath(id);
@@ -1028,7 +1028,7 @@ Cmd.prototype.executeSubmit = function() {
 
     thisref = this;
 
-    file = this.getArgument(2);
+    file = this.getArgument(0);
 
     if (CLI.isEmpty(file)) {
         this.usage('tibet tws submit <jobfile>');

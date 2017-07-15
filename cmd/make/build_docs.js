@@ -189,30 +189,33 @@
             destfile = make.path.join(manpath, 'man' + options.section, file);
             destfile = destfile.slice(0, destfile.lastIndexOf('.'));
 
-            if (!cmdopts.force && !make.CLI.isFileNewer(srcfile, destfile)) {
-                return;
-            } else {
-                make.info('processing ' +
-                    file.slice(0, file.lastIndexOf('.')));
-            }
-
             try {
-                tempfile = srcfile + '.tmp';
                 content = make.sh.cat(srcfile);
                 template = make.template.compile(content);
                 content = template(options);
-                content.to(tempfile);
 
                 //  NOTE this depends on first line being the # {{topic}} line.
                 options.firstline = content.split('\n')[0];
                 index.push(JSON.parse(JSON.stringify(options)));
+
+                if (!cmdopts.force && !make.CLI.isFileNewer(srcfile, destfile)) {
+                    return;
+                } else {
+                    make.info('processing ' +
+                        file.slice(0, file.lastIndexOf('.')));
+                }
+
+                tempfile = srcfile + '.tmp';
+                content.to(tempfile);
 
                 genMan(file, options);
                 genHtml(file, options);
             } catch (e) {
                 make.error('Error processing ' + file + ': ' + e.message);
             } finally {
-                make.sh.rm('-f', tempfile);
+                if (tempfile) {
+                    make.sh.rm('-f', tempfile);
+                }
             }
         });
 

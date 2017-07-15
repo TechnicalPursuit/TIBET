@@ -24,11 +24,18 @@
 <p>tibet init [--static]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Initializes a TIBET project, linking and installing dependencies.</p>
-<p>This command must be run prior to most activity within a TIBET<br>project. Many of the TIBET cli commands will fail to run until<br>you have run a <code>tibet init</code> command.</p>
-<p>The optional <code>--static</code> parameter will cause TIBET to make a static copy of<br>the current globally installed version in the project and update the<br>package.json to refer to that version. Normally the current running release is<br>simply linked into position via <code>npm link tibet</code>.</p>
+<p>This command must be run prior to most activity within a TIBET
+project. Many of the TIBET cli commands will fail to run until
+you have run a <code>tibet init</code> command.</p>
+<p>The optional <code>--static</code> parameter will cause TIBET to make a static copy of
+the current globally installed version in the project and update the
+package.json to refer to that version. Normally the current running release is
+simply linked into position via <code>npm link tibet</code>.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><code>--static</code> :<br>Used to lock your project to a specific version of TIBET within the<br>package.json and node_modules locations.</li>
+<li><code>--static</code> :
+Used to lock your project to a specific version of TIBET within the
+package.json and node_modules locations.</li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="initialize-a-fresh-project">Initialize a fresh project</h3>

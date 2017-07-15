@@ -21,30 +21,68 @@
 
 <h1 id="tibet-appcache-1-manages-a-project-s-html5-application-manifest">tibet-appcache(1) -- manages a project&#39;s HTML5 application manifest</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet appcache [--file &lt;cachefile&gt;] [--enable|--disable|--status] [--missing] [--develop] [--rebuild] [--touch] [--context &lt;app|lib|all&gt;]</p>
+<p>tibet appcache [--file &lt;cachefile&gt;] [--enable|--disable|--status]
+    [--missing] [--develop] [--rebuild] [--touch] [--context &lt;app|lib|all&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Manages a project&#39;s HTML5 application manifest file for offline caching.</p>
-<p>TIBET projects include a manifest file named <code>{appname}.appcache</code> which is<br>managed by this command. Specific comment blocks in TIBET versions of the<br>manifest file help delimit the content of the file for easier processing.</p>
-<p><em>This command never removes entries</em> so you can feel confident both editing the<br>cache and using this command.</p>
+<p>TIBET projects include a manifest file named <code>{appname}.appcache</code> which is
+managed by this command. Specific comment blocks in TIBET versions of the
+manifest file help delimit the content of the file for easier processing.</p>
+<p><em>This command never removes entries</em> so you can feel confident both editing the
+cache and using this command.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>--context</code> :<br>Sets the context of the package scan which is run. The default is <code>app</code><br>which scans only application-level resources, ignoring any potential library<br>resources. Other values are <code>lib</code> and <code>all</code> but for most application uses these<br>options are not useful.</p>
+<li><p><code>--context</code> :
+Sets the context of the package scan which is run. The default is <code>app</code>
+which scans only application-level resources, ignoring any potential library
+resources. Other values are <code>lib</code> and <code>all</code> but for most application uses these
+options are not useful.</p>
 </li>
-<li><p><code>--develop</code> :<br>Update the cache such that application-specific content is commented out so<br>it will load dynamically via the network. Invert the flag via <code>--no-develop</code> to<br>uncomment application section content to test your application running from the<br>cache. Note <code>--develop</code> is on by default.</p>
+<li><p><code>--develop</code> :
+Update the cache such that application-specific content is commented out so
+it will load dynamically via the network. Invert the flag via <code>--no-develop</code> to
+uncomment application section content to test your application running from the
+cache. Note <code>--develop</code> is on by default.</p>
 </li>
-<li><p><code>--disable</code> :<br>Update <code>index.handlebars</code> to have a <code>no-manifest</code> attribute. This attribute<br>name effectively will disable the cache. <em>NOTE that if the cache was ever<br>activated you must clear your browser&#39;s cache content and any browser-specific<br>appcache (for example: chrome://appcache-internals/) to fully disable.</em></p>
+<li><p><code>--disable</code> :
+Update <code>index.handlebars</code> to have a <code>no-manifest</code> attribute. This attribute
+name effectively will disable the cache. <em>NOTE that if the cache was ever
+activated you must clear your browser&#39;s cache content and any browser-specific
+appcache (for example: chrome://appcache-internals/) to fully disable.</em></p>
 </li>
-<li><p><code>--enable</code> :<br>Update <code>index.handlebars</code> to use the proper manifest value. When active the<br>html element will have a <code>manifest</code> attribute, otherwise it will have a<br><code>no-manifest</code> attribute (which effectively turns off caching).</p>
+<li><p><code>--enable</code> :
+Update <code>index.handlebars</code> to use the proper manifest value. When active the
+html element will have a <code>manifest</code> attribute, otherwise it will have a
+<code>no-manifest</code> attribute (which effectively turns off caching).</p>
 </li>
-<li><p><code>--file</code> :<br>Provides a way to point to an application manifest other than<br><code>{appname}.appcache</code>. You will need this if you renamed the default app manifest<br>file.</p>
+<li><p><code>--file</code> :
+Provides a way to point to an application manifest other than
+<code>{appname}.appcache</code>. You will need this if you renamed the default app manifest
+file.</p>
 </li>
-<li><p><code>--missing</code> :<br>List files in the application not in the manifest. This is a relatively<br>simple scan looking for css, image, and other non-source files which might be<br>useful to cache. For JavaScript the system presumes that only source files in<br><code>~app_build</code> should be part of the cache.</p>
+<li><p><code>--missing</code> :
+List files in the application not in the manifest. This is a relatively
+simple scan looking for css, image, and other non-source files which might be
+useful to cache. For JavaScript the system presumes that only source files in
+<code>~app_build</code> should be part of the cache.</p>
 </li>
-<li><p><code>--rebuild</code> :<br>Refresh the app and lib sections of the manifest. This is the only flag<br>which edits the file content of the appcache itself. If the comment delimiters<br>for app and lib sections are not present this operation will fail and output an<br>appropriate error message. Use this option with a degree of caution since it<br>will alter the content of your cache.</p>
+<li><p><code>--rebuild</code> :
+Refresh the app and lib sections of the manifest. This is the only flag
+which edits the file content of the appcache itself. If the comment delimiters
+for app and lib sections are not present this operation will fail and output an
+appropriate error message. Use this option with a degree of caution since it
+will alter the content of your cache.</p>
 </li>
-<li><p><code>--status</code> :<br>Display the current application cache status based on the current state of<br>the <code>index.handlebars</code> file&#39;s <code>manifest</code> attribute. Note that this command<br>cannot tell you if a particular browser is still relying on cached data. This is<br>the default option.</p>
+<li><p><code>--status</code> :
+Display the current application cache status based on the current state of
+the <code>index.handlebars</code> file&#39;s <code>manifest</code> attribute. Note that this command
+cannot tell you if a particular browser is still relying on cached data. This is
+the default option.</p>
 </li>
-<li><p><code>--touch</code> :<br>Update the embedded ID: {timestamp} value provided by the<br>default cache template. This effectively changes the cache content which<br>should have the effect of causing your browser to refresh the cache.</p>
+<li><p><code>--touch</code> :
+Update the embedded ID: {timestamp} value provided by the default cache
+template. This effectively changes the cache content which should have the
+effect of causing your browser to refresh the cache.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>

@@ -9,25 +9,18 @@ tibet init [\-\-static]
 Initializes a TIBET project, linking and installing dependencies\.
 .P
 This command must be run prior to most activity within a TIBET
-.br
 project\. Many of the TIBET cli commands will fail to run until
-.br
 you have run a \fBtibet init\fP command\.
 .P
 The optional \fB\-\-static\fP parameter will cause TIBET to make a static copy of
-.br
 the current globally installed version in the project and update the
-.br
 package\.json to refer to that version\. Normally the current running release is
-.br
 simply linked into position via \fBnpm link tibet\fP\|\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fB\-\-static\fP :
-.br
 Used to lock your project to a specific version of TIBET within the
-.br
 package\.json and node_modules locations\.
 
 .RE

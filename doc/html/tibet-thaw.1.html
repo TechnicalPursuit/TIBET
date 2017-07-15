@@ -24,12 +24,20 @@
 <p>tibet thaw [--force]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Thaws (un-freezes) the current application&#39;s TIBET library in <code>~app_inf</code>.</p>
-<p>By default <code>~app_inf</code> refers to <code>public/TIBET-INF</code>, the default location for<br>package data, custom commands, etc. TIBET is configured to allow a version of<br>TIBET to be frozen into <code>~app_inf/tibet</code> rather than in <code>node_modules/tibet</code> to<br>support deployments where the use of the <code>node_modules</code> directory would be<br>unnecessary or excessive.</p>
-<p>The thaw command removes any <code>~app_inf/tibet</code> content and returns the<br>setting for <code>lib_root</code> to its default value of <code>~/node_modules/tibet</code> where the<br><code>~</code> in this case represents your project&#39;s root directory.</p>
-<p>Since it is inherently destructive this command requires <code>--force</code> to<br>actually run.</p>
+<p>By default <code>~app_inf</code> refers to <code>public/TIBET-INF</code>, the default location for
+package data, custom commands, etc. TIBET is configured to allow a version of
+TIBET to be frozen into <code>~app_inf/tibet</code> rather than in <code>node_modules/tibet</code> to
+support deployments where the use of the <code>node_modules</code> directory would be
+unnecessary or excessive.</p>
+<p>The thaw command removes any <code>~app_inf/tibet</code> content and returns the
+setting for <code>lib_root</code> to its default value of <code>~/node_modules/tibet</code> where the
+<code>~</code> in this case represents your project&#39;s root directory.</p>
+<p>Since it is inherently destructive this command requires <code>--force</code> to
+actually run.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><code>--force</code> :<br>Required to actually cause a thaw operation to be performed.</li>
+<li><code>--force</code> :
+Required to actually cause a thaw operation to be performed.</li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="thaw-a-previously-frozen-project-but-not-really-">Thaw a previously frozen project (...but not really...)</h3>

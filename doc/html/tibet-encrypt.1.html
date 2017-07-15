@@ -23,9 +23,14 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>tibet encrypt &lt;string&gt;</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Encrypts a string using the same approach used by the TDS. This command is<br>provided as a convenience allowing you to set a TDS_CRYPTO_KEY environment value<br>and then encrypt passwords or API keys prior to storing them.</p>
-<p>The TIBET Workflow System (TWS) tasks expect passwords/keys to be provided in<br>encrypted form as output by this command. This allows you to store task-specific<br>passwords or API keys as part of your task definitions or parameters.</p>
-<p>Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the<br>encryption and decryption processes.</p>
+<p>Encrypts a string using the same approach used by the TDS. This command is
+provided as a convenience allowing you to set a TDS_CRYPTO_KEY environment value
+and then encrypt passwords or API keys prior to storing them.</p>
+<p>The TIBET Workflow System (TWS) tasks expect passwords/keys to be provided in
+encrypted form as output by this command. This allows you to store task-specific
+passwords or API keys as part of your task definitions or parameters.</p>
+<p>Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the
+encryption and decryption processes.</p>
 <h2 id="examples">EXAMPLES</h2>
 <pre><code>$ export TDS_CRYPTO_KEY=&#39;TOPsecretKEY&#39;
 $ tibet encrypt &#39;myrestserviceapikey&#39;

@@ -24,17 +24,31 @@
 <p>tibet release</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Performs the steps necessary to tag a release of the TIBET library.</p>
-<p>The release process consists of several steps to sanity check the<br>current repository followed by a number of steps which work to build<br>a releasable version, tag it, commit it, and merge/push it to master.</p>
+<p>The release process consists of several steps to sanity check the
+current repository followed by a number of steps which work to build
+a releasable version, tag it, commit it, and merge/push it to master.</p>
 <p>Before proceeding this command will:</p>
-<p>Verify the current branch is develop.<br>Verify the branch is not dirty. [--dirty (dev-only)]<br>Verify the branch is up-to-date. [--local]</p>
+<p>Verify the current branch is develop.
+Verify the branch is not dirty. [--dirty (dev-only)]
+Verify the branch is up-to-date. [--local]</p>
 <p>IFF all the prior checks pass:</p>
-<p>Run <code>tibet build_all</code> to build distro. [--no-build]<br>Run the version update template.<br>Update TIBET\&#39;s package.json file.<br>Run <code>tibet checkup</code> to lint/test. [--no-check]</p>
+<p>Run <code>tibet build_all</code> to build distro. [--no-build]
+Run the version update template.
+Update TIBET\&#39;s package.json file.
+Run <code>tibet checkup</code> to lint/test. [--no-check]</p>
 <p>IFF all that runs and passes testing it:</p>
-<p>Commits the changes which resulted.<br>Tags the develop branch with {tag}-develop.<br>Pushes those changes to origin/develop.</p>
+<p>Commits the changes which resulted.
+Tags the develop branch with {tag}-develop.
+Pushes those changes to origin/develop.</p>
 <p>IFF that all worked successfully it:</p>
-<p>Checks out the master branch.<br>Merges in the develop branch.<br>Commits the changes to master.<br>Tags the commit with the release tag.<br>Pushes the commit and related tag.</p>
+<p>Checks out the master branch.
+Merges in the develop branch.
+Commits the changes to master.
+Tags the commit with the release tag.
+Pushes the commit and related tag.</p>
 <p>Once that is complete it:</p>
-<p>Writes out latest.js content to be used in the technicalpursuit.com repo.<br>Writes out instructions on the final manual steps to do to publish TIBET.</p>
+<p>Writes out latest.js content to be used in the technicalpursuit.com repo.
+Writes out instructions on the final manual steps to do to publish TIBET.</p>
 
 </div>
 <div id="footer">

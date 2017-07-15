@@ -24,14 +24,25 @@
 <p>tibet deploy [&lt;environment&gt;] [&lt;options&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Deploys the current application by leveraging <code>shipit</code> or <code>tibet make deploy</code>.</p>
-<p>The concrete deployment logic itself is found in either a <code>shipitfile.js</code> file<br>appropriate for use via <code>shipit</code> or in a TIBET <code>makefile.js</code> target named<br><code>deploy</code> which will be executed by this command.</p>
-<p>For shipit-related deployment you are responsible for creating and maintaining<br>your deployment environments and their options. <code>tibet deploy</code> will simply<br>invoke <code>shipit</code> and target a specified <code>environment</code>. See the Shipit<br>documentation at (<code>https://github.com/shipitjs/shipit</code>) for more info.</p>
-<p>For <code>tibet make</code>-based deployment your application may already include basic<br>deployment logic in <code>~app_cmd/makefile.js</code>. You can adjust the <code>deploy</code> target<br>in your TIBET makefile to support whatever deployment task(s) you require.</p>
+<p>The concrete deployment logic itself is found in either a <code>shipitfile.js</code> file
+appropriate for use via <code>shipit</code> or in a TIBET <code>makefile.js</code> target named
+<code>deploy</code> which will be executed by this command.</p>
+<p>For shipit-related deployment you are responsible for creating and maintaining
+your deployment environments and their options. <code>tibet deploy</code> will simply
+invoke <code>shipit</code> and target a specified <code>environment</code>. See the Shipit
+documentation at (<code>https://github.com/shipitjs/shipit</code>) for more info.</p>
+<p>For <code>tibet make</code>-based deployment your application may already include basic
+deployment logic in <code>~app_cmd/makefile.js</code>. You can adjust the <code>deploy</code> target
+in your TIBET makefile to support whatever deployment task(s) you require.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>environment</code> :<br>A shipit environment name to be targeted by the deploy. Only required when<br>using <code>tibet deploy</code> in a Shipit-enabled project.</p>
+<li><p><code>environment</code> :
+A shipit environment name to be targeted by the deploy. Only required when
+using <code>tibet deploy</code> in a Shipit-enabled project.</p>
 </li>
-<li><p><code>options</code> :<br>An open-ended set of arguments and flags. Any content on the command line<br>can be accessed from within your <code>deploy</code> make target.</p>
+<li><p><code>options</code> :
+An open-ended set of arguments and flags. Any content on the command line
+can be accessed from within your <code>deploy</code> make target.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
