@@ -4,94 +4,64 @@
 .SH SYNOPSIS
 .P
 tibet reflect [target] [\-\-interface <interface>]
-.br
     [\-\-filter <filter>] [\-\-types] [\-\-methods] [\-\-owners] [\-\-slots]
 .SH DESCRIPTION
 .P
 Runs the TSH :reflect command to show object or system reflection data\.
 .P
 You can list all of TIBET's types via \fBtibet reflect \-\-types\fP or list all
-.br
 methods via \fBtibet reflect \-\-methods\fP\|\. Without a target object this
-.br
 approach lets you view the top\-most metadata collections in TIBET\.
 .P
 The [target] parameter can be any object reference TIBET can resolve
-.br
 using TIBET's getObjectById() function\. That means any namespace, type,
-.br
 method, or publicly registed object such as window or a TIBET URI\.
 .P
 For objects which support it the \-\-interface option lets you restrict
-.br
 the results to a specific interface of the object\. The values here must
-.br
 be found in the TP\.SLOT_FILTERS object as used by TP\.interface()\. Some
-.br
 interesting options are \fBknown\fP, \fBpublic\fP, and \fBunique\fP\|\.
 .P
 Note that not all flags will work for every target object type\. Namespace
-.br
 objects don't support \-\-owners for example\. When a flag is ignored it is
-.br
 not typically reported since working combinations are so target\-dependant\.
-.br
 The best thing to do is experiment a little and see what reflect finds\.
 .P
 The \-\-filter option allows you to refine your result data by checking the
-.br
 keys returned against either a regular expression or string\. The filter value
-.br
 is always used as a RegExp if one can be created from the string\. Full RegExp
-.br
 syntax is possible to the extent your shell will allow it\. For example, using
-.br
 \fB\-\-filter '/example/i'\fP will filter for example in a case\-insensitive fashion\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBtarget\fP :
-.br
 An optional target, usually a type name, to check\.
 .IP \(bu 2
 \fB\-\-filter\fP :
-.br
 An optional regular expression, expressed in /foo/ig form\. This filter will
-.br
 be applied to fully\-qualified method names\.
 .IP \(bu 2
 \fB\-\-interface\fP :
-.br
 An interface value from the \fBTP\.SLOT_FILTERS\fP list in TIBET\.
 .IP \(bu 2
 \fB\-\-methods\fP :
-.br
 Signify that the search should work against methods\. This can list all
-.br
 methods (or a subset by combining with \fB\-\-filter\fP) or just the methods of a
-.br
 particular target\.
 .IP \(bu 2
 \fB\-\-owners\fP :
-.br
 Signify the search should produce owners\. This flag is primarily useful only
-.br
 when reflecting on a function\. In that case it should return a list of the
-.br
 owners (implementers) of the function\. You can also use this flag alone to list
-.br
 all known \fBowners\fP of methods in the system\.
 .IP \(bu 2
 \fB\-\-slots\fP :
-.br
 Focus the search on attributes if no other flags are provided\. Otherwise
-.br
 focus on all keys on the target object, not just methods etc\.
 .IP \(bu 2
 \fB\-\-types\fP :
-.br
 Normally used to list all types, or to filter types in conjunction with the
-.br
 \fB\-\-filter\fP option\.
 
 .RE

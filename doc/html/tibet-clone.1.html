@@ -25,18 +25,34 @@
 <h2 id="description">DESCRIPTION</h2>
 <p>Clones a template directory, considered the <code>dna</code>, to create a new project.</p>
 <p><code>&lt;target&gt;</code> is required and must be a valid directory name to clone to.</p>
-<p>By default the target will be the new project&#39;s appname unless otherwise<br>specified. You can use <code>.</code> to clone to the current directory HOWEVER no checks<br>are currently done to prevent potential data loss. Be careful!</p>
-<p>NOTE this command is currently being re-evaluated and will likely become a<br>front-end for Yeoman functionality in a future release.</p>
-<p>Once a project template has been cloned you use the <code>tibet init</code> command to<br>initialize the project by triggering installation of all project dependencies.</p>
+<p>By default the target will be the new project&#39;s appname unless otherwise
+specified. You can use <code>.</code> to clone to the current directory HOWEVER no checks
+are currently done to prevent potential data loss. Be careful!</p>
+<p>NOTE this command is currently being re-evaluated and will likely become a
+front-end for Yeoman functionality in a future release.</p>
+<p>Once a project template has been cloned you use the <code>tibet init</code> command to
+initialize the project by triggering installation of all project dependencies.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>--list</code> :<br>Output a list of available dna options. No project is created if you use<br>this option.</p>
+<li><p><code>--list</code> :
+Output a list of available dna options. No project is created if you use
+this option.</p>
 </li>
-<li><p><code>--force</code> :<br>Required if you use <code>.</code> as a simple reminder to be careful. You can also<br>use <code>--force</code> with existing directories but <em>no checks are done</em> to avoid<br>overwriting existing files.</p>
+<li><p><code>--force</code> :
+Required if you use <code>.</code> as a simple reminder to be careful. You can also
+use <code>--force</code> with existing directories but <em>no checks are done</em> to avoid
+overwriting existing files.</p>
 </li>
-<li><p><code>--name</code> :<br>Lets you rename from the directory name to an alternative name. This lets<br>the directory and appname vary. This is common when cloning to existing<br>directories or poorly named ones like those required for GitHub Pages<br>repositories.</p>
+<li><p><code>--name</code> :
+Lets you rename from the directory name to an alternative name. This lets
+the directory and appname vary. This is common when cloning to existing
+directories or poorly named ones like those required for GitHub Pages
+repositories.</p>
 </li>
-<li><p><code>--dna</code> :<br>Lets you clone any valid template in TIBET&#39;s <code>dna</code> directory or a<br>directory of your choosing. This latter option lets you create your own reusable<br>custom application templates.</p>
+<li><p><code>--dna</code> :
+Lets you clone any valid template in TIBET&#39;s <code>dna</code> directory or a
+directory of your choosing. This latter option lets you create your own reusable
+custom application templates.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
@@ -65,7 +81,9 @@ TIBET dna &#39;default&#39; cloned to . as app &#39;hellolocal&#39;
 
 TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.
 </code></pre><h3 id="create-a-named-project-in-an-existing-directory-not-empty-">Create a named project in an existing directory (not empty)</h3>
-<p>NOTE NOTE NOTE!!! This command can overlay files and is potentially<br>destructive!!! Future versions of the <code>clone</code> command may use <code>yeoman</code> to help<br>avoid file conflicts, allowing this operation to be done safely.</p>
+<p>NOTE NOTE NOTE!!! This command can overlay files and is potentially
+destructive!!! Future versions of the <code>clone</code> command may use <code>yeoman</code> to help
+avoid file conflicts, allowing this operation to be done safely.</p>
 <pre><code>$ tibet clone --name hello . --force
 
 TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.

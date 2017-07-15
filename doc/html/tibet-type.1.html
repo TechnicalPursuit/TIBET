@@ -25,18 +25,45 @@
 <h2 id="description">DESCRIPTION</h2>
 <p>Creates a new TIBET type using the supplied type name and parameters.</p>
 <p>Type names can supply one, two or three parts, separated by <code>.</code> or <code>:</code>.</p>
-<p>If three parts are supplied, they are used as the root namespace,<br>the type namespace and the type name, respectively.</p>
-<p>If two parts are supplied, they are used for the type namespace and the type<br>name and the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending on<br>whether this command is being executed in an application project or the TIBET<br>library.</p>
-<p>If one part is supplied, and this command is being executed in an application<br>project, the type namespace is defaulted to the application project name and<br>the root namespace is defaulted as it is when two parts are supplied. It is not<br>a valid operation to execute this command with one part when executed inside of<br>the TIBET library.</p>
+<p>If three parts are supplied, they are used as the root namespace,
+the type namespace and the type name, respectively.</p>
+<p>If two parts are supplied, they are used for the type namespace and the type
+name and the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending on
+whether this command is being executed in an application project or the TIBET
+library.</p>
+<p>If one part is supplied, and this command is being executed in an application
+project, the type namespace is defaulted to the application project name and
+the root namespace is defaulted as it is when two parts are supplied. It is not
+a valid operation to execute this command with one part when executed inside of
+the TIBET library.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>--dna</code> :<br>The name of the dna (essentially a directory reference) to clone and process<br>to produce the new type. The default is <code>default</code>. Other options are <code>content</code><br>for <code>TP.core.Content</code> subtypes, <code>controller</code> for <code>TP.core.Controller</code> subtypes,<br><code>compiledtag</code> for <code>TP.core.CompiledTag</code> and <code>templatedtag</code> for<br><code>TP.core.TemplatedTag</code> subtypes. (As you can see the dna name is often simply<br>the name of a type to use as the supertype, but each does in fact refer to a<br>unique dna directory.</p>
+<li><p><code>--dna</code> :
+The name of the dna (essentially a directory reference) to clone and process
+to produce the new type. The default is <code>default</code>. Other options are <code>content</code>
+for <code>TP.core.Content</code> subtypes, <code>controller</code> for <code>TP.core.Controller</code> subtypes,
+<code>compiledtag</code> for <code>TP.core.CompiledTag</code> and <code>templatedtag</code> for
+<code>TP.core.TemplatedTag</code> subtypes. (As you can see the dna name is often simply
+the name of a type to use as the supertype, but each does in fact refer to a
+unique dna directory.</p>
 </li>
-<li><p><code>--config</code> :<br>Used as the name of the config package in the cfg package file that the<br>new type will be made a part of. If this parameter is not supplied, the default<br>for a type being created in a project is <code>scripts</code> and for a type being created<br>in the TIBET library is the same as the type namespace name.</p>
+<li><p><code>--config</code> :
+Used as the name of the config package in the cfg package file that the
+new type will be made a part of. If this parameter is not supplied, the default
+for a type being created in a project is <code>scripts</code> and for a type being created
+in the TIBET library is the same as the type namespace name.</p>
 </li>
-<li><p><code>--package</code> :<br>Used to determine the cfg package file that will be updated with entries to<br>load the new type and configure it. If this parameter is not supplied, the<br>default for a type being created in a project is <code>~app_cfg/.xml</code>. For<br>a type created in the TIBET library it&#39;s <code>lib_cfg/lib_namespaces.xml</code>.</p>
+<li><p><code>--package</code> :
+Used to determine the cfg package file that will be updated with entries to
+load the new type and configure it. If this parameter is not supplied, the
+default for a type being created in a project is <code>~app_cfg/.xml</code>. For
+a type created in the TIBET library it&#39;s <code>lib_cfg/lib_namespaces.xml</code>.</p>
 </li>
-<li><p><code>--dir</code> :<br>Used as the destination directory for the newly created source code files<br>representing the type. If this parameter is not supplied, the default for a type<br>being created in a project is <code>~app_src/tags</code> and for a type being created in<br>the TIBET library is <code>~lib_src/</code>.</p>
+<li><p><code>--dir</code> :
+Used as the destination directory for the newly created source code files
+representing the type. If this parameter is not supplied, the default for a type
+being created in a project is <code>~app_src/tags</code> and for a type being created in
+the TIBET library is <code>~lib_src/</code>.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
@@ -54,7 +81,8 @@ adjusting package entries...
 New configuration entries created. Review/Rebuild as needed.
 Cleaning up working directory.
 Type DNA &#39;default&#39; cloned to ~app_src as &#39;testing&#39;.
-</code></pre><p>In this case we can see TIBET has generated a type as well as an associated<br>unit test file.</p>
+</code></pre><p>In this case we can see TIBET has generated a type as well as an associated
+unit test file.</p>
 <h3 id="create-a-new-custom-type-in-a-specific-namespace">Create a new custom type in a specific namespace</h3>
 <pre><code>$ tibet type APP.special.Type
 
@@ -69,7 +97,10 @@ adjusting package entries...
 New configuration entries created. Review/Rebuild as needed.
 Cleaning up working directory.
 Type DNA &#39;default&#39; cloned to ~app_src as &#39;Type&#39;.
-</code></pre><p>Note that the current <code>type</code> command does not define new namespaces so if you<br>use this approach you should be referring to an existing namespace or you should<br>be prepared to define the namespace as part of your application startup<br>sequence.</p>
+</code></pre><p>Note that the current <code>type</code> command does not define new namespaces so if you
+use this approach you should be referring to an existing namespace or you should
+be prepared to define the namespace as part of your application startup
+sequence.</p>
 <p>Also note that TIBET has also updated the package#config so our types load:</p>
 <pre><code>&lt;config id=&quot;scripts&quot;&gt;
     &lt;!-- put your source scripts here --&gt;

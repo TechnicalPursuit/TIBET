@@ -24,13 +24,23 @@
 <p>tibet make &lt;target&gt; [--list]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs a target function in a TIBET <code>makefile.js</code> file via a JS Promise.</p>
-<p>This command supports lightweight commands in the form of functions, much<br>like Grunt or Gulp. There&#39;s no dependency checking or true &#39;make&#39;-like<br>functionality but <code>makefile.js</code> code does leverage JavaScript Promises to<br>coordinate tasks and their interactions, particularly when calling tasks<br>within tasks and when dealing with asynchronous tasks.</p>
-<p>TIBET provides a default <code>makefile.js</code> which supports basic operations such as<br>clean, build, and rollup that are common in TIBET applications. By providing<br>these commands as make targets it is easy for you to modify them to meet your<br>specific project requirements.</p>
+<p>This command supports lightweight commands in the form of functions, much
+like Grunt or Gulp. There&#39;s no dependency checking or true &#39;make&#39;-like
+functionality but <code>makefile.js</code> code does leverage JavaScript Promises to
+coordinate tasks and their interactions, particularly when calling tasks
+within tasks and when dealing with asynchronous tasks.</p>
+<p>TIBET provides a default <code>makefile.js</code> which supports basic operations such as
+clean, build, and rollup that are common in TIBET applications. By providing
+these commands as make targets it is easy for you to modify them to meet your
+specific project requirements.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>--list</code> :<br>Used to list the available <code>makefile.js</code> targets you can run.</p>
+<li><p><code>--list</code> :
+Used to list the available <code>makefile.js</code> targets you can run.</p>
 </li>
-<li><p><code>--timeout &lt;ms&gt;</code> :<br>Gives you a way to provide a millisecond timeout value in which each task<br>must complete successfully. The default is 15 seconds (15000).</p>
+<li><p><code>--timeout &lt;ms&gt;</code> :
+Gives you a way to provide a millisecond timeout value in which each task
+must complete successfully. The default is 15 seconds (15000).</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>

@@ -7,49 +7,35 @@ tibet config [property[=value]] [\-\-env <env>]
 .SH DESCRIPTION
 .P
 The \fBconfig\fP command can output one or more configuration values to the
-.br
 console based on current configuration data for your application or
-.br
 update a particular value to a string, number or boolean value\.
 .P
 You can view the entire configuration list by leaving off any specific
-.br
 value\. You can view all values for a particular prefix by listing just
-.br
 the prefix\. You can view a specific value by naming that value directly\.
 .P
 You can dump virtual paths by quoting them as in: \fB\|'~app'\fP or \fB\|'~lib'\fP as needed
-.br
 by whichever native shell you may be using\.
 .P
 For set operations you can specify an optional environment value\. In the
-.br
 current implementation this applies only to TDS settings (\fBtds\.\\*\fP values)\.
 .P
 NOTE that if you use this command to set values it will rewrite \fBtibet\.json\fP
-.br
 by using the beautify npm module to process the stringified JSON content\.
-.br
 As a result your file may not retain its appearance after updates\.
 .P
 Configuration data can also be updated by adding an \fB=\fP and value to
-.br
 a properly defined property name\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBproperty[=value]]\fP :
-.br
 Supplies a property name and optional value to set for that property\.
 .IP \(bu 2
 \fB\-\-env\fP :
-.br
 Provides a way to specifically target a particular environment such as
-.br
 \fBdevelopment\fP within a configuration file\. Note that this option only applies to
-.br
 values prefixed with \fBtds\.\fP since environment\-specific configuration via JSON is
-.br
 only done for server configuration values\.
 
 .RE

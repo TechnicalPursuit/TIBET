@@ -24,16 +24,25 @@
 <p>tibet tsh [--script=]&lt;command&gt; [&lt;phantomtsh_args&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TIBET <code>phantomtsh</code> script runner to execute a TSH script.</p>
-<p>The script to execute is presumed to be the first argument, quoted as<br>needed to ensure that it can be captured as a single string to pass to<br>the TIBET Shell. For example: <code>tibet tsh &#39;:echo &quot;Hello World!&quot;&#39;.</code><br>You can also use the <code>--script</code> argument to provide the TSH script.</p>
-<p><code>&lt;phantomtsh_args&gt;</code> refers to the various flags and paramters you can<br>provide to TIBET&#39;s <code>phantomtsh.js</code> script. See <code>tibet help phantomtsh</code>.</p>
+<p>The script to execute is presumed to be the first argument, quoted as
+needed to ensure that it can be captured as a single string to pass to
+the TIBET Shell. For example: <code>tibet tsh &#39;:echo &quot;Hello World!&quot;&#39;.</code>
+You can also use the <code>--script</code> argument to provide the TSH script.</p>
+<p><code>&lt;phantomtsh_args&gt;</code> refers to the various flags and paramters you can
+provide to TIBET&#39;s <code>phantomtsh.js</code> script. See <code>tibet help phantomtsh</code>.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>command</code> :<br>A properly quoted command line for the TSH, escaped as necessary based on<br>the requirements of your shell.</p>
+<li><p><code>command</code> :
+A properly quoted command line for the TSH, escaped as necessary based on
+the requirements of your shell.</p>
 </li>
-<li><p><code>phantomtsh_args</code><br>Optional arguments to TIBET&#39;s <code>phantomtsh.js</code> script which is responsible<br>for processing all PhantomJS-based execution of TIBET. See <code>tibet help
+<li><p><code>phantomtsh_args</code>
+Optional arguments to TIBET&#39;s <code>phantomtsh.js</code> script which is responsible
+for processing all PhantomJS-based execution of TIBET. See <code>tibet help
 phantomtsh</code> for details.</p>
 </li>
-<li><p><code>--script</code> :<br>An optional argument used to define the <code>command</code>.</p>
+<li><p><code>--script</code> :
+An optional argument used to define the <code>command</code>.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
@@ -48,7 +57,9 @@ TIBET loaded in 4094 ms. Starting execution.
 }
 Finished in 4173 ms w/TSH exec time of 79 ms.
 </code></pre><h3 id="run-a-more-complex-tsh-script-via-the-command-line">Run a more complex TSH script via the command line</h3>
-<p>In the example below we run the TSH <code>:test</code> command via the <code>tsh</code> command line<br>tool. As it turns out, this is exactly what the <code>tibet test</code> command does. The<br><code>tibet test</code> command is actually a subtype of the <code>tsh</code> command.</p>
+<p>In the example below we run the TSH <code>:test</code> command via the <code>tsh</code> command line
+tool. As it turns out, this is exactly what the <code>tibet test</code> command does. The
+<code>tibet test</code> command is actually a subtype of the <code>tsh</code> command.</p>
 <pre><code>$ tibet tsh --script &#39;:test&#39;
 
 Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:58:13 MDT

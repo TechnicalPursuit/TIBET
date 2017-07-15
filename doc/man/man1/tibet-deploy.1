@@ -9,37 +9,26 @@ tibet deploy [<environment>] [<options>]
 Deploys the current application by leveraging \fBshipit\fP or \fBtibet make deploy\fP\|\.
 .P
 The concrete deployment logic itself is found in either a \fBshipitfile\.js\fP file
-.br
 appropriate for use via \fBshipit\fP or in a TIBET \fBmakefile\.js\fP target named
-.br
 \fBdeploy\fP which will be executed by this command\.
 .P
 For shipit\-related deployment you are responsible for creating and maintaining
-.br
 your deployment environments and their options\. \fBtibet deploy\fP will simply
-.br
 invoke \fBshipit\fP and target a specified \fBenvironment\fP\|\. See the Shipit
-.br
 documentation at (\fBhttps://github\.com/shipitjs/shipit\fP) for more info\.
 .P
 For \fBtibet make\fP\-based deployment your application may already include basic
-.br
 deployment logic in \fB~app_cmd/makefile\.js\fP\|\. You can adjust the \fBdeploy\fP target
-.br
 in your TIBET makefile to support whatever deployment task(s) you require\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBenvironment\fP :
-.br
 A shipit environment name to be targeted by the deploy\. Only required when
-.br
 using \fBtibet deploy\fP in a Shipit\-enabled project\.
 .IP \(bu 2
 \fBoptions\fP :
-.br
 An open\-ended set of arguments and flags\. Any content on the command line
-.br
 can be accessed from within your \fBdeploy\fP make target\.
 
 .RE

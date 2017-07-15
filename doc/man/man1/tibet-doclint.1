@@ -9,59 +9,40 @@ tibet doclint [<target>] [\-\-filter <filter>] [\-\-context <app|lib|all>]
 Runs the TSH \fB:doclint\fP command to validate method comment content\.
 .P
 The doclint command uses TIBET reflection to find all methods in your
-.br
 application and check their comment text for conformance to JSDoc3 and
-.br
 TIBET comment standards\. This check can be a part of an overall quality
-.br
 pass which includes running \fBtibet lint\fP and \fBtibet test\fP on your code\.
 .P
 If you provide an optional string parameter it will be used as a target
-.br
 ID which must resolve via TP\.bySystemId\. Only methods owned by that target will
-.br
 be checked\.
 .P
 If you provide a \-\-filter the method names themselves will be filtered to match
-.br
 only the pattern or string provided\.
 .P
 The context (app, lib, or all) is generally defaulted based on any target data
-.br
 given\. For example, using a target of \fBAPP\.*\fP will cause an \fBapp\fP context while
-.br
 using a target of \fBTP\.*\fP will default to a lib context\. To use the \fBall\fP context
-.br
 you must specify it explicitly\.
 .P
 Note that because it uses method reflection, not file lists, to drive
-.br
 the checks when this command outputs file counts they represent the
-.br
 number of unique files containing matching methods, not a full list
-.br
 of project files\. This can be disconcerting at first if you are used
-.br
 to listings which are built by file\-driven tools\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBtarget\fP :
-.br
 An optional target, usually a type name, to check\.
 .IP \(bu 2
 \fB\-\-context\fP :
-.br
 Sets the context of the method scan which is run\. The default is \fBapp\fP
-.br
 which scans only application\-level resources, ignoring any potential library
-.br
 resources\. Other values are \fBlib\fP and \fBall\fP\|\.
 .IP \(bu 2
 \fB\-\-filter\fP :
-.br
 An optional regular expression, expressed in /foo/ig form\. This filter will
-.br
 be applied to fully\-qualified method names\.
 
 .RE
@@ -69,7 +50,6 @@ be applied to fully\-qualified method names\.
 .SS Checking a specific type for documentation lint
 .P
 Assume a brand\-new project\. The application type won't have any methods yet
-.br
 so an initial test won't find any methods and hence will list no files:
 .P
 .RS 2

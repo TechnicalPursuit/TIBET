@@ -9,43 +9,29 @@ tibet resource [\-\-build] [\-\-list] [<package\-opts>]
 Reflects on application resource requirements and builds rollup resources\.
 .P
 The \fBtibet resource\fP command is used to build JavaScript\-based versions of
-.br
 various resources such as templates, style sheets, JSON data files, etc\. The
-.br
 resulting files can be rolled up into build packages, significantly
-.br
 reducing the number of HTTP calls necessary to load application resources\.
 .P
 In addition to building loadable versions of resources this command will
-.br
 maintain the \fBresources\fP \fB<config/>\fP in your application's package file\. By
-.br
 updating the package this command ensures the \fBrollup\fP command will find all
-.br
 built resources and include them\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fB\-\-build\fP :
-.br
 Tell the command to actually build resources and update the application
-.br
 package with any missing resource entries\.
 .IP \(bu 2
 \fB\-\-list\fP :
-.br
 List but don't build the resources\. This is the default flag\.
 .IP \(bu 2
 \fB[package\-opts]\fP :
-.br
 Refers to valid options for a TIBET Package object\. These include \-\-package,
-.br
 \-\-config, \-\-phase, \-\-assets, etc\. The package#config defaults to
-.br
 \fB~app_cfg/main\.xml\fP and its default config (usually #base) so your typical
-.br
 configuration is built\. See help on the \fBtibet package\fP command for more
-.br
 information\.
 
 .RE
@@ -53,9 +39,7 @@ information\.
 .SS Listing application resource data
 .P
 By default the \fBtibet resource\fP command will list concrete resources it
-.br
 believes should be processed and will display an example of the \fB<config/>\fP
-.br
 entries it would build:
 .P
 .RS 2
@@ -95,16 +79,12 @@ Writing package resource entries\.\.\.
 .RE
 .P
 Note that if you build multiple times the \fB(added)\fP qualifier will show
-.br
 \fB(exists)\fP for any resources the package already contains\.
 .SS Modularizing application resources
 .P
 For larger applications or applications which need to load resources in
-.br
 different bundles you can use nested \fB<config/>\fP elements\. To accomplish
-.br
 this run the \fBtibet resource\fP command once to load the initial set of
-.br
 resources, then partition them into separate \fB<config/>\fP elements:
 .P
 .RS 2
@@ -127,11 +107,9 @@ resources, then partition them into separate \fB<config/>\fP elements:
 .RE
 .P
 When you use a configuration like the one above TIBET will automatically
-.br
 recognize that nested entries do not need to be added\.
 .P
 You can then refer to the individual <config/> elements in your other
-.br
 package configurations to adjust loading as you require\.
 .SH SEE ALSO
 .RS 0

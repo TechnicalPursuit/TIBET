@@ -9,69 +9,48 @@ tibet test [<target>] [\-\-suite <filter>] [\-\-cases <filter>] [\-\-karma] [\-\
 Runs unit, functional, and/or integration tests on your application\.
 .P
 If the \fB\-\-karma\fP flag is true, \fBtibet test\fP checks to see if the \fBkarma\-tibet\fP
-.br
 testing module and \fBkarma\fP have been installed in your project\. If so the
-.br
 command delegates to \fBkarma start\fP to run your tests\.
 .P
 If \fBkarma\fP isn't installed or the \fB\-\-karma\fP flag is false (the default)
-.br
 \fBphantomjs\fP is checked and tests will run in the context of \fBphantomjs\fP if
-.br
 found\.
 .P
 In both cases (karma or phantom) you can specify a particular test target object
-.br
 or test suite to run as the first argument to the command\. If you need to
-.br
 specify both a target and suite use \fB\-\-target\fP and \fB\-\-suite\fP respectively\.
 .P
 You can limit testing to a particular case or set of cases by using the
-.br
 \fB\-\-cases\fP parameter\. Both \fB\-\-suite\fP and \fB\-\-cases\fP accept either a string or a
-.br
 regular expression in JavaScript syntax such as \fB\-\-cases /foo/i\fP\|\.
 .P
 For phantomjs testing output is to the terminal in colorized TAP format by
-.br
 default\. Future versions will support additional test output formatters\.
 .P
 You can use the built\-in debugging facilities of PhantomJS by
-.br
 specifying \fB\-\-remote\-debug\-port\fP and a port number\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBtarget\fP :
-.br
 An optional target, usually a type name, to run tests on\. Unlike other test
-.br
 frameworks, TIBET's tests are typically associated with an object such as a
-.br
 type\. This lets you quickly test a type by simply specifying it as a \fBtarget\fP\|\.
 .IP \(bu 2
 \fB\-\-cases\fP :
-.br
 A specific case name or a /pattern/ to match to filter case names\.
 .IP \(bu 2
 \fB\-\-context\fP :
-.br
 Sets the context of the scan which is run\. The default is \fBapp\fP
-.br
 which scans only application\-level resources, ignoring any potential library
-.br
 resources\. Other values are \fBlib\fP and \fBall\fP\|\.
 .IP \(bu 2
 \fB\-\-karma\fP :
-.br
 Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\. Using
-.br
 \fB\-\-no\-karma\fP will force TIBET's basic PhantomJS\-driven test execution\. The
-.br
 default value is false\.
 .IP \(bu 2
 \fB\-\-suite\fP :
-.br
 A specific suite name or a /pattern/ to match to filter suite names\.
 
 .RE
@@ -94,7 +73,6 @@ Chrome 51\.0\.2704 (Mac OS X 10\.11\.5): Executed 3 of 3 SUCCESS (0\.169 secs / 
 .SS Run default application tests via phantomjs
 .P
 If you haven't installed \fBkarma\fP but you do have \fBphantomjs\fP available you can
-.br
 run tests via the \fBtibet test\fP command:
 .P
 .RS 2
@@ -123,7 +101,6 @@ ok \- Is a templated tag\.
 .RE
 .P
 NOTE that each test is prefixed with a comment of the form \fB# tibet test \.\.\fP
-.br
 which allows you to run that specific test suite\.
 .SS Force default application tests via phantom in a karma\-enabled project
 .P

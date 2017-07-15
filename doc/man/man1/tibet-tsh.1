@@ -9,34 +9,25 @@ tibet tsh [\-\-script=]<command> [<phantomtsh_args>]
 Runs the TIBET \fBphantomtsh\fP script runner to execute a TSH script\.
 .P
 The script to execute is presumed to be the first argument, quoted as
-.br
 needed to ensure that it can be captured as a single string to pass to
-.br
 the TIBET Shell\. For example: \fBtibet tsh ':echo "Hello World!"'\.\fP
-.br
 You can also use the \fB\-\-script\fP argument to provide the TSH script\.
 .P
 \fB<phantomtsh_args>\fP refers to the various flags and paramters you can
-.br
 provide to TIBET's \fBphantomtsh\.js\fP script\. See \fBtibet help phantomtsh\fP\|\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fBcommand\fP :
-.br
 A properly quoted command line for the TSH, escaped as necessary based on
-.br
 the requirements of your shell\.
 .IP \(bu 2
 \fBphantomtsh_args\fP
-.br
 Optional arguments to TIBET's \fBphantomtsh\.js\fP script which is responsible
-.br
 for processing all PhantomJS\-based execution of TIBET\. See \fBtibet help
 phantomtsh\fP for details\.
 .IP \(bu 2
 \fB\-\-script\fP :
-.br
 An optional argument used to define the \fBcommand\fP\|\.
 
 .RE
@@ -59,9 +50,7 @@ Finished in 4173 ms w/TSH exec time of 79 ms\.
 .SS Run a more complex TSH script via the command line
 .P
 In the example below we run the TSH \fB:test\fP command via the \fBtsh\fP command line
-.br
 tool\. As it turns out, this is exactly what the \fBtibet test\fP command does\. The
-.br
 \fBtibet test\fP command is actually a subtype of the \fBtsh\fP command\.
 .P
 .RS 2

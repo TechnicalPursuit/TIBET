@@ -7,19 +7,14 @@ tibet encrypt <string>
 .SH DESCRIPTION
 .P
 Encrypts a string using the same approach used by the TDS\. This command is
-.br
 provided as a convenience allowing you to set a TDS_CRYPTO_KEY environment value
-.br
 and then encrypt passwords or API keys prior to storing them\.
 .P
 The TIBET Workflow System (TWS) tasks expect passwords/keys to be provided in
-.br
 encrypted form as output by this command\. This allows you to store task\-specific
-.br
 passwords or API keys as part of your task definitions or parameters\.
 .P
 Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the
-.br
 encryption and decryption processes\.
 .SH EXAMPLES
 .P
