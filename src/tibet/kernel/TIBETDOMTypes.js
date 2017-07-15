@@ -3608,9 +3608,19 @@ function(aRequest) {
             //  Make sure to create the type-level (each type - not shared)
             //  originals registry. This will hold clones of the original nodes
             //  shared by type.
-            if (!TP.isValid(originals = this.get('originals'))) {
+            originals = this.get('originals');
+            if (!TP.isValid(originals)) {
                 originals = TP.hc();
                 this.set('originals', originals);
+            } else {
+                //  If we had an originals registry, check to make sure that it
+                //  doesn't already have the local id of the element in it. If
+                //  it does, just return. Note how we pass 'false' to *not*
+                //  assign an ID.
+                localID = TP.lid(elem, false);
+                if (originals.hasKey(localID)) {
+                    return result;
+                }
             }
 
             //  If the result defined an ID, then we use that - note how we pass
