@@ -339,8 +339,15 @@ function(anAspect, options) {
 
         case 'Structure':
 
+            //  See if the tag has a type-local tagCompile method. If so, return
+            //  it.
             if (TP.owns(thisType, 'tagCompile')) {
                 return thisType.tagCompile;
+            }
+
+            //  See if the tag has a type tagCompile method. If so, return it.
+            if (TP.owns(thisType.Type, 'tagCompile')) {
+                return thisType.Type.tagCompile;
             }
 
             return null;
