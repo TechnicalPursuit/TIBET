@@ -39,19 +39,19 @@ href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd57
 complexity</a>,** improving tooling, and lowering costs** so you get more done in
 less time with a smaller more efficient team.
 
-#### **Building a desktop-class web application? We built TIBET for you**.
+#### **Building a desktop-class web application? We built TIBET for you.**
 
 <br/>
 
 ---
 
+### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./lib/media/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a>
+
 ### Explore TIBET's unique design goals: <a href="https://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf" target="_blank">The Zen Of TIBET</a>
 
 ### Experience TIBET for yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
-
-### Learn TIBET coding with the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
-
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./lib/media/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a>
 
 <br/>
 
@@ -74,77 +74,11 @@ TIBET should be installed globally using `npm install -g`:<br/>
 npm install -g tibet
 ```
 
-The installation process can take several minutes depending on the speed of your
-network connection and the particular version and dependencies being installed.
-Be patient :).
+Initial installation process can take several minutes depending on the speed of
+your network connection and the particular version being installed. Be patient
+:).
 
----
-
-<br/>
-
-# Quickstart
-
-The `tibet quickstart` command outputs version-specific instructions on how
-to clone, initialize, and start a TIBET application (your output may vary by
-version):
-
-```bash
-tibet quickstart
-```
-
-Following the steps described by `tibet quickstart` for your TIBET version
-should result in a running application. See the <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
-target="_blank">TIBET Quickstart Guide</a> for a thorough introduction.
-
-<pre>
-Welcome to TIBET! This quickstart content is intended to get you up and running
-with a minimum of overhead so we'll be working with a limited set of commands
-and using their default options. Once you're done, check out the development wiki
-at https://github.com/TechnicalPursuit/TIBET/wiki to dive deeper into TIBET.
-
-CREATE A NEW PROJECT
-
-The 'tibet clone' command is your first step in creating a TIBET project.
-
-Before using clone navigate to a directory to hold your new project content
-and select a name for your new project. The name will be used as a directory
-name so it should be a valid directory name on your platform.
-
-Type 'tibet clone {appname}', replacing {appname} with your project name:
-
-    $ tibet clone hello
-    ...
-    Application DNA 'default' cloned to ./hello as 'hello'.
-
-INITIALIZE THE PROJECT
-
-With your new project in place you need to initialize it to install any code
-dependencies specific to the template you cloned (we used the default here).
-Navigate to your project and then type 'tibet init' to initialize it:
-
-    $ cd hello
-    $ tibet init
-    ...
-    project initialized successfully.
-
-START THE SERVER
-
-The 'default' template used by clone includes a Node.js-based HTTP server
-we call the TIBET Data Server or TDS. By default the TDS will use port 1407
-so assuming that port isn't busy on your system you can start the server
-using 'tibet start' without any parameters:
-
-    $ tibet start
-    ...
-    1498043782937 [7] TDS hello 0.1.0 @ http://127.0.0.1:1407#?boot.config=developer (sherpa)
-
-Congratulations! Your new TIBET project is running. Open the web address
-for your project in an HTML5 browser and you should see text directing you
-on how to take the next step in your TIBET journey.
-
-For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
-</pre>
+Once your installation completes we recommend the <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
 
 ---
 
