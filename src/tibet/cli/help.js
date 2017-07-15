@@ -581,7 +581,8 @@ Cmd.prototype.executeIntro = function() {
     intro =
         '\nThe tibet command can invoke TIBET built-ins, custom commands,\n' +
         'tibet make targets, grunt targets, or gulp targets based on your\n' +
-        'project configuration and your specific customizations.';
+        'project configuration and your specific customizations.\n\n' +
+        'Use `tibet help <command>` or `tibet <command> --help` for details.';
 
     this.info(intro);
 

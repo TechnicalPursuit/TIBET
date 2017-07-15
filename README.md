@@ -23,7 +23,9 @@
 
 <br/>
 
-### The Sum Of The Parts, Not Some Of The Parts&#8482;
+### TIBET: The Sum Of The Parts, Not Some Of The Parts&#8482;
+
+#### **Building a desktop-class web application? We built TIBET for you.**
 
 **TIBET is a seamlessly integrated web platform, not an à la carte
 mashup**, a solution offering **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
@@ -32,26 +34,37 @@ mashup**, a solution offering **<a target="_blank" href="https://github.com/Tech
 <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
 platform** and the confidence that comes from using **a <a target="_blank"
 href="http://www.technicalpursuit.com/support.xhtml">fully supported</a>
-single-vendor solution**.
+open source solution**.
 
 **TIBET is built for business, reducing **<a target="_blank"
 href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical
 complexity</a>,** improving tooling, and lowering costs** so you get more done in
 less time with a smaller more efficient team.
 
-#### **Building a desktop-class web application? We built TIBET for you.**
-
 <br/>
 
 ---
 
-### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
+<img alt="First Steps" src="./lib/media/first_steps.png" width="128px" height="128px"/>
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./lib/media/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a>
+### Tour the web's best development platform for business:
+
+| TIBET Solutions | Description / Features |
+|:----------------|:-----------------------|
+| <a href="https://github.com/TechnicalPursuit/TIBET/wiki#client">Client Stack</a> | The components every desktop-class application needs |
+| <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">Power Tools</a> | Immersive tooling built to keep you in the flow full-time |
+| <a href="https://github.com/TechnicalPursuit/TIBET/wiki#server">Server-Side</a> | Optional full-stack server and micro-service components |
+| <a href="https://github.com/TechnicalPursuit/TIBET/wiki#desktop">Desktop Apps</a> | Desktop application options for zero server deployments |
+| <a href="https://github.com/TechnicalPursuit/TIBET/wiki#cloud">Cloud Services</a> | Cloud-based services to offload application administration |
+
 
 ### Explore TIBET's unique design goals: <a href="https://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf" target="_blank">The Zen Of TIBET</a>
 
 ### Experience TIBET for yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
+
+### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
+
+<!-- a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./wiki/images/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a -->
 
 <br/>
 
@@ -82,7 +95,7 @@ Once your installation completes we recommend the <a href="https://github.com/Te
 
 ---
 
-<br/>
+<img alt="Documentation" src="./lib/media/training.png" width="128px" height="128px"/>
 
 # Documentation
 
@@ -280,7 +293,7 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 
 ---
 
-<br/>
+<img alt="Feedback" src="./lib/media/solutions.png" width="128px" height="128px"/>
 
 # Feedback
 
