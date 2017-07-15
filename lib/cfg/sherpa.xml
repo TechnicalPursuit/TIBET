@@ -30,7 +30,8 @@
     <script src="./TP.sherpa.about/TP.sherpa.about.js"/>
     <script src="./TP.sherpa.console/TP.sherpa.console.js"/>
     <script src="./TP.sherpa.halo/TP.sherpa.halo.js"/>
-    <script src="./TP.sherpa.customTagContextMenuContent/TP.sherpa.customTagContextMenuContent.js"/>
+    <script src="./TP.sherpa.compiledTagContextMenuContent/TP.sherpa.compiledTagContextMenuContent.js"/>
+    <script src="./TP.sherpa.templatedTagContextMenuContent/TP.sherpa.templatedTagContextMenuContent.js"/>
     <script src="./TP.sherpa.hud/TP.sherpa.hud.js"/>
     <script src="./TP.sherpa.world/TP.sherpa.world.js"/>
     <script src="./TP.sherpa.screen/TP.sherpa.screen.js"/>

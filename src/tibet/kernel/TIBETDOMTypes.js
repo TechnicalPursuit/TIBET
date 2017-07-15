@@ -822,6 +822,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Type.defineMethod('generatedNode',
+function(aNode) {
+
+    /**
+     * @method generatedNode
+     * @summary Returns whether or not the receiver generated the supplied Node.
+     * @param {Node} aNode The node to check for a generator.
+     * @returns {Boolean} True when the receiver is the generator for the
+     *     supplied Node.
+     */
+
+    var generatorName,
+        generatorType;
+
+    generatorName = aNode[TP.GENERATOR];
+    if (TP.isEmpty(generatorName)) {
+        return false;
+    }
+
+    generatorType = TP.sys.getTypeByName(generatorName);
+    if (!TP.isType(generatorType)) {
+        return false;
+    }
+
+    return generatorType === this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Type.defineMethod('isResponderFor',
 function(aNode, aSignal) {
 
@@ -3579,13 +3608,23 @@ function(aRequest) {
             //  Make sure to create the type-level (each type - not shared)
             //  originals registry. This will hold clones of the original nodes
             //  shared by type.
-            if (!TP.isValid(originals = this.get('originals'))) {
+            originals = this.get('originals');
+            if (!TP.isValid(originals)) {
                 originals = TP.hc();
                 this.set('originals', originals);
+            } else {
+                //  If we had an originals registry, check to make sure that it
+                //  doesn't already have the local id of the element in it. If
+                //  it does, just return. Note how we pass 'false' to *not*
+                //  assign an ID.
+                localID = TP.lid(elem, false);
+                if (originals.hasKey(localID)) {
+                    return result;
+                }
             }
 
             //  If the result defined an ID, then we use that - note how we pass
-            //  'false' to *not* assign an ID
+            //  'false' to *not* assign an ID.
             localID = TP.lid(result, false);
 
             if (TP.isEmpty(localID)) {
@@ -17855,7 +17894,6 @@ function(aRequest) {
 
     var elem,
         id,
-        genName,
 
         wantsTemplateWrapper,
 
@@ -17872,11 +17910,8 @@ function(aRequest) {
         return;
     }
 
-    //  If the element already has a TP.GENERATOR, then it had to be placed here
-    //  by some template in an earlier iteration. If the generator was ourself,
-    //  return the original element.
-    if (TP.notEmpty(genName = elem[TP.GENERATOR]) &&
-        genName === this.getCanonicalName()) {
+    //  If we generated this element, then just return it.
+    if (this.generatedNode(elem)) {
         return elem;
     }
 
@@ -17898,7 +17933,9 @@ function(aRequest) {
         canonicalName = TP.elementGetCanonicalName(elem);
 
         //  Set the name of the replacement and the 'generator name' to be the
-        //  canonical name of the templated element.
+        //  canonical name of the templated element. This is not the normal
+        //  value of TP.GENERATOR, which is why we don't use
+        //  TP.elementSetGenerator.
         TP.elementSetAttribute(
                 replacement, 'tsh:name', canonicalName, true);
         replacement[TP.GENERATOR] = canonicalName;
@@ -17943,7 +17980,9 @@ function(aRequest) {
         //  Make sure that (almost) all of the expandos get copied to the clone.
         TP.nodeCopyTIBETExpandos(resourceElem, replacementClone, false);
 
-        //  We've computed the generator, so (re)set it here.
+        //  We've computed the generator, so (re)set it here. This is not the
+        //  normal value of TP.GENERATOR, which is why we don't use
+        //  TP.elementSetGenerator.
         replacementClone[TP.GENERATOR] = canonicalName;
 
         //  Merge any remaining attributes. Note that we don't want to overwrite
@@ -18021,7 +18060,8 @@ function(aRequest) {
     ourID = TP.lid(elem, true);
 
     //  Note how we stamp a TP.GENERATOR of our ID onto individual template
-    //  elements.
+    //  elements. This is not the normal value of TP.GENERATOR, which is why we
+    //  don't use TP.elementSetGenerator.
     templateElems.perform(
         function(anElem) {
 

@@ -1209,7 +1209,8 @@ function(aspectPathParts) {
     //  Note here how we go after the current halo target's nearest 'generator'.
     //  That will usually be its custom tag. If one cannot be found, it will be
     //  the current target's nearest 'parent'.
-    newTargetTPElem = currentTargetTPElem.getNearestHaloGenerator(this);
+    newTargetTPElem = currentTargetTPElem.getNearestHaloGenerator(
+                                                        this, aspectPathParts);
 
     //  If we acquired a new target, then we blur off of our current target and
     //  focus on it.

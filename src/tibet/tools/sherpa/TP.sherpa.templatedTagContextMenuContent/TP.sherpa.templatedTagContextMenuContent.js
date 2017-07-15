@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.customTagContextMenuContent}
+ * @type {TP.sherpa.templatedTagContextMenuContent}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('customTagContextMenuContent');
+TP.sherpa.TemplatedTag.defineSubtype('templatedTagContextMenuContent');
 
 //  ------------------------------------------------------------------------
 //  end
