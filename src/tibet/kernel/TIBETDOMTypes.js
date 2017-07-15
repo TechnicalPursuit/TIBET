@@ -17884,7 +17884,6 @@ function(aRequest) {
 
     var elem,
         id,
-        genName,
 
         wantsTemplateWrapper,
 
@@ -17901,11 +17900,8 @@ function(aRequest) {
         return;
     }
 
-    //  If the element already has a TP.GENERATOR, then it had to be placed here
-    //  by some template in an earlier iteration. If the generator was ourself,
-    //  return the original element.
-    if (TP.notEmpty(genName = elem[TP.GENERATOR]) &&
-        genName === this.getCanonicalName()) {
+    //  If we generated this element, then just return it.
+    if (this.generatedNode(elem)) {
         return elem;
     }
 
