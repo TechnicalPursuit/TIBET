@@ -165,8 +165,8 @@ Cmd.prototype.executeCompactdb = function() {
 
     result = CLI.prompt.question(
         'Compact database [' + couch.maskCouchAuth(db_url) + '/' + db_name +
-            '] ? Enter \'yes\' to confirm: ');
-    if (!result || result.trim().toLowerCase() !== 'yes') {
+            '] ? Enter database name to confirm: ');
+    if (!result || result.trim().toLowerCase() !== db_name) {
         this.log('database compaction cancelled.');
         return 0;
     }
@@ -764,8 +764,8 @@ Cmd.prototype.executeRemoveapp = function() {
     result = CLI.prompt.question(
         'Delete [' +
         couch.maskCouchAuth(db_url) + '/' + db_name + '/' + doc_name +
-        '] ? Enter \'yes\' to confirm: ');
-    if (!result || result.trim().toLowerCase() !== 'yes') {
+        '] ? Enter application name to confirm: ');
+    if (!result || result.trim().toLowerCase() !== db_app) {
         this.log('application removal cancelled.');
         return 0;
     }
@@ -815,8 +815,8 @@ Cmd.prototype.executeRemovedb = function() {
     result = CLI.prompt.question(
         'Delete ENTIRE database [' +
         couch.maskCouchAuth(db_url) + '/' + db_name +
-        '] ? Enter \'yes\' to confirm: ');
-    if (!result || result.trim().toLowerCase() !== 'yes') {
+        '] ? Enter database name to confirm: ');
+    if (!result || result.trim().toLowerCase() !== db_name) {
         this.log('database removal cancelled.');
         return 0;
     }
