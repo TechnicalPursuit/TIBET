@@ -3614,7 +3614,7 @@ function(aRequest) {
             }
 
             //  If the result defined an ID, then we use that - note how we pass
-            //  'false' to *not* assign an ID
+            //  'false' to *not* assign an ID.
             localID = TP.lid(result, false);
 
             if (TP.isEmpty(localID)) {
@@ -17923,7 +17923,9 @@ function(aRequest) {
         canonicalName = TP.elementGetCanonicalName(elem);
 
         //  Set the name of the replacement and the 'generator name' to be the
-        //  canonical name of the templated element.
+        //  canonical name of the templated element. This is not the normal
+        //  value of TP.GENERATOR, which is why we don't use
+        //  TP.elementSetGenerator.
         TP.elementSetAttribute(
                 replacement, 'tsh:name', canonicalName, true);
         replacement[TP.GENERATOR] = canonicalName;
@@ -17968,7 +17970,9 @@ function(aRequest) {
         //  Make sure that (almost) all of the expandos get copied to the clone.
         TP.nodeCopyTIBETExpandos(resourceElem, replacementClone, false);
 
-        //  We've computed the generator, so (re)set it here.
+        //  We've computed the generator, so (re)set it here. This is not the
+        //  normal value of TP.GENERATOR, which is why we don't use
+        //  TP.elementSetGenerator.
         replacementClone[TP.GENERATOR] = canonicalName;
 
         //  Merge any remaining attributes. Note that we don't want to overwrite
@@ -18046,7 +18050,8 @@ function(aRequest) {
     ourID = TP.lid(elem, true);
 
     //  Note how we stamp a TP.GENERATOR of our ID onto individual template
-    //  elements.
+    //  elements. This is not the normal value of TP.GENERATOR, which is why we
+    //  don't use TP.elementSetGenerator.
     templateElems.perform(
         function(anElem) {
 
