@@ -257,10 +257,12 @@ helpers.getCouchParameters = function(options) {
             requestor.getcfg('npm.name');
     }
 
-    if (requestor.prompt && opts.confirm !== false) {
-        result = requestor.prompt.question('Database name [' + db_name + '] ? ');
-        if (result && result.length > 0) {
-            db_name = result;
+    if (options.needsdb !== false) {
+        if (requestor.prompt && opts.confirm !== false) {
+            result = requestor.prompt.question('Database name [' + db_name + '] ? ');
+            if (result && result.length > 0) {
+                db_name = result;
+            }
         }
     }
 

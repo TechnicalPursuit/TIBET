@@ -280,12 +280,12 @@ Cmd.prototype.getArgument = function(name) {
     //  If it's a numbered argument reference we can look in the '_' array from
     //  minimist's argv processing.
     if (/^arg(\d+)$/.test(name)) {
-        return this.options._[name.slice(3)];
+        return this.options._.slice(2)[name.slice(3)];
     }
 
     //  Number? Just return the numbered argument if possible.
     if (typeof name === 'number') {
-        return this.options._[name];
+        return this.options._.slice(2)[name];
     }
 
     return;
@@ -373,7 +373,8 @@ Cmd.prototype.hasArgument = function(name) {
     argv = this.getArgv();
 
     if (typeof name === 'number') {
-        return CLI.isValid(argv[name]);
+        //  NOTE We don't consider 'tibet' and command when indexing here.
+        return CLI.isValid(argv.slice(2)[name]);
     }
 
     return argv.indexOf('--' + name) !== -1 || argv.indexOf('--no-' + name) !== -1;

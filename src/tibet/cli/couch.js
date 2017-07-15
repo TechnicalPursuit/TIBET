@@ -88,7 +88,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|pushapp|removeapp|removedb|view> [<flags>]';
+Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]';
 
 
 //  ---
@@ -100,7 +100,9 @@ Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|pushapp|removeapp|removed
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {
-    var confirm;
+    var confirm,
+        parts,
+        arg0;
 
     //  Explicit flag always wins.
     if (this.hasArgument('confirm')) {
@@ -114,13 +116,32 @@ Cmd.prototype.configure = function() {
         }
     }
 
+    //  All commands allow target specification via a dotted arg0 value. Since
+    //  most commands operate on a database or database and appname we default
+    //  to assuming dbname[.appname]. Subcommands may alter this as needed.
+    arg0 = this.getArgument(0);
+    if (arg0) {
+        parts = arg0.split('.');
+        switch (parts.length) {
+            case 1:
+                this.options.db_name = parts[0];
+                break;
+            case 2:
+                this.options.db_name = parts[0];
+                this.options.db_app = parts[1];
+                break;
+            default:
+                this.options.db_name = parts[0];
+                this.options.db_app = parts[1];
+                //  abstract place to hold part 3 (viewname, something else?)
+                this.options.db_ref = parts[2];
+                break;
+        }
+    }
+
     return this.options;
 };
 
-
-//  ---
-//  compactdb
-//  ---
 
 /**
  */
@@ -135,7 +156,9 @@ Cmd.prototype.executeCompactdb = function() {
 
     cmd = this;
 
-    params = couch.getCouchParameters({requestor: this, needsapp: false});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false});
+    params = couch.getCouchParameters(params);
+
     db_url = params.db_url;
     db_name = params.db_name;
     app_name = params.app_name;
@@ -176,7 +199,8 @@ Cmd.prototype.executeCreatedb = function() {
 
     cmd = this;
 
-    params = couch.getCouchParameters({requestor: this, needsapp: false});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false});
+    params = couch.getCouchParameters(params);
     db_url = params.db_url;
     db_name = params.db_name;
 
@@ -198,10 +222,42 @@ Cmd.prototype.executeCreatedb = function() {
 
 
 /**
- * Push the current app.js and attachments content to CouchDB.
+ * List all available databases for a particular CouchDB server.
+ */
+Cmd.prototype.executeListall = function() {
+    var cmd,
+        params,
+        db_url,
+        nano;
+
+    cmd = this;
+
+    params = CLI.blend(this.options,
+        {requestor: this, needsapp: false, needsdb: false});
+    params = couch.getCouchParameters(params);
+    db_url = params.db_url;
+
+    nano = require('nano')(db_url);
+    nano.db.list(function(error, list) {
+        if (error) {
+            CLI.handleError(error, 'listall', 'couch');
+            return;
+        }
+
+        list.sort().forEach(function(db) {
+            cmd.log(db);
+        });
+    });
+};
+
+
+/**
+ * Push a project's couch/app/{appname} content to CouchDB.
  */
 Cmd.prototype.executePushapp = function() {
     var cmd,
+        arg0,
+        parts,
         params,
         db_url,
         db_name,
@@ -223,7 +279,30 @@ Cmd.prototype.executePushapp = function() {
 
     cmd = this;
 
-    params = couch.getCouchParameters({requestor: this});
+    arg0 = this.getArgument(0);
+    if (!arg0) {
+        this.usage('tibet couch pushapp [<[dbname.]appname>]');
+        return;
+    }
+
+    //  Assume appname as solo parameter, db.app when dotted.
+    parts = arg0.split('.');
+    switch (parts.length) {
+        case 1:
+            delete this.options.db_name;
+            this.options.db_app = parts[0];
+            break;
+        case 2:
+            this.options.db_name = parts[0];
+            this.options.db_app = parts[1];
+            break;
+        default:
+            this.usage('tibet couch pushapp [<[dbname.]appname>]');
+            return;
+    }
+
+    params = CLI.blend(this.options, {requestor: this});
+    params = couch.getCouchParameters(params);
     db_url = params.db_url;
     db_name = params.db_name;
     db_app = params.db_app;
@@ -635,23 +714,47 @@ Cmd.prototype.executePushapp = function() {
 
 
 /**
- * Remove the current CouchDB database.
+ * Remove a pushed application from a CouchDB database.
  */
 Cmd.prototype.executeRemoveapp = function() {
     var cmd,
+        arg0,
+        parts,
         params,
         db_url,
         db_name,
         db_app,
         result,
-        nano,
         db,
         dbGet,
         doc_name;
 
     cmd = this;
 
-    params = couch.getCouchParameters({requestor: this});
+    arg0 = this.getArgument(0);
+    if (!arg0) {
+        this.usage('tibet couch removeapp [<[dbname.]appname>]');
+        return;
+    }
+
+    //  Assume appname as solo parameter, db.app when dotted.
+    parts = arg0.split('.');
+    switch (parts.length) {
+        case 1:
+            delete this.options.db_name;
+            this.options.db_app = parts[0];
+            break;
+        case 2:
+            this.options.db_name = parts[0];
+            this.options.db_app = parts[1];
+            break;
+        default:
+            this.usage('tibet couch removeapp [<[dbname.]appname>]');
+            return;
+    }
+
+    params = CLI.blend(this.options, {requestor: this});
+    params = couch.getCouchParameters(params);
     db_url = params.db_url;
     db_name = params.db_name;
     db_app = params.db_app;
@@ -673,11 +776,8 @@ Cmd.prototype.executeRemoveapp = function() {
     db = require('nano')(db_url + '/' + db_name);
     dbGet = Promise.promisify(db.get);
 
-    dbGet(doc_name, {att_encoding_info: true}).then(
-    function(response) {
-
-        nano.db.destroy(db_url + '/' + db_name + '/_design/' + db_app,
-            response._rev,
+    dbGet(doc_name, {att_encoding_info: true, revs_info: true}).then(function(response) {
+        db.destroy(doc_name, response[0]._rev,
             function(error) {
                 if (error) {
                     CLI.handleError(error, 'removeapp', 'couch');
@@ -688,13 +788,14 @@ Cmd.prototype.executeRemoveapp = function() {
             });
 
     }).catch(function(err) {
+        CLI.debug(params);
         CLI.handleError(err, 'removeapp', 'couch');
     });
 };
 
 
 /**
- * Remove the current CouchDB database.
+ * Remove an active CouchDB database.
  */
 Cmd.prototype.executeRemovedb = function() {
     var cmd,
@@ -706,7 +807,8 @@ Cmd.prototype.executeRemovedb = function() {
 
     cmd = this;
 
-    params = couch.getCouchParameters({requestor: this, needsapp: false});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false});
+    params = couch.getCouchParameters(params);
     db_url = params.db_url;
     db_name = params.db_name;
 
@@ -745,6 +847,8 @@ Cmd.prototype.executeView = function() {
         viewParams,
         method,
         thisref,
+        arg0,
+        parts,
         db;
 
     thisref = this;
@@ -759,29 +863,44 @@ Cmd.prototype.executeView = function() {
         }
     });
 
-    dbParams = {
-        requestor: this,
-        confirm: this.options.confirm
-    };
+    arg0 = this.getArgument(0);
+    if (!arg0) {
+        this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
+        return;
+    }
 
-    viewname = this.getArgument(2);
-    if (/\./.test(viewname)) {
-        appname = viewname.slice(0, viewname.indexOf('.'));
-        viewname = viewname.slice(viewname.indexOf('.') + 1);
-        dbParams.db_app = appname;
-        dbParams = couch.getCouchParameters(dbParams);
-    } else {
-        dbParams = couch.getCouchParameters(dbParams);
-        appname = dbParams.db_app;
+    //  View parsing of arg0 is different in that viewname is required, so we
+    //  assume single values are viewnames. 2 parts are app.view, and 3 parts
+    //  are db.app.view.
+    parts = arg0.split('.');
+    switch (parts.length) {
+        case 1:
+            delete this.options.db_name;
+            delete this.options.db_app;
+            viewname = parts[0];
+            break;
+        case 2:
+            delete this.options.db_name;
+            this.options.db_app = parts[0];
+            viewname = parts[1];
+            break;
+        case 3:
+            this.options.db_name = parts[0];
+            this.options.db_app = parts[1];
+            viewname = parts[2];
+            break;
+        default:
+            this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
+            return;
     }
 
     if (!viewname) {
-        this.usage('tibet couch view <[appname.]viewname> [viewParamJSON]');
+        this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
         return;
     }
 
     //  View parameters can be provided as a JSON block.
-    viewParams = this.getArgument(3);
+    viewParams = this.getArgument(1);
     if (CLI.notValid(viewParams)) {
         viewParams = {};
     } else {
@@ -792,10 +911,13 @@ Cmd.prototype.executeView = function() {
             return;
         }
     }
-
     viewParams.include_docs = this.options.docs;
 
+    dbParams = CLI.blend(this.options, {requestor: this});
+    dbParams = couch.getCouchParameters(dbParams);
+
     db = couch.getCouchDatabase(dbParams);
+    appname = dbParams.db_app;
 
     if (this.options.keys) {
         method = 'viewAsyncKeys';
@@ -816,6 +938,7 @@ Cmd.prototype.executeView = function() {
         if (err.message === 'missing_named_view') {
             thisref.error('View not found: ' + viewname);
         } else {
+            CLI.debug(CLI.beautify(dbParams));
             CLI.handleError(err, 'couch', 'view');
         }
     });
