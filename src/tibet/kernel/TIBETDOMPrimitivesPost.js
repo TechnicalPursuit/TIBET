@@ -1513,6 +1513,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
                     '</', tagName, '>');
 
     newElem = TP.elem(tagstr);
+    TP.elementSetGenerator(newElem);
 
     if (TP.notValid(newElem)) {
         //  $elem above should have done a raise/report for us.
@@ -4418,6 +4419,30 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         return TP.xmlElementSetContent(anElement, content,
                                             loadedFunction, shouldAwake);
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementSetGenerator',
+function(anElement) {
+
+    /**
+     * @method elementSetGenerator
+     * @summary Sets the 'generator' of the target element. This is the
+     *     canonical name of the element, which usually points back to the type
+     *     that generated the target element when it was 'compiled'.
+     * @param {Element} anElement The element to set the generator for.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement',
+                                'Must provide a target Element node.');
+    }
+
+    anElement[TP.GENERATOR] = TP.elementGetCanonicalName(anElement);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
