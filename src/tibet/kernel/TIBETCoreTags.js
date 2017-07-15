@@ -102,6 +102,43 @@ TP.core.CustomTag.defineSubtype('TP.core.CompiledTag');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.core.CompiledTag.Type.defineMethod('defineMethod',
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
+
+    /**
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as a type or
+     *     'type local' method.
+     * @param {String} methodName The name of the new method.
+     * @param {Function} methodBody The actual method implementation.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @param {Boolean} [$isHandler=false] True will cause the definition to
+     *     pass without errors for deprecated use of defineMethod for handlers.
+     * @returns {Function} The newly defined method.
+     */
+
+    var retVal;
+
+    //  Gotta love TIBET - redefining the 'defineMethod' method for a particular
+    //  type and its subtypes. And callNextMethod() too!
+
+    retVal = this.callNextMethod();
+
+    //  If we're redefining the 'tagCompile' method and the system has started,
+    //  then we need to refresh all of the existing instances.
+    if (methodName === 'tagCompile' && TP.sys.hasStarted()) {
+        this[TP.OWNER].refreshInstances();
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CompiledTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
