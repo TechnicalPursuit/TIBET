@@ -822,6 +822,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Type.defineMethod('generatedNode',
+function(aNode) {
+
+    /**
+     * @method generatedNode
+     * @summary Returns whether or not the receiver generated the supplied Node.
+     * @param {Node} aNode The node to check for a generator.
+     * @returns {Boolean} True when the receiver is the generator for the
+     *     supplied Node.
+     */
+
+    var generatorName,
+        generatorType;
+
+    generatorName = aNode[TP.GENERATOR];
+    if (TP.isEmpty(generatorName)) {
+        return false;
+    }
+
+    generatorType = TP.sys.getTypeByName(generatorName);
+    if (!TP.isType(generatorType)) {
+        return false;
+    }
+
+    return generatorType === this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Type.defineMethod('isResponderFor',
 function(aNode, aSignal) {
 
