@@ -158,6 +158,24 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.methodeditor.Inst.defineMethod('isSourceDirty',
+function() {
+
+    /**
+     * @method isSourceDirty
+     * @summary Returns true if the receiver's *source* has changed since it was
+     *     last loaded. For this type, this effectively means whether the source
+     *     object (the client side version of a method) and the server source
+     *     object (the server side version of a method) are not the same.
+     * @returns {Boolean} Whether or not the *source* of the receiver is
+     *     'dirty'.
+     */
+
+    return this.get('sourceObject') !== this.get('serverSourceObject');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.methodeditor.Inst.defineMethod('pushResource',
 function() {
 
@@ -198,6 +216,8 @@ function() {
 
     if (TP.notEmpty(diffPatch)) {
 
+        //  Send the patch to the TDS and get a Promise back that we can wait on
+        //  to see if the patch was successful.
         patchPromise = TP.tds.TDSURLHandler.sendPatch(
                             this.get('sourceURI'),
                             diffPatch);
@@ -210,6 +230,9 @@ function() {
                 if (successfulPatch) {
                     this.set('serverSourceObject', sourceObject);
 
+                    //  Make sure to update the source URI's resource with the
+                    //  new content generated for the whole file to keep things
+                    //  in sync with what just happened on the server.
                     sourceURI = this.get('sourceURI');
                     sourceURI.$set('resource', newContent, false);
                     sourceURI.isLoaded(true);
@@ -321,20 +344,27 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.methodeditor.Inst.defineMethod('revertResource',
-function() {
+function(shouldRefresh) {
 
     /**
      * @method revertResource
      * @summary Reverts any changes in the editor text since the last 'accept'
      *     to the value as it was then.
+     * @param {Boolean} [shouldRefresh=false] Whether or not to revert the
+     *     content from the remote resource. The default is false.
      * @returns {TP.sherpa.methodeditor} The receiver.
      */
 
     var editor,
-        sourceText,
-        editorObj,
+
         sourceObj,
-        serverSourceObj;
+        serverSourceObj,
+
+        refresh,
+
+        sourceText,
+
+        editorObj;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
@@ -342,9 +372,16 @@ function() {
     sourceObj = this.get('sourceObject');
     serverSourceObj = this.get('serverSourceObject');
 
+    refresh = TP.ifInvalid(shouldRefresh, false);
+
     //  Grab our source text that we want to transition (back) to by converting
-    //  the server source object to text.
-    sourceText = TP.src(serverSourceObj);
+    //  the either the source object or server source object to text, depending
+    //  on whether we're refreshing (from server) or not.
+    if (refresh) {
+        sourceText = TP.src(serverSourceObj);
+    } else {
+        sourceText = TP.src(sourceObj);
+    }
 
     //  If we don't have a valid source URI, then just set both our local
     //  version of the source content and the editor display value to the empty
@@ -358,6 +395,12 @@ function() {
 
         return this;
     }
+
+    //  Capture the current scroll position so that we can try restoring it
+    //  below after we refresh the editor. This attempts to prevent the 'scroll
+    //  jumping' that happens when the editor refreshes and sets the scroll
+    //  position back to 0,0.
+    editor.captureCurrentScrollInfo();
 
     //  Initialize our local copy of the content with the source String and set
     //  the dirty flag to false.
@@ -379,9 +422,23 @@ function() {
     //  references away.
     this.$set('sourceObject', sourceObj);
 
+    //  Force an update of the 'dirty' flag here. Because of how apply vs. push
+    //  vs. revert vs. refresh works, the dirty flag might have already been
+    //  false when we set isDirty(false) above, but we need other components,
+    //  like the toolbar, to refresh based on not just our dirty state, but our
+    //  source's dirty state.
+    this.changed('dirty');
+
     /* eslint-disable no-extra-parens */
     (function() {
+
+        //  Refresh the editor and try to put the scroll position back to what
+        //  it was before we refreshed it. This is an attempt to prevent 'scroll
+        //  jumping'.
+
         editor.refreshEditor();
+
+        editor.scrollUsingLastScrollInfo();
 
         //  Signal to observers that this control has rendered.
         this.signal('TP.sig.DidRender');

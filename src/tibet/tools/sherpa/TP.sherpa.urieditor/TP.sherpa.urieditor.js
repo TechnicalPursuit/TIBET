@@ -206,7 +206,7 @@ function(aSignal) {
     this.applyResource();
 
     //  Update the editor's state, including its dirty state.
-    this.updateEditorState(this.get('editor').$get('$editorObj'));
+    this.updateEditorState();
 
     return this;
 });
@@ -226,10 +226,8 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
+    //  NB: This is an asynchronous operation.
     this.pushResource();
-
-    //  Update the editor's state, including its dirty state.
-    this.updateEditorState(this.get('editor').$get('$editorObj'));
 
     return this;
 });
@@ -250,7 +248,12 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    this.revertResource();
+    var refresh;
+
+    refresh = TP.bc(aSignal.at('refresh'));
+
+    //  NB: This is an asynchronous operation.
+    this.revertResource(refresh);
 
     return this;
 });
@@ -317,6 +320,23 @@ function(aFlag) {
      */
 
     return this.$flag('dirty', aFlag);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('isSourceDirty',
+function() {
+
+    /**
+     * @method isSourceDirty
+     * @summary Returns true if the receiver's *source* has changed since it was
+     *     last loaded. For this type, this effectively means whether the source
+     *     URI is dirty.
+     * @returns {Boolean} Whether or not the *source* of the receiver is
+     *     'dirty'.
+     */
+
+    return this.get('sourceURI').isDirty();
 });
 
 //  ------------------------------------------------------------------------
@@ -460,6 +480,9 @@ function() {
             this.set('localSourceContent', sourceStr);
             this.isDirty(false);
 
+            //  Update the editor's state, including its dirty state.
+            this.updateEditorState();
+
             //  Grab the real underlying editor object beneath the
             //  xctrls:codeeditor. This is an instance of CodeMirror.
             editorObj = this.get('editor').$get('$editorObj');
@@ -499,18 +522,22 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.urieditor.Inst.defineMethod('revertResource',
-function() {
+function(shouldRefresh) {
 
     /**
      * @method revertResource
      * @summary Reverts any changes in the editor text since the last 'accept'
      *     to the value as it was then.
+     * @param {Boolean} [shouldRefresh=false] Whether or not to revert the
+     *     content from the remote resource. The default is false.
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
     var editor,
 
         sourceURI,
+
+        refresh,
 
         sourceResource;
 
@@ -530,17 +557,35 @@ function() {
         return this;
     }
 
+    refresh = TP.ifInvalid(shouldRefresh, false);
+
+    //  Make sure to set a flag that we're changing the content out from under
+    //  the source URI. That way, ValueChange notifications, et. al. won't cause
+    //  strange recursions, etc.
+    this.set('$changingSourceContent', true);
+
+    //  Capture the current scroll position so that we can try restoring it
+    //  below after we refresh the editor. This attempts to prevent the 'scroll
+    //  jumping' that happens when the editor refreshes and sets the scroll
+    //  position back to 0,0.
+    editor.captureCurrentScrollInfo();
+
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
-    sourceResource =
-            sourceURI.getResource(TP.hc('resultType', TP.core.Content));
+    sourceResource = sourceURI.getResource(
+                                TP.hc('resultType', TP.core.Content,
+                                        'refresh', refresh));
 
     sourceResource.then(
         function(sourceResult) {
 
             var sourceStr,
                 editorObj;
+
+            //  Now that we're done reverting the content, we can unset the
+            //  'changing content' flag.
+            this.set('$changingSourceContent', false);
 
             //  If we don't have a valid result, then just set both our local
             //  version of the source content and the editor display value to
@@ -572,6 +617,9 @@ function() {
 
                 this.isDirty(false);
 
+                //  Update the editor's state, including its dirty state.
+                this.updateEditorState();
+
                 return this;
             }
 
@@ -579,6 +627,9 @@ function() {
             //  and set the dirty flag to false.
             this.set('localSourceContent', sourceStr);
             this.isDirty(false);
+
+            //  Update the editor's state, including its dirty state.
+            this.updateEditorState();
 
             //  Grab the real underlying editor object beneath the
             //  xctrls:codeeditor. This is an instance of CodeMirror.
@@ -589,13 +640,27 @@ function() {
 
             /* eslint-disable no-extra-parens */
             (function() {
+
+                //  Refresh the editor and try to put the scroll position back
+                //  to what it was before we refreshed it. This is an attempt to
+                //  prevent 'scroll jumping'.
+
                 editor.refreshEditor();
+
+                editor.scrollUsingLastScrollInfo();
 
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');
 
             }).queueForNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
+        }.bind(this),
+        function(error) {
+
+            //  We had an error reverting the content, but make sure we unset
+            //  the 'changing content' flag.
+            this.set('$changingSourceContent', false);
+
         }.bind(this));
 
     return this;
