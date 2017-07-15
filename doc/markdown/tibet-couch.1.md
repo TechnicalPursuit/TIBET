@@ -98,7 +98,8 @@ general you can set the TIBET configuration value `cli.couch.confirm` to false.
     Use the `tibet couch compactdb` command:
 
     $ tibet couch compactdb dbtest
-    Compact database [http://127.0.0.1:5984/dbtest] ? Enter 'yes' to confirm: yes
+    Compact database [http://127.0.0.1:5984/dbtest] ?
+    Enter database name to confirm: dbtest
     compacting database: http://127.0.0.1:5984/dbtest
     database compacted.
 
@@ -168,7 +169,8 @@ general you can set the TIBET configuration value `cli.couch.confirm` to false.
     Use the `tibet couch removeapp` command:
 
     $ tibet couch removeapp sample
-    Delete [http://127.0.0.1:5984/dbtest/_design/sample] ? Enter 'yes' to confirm: yes
+    Delete [http://127.0.0.1:5984/dbtest/_design/sample] ?
+    Enter database name to confirm: sample
     deleting http://127.0.0.1:5984/dbtest/_design/sample
     application removed.
 
@@ -177,7 +179,8 @@ general you can set the TIBET configuration value `cli.couch.confirm` to false.
     Use the `tibet couch removedb` command:
 
     $ tibet couch removedb dbtest
-    Delete ENTIRE database [http://127.0.0.1:5984/dbtest] ? Enter 'yes' to confirm: yes
+    Delete ENTIRE database [http://127.0.0.1:5984/dbtest] ?
+    Enter database name to confirm: dbtest
     deleting database: http://127.0.0.1:5984/dbtest
     database removed.
 

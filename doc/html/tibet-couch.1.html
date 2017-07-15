@@ -109,7 +109,8 @@ database ready at http://127.0.0.1:5984/dbtest
 <pre><code>Use the `tibet couch compactdb` command:
 
 $ tibet couch compactdb dbtest
-Compact database [http://127.0.0.1:5984/dbtest] ? Enter &#39;yes&#39; to confirm: yes
+Compact database [http://127.0.0.1:5984/dbtest] ?
+Enter database name to confirm: dbtest
 compacting database: http://127.0.0.1:5984/dbtest
 database compacted.
 </code></pre><h3 id="list-all-databases">List all databases</h3>
@@ -172,14 +173,16 @@ application ready at http://127.0.0.1:5984/dbtest/_design/sample/index.html
 <pre><code>Use the `tibet couch removeapp` command:
 
 $ tibet couch removeapp sample
-Delete [http://127.0.0.1:5984/dbtest/_design/sample] ? Enter &#39;yes&#39; to confirm: yes
+Delete [http://127.0.0.1:5984/dbtest/_design/sample] ?
+Enter database name to confirm: sample
 deleting http://127.0.0.1:5984/dbtest/_design/sample
 application removed.
 </code></pre><h3 id="removing-a-couchdb-database">Removing a CouchDB database</h3>
 <pre><code>Use the `tibet couch removedb` command:
 
 $ tibet couch removedb dbtest
-Delete ENTIRE database [http://127.0.0.1:5984/dbtest] ? Enter &#39;yes&#39; to confirm: yes
+Delete ENTIRE database [http://127.0.0.1:5984/dbtest] ?
+Enter database name to confirm: dbtest
 deleting database: http://127.0.0.1:5984/dbtest
 database removed.
 </code></pre><h3 id="querying-a-couchdb-view">Querying a CouchDB view</h3>
