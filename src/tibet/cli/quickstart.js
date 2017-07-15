@@ -114,8 +114,8 @@ Cmd.prototype.execute = function() {
 '    1498043782937 [7] TDS hello 0.1.0 @ http://127.0.0.1:1407#?boot.config=developer (sherpa)\n\n' +
 
 'Congratulations! Your new TIBET project is running. Open the web address\n' +
-'for your project in an HTML5 browser and you should see text directing you\n' +
-'on how to take the next step in your TIBET journey.\n\n' +
+'for your project in a supported HTML5 browser and you\'ll see text directing\n' +
+'you on how to take the next step in your TIBET journey.\n\n' +
 
 'For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.\n';
 
