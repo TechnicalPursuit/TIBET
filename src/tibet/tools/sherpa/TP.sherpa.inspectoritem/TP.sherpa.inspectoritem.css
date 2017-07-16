@@ -51,6 +51,21 @@ sherpa|inspectoritem > div.readonly {
     border: dashed 1px #aaa;
 }
 
+sherpa|inspectoritem > div.comingsoon {
+
+    display: flex;
+
+    border: none;
+
+    font-size: 300%;
+    font-family: "arial", "helvetica", "clean", sans-serif;
+
+    opacity: 0.1;
+
+    align-items: center;
+    justify-content: center;
+}
+
 sherpa|inspectoritem > div > textarea {
 
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
