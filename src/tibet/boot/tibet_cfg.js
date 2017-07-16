@@ -1560,8 +1560,12 @@
     TP.sys.setcfg('sherpa.inspector_root_sources',
         [
             ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
-            ['Remote Data Sources',
-                'TP.sherpa.TIBETRemoteSourcesListInspectorSource']
+            ['APP', 'TP.sherpa.AppRootInspectorSource'],
+            ['TSH', 'TP.sherpa.TSHRootInspectorSource'],
+            ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
+            ['TWS', 'TP.sherpa.TWSRootInspectorSource'],
+            ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource'],
+            ['REST', 'TP.sherpa.RESTRootInspectorSource']
         ]);
 
     //  the initial location to load into screen_0 in the Sherpa. Note this
