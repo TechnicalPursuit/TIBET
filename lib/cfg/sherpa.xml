@@ -62,7 +62,6 @@
 
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
 
-    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETRemoteSourcesListInspectorSource.js"/>
 
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETConfigListInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETLocalStorageListInspectorSource.js"/>
