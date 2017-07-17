@@ -11075,7 +11075,7 @@ function(aFunction, copySourceInfo) {
     //  lost.
     if (TP.notFalse(copySourceInfo)) {
         loadPath = this[TP.LOAD_PATH];
-        sourcePath = this[TP.LOAD_PATH];
+        sourcePath = this[TP.SOURCE_PATH];
         loadPackage = this[TP.LOAD_PACKAGE];
         loadConfig = this[TP.LOAD_CONFIG];
     }
