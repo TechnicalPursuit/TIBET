@@ -1129,9 +1129,12 @@ function(options) {
 
     this.$set('statistics', null);
 
-    //  NB: We do *not* reset the 'caseList' here. If it already been obtained
-    //  (or even modified, say by the Sherpa IDE), we don't want to lose those
-    //  changes.
+    //  NB: Unless Karma is running, we do *not* reset the 'caseList' here. If
+    //  it already been obtained (or even modified, say by the Sherpa IDE), we
+    //  don't want to lose those changes.
+    if (TP.sys.hasFeature('karma')) {
+        this.$set('caseList', null);
+    }
 
     this.$set('msstart', null);
     this.$set('msend', null);
