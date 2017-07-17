@@ -333,11 +333,28 @@ function(anOverlayPoint) {
     overlayRect.addToX(bodyScrollOffsets.getX());
     overlayRect.addToY(bodyScrollOffsets.getY());
 
-    //  Now, get the 'northwest' coordinate of the overlay rectangle. This will
-    //  give us our true 'overlay point'.
-    overlayPoint = overlayRect.getEdgePoint(TP.NORTHWEST);
+    //  Now, get the coordinate of the overlay rectangle corresponding to the
+    //  'overlay corner. This will give us our true 'overlay point'.
+    overlayPoint = overlayRect.getEdgePoint(this.getOverlayCorner());
 
     return overlayPoint;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('getOverlayCorner',
+function() {
+
+    /**
+     * @method getOverlayCorner
+     * @summary Returns a constant responding to one of 8 compass points that
+     *     the overlay will be positioned at relative to the overlay's
+     *     container.
+     * @returns {Number} A Number matching the constant corresponding to the
+     *     compass corner.
+     */
+
+    return TP.NORTHWEST;
 });
 
 //  ------------------------------------------------------------------------
