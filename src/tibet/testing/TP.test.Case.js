@@ -788,6 +788,8 @@ function(oldFunction, newFunction, copySourceInfo) {
      * @returns {Function} The new method.
      */
 
+    var thisref;
+
     //  If the caller hasn't supplied false to the copySourceInfo parameter
     //  capture the 'path information' slots about this method. We need to do
     //  this because when we redefine the method below, this information will be
@@ -799,9 +801,19 @@ function(oldFunction, newFunction, copySourceInfo) {
         newFunction[TP.LOAD_CONFIG] = oldFunction[TP.LOAD_CONFIG];
     }
 
+    //  Capture the case (this) as the TP.OWNER of the case Function. This will
+    //  help tie it back to the case if we need to introspect on it.
+    thisref = this;
+
     //  Make sure that the TP.OWNER of the replacement Function is set to the
     //  receiver.
-    newFunction[TP.OWNER] = this;
+    newFunction[TP.OWNER] = thisref;
+
+    newFunction.defineMethod('replaceWith',
+                                function(aFunction, copySrcInfo) {
+                                    return thisref.replaceTestFunctionWith(
+                                            this, aFunction, copySrcInfo);
+                                });
 
     this.$set('caseFunc', newFunction);
 
