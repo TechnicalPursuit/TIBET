@@ -280,6 +280,18 @@ TP.test.Suite.Inst.defineAttribute(TP.LOAD_PATH);
  */
 TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PATH);
 
+/**
+ * What is the path of the package that loaded this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.LOAD_PACKAGE);
+
+/**
+ * What is the name of the config that loaded this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.LOAD_CONFIG);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -814,7 +826,7 @@ function(options) {
 
                         name = casey.getCaseName();
                         path = TP.objectGetSourcePath(casey) ||
-                            TP.objectGetLoadPath(casey);
+                                TP.objectGetLoadPath(casey);
 
                         if (pattern) {
                             return pattern.match(name) ||
@@ -930,9 +942,13 @@ function(target, suiteName, suiteFunc) {
     //  Track load information to support context/file test filtering.
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
     this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
+    this.$set(TP.LOAD_PACKAGE, TP.boot[TP.LOAD_PACKAGE]);
+    this.$set(TP.LOAD_CONFIG, TP.boot[TP.LOAD_CONFIG]);
 
     suiteFunc[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
     suiteFunc[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+    suiteFunc[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
+    suiteFunc[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
 
     //  Set up a handler for unhandled rejections. We need this because if we
     //  have code outside of the test harness that is using Promises, we need to
@@ -967,10 +983,6 @@ function(caseName, caseFunc) {
         this.raise('InvalidTestCase');
         return;
     }
-
-    //  Track load information to support context/file test filtering.
-    caseFunc[TP.LOAD_PATH] = this.$get(TP.LOAD_PATH);
-    caseFunc[TP.SOURCE_PATH] = this.$get(TP.SOURCE_PATH);
 
     caseList = this.$get('caseList');
     if (TP.notValid(caseList)) {

@@ -90,6 +90,18 @@ TP.test.Case.Inst.defineAttribute(TP.LOAD_PATH);
  */
 TP.test.Case.Inst.defineAttribute(TP.SOURCE_PATH);
 
+/**
+ * What is the path of the package that loaded this case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.LOAD_PACKAGE);
+
+/**
+ * What is the name of the config that loaded this case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.LOAD_CONFIG);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -343,6 +355,11 @@ function(suite, caseName, caseFunc) {
      * @returns {TP.test.Case} The newly created test case.
      */
 
+    var loadPath,
+        sourcePath,
+        loadPackage,
+        loadConfig;
+
     if (TP.notValid(suite) ||
             TP.notValid(caseName) ||
             TP.notValid(caseFunc)) {
@@ -357,12 +374,25 @@ function(suite, caseName, caseFunc) {
     this.$set('caseName', caseName);
     this.$set('caseFunc', caseFunc);
 
+    loadPath = suite[TP.LOAD_PATH];
+    sourcePath = suite[TP.SOURCE_PATH];
+    loadPackage = suite[TP.LOAD_PACKAGE];
+    loadConfig = suite[TP.LOAD_CONFIG];
+
     //  Track load information to support context/file test filtering. NOTE that
     //  we use the suite path information here because until the suite actually
     //  invokes the suite function the 'it' calls are not run and hence the case
     //  won't reflect where it was truly defined.
-    this.$set(TP.LOAD_PATH, suite[TP.LOAD_PATH]);
-    this.$set(TP.SOURCE_PATH, suite[TP.SOURCE_PATH]);
+    this.$set(TP.LOAD_PATH, loadPath);
+    this.$set(TP.SOURCE_PATH, sourcePath);
+    this.$set(TP.LOAD_PACKAGE, loadPackage);
+    this.$set(TP.LOAD_CONFIG, loadConfig);
+
+    //  Track load information to support context/file test filtering.
+    caseFunc[TP.LOAD_PATH] = loadPath;
+    caseFunc[TP.SOURCE_PATH] = sourcePath;
+    caseFunc[TP.LOAD_PACKAGE] = loadPackage;
+    caseFunc[TP.LOAD_CONFIG] = loadConfig;
 
     return this;
 });
