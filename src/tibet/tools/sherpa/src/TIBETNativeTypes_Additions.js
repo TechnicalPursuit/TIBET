@@ -233,10 +233,8 @@ function(options) {
      *                                      placed in it.
      */
 
-    if (TP.isMethod(this)) {
-        options.atPut(TP.ATTR + '_class', 'doublewide');
-        options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
-    }
+    options.atPut(TP.ATTR + '_class', 'doublewide');
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
 
     return options;
 });
@@ -269,23 +267,19 @@ function(options) {
     var dataURI,
         methodEditorTPElem;
 
-    if (TP.isMethod(this)) {
 
-        dataURI = TP.uc(options.at('bindLoc'));
+    dataURI = TP.uc(options.at('bindLoc'));
 
-        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
-                                'template',
-                                TP.ietf.Mime.XHTML);
+    methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
 
-        methodEditorTPElem = methodEditorTPElem.clone();
+    methodEditorTPElem = methodEditorTPElem.clone();
 
-        methodEditorTPElem.setAttribute('id', 'inspectorEditor');
-        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
+    methodEditorTPElem.setAttribute('id', 'inspectorEditor');
+    methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
-        return TP.unwrap(methodEditorTPElem);
-    }
-
-    return null;
+    return TP.unwrap(methodEditorTPElem);
 });
 
 //  ------------------------------------------------------------------------
@@ -338,19 +332,15 @@ function(options) {
 
     var displayName;
 
-    if (TP.isMethod(this)) {
-        if (TP.owns(this, '$realFunc')) {
-            displayName = this.$realFunc[TP.DISPLAY];
-        } else if (TP.owns(this, '$resolutionMethod')) {
-            displayName = this.$resolutionMethod[TP.DISPLAY];
-        } else {
-            displayName = this[TP.DISPLAY];
-        }
-
-        return TP.ac('_METHOD_', displayName);
+    if (TP.owns(this, '$realFunc')) {
+        displayName = this.$realFunc[TP.DISPLAY];
+    } else if (TP.owns(this, '$resolutionMethod')) {
+        displayName = this.$resolutionMethod[TP.DISPLAY];
+    } else {
+        displayName = this[TP.DISPLAY];
     }
 
-    return TP.ac();
+    return TP.ac('_METHOD_', displayName);
 });
 
 //  ------------------------------------------------------------------------
@@ -378,13 +368,8 @@ function(options) {
      *     toolbar.
      */
 
-    if (TP.isMethod(this)) {
-
-        return TP.elem('<sherpa:methodEditorToolbarContent' +
-                        ' tibet:ctrl="inspectorEditor"/>');
-    }
-
-    return null;
+    return TP.elem('<sherpa:methodEditorToolbarContent' +
+                    ' tibet:ctrl="inspectorEditor"/>');
 });
 
 //  ------------------------------------------------------------------------
