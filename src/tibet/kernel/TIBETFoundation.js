@@ -3769,6 +3769,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return this.toString().length === 0;
+});
+
+//  ------------------------------------------------------------------------
+
 String.Inst.defineMethod('isEmpty',
 function() {
 
