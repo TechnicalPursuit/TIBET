@@ -1129,7 +1129,9 @@ function(options) {
 
     this.$set('statistics', null);
 
-    this.$set('caseList', null);
+    //  NB: We do *not* reset the 'caseList' here. If it already been obtained
+    //  (or even modified, say by the Sherpa IDE), we don't want to lose those
+    //  changes.
 
     this.$set('msstart', null);
     this.$set('msend', null);
