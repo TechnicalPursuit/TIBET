@@ -45,9 +45,11 @@ function(anEvent) {
     var sig,
 
         targetElem,
+        targetID,
+
         targetTPElem,
 
-        hintElem,
+        hintTPElem,
         textContentNode,
 
         textContent;
@@ -60,30 +62,48 @@ function(anEvent) {
     sig = TP.wrap(anEvent);
 
     targetElem = sig.getResolvedTarget();
+    targetID = TP.elementGetAttribute(targetElem, 'id', true);
 
     targetTPElem = TP.wrap(targetElem);
 
-    //  Grab the xctrls:hint element under the signal target
-    hintElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+    //  Grab the xctrls:hint element under the signal target. Note we supply
+    //  true to try to 'autocollapse' an Array of 1 result into just the result.
+    hintTPElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+
+    //  If there was more than one, then the query was invalid. Return true.
+    if (TP.isArray(hintTPElem)) {
+        //  TODO: Raise an exception
+        return this;
+    }
 
     //  Couldn't find a hint element. Go up the ancestor chain looking for an
     //  'on:mouseover' containing the 'OpenTooltip' signal name.
-    if (TP.notValid(hintElem)) {
+    if (TP.notValid(hintTPElem)) {
         targetElem = TP.nodeAncestorMatchingCSS(
                             targetElem, '*[on|mouseover*="OpenTooltip"]');
 
-        if (!TP.isElement(targetElem)) {
-            return this;
+        if (TP.isElement(targetElem)) {
+            targetTPElem = TP.wrap(targetElem);
+
+            //  Grab the xctrls:hint element under the signal target
+            hintTPElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+        } else {
+
+            //  Couldn't find one by traversing the ancestor chain. See if an
+            //  xctrls:hint exists with a 'for=' attribute containing the target
+            //  ID.
+            hintTPElem = TP.byCSSPath('*[for="' + targetID + '"]',
+                                        sig.getDocument(),
+                                        true);
         }
 
-        targetTPElem = TP.wrap(targetElem);
-
-        //  Grab the xctrls:hint element under the signal target
-        hintElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+        if (TP.notValid(hintTPElem)) {
+            return this;
+        }
     }
 
     //  Grab it's text content and use that as the hint's message.
-    textContentNode = hintElem.getFirstChildContentNode();
+    textContentNode = hintTPElem.getFirstChildContentNode();
     if (TP.isValid(textContentNode)) {
         textContent = TP.str(textContentNode);
     }
@@ -108,7 +128,7 @@ function(aRequest) {
      */
 
     var elem,
-        parentElem,
+        forElem,
 
         hintID;
 
@@ -120,13 +140,24 @@ function(aRequest) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  Grab the parent element of the element we're processing.
+    //  If we have a 'for' attribute, see if there is an Element that matches
+    //  that ID.
+    if (TP.elementHasAttribute(elem, 'for', true)) {
+        forElem = TP.byId(TP.elementGetAttribute(elem, 'for', true),
+                            TP.nodeGetDocument(elem),
+                            false);
+    }
 
-    parentElem = elem.parentNode;
-    if (TP.isElement(parentElem)) {
+    //  If there wasn't an element matching the 'for' element, grab the parent
+    //  element of the element we're processing.
+    if (!TP.isElement(forElem)) {
+        forElem = elem.parentNode;
+    }
+
+    if (TP.isElement(forElem)) {
         //  If it's real, then install a listener on it that will call our
         //  UIHint dispatch method.
-        parentElem.addEventListener('mouseover',
+        forElem.addEventListener('mouseover',
                                     TP.xctrls.hint.$dispatchHintSignal,
                                     false);
 
@@ -135,13 +166,13 @@ function(aRequest) {
         //  Also, set 'on:mouseover' and 'on:mouseout' attributes that will send
         //  OpenTooltip/CloseTooltip signals respectively.
         TP.elementSetAttribute(
-            parentElem,
+            forElem,
             'on:mouseover',
             '{signal: OpenTooltip, payload: {contentID: ' + hintID + '}}',
             true);
 
         TP.elementSetAttribute(
-            parentElem,
+            forElem,
             'on:mouseout',
             '{signal: CloseTooltip}',
             true);
@@ -163,7 +194,7 @@ function(aRequest) {
      */
 
     var elem,
-        parentElem;
+        forElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -174,21 +205,32 @@ function(aRequest) {
         return;
     }
 
-    //  Grab the parent element of the element we're processing.
+    //  If we have a 'for' attribute, see if there is an Element that matches
+    //  that ID.
+    if (TP.elementHasAttribute(elem, 'for', true)) {
+        forElem = TP.byId(TP.elementGetAttribute(elem, 'for', true),
+                            TP.nodeGetDocument(elem),
+                            false);
+    }
 
-    parentElem = elem.parentNode;
-    if (TP.isElement(parentElem)) {
+    //  If there wasn't another 'for' element, grab the parent element of the
+    //  element we're processing.
+    if (!TP.isElement(forElem)) {
+        forElem = elem.parentNode;
+    }
+
+    if (TP.isElement(forElem)) {
         //  If it's real, then remove the listener that we installed in the
         //  attach method that call our UIHints dispatch method.
-        parentElem.removeEventListener('mouseover',
+        forElem.removeEventListener('mouseover',
                                         TP.xctrls.hint.$dispatchHintSignal,
                                         false);
 
         //  Also, remove the 'on:mouseover' and 'on:mouseout' attributes that we
         //  set in the attach method.
-        TP.elementRemoveAttribute(parentElem, 'on:mouseover', true);
+        TP.elementRemoveAttribute(forElem, 'on:mouseover', true);
 
-        TP.elementRemoveAttribute(parentElem, 'on:mouseout', true);
+        TP.elementRemoveAttribute(forElem, 'on:mouseout', true);
     }
 
     return;
