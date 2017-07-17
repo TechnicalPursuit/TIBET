@@ -1034,6 +1034,13 @@ function(newMethodText, loadedFromSourceFile) {
         //  Get the current method's body text...
         str = TP.src(this);
 
+        //  If there's a trailing ';', then we want to slice it off. We may be
+        //  trying to match in a place where there's a '})', but the Function is
+        //  standing alone and is generating these ';'s.
+        if (/;$/.test(str)) {
+            str = str.slice(0, -1);
+        }
+
         //  Convert the body text into a RegExp we can use as a way of indexing
         //  into the original source file text.
         matcher = TP.rc(RegExp.escapeMetachars(
