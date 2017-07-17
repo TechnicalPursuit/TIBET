@@ -984,6 +984,8 @@ function(newMethodText, loadedFromSourceFile) {
         matcher,
         resp,
         currentContent,
+        newText,
+
         match,
         newContent,
         patch;
@@ -1026,10 +1028,12 @@ function(newMethodText, loadedFromSourceFile) {
         return;
     }
 
+    newText = newMethodText;
+
     if (TP.isFalse(loadedFromSourceFile)) {
         //  This method did not come from a source file on startup - just append
         //  it to the existing content.
-        newContent = currentContent + newMethodText;
+        newContent = currentContent + newText;
     } else {
         //  Get the current method's body text...
         str = TP.src(this);
@@ -1037,8 +1041,18 @@ function(newMethodText, loadedFromSourceFile) {
         //  If there's a trailing ';', then we want to slice it off. We may be
         //  trying to match in a place where there's a '})', but the Function is
         //  standing alone and is generating these ';'s.
-        if (/;$/.test(str)) {
+        if (/\};$/.test(str)) {
             str = str.slice(0, -1);
+            if (TP.isValid(this[TP.OWNER])) {
+                str += ');';
+            }
+        }
+
+        if (/\};$/.test(newText)) {
+            newText = newText.slice(0, -1);
+            if (TP.isValid(this[TP.OWNER])) {
+                newText += ');';
+            }
         }
 
         //  Convert the body text into a RegExp we can use as a way of indexing
@@ -1057,7 +1071,7 @@ function(newMethodText, loadedFromSourceFile) {
         }
 
         newContent = currentContent.slice(0, match.index) +
-                        newMethodText +
+                        newText +
                         currentContent.slice(match.index + match.at(0).length);
     }
 
