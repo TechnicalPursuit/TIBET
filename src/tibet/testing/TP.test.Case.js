@@ -358,7 +358,9 @@ function(suite, caseName, caseFunc) {
     var loadPath,
         sourcePath,
         loadPackage,
-        loadConfig;
+        loadConfig,
+
+        thisref;
 
     if (TP.notValid(suite) ||
             TP.notValid(caseName) ||
@@ -393,6 +395,21 @@ function(suite, caseName, caseFunc) {
     caseFunc[TP.SOURCE_PATH] = sourcePath;
     caseFunc[TP.LOAD_PACKAGE] = loadPackage;
     caseFunc[TP.LOAD_CONFIG] = loadConfig;
+
+    //  Capture the case (this) as the TP.OWNER of the case Function. This will
+    //  help tie it back to the case if we need to introspect on it.
+    thisref = this;
+
+    caseFunc[TP.OWNER] = thisref;
+
+    //  Define a local version of the 'replaceWith' method on the case Function
+    //  that will call upon the case object to allow it to be replaced in the
+    //  case.
+    caseFunc.defineMethod('replaceWith',
+                            function(aFunction, copySourceInfo) {
+                                return thisref.replaceTestFunctionWith(
+                                        this, aFunction, copySourceInfo);
+                            });
 
     return this;
 });
@@ -752,6 +769,43 @@ function() {
     this.$rejector();
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('replaceTestFunctionWith',
+function(oldFunction, newFunction, copySourceInfo) {
+
+    /**
+     * @method replaceTestFunctionWith
+     * @summary Replaces the supplied old Function with the supplied new
+     *     Function which becomes the receiver's case Function..
+     * @param {Function} oldFunction The original Function.
+     * @param {Function} newFunction The replacement Function.
+     * @param {Boolean} copySourceInfo Whether or not to copy 'source'
+     *     information such as the load node and source path. The default is
+     *     true.
+     * @returns {Function} The new method.
+     */
+
+    //  If the caller hasn't supplied false to the copySourceInfo parameter
+    //  capture the 'path information' slots about this method. We need to do
+    //  this because when we redefine the method below, this information will be
+    //  lost.
+    if (TP.notFalse(copySourceInfo)) {
+        newFunction[TP.LOAD_PATH] = oldFunction[TP.LOAD_PATH];
+        newFunction[TP.SOURCE_PATH] = oldFunction[TP.SOURCE_PATH];
+        newFunction[TP.LOAD_PACKAGE] = oldFunction[TP.LOAD_PACKAGE];
+        newFunction[TP.LOAD_CONFIG] = oldFunction[TP.LOAD_CONFIG];
+    }
+
+    //  Make sure that the TP.OWNER of the replacement Function is set to the
+    //  receiver.
+    newFunction[TP.OWNER] = this;
+
+    this.$set('caseFunc', newFunction);
+
+    return newFunction;
 });
 
 //  ------------------------------------------------------------------------
