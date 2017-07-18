@@ -191,7 +191,7 @@ See TIBET source code for examples on how to author for live runtime docs.
 #### Supported browser platforms
 
 | Platform | TIBET Runtime Library | TIBET Live Patching | TIBET Sherpa |
-|:----------------|:-----------------------|
+|:---------|:----------------------|:--------------------|:-------------|
 | Google Chrome | Yes | Yes | Yes |
 | Mozilla Firefox | Yes | Yes | Coming Soon |
 | Apple Safari | Yes | Yes | Coming Soon |
