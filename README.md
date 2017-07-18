@@ -186,6 +186,18 @@ See TIBET source code for examples on how to author for live runtime docs.
 <a name="prereqs" href="#"></a>
 # Prerequisites
 
+---
+
+#### Supported browser platforms
+
+| Platform | TIBET Runtime Library | TIBET Live Patching | TIBET Sherpa |
+|:----------------|:-----------------------|
+| Google Chrome | Yes | Yes | Yes |
+| Mozilla Firefox | Yes | Yes | Coming Soon |
+| Apple Safari | Yes | Yes | Coming Soon |
+| Microsoft Edge | Future | Future | Future |
+| Microsoft IE | No | No | No |
+
 #### Install Node.js
 
 TIBET relies on Node.js and npm for command line tooling and integration of
