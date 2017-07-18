@@ -26,9 +26,11 @@
             logcolor,           // Should console log be colorized.
             logcount,           // The app log file count.
             logfile,            // The app log file.
+            logdir,             // The app log directory.
             logtheme,           // The log colorizing theme.
             logger,             // The app logger instance.
             meta,               // Reusable logger metadata.
+            path,               // Path module for dirname.
             sh,                 // ShellJS for file utilities.
             logsize,            // The app log file size per file.
             TDS,                // The TIBET Data Server instance.
@@ -53,6 +55,7 @@
         //  Requires
         //  ---
 
+        path = require('path');
         sh = require('shelljs');
         winston = require('winston');
         expressWinston = require('express-winston');
@@ -91,8 +94,9 @@
         }
         /* eslint-enable no-useless-escape */
 
-        if (!sh.test('-e', logfile)) {
-            ''.to(logfile);
+        logdir = path.dirname(logfile);
+        if (!sh.test('-e', logdir)) {
+            sh.mkdir('-p', logdir);
         }
 
         //  ---
