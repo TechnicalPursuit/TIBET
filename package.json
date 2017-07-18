@@ -56,7 +56,6 @@
         "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
         "handlebars": "*",
         "has-ansi": "^2.0.0",
-        "iltorb": "*",
         "ip": "^1.1.5",
         "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
         "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",

@@ -34,7 +34,14 @@ sh = require('shelljs');
 path = require('path');
 Promise = require('bluebird');
 zlib = require('zlib');
-iltorb = require('iltorb');
+
+//  Conditionally load iltorb. If this fails don't make a fuss, we just won't
+//  output brotli-compressed content.
+try {
+    iltorb = require('iltorb');
+} catch (e) {
+    void 0;
+}
 
 
 /**
@@ -351,6 +358,11 @@ helpers.rollup = function(make, options) {
 
     // brotli as well...
     if (options.brotli) {
+
+        if (!iltorb) {
+            make.warn('Ignoring brotli flag. Module `iltorb` not installed.');
+            return promise;
+        }
 
         brotfile = file + '.br';
         make.log('creating brotlied output in ' + brotfile);
