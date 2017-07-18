@@ -72,8 +72,8 @@ less time with a smaller more efficient team.
 
 # Installation
 
-If you don't have `Node.js` and `npm` installed start with the <a
-href="#prereqs">Prerequisites</a>.
+**Check your OS, browser, and Node/npm versions against
+TIBET's <a href="#prereqs">prerequisites</a>.**
 
 If you prefer to install via `git` see the <a href="#gitinstall">TIBET Git
 Installation</a> instructions.
@@ -186,27 +186,43 @@ See TIBET source code for examples on how to author for live runtime docs.
 <a name="prereqs" href="#"></a>
 # Prerequisites
 
----
+#### Supported platforms
 
-#### Supported browser platforms
+###### TIBET CLI / Server
 
-| Platform | TIBET Runtime Library | TIBET Live Patching | TIBET Sherpa |
+The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
+components are supported on MacOS and common Linux variants.
+
+TIBET's command line and server components are not supported on Windows. We
+recommend using Docker or similar container technology if you are a
+Windows-based developer. Pre-built Docker images will be available in an
+upcoming release.
+
+
+###### TIBET Client / Sherpa
+
+| Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
 |:---------|:----------------------|:--------------------|:-------------|
 | Google Chrome | Yes | Yes | Yes |
 | Mozilla Firefox | Yes | Yes | Coming Soon |
 | Apple Safari | Yes | Yes | Coming Soon |
+| Electron | Yes | Coming Soon | Coming Soon |
 | Microsoft Edge | Future | Future | Future |
 | Microsoft IE | No | No | No |
 
+
 #### Install Node.js
 
-TIBET relies on Node.js and npm for command line tooling and integration of
-today's best JavaScript modules. To install TIBET make sure
-you have a recent version of Node.js.
+TIBET requires Node.js version 4+ (6+ is recommended).
+
+We also recommend using `npm` version `3.x` (some TIBET dependencies have shown
+installation glitches using version `5.x` of npm).
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
 your Node.js installation. Using `nvm` lets you install multiple versions of
-Node.js and switch between them with ease which is great for development.
+Node.js and switch between them with ease which is great for development and
+helpful if you need to adjust the version running in production while
+maintaining an easy rollback strategy.
 
 To install Node.js via `nvm` see the instructions at <a target="_blank"
 href="https://github.com/creationix/nvm">the nvm GitHub repo</a>.
@@ -214,15 +230,12 @@ href="https://github.com/creationix/nvm">the nvm GitHub repo</a>.
 To install Node.js without `nvm` follow the instructions at <a href="http://nodejs.org"
    target="_blank">nodejs.org</a>.
 
-#### Update npm (optional)
+#### Update/Adjust npm
 
 If you already have a recent version of Node.js installed you should have a
-valid version of `npm`. Unfortunately some older versions of `npm` suffer from
-race condition errors. On \*nix variants update `npm` by running:<br/>
-
-```bash
-npm install -g npm@latest
-```
+valid version of `npm`. Unfortunately some older versions (1.x) of `npm` suffer
+from race condition errors and some newer (5.x) versions cause problems with
+certain dependent libraries. We suggest using npm `3.x`.
 
 If you see errors from any npm-based operations mentioning `cb() never called!`
 you'll want to perform the step above, or the appropriate step for your
