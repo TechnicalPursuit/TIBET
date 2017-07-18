@@ -191,9 +191,9 @@ See TIBET source code for examples on how to author for live runtime docs.
 ###### TIBET CLI / Server
 
 The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
-components are supported on MacOS and common Linux variants.
+components are **supported on MacOS and common Linux variants**.
 
-TIBET's command line and server components are not supported on Windows. We
+TIBET's command line and server components are **not supported on Windows**. We
 recommend using Docker or similar container technology if you are a
 Windows-based developer. Pre-built Docker images will be available in an
 upcoming release.
