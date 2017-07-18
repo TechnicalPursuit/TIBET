@@ -64,8 +64,6 @@ less time with a smaller more efficient team.
 
 ## See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
 
-<!-- a href="http://www.youtube.com/watch?feature=player_embedded&v=64HDd-1cNBo" target="_blank"><img src="./wiki/images/splash_video_thumbnail.png" alt="TIBET In Action" width="448" height="252" border="10" /></a -->
-
 <br/>
 
 ---
