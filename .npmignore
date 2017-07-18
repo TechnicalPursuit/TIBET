@@ -1,7 +1,8 @@
 # Directories
 build/
-logs/
 tmp/
+
+*.log/
 
 # Administrative dev files.
 .git/
