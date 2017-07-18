@@ -18,12 +18,6 @@
 TP.xctrls.SharedOverlay.defineSubtype('xctrls:tooltip');
 
 //  ------------------------------------------------------------------------
-//  Type Constants
-//  ------------------------------------------------------------------------
-
-TP.xctrls.tooltip.Type.defineConstant('tooltip_OFFSET', 8);
-
-//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -69,51 +63,19 @@ function(aSignal) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.tooltip.Inst.defineMethod('getPositioningPoint',
-function(anOverlayPoint) {
-
-    /**
-     * @method getPositioningPoint
-     * @summary Computes and returns the point used to position the overlay
-     *     using the supplied point (which should be the initial point).
-     * @param {TP.core.Point} anOverlayPoint The initial point to use to
-     *     position the overlay. NOTE: This point should be in *global*
-     *     coordinates.
-     * @returns {TP.core.Point} The point (in global coordinates) to position
-     *     the overlay at.
-     */
-
-    var overlayPoint,
-        triggerTPElem,
-        triggerRect;
-
-    overlayPoint = this.callNextMethod();
-
-    triggerTPElem = this.get('$triggerTPElement');
-    if (triggerTPElem !== triggerTPElem.getDocument().getBody()) {
-        triggerRect = triggerTPElem.getGlobalRect();
-        if (triggerRect.containsPoint(overlayPoint)) {
-            overlayPoint = triggerRect.getEdgePoint(TP.SOUTHWEST);
-        }
-    }
-
-    return overlayPoint;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.tooltip.Inst.defineMethod('getOverlayOffset',
+TP.xctrls.tooltip.Inst.defineMethod('getOverlayCorner',
 function() {
 
     /**
-     * @method getOverlayOffset
-     * @summary Returns a numeric offset from the edge of the overlay's
-     *     container that the overlay should use to offset it's position from
-     *     the corner it will be positioned at.
-     * @returns {Number} The offset.
+     * @method getOverlayCorner
+     * @summary Returns a constant responding to one of 8 compass points that
+     *     the overlay will be positioned at relative to the overlay's
+     *     container.
+     * @returns {Number} A Number matching the constant corresponding to the
+     *     compass corner.
      */
 
-    return this.getType().tooltip_OFFSET;
+    return TP.SOUTHWEST;
 });
 
 //  ------------------------------------------------------------------------

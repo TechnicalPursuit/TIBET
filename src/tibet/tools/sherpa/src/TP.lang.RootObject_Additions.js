@@ -981,7 +981,7 @@ function(options) {
 
     result.push(TP.GROUPING_PREFIX + ' - Type');
 
-    params.atPut('targetObject', sourceType.Type);
+    params.atPut('target', sourceType.Type);
     rawData = TP.test.getCases(params);
 
     rawData.forEach(
@@ -995,7 +995,7 @@ function(options) {
 
     result.push(TP.GROUPING_PREFIX + ' - Instance');
 
-    params.atPut('targetObject', sourceType.Inst);
+    params.atPut('target', sourceType.Inst);
     rawData = TP.test.getCases(params);
 
     rawData.forEach(
@@ -1007,9 +1007,9 @@ function(options) {
 
     //  ---
 
-    result.push(TP.GROUPING_PREFIX + ' - Local');
+    result.push(TP.GROUPING_PREFIX + ' - Type Local');
 
-    params.atPut('targetObject', sourceType);
+    params.atPut('target', sourceType);
     rawData = TP.test.getCases(params);
 
     rawData.forEach(
@@ -1089,7 +1089,7 @@ function(anAspect, options) {
 
     matchName = anAspect.slice(0, anAspect.indexOf('(') - 1);
 
-    params.atPut('targetObject', sourceType.Type);
+    params.atPut('target', sourceType.Type);
     rawData = TP.test.getCases(params);
 
     caseFunc = null;
@@ -1108,7 +1108,7 @@ function(anAspect, options) {
     //  ---
 
     if (TP.notValid(caseFunc)) {
-        params.atPut('targetObject', sourceType.Inst);
+        params.atPut('target', sourceType.Inst);
         rawData = TP.test.getCases(params);
 
         len = rawData.getSize();
@@ -1124,7 +1124,7 @@ function(anAspect, options) {
     //  ---
 
     if (TP.notValid(caseFunc)) {
-        params.atPut('targetObject', sourceType);
+        params.atPut('target', sourceType);
         rawData = TP.test.getCases(params);
 
         len = rawData.getSize();

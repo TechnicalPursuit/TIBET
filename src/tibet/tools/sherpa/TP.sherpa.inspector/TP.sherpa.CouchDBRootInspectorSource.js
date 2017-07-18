@@ -9,15 +9,14 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.sherpa.TIBETRemoteSourcesListInspectorSource
+//  TP.sherpa.CouchDBRootInspectorSource
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.TIBETRemoteSourcesListInspectorSource}
+ * @type {TP.sherpa.CouchDBRootInspectorSource}
  */
 
-TP.sherpa.InspectorSource.defineSubtype(
-                            'sherpa.TIBETRemoteSourcesListInspectorSource');
+TP.sherpa.InspectorSource.defineSubtype('sherpa.CouchDBRootInspectorSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -27,8 +26,7 @@ TP.sherpa.InspectorSource.defineSubtype(
 //  Inspector API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETRemoteSourcesListInspectorSource.Inst.defineMethod(
-'getDataForInspector',
+TP.sherpa.CouchDBRootInspectorSource.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -52,40 +50,44 @@ function(options) {
      *     a bay.
      */
 
-    /*
-    remoteSources = TP.sys.cfg('uri.remote_sources', TP.ac());
-
-    remoteSources.forEach(
-        function(aSource) {
-
-            var sourceURI,
-                sourceURIMap,
-                inspectorHandlerTypeName,
-                inspectorHandlerType,
-                newHandler;
-
-            sourceURI = TP.uc(aSource);
-
-            sourceURIMap = TP.core.URI.$getURIMap(sourceURI);
-
-            inspectorHandlerTypeName =
-                    sourceURIMap.at('sherpa_inspector_handler');
-            inspectorHandlerType =
-                    TP.sys.getTypeByName(inspectorHandlerTypeName);
-
-            if (TP.isType(inspectorHandlerType)) {
-
-                newHandler = inspectorHandlerType.construct();
-                newHandler.set('serverAddress', sourceURI.getRoot());
-
-                this.addEntry(newHandler.getInspectorPath(), newHandler);
-            }
-        }.bind(this));
-    */
-
     return TP.ac(
-            TP.ac('Foo', 'Foo')
+            TP.ac('RootServer', 'CouchDB Server')
     );
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchDBRootInspectorSource.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var newInspector;
+
+    switch (anAspect) {
+
+        case 'RootServer':
+            newInspector = TP.sherpa.CouchTools.construct();
+            newInspector.set('serverAddress', '127.0.0.1:5984');
+
+            return newInspector;
+
+        default:
+            return this.callNextMethod();
+    }
 });
 
 //  ------------------------------------------------------------------------

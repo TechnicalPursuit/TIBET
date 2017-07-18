@@ -3544,7 +3544,6 @@ function(options) {
                                 kvPair.first(),
                                 this.getEntryLabel(kvPair.last()));
                     }.bind(this));
-    staticData.sort(TP.sort.FIRST_ITEM);
 
     data = dynamicData.concat(staticData);
 

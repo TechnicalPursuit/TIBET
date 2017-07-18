@@ -90,6 +90,18 @@ TP.test.Case.Inst.defineAttribute(TP.LOAD_PATH);
  */
 TP.test.Case.Inst.defineAttribute(TP.SOURCE_PATH);
 
+/**
+ * What is the path of the package that loaded this case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.LOAD_PACKAGE);
+
+/**
+ * What is the name of the config that loaded this case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.LOAD_CONFIG);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -343,6 +355,13 @@ function(suite, caseName, caseFunc) {
      * @returns {TP.test.Case} The newly created test case.
      */
 
+    var loadPath,
+        sourcePath,
+        loadPackage,
+        loadConfig,
+
+        thisref;
+
     if (TP.notValid(suite) ||
             TP.notValid(caseName) ||
             TP.notValid(caseFunc)) {
@@ -357,12 +376,40 @@ function(suite, caseName, caseFunc) {
     this.$set('caseName', caseName);
     this.$set('caseFunc', caseFunc);
 
+    loadPath = suite[TP.LOAD_PATH];
+    sourcePath = suite[TP.SOURCE_PATH];
+    loadPackage = suite[TP.LOAD_PACKAGE];
+    loadConfig = suite[TP.LOAD_CONFIG];
+
     //  Track load information to support context/file test filtering. NOTE that
     //  we use the suite path information here because until the suite actually
     //  invokes the suite function the 'it' calls are not run and hence the case
     //  won't reflect where it was truly defined.
-    this.$set(TP.LOAD_PATH, suite[TP.LOAD_PATH]);
-    this.$set(TP.SOURCE_PATH, suite[TP.SOURCE_PATH]);
+    this.$set(TP.LOAD_PATH, loadPath);
+    this.$set(TP.SOURCE_PATH, sourcePath);
+    this.$set(TP.LOAD_PACKAGE, loadPackage);
+    this.$set(TP.LOAD_CONFIG, loadConfig);
+
+    //  Track load information to support context/file test filtering.
+    caseFunc[TP.LOAD_PATH] = loadPath;
+    caseFunc[TP.SOURCE_PATH] = sourcePath;
+    caseFunc[TP.LOAD_PACKAGE] = loadPackage;
+    caseFunc[TP.LOAD_CONFIG] = loadConfig;
+
+    //  Capture the case (this) as the TP.OWNER of the case Function. This will
+    //  help tie it back to the case if we need to introspect on it.
+    thisref = this;
+
+    caseFunc[TP.OWNER] = thisref;
+
+    //  Define a local version of the 'replaceWith' method on the case Function
+    //  that will call upon the case object to allow it to be replaced in the
+    //  case.
+    caseFunc.defineMethod('replaceWith',
+                            function(aFunction, copySourceInfo) {
+                                return thisref.replaceTestFunctionWith(
+                                        this, aFunction, copySourceInfo);
+                            });
 
     return this;
 });
@@ -722,6 +769,55 @@ function() {
     this.$rejector();
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('replaceTestFunctionWith',
+function(oldFunction, newFunction, copySourceInfo) {
+
+    /**
+     * @method replaceTestFunctionWith
+     * @summary Replaces the supplied old Function with the supplied new
+     *     Function which becomes the receiver's case Function..
+     * @param {Function} oldFunction The original Function.
+     * @param {Function} newFunction The replacement Function.
+     * @param {Boolean} copySourceInfo Whether or not to copy 'source'
+     *     information such as the load node and source path. The default is
+     *     true.
+     * @returns {Function} The new method.
+     */
+
+    var thisref;
+
+    //  If the caller hasn't supplied false to the copySourceInfo parameter
+    //  capture the 'path information' slots about this method. We need to do
+    //  this because when we redefine the method below, this information will be
+    //  lost.
+    if (TP.notFalse(copySourceInfo)) {
+        newFunction[TP.LOAD_PATH] = oldFunction[TP.LOAD_PATH];
+        newFunction[TP.SOURCE_PATH] = oldFunction[TP.SOURCE_PATH];
+        newFunction[TP.LOAD_PACKAGE] = oldFunction[TP.LOAD_PACKAGE];
+        newFunction[TP.LOAD_CONFIG] = oldFunction[TP.LOAD_CONFIG];
+    }
+
+    //  Capture the case (this) as the TP.OWNER of the case Function. This will
+    //  help tie it back to the case if we need to introspect on it.
+    thisref = this;
+
+    //  Make sure that the TP.OWNER of the replacement Function is set to the
+    //  receiver.
+    newFunction[TP.OWNER] = thisref;
+
+    newFunction.defineMethod('replaceWith',
+                                function(aFunction, copySrcInfo) {
+                                    return thisref.replaceTestFunctionWith(
+                                            this, aFunction, copySrcInfo);
+                                });
+
+    this.$set('caseFunc', newFunction);
+
+    return newFunction;
 });
 
 //  ------------------------------------------------------------------------
