@@ -32,38 +32,13 @@ TP.tsh.type_assistant.Inst.defineAttribute('body',
     TP.cpc('> .body', TP.hc('shouldCollapse', true)));
 
 TP.tsh.type_assistant.Inst.defineAttribute('generatedCmdLine',
-    TP.cpc('> .body > #generatedCmdLine', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .foot > #generatedCmdLine', TP.hc('shouldCollapse', true)));
 
 TP.tsh.type_assistant.Inst.defineAttribute('foot',
     TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.tsh.type_assistant.Inst.defineMethod('awaken',
-function() {
-
-    /**
-     * @method awaken
-     * @summary This method invokes the 'awaken' functionality of the tag
-     *     processing system, to provide 'post-render' awakening of various
-     *     features such as events and CSS styles.
-     * @returns {TP.tsh.type_assistant} The receiver.
-     */
-
-    this.callNextMethod();
-
-    setTimeout(function() {
-        var modelURI;
-
-        modelURI = TP.uc('urn:tibet:type_cmd_source');
-        modelURI.$changed();
-    }, 50);
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.tsh.type_assistant.Inst.defineHandler('DialogCancel',
@@ -144,6 +119,11 @@ function(info) {
 
     str = ':type --name=\'' +
             info.at('topLevelNS') + '.' + info.at('typeNSAndName') + '\'';
+
+    if (TP.notEmpty(val = info.at('super'))) {
+        val = TP.uc('urn:tibet:typelist').getResource().get('result').at(val);
+        str += ' --super=\'' + val + '\'';
+    }
 
     if (TP.notEmpty(val = info.at('dna'))) {
         str += ' --dna=\'' + val + '\'';
@@ -228,16 +208,19 @@ function(anObj) {
     var shell,
         args,
 
-        typeInfo,
         topLevelInfo,
+        typeInfo,
 
         name,
         nameParts,
 
+        str,
+
         modelURI,
         modelObj,
 
-        str;
+        typesURI,
+        typesObj;
 
     this.$set('originalRequest', anObj);
 
@@ -279,6 +262,8 @@ function(anObj) {
                     TP.ifInvalid(args.at('tsh:dir'), ''));
     typeInfo.atPut('dna',
                     TP.ifInvalid(args.at('tsh:dna'), ''));
+    typeInfo.atPut('super',
+                    TP.ifInvalid(args.at('tsh:super'), ''));
 
     str = this.generateCommand(typeInfo);
     this.get('generatedCmdLine').setTextContent(str);
@@ -287,9 +272,16 @@ function(anObj) {
 
     modelObj = TP.core.JSONContent.construct(TP.js2json(topLevelInfo));
 
-    modelURI.setResource(modelObj, TP.hc('observeResource', true));
-
     this.observe(modelURI, 'ValueChange');
+    modelURI.setResource(
+        modelObj, TP.hc('observeResource', true, 'signalChange', true));
+
+    typesURI = TP.uc('urn:tibet:typelist');
+    typesObj = TP.copy(TP.sys.getCustomTypeNames().sort());
+
+    typesObj.isOriginSet(false);
+
+    typesURI.setResource(typesObj, TP.hc('signalChange', true));
 
     return this;
 });

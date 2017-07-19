@@ -3,51 +3,61 @@
 <tsh:type_assistant tibet:nomutationtracking="true">
     <div class="head"/>
     <div class="body">
-        <form bind:scope="urn:tibet:type_cmd_source#jpath($.info)">
-            <ul class="flex_outer">
-                <li>
-                    <label>Root NS:</label>
-                    <ul class="flex_inner">
-                        <li>
-                            <label for="topLevelNSRadio1">TP</label>
-                            <input type="radio" name="namespace_radio" value="TP" id="topLevelNSRadio1" bind:io="{checked: topLevelNS}"/>
-                        </li>
-                        <li>
-                            <label for="topLevelNSRadio2">APP</label>
-                            <input type="radio" name="namespace_radio" value="APP" id="topLevelNSRadio2"/>
-                        </li>
-                    </ul>
-                </li>
+        <div class="supertype_chooser">
+            Supertype:
+            <br/>
+            <br/>
+            <xctrls:list id="TypeAssistantSupertypes" bind:in="{data: urn:tibet:typelist}" bind:io="{value: urn:tibet:type_cmd_source#jpath($.info.super)}"/>
+        </div>
+        <div class="new_type_details">
+            <form bind:scope="urn:tibet:type_cmd_source#jpath($.info)">
+                <ul class="flex_outer">
+                    <li>
+                        <label>Root NS:</label>
+                        <ul class="flex_inner">
+                            <li>
+                                <label for="topLevelNSRadio1">TP</label>
+                                <input type="radio" name="namespace_radio" value="TP" id="topLevelNSRadio1" bind:io="{checked: topLevelNS}"/>
+                            </li>
+                            <li>
+                                <label for="topLevelNSRadio2">APP</label>
+                                <input type="radio" name="namespace_radio" value="APP" id="topLevelNSRadio2"/>
+                            </li>
+                        </ul>
+                    </li>
 
-                <li>
-                    <label for="typeNameField">Type name:</label>
-                    <input type="text" id="typeNameField" bind:io="{value: typeNSAndName}" autofocus="autofocus"/>
-                </li>
+                    <li>
+                        <label for="typeNameField">Type name:</label>
+                        <input type="text" id="typeNameField" bind:io="{value: typeNSAndName}" autofocus="autofocus"/>
+                    </li>
 
-                <li>
-                    <label for="packageField">Package:</label>
-                    <input type="text" id="packageField" bind:io="{value: package}"/>
-                </li>
+                    <li>
+                        <label for="packageField">Package:</label>
+                        <input type="text" id="packageField" bind:io="{value: package}"/>
+                    </li>
 
-                <li>
-                    <label for="configField">Config:</label>
-                    <input type="text" id="configField" bind:io="{value: config}"/>
-                </li>
+                    <li>
+                        <label for="configField">Config:</label>
+                        <input type="text" id="configField" bind:io="{value: config}"/>
+                    </li>
 
-                <li>
-                    <label for="directoryField">Directory:</label>
-                    <input type="text" id="directoryField" bind:io="{value: dir}"/>
-                </li>
+                    <li>
+                        <label for="directoryField">Directory:</label>
+                        <input type="text" id="directoryField" bind:io="{value: dir}"/>
+                    </li>
 
-                <li>
-                    <label for="dnaField">DNA:</label>
-                    <input type="text" id="dnaField" bind:io="{value: dna}"/>
-                </li>
-            </ul>
-        </form>
-        <code id="generatedCmdLine"/>
+                    <li>
+                        <label for="dnaField">DNA:</label>
+                        <input type="text" id="dnaField" bind:io="{value: dna}"/>
+                    </li>
+                </ul>
+            </form>
+        </div>
     </div>
     <div class="foot">
+        <code id="generatedCmdLine"/>
+        <br/>
+        <br/>
         <button on:click="DialogCancel">Cancel</button>
         <button on:click="DialogOk">Create Type</button>
     </div>

@@ -2,9 +2,10 @@
 
 <xctrls:notifier
         class="NOTIFIER_TIER {{$SOURCE.(@class)}}"
+        tibet:assembly="xctrls:notifier"
         pclass:hidden="true">
     <xctrls:content>
-        {{$SOURCE.(./*)}}
+        {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:notifier')])}}
     </xctrls:content>
 </xctrls:notifier>
 

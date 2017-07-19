@@ -3,9 +3,6 @@
 
 tsh|type_assistant {
 
-    display: flex;
-    flex-direction: column;
-
     position: absolute;
 
     top: 0;
@@ -18,9 +15,44 @@ tsh|type_assistant > .head {
 }
 
 tsh|type_assistant > .body {
+
+    display: grid;
+
+    margin: 0 auto;
+
+    grid-gap: 10px;
+    grid-template-columns: 1fr 3fr;
 }
 
-tsh|type_assistant > .body .flex_outer li,
+tsh|type_assistant > .body .supertype_chooser {
+
+    float: left;
+
+    margin: 13px;
+    margin-top: 43px;
+}
+
+xctrls|list#TypeAssistantSupertypes {
+
+    width: 100%;
+    height: 14em;
+
+    overflow-y: auto;
+
+    line-height: 1.5;
+}
+
+tsh|type_assistant > .body .new_type_details {
+
+    float: right;
+}
+
+tsh|type_assistant > .body .new_type_details .flex_outer {
+
+    margin-left: 0;
+}
+
+tsh|type_assistant > .body .new_type_details .flex_outer li,
 .flex-inner {
 
     display: flex;
@@ -28,30 +60,35 @@ tsh|type_assistant > .body .flex_outer li,
     align-items: center;
 }
 
-tsh|type_assistant > .body .flex_outer > li > label {
+tsh|type_assistant > .body .new_type_details .flex_outer > li > label {
 
-    flex: 1 0 120px;
+    flex: 1 0 100px;
 
-    max-width: 220px;
+    max-width: 100px;
 }
 
-tsh|type_assistant > .body .flex_outer > li > label + *,
+tsh|type_assistant > .body .new_type_details .flex_outer > li > label + *,
 .flex_inner {
 
-    flex: 1 0 220px;
+    flex: 1 0 100px;
 }
 
-tsh|type_assistant > .body .flex_inner {
+tsh|type_assistant > .body .new_type_details .flex_inner {
 
     justify-content: space-between;
 }
 
-tsh|type_assistant > .body .flex_inner li {
+tsh|type_assistant > .body .new_type_details .flex_inner li {
 
     width: 100px;
 }
 
-tsh|type_assistant > .body #generatedCmdLine {
+tsh|type_assistant > .foot {
+
+    margin-top: 1em;
+}
+
+tsh|type_assistant > .foot #generatedCmdLine {
 
     margin-bottom: 10px;
     margin-left: 10px;
@@ -61,10 +98,5 @@ tsh|type_assistant > .body #generatedCmdLine {
     background-color: #f8f8f8;
 
     border: dashed 1px black;
-}
-
-tsh|type_assistant > .foot {
-
-    margin-top: 1em;
 }
 

@@ -2,9 +2,10 @@
 
 <xctrls:popup
         class="POPUP_TIER {{$SOURCE.(@class)}}"
+        tibet:assembly="xctrls:popup"
         pclass:hidden="true">
     <xctrls:content tibet:focuscontext="true">
-        {{$SOURCE.(./*)}}
+        {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:popup')])}}
     </xctrls:content>
 </xctrls:popup>
 
