@@ -28,16 +28,11 @@
 
 ### **A scalable <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts#pyramid">authoring pyramid</a> is just one of <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts">TIBET's Good Parts</a>.**
 
-**TIBET is a seamlessly integrated web platform, not an à la carte
-mashup**, a solution offering **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
+**TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
 
-**TIBET is built for projects that need a turnkey <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client</a> OR
-<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
-platform** and the confidence that comes from using **a <a target="_blank"
-href="http://www.technicalpursuit.com/support.xhtml">fully supported</a>
-open source solution**.
+**TIBET is built for projects that need a turnkey <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client</a> OR <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web platform** and the confidence that comes from using **a <a target="_blank" href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
 
-**TIBET is easy to use, reducing **<a target="_blank" href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
+**TIBET is easy to use**, reducing <a target="_blank" href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
 
 ### **Building a desktop-class web application? We built TIBET for you.**
 
