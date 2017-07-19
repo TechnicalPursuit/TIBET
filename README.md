@@ -1,5 +1,8 @@
 # TIBET <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
 
+## The Sum Of The Parts, Not Some Of The Parts&#8482;
+
+
                                      ,`
                               __,~//`
            ,///,_       .~///////'`
@@ -23,23 +26,20 @@
 
 <br/>
 
-## TIBET: The Sum Of The Parts, Not Some Of The Parts&#8482;
-
-### **Building a desktop-class web application? We built TIBET for you.**
+### **A scalable <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts#pyramid">authoring pyramid</a> is just one of <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts">TIBET's Good Parts</a>.**
 
 **TIBET is a seamlessly integrated web platform, not an à la carte
 mashup**, a solution offering **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
 
-**TIBET is built for projects that need a <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">turnkey client</a> OR
+**TIBET is built for projects that need a turnkey <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client</a> OR
 <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#server">full-stack</a> web
 platform** and the confidence that comes from using **a <a target="_blank"
 href="http://www.technicalpursuit.com/support.xhtml">fully supported</a>
 open source solution**.
 
-**TIBET is built for business, reducing **<a target="_blank"
-href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical
-complexity</a>,** improving tooling, and lowering costs** so you get more done in
-less time with a smaller more efficient team.
+**TIBET is easy to use, reducing **<a target="_blank" href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
+
+### **Building a desktop-class web application? We built TIBET for you.**
 
 <br/>
 
@@ -233,7 +233,11 @@ To install Node.js without `nvm` follow the instructions at <a href="http://node
 If you already have a recent version of Node.js installed you should have a
 valid version of `npm`. Unfortunately some older versions (1.x) of `npm` suffer
 from race condition errors and some newer (5.x) versions cause problems with
-certain dependent libraries. We suggest using npm `3.x`.
+certain dependent modules like `phantomjs-prebuilt`. We suggest using npm `3.x`.
+
+```
+npm install -g npm@3
+```
 
 If you see errors from any npm-based operations mentioning `cb() never called!`
 you'll want to perform the step above, or the appropriate step for your
