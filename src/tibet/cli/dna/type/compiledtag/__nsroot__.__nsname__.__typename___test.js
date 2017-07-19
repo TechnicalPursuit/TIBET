@@ -7,9 +7,9 @@
 {{nsroot}}.{{nsname}}.{{typename}}.Type.describe('{{nsroot}}.{{nsname}}:{{typename}} suite',
 function() {
 
-    this.it('Is a {{super}} tag', function(test, options) {
+    this.it('Is a {{supertype}} tag', function(test, options) {
         test.assert.isKindOf({{nsroot}}.{{nsname}}.{{typename}},
-            '{{super}}');
+            '{{supertype}}');
     });
 });
 
