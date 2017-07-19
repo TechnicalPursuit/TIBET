@@ -102,22 +102,22 @@ recommend you take a few minutes to scan it.
 <a name="tutorials" href="#"></a>
 #### Tutorials
 
-- <a href="TIBET-Quickstart-Guide"
+- <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
   target="_blank">TIBET Quickstart Guide</a> - Hello World! for TIBET developers.
 
 
 <a name="guidelines" href="#"></a>
 #### Guidelines
 
-- <a href="TIBET-FAQ" target="_blank">TIBET FAQ</a> - Answers to common
+- <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ" target="_blank">TIBET FAQ</a> - Answers to common
   TIBET-related questions.
-- <a href="TIBET-For-JavaScript-Programmers"
+- <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-For-JavaScript-Programmers"
   target="_blank">TIBET For JS Programmers</a> - JavaScript: the TIBET
 parts&#8482;.
-- <a href="TIBET-Coding-Standards"
+- <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Coding-Standards"
   target="_blank">TIBET Coding Standards</a> - The coding standard used in
 TIBET source.
-- <a href="TIBET-Troubleshooting" target="_blank">TIBET Troubleshooting</a> -
+- <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Troubleshooting" target="_blank">TIBET Troubleshooting</a> -
   Solutions to keep you developing smoothly.
 
 <a name="whitepapers" href="#"></a>
