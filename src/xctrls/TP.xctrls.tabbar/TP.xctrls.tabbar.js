@@ -146,20 +146,20 @@ TP.xctrls.tabbar.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.tabbar.Inst.defineAttribute(
     'tabcontent',
-    TP.cpc('> tibet|group xctrls|content', TP.hc('shouldCollapse', true)));
+    TP.cpc('> span tibet|group xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.tabbar.Inst.defineAttribute(
     'tabitems',
-    TP.cpc('> tibet|group xctrls|content > xctrls|*', TP.hc('shouldCollapse', false)));
+    TP.cpc('> span tibet|group xctrls|content > xctrls|*', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.tabbar.Inst.defineAttribute(
     'focusedItem',
-    TP.cpc('> tibet|group xctrls|content > xctrls|*[pclass|focus]',
+    TP.cpc('> span tibet|group xctrls|content > xctrls|*[pclass|focus]',
             TP.hc('shouldCollapse', true)));
 
 TP.xctrls.tabbar.Inst.defineAttribute(
     'group',
-    TP.cpc('> tibet|group', TP.hc('shouldCollapse', true)));
+    TP.cpc('> span tibet|group', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
