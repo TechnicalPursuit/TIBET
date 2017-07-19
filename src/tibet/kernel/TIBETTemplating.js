@@ -286,7 +286,9 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         templateFunc,
 
         scopedParams,
-        scopedSourceNames;
+        scopedSourceNames,
+
+        funcStr;
 
     srcVars = sourceVarNames;
     if (TP.notValid(srcVars)) {
@@ -971,7 +973,15 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             'TP.ifError() ? TP.error(TP.ec(e)): 0;\n',
         '};\n');
 
-    templateFunc = TP.fc('aDataSource', 'aParamHash', funcParts.join(''));
+    funcStr = funcParts.join('');
+
+    try {
+        templateFunc = TP.fc('aDataSource', 'aParamHash', funcStr);
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e, 'Error generating template function: ' + funcStr)) : 0;
+    }
 
     return templateFunc;
 });
