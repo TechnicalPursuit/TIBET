@@ -423,7 +423,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  Generate the expression.
             retVal = 'var ' + generators.escapedIdentifier(propName) + ' = ' +
                         'TP.wrap(TP.objectValue(' + sourceName + ',' +
-                                    ' \'' + propName + '\',' +
+                                    ' ' + propName.quoted() + ',' +
                                     ' true));';
 
             return retVal;
