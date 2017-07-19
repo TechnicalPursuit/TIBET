@@ -38,7 +38,9 @@ function(aRequest) {
      */
 
     var shell,
-        shouldAssist;
+        shouldAssist,
+
+        typeName;
 
     shell = aRequest.at('cmdShell');
 
@@ -59,26 +61,36 @@ function(aRequest) {
         return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
-    //  Fire a 'RemoteConsoleCommand' with a 'type ...' command, supplying the
-    //  original request.
-    TP.signal(null,
-                'RemoteConsoleCommand',
-                TP.hc('originalRequest', aRequest,
-                        TP.ONSUCCESS, function(aResponse) {
+    //  Make sure that the type isn't already defined
+    typeName = shell.getArgument(aRequest, 'tsh:name');
+    if (TP.isType(TP.sys.getTypeByName(typeName))) {
+        aRequest.stderr('Type already exists: ' + typeName);
+    } else {
 
-                            //  Subscribe to 'script imported' - those will be
-                            //  the scripts for the new type(s) that got created
-                            //  by executing our command remotely. Note that we
-                            //  do this each time we are run, since we will
-                            //  remove this observation below in our handler.
-                            //  We're not interested in all 'script imported'
-                            //  signals.
-                            this.observe(TP.sys, 'ScriptImported');
-                        }.bind(this),
-                        TP.ONFAIL, function(aResponse) {
-                            //  TODO: Raise an exception;
-                        }
-                ));
+        //  Fire a 'RemoteConsoleCommand' with a 'type ...' command, supplying
+        //  the original request.
+        TP.signal(null,
+                    'RemoteConsoleCommand',
+                    TP.hc('originalRequest', aRequest,
+                            TP.ONSUCCESS,
+                                function(aResponse) {
+
+                                    //  Subscribe to 'script imported' - those
+                                    //  will be the scripts for the new type(s)
+                                    //  that got created by executing our
+                                    //  command remotely. Note that we do this
+                                    //  each time we are run, since we will
+                                    //  remove this observation below in our
+                                    //  handler. We're not interested in all
+                                    //  'script imported' signals.
+                                    this.observe(TP.sys, 'ScriptImported');
+                                }.bind(this),
+                            TP.ONFAIL,
+                                function(aResponse) {
+                                    //  TODO: Raise an exception;
+                                }
+                    ));
+    }
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
@@ -89,6 +101,13 @@ function(aRequest) {
 
 TP.tsh.type.Type.defineMethod('getContentForAssistant',
 function() {
+
+    /**
+     * @method getContentForAssistant
+     * @summary Returns the Element representing the root node of the content
+     *     for the receiver's 'assistant'.
+     * @returns {Element} The root node of the receiver's assistant content.
+     */
 
     var assistantTPElem;
 
@@ -103,6 +122,18 @@ function() {
 
 TP.tsh.type.Type.defineHandler('ScriptImported',
 function(aSignal) {
+
+    /**
+     * @method handleScriptImported
+     * @summary Handles notifications of when a script node has been imported
+     *     into the system. Typically we set up an observation for these when we
+     *     create a new type and are waiting for the system to signal that that
+     *     new type has been imported and created on-the-fly. At that point, we
+     *     let the rest of the system know that a type has been added.
+     * @param {TP.sig.ScriptImported} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.tsh.type} The receiver.
+     */
 
     //  Unsubscribe us from this signal each time we run the handler. We're only
     //  interested in this signal when we're defining new types.
