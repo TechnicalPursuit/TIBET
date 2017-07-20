@@ -430,32 +430,6 @@ function(options) {
 //  Actions API
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineHandler('SherpaInspectorAddMethod',
-function(aSignal) {
-
-    var inspector,
-        pathParts,
-        typeName;
-
-    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
-
-    pathParts = inspector.get('selectedItems');
-    typeName = pathParts.at(pathParts.getSize() - 2);
-
-    TP.signal(null,
-                'ConsoleCommand',
-                TP.hc(
-                    'cmdText',
-                        ':method --assist' +
-                                ' --name=\'newmethod\'' +
-                                ' --owner=\'' + typeName + '\''
-                ));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lang.RootObject.Type.defineHandler('SherpaInspectorTestType',
 function(aSignal) {
 
@@ -650,13 +624,37 @@ function(options) {
      *     toolbar.
      */
 
-    if (TP.isMethod(this)) {
+    return TP.elem('<sherpa:methodsToolbarContent' +
+                    ' tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
+});
 
-        return TP.elem('<sherpa:methodsToolbarContent' +
-                        ' tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
-    }
+//  ------------------------------------------------------------------------
+//  Actions API
+//  ------------------------------------------------------------------------
 
-    return null;
+TP.sherpa.InstanceMethodsInspectorSource.Inst.defineHandler(
+    'SherpaInspectorAddMethod',
+function(aSignal) {
+
+    var inspector,
+        pathParts,
+        typeName;
+
+    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+
+    pathParts = inspector.get('selectedItems');
+    typeName = pathParts.at(pathParts.getSize() - 2);
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':method --assist' +
+                                ' --name=\'newmethod\'' +
+                                ' --owner=\'' + typeName + '\''
+                ));
+
+    return this;
 });
 
 //  ========================================================================
