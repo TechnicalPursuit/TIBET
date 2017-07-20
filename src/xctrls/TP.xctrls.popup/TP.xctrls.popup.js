@@ -275,7 +275,7 @@ function(openSignal, popupContent) {
                 //  signal.
                 popupCorner = openSignal.at('corner');
                 if (TP.isEmpty(popupCorner)) {
-                    popupCorner = TP.SOUTHEAST;
+                    popupCorner = TP.SOUTHWEST;
                 }
 
                 //  The point that the popup should appear at is the 'edge
@@ -297,9 +297,9 @@ function(openSignal, popupContent) {
         }
     }
 
-    //  By default, popup overlays should be positioned southeast of their
+    //  By default, popup overlays should be positioned southwest of their
     //  triggering element.
-    openSignal.atPutIfAbsent('corner', TP.SOUTHEAST);
+    openSignal.atPutIfAbsent('corner', TP.SOUTHWEST);
 
     this.callNextMethod();
 
