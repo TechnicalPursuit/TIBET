@@ -1,6 +1,6 @@
 {
     "default": {
-        "super": "TP.core.Content"
+        "supertype": "TP.core.Content"
     },
     "APP": {
         "dir": "~app_src",

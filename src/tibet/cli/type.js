@@ -181,7 +181,7 @@ Cmd.prototype.configureForDNA = function(config) {
 
     CLI.blend(options, obj);
 
-    if (!options.super) {
+    if (!options.supertype) {
         root = options.nsroot;
         ns = options.nsname;
         tail = 'Object';
@@ -192,7 +192,7 @@ Cmd.prototype.configureForDNA = function(config) {
             root = root || 'TP';
             ns = ns || 'core';
         }
-        options.super = root + '.' + ns + '.' + tail;
+        options.supertype = root + '.' + ns + '.' + tail;
     }
 
     options.typename = root + '.' + ns + '.' + options.name;

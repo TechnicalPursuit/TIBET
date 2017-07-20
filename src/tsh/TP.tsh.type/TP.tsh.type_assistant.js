@@ -120,9 +120,9 @@ function(info) {
     str = ':type --name=\'' +
             info.at('topLevelNS') + '.' + info.at('typeNSAndName') + '\'';
 
-    if (TP.notEmpty(val = info.at('super'))) {
+    if (TP.notEmpty(val = info.at('supertype'))) {
         val = TP.uc('urn:tibet:typelist').getResource().get('result').at(val);
-        str += ' --super=\'' + val + '\'';
+        str += ' --supertype=\'' + val + '\'';
     }
 
     if (TP.notEmpty(val = info.at('dna'))) {
@@ -262,8 +262,8 @@ function(anObj) {
                     TP.ifInvalid(args.at('tsh:dir'), ''));
     typeInfo.atPut('dna',
                     TP.ifInvalid(args.at('tsh:dna'), ''));
-    typeInfo.atPut('super',
-                    TP.ifInvalid(args.at('tsh:super'), ''));
+    typeInfo.atPut('supertype',
+                    TP.ifInvalid(args.at('tsh:supertype'), ''));
 
     str = this.generateCommand(typeInfo);
     this.get('generatedCmdLine').setTextContent(str);

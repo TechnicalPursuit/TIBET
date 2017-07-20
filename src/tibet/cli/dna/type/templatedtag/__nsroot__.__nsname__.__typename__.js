@@ -1,11 +1,11 @@
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~typename~}} }
- * @summary {{super}} subtype which...
+ * @summary {{supertype}} subtype which...
  */
 
 //  ------------------------------------------------------------------------
 
-{{super}}.defineSubtype('{{nsroot}}.{{nsname}}:{{typename}}');
+{{supertype}}.defineSubtype('{{nsroot}}.{{nsname}}:{{typename}}');
 
 //  ------------------------------------------------------------------------
 //  end
