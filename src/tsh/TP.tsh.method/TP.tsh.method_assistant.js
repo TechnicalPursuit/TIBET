@@ -41,31 +41,6 @@ TP.tsh.method_assistant.Inst.defineAttribute('foot',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.method_assistant.Inst.defineMethod('awaken',
-function() {
-
-    /**
-     * @method awaken
-     * @summary This method invokes the 'awaken' functionality of the tag
-     *     processing system, to provide 'post-render' awakening of various
-     *     features such as events and CSS styles.
-     * @returns {TP.tsh.method_assistant} The receiver.
-     */
-
-    this.callNextMethod();
-
-    setTimeout(function() {
-        var modelURI;
-
-        modelURI = TP.uc('urn:tibet:method_cmd_source');
-        modelURI.$changed();
-    }, 50);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tsh.method_assistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
@@ -246,9 +221,9 @@ function(anObj) {
 
     modelObj = TP.core.JSONContent.construct(TP.js2json(topLevelInfo));
 
-    modelURI.setResource(modelObj, TP.hc('observeResource', true));
-
     this.observe(modelURI, 'ValueChange');
+    modelURI.setResource(
+        modelObj, TP.hc('observeResource', true, 'signalChange', true));
 
     return this;
 });
