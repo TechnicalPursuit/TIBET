@@ -4638,14 +4638,16 @@ function(anElement, partial, direction, wantsTransformed) {
      * @param {String} [direction] The direction to test visibility in. If
      *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
      *     this is not specified, then both directions will be tested.
-     * @param {Boolean} wantsTransformed An optional parameter that determines
-     *     whether to use 'transformed' values if the element has been
-     *     transformed with a CSS transformation. The default is false.
+     * @param {Boolean} [wantsTransformed=false] An optional parameter that
+     *     determines whether to use 'transformed' values if the element has
+     *     beentransformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    var viewportBox,
+    var isDisplayed,
+
+        viewportBox,
         elementBox,
 
         topVisible,
@@ -4658,6 +4660,13 @@ function(anElement, partial, direction, wantsTransformed) {
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  First, is the element even displayed? If not (i.e. 'display: none'),
+    //  then just return false here.
+    isDisplayed = TP.elementIsDisplayed(anElement);
+    if (!isDisplayed) {
+        return false;
     }
 
     //  Get the viewport width and height, as defined by our offsetParent
