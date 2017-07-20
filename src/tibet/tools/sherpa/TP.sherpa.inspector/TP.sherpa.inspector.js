@@ -2709,20 +2709,50 @@ function(aBayNum) {
 
     var selectedItems,
         bayNum,
-        bayContent;
+
+        inspectorBays,
+        inspectorBay,
+        resolver,
+        data,
+
+        bindLoc;
 
     selectedItems = this.get('selectedItems');
     bayNum = aBayNum;
     if (TP.notValid(bayNum)) {
-        bayNum = selectedItems.getSize() - 1;
+
+        //  We're interested in refreshing the 'next bay over' where there is
+        //  currently no selection.
+        bayNum = selectedItems.getSize();
     }
 
-    //  Grab the first bay and, if it's content can 'render', then do so.
-    bayContent = TP.byCSSPath('sherpa|inspectoritem', this).
-                                    at(bayNum).getFirstChildElement();
-    if (TP.canInvoke(bayContent, 'render')) {
-        bayContent.render();
+    //  Grab the inspector bay corresponding to that bay number
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBay = inspectorBays.at(bayNum);
+
+    if (TP.notValid(inspectorBay)) {
+        //  TODO: Raise an exception - can't find a bay object
+        return this;
     }
+
+    resolver = inspectorBay.get('config').at('resolver');
+
+    if (TP.notValid(resolver)) {
+        //  TODO: Raise an exception - can't find a bay resolver
+        return this;
+    }
+
+    //  Grab the data for the inspector using the resolver for that bay. Note
+    //  that we do not supply any other params, just an empty Hash.
+    data = TP.getDataForTool(
+                    resolver,
+                    'inspector',
+                    TP.hc());
+
+    //  Set the resource of the URI holding the bound data for that bay to the
+    //  refreshed data that we just obtained.
+    bindLoc = 'urn:tibet:sherpa_bay_' + bayNum;
+    TP.uc(bindLoc).setResource(data);
 
     return this;
 });
