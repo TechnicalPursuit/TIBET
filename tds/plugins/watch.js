@@ -251,6 +251,8 @@
             fullpath = path.join(watchRoot, file);
             tibetpath = TDS.getVirtualPath(fullpath);
 
+            logger.debug('Processing file change to ' + tibetpath);
+
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {
                     path: tibetpath,
