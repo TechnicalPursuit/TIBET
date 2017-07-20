@@ -89,7 +89,8 @@ Cmd.prototype.execute = function() {
 
 '    $ tibet clone hello\n' +
 '    ...\n' +
-'    Application DNA \'default\' cloned to ./hello as \'hello\'.\n\n' +
+'    Application DNA \'default\' cloned to ./hello as \'hello\'.\n' +
+'    ...\n\n' +
 
 'INITIALIZE THE PROJECT\n\n' +
 
@@ -100,7 +101,8 @@ Cmd.prototype.execute = function() {
 '    $ cd hello\n' +
 '    $ tibet init\n' +
 '    ...\n' +
-'    project initialized successfully.\n\n' +
+'    project initialized successfully.\n' +
+'    ...\n\n' +
 
 'START THE SERVER\n\n' +
 
@@ -111,7 +113,7 @@ Cmd.prototype.execute = function() {
 
 '    $ tibet start\n' +
 '    ...\n' +
-'    1498043782937 [7] TDS hello 0.1.0 @ http://127.0.0.1:1407#?boot.config=developer (sherpa)\n\n' +
+'    1498043782937 [7] TDS hello 0.1.0 @ http://127.0.0.1:1407#?boot.profile=development (dev)\n\n' +
 
 'Congratulations! Your new TIBET project is running. Open the web address\n' +
 'for your project in a supported HTML5 browser and you\'ll see text directing\n' +
