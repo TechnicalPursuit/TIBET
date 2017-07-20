@@ -19,7 +19,7 @@
                 <sherpa:breadcrumb id="SherpaBreadcrumb"/>
             </div>
             <div class="bookmarks">
-                <button id="showbookmarks" class="bookmarking" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.bookmarkMenuContent, hideOn: UISelect}}">
+                <button id="showbookmarks" class="bookmarking" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.bookmarkMenuContent, hideOn: UISelect, overlayID: 'BookmarksPopup'}}">
                     <xctrls:hint>Show Bookmarks</xctrls:hint>
                 </button>
                 <button id="addbookmark" class="bookmarking" on:click="AddBookmark">
@@ -35,7 +35,7 @@
 
     <div class="footer">
         <div class="systemToolbar">
-            <button id="snippetMenuTrigger" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect}}"/>
+            <button id="snippetMenuTrigger" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: 'SnippetsPopup'}}"/>
 
             <xctrls:button class="build" on:click="TSHBuild">
                 <xctrls:hint>Build project</xctrls:hint>
