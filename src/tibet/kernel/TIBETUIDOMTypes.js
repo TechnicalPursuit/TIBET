@@ -3528,7 +3528,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('isVisible',
-function() {
+function(partial, direction, wantsTransformed) {
 
     /**
      * @method isVisible
@@ -3537,10 +3537,20 @@ function() {
      * @description In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
            CSS transformation that has been applied to the element.
+     * @param {Boolean} [partial=false] Whether or not the element can be
+     *     partially visible or has to be completely visible. The default is
+     *     false (i.e. it should be completely visible).
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
+     * @param {Boolean} [wantsTransformed=false] An optional parameter that
+     *     determines whether to use 'transformed' values if the element has
+     *     been transformed with a CSS transformation. The default is false.
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    return TP.elementIsVisible(this.getNativeNode());
+    return TP.elementIsVisible(this.getNativeNode(),
+                                partial, direction, wantsTransformed);
 });
 
 //  ------------------------------------------------------------------------
