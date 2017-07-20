@@ -68,6 +68,14 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  Whether or not the currently processing DOMClick signal is the 'triggering'
+//  signal or is a subsequent DOMClick.
+TP.xctrls.popup.defineAttribute('isTriggeringClick');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -119,19 +127,34 @@ function(aSignal) {
 
     triggerTPElem = this.get('$triggerTPElement');
 
+    //  If we don't have a valid triggering element, then check to see if the
+    //  target element of the DOMClick is contained in ourself. If not, then
+    //  hide ourself.
     if (TP.notValid(triggerTPElem)) {
         if (!this.contains(targetElem)) {
             this.setAttribute('hidden', true);
         }
     } else {
-        //  If the user clicked outside of the popup - deactivate it.
-        if (!this.contains(targetElem) &&
-            TP.unwrap(triggerTPElem) !== targetElem &&
-            !triggerTPElem.contains(targetElem)) {
 
-            this.setAttribute('hidden', true);
+        //  If the target element of the DOMClick isn't contained in ourself,
+        //  then check to see if the triggering element contains the target
+        //  element (or is the triggering element itself). Also, check to see if
+        //  this is *not* the triggering element. If any of those is the case,
+        //  then hide ourself.
+        if (!this.contains(targetElem)) {
+
+            if (TP.unwrap(triggerTPElem) !== targetElem &&
+                !triggerTPElem.contains(targetElem)) {
+                this.setAttribute('hidden', true);
+            } else if (!this.get('isTriggeringClick')) {
+                this.setAttribute('hidden', true);
+            }
         }
     }
+
+    //  Flip the isTriggeringClick flag - there's no way that any subsequent
+    //  clicks during this 'popup open' session are the triggering click.
+    this.set('isTriggeringClick', false);
 
     return;
 });
@@ -165,6 +188,8 @@ function(beHidden) {
 
         this.observe(TP.core.Mouse, 'TP.sig.DOMClick');
         this.observe(TP.ANY, 'TP.sig.ClosePopup');
+
+        this.set('isTriggeringClick', true);
 
         this.observeKeybindingsDirectly();
 
