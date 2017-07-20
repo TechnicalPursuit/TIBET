@@ -364,7 +364,7 @@
             TDS.colorize(protocol + '://' + nodeIP +
                 (port === 80 ? '' : ':' + port + '#?boot.profile=development'),
                 'host'),
-            {comp: 'TDS', type: 'tds', name: 'sherpa'});
+            {comp: 'TDS', type: 'tds', name: 'dev'});
     };
 
     /**
