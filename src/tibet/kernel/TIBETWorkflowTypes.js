@@ -3034,7 +3034,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     for (i = 0; i < len; i++) {
         //  NOTE that this won't do anything if the job already cancelled so
         //  we shouldn't see looping or extra overhead here.
-        joins.at(i).first().cancel(aFaultString, aFaultCode, aFaultInfo);
+        joins.at(i).first().fail(aFaultString, aFaultCode, aFaultInfo);
     }
 
     //  don't push empty values into the argument list or we risk creating
