@@ -27,7 +27,7 @@ TP.sherpa.outliner.Inst.defineAttribute('$mouseHandler');
 TP.sherpa.outliner.Inst.defineAttribute('$currentDNDTarget');
 
 TP.sherpa.outliner.Inst.defineAttribute('$outlinerStyleElement');
-TP.sherpa.outliner.Inst.defineAttribute('$outlinedDescendantsRule');
+TP.sherpa.outliner.Inst.defineAttribute('$hudOutlinerDescendantsRule');
 
 TP.sherpa.outliner.Inst.defineAttribute('$containingBlockElem');
 
@@ -759,7 +759,7 @@ function() {
         TP.elementSetStyleProperty(topLevelElem, 'transform', prevValue);
     }
 
-    TP.elementAddClass(topLevelElem, 'outlined');
+    TP.elementAddClass(topLevelElem, 'sherpa-outliner');
 
     TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
 
@@ -852,7 +852,7 @@ function() {
 
         outlinerStyleElement = TP.documentAddCSSElement(
             canvasTPDoc.getNativeNode(),
-            TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner.css').getLocation(),
+            TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner_injected.css').getLocation(),
             true);
 
         //  Mark the sheet as 'TIBET_PRIVATE' so that it's style rules are not
@@ -863,9 +863,9 @@ function() {
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
                                 outlinerStyleElement.sheet,
-                                '.outlined *');
+                                '.sherpa-outliner *');
 
-        this.set('$outlinedDescendantsRule', descendantRule.first());
+        this.set('$hudOutlinerDescendantsRule', descendantRule.first());
     } else {
         outlinerStyleElement.disabled = false;
     }
@@ -905,7 +905,7 @@ function() {
 
     TP.elementSetStyleProperty(topLevelElem, 'transform', '');
 
-    TP.elementRemoveClass(topLevelElem, 'outlined');
+    TP.elementRemoveClass(topLevelElem, 'sherpa-outliner');
 
     TP.elementRemoveAttribute(topLevelElem, 'tibet:ctrl');
     TP.elementRemoveAttribute(topLevelElem, 'dnd:accept');
@@ -928,7 +928,7 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('updateOutlinedDescendantStyle',
 function() {
 
-    this.get('$outlinedDescendantsRule').style.transform =
+    this.get('$hudOutlinerDescendantsRule').style.transform =
                 'translate3d(0px, 0px, ' + this.get('spread') + 'px)';
 
     return this;
