@@ -1205,6 +1205,8 @@
         var str,
             arr;
 
+        PhantomTSH.lastActivity = new Date().getTime();
+
         if (PhantomTSH.argv.errimg) {
             /* eslint-disable no-extra-parens */
             PhantomTSH.page.render('PhantomError_' +
