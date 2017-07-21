@@ -95,6 +95,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hud.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hud.Inst.defineMethod('setAttrClosed',
 function(beClosed) {
 
@@ -200,7 +232,10 @@ function() {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var backgroundElem;
+    var backgroundElem,
+
+        world,
+        currentScreenTPWin;
 
     backgroundElem = TP.byId('background', this.getNativeWindow(), false);
 
@@ -208,6 +243,55 @@ function() {
     //  toggling.
     this.set('initialBackgroundClassNames',
                 TP.elementGetAttribute(backgroundElem, 'class', true));
+
+    //  Grab the world's current screen TP.core.Window and observe it for when
+    //  it's document unloads & loads so that we can manage our click & context
+    //  menu observations.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    this.observe(world, 'ToggleScreen');
+
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.observe(currentScreenTPWin,
+                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    /**
+     * @method handleToggleScreen
+     * @summary Handles notifications of screen toggle signals.
+     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    var world,
+        oldScreenTPWin,
+
+        newScreen,
+        newScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the old screen TP.core.Window and ignore
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    //  Grab the new screen TP.core.Window and observe
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    newScreen = world.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(newScreen)) {
+        newScreenTPWin = newScreen.getContentWindow();
+        this.observe(newScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    }
 
     return this;
 });
