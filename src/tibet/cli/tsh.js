@@ -253,8 +253,9 @@ Cmd.prototype.execute = function() {
         var msg;
 
         if (CLI.isValid(data)) {
+
             // Copy and remove newline.
-            msg = data.slice(0, -1).toString('utf-8');
+            msg = ('' + data).slice(0, -1).toString('utf-8');
 
             if (/SyntaxError: Parse error/.test(msg)) {
                 // Bug in phantom script itself most likely.
@@ -276,7 +277,7 @@ Cmd.prototype.execute = function() {
             msg = 'Unspecified error occurred.';
         } else {
             // Copy and remove newline.
-            msg = data.slice(0, -1).toString('utf-8');
+            msg = ('' + data).slice(0, -1).toString('utf-8');
         }
 
         // Some leveraged module likes to write error output with empty lines.
