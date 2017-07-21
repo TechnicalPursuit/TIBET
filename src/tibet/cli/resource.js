@@ -175,18 +175,21 @@ Cmd.prototype.execute = function() {
  * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
+    var args;
+
+    args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
 
     //  Since we use the output from phantomjs to provide data we need it to be
     //  no-color, regardless of command setting for the command output itself.
-    arglist.push('--no-color');
+    args.push('--no-color');
 
     //  Force command to NOT try to load inlined resources since this can cause
     //  a circular failure condition where we're trying to boot TIBET to compute
     //  resources but we are missing resource files because...we haven't been
     //  able to run this command to completion...etc.
-    arglist.push('--params=boot.inlined=false');
+    args.push('--params=boot.inlined=false');
 
-    return arglist;
+    return args;
 };
 
 
@@ -787,14 +790,11 @@ Cmd.prototype.stdout = function(data) {
         if (line.charAt(0) === '~') {
             cmd.computed.push(line);
         } else {
-            //  Filter just to show TIBET lines
-            if ((/tibet/i).test(line)) {
-                //  NOTE we manually colorize since color is off to phantomjs to
-                //  avoid problems trying to parse the output data.
-                /* eslint-disable no-console */
-                console.log(cmd.colorize(line, 'dim'));
-                /* eslint-enable no-console */
-            }
+            //  NOTE we manually colorize since color is off to phantomjs to
+            //  avoid problems trying to parse the output data.
+            /* eslint-disable no-console */
+            console.log(cmd.colorize(line, 'dim'));
+            /* eslint-enable no-console */
         }
     });
 };
