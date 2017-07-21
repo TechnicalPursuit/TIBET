@@ -16,6 +16,10 @@
 
 TP.sherpa.hudsidebar.defineSubtype('domhud');
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
 //  ------------------------------------------------------------------------
@@ -432,7 +436,7 @@ function(aSignal) {
      * @summary Responds to mouse over/out notifications by toggling a
      *     class on individual peer elements. The result is that as the user
      *     hovers over elements in the sidebar the corresponding element in
-     *     the canvas gets a 'hud-highlight' class addd/removed.
+     *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
      * @param {TP.sig.Signal} aSignal The over/out signal with the target.
      * @returns {TP.sherpa.domhud} The receiver.
      */
@@ -445,7 +449,7 @@ function(aSignal) {
 
     //  If target then we're leaving...clear and exit.
     if (TP.isValid(target)) {
-        TP.elementRemoveClass(target, 'hud-highlight');
+        TP.elementRemoveClass(target, 'sherpa-hud-highlight');
         this.$set('highlighted', null, false);
         return;
     }
@@ -457,13 +461,15 @@ function(aSignal) {
         return this;
     }
 
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
     target = TP.byId(peerID);
     if (TP.notValid(target)) {
         return this;
     }
 
     target = target.getNativeNode();
-    TP.elementAddClass(target, 'hud-highlight');
+    TP.elementAddClass(target, 'sherpa-hud-highlight');
     this.$set('highlighted', target, false);
 
     return this;

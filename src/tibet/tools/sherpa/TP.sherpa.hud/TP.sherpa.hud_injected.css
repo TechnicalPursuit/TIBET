@@ -1,0 +1,19 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+.sherpa-hud {
+}
+
+.sherpa-hud *|app {
+
+    /* For highlighting below */
+    margin: 1px;
+}
+
+.sherpa-hud .sherpa-hud-highlight,
+.sherpa-hud *|*[class~="sherpa-hud-highlight"] {
+
+    outline: dashed 1px red !important;
+}
+
