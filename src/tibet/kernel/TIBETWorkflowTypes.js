@@ -1336,6 +1336,31 @@ function(varargs) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Type.defineMethod('getWrapupMethodName',
+function(aState) {
+
+    /**
+     * @method getWrapupMethodName
+     * @summary Returns the proper method name to invoke during wrapup depending
+     *      on the state name provided.
+     * @param {String} aState The state (TP.FAILED, TP.CANCELLED, etc).
+     * @returns {?String} The method name such as 'cancel' or 'fail'.
+     */
+
+    switch (aState) {
+        case TP.CANCELLED:
+            return 'cancel';
+        case TP.ERRORED:
+            return 'error';
+        case TP.FAILED:
+            return 'fail';
+        default:
+            return 'cancel';
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Type.defineMethod('isSynchronous',
 function() {
 
@@ -3101,6 +3126,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         suffix,
 
         handlerName,
+        methodName,
 
         state,
         joins,
@@ -3225,11 +3251,12 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         joins = this.getJoins(TP.AND).copy().addAll(
             this.getJoins(TP.OR)).unique();
     } else {
+        methodName = TP.sig.Request.getWrapupMethodName(state);
         //  If we're not succeeding we can only invoke our OR joins and we
-        //  should be cancelling the AND joins.
+        //  should be finalizing the AND joins.
         joins = this.getJoins(TP.AND);
         joins.forEach(function(item) {
-            item.first().cancel(
+            item.first()[methodName](
                 request.get('faultString'),
                 request.get('faultCode'),
                 request.get('faultInfo'));
@@ -3276,11 +3303,12 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         joins = this.getParentJoins(TP.AND).copy().addAll(
             this.getParentJoins(TP.OR)).unique();
     } else {
+        methodName = TP.sig.Request.getWrapupMethodName(state);
         //  If we're not succeeding we can only invoke our OR joins and we
-        //  should be cancelling the AND joins.
+        //  should be finalizing the AND joins.
         joins = this.getParentJoins(TP.AND);
         joins.forEach(function(item) {
-            item.first().cancel(
+            item.first()[methodName](
                 request.get('faultString'),
                 request.get('faultCode'),
                 request.get('faultInfo'));
