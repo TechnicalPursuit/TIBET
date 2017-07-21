@@ -263,16 +263,10 @@ function(aRequest) {
     }
     successHandler = function(aSignal) {
         shell.detachSTDIO();
-
-        //  Note that we have to ignore *both* of the handlers so that when one
-        //  of them gets executed, the other one is removed and doesn't leak.
-        successHandler.ignore(request, 'TP.sig.ShellRequestSucceeded');
-        failureHandler.ignore(request, 'TP.sig.ShellRequestFailed');
-
         success(aSignal, stdioResults);
     };
-    successHandler.observe(request, 'TP.sig.ShellRequestSucceeded');
 
+    request.defineHandler('RequestSucceeded', successHandler);
 
     //  Configure the failure handler, or a default one to report any output.
     failure = params.at(TP.ONFAIL);
@@ -287,16 +281,10 @@ function(aRequest) {
     }
     failureHandler = function(aSignal) {
         shell.detachSTDIO();
-
-        //  Note that we have to ignore *both* of the handlers so that when one
-        //  of them gets executed, the other one is removed and doesn't leak.
-        successHandler.ignore(request, 'TP.sig.ShellRequestSucceeded');
-        failureHandler.ignore(request, 'TP.sig.ShellRequestFailed');
-
         failure(aSignal, stdioResults);
     };
-    failureHandler.observe(request, 'TP.sig.ShellRequestFailed');
 
+    request.defineHandler('RequestFailed', failureHandler);
 
     //  Go ahead and tell the shell to handle the shell request.
     shell[TP.composeHandlerName('ShellRequest')](request);
