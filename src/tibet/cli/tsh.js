@@ -321,6 +321,9 @@ Cmd.prototype.execute = function() {
  * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
+
+    arglist.push('--quiet');
+
     return arglist;
 };
 
