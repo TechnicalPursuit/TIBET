@@ -291,7 +291,8 @@ Cmd.prototype.executeClone = function() {
     //  Have to use reflection to find the source file for the tag in question.
     //  Armed with that we can copy and then 'sed' references to the original
     //  tag into their new tag name counterparts.
-    result = CLI.sh.exec('tibet resource --no-color --raw --type ' + options.dna, {
+    result = CLI.sh.exec('tibet resource --no-color --raw --type ' +
+            options.dna, {
         silent: CLI.options.silent !== true
     });
 
@@ -361,7 +362,6 @@ Cmd.prototype.executeClone = function() {
         return text;
     };
 
-
     //  Result output will include multiple lines. We want just those which
     //  begin with '~' since they represent virtual paths to the files we want.
     arr = result.output.split('\n');
@@ -383,6 +383,12 @@ Cmd.prototype.executeClone = function() {
         fullpath = CLI.expandPath(item);
 
         base = path.basename(fullpath);
+
+        //  Don't try processing resources that are only hypothetical (computed
+        //  but not confirmed).
+        if (!CLI.sh.test('-e', fullpath)) {
+            return;
+        }
 
         //  Capture content of current dna file.
         content = CLI.sh.cat(fullpath);
