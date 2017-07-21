@@ -300,9 +300,6 @@ Cmd.prototype.execute = function() {
 
         if (code !== 0) {
             msg = 'Execution stopped with status: ' + code;
-            if (!cmd.options.debug || !cmd.options.verbose) {
-                msg += ' Retry with --debug --verbose for more information.';
-            }
             cmd.error(msg);
         }
 
