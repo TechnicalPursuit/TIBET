@@ -319,11 +319,11 @@ TP.hc(
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
-            if (username === TP.NONE) {
+            if (request.at('username') === TP.NONE) {
                 username = null;
             }
 
-            if (password === TP.NONE) {
+            if (request.at('password') === TP.NONE) {
                 password = null;
             }
 
@@ -595,11 +595,11 @@ TP.hc(
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
-            if (username === TP.NONE) {
+            if (request.at('username') === TP.NONE) {
                 username = null;
             }
 
-            if (password === TP.NONE) {
+            if (request.at('password') === TP.NONE) {
                 password = null;
             }
 
@@ -842,11 +842,11 @@ TP.hc(
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
-            if (username === TP.NONE) {
+            if (request.at('username') === TP.NONE) {
                 username = null;
             }
 
-            if (password === TP.NONE) {
+            if (request.at('password') === TP.NONE) {
                 password = null;
             }
 
