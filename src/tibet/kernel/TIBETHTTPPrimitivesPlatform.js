@@ -307,6 +307,9 @@ TP.hc(
             httpObj = TP.httpConstruct(url);
             request.atPut('commObj', httpObj);
 
+            username = request.at('username');
+            password = request.at('password');
+
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
@@ -574,6 +577,9 @@ TP.hc(
             httpObj = TP.httpConstruct(url);
             request.atPut('commObj', httpObj);
 
+            username = request.at('username');
+            password = request.at('password');
+
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
@@ -811,6 +817,9 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(url);
             request.atPut('commObj', httpObj);
+
+            username = request.at('username');
+            password = request.at('password');
 
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
