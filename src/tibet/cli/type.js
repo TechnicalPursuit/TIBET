@@ -271,6 +271,7 @@ Cmd.prototype.executeClone = function() {
         arr,
         inProj,
         parts,
+        dna,
         dnaroot,
         dnans,
         dnaname,
@@ -282,7 +283,9 @@ Cmd.prototype.executeClone = function() {
     options = this.options;
     inProj = CLI.inProject();
 
-    if (!/:|\./.test(options.dna)) {
+    dna = path.basename(options.dna);
+
+    if (!/:|\./.test(dna)) {
         return Cmd.Parent.prototype.executeClone.apply(this, arguments);
     }
 
@@ -292,7 +295,7 @@ Cmd.prototype.executeClone = function() {
     //  Armed with that we can copy and then 'sed' references to the original
     //  tag into their new tag name counterparts.
     result = CLI.sh.exec('tibet resource --no-color --raw --type ' +
-            options.dna, {
+            dna, {
         silent: CLI.options.silent !== true
     });
 
@@ -300,7 +303,7 @@ Cmd.prototype.executeClone = function() {
         throw new Error(result.output);
     }
 
-    parts = options.dna.split(/[\.:]/g);
+    parts = dna.split(/[\.:]/g);
     switch (parts.length) {
         case 3:
             dnaroot = parts[0];
@@ -782,13 +785,13 @@ Cmd.prototype.getTemplateParameters = function() {
     options = this.options;
 
     name = options.name;
-    dna = options.dna;
+    dna = path.basename(options.dna);
 
     //  NOTE that we don't use the full path for the dna reference here to avoid
     //  embedding real paths in the output.
     obj = {};
     obj[this.TEMPLATE_KEY] = name;
-    obj.dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
+    obj.dna = dna;
 
     obj.nsroot = options.nsroot;
     obj.nsname = options.nsname;
