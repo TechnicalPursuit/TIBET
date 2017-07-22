@@ -11963,14 +11963,11 @@ TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
 TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeRE');
 TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeRE');
 
-//  Configuration names for the include/exclude configuration setting for the
+//  Configuration names for the include/exclude configuration settings for the
 //  remote url watcher types which mix this in.
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
-    'tds.watch.include');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
-    'tds.watch.exclude');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
-    'tds.watch.uri');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName');
 
 //  ------------------------------------------------------------------------
 //  TypeLocal Methods

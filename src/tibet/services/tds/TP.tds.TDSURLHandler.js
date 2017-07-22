@@ -28,6 +28,14 @@ TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 TP.tds.TDSURLHandler.set('uriConfigName', 'tds.watch.uri');
 
+//  Configuration names for the include/exclude configuration settings.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
+    'tds.watch.include');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
+    'tds.watch.exclude');
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
+    'tds.watch.uri');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
