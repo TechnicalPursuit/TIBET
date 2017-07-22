@@ -324,6 +324,9 @@ function(aSignal) {
     this.set('$wasActive', isActive);
 
     if (!isActive) {
+
+        this.set('isActive', true);
+
         this.signal('TP.sig.BeginOutlineMode');
     }
 
@@ -401,6 +404,8 @@ function(aSignal) {
     wasActive = this.get('$wasActive');
 
     if (!wasActive) {
+        this.set('isActive', false);
+
         this.signal('TP.sig.EndOutlineMode');
     }
 

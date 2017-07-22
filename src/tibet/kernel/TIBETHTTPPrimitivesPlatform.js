@@ -307,6 +307,15 @@ TP.hc(
             httpObj = TP.httpConstruct(url);
             request.atPut('commObj', httpObj);
 
+            //  NOTE: As of Chrome 19+, etc. using the username/password fields
+            //  of the 'open()' method below is unsupported because that will
+            //  result in a 'URL embedded entity' (i.e.
+            //  'username:password@foo.com'). We can't get rid of these request
+            //  parameters, because they're used by things like the 'basic auth'
+            //  header generator, but we don't extract them here
+            //  username = request.at('username');
+            //  password = request.at('password');
+
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
@@ -574,6 +583,15 @@ TP.hc(
             httpObj = TP.httpConstruct(url);
             request.atPut('commObj', httpObj);
 
+            //  NOTE: As of Chrome 19+, etc. using the username/password fields
+            //  of the 'open()' method below is unsupported because that will
+            //  result in a 'URL embedded entity' (i.e.
+            //  'username:password@foo.com'). We can't get rid of these request
+            //  parameters, because they're used by things like the 'basic auth'
+            //  header generator, but we don't extract them here
+            //  username = request.at('username');
+            //  password = request.at('password');
+
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that
             //  we are XHR spec compliant
@@ -811,6 +829,15 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(url);
             request.atPut('commObj', httpObj);
+
+            //  NOTE: As of Chrome 19+, etc. using the username/password fields
+            //  of the 'open()' method below is unsupported because that will
+            //  result in a 'URL embedded entity' (i.e.
+            //  'username:password@foo.com'). We can't get rid of these request
+            //  parameters, because they're used by things like the 'basic auth'
+            //  header generator, but we don't extract them here
+            //  username = request.at('username');
+            //  password = request.at('password');
 
             //  if either username or password use our special value, TP.NONE,
             //  set them to null so that the word 'none' isn't used and so that

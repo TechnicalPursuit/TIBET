@@ -1075,7 +1075,8 @@ function(aRequest) {
     //  make sure we provide the request ID in the call headers for
     //  tracking purposes
     if (TP.uriNeedsPrivileges(url) &&
-        TP.sys.cfg('http.simple_cors_only')) {
+        (TP.sys.cfg('http.simple_cors_only') ||
+            aRequest.at('simple_cors_only'))) {
             //  url needs privileges but we're configured for 'simple CORS'
             //  only, which disallows custom 'X-' headers.
         void 0;

@@ -22,6 +22,10 @@ TP.sherpa.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
+//  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
+//  design.
+TP.sherpa.Element.defineAttribute('styleURI', TP.NO_RESULT);
+
 //  Note how this property is *not* TYPE_LOCAL, by design. 'sherpa:' elements,
 //  by default, do *not* use theming.
 TP.sherpa.Element.Type.defineAttribute('themeURI', TP.NO_RESULT);

@@ -9,26 +9,58 @@
  */
 
 (function () {
+
+  var MAX_SAFE_INTEGER = 9007199254740991;
+  var isLength = function (value) {
+      return typeof value === 'number' && value > -1 && value % 1 === 0 && value <= MAX_SAFE_INTEGER;
+  };
+
+  var isObjectLike = function (value) {
+      return !!value && typeof value == 'object';
+  };
+
+  var isObject = function (value) {
+      var type = typeof value;
+      return !!value && (type == 'object' || type == 'function');
+  };
+
+  var objProtoToString = Object.prototype.toString;
+
+  var is = {
+      object: isObject,
+      array: Array.isArray || function(value) {
+          return isObjectLike(value) &&
+              isLength(value.length) &&
+              objProtoToString.call(value) == '[object Array]';
+      },
+      regExp: function (value) {
+          return isObject(value) && objProtoToString.call(value) == '[object RegExp]';
+      },
+      date: function (value) {
+          return isObjectLike(value) && objProtoToString.call(value) == '[object Date]';
+      }
+  };
+
   var clone = function (obj) {
       // Handle the 3 simple types (string, number, function), and null or undefined
       if (obj === null || typeof obj !== 'object') return obj;
       var copy;
 
       // Handle Date
-      if (obj instanceof Date) {
+      if (is.date(obj)) {
           copy = new Date();
           copy.setTime(obj.getTime());
           return copy;
       }
 
       // handle RegExp
-      if (obj instanceof RegExp) {
+      if (is.regExp(obj)) {
         copy = new RegExp(obj);
         return copy;
       }
 
       // Handle Array
-      if (obj instanceof Array) {
+      if (is.array(obj)) {
           copy = [];
           for (var i = 0, len = obj.length; i < len; i++)
               copy[i] = clone(obj[i]);
@@ -36,11 +68,12 @@
       }
 
       // Handle Object
-      if (obj instanceof Object) {
+      if (is.object(obj)) {
           copy = {};
+          var hasOwnProperty = copy.hasOwnProperty;
 //           copy = Object.create(Object.getPrototypeOf(obj));
           for (var attr in obj) {
-              if (obj.hasOwnProperty(attr))
+              if (hasOwnProperty.call(obj, attr))
                 copy[attr] = clone(obj[attr]);
           }
           return copy;
@@ -112,7 +145,7 @@
       return Array.isArray(x);
     },
     'date': function (x) {
-      return x instanceof Date;
+      return is.date(x);
     }
   };
 
@@ -150,6 +183,9 @@
     },
     'email': function (v) { // email, ipv4 and ipv6 adapted from node-validator
       return (/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/).test(v);
+    },
+    'phone': function (v) {  // matches most European and US representations like +49 123 999 or 0001 123.456 or +31 (0) 8123
+      return (/^(?:\+\d{1,3}|0\d{1,3}|00\d{1,2})?(?:\s?\(\d+\))?(?:[-\/\s.]|\d)+$/).test(v);
     },
     'ipv4': function (v) {
       if ((/^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$/).test(v)) {
@@ -355,6 +391,13 @@
       if (typeof schema.type === 'string') {
         if (options.useCoerce && env.coerceType.hasOwnProperty(schema.type))
           prop = object[name] = env.coerceType[schema.type](prop);
+        if (options.useDefault && schema.default){
+          if ( (prop === undefined || prop === null || prop === '') ||
+            (schema.type === 'array' && !prop.length && Array.isArray(prop)) ||
+            (schema.type === 'object' && JSON.stringify(prop) === JSON.stringify({}))) {
+            prop = object[name] = clone(schema.default);
+          }
+        }
         if (!env.fieldType[schema.type](prop))
           return {'type': schema.type};
       } else {
@@ -547,7 +590,9 @@
       if (options.useDefault && hasProp && !malformed) {
         for (p in schema.properties)
           if (schema.properties.hasOwnProperty(p) && !prop.hasOwnProperty(p) && schema.properties[p].hasOwnProperty('default'))
-            prop[p] = schema.properties[p]['default'];
+            prop[p] = clone(schema.properties[p]['default']);
+          else if (schema.properties[p] && schema.properties[p].items && !prop.hasOwnProperty(p) && schema.properties[p].items.hasOwnProperty('default'))
+            prop[p] = clone(schema.properties[p].items['default']);
       }
 
       if (options.removeAdditional && hasProp && schema.additionalProperties !== true && typeof schema.additionalProperties !== 'object') {
