@@ -880,6 +880,8 @@ function(targetUrl, aRequest, httpObj) {
         headers,
         h,
 
+        simpleCORSOnly,
+
         hash,
 
         keys,
@@ -902,6 +904,9 @@ function(targetUrl, aRequest, httpObj) {
     //  NOTE we use the string of the body content here for Content-Length
     body = request.at('finalbody');
     url = request.at('uri');
+
+    simpleCORSOnly = TP.sys.cfg('http.simple_cors_only') ||
+                        request.at('simple_cors_only');
 
     //  Default the mimetype based on body type as best we can.
     if (TP.notDefined(request.at('mimetype'))) {
@@ -940,11 +945,9 @@ function(targetUrl, aRequest, httpObj) {
     //  identify the request as coming from an XMLHttpRequest (ala Rails), but
     //  only if we'
     if (TP.notDefined(headers.at('X-Requested-With'))) {
-        if (TP.uriNeedsPrivileges(targetUrl) &&
-            (TP.sys.cfg('http.simple_cors_only') ||
-                request.at('simple_cors_only'))) {
-                //  targetUrl needs privileges but we're configured for 'simple
-                //  CORS' only, which disallows custom 'X-' headers.
+        if (TP.uriNeedsPrivileges(targetUrl) && simpleCORSOnly) {
+            //  targetUrl needs privileges but we're configured for 'simple
+            //  CORS' only, which disallows custom 'X-' headers.
             void 0;
         } else {
             headers.atPut('X-Requested-With', 'XMLHttpRequest');
@@ -978,10 +981,14 @@ function(targetUrl, aRequest, httpObj) {
     //  method. But only do this if we're not doing simple CORS.
     if (TP.notDefined(headers.at('X-HTTP-Method-Override'))) {
         if (request.at('method') === TP.HTTP_POST &&
-            TP.notEmpty(method = request.at('altmethod')) &&
-            !(TP.sys.cfg('http.simple_cors_only') ||
-                request.at('simple_cors_only'))) {
-            headers.atPut('X-HTTP-Method-Override', method);
+            TP.notEmpty(altMethod = request.at('altmethod'))) {
+            if (TP.uriNeedsPrivileges(targetUrl) && simpleCORSOnly) {
+                //  targetUrl needs privileges but we're configured for 'simple
+                //  CORS' only, which disallows custom 'X-' headers.
+                void 0;
+            } else {
+                headers.atPut('X-HTTP-Method-Override', altMethod);
+            }
         }
     }
 
