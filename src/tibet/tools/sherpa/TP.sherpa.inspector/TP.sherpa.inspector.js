@@ -642,14 +642,6 @@ function(options) {
      *     bay.
      */
 
-    var data,
-        dataURI;
-
-    dataURI = TP.uc(options.at('bindLoc'));
-
-    data = this.getDataForInspector(options);
-    dataURI.setResource(data, TP.request('signalChange', false));
-
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getContentForInspectorFor',
                                         arguments);
