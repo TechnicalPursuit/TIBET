@@ -957,10 +957,10 @@ function(targetUrl, aRequest, httpObj) {
     //  for now ('HTTP Digest' authentication requires a round-trip to the
     //  server anyway for the 'server nonce').
     if (request.at('auth') === TP.HTTP_BASIC) {
-        //  if 'Authentication' authentication header wasn't supplied but a
+        //  if 'Authorization' authentication header wasn't supplied but a
         //  username/password was, then compute an 'HTTP Basic'
         //  authentication header
-        if (TP.notDefined(headers.at('Authentication')) &&
+        if (TP.notDefined(headers.at('Authorization')) &&
                 TP.isDefined(request.at('username')) &&
                 TP.isDefined(request.at('password'))) {
             hash = TP.btoa(
