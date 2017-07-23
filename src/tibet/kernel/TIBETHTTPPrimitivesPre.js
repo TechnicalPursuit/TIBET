@@ -878,9 +878,10 @@ function(targetUrl, aRequest, httpObj) {
 
     var request,
         headers,
-        h,
 
         simpleCORSOnly,
+
+        header,
 
         hash,
 
@@ -893,7 +894,7 @@ function(targetUrl, aRequest, httpObj) {
         body,
         url,
 
-        method;
+        altMethod;
 
     request = aRequest || TP.request();
 
@@ -920,11 +921,11 @@ function(targetUrl, aRequest, httpObj) {
     //  on moz we have to avoid duplication of this header, which seems
     //  to appear as if by magic...
     if (TP.sys.isUA('GECKO')) {
-        if (TP.isDefined(h = headers.at('Pragma'))) {
-            if (h === 'no-cache') {
+        if (TP.isDefined(header = headers.at('Pragma'))) {
+            if (header === 'no-cache') {
                 headers.removeKey('Pragma');
-            } else if (TP.isArray(h)) {
-                h.remove('no-cache');
+            } else if (TP.isArray(header)) {
+                header.remove('no-cache');
             }
         }
     } else if (TP.notDefined(headers.at('Pragma'))) {
@@ -1005,7 +1006,7 @@ function(targetUrl, aRequest, httpObj) {
                 //  It's an Array of settings, so we join it with a ', '
                 httpObj.setRequestHeader(key, val.join(', '));
             } else {
-                for (j = 0; j < val.length; j++) {
+                for (j = 0; j < val.getSize(); j++) {
                     httpObj.setRequestHeader(key, val.at(i));
                 }
             }
