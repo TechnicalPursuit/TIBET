@@ -510,6 +510,15 @@ function() {
             //  Set the editor's 'mode' to the computed MIME type.
             editorObj.setOption('mode', mimeType);
 
+            //  If the content was JSON encoded, then try to format it using the
+            //  'plain text encoding' (i.e. newlines and spaces). CodeMirror
+            //  will format that into the proper markup for display.
+            if (mimeType === TP.JSON_ENCODED) {
+                sourceStr = TP.sherpa.pp.runFormattedJSONModeOn(
+                            sourceStr,
+                            TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
+            }
+
             //  Set the CodeMirror object's value to the source string.
             editorObj.setValue(sourceStr);
 
