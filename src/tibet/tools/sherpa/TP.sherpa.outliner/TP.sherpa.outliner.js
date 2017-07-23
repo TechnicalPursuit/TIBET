@@ -391,14 +391,6 @@ function(aSignal) {
 TP.sherpa.outliner.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
-    //  This method will be called if we were active *before* the drag and drop
-    //  sequence began.
-
-    //  If we weren't active before the drag and drop sequence began, the
-    //  dispenser will have sent a TP.sig.EndOutlineMode signal, which causes us
-    //  to ignore() this signal, but it will call processDNDTermination()
-    //  manually.
-
     var wasActive;
 
     wasActive = this.get('$wasActive');
