@@ -657,17 +657,25 @@ TP.sig.MessageSource.defineSubtype('sig.RemoteMessageSource');
 TP.sig.RemoteMessageSource.addTraits(TP.sig.URISignalSource);
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.RemoteMessageSource.Inst.defineAttribute('sourceParams');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sig.RemoteMessageSource.Inst.defineMethod('init',
-function(aURI) {
+function(aURI, sourceParams) {
 
     /**
      * @method init
      * @summary Initialize a new signal instance.
      * @param {TP.core.URI} aURI The endpoint URI representing the remote
      *     messaging source.
+     * @param {TP.core.Hash} [sourceParams] Optional parameters used by the
+     *     receiver to configure the message source.
      * @returns {TP.sig.RemoteMessageSource} A new instance.
      */
 
@@ -675,6 +683,10 @@ function(aURI) {
 
     //  Invoke mixed-in setter to capture the URI value.
     this.setURI(aURI);
+
+    //  Grab any parameters that the caller wants us to use to configure the
+    //  remote source.
+    this.set('sourceParams', sourceParams);
 
     return this;
 });
@@ -760,13 +772,25 @@ function() {
      * @returns {Object} The system object that will send and receive messages.
      */
 
-    var srcType;
+    var srcType,
+        uriStr,
+        options;
 
     srcType = this.getSourceType();
 
+    uriStr = this.get('uri').asString();
+
+    //  Make sure that, one or another, we end up with POJO.
+    options = this.get('sourceParams');
+    if (TP.isValid(options)) {
+        options = options.asObject();
+    } else {
+        options = {};
+    }
+
     //  NB: We use old-style JS syntax here because the type we get back from
     //  getSourceType is (or should be) a native platform constructor.
-    return new srcType(this.get('uri').asString());
+    return new srcType(uriStr, options);
 });
 
 //  ------------------------------------------------------------------------
