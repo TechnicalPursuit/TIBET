@@ -972,9 +972,15 @@ function(targetUrl, aRequest, httpObj) {
         }
     }
 
+    //  If the user didn't already define an 'X-HTTP-Method-Override' header and
+    //  the regular method was set to POST and there is an 'alternate method'
+    //  provided, then set a 'X-HTTP-Method-Override' header with the alternate
+    //  method. But only do this if we're not doing simple CORS.
     if (TP.notDefined(headers.at('X-HTTP-Method-Override'))) {
         if (request.at('method') === TP.HTTP_POST &&
-                TP.notEmpty(method = request.at('altmethod'))) {
+            TP.notEmpty(method = request.at('altmethod')) &&
+            !(TP.sys.cfg('http.simple_cors_only') ||
+                request.at('simple_cors_only'))) {
             headers.atPut('X-HTTP-Method-Override', method);
         }
     }
