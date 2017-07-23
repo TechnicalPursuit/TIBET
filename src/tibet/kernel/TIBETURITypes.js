@@ -11771,11 +11771,11 @@ function(targetURI, aRequest) {
         if (useWebDAV) {
             deleteRequest.atPut('method', TP.HTTP_DELETE);
         } else {
-            //  all other situations require a 'method' of TP.HTTP_POST, and a
-            //  'method' of TP.HTTP_DELETE (which eventually translates into
+            //  all other situations require a 'method' of TP.HTTP_POST, and an
+            //  'altmethod' of TP.HTTP_DELETE (which eventually translates into
             //  the increasingly standard 'X-HTTP-Method-Override' header).
-            // deleteRequest.atPut('method', TP.HTTP_POST);
-            deleteRequest.atPut('method', TP.HTTP_DELETE);
+            deleteRequest.atPut('method', TP.HTTP_POST);
+            deleteRequest.atPut('altmethod', TP.HTTP_DELETE);
         }
     }
 
@@ -11892,9 +11892,9 @@ function(targetURI, aRequest) {
             saveRequest.atPut('method', TP.HTTP_POST);
 
             if (saveRequest.at('crud') === TP.CREATE) {
-                saveRequest.atPut('method', TP.HTTP_PUT);
+                saveRequest.atPut('altmethod', TP.HTTP_PUT);
             } else {
-                saveRequest.atPut('method', TP.HTTP_POST);
+                saveRequest.atPut('altmethod', TP.HTTP_POST);
             }
         }
     }

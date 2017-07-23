@@ -974,7 +974,7 @@ function(targetUrl, aRequest, httpObj) {
 
     if (TP.notDefined(headers.at('X-HTTP-Method-Override'))) {
         if (request.at('method') === TP.HTTP_POST &&
-                TP.notEmpty(method = request.at('method'))) {
+                TP.notEmpty(method = request.at('altmethod'))) {
             headers.atPut('X-HTTP-Method-Override', method);
         }
     }

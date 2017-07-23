@@ -1147,7 +1147,7 @@
     TP.sys.setcfg('http.timeout', 15000);
 
     //  when performing delete and put operations should we use the webdav
-    //  methods or use post/X-HTTP-Method-Override semantics. we default toward
+    //  methods or use POST/X-HTTP-Method-Override semantics. we default toward
     //  webdav since a) we feel that's a better enterprise approach, and b)
     //  overrides are consistent with what people are used to entering for other
     //  frameworks.
