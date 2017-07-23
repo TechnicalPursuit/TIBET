@@ -2535,6 +2535,21 @@ function(info, createHistoryEntry) {
 
     selectedItems = this.get('selectedItems');
 
+    //  We need to do this first since we need to add the aspect before we make
+    //  the calls for the final target and data.
+    if (newBayNum > 0) {
+
+        //  Put the (new) aspect name at the spot we're on now in the selected
+        //  items.
+        selectedItems.atPut(newBayNum - 1, aspect);
+
+        //  'Slice back' to the spot just after us.
+        selectedItems = selectedItems.slice(0, newBayNum);
+
+        //  Reset the selectedItems to what we just computed.
+        this.set('selectedItems', selectedItems);
+    }
+
     //  Compute whether we already have the minimum number of bays to display
     //  the content we're traversing to. Note that we might have *more* bays
     //  than what we need - we'll remove them below. But we need to have at
@@ -2583,34 +2598,9 @@ function(info, createHistoryEntry) {
         //  Make sure to update our toolbar, etc.
         this.finishUpdateAfterNavigation(info);
 
-        //  Put the (unresolved) aspect name at the spot we're on now in the
-        //  selected items.
-        selectedItems.atPut(newBayNum - 1, aspect);
-
-        //  'Slice back' to the spot just after us.
-        selectedItems = selectedItems.slice(0, newBayNum);
-
-        //  Reset the selectedItems to what we just computed.
-        this.set('selectedItems', selectedItems);
-
         this.signal('InspectorDidFocus');
 
         return this;
-    }
-
-    //  We need to do this first since we need to add the aspect before we make
-    //  the call to get the configuration.
-    if (newBayNum > 0) {
-
-        //  Put the (new) aspect name at the spot we're on now in the selected
-        //  items.
-        selectedItems.atPut(newBayNum - 1, aspect);
-
-        //  'Slice back' to the spot just after us.
-        selectedItems = selectedItems.slice(0, newBayNum);
-
-        //  Reset the selectedItems to what we just computed.
-        this.set('selectedItems', selectedItems);
     }
 
     dataURI = TP.uc(bindLoc);
