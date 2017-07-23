@@ -758,6 +758,8 @@ function(anAspect, options) {
      *     the receiver.
      */
 
+    this.addEntry(anAspect, this);
+
     return this;
 });
 
