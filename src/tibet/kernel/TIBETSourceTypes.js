@@ -838,16 +838,16 @@ function(evt) {
 });
 
 //  ========================================================================
-//  TP.core.SSE
+//  TP.core.SSEMessageSource
 //  ========================================================================
 
-TP.sig.RemoteMessageSource.defineSubtype('core.SSE');
+TP.sig.RemoteMessageSource.defineSubtype('core.SSEMessageSource');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SSE.Type.defineMethod('isSupported',
+TP.core.SSEMessageSource.Type.defineMethod('isSupported',
 function() {
 
     /**
@@ -864,7 +864,7 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SSE.Inst.defineMethod('getSourceType',
+TP.core.SSEMessageSource.Inst.defineMethod('getSourceType',
 function() {
 
     /**
@@ -880,7 +880,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SSE.Inst.defineMethod('onerror',
+TP.core.SSEMessageSource.Inst.defineMethod('onerror',
 function(evt) {
 
     /**
@@ -939,7 +939,7 @@ function(evt) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SSE.Inst.defineMethod('onmessage',
+TP.core.SSEMessageSource.Inst.defineMethod('onmessage',
 function(evt) {
 
     /**
@@ -979,7 +979,7 @@ function(evt) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SSE.Inst.defineMethod('setupCustomHandlers',
+TP.core.SSEMessageSource.Inst.defineMethod('setupCustomHandlers',
 function(signalTypes) {
 
     /**
@@ -1054,7 +1054,7 @@ function(signalTypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SSE.Inst.defineMethod('teardownCustomHandlers',
+TP.core.SSEMessageSource.Inst.defineMethod('teardownCustomHandlers',
 function(signalTypes) {
 
     /**
