@@ -1876,6 +1876,61 @@ function(bayNum) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getSelectedLabels',
+function() {
+
+    /**
+     * @method getSelectedLabels
+     * @summary Returns the labels for the set of currently selected items. Note
+     *     that the aspects which represent the selected items are not
+     *     necessarily the labels that are being shown to the user. This method
+     *     traverses those items and converts them into labels.
+     * @returns {String[]} The list of labels representing the currently
+     *     selected items.
+     */
+
+    var selectedItems,
+        resolver,
+
+        result,
+
+        len,
+        i;
+
+    selectedItems = this.get('selectedItems');
+
+    /* eslint-disable consistent-this */
+    resolver = this;
+    /* eslint-enable consistent-this */
+
+    result = TP.ac();
+
+    len = selectedItems.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Query the resolver for the label for the item.
+        result.push(resolver.getEntryLabel(selectedItems.at(i)));
+
+        //  Traverse down, performing a getEntryAt() at each step, which
+        //  will return the next resolver.
+        resolver = resolver.getEntryAt(selectedItems.at(i));
+
+        //  If we couldn't compute a 'next resolver' and we're not at the end,
+        //  then exit from the loop. Can't query a missing resolver.
+
+        /* eslint-disable no-extra-parens */
+        if (TP.notValid(resolver) && (i < len - 1)) {
+            //  TODO: Log a warning.
+            break;
+        }
+        /* eslint-enable no-extra-parens */
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromBay',
 function(aBay) {
 
