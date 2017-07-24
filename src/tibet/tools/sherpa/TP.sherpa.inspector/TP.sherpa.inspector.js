@@ -529,15 +529,22 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('dispatchMethodForPath',
-function(pathParts, methodPrefix, args) {
+function(pathParts, methodPrefix, anArgArray) {
 
     /**
      * @method dispatchMethodForPath
-     * @summary
-     * @param
-     * @param
-     * @param
-     * @returns
+     * @summary Dispatches the method that can be computed by using the supplied
+     *     path parts and the method prefix along with any registered method
+     *     suffixes.
+     * @param {String[]} pathParts An Array of parts making up the path to
+     *     attempt the dispatch against.
+     * @param {String} methodPrefix The prefix of the method to use to try with
+     *     the various registered suffixes to see if the receiver has a method
+     *     named by that construct.
+     * @param {arguments} anArgArray An array or arguments object containing the
+     *     arguments to pass to the method invocation, if a method was found.
+     * @returns {Object} The object produced when the method was invoked against
+     *     the receiver.
      */
 
     var path,
@@ -552,32 +559,45 @@ function(pathParts, methodPrefix, args) {
 
         method;
 
+    //  Join the path together with the PATH_SEP and then bookend it PATH_START
+    //  and PATH_END. This will provide the most accurate match with the
+    //  registered method matchers.
     path = TP.PATH_START + pathParts.join(TP.PATH_SEP) + TP.PATH_END;
 
     methodRegister = this.get('methodRegister');
 
+    //  Grab the keys from the method register. These will be the method
+    //  suffixes that were registered for lookup.
     methodKeys = methodRegister.getKeys();
     methodKeys.sort(
             function(key1, key2) {
 
+                //  Each key points to an entry that has a RegExp in its first
+                //  position and the length of the parts making up the RegExp.
+                //  We want to sort that so that the most specific comes first.
                 return methodRegister.at(key1).last() <
                         methodRegister.at(key2).last();
             });
 
+    //  Iterate over the entries, looking for a RegExp that matches the supplied
+    //  method prefix with the registered suffix appended to it.
     len = methodKeys.getSize();
-
     for (i = 0; i < len; i++) {
 
+        //  The RegExp is in the first position of the entry.
         matcher = methodRegister.at(methodKeys.at(i)).first();
 
+        //  If we found a method, exit here. This is in keeping with trying to
+        //  favor the 'most specific' RegExps first (per our sorting above).
         if (matcher.test(path)) {
             method = this[methodPrefix + methodKeys.at(i)];
             break;
         }
     }
 
+    //  If we found a method, invoke it and return the result.
     if (TP.isMethod(method)) {
-        return method.apply(this, args);
+        return method.apply(this, anArgArray);
     }
 
     return null;
@@ -709,18 +729,21 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('registerMethodSuffixForPath',
-function(methodName, regExpParts) {
+function(methodSuffix, regExpParts) {
 
     /**
      * @method registerMethodSuffixForPath
-     * @summary
-     * @param
-     * @param
-     * @returns
+     * @summary Registers a method suffix with the attendant parts that will be
+     *     used to form a RegExp. The RegExp will be computed from the supplied
+     *     parts and, when matched, will indicate that the supplied method
+     *     suffix should be used to compute a method name.
+     * @param {String} methodSuffix The suffix to register for matching.
+     * @param {String[]} regExpParts The parts used to form the RegExp.
+     * @returns {TP.sherpa.InspectorPathSource} The receiver.
      */
 
     this.get('methodRegister').atPut(
-            methodName,
+            methodSuffix,
             TP.ac(
                 TP.rc('^' +
                         TP.PATH_START + regExpParts.join('') + TP.PATH_END +
@@ -928,7 +951,7 @@ function(aNode, aURI) {
      * @param {Node} aNode A native node.
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
-     * @returns {TP.core.Node} The initialized instance.
+     * @returns {TP.sherpa.inspector} The initialized instance.
      */
 
     this.callNextMethod();
