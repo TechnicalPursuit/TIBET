@@ -89,6 +89,9 @@ TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 
 TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 
+TP.sherpa.urieditor.Inst.defineAttribute('extraLoadHeaders');
+TP.sherpa.urieditor.Inst.defineAttribute('extraSaveHeaders');
+
 TP.sherpa.urieditor.Inst.defineAttribute('head',
     TP.cpc('> .head', TP.hc('shouldCollapse', true)));
 
@@ -354,6 +357,8 @@ function() {
     var sourceURI,
 
         putParams,
+        extraHeaders,
+
         saveRequest;
 
     sourceURI = this.get('sourceURI');
@@ -362,6 +367,15 @@ function() {
     //  HTTP PUT, but if we're pushing to the TDS, this very well might be reset
     //  to be an HTTP PATCH.
     putParams = TP.hc('method', TP.HTTP_PUT);
+
+    //  If any extra save headers were configured on ourself as an attribute,
+    //  then they'll be in this instance variable. Add them to the put
+    //  parameters.
+    extraHeaders = this.get('extraSaveHeaders');
+    if (TP.notEmpty(extraHeaders)) {
+        putParams.addAll(extraHeaders);
+    }
+
     saveRequest = sourceURI.constructRequest(putParams);
 
     saveRequest.defineHandler('RequestSucceeded',
@@ -411,6 +425,9 @@ function() {
 
         sourceURI,
 
+        getParams,
+        extraHeaders,
+
         sourceResource;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
@@ -437,8 +454,18 @@ function() {
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
-    sourceResource =
-            sourceURI.getResource(TP.hc('resultType', TP.core.Content));
+
+    getParams = TP.hc('resultType', TP.core.Content);
+
+    //  If any extra load headers were configured on ourself as an attribute,
+    //  then they'll be in this instance variable. Add them to the get
+    //  parameters.
+    extraHeaders = this.get('extraLoadHeaders');
+    if (TP.notEmpty(extraHeaders)) {
+        getParams.addAll(extraHeaders);
+    }
+
+    sourceResource = sourceURI.getResource(getParams);
 
     sourceResource.then(
         function(sourceResult) {
@@ -555,6 +582,9 @@ function(shouldRefresh) {
 
         sourceURI,
 
+        getParams,
+        extraHeaders,
+
         refresh,
 
         sourceResource;
@@ -591,9 +621,18 @@ function(shouldRefresh) {
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
-    sourceResource = sourceURI.getResource(
-                                TP.hc('resultType', TP.core.Content,
-                                        'refresh', refresh));
+
+    getParams = TP.hc('resultType', TP.core.Content, 'refresh', refresh);
+
+    //  If any extra load headers were configured on ourself as an attribute,
+    //  then they'll be in this instance variable. Add them to the get
+    //  parameters.
+    extraHeaders = this.get('extraLoadHeaders');
+    if (TP.notEmpty(extraHeaders)) {
+        getParams.addAll(extraHeaders);
+    }
+
+    sourceResource = sourceURI.getResource(getParams);
 
     sourceResource.then(
         function(sourceResult) {
@@ -783,7 +822,9 @@ function() {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var editorObj;
+    var editorObj,
+
+        attrVal;
 
     //  Grab the underlying editor's editor ;-), which is a CodeMirror object.
     editorObj = this.get('editor').$get('$editorObj');
@@ -802,6 +843,30 @@ function() {
 
     //  Install that handler onto CodeMirror.
     editorObj.on('change', this.get('changeHandler'));
+
+    //  If there are an 'extra load headers' defined on ourself as an attribute,
+    //  grab and store them.
+    attrVal = this.getAttribute('extraLoadHeaders');
+    if (TP.notEmpty(attrVal)) {
+
+        //  Convert the JSON-y like value into real JSON
+        attrVal = TP.reformatJSToJSON(attrVal);
+        if (TP.isJSONString(attrVal)) {
+            this.set('extraLoadHeaders', TP.json2js(attrVal));
+        }
+    }
+
+    //  If there are an 'extra save headers' defined on ourself as an attribute,
+    //  grab and store them.
+    attrVal = this.getAttribute('extraSaveHeaders');
+    if (TP.notEmpty(attrVal)) {
+
+        //  Convert the JSON-y like value into real JSON
+        attrVal = TP.reformatJSToJSON(attrVal);
+        if (TP.isJSONString(attrVal)) {
+            this.set('extraSaveHeaders', TP.json2js(attrVal));
+        }
+    }
 
     return this;
 });
