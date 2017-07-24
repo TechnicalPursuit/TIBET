@@ -94,72 +94,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('getCouchURL',
-function(options) {
-
-    /**
-     * @method getCouchURL
-     * @summary Computes the proper CouchDB URL for use as a base URL.
-     * @param {Object} [options] A parameter block with possible user/pass data
-     *     if using basic authentication to access CouchDB.
-     * @returns {String} The database url.
-     */
-
-    var opts,
-        cfg_root,
-        db_scheme,
-        db_host,
-        db_port,
-        db_user,
-        db_pass,
-        db_url;
-
-    opts = options || {};
-
-    cfg_root = opts.cfg_root || 'tds.couch';
-
-    db_url = TP.ifInvalid(opts.db_url, TP.sys.cfg('tds.couch.db_url'));
-    if (!db_url) {
-        //  Build up from config or defaults as needed.
-        db_scheme = opts.db_scheme ||
-            TP.sys.getcfg(cfg_root + '.scheme') || 'http';
-        db_host = opts.db_host ||
-            TP.sys.getcfg(cfg_root + '.host') || '127.0.0.1';
-        db_port = opts.db_port ||
-            TP.sys.getcfg(cfg_root + '.port') === undefined ? '5984' :
-                TP.sys.getcfg(cfg_root + '.port');
-
-        //  NOTE these are ENV variables on the server. In the client we allow
-        //  them to be set temporarily via config but that is NOT SECURE.
-        db_user = TP.ifInvalid(opts.db_user, TP.sys.cfg('tds.couch.db_user'));
-        db_pass = TP.ifInvalid(opts.db_pass, TP.sys.cfg('tds.couch.db_pass'));
-
-        //  Watch out for special chars, esp in the password.
-        if (db_user) {
-            db_user = encodeURIComponent(db_user);
-        }
-
-        if (db_pass) {
-            db_pass = encodeURIComponent(db_pass);
-        }
-
-        db_url = db_scheme + '://';
-        if (db_user && db_pass) {
-            db_url += db_user + ':' + db_pass + '@' + db_host;
-        } else {
-            db_url += db_host;
-        }
-
-        if (db_port) {
-            db_url += ':' + db_port;
-        }
-    }
-
-    return db_url;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalType',
 function() {
 
@@ -191,21 +125,23 @@ function() {
      */
 
     var list,
-        db_url,
+        rootURL,
         targets;
 
-    db_url = this.getCouchURL();
+    rootURL = TP.sys.getcfg('uri.couchdb_urls').first().last();
+
     list = TP.ac();
 
     targets = TP.sys.cfg('uri.watch_couchdb_uris');
-    targets.forEach(function(target) {
-        var url;
+    targets.forEach(
+            function(target) {
+                var url;
 
-        url = TP.uriJoinPaths(db_url, target);
-        if (TP.isURIString(url)) {
-            list.push(url);
-        }
-    });
+                url = TP.uriJoinPaths(rootURL, target);
+                if (TP.isURIString(url)) {
+                    list.push(url);
+                }
+            });
 
     return list;
 });
