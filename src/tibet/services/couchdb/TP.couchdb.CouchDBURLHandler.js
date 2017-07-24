@@ -259,6 +259,25 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('isWatchableURI',
+function(targetURI) {
+
+    /**
+     * @method isWatchableURI
+     * @summary Tests a URI against include/exclude filters to determine if
+     *     changes to the URI should be considered for processing.
+     * @param {String|TP.core.URI} targetURI The URI to test.
+     * @returns {Boolean} true if the URI passes include/exclude filters.
+     */
+
+    //  TODO: In actuality, only some CouchDB URIs are watchable, but for now we
+    //  always return true.
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('maskCouchAuth',
 function(url) {
 
