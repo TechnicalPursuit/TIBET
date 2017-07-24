@@ -98,7 +98,9 @@ function(options) {
      *     bay.
      */
 
-    var result,
+    var resp,
+
+        result,
         str,
 
         dataURI,
@@ -106,11 +108,16 @@ function(options) {
         inspectorElem,
         uriEditorTPElem;
 
-    result = this.getResource().get('result');
+    //  force refresh to false, we only want cached data access here. If in
+    //  doubt (i.e. the data isn't available), we'll go ahead and generate the
+    //  editor. NOTE that this avoids any async issues as well.
+    resp = this.getResource(TP.hc('refresh', false, 'async', false));
+    result = resp.get('result');
 
     str = TP.str(result);
 
-    if (str.getSize() > TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
+    if (TP.notEmpty(str) &&
+        str.getSize() > TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
 
         result = str.asEscapedXML();
 
