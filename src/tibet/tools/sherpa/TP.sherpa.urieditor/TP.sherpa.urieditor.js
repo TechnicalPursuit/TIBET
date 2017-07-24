@@ -484,14 +484,6 @@ function() {
                 return this;
             }
 
-            //  Initialize our local copy of the content with the source String
-            //  and set the dirty flag to false.
-            this.set('localSourceContent', sourceStr);
-            this.isDirty(false);
-
-            //  Update the editor's state, including its dirty state.
-            this.updateEditorState();
-
             //  Grab the real underlying editor object beneath the
             //  xctrls:codeeditor. This is an instance of CodeMirror.
             editorObj = this.get('editor').$get('$editorObj');
@@ -521,6 +513,14 @@ function() {
 
             //  Set the CodeMirror object's value to the source string.
             editorObj.setValue(sourceStr);
+
+            //  Initialize our local copy of the content with the source String
+            //  and set the dirty flag to false.
+            this.set('localSourceContent', sourceStr);
+            this.isDirty(false);
+
+            //  Update the editor's state, including its dirty state.
+            this.updateEditorState();
 
             /* eslint-disable no-extra-parens */
             (function() {
