@@ -19,11 +19,41 @@
 TP.sherpa.InspectorSource.defineSubtype('sherpa.CouchDBRootInspectorSource');
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Inspector API
 //  ------------------------------------------------------------------------
 
-//  ------------------------------------------------------------------------
-//  Inspector API
+TP.sherpa.CouchDBRootInspectorSource.Inst.defineMethod('getEntryLabel',
+function(anItem) {
+
+    /**
+     * @method getEntryLabel
+     * @summary Returns the 'entry label' used in the receiver for the supplied
+     *     Object in the receiver.
+     * @param {Object} anItem The object to return the label for.
+     * @returns {String} The label to be used for the supplied item.
+     */
+
+    var serverConfig,
+
+        serverNumber,
+        serverName;
+
+    serverConfig = TP.sys.getcfg('uri.couchdb_urls');
+
+    //  The item will be something like 'CouchDB_Server_1'. We want the number,
+    //  so we slice everything else off.
+    serverNumber = anItem.slice(anItem.lastIndexOf('_') + 1).asNumber();
+    if (!TP.isNumber(serverNumber)) {
+        return this.callNextMethod();
+    }
+
+    //  The server name is stored in the first position of the config pair of
+    //  the computed server number.
+    serverName = serverConfig.at(serverNumber).first();
+
+    return serverName;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CouchDBRootInspectorSource.Inst.defineMethod('getDataForInspector',
@@ -50,9 +80,23 @@ function(options) {
      *     a bay.
      */
 
-    return TP.ac(
-            TP.ac('RootServer', 'CouchDB Server')
-    );
+    var serverConfig,
+        data;
+
+    serverConfig = TP.sys.getcfg('uri.couchdb_urls');
+    if (TP.isEmpty(serverConfig)) {
+        return TP.ac();
+    }
+
+    data = serverConfig.collect(
+        function(serverInfoPair, anIndex) {
+            var val;
+
+            val = 'CouchDB_Server_' + anIndex;
+            return TP.ac(val, this.getEntryLabel(val));
+        }.bind(this));
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
@@ -75,19 +119,36 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    var newInspector;
+    var serverConfig,
 
-    switch (anAspect) {
+        serverNumber,
+        serverAddress,
 
-        case 'RootServer':
-            newInspector = TP.sherpa.CouchTools.construct();
-            newInspector.set('serverAddress', '127.0.0.1:5984');
+        newInspector;
 
-            return newInspector;
-
-        default:
-            return this.callNextMethod();
+    if (!anAspect.startsWith('CouchDB_Server_')) {
+        return this.callNextMethod();
     }
+
+    serverConfig = TP.sys.getcfg('uri.couchdb_urls');
+
+    //  The item will be something like 'CouchDB_Server_1'. We want the number,
+    //  so we slice everything else off.
+    serverNumber = anAspect.slice(anAspect.lastIndexOf('_') + 1).asNumber();
+    if (!TP.isNumber(serverNumber)) {
+        return this.callNextMethod();
+    }
+
+    //  The server address is stored in the last position of the config pair of
+    //  the computed server number.
+    serverAddress = serverConfig.at(serverNumber).last();
+
+    newInspector = TP.sherpa.CouchTools.construct();
+    newInspector.set('serverAddress', serverAddress);
+
+    this.addEntry(anAspect, newInspector);
+
+    return newInspector;
 });
 
 //  ------------------------------------------------------------------------
