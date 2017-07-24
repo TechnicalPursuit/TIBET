@@ -8,8 +8,9 @@ TP.sherpa.InspectorPathSource.defineSubtype('sherpa.CouchTools');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineAttribute('databaseName');
 TP.sherpa.CouchTools.Inst.defineAttribute('serverAddress');
+TP.sherpa.CouchTools.Inst.defineAttribute('databaseName');
+TP.sherpa.CouchTools.Inst.defineAttribute('documentID');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -32,23 +33,24 @@ function() {
 
     this.registerMethodSuffixForPath(
             'ServerDesignation',
-            TP.ac('\.+',
+            TP.ac('CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB',
-                    TP.PATH_NO_SEP));
+                    'CouchDB_Server_\.+'));
+
     this.registerMethodSuffixForPath(
             'ServerInfo',
-            TP.ac('\.+',
+            TP.ac('CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB\.+',
+                    'CouchDB_Server_\.+',
                     TP.PATH_SEP,
                     'Server Info'
                     ));
+
     this.registerMethodSuffixForPath(
             'AllDatabases',
-            TP.ac('\.+',
+            TP.ac('CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB\.+',
+                    'CouchDB_Server_\.+',
                     TP.PATH_SEP,
                     'All Databases'
                     ));
@@ -57,29 +59,32 @@ function() {
 
     this.registerMethodSuffixForPath(
             'DatabaseDesignation',
-            TP.ac('\.+',
+            TP.ac('CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB\.+',
+                    'CouchDB_Server_\.+',
                     TP.PATH_SEP,
                     'All Databases',
-                    TP.PATH_NO_SEP
+                    '\.+'
                     ));
+
     this.registerMethodSuffixForPath(
             'DatabaseInfo',
-            TP.ac('\.+',
+            TP.ac('CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB\.+',
+                    'CouchDB_Server_\.+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
                     '\.+',
+                    TP.PATH_SEP,
                     'Database Info'
                     ));
+
     this.registerMethodSuffixForPath(
             'AllDocuments',
-            TP.ac('\.+',
+            TP.ac('CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB\.+',
+                    'CouchDB_Server_\.+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
@@ -88,66 +93,25 @@ function() {
                     'All Documents'
                     ));
 
+    //  Documents
+
+    this.registerMethodSuffixForPath(
+            'DocumentContent',
+            TP.ac('CouchDB',
+                    TP.PATH_SEP,
+                    'CouchDB_Server_\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_SEP,
+                    '\.+',
+                    TP.PATH_SEP,
+                    'All Documents',
+                    '\.+'
+                    ));
+
     /* eslint-enable no-useless-escape */
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CouchTools.Inst.defineMethod('getInspectorPath',
-function() {
-    return TP.ac('Remote Data Sources',
-                    'CouchDB @ ' + this.get('serverAddress'));
-});
-
-//  ------------------------------------------------------------------------
-//  Editor
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForEditor',
-function(options) {
-
-    /**
-     * @method getContentForEditor
-     * @summary
-     * @returns
-     */
-
-    var targetAspect,
-        targetURI,
-
-        params,
-        targetReq,
-
-        dataURI;
-
-    targetAspect = options.at('targetAspect');
-
-    if (TP.isURIString(targetAspect)) {
-
-        dataURI = TP.uc(options.at('bindLoc'));
-
-        params = TP.hc('refresh', true,
-                        'async', true,
-                        'resultType', TP.WRAP);
-
-        targetReq = TP.request(params);
-        targetReq.defineHandler('RequestSucceeded',
-                function(aResponse) {
-                    var data;
-
-                    data = aResponse.getResult();
-                    dataURI.setResource(data);
-                });
-
-        targetURI = TP.uc(targetAspect);
-        targetURI.getResource(targetReq);
-
-        return TP.elem('<sherpa:navlist bind:in="' +
-                        dataURI.asString() +
-                        '"/>');
-    }
 });
 
 //  ------------------------------------------------------------------------
@@ -157,7 +121,7 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDatabases',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
 
     return options;
 });
@@ -167,7 +131,7 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDocuments',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
 
     return options;
 });
@@ -177,7 +141,7 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDatabaseDesignation',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
 
     return options;
 });
@@ -194,10 +158,20 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDocumentContent',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForServerDesignation',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
 
     return options;
 });
@@ -223,9 +197,9 @@ function(options) {
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<sherpa:navlist bind:in="' +
+    return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '"/>');
+                    '}"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -237,9 +211,9 @@ function(options) {
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<sherpa:navlist bind:in="' +
+    return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '"/>');
+                    '}"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -251,9 +225,9 @@ function(options) {
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<sherpa:navlist bind:in="' +
+    return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '"/>');
+                    '}"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -261,29 +235,61 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDatabaseInfo',
 function(options) {
 
-    var dataURI,
-
-        targetAspect,
-
-        loc,
+    var loc,
         locURI,
 
-        uriEditorTPElem;
+        uriEditorElem;
 
-    dataURI = TP.uc(options.at('bindLoc'));
-
-    targetAspect = options.at('targetAspect');
-
-    loc = this.get('serverAddress') + '/' + targetAspect;
+    //  The same data as we get when we get data for this target.
+    loc = this.get('serverAddress') +
+            '/' +
+            this.get('databaseName');
     locURI = TP.uc(loc);
 
-    uriEditorTPElem = TP.wrap(TP.getContentForTool(locURI, 'Inspector'));
+    uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
-    uriEditorTPElem = uriEditorTPElem.clone();
+    TP.elementSetAttribute(uriEditorElem,
+                            'extraLoadHeaders',
+                            '{simple_cors_only: true}',
+                            true);
+    TP.elementSetAttribute(uriEditorElem,
+                            'extraSaveHeaders',
+                            '{simple_cors_only: true}',
+                            true);
 
-    uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
+    return uriEditorElem;
+});
 
-    return TP.unwrap(uriEditorTPElem);
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDocumentContent',
+function(options) {
+
+    var loc,
+        locURI,
+
+        uriEditorElem;
+
+    //  The same data as we get when we get data for this target.
+    loc = this.get('serverAddress') +
+            '/' +
+            this.get('databaseName') +
+            '/' +
+            this.get('documentID');
+    locURI = TP.uc(loc);
+
+    uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
+
+    TP.elementSetAttribute(uriEditorElem,
+                            'extraLoadHeaders',
+                            '{simple_cors_only: true}',
+                            true);
+    TP.elementSetAttribute(uriEditorElem,
+                            'extraSaveHeaders',
+                            '{simple_cors_only: true}',
+                            true);
+
+    return uriEditorElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -295,9 +301,9 @@ function(options) {
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<sherpa:navlist bind:in="' +
+    return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '"/>');
+                    '}"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -305,25 +311,27 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForServerInfo',
 function(options) {
 
-    var dataURI,
-
-        loc,
+    var loc,
         locURI,
 
-        uriEditorTPElem;
+        uriEditorElem;
 
-    dataURI = TP.uc(options.at('bindLoc'));
-
+    //  The same data as we get when we get data for this target.
     loc = this.get('serverAddress');
     locURI = TP.uc(loc);
 
-    uriEditorTPElem = TP.wrap(TP.getContentForTool(locURI, 'Inspector'));
+    uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
-    uriEditorTPElem = uriEditorTPElem.clone();
+    TP.elementSetAttribute(uriEditorElem,
+                            'extraLoadHeaders',
+                            '{simple_cors_only: true}',
+                            true);
+    TP.elementSetAttribute(uriEditorElem,
+                            'extraSaveHeaders',
+                            '{simple_cors_only: true}',
+                            true);
 
-    uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
-
-    return TP.unwrap(uriEditorTPElem);
+    return uriEditorElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -347,7 +355,8 @@ function(options) {
 
         params = TP.request('refresh', true,
                             'async', true,
-                            'resultType', TP.WRAP);
+                            'resultType', TP.WRAP,
+                            'simple_cors_only', true);
 
         fetchRequest = TP.request(params);
 
@@ -363,7 +372,18 @@ function(options) {
     loc = this.get('serverAddress') + '/_all_dbs';
     fetcher(TP.uc(loc)).then(
                 function(result) {
-                    dataURI.setResource(result);
+                    var dbNames,
+                        data;
+
+                    dbNames = result.get('data');
+                    data = TP.ac();
+
+                    dbNames.forEach(
+                        function(aName) {
+                            data.push(TP.ac(aName, aName));
+                        });
+
+                    dataURI.setResource(data);
                 }).catch(
                 function(err) {
                     TP.ifError() ?
@@ -371,7 +391,7 @@ function(options) {
                                     TP.str(err)) : 0;
                 });
 
-    return TP.ac('It\'s coming!');
+    return TP.ac('Data Loading...');
 });
 
 //  ------------------------------------------------------------------------
@@ -394,7 +414,8 @@ function(options) {
 
         params = TP.request('refresh', true,
                             'async', true,
-                            'resultType', TP.WRAP);
+                            'resultType', TP.WRAP,
+                            'simple_cors_only', true);
 
         fetchRequest = TP.request(params);
 
@@ -415,7 +436,17 @@ function(options) {
 
     fetcher(TP.uc(loc)).then(
                 function(result) {
-                    dataURI.setResource(TP.ac(result.get('rows[0:].id')));
+
+                    var data;
+
+                    data = result.get('rows[0:].id');
+
+                    data = data.collect(
+                            function(docID) {
+                                return TP.ac(docID, docID);
+                            });
+
+                    dataURI.setResource(data);
                 }).catch(
                 function(err) {
                     TP.ifError() ?
@@ -424,7 +455,52 @@ function(options) {
                                     TP.str(err)) : 0;
                 });
 
-    return TP.ac('It\'s coming!');
+    return TP.ac('Data Loading...');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
+function(options) {
+
+    this.set('databaseName', options.at('targetAspect'));
+
+    return TP.ac(
+            TP.ac('Database Info', 'Database Info'),
+            TP.ac('All Documents', 'All Documents')
+    );
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseInfo',
+function(options) {
+
+    var loc;
+
+    loc = this.get('serverAddress') +
+            '/' +
+            this.get('databaseName');
+
+    return TP.uc(loc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDocumentContent',
+function(options) {
+
+    var loc;
+
+    this.set('documentID', options.at('targetAspect'));
+
+    loc = this.get('serverAddress') +
+            '/' +
+            this.get('databaseName') +
+            '/' +
+            this.get('documentID');
+
+    return TP.uc(loc);
 });
 
 //  ------------------------------------------------------------------------
@@ -432,7 +508,10 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForServerDesignation',
 function(options) {
 
-    return TP.ac('Server Info', 'All Databases');
+    return TP.ac(
+            TP.ac('Server Info', 'Server Info'),
+            TP.ac('All Databases', 'All Databases')
+    );
 });
 
 //  ------------------------------------------------------------------------
@@ -448,25 +527,14 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
-function(options) {
-
-    this.set('databaseName', options.at('targetAspect'));
-
-    return TP.ac('Database Info', 'All Documents');
-});
-
+//  Toolbar API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForToolbarForDocumentContent',
 function(options) {
 
-    var loc;
-
-    loc = this.get('serverAddress') + '/' + this.get('databaseName');
-
-    return TP.uc(loc);
+    return TP.elem(
+        '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
 });
 
 //  ------------------------------------------------------------------------
