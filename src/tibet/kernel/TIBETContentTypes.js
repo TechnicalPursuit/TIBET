@@ -822,7 +822,11 @@ function(aSignal) {
      */
 
     var scope,
-        scopeURI;
+        scopeURI,
+
+        index,
+
+        targetElem;
 
     //  The 'scope' should be a URI location to find the overall collection to
     //  insert the item into. It should be either the whole collection
@@ -836,9 +840,29 @@ function(aSignal) {
         return this.raise('TP.sig.InvalidURI');
     }
 
+    //  Grab the index if one was specified in the signal.
+    index = aSignal.at('index');
+    if (index === TP.TARGET) {
+
+        //  If the index was 'TP.TARGET', then we're going to use the 'repeat
+        //  index' of the target.
+        targetElem = aSignal.at('trigger').getTarget();
+        if (TP.isElement(targetElem)) {
+            index = TP.wrap(targetElem).$getNearestRepeatIndex();
+        }
+    } else {
+        //  Otherwise, if the index is a Number, then we use. If not, then we
+        //  set it to null, instructing the insertion method just use the end of
+        //  the collection
+        index = parseInt(index, 10);
+        if (TP.isNaN(index)) {
+            index = null;
+        }
+    }
+
     //  Remove a row from that collection, using the deletion index in the
     //  signal.
-    this.removeRowFromAt(scopeURI, aSignal.at('index'));
+    this.removeRowFromAt(scopeURI, index);
 
     return;
 });
@@ -860,7 +884,11 @@ function(aSignal) {
     var scope,
         scopeURI,
 
-        source;
+        source,
+
+        index,
+
+        targetElem;
 
     //  The 'scope' should be a URI location to find the overall collection to
     //  insert the item into. It should be either the whole collection
@@ -897,13 +925,34 @@ function(aSignal) {
         }
     }
 
+    //  Grab the index if one was specified in the signal.
+    index = aSignal.at('index');
+    if (index === TP.TARGET) {
+
+        //  If the index was 'TP.TARGET', then we're going to use the 'repeat
+        //  index' of the target.
+        targetElem = aSignal.at('trigger').getTarget();
+        if (TP.isElement(targetElem)) {
+            index = TP.wrap(targetElem).$getNearestRepeatIndex();
+        }
+    } else {
+        //  Otherwise, if the index is a Number, then we use. If not, then we
+        //  set it to null, instructing the insertion method just use the end of
+        //  the collection
+        index = parseInt(index, 10);
+        if (TP.isNaN(index)) {
+            index = null;
+        }
+    }
+
     //  Go ahead and insert the cloned data.
     this.insertRowIntoAt(
-        scopeURI,
-        source,
-        TP.nc(aSignal.at('index')).asNumber(),
-        aSignal.at('position'),
-        aSignal.at('copy'));
+            scopeURI,
+            source,
+            index,
+            aSignal.at('position'),
+            aSignal.at('copy'),
+            aSignal.at('clear'));
 
     return;
 });
