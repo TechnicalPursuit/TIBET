@@ -52,4 +52,4 @@ point and what the baseline boot profile elements are.
 
 ## SEE ALSO
 
-  * config(1)
+  * tibet-config(1)

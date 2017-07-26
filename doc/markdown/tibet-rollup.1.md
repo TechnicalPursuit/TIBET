@@ -97,5 +97,5 @@ information.
 
 ## SEE ALSO
 
-  * package(1)
-  * resources(1)
+  * tibet-package(1)
+  * tibet-resources(1)

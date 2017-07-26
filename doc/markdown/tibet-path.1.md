@@ -15,3 +15,7 @@ this command lets you leave the leading '~' off.
 
     $ tibet path app_cfg
     ~app_cfg => /Users/ss/dev/TPI/TIBET/TIBET-INF/cfg
+
+## SEE ALSO
+
+  * tibet-config(1)

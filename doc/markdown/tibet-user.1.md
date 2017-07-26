@@ -70,6 +70,3 @@ plain text.
         }
     }
 
-## SEE ALSO
-
-

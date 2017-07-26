@@ -206,4 +206,4 @@ variables or provide your credentials in your `CouchDB url` prompt response.
 
 ## SEE ALSO
 
-  * tws(1)
+  * tibet-tws(1)

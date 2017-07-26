@@ -113,4 +113,4 @@ Note that you can also do case-insensitive filtering (with `i`) as follows:
 
 ## SEE ALSO
 
-  * lint(1)
+  * tibet-lint(1)

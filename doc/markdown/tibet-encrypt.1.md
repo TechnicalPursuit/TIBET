@@ -24,3 +24,6 @@ encryption and decryption processes.
     $ tibet encrypt 'myrestserviceapikey'
     f92d28cf96fb590cf92a206a9b4c3af4
 
+## SEE ALSO
+
+  * tibet-decrypt(1)

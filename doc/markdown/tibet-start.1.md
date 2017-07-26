@@ -70,4 +70,4 @@ server should start on.
 
 ## SEE ALSO
 
-  * config(1)
+  * tibet-config(1)

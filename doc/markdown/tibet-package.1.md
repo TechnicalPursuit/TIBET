@@ -75,5 +75,5 @@ Note that with `--context all` we now see library resources (in this case
 
 ## SEE ALSO
 
-  * resources(1)
-  * rollup(1)
+  * tibet-resources(1)
+  * tibet-rollup(1)

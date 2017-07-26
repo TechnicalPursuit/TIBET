@@ -84,4 +84,5 @@ server should start on.
 
 ## SEE ALSO
 
-  * config(1)
+  * tibet-config(1)
+  * tibet-start(1)

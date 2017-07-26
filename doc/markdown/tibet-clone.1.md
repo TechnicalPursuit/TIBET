@@ -91,5 +91,5 @@ avoid file conflicts, allowing this operation to be done safely.
 
 ## SEE ALSO
 
-  * init(1)
+  * tibet-init(1)
 

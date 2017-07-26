@@ -3,9 +3,7 @@
 
 ## SYNOPSIS
 
-tibet help
 tibet help <topic>
-tibet <command> --help
 
 ## DESCRIPTION
 

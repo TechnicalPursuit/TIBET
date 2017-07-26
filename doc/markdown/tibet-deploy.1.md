@@ -56,5 +56,5 @@ can be accessed from within your `deploy` make target.
 
 ## SEE ALSO
 
-    * make(1)
+  * tibet-make(1)
 

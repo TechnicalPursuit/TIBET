@@ -53,4 +53,4 @@ Additional <flags> for this command include:
 
 ## SEE ALSO
 
-  * tsh(1)
+  * tibet-tsh(1)

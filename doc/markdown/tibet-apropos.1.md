@@ -139,4 +139,4 @@ improve the chances you will find appropriate suggestions in the result list.
 
 ## SEE ALSO
 
-  * reflect(1)
+  * tibet-reflect(1)
