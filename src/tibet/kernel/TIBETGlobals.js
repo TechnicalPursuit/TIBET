@@ -1134,6 +1134,8 @@ TP.START_SIGNAL_BATCH = 'startbatch';
 TP.SIGNAL_BATCH = 'batch';
 TP.END_SIGNAL_BATCH = 'endbatch';
 
+TP.TARGET = 'Target';
+
 //  ---
 //  requests
 //  ---
