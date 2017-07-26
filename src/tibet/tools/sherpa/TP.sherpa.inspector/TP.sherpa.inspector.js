@@ -529,15 +529,22 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('dispatchMethodForPath',
-function(pathParts, methodPrefix, args) {
+function(pathParts, methodPrefix, anArgArray) {
 
     /**
      * @method dispatchMethodForPath
-     * @summary
-     * @param
-     * @param
-     * @param
-     * @returns
+     * @summary Dispatches the method that can be computed by using the supplied
+     *     path parts and the method prefix along with any registered method
+     *     suffixes.
+     * @param {String[]} pathParts An Array of parts making up the path to
+     *     attempt the dispatch against.
+     * @param {String} methodPrefix The prefix of the method to use to try with
+     *     the various registered suffixes to see if the receiver has a method
+     *     named by that construct.
+     * @param {arguments} anArgArray An array or arguments object containing the
+     *     arguments to pass to the method invocation, if a method was found.
+     * @returns {Object} The object produced when the method was invoked against
+     *     the receiver.
      */
 
     var path,
@@ -552,32 +559,45 @@ function(pathParts, methodPrefix, args) {
 
         method;
 
+    //  Join the path together with the PATH_SEP and then bookend it PATH_START
+    //  and PATH_END. This will provide the most accurate match with the
+    //  registered method matchers.
     path = TP.PATH_START + pathParts.join(TP.PATH_SEP) + TP.PATH_END;
 
     methodRegister = this.get('methodRegister');
 
+    //  Grab the keys from the method register. These will be the method
+    //  suffixes that were registered for lookup.
     methodKeys = methodRegister.getKeys();
     methodKeys.sort(
             function(key1, key2) {
 
+                //  Each key points to an entry that has a RegExp in its first
+                //  position and the length of the parts making up the RegExp.
+                //  We want to sort that so that the most specific comes first.
                 return methodRegister.at(key1).last() <
                         methodRegister.at(key2).last();
             });
 
+    //  Iterate over the entries, looking for a RegExp that matches the supplied
+    //  method prefix with the registered suffix appended to it.
     len = methodKeys.getSize();
-
     for (i = 0; i < len; i++) {
 
+        //  The RegExp is in the first position of the entry.
         matcher = methodRegister.at(methodKeys.at(i)).first();
 
+        //  If we found a method, exit here. This is in keeping with trying to
+        //  favor the 'most specific' RegExps first (per our sorting above).
         if (matcher.test(path)) {
             method = this[methodPrefix + methodKeys.at(i)];
             break;
         }
     }
 
+    //  If we found a method, invoke it and return the result.
     if (TP.isMethod(method)) {
-        return method.apply(this, args);
+        return method.apply(this, anArgArray);
     }
 
     return null;
@@ -641,14 +661,6 @@ function(options) {
      * @returns {Element} The Element that will be used as the content for the
      *     bay.
      */
-
-    var data,
-        dataURI;
-
-    dataURI = TP.uc(options.at('bindLoc'));
-
-    data = this.getDataForInspector(options);
-    dataURI.setResource(data, TP.request('signalChange', false));
 
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getContentForInspectorFor',
@@ -717,18 +729,21 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('registerMethodSuffixForPath',
-function(methodName, regExpParts) {
+function(methodSuffix, regExpParts) {
 
     /**
      * @method registerMethodSuffixForPath
-     * @summary
-     * @param
-     * @param
-     * @returns
+     * @summary Registers a method suffix with the attendant parts that will be
+     *     used to form a RegExp. The RegExp will be computed from the supplied
+     *     parts and, when matched, will indicate that the supplied method
+     *     suffix should be used to compute a method name.
+     * @param {String} methodSuffix The suffix to register for matching.
+     * @param {String[]} regExpParts The parts used to form the RegExp.
+     * @returns {TP.sherpa.InspectorPathSource} The receiver.
      */
 
     this.get('methodRegister').atPut(
-            methodName,
+            methodSuffix,
             TP.ac(
                 TP.rc('^' +
                         TP.PATH_START + regExpParts.join('') + TP.PATH_END +
@@ -757,6 +772,8 @@ function(anAspect, options) {
      * @returns {Object} The object produced when resolving the aspect against
      *     the receiver.
      */
+
+    this.addEntry(anAspect, this);
 
     return this;
 });
@@ -934,7 +951,7 @@ function(aNode, aURI) {
      * @param {Node} aNode A native node.
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
-     * @returns {TP.core.Node} The initialized instance.
+     * @returns {TP.sherpa.inspector} The initialized instance.
      */
 
     this.callNextMethod();
@@ -1882,6 +1899,61 @@ function(bayNum) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getSelectedLabels',
+function() {
+
+    /**
+     * @method getSelectedLabels
+     * @summary Returns the labels for the set of currently selected items. Note
+     *     that the aspects which represent the selected items are not
+     *     necessarily the labels that are being shown to the user. This method
+     *     traverses those items and converts them into labels.
+     * @returns {String[]} The list of labels representing the currently
+     *     selected items.
+     */
+
+    var selectedItems,
+        resolver,
+
+        result,
+
+        len,
+        i;
+
+    selectedItems = this.get('selectedItems');
+
+    /* eslint-disable consistent-this */
+    resolver = this;
+    /* eslint-enable consistent-this */
+
+    result = TP.ac();
+
+    len = selectedItems.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Query the resolver for the label for the item.
+        result.push(resolver.getEntryLabel(selectedItems.at(i)));
+
+        //  Traverse down, performing a getEntryAt() at each step, which
+        //  will return the next resolver.
+        resolver = resolver.getEntryAt(selectedItems.at(i));
+
+        //  If we couldn't compute a 'next resolver' and we're not at the end,
+        //  then exit from the loop. Can't query a missing resolver.
+
+        /* eslint-disable no-extra-parens */
+        if (TP.notValid(resolver) && (i < len - 1)) {
+            //  TODO: Log a warning.
+            break;
+        }
+        /* eslint-enable no-extra-parens */
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromBay',
 function(aBay) {
 
@@ -2533,6 +2605,21 @@ function(info, createHistoryEntry) {
 
     selectedItems = this.get('selectedItems');
 
+    //  We need to do this first since we need to add the aspect before we make
+    //  the calls for the final target and data.
+    if (newBayNum > 0) {
+
+        //  Put the (new) aspect name at the spot we're on now in the selected
+        //  items.
+        selectedItems.atPut(newBayNum - 1, aspect);
+
+        //  'Slice back' to the spot just after us.
+        selectedItems = selectedItems.slice(0, newBayNum);
+
+        //  Reset the selectedItems to what we just computed.
+        this.set('selectedItems', selectedItems);
+    }
+
     //  Compute whether we already have the minimum number of bays to display
     //  the content we're traversing to. Note that we might have *more* bays
     //  than what we need - we'll remove them below. But we need to have at
@@ -2581,34 +2668,9 @@ function(info, createHistoryEntry) {
         //  Make sure to update our toolbar, etc.
         this.finishUpdateAfterNavigation(info);
 
-        //  Put the (unresolved) aspect name at the spot we're on now in the
-        //  selected items.
-        selectedItems.atPut(newBayNum - 1, aspect);
-
-        //  'Slice back' to the spot just after us.
-        selectedItems = selectedItems.slice(0, newBayNum);
-
-        //  Reset the selectedItems to what we just computed.
-        this.set('selectedItems', selectedItems);
-
         this.signal('InspectorDidFocus');
 
         return this;
-    }
-
-    //  We need to do this first since we need to add the aspect before we make
-    //  the call to get the configuration.
-    if (newBayNum > 0) {
-
-        //  Put the (new) aspect name at the spot we're on now in the selected
-        //  items.
-        selectedItems.atPut(newBayNum - 1, aspect);
-
-        //  'Slice back' to the spot just after us.
-        selectedItems = selectedItems.slice(0, newBayNum);
-
-        //  Reset the selectedItems to what we just computed.
-        this.set('selectedItems', selectedItems);
     }
 
     dataURI = TP.uc(bindLoc);

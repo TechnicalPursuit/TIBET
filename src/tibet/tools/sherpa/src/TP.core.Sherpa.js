@@ -708,6 +708,7 @@ function(aSignal) {
             TP.hc(
                 'dialogID', 'AssistantDialog',
                 'isModal', true,
+                'title', aSignal.getPayload().at('title'),
                 'templateContent', assistantContentTPElem));
 
         //  After the dialog is showing, set the assistant parameters on the

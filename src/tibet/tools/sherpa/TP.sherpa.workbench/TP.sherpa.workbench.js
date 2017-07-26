@@ -203,7 +203,8 @@ function(aSignal) {
         sigOriginTPElem = TP.wrap(origin);
     }
 
-    inspectorSelectedItemLabels = sigOriginTPElem.get('selectedItems');
+    //  Grab the selected *labels* from the inspector.
+    inspectorSelectedItemLabels = sigOriginTPElem.get('selectedLabels');
 
     //  Set up the breadcrumb bar
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());

@@ -1887,6 +1887,14 @@
 
     //  should we watch changes from couchdb? Currently awaiting updates to SSE
     //  to support authentication.
+    //  couchdb servers known to the system.
+    TP.sys.setcfg('uri.couchdb_urls',
+        [
+            ['Local CouchDB', 'http://127.0.0.1:5984']
+            // ['Another CouchDB Server', 'http://foo.com:5984']
+        ]);
+
+
     TP.sys.setcfg('uri.watch_couchdb_changes', false);
 
     //  which CouchDB change feed URLs do we want to observe?

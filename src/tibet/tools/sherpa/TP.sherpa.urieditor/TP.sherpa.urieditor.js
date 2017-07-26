@@ -89,6 +89,9 @@ TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 
 TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 
+TP.sherpa.urieditor.Inst.defineAttribute('extraLoadHeaders');
+TP.sherpa.urieditor.Inst.defineAttribute('extraSaveHeaders');
+
 TP.sherpa.urieditor.Inst.defineAttribute('head',
     TP.cpc('> .head', TP.hc('shouldCollapse', true)));
 
@@ -354,6 +357,8 @@ function() {
     var sourceURI,
 
         putParams,
+        extraHeaders,
+
         saveRequest;
 
     sourceURI = this.get('sourceURI');
@@ -362,6 +367,15 @@ function() {
     //  HTTP PUT, but if we're pushing to the TDS, this very well might be reset
     //  to be an HTTP PATCH.
     putParams = TP.hc('method', TP.HTTP_PUT);
+
+    //  If any extra save headers were configured on ourself as an attribute,
+    //  then they'll be in this instance variable. Add them to the put
+    //  parameters.
+    extraHeaders = this.get('extraSaveHeaders');
+    if (TP.notEmpty(extraHeaders)) {
+        putParams.addAll(extraHeaders);
+    }
+
     saveRequest = sourceURI.constructRequest(putParams);
 
     saveRequest.defineHandler('RequestSucceeded',
@@ -411,6 +425,9 @@ function() {
 
         sourceURI,
 
+        getParams,
+        extraHeaders,
+
         sourceResource;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
@@ -429,11 +446,26 @@ function() {
         return this;
     }
 
+    //  Make sure to set a flag that we're changing the content out from under
+    //  the source URI. That way, ValueChange notifications, et. al. won't cause
+    //  strange recursions, etc.
+    this.set('$changingSourceContent', true);
+
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
-    sourceResource =
-            sourceURI.getResource(TP.hc('resultType', TP.core.Content));
+
+    getParams = TP.hc('resultType', TP.core.Content);
+
+    //  If any extra load headers were configured on ourself as an attribute,
+    //  then they'll be in this instance variable. Add them to the get
+    //  parameters.
+    extraHeaders = this.get('extraLoadHeaders');
+    if (TP.notEmpty(extraHeaders)) {
+        getParams.addAll(extraHeaders);
+    }
+
+    sourceResource = sourceURI.getResource(getParams);
 
     sourceResource.then(
         function(sourceResult) {
@@ -441,6 +473,10 @@ function() {
             var sourceStr,
                 editorObj,
                 mimeType;
+
+            //  Now that we're done reverting the content, we can unset the
+            //  'changing content' flag.
+            this.set('$changingSourceContent', false);
 
             //  If we don't have a valid result, then just set both our local
             //  version of the source content and the editor display value to
@@ -475,14 +511,6 @@ function() {
                 return this;
             }
 
-            //  Initialize our local copy of the content with the source String
-            //  and set the dirty flag to false.
-            this.set('localSourceContent', sourceStr);
-            this.isDirty(false);
-
-            //  Update the editor's state, including its dirty state.
-            this.updateEditorState();
-
             //  Grab the real underlying editor object beneath the
             //  xctrls:codeeditor. This is an instance of CodeMirror.
             editorObj = this.get('editor').$get('$editorObj');
@@ -501,8 +529,25 @@ function() {
             //  Set the editor's 'mode' to the computed MIME type.
             editorObj.setOption('mode', mimeType);
 
+            //  If the content was JSON encoded, then try to format it using the
+            //  'plain text encoding' (i.e. newlines and spaces). CodeMirror
+            //  will format that into the proper markup for display.
+            if (mimeType === TP.JSON_ENCODED) {
+                sourceStr = TP.sherpa.pp.runFormattedJSONModeOn(
+                            sourceStr,
+                            TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
+            }
+
             //  Set the CodeMirror object's value to the source string.
             editorObj.setValue(sourceStr);
+
+            //  Initialize our local copy of the content with the source String
+            //  and set the dirty flag to false.
+            this.set('localSourceContent', sourceStr);
+            this.isDirty(false);
+
+            //  Update the editor's state, including its dirty state.
+            this.updateEditorState();
 
             /* eslint-disable no-extra-parens */
             (function() {
@@ -536,6 +581,9 @@ function(shouldRefresh) {
     var editor,
 
         sourceURI,
+
+        getParams,
+        extraHeaders,
 
         refresh,
 
@@ -573,9 +621,18 @@ function(shouldRefresh) {
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
     //  sort of TP.core.Content instance.
-    sourceResource = sourceURI.getResource(
-                                TP.hc('resultType', TP.core.Content,
-                                        'refresh', refresh));
+
+    getParams = TP.hc('resultType', TP.core.Content, 'refresh', refresh);
+
+    //  If any extra load headers were configured on ourself as an attribute,
+    //  then they'll be in this instance variable. Add them to the get
+    //  parameters.
+    extraHeaders = this.get('extraLoadHeaders');
+    if (TP.notEmpty(extraHeaders)) {
+        getParams.addAll(extraHeaders);
+    }
+
+    sourceResource = sourceURI.getResource(getParams);
 
     sourceResource.then(
         function(sourceResult) {
@@ -765,7 +822,9 @@ function() {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var editorObj;
+    var editorObj,
+
+        attrVal;
 
     //  Grab the underlying editor's editor ;-), which is a CodeMirror object.
     editorObj = this.get('editor').$get('$editorObj');
@@ -784,6 +843,30 @@ function() {
 
     //  Install that handler onto CodeMirror.
     editorObj.on('change', this.get('changeHandler'));
+
+    //  If there are an 'extra load headers' defined on ourself as an attribute,
+    //  grab and store them.
+    attrVal = this.getAttribute('extraLoadHeaders');
+    if (TP.notEmpty(attrVal)) {
+
+        //  Convert the JSON-y like value into real JSON
+        attrVal = TP.reformatJSToJSON(attrVal);
+        if (TP.isJSONString(attrVal)) {
+            this.set('extraLoadHeaders', TP.json2js(attrVal));
+        }
+    }
+
+    //  If there are an 'extra save headers' defined on ourself as an attribute,
+    //  grab and store them.
+    attrVal = this.getAttribute('extraSaveHeaders');
+    if (TP.notEmpty(attrVal)) {
+
+        //  Convert the JSON-y like value into real JSON
+        attrVal = TP.reformatJSToJSON(attrVal);
+        if (TP.isJSONString(attrVal)) {
+            this.set('extraSaveHeaders', TP.json2js(attrVal));
+        }
+    }
 
     return this;
 });

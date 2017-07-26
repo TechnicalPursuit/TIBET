@@ -31,6 +31,9 @@ TP.xctrls.dialog.Type.defineAttribute('opaqueCapturingSignalNames', null);
 TP.xctrls.dialog.Inst.defineAttribute('body',
     TP.cpc('> *[tibet|pelem="body"]', TP.hc('shouldCollapse', true)));
 
+TP.xctrls.dialog.Inst.defineAttribute('header',
+    TP.cpc('> *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
+
 TP.xctrls.dialog.Inst.defineAttribute('bodyGroup',
     TP.cpc('> *[tibet|pelem="body"] > tibet|group',
         TP.hc('shouldCollapse', true)));
@@ -215,6 +218,8 @@ function(info) {
 
                 dialogTPElem,
 
+                title,
+
                 dialogElem,
                 docBody,
 
@@ -266,6 +271,16 @@ function(info) {
                 //  Note the assignment here to capture the TP version of the
                 //  element that got inserted.
                 dialogTPElem = docBody.insertContent(dialogElem, TP.BEFORE_END);
+            }
+
+            //  If a title was defined, then set the dialog's title to it.
+            //  Otherwise, clear the dialog's title (in case it's shared and it
+            //  had a title from it's previous user).
+            title = info.at('title');
+            if (TP.notEmpty(title)) {
+                dialogTPElem.setTitle(title);
+            } else {
+                dialogTPElem.setTitle('');
             }
 
             //  Grab any template data and transform the supplied template with

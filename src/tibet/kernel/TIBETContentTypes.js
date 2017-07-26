@@ -1727,21 +1727,6 @@ TP.core.Content.defineSubtype('core.CSSStyleSheet');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSStyleSheet.Type.defineMethod('getContentMIMEType',
-function() {
-
-    /**
-     * @method getContentMIMEType
-     * @summary Returns the receiver's "content MIME type", the MIME type the
-     *     content can render most effectively.
-     * @returns {String} The content MIME type.
-     */
-
-    return TP.ietf.Mime.CSS;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CSSStyleSheet.Type.defineMethod('canConstruct',
 function(data, uri) {
 
@@ -1762,6 +1747,23 @@ function(data, uri) {
     if (TP.canInvoke(uri, 'getExtension')) {
         return uri.getExtension() === 'css';
     }
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CSSStyleSheet.Inst.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.CSS;
 });
 
 //  ========================================================================
@@ -1809,21 +1811,6 @@ function(data, uri) {
      */
 
     return TP.isJSONString(data);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONContent.Type.defineMethod('getContentMIMEType',
-function() {
-
-    /**
-     * @method getContentMIMEType
-     * @summary Returns the receiver's "content MIME type", the MIME type the
-     *     content can render most effectively.
-     * @returns {String} The content MIME type.
-     */
-
-    return TP.ietf.Mime.JSON;
 });
 
 //  ------------------------------------------------------------------------
@@ -1953,6 +1940,21 @@ function() {
         });
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.JSON;
 });
 
 //  ------------------------------------------------------------------------
@@ -2437,21 +2439,6 @@ TP.core.Content.defineSubtype('core.TextContent');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TextContent.Type.defineMethod('getContentMIMEType',
-function() {
-
-    /**
-     * @method getContentMIMEType
-     * @summary Returns the receiver's "content MIME type", the MIME type the
-     *     content can render most effectively.
-     * @returns {String} The content MIME type.
-     */
-
-    return TP.ietf.Mime.PLAIN;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TextContent.Type.defineMethod('canConstruct',
 function(data, uri) {
 
@@ -2465,6 +2452,23 @@ function(data, uri) {
      */
 
     return TP.isString(data);
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TextContent.Inst.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.PLAIN;
 });
 
 //  ========================================================================
@@ -2513,21 +2517,6 @@ function(data, uri) {
      */
 
     return TP.isNode(data) || TP.isXMLString(data);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.XMLContent.Type.defineMethod('getContentMIMEType',
-function() {
-
-    /**
-     * @method getContentMIMEType
-     * @summary Returns the receiver's "content MIME type", the MIME type the
-     *     content can render most effectively.
-     * @returns {String} The content MIME type.
-     */
-
-    return TP.ietf.Mime.XML;
 });
 
 //  ------------------------------------------------------------------------
@@ -2880,6 +2869,21 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
                         TP.END_SIGNAL_BATCH, batchID));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.XML;
 });
 
 //  ------------------------------------------------------------------------

@@ -878,7 +878,10 @@ function(targetUrl, aRequest, httpObj) {
 
     var request,
         headers,
-        h,
+
+        simpleCORSOnly,
+
+        header,
 
         hash,
 
@@ -891,7 +894,7 @@ function(targetUrl, aRequest, httpObj) {
         body,
         url,
 
-        method;
+        altMethod;
 
     request = aRequest || TP.request();
 
@@ -902,6 +905,9 @@ function(targetUrl, aRequest, httpObj) {
     //  NOTE we use the string of the body content here for Content-Length
     body = request.at('finalbody');
     url = request.at('uri');
+
+    simpleCORSOnly = TP.sys.cfg('http.simple_cors_only') ||
+                        request.at('simple_cors_only');
 
     //  Default the mimetype based on body type as best we can.
     if (TP.notDefined(request.at('mimetype'))) {
@@ -915,11 +921,11 @@ function(targetUrl, aRequest, httpObj) {
     //  on moz we have to avoid duplication of this header, which seems
     //  to appear as if by magic...
     if (TP.sys.isUA('GECKO')) {
-        if (TP.isDefined(h = headers.at('Pragma'))) {
-            if (h === 'no-cache') {
+        if (TP.isDefined(header = headers.at('Pragma'))) {
+            if (header === 'no-cache') {
                 headers.removeKey('Pragma');
-            } else if (TP.isArray(h)) {
-                h.remove('no-cache');
+            } else if (TP.isArray(header)) {
+                header.remove('no-cache');
             }
         }
     } else if (TP.notDefined(headers.at('Pragma'))) {
@@ -940,11 +946,9 @@ function(targetUrl, aRequest, httpObj) {
     //  identify the request as coming from an XMLHttpRequest (ala Rails), but
     //  only if we'
     if (TP.notDefined(headers.at('X-Requested-With'))) {
-        if (TP.uriNeedsPrivileges(targetUrl) &&
-            (TP.sys.cfg('http.simple_cors_only') ||
-                request.at('simple_cors_only'))) {
-                //  targetUrl needs privileges but we're configured for 'simple
-                //  CORS' only, which disallows custom 'X-' headers.
+        if (TP.uriNeedsPrivileges(targetUrl) && simpleCORSOnly) {
+            //  targetUrl needs privileges but we're configured for 'simple
+            //  CORS' only, which disallows custom 'X-' headers.
             void 0;
         } else {
             headers.atPut('X-Requested-With', 'XMLHttpRequest');
@@ -978,10 +982,14 @@ function(targetUrl, aRequest, httpObj) {
     //  method. But only do this if we're not doing simple CORS.
     if (TP.notDefined(headers.at('X-HTTP-Method-Override'))) {
         if (request.at('method') === TP.HTTP_POST &&
-            TP.notEmpty(method = request.at('altmethod')) &&
-            !(TP.sys.cfg('http.simple_cors_only') ||
-                request.at('simple_cors_only'))) {
-            headers.atPut('X-HTTP-Method-Override', method);
+            TP.notEmpty(altMethod = request.at('altmethod'))) {
+            if (TP.uriNeedsPrivileges(targetUrl) && simpleCORSOnly) {
+                //  targetUrl needs privileges but we're configured for 'simple
+                //  CORS' only, which disallows custom 'X-' headers.
+                void 0;
+            } else {
+                headers.atPut('X-HTTP-Method-Override', altMethod);
+            }
         }
     }
 
@@ -998,7 +1006,7 @@ function(targetUrl, aRequest, httpObj) {
                 //  It's an Array of settings, so we join it with a ', '
                 httpObj.setRequestHeader(key, val.join(', '));
             } else {
-                for (j = 0; j < val.length; j++) {
+                for (j = 0; j < val.getSize(); j++) {
                     httpObj.setRequestHeader(key, val.at(i));
                 }
             }
