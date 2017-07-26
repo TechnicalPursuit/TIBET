@@ -1965,6 +1965,61 @@ function(scopeVals, bindingInfoValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$getNearestRepeatIndex',
+function() {
+
+    /**
+     * @method $getNearestRepeatIndex
+     * @summary Returns the 'nearest' repeat index to the receiver. The receiver
+     *     might be nested in multiple repeat contexts and this will return the
+     *     'most specific' one to the receiver.
+     * @returns {Number} The repeat index 'nearest' to the receiver in it's
+     *     ancestor chain or TP.NOT_FOUND.
+     */
+
+    var scopeVals,
+
+        len,
+        i,
+
+        repeatIndex,
+
+        val;
+
+    //  Grab all of the binding scope values. If there aren't any, then we just
+    //  return TP.NOT_FOUND
+    scopeVals = this.getBindingScopeValues();
+
+    if (TP.isEmpty(scopeVals)) {
+        return TP.NOT_FOUND;
+    }
+
+    //  Reverse the values, since we want to find the nearest (i.e. the most
+    //  specific) index (we might be in a nested repeat)
+    scopeVals.reverse();
+
+    repeatIndex = TP.NOT_FOUND;
+
+    //  Iterate up through the scoping values, looking for a numeric scope.
+    len = scopeVals.getSize();
+    for (i = 0; i < len; i++) {
+
+        val = scopeVals.at(i);
+
+        //  If attribute value contains '[N]', where N is an integer, then we
+        //  extract that and convert it to a Number.
+        if (TP.regex.SIMPLE_NUMERIC_PATH.test(val)) {
+            repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
+                                        val).at(1).asNumber();
+            break;
+        }
+    }
+
+    return repeatIndex;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
 function() {
 
