@@ -2070,7 +2070,7 @@ function(aSignal) {
 
 TP.core.JSONContent.Inst.defineMethod('insertRowIntoAt',
 function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
-         shouldClone) {
+         shouldClone, shouldEmpty) {
 
     /**
      * @method insertRowIntoAt
@@ -2094,6 +2094,9 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     is supplied, TP.AFTER is assumed.
      * @param {Boolean} [shouldClone=false] Whether or not to clone the data
      *     before inserting it. The default is false.
+     * @param {Boolean} [shouldEmpty=false] Whether or not to empty any cloned
+     *     data before inserting it. The default is false. NOTE: This parameter
+     *     is only used if the shouldClone parameter is true.
      * @returns {TP.core.Content} The receiver.
      */
 
@@ -2215,17 +2218,20 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
 
         dataRow = TP.copy(dataRow);
 
-        if (TP.canInvoke(dataRow, 'clearTextContent')) {
-            //  Clear out all of the 'text content' - that is, all of the scalar
-            //  values in the newly cloned item. This will descend through the
-            //  new item's data structure and cleanse it all of previous values.
-            dataRow.clearTextContent();
-        } else {
-            keys = TP.keys(dataRow);
-            keys.forEach(
-                function(aKey) {
-                    dataRow[aKey] = '';
-                });
+        if (TP.isTrue(shouldEmpty)) {
+            if (TP.canInvoke(dataRow, 'clearTextContent')) {
+                //  Clear out all of the 'text content' - that is, all of the
+                //  scalar values in the newly cloned item. This will descend
+                //  through the new item's data structure and cleanse it all of
+                //  previous values.
+                dataRow.clearTextContent();
+            } else {
+                keys = TP.keys(dataRow);
+                keys.forEach(
+                    function(aKey) {
+                        dataRow[aKey] = '';
+                    });
+            }
         }
     }
 
@@ -2639,7 +2645,7 @@ function(aSignal) {
 
 TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
 function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
-         shouldClone) {
+         shouldClone, shouldEmpty) {
 
     /**
      * @method insertRowIntoAt
@@ -2663,6 +2669,9 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     is supplied, TP.AFTER is assumed.
      * @param {Boolean} [shouldClone=false] Whether or not to clone the data
      *     before inserting it. The default is false.
+     * @param {Boolean} [shouldEmpty=false] Whether or not to empty any cloned
+     *     data before inserting it. The default is false. NOTE: This parameter
+     *     is only used if the shouldClone parameter is true.
      * @returns {TP.core.Content} The receiver.
      */
 
@@ -2791,10 +2800,12 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
         //  Get the item to clone and clone it.
         dataRow = dataRow.clone(true);
 
-        //  Clear out all of the 'text content' - that is, all of the scalar
-        //  values in the newly cloned item. This will descend through the new
-        //  item's data structure and cleanse it all of previous values.
-        dataRow.clearTextContent();
+        if (TP.isTrue(shouldEmpty)) {
+            //  Clear out all of the 'text content' - that is, all of the scalar
+            //  values in the newly cloned item. This will descend through the
+            //  new item's data structure and cleanse it all of previous values.
+            dataRow.clearTextContent();
+        }
     }
 
     //  NB: The insertion index is computed to represent the row that will come
@@ -5925,7 +5936,7 @@ function(targetObj, varargs) {
         //  XPaths against that representation.
         target.defineMethod('insertRowIntoAt',
         function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex,
-                 aPosition, shouldClone) {
+                 aPosition, shouldClone, shouldEmpty) {
 
             var targetURIOrPath,
 
@@ -6044,11 +6055,13 @@ function(targetObj, varargs) {
                 //  Get the item to clone and clone it.
                 dataRow = dataRow.clone(true);
 
-                //  Clear out all of the 'text content' - that is, all of the
-                //  scalar values in the newly cloned item. This will descend
-                //  through the new item's data structure and cleanse it all of
-                //  previous values.
-                dataRow.clearTextContent();
+                if (TP.isTrue(shouldEmpty)) {
+                    //  Clear out all of the 'text content' - that is, all of
+                    //  the scalar values in the newly cloned item. This will
+                    //  descend through the new item's data structure and
+                    //  cleanse it all of previous values.
+                    dataRow.clearTextContent();
+                }
             }
 
             //  NB: The insertion index is computed to represent the row that
