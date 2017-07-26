@@ -47,4 +47,4 @@ package.json and node_modules locations.
 
 ## SEE ALSO
 
-  * clone(1)
+  * tibet-clone(1)

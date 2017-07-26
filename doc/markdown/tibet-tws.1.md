@@ -287,4 +287,4 @@ variables or provide your credentials in your `CouchDB url` prompt response.
 
 ## SEE ALSO
 
-  * couch(1)
+  * tibet-couch(1)

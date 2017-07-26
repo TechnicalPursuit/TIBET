@@ -97,4 +97,4 @@ only done for server configuration values.
 
 ## SEE ALSO
 
-  * context(1)
+  * tibet-context(1)

@@ -74,4 +74,4 @@ tool. As it turns out, this is exactly what the `tibet test` command does. The
 
 ## SEE ALSO
 
-  * phantomtsh(1)
+  * tibet-phantomtsh(1)

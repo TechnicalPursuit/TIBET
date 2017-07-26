@@ -73,4 +73,4 @@ performance impact.
 
 ## SEE ALSO
 
-  * thaw(1)
+  * tibet-thaw(1)

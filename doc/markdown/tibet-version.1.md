@@ -47,4 +47,4 @@ If a new version is available you'll see something similar to:
 
 ## SEE ALSO
 
-  * config(1)
+  * tibet-config(1)

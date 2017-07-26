@@ -80,4 +80,4 @@ Tells the linter to stop after the first file with errors.
 
 ## SEE ALSO
 
-  * doclint(1)
+  * tibet-doclint(1)

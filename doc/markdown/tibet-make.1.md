@@ -55,6 +55,3 @@ must complete successfully. The default is 15 seconds (15000).
     cleaning...
     Task complete: 4ms.
 
-## SEE ALSO
-
-

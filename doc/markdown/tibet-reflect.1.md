@@ -226,5 +226,5 @@ focus on all keys on the target object, not just methods etc.
 
 ## SEE ALSO
 
-  * apropos(1)
-  * help(1)
+  * tibet-apropos(1)
+  * tibet-help(1)

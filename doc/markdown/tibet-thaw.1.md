@@ -45,4 +45,4 @@ actually run.
 
 ## SEE ALSO
 
-  * freeze(1)
+  * tibet-freeze(1)

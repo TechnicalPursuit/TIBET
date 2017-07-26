@@ -117,5 +117,5 @@ Also note that TIBET has also updated the package#config so our types load:
 
 ## SEE ALSO
 
-  * clone(1)
-  * package(1)
+  * tibet-clone(1)
+  * tibet-package(1)
