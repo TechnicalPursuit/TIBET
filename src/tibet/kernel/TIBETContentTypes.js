@@ -6121,6 +6121,19 @@ function(targetObj, varargs) {
             }
 
             nodeName = targetCollection.first().getLocalName();
+
+            //  If we got a JSON content object, then we want it's data.
+            //  Otherwise, serialization will endlessly recurse because we don't
+            //  have the underlying data.
+            if (TP.isKindOf(dataRow, TP.core.JSONContent)) {
+                dataRow = dataRow.get('data');
+            }
+
+            //  If it's a TP.core.Hash, then we want it as a POJO.
+            if (TP.isHash(dataRow)) {
+                dataRow = dataRow.asObject();
+            }
+
             dataRow = TP.$jsonObj2xml(dataRow, nodeName);
 
             dataRow = TP.wrap(dataRow.documentElement);
