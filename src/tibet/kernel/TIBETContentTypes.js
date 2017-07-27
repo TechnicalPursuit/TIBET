@@ -6169,7 +6169,13 @@ function(targetObj, varargs) {
                 dataRow = aDataRowOrURIOrPath;
             }
 
-            nodeName = targetCollection.first().getLocalName();
+            //  If we have an empty collection, then we just use the name of the
+            //  root node to populate children.
+            if (targetCollection.isEmpty()) {
+                nodeName = targetCollection.getLocalName();
+            } else {
+                nodeName = targetCollection.first().getLocalName();
+            }
 
             //  If we got a JSON content object, then we want it's data.
             //  Otherwise, serialization will endlessly recurse because we don't
