@@ -147,8 +147,8 @@ function() {
     var keyFunc;
 
     keyFunc =
-        function(d) {
-            return TP.id(d);
+        function(d, i) {
+            return i;
         };
 
     return keyFunc;
