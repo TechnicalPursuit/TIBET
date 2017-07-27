@@ -3603,7 +3603,7 @@ function(aRequest) {
     //  If we got a collection node back, register a reference to a clone of the
     //  original element (if the 'content.retain_originals' cfg flag is on).
     if (TP.isCollectionNode(result)) {
-        if (result !== elem && TP.sys.cfg('content.retain_originals')) {
+        if (TP.sys.cfg('content.retain_originals')) {
 
             //  Make sure to create the type-level (each type - not shared)
             //  originals registry. This will hold clones of the original nodes
