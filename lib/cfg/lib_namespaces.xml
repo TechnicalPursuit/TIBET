@@ -148,6 +148,7 @@
 <config id="tsh">
     <script src="tsh/TP.tsh.XMLNS.js"/>
     <script src="tsh/TP.tsh.Element.js"/>
+    <script src="tsh/TP.tsh.CommandAssistant.js"/>
 
     <!-- Built-in shell constructs -->
     <script src="tsh/TP.tsh.eval.js"/>

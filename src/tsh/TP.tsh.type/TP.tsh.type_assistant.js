@@ -14,94 +14,13 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('tsh.type_assistant');
+TP.tsh.CommandAssistant.defineSubtype('tsh.type_assistant');
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.tsh.type_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.tsh.type_assistant.Inst.defineAttribute('originalRequest');
-
-TP.tsh.type_assistant.Inst.defineAttribute('head',
-    TP.cpc('> .head', TP.hc('shouldCollapse', true)));
-
-TP.tsh.type_assistant.Inst.defineAttribute('body',
-    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
-
-TP.tsh.type_assistant.Inst.defineAttribute('generatedCmdLine',
-    TP.cpc('> .foot > #generatedCmdLine', TP.hc('shouldCollapse', true)));
-
-TP.tsh.type_assistant.Inst.defineAttribute('foot',
-    TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.tsh.type_assistant.Inst.defineHandler('DialogCancel',
-function(anObject) {
-
-    /**
-     * @method handleDialogCancel
-     * @summary
-     * @returns {TP.tsh.type_assistant} The receiver.
-     */
-
-    var modelURI;
-
-    modelURI = TP.uc('urn:tibet:type_cmd_source');
-    this.ignore(modelURI, 'ValueChange');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tsh.type_assistant.Inst.defineHandler('DialogOk',
-function(anObject) {
-
-    /**
-     * @method handleDialogOk
-     * @summary
-     * @returns {TP.tsh.type_assistant} The receiver.
-     */
-
-    var modelURI,
-
-        result,
-        data,
-        typeInfo,
-        str;
-
-    modelURI = TP.uc('urn:tibet:type_cmd_source');
-    this.ignore(modelURI, 'ValueChange');
-
-    result = TP.uc('urn:tibet:type_cmd_source').getResource().get('result');
-
-    if (TP.notValid(result)) {
-        return this;
-    }
-
-    if (TP.notValid(data = result.get('data'))) {
-        return this;
-    }
-
-    typeInfo = TP.hc(data).at('info');
-
-    str = this.generateCommand(typeInfo);
-
-    //  Fire a 'ConsoleCommand' with a ':type' command, supplying the name and
-    //  the template.
-    TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
-
-    // TP.info('gonna execute: ' + str);
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.tsh.type_assistant.Inst.defineMethod('generateCommand',
@@ -109,8 +28,10 @@ function(info) {
 
     /**
      * @method generateCommand
-     * @summary
-     * @returns {TP.tsh.type_assistant} The receiver.
+     * @summary Generates the command text that will be sent to the shell if the
+     *     user dismisses the assistant by clicking 'ok'.
+     * @param {TP.core.Hash} info The hash containing the command parameters.
+     * @returns {String} The generated command string.
      */
 
     var str,
@@ -146,62 +67,15 @@ function(info) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.type_assistant.Inst.defineHandler('ValueChange',
-function() {
-
-    /**
-     * @method handleValueChange
-     * @summary
-     * @returns {TP.tsh.type_assistant} The receiver.
-     */
-
-    var result,
-        data,
-        typeInfo,
-        str;
-
-    result = TP.uc('urn:tibet:type_cmd_source').getResource().get('result');
-
-    if (TP.notValid(result)) {
-        return this;
-    }
-
-    if (TP.notValid(data = result.get('data'))) {
-        return this;
-    }
-
-    typeInfo = TP.hc(data).at('info');
-
-    str = this.generateCommand(typeInfo);
-    this.get('generatedCmdLine').setTextContent(str);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tsh.type_assistant.Inst.defineMethod('setAssistantParams',
-function(paramsObj) {
-
-    /**
-     * @method setAssistantParams
-     * @summary
-     * @returns {TP.tsh.type_assistant} The receiver.
-     */
-
-    this.setOriginalRequest(paramsObj.at('originalRequest'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tsh.type_assistant.Inst.defineMethod('setOriginalRequest',
 function(anObj) {
 
     /**
      * @method setOriginalRequest
-     * @summary
+     * @summary Sets the original request received by the command that triggered
+     *     the assistant.
+     * @param {TP.sig.Request} anObj The original request that was supplied to
+     *     the assistant via the command.
      * @returns {TP.tsh.type_assistant} The receiver.
      */
 
@@ -214,15 +88,16 @@ function(anObj) {
         name,
         nameParts,
 
-        str,
-
         modelURI,
         modelObj,
 
         typesURI,
         typesObj;
 
-    this.$set('originalRequest', anObj);
+    this.callNextMethod();
+
+    //  Configure the GUI using the argument values that we can derive from the
+    //  original request
 
     shell = anObj.at('cmdShell');
     args = shell.getArguments(anObj);
@@ -265,22 +140,35 @@ function(anObj) {
     typeInfo.atPut('supertype',
                     TP.ifInvalid(args.at('tsh:supertype'), ''));
 
-    str = this.generateCommand(typeInfo);
-    this.get('generatedCmdLine').setTextContent(str);
-
+    //  Set up a model URI and observe it for change ourself. This will allow us
+    //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:type_cmd_source');
+    this.observe(modelURI, 'ValueChange');
 
+    //  Construct a JSONContent object around the model object so that we can
+    //  bind to it using the more powerful JSONPath constructs
     modelObj = TP.core.JSONContent.construct(TP.js2json(topLevelInfo));
 
-    this.observe(modelURI, 'ValueChange');
+    //  Set the resource of the model URI to the model object, telling the URI
+    //  that it should observe changes to the model (which will allow us to get
+    //  notifications from the URI which we're observing above) and to go ahead
+    //  and signal change to kick things off.
     modelURI.setResource(
         modelObj, TP.hc('observeResource', true, 'signalChange', true));
 
-    typesURI = TP.uc('urn:tibet:typelist');
-    typesObj = TP.copy(TP.sys.getCustomTypeNames().sort());
+    //  Set up the type list value holder
 
+    typesURI = TP.uc('urn:tibet:typelist');
+
+    //  Grab all of the type names here. Note that because this list contains
+    //  type names that are signal names themselves, we need to make sure to
+    //  configure this Array to not consider itself an 'origin set'. Otherwise,
+    //  there will be spurious triggering of signals.
+    typesObj = TP.copy(TP.sys.getCustomTypeNames().sort());
     typesObj.isOriginSet(false);
 
+    //  Set the types value holder to the Array we computed here. We also tell
+    //  it to go ahead and signal change to kick things off.
     typesURI.setResource(typesObj, TP.hc('signalChange', true));
 
     return this;
