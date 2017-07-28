@@ -10973,7 +10973,7 @@ function(anElement, nodesAdded) {
 
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
-        if (root.$$awakened) {
+        if (root[TP.AWAKENED]) {
             continue;
         }
 
@@ -11277,7 +11277,7 @@ function(aNode) {
 
     //  Flag the node as having been awakened. This state is checked by mutation
     //  handlers etc. to avoid duplicate effort.
-    aNode.$$awakened = true;
+    aNode[TP.AWAKENED] = true;
 
     return;
 });

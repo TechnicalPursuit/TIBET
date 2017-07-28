@@ -753,6 +753,7 @@ TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
 TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
 TP.GENERATED = 'tp_generated';
+TP.AWAKENED = 'tp_awakened';
 TP.APPLIED_RULES = 'tp_appliedrules';
 TP.TIBET_PRIVATE = 'tp_tibetprivate';
 TP.PREVIOUS_POSITION = 'tp_previousposition';
