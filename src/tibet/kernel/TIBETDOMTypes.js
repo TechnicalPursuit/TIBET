@@ -10975,6 +10975,12 @@ function(anElement, nodesAdded) {
             continue;
         }
 
+        //  Check to make sure this isn't a 'generated node'. If so we want to
+        //  exit.
+        if (root[TP.GENERATED]) {
+            continue;
+        }
+
         //  It seems weird that the root might be detached since it was 'added',
         //  but the way that mutation observers work (they trigger this code) is
         //  that the root might have been added and then removed all before the
@@ -11088,6 +11094,11 @@ function(anElement, nodesRemoved) {
 
         root = rootNodesRemoved.at(i);
 
+        //  Check to make sure this isn't a 'generated node'. If so we want to
+        //  exit.
+        if (root[TP.GENERATED]) {
+            continue;
+        }
 
         //  Note here how we assign the global ID if there isn't one present.
         //  This is important for observers of this signal who will want to come
