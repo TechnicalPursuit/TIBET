@@ -4289,7 +4289,7 @@ function(anObject, aParamHash) {
 
     if (TP.notEmpty(templateName = this.getTemplateName())) {
 
-        //  NB: We assume 'async' of false here.
+        //  NB: This should be a URN, therefore we assume 'async' of false here.
         templateFunc = TP.uc(templateName).getResource().get('result');
         if (TP.isCallable(templateFunc)) {
             //  Run the transform Function

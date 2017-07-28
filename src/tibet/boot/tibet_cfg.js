@@ -1885,8 +1885,6 @@
     //  should we take action when notified of a remote uri change?
     TP.sys.setcfg('uri.process_remote_changes', false);
 
-    //  should we watch changes from couchdb? Currently awaiting updates to SSE
-    //  to support authentication.
     //  couchdb servers known to the system.
     TP.sys.setcfg('uri.couchdb_urls',
         [
@@ -1895,13 +1893,14 @@
         ]);
 
 
+    //  should we watch changes from couchdb?
     TP.sys.setcfg('uri.watch_couchdb_changes', false);
 
     //  which CouchDB change feed URLs do we want to observe?
     TP.sys.setcfg('uri.watch_couchdb_uris', [
-        '_db_updates?feed=eventsource',                     //  server changes
-        // '_changes?feed=eventsource',                     //  no docs
-        '_changes?feed=eventsource&include_docs=true'       //  with docs
+        // '_db_updates?feed=eventsource'                        //  all server
+        // '{dbname}_changes?feed=eventsource',                  //  no docs
+        // '{dbname}_changes?feed=eventsource&include_docs=true' //  with docs
     ]);
 
     //  ---
