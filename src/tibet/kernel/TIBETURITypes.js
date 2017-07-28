@@ -6617,6 +6617,13 @@ function() {
 
         url = TP.uc(changedLoc);
 
+        //  Make sure to set isLoaded() to true here, since we set it to false
+        //  above. This will ensure that the URL doesn't think it's still dirty
+        //  after we've reloaded it per the semantics of this method.
+        if (url.isWatched()) {
+            url.isLoaded(false);
+        }
+
         //  Is the changed location one of our loaded package files? If so we
         //  need to process it as a package, not a random file or script.
         if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
