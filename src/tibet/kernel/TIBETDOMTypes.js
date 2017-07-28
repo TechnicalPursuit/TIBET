@@ -10538,7 +10538,11 @@ function(resource, mimeType, setupFunc) {
     //  Grab the receiver's content for processing. We do this synchronously
     //  here and we also get it in string form so we can process the markup and
     //  add default namespace as needed to make authoring more convenient.
-    resp = uri.getResource(TP.hc('async', false, 'resultType', TP.TEXT));
+    resp = uri.getResource(
+            TP.hc('async', false,
+                    'resultType', TP.TEXT,
+                    'signalChange', false));
+
     str = resp.get('result');
 
     if (TP.isEmpty(mime = mimeType)) {

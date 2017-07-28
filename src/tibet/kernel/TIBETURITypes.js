@@ -6654,7 +6654,8 @@ function() {
     } else {
         TP.debug('Reading in changes to ' + changedLoc);
 
-        return this.getResource().then(callback, callback);
+        return this.getResource(TP.hc('signalChange', false)).then(
+                                                    callback, callback);
     }
 });
 
