@@ -103,6 +103,23 @@ function(src) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.script.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of a change.
+     * @description For 'html:script' elements, when they are (re)imported, we
+     *     do *not* respond to value changes, as that is handled specially by
+     *     the system.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.script.Inst.defineMethod('reloadFromAttrSrc',
 function(aSrc) {
 
