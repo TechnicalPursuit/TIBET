@@ -3576,6 +3576,8 @@ function(aRequest) {
      */
 
     var elem,
+        elemClone,
+
         result,
 
         originals,
@@ -3588,6 +3590,15 @@ function(aRequest) {
     if (!TP.canInvoke(this, 'tagCompile')) {
         return elem;
     }
+
+    //  Clone the original element for comparison purposes below. This avoids
+    //  issues with the node equality routine and Text nodes under original
+    //  Element. If all that changes is a single Text node under the original
+    //  Element, then elem and result will still be considered equal because the
+    //  change will now be present in *both* of them (changing the Text node's
+    //  value by compiling it will change it in both because it's just the
+    //  '.nodeValue' that's being updated).
+    elemClone = TP.nodeCloneNode(elem);
 
     result = this.tagCompile(aRequest);
 
@@ -3602,7 +3613,7 @@ function(aRequest) {
 
     //  If we got a collection node back, register a reference to a clone of the
     //  original element (if the 'content.retain_originals' cfg flag is on).
-    if (!TP.nodeEqualsNode(result, elem) && TP.isCollectionNode(result)) {
+    if (!TP.nodeEqualsNode(result, elemClone) && TP.isCollectionNode(result)) {
         if (TP.sys.cfg('content.retain_originals')) {
 
             //  Make sure to create the type-level (each type - not shared)
