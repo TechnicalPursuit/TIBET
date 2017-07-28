@@ -10969,8 +10969,6 @@ function(anElement, nodesAdded) {
     for (i = 0; i < len; i++) {
         root = rootNodesAdded.at(i);
 
-        mutatedGIDs.push(TP.gid(root));
-
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
         if (root[TP.AWAKENED]) {
@@ -11090,7 +11088,6 @@ function(anElement, nodesRemoved) {
 
         root = rootNodesRemoved.at(i);
 
-        mutatedGIDs.push(TP.gid(root));
 
         //  Note here how we assign the global ID if there isn't one present.
         //  This is important for observers of this signal who will want to come
