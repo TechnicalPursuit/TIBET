@@ -1513,6 +1513,10 @@
     //  editing (in ms) ?
     TP.sys.setcfg('sherpa.eval_mark_time', 5000);
 
+    //  the amount of time that the Sherpa should wait before clearing newly
+    //  mutated nodes mutation flags
+    TP.sys.setcfg('sherpa.mutation_flag_clear_timeout', 5000);
+
     //  how long should the HUD wait after the last key up before resetting the
     //  keyboard/mouse readout back to info from the last mouse move event (in
     //  ms) ?

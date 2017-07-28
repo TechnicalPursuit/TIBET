@@ -759,6 +759,7 @@ TP.TIBET_PRIVATE = 'tp_tibetprivate';
 TP.PREVIOUS_POSITION = 'tp_previousposition';
 TP.INSERTION_POSITION = 'tp_insertionposition';
 TP.RESIZE_LISTENERS = 'tp_resize_listeners';
+TP.SHERPA_MUTATION = 'tp_sherpa_mutated';
 
 TP.OLD_TOP = 'tp_top';
 TP.OLD_LEFT = 'tp_left';

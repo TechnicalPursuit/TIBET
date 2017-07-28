@@ -1,0 +1,161 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+sherpa|insertionAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+sherpa|insertionAssistant > .head {
+}
+
+sherpa|insertionAssistant > .body {
+
+    display: grid;
+
+    margin: 0 auto;
+
+    grid-gap: 10px;
+    grid-template-columns: 1fr 3fr;
+}
+
+sherpa|insertionAssistant > .body .supertype_chooser {
+
+    float: left;
+
+    margin: 13px;
+    margin-top: 43px;
+}
+
+xctrls|list#InsertionAssistantTagTypes {
+
+    width: 100%;
+    height: 14em;
+
+    overflow-y: auto;
+
+    line-height: 1.5;
+}
+
+sherpa|insertionAssistant > .body .insertion_details {
+
+    float: right;
+}
+
+sherpa|insertionAssistant > .body .insertion_details .flex_outer {
+
+    margin-left: 0;
+}
+
+sherpa|insertionAssistant > .body .insertion_details .flex_outer li,
+.flex-inner {
+
+	position: relative;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+sherpa|insertionAssistant > .body .insertion_details .flex_outer > li > label {
+
+    flex: 1 0 100px;
+
+    max-width: 100px;
+}
+
+sherpa|insertionAssistant > .body .insertion_details .flex_outer > li > label + *,
+.flex_inner {
+
+    margin-left: 0px;
+}
+
+sherpa|insertionAssistant > .body .insertion_details .flex_inner {
+
+    justify-content: space-between;
+}
+
+sherpa|insertionAssistant > .body .insertion_details .flex_inner li {
+
+}
+
+sherpa|insertionAssistant > .foot {
+
+    margin-top: -1em;
+}
+
+sherpa|insertionAssistant > .body .insertion_details input {
+
+	margin-left: 10px;
+}
+
+sherpa|insertionAssistant > .body .insertion_details input:checked + label {
+
+	font-weight: bold;
+}
+
+#AttributesTable input {
+
+    height: 1em;
+
+    margin-left: 0px;
+    margin-bottom: 2px;
+}
+
+#AttributesTable .deleter {
+
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+
+    margin-top: 0px;
+
+    cursor: pointer;
+
+	background-image: url("../media/ic_close_black_24px.svg");
+}
+
+sherpa|insertionAssistant > .body .insertion_details .inserter {
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    margin-left: 446px;
+
+	background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+#InsertionBreadcrumb {
+
+    display: block;
+
+    top: 0px;
+    left: 115px;
+}
+
+#InsertionBreadcrumb > .content div.item {
+
+    color: black;
+}
+
+sherpa|insertionAssistant > .foot #generatedTag {
+
+    margin-bottom: 10px;
+    margin-left: 10px;
+
+    font-size: 100%;
+
+    background-color: #f8f8f8;
+
+    border: dashed 1px black;
+}
+

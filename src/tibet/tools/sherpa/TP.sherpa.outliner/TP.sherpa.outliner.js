@@ -619,6 +619,9 @@ function(aSignal) {
 
     var targetElem,
 
+        assistantContentTPElem,
+
+        dialogPromise,
         containingBlockElem;
 
     targetElem = this.get('$currentDNDTarget');
@@ -628,41 +631,33 @@ function(aSignal) {
         TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
-        (function() {
-            TP.prompt('Please type in a tag name: ').then(
-                function(retVal) {
+        assistantContentTPElem =
+            TP.sherpa.insertionAssistant.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
 
-                    var tagName,
+        dialogPromise = TP.dialog(
+            TP.hc(
+                'dialogID', 'AssistantDialog',
+                'isModal', true,
+                'title', 'Insert New Tag',
+                'templateContent', assistantContentTPElem));
 
-                        targetTPElem,
-                        newTPElem;
+        //  After the dialog is showing, set the assistant parameters on the
+        //  content object from those defined in the original signal's payload.
+        dialogPromise.then(
+            function(aDialogTPElem) {
 
-                    if (TP.isEmpty(retVal)) {
-                        return;
-                    }
+                var contentTPElem;
 
-                    tagName = retVal;
-                    if (!TP.regex.HAS_COLON.test(tagName)) {
-                        tagName = 'html:' + tagName;
-                    }
+                contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                    getFirstChildElement();
 
-                    targetTPElem = TP.wrap(targetElem);
-                    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
-                    newTPElem = targetTPElem.insertContent(
-                                        '<' + tagName + '/>',
-                                        this.get('insertionPosition'));
-                    TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
-
-                    TP.unwrap(newTPElem)[TP.INSERTION_POSITION] =
-                                            this.get('insertionPosition');
-
-                    (function() {
-                        this.signal('OutlinerDOMInsert',
-                                    TP.hc('insertedTPElem', newTPElem));
-                    }.bind(this)).queueForNextRepaint(TP.win('UIROOT'));
-
-                }.bind(this));
-        }.bind(this)).queueForNextRepaint(TP.win('UIROOT'));
+                contentTPElem.set('data',
+                    TP.hc(
+                        'insertionPosition', this.get('insertionPosition'),
+                        'insertionPoint', targetElem));
+            }.bind(this));
     }
 
     containingBlockElem = this.get('$containingBlockElem');
@@ -1305,8 +1300,6 @@ function(aSignal) {
 TP.sig.Signal.defineSubtype('BeginOutlineMode');
 TP.sig.Signal.defineSubtype('EndOutlineMode');
 TP.sig.Signal.defineSubtype('SherpaOutlinerToggle');
-
-TP.sig.Signal.defineSubtype('OutlinerDOMInsert');
 
 //  ------------------------------------------------------------------------
 //  end
