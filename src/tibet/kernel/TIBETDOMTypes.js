@@ -11000,6 +11000,11 @@ function(anElement, nodesAdded) {
             continue;
         }
 
+        //  Note here how we assign the global ID if there isn't one present.
+        //  This is important for observers of this signal who will want to come
+        //  back and reference these elements.
+        mutatedGIDs.push(TP.gid(root, true));
+
         processor.processTree(root);
 
         //  Signal from the root node that attach processing is complete.
@@ -11086,6 +11091,11 @@ function(anElement, nodesRemoved) {
         root = rootNodesRemoved.at(i);
 
         mutatedGIDs.push(TP.gid(root));
+
+        //  Note here how we assign the global ID if there isn't one present.
+        //  This is important for observers of this signal who will want to come
+        //  back and reference these elements.
+        mutatedGIDs.push(TP.gid(root, true));
 
         //  Initially we're set to process this markup.
         shouldProcess = true;
