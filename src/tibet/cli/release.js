@@ -522,6 +522,7 @@ Cmd.prototype.phaseTwo = function(source) {
 
     // Don't include metadata in the npm version string.
     CLI.config.npm.version = this.getLibVersion(source).split('+')[0];
+    CLI.config.tibet.version = CLI.config.npm.version;
 
     file = CLI.expandPath(Cmd.NPM_FILE);
     if (this.options['dry-run']) {
