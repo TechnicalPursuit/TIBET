@@ -39,7 +39,7 @@ TP.sherpa.outliner.Inst.defineAttribute('scale');
 
 TP.sherpa.outliner.Inst.defineAttribute('insertionPosition');
 
-TP.sherpa.outliner.Inst.defineAttribute('topLevelTPElem');
+TP.sherpa.outliner.Inst.defineAttribute('targetTPElement');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -51,7 +51,7 @@ function() {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
     var consoleService,
@@ -136,7 +136,14 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('activateMouseHandler',
 function() {
 
-    var topLevelElem,
+    /**
+     * @method activateMouseHandler
+     * @summary Installs the mouse handler on the  target element's document for
+     *     rotation and zooming purposes.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var targetElement,
         doc,
         handler,
 
@@ -152,13 +159,15 @@ function() {
 
         forward;
 
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    targetElement = TP.unwrap(this.get('targetTPElement'));
 
-    doc = TP.nodeGetDocument(topLevelElem);
+    doc = TP.nodeGetDocument(targetElement);
 
     thisref = this;
 
     lastMouseMoveEvent = TP.core.Mouse.get('lastMove');
+
+    //  Grab the initial X and Y for use within the handler.
     initialMousePosition = TP.eventGetPageXY(lastMouseMoveEvent);
 
     initialX = initialMousePosition.at(0);
@@ -166,6 +175,7 @@ function() {
 
     mouse = {
     };
+
     mouse.start = {
         x: initialX,
         y: initialY
@@ -175,6 +185,7 @@ function() {
         return v1 >= v2 ? true : false;
     };
 
+    //  Define the handler.
     handler = function(e) {
 
         var currentMousePosition,
@@ -215,6 +226,7 @@ function() {
         thisref.set('xRotation', computedX);
         thisref.set('yRotation', computedY);
 
+        //  Update both the target element and halo style.
         thisref.updateTargetElementStyle();
         thisref.updateHaloStyle();
 
@@ -222,8 +234,11 @@ function() {
         mouse.last.y = currentY;
     };
 
+    //  Using low-level DOM APIs, install the above defined mouse handler on the
+    //  target element's document.
     doc.addEventListener('mousemove', handler, true);
 
+    //  Capture the handler Function so that we uninstall it later.
     this.set('$mouseHandler', handler);
 
     return this;
@@ -234,18 +249,29 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('deactivateMouseHandler',
 function() {
 
-    var topLevelElem,
+    /**
+     * @method deactivateMouseHandler
+     * @summary Uninstalls any mouse handler installed on the target element's
+     *     document for rotation and zooming purposes.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var targetElement,
         doc,
         handler;
 
-    if (TP.isCallable(handler = this.get('$mouseHandler'))) {
+    handler = this.get('$mouseHandler');
 
-        topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    //  If there is an installed mouse handler, then we grab the target element
+    //  and, using low-level DOM APIs, remove it from that element's document.
+    if (TP.isCallable(handler)) {
 
-        doc = TP.nodeGetDocument(topLevelElem);
+        targetElement = TP.unwrap(this.get('targetTPElement'));
 
+        doc = TP.nodeGetDocument(targetElement);
         doc.removeEventListener('mousemove', handler, true);
 
+        //  Set this to null to avoid GC issues.
         this.set('$mouseHandler', null);
     }
 
@@ -257,7 +283,15 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('extrudeIn',
 function() {
 
+    /**
+     * @method extrudeIn
+     * @summary Decreases the amount of extrusion in our '3D' view.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     this.set('spread', this.get('spread') - 5);
+
+    //  Update both the target element and it's descendants style.
     this.updateOutlinedDescendantStyle();
     this.updateHaloStyle();
 
@@ -269,7 +303,15 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('extrudeOut',
 function() {
 
+    /**
+     * @method extrudeOut
+     * @summary Increases the amount of extrusion in our '3D' view.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     this.set('spread', this.get('spread') + 5);
+
+    //  Update both the target element and it's descendants style.
     this.updateOutlinedDescendantStyle();
     this.updateHaloStyle();
 
@@ -280,6 +322,13 @@ function() {
 
 TP.sherpa.outliner.Inst.defineMethod('getXRotation',
 function() {
+
+    /**
+     * @method getXRotation
+     * @summary Returns the X rotation, clamped by a built-in value (so that the
+     *     user cannot rotate the target element out of view).
+     * @returns {Number} The X rotation, clamped by a value.
+     */
 
     var val;
 
@@ -299,6 +348,13 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('getYRotation',
 function() {
 
+    /**
+     * @method getYRotation
+     * @summary Returns the Y rotation, clamped by a built-in value (so that the
+     *     user cannot rotate the target element out of view).
+     * @returns {Number} The Y rotation, clamped by a value.
+     */
+
     var val;
 
     val = this.$get('yRotation');
@@ -317,13 +373,24 @@ function() {
 TP.sherpa.outliner.Inst.defineHandler('DOMDNDInitiate',
 function(aSignal) {
 
+    /**
+     * @method handleDOMDNDInitiate
+     * @summary Handles when the drag and drop system initiates a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDInitiate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     var isActive;
 
+    //  We need to capture whether we were active *before* the DND session, so
+    //  we do that here.
     isActive = this.get('isActive');
     this.set('$wasActive', isActive);
 
+    //  If we're not current active, then activate us.
     if (!isActive) {
-
         this.set('isActive', true);
 
         this.signal('TP.sig.BeginOutlineMode');
@@ -337,25 +404,42 @@ function(aSignal) {
 TP.sherpa.outliner.Inst.defineHandler('DOMDNDTargetOver',
 function(aSignal) {
 
-    var targetTPElem,
-        targetElem,
+    /**
+     * @method handleDOMDNDTargetOver
+     * @summary Handles when the drag and drop system enters a possible drop
+     *     target.
+     * @param {TP.sig.DOMDNDTargetOver} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var dndTargetTPElem,
+        dndTargetElem,
 
         containingBlockElem;
 
-    targetTPElem = aSignal.getDOMTarget();
-    targetElem = TP.unwrap(targetTPElem);
+    //  Grab the current signal's "DOM target" and set it as our current drop
+    //  target.
+    dndTargetTPElem = aSignal.getDOMTarget();
+    dndTargetElem = TP.unwrap(dndTargetTPElem);
 
-    this.set('$currentDNDTarget', targetElem);
+    this.set('$currentDNDTarget', dndTargetElem);
 
-    TP.elementAddClass(targetElem, 'sherpa_droptarget');
+    //  Put a CSS class on the current drop target element for visual
+    //  highlighting purposes
+    TP.elementAddClass(dndTargetElem, 'sherpa_droptarget');
 
-    if (TP.elementIsPositioned(targetElem)) {
-        containingBlockElem = targetElem;
+    //  If the element is positioned, then the drop containing block is that
+    //  element. Otherwise, grab its containing block element and use that.
+    if (TP.elementIsPositioned(dndTargetElem)) {
+        containingBlockElem = dndTargetElem;
     } else {
-        containingBlockElem = TP.elementGetContainingBlockElement(targetElem);
+        containingBlockElem = TP.elementGetContainingBlockElement(dndTargetElem);
     }
     this.set('$containingBlockElem', containingBlockElem);
 
+    //  Add a CSS class to the containing block for visual highlighting
+    //  purposes.
     TP.elementAddClass(containingBlockElem, 'sherpa_containingblock');
 
     return this;
@@ -366,18 +450,30 @@ function(aSignal) {
 TP.sherpa.outliner.Inst.defineHandler('DOMDNDTargetOut',
 function(aSignal) {
 
-    var targetTPElem,
-        targetElem,
+    /**
+     * @method handleDOMDNDTargetOut
+     * @summary Handles when the drag and drop system exits a possible drop
+     *     target.
+     * @param {TP.sig.DOMDNDTargetOut} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var dndTargetTPElem,
+        dndTargetElem,
 
         containingBlockElem;
 
-    targetTPElem = aSignal.getDOMTarget();
-    targetElem = TP.unwrap(targetTPElem);
+    dndTargetTPElem = aSignal.getDOMTarget();
+    dndTargetElem = TP.unwrap(dndTargetTPElem);
 
+    //  Remove the CSS class placed on the drop target and set the attribute we
+    //  use to track the current DND target to null.
+    TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
     this.set('$currentDNDTarget', null);
 
-    TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
-
+    //  Remove the containing block CSS class from the drop zone element that
+    //  we're hovering over.
     containingBlockElem = this.get('$containingBlockElem');
     TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
     this.set('$containingBlockElem', null);
@@ -390,17 +486,86 @@ function(aSignal) {
 TP.sherpa.outliner.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
-    var wasActive;
+    /**
+     * @method handleDOMDNDTerminate
+     * @summary Handles when the drag and drop system terminates a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDTerminate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
 
+    var wasActive,
+
+        dndTargetElem,
+
+        assistantContentTPElem,
+
+        dialogPromise,
+        containingBlockElem;
+
+    //  Were we active *before* the DND session.
     wasActive = this.get('$wasActive');
 
+    //  If not, then set us back to inactive.
     if (!wasActive) {
         this.set('isActive', false);
 
         this.signal('TP.sig.EndOutlineMode');
     }
 
-    this.processDNDTermination(aSignal);
+    //  Grab the DND target element. If there was no DND target, then a valid
+    //  drop target couldn't be computed.
+    dndTargetElem = this.get('$currentDNDTarget');
+
+    if (TP.isElement(dndTargetElem)) {
+
+        //  Remove the class placed on the drop target and set the attribute we
+        //  use to track the current DND target to null.
+        TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+        this.set('$currentDNDTarget', null);
+
+        //  Grab the TP.sherpa.insertionAssistant type's template.
+        assistantContentTPElem =
+            TP.sherpa.insertionAssistant.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
+
+        //  Open a dialog with the insertion assistant's content.
+        dialogPromise = TP.dialog(
+            TP.hc(
+                'dialogID', 'AssistantDialog',
+                'isModal', true,
+                'title', 'Insert New Tag',
+                'templateContent', assistantContentTPElem));
+
+        //  After the dialog is showing, set the assistant parameters on the
+        //  content object from those defined in the original signal's payload.
+        dialogPromise.then(
+            function(aDialogTPElem) {
+
+                var contentTPElem;
+
+                contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                    getFirstChildElement();
+
+                //  Pass along the insertion position and the drop target
+                //  element as the insertion point to the dialog info.
+                contentTPElem.set('data',
+                    TP.hc(
+                        'insertionPosition', this.get('insertionPosition'),
+                        'insertionPoint', dndTargetElem));
+            }.bind(this));
+    }
+
+    //  Remove the containing block CSS class from the drop zone element that
+    //  we were hovering over, whether or not a valid drop target was computed.
+    containingBlockElem = this.get('$containingBlockElem');
+
+    if (TP.isElement(containingBlockElem)) {
+        TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
+        this.set('$containingBlockElem', null);
+    }
 
     return this;
 });
@@ -422,6 +587,8 @@ function(aSignal) {
 
     aSignal.preventDefault();
 
+    //  Grab the wheel delta and use it to compute a new scale.
+
     delta = aSignal.getWheelDelta();
 
     if (delta === 0) {
@@ -435,6 +602,7 @@ function(aSignal) {
 
     this.set('scale', scale);
 
+    //  Update both the target element and halo style.
     this.updateTargetElementStyle();
     this.updateHaloStyle();
 
@@ -481,22 +649,28 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineHandler('MutationDetach',
+TP.sherpa.outliner.Inst.defineHandler('MutationAttach',
 function(aSignal) {
 
     /**
-     * @method handleMutationDetach
-     * @summary Handles notifications of node detachment from the overall canvas
-     *     that the halo is working with.
-     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     * @method handleMutationAttach
+     * @summary Handles notifications of node attachment from the current UI
+     *     canvas.
+     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var topLevelElem,
+    var targetElement,
 
         labelStr;
 
+    targetElement = TP.unwrap(this.get('targetTPElement'));
+
+    //  Define a Function that will compute the tag label either by using the
+    //  name in the 'tibet:tag' attribute (preferred since it was set by the
+    //  system during some sort of compilation phase) or, lacking that, using
+    //  the element's 'tagName'.
     labelStr = function(anElement) {
 
         var tagName;
@@ -509,20 +683,76 @@ function(aSignal) {
         return tagName;
     };
 
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    //  Add a 'tagname' attribute on the target and all of its descendants.
+    //  This is used by a CSS rule to display the tagname labels for each
+    //  element in the outline.
 
-    TP.elementSetAttribute(topLevelElem,
+    TP.elementSetAttribute(targetElement,
                             'tagname',
-                            labelStr(topLevelElem),
-                            true);
-
-    TP.elementSetAttribute(topLevelElem,
-                            'position',
-                            this.get('insertionPosition'),
+                            labelStr(targetElement),
                             true);
 
     TP.nodeDescendantElementsPerform(
-                    topLevelElem,
+                    targetElement,
+                    function(anElement) {
+
+                        TP.elementSetAttribute(
+                                        anElement,
+                                        'tagname',
+                                        labelStr(anElement),
+                                        true);
+                    });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the overall canvas
+     *     that the outliner is working with.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var targetElement,
+
+        labelStr;
+
+    targetElement = TP.unwrap(this.get('targetTPElement'));
+
+    //  Define a Function that will compute the tag label either by using the
+    //  name in the 'tibet:tag' attribute (preferred since it was set by the
+    //  system during some sort of compilation phase) or, lacking that, using
+    //  the element's 'tagName'.
+    labelStr = function(anElement) {
+
+        var tagName;
+
+        tagName = TP.elementGetAttribute(anElement, 'tibet:tag', true);
+        if (TP.isEmpty(tagName)) {
+            tagName = anElement.tagName;
+        }
+
+        return tagName;
+    };
+
+    //  Add a 'tagname' attribute on the target and all of its descendants.
+    //  This is used by a CSS rule to display the tagname labels for each
+    //  element in the outline.
+
+    TP.elementSetAttribute(targetElement,
+                            'tagname',
+                            labelStr(targetElement),
+                            true);
+
+    TP.nodeDescendantElementsPerform(
+                    targetElement,
                     function(anElement) {
 
                         TP.elementSetAttribute(
@@ -543,10 +773,10 @@ function(aSignal) {
     /**
      * @method handleMutationStyleChange
      * @summary Handles notifications of node style changes from the overall
-     *     canvas that the halo is working with.
+     *     canvas that the outliner is working with.
      * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
      *     triggered this method.
-     * @returns {TP.sherpa.halo} The receiver.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
     return this;
@@ -580,6 +810,12 @@ function(aSignal) {
 TP.sherpa.outliner.Inst.defineMethod('hideOutliner',
 function() {
 
+    /**
+     * @method hideOutliner
+     * @summary Hides the outliner.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     var canvasTPDoc,
 
         doc,
@@ -587,93 +823,54 @@ function() {
 
         haloTPElem;
 
-    canvasTPDoc = this.get('topLevelTPElem').getDocument();
+    //  Grab the canvas document and ignore the mutation detach and mutation
+    //  style change signals that were observed when the outliner was shown.
+    canvasTPDoc = this.get('targetTPElement').getDocument();
     this.ignore(canvasTPDoc,
-                TP.ac('TP.sig.MutationDetach',
+                TP.ac('TP.sig.MutationAttach',
+                        'TP.sig.MutationDetach',
                         'TP.sig.MutationStyleChange'));
+
+    //  Ignore the DND targeting signals that we observed over the target
+    //  element.
+    this.ignore(this.get('targetTPElement'),
+                    TP.ac('TP.sig.DOMDNDTargetOver',
+                            'TP.sig.DOMDNDTargetOut'));
 
     this.teardownTargetElement();
 
     doc = TP.sys.uidoc(true);
 
+    //  Grab the injected stylesheet and disable it. We don't bother actually
+    //  removing it as it won't be serialized when the canvas document is saved
+    //  and its much faster to just toggle it's 'disabled' property during
+    //  development.
     outlinerStyleElement = TP.byId('outliner_injected', doc, false);
     if (TP.isElement(outlinerStyleElement)) {
         outlinerStyleElement.disabled = true;
     }
 
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                'TP.sig.HaloDidFocus');
-
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                'TP.sig.HaloDidBlur');
-
+    //  Grab the halo, reset its transform and transform origin to '' and move
+    //  and size it to its own target to display it properly.
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
     haloTPElem.setTransform('');
     haloTPElem.setTransformOrigin('');
 
     haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
 
-    this.set('topLevelTPElem', null);
+    //  Ignore the halo for when it focuses and blurs. These observations were
+    //  made when the outliner was shown.
 
+    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                'TP.sig.HaloDidFocus');
+    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                'TP.sig.HaloDidBlur');
+
+    //  Null out the target element.
+    this.set('targetTPElement', null);
+
+    //  We are now officially inactive.
     this.set('isActive', false);
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('processDNDTermination',
-function(aSignal) {
-
-    var targetElem,
-
-        assistantContentTPElem,
-
-        dialogPromise,
-        containingBlockElem;
-
-    targetElem = this.get('$currentDNDTarget');
-
-    if (TP.isElement(targetElem)) {
-
-        TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
-        this.set('$currentDNDTarget', null);
-
-        assistantContentTPElem =
-            TP.sherpa.insertionAssistant.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
-
-        dialogPromise = TP.dialog(
-            TP.hc(
-                'dialogID', 'AssistantDialog',
-                'isModal', true,
-                'title', 'Insert New Tag',
-                'templateContent', assistantContentTPElem));
-
-        //  After the dialog is showing, set the assistant parameters on the
-        //  content object from those defined in the original signal's payload.
-        dialogPromise.then(
-            function(aDialogTPElem) {
-
-                var contentTPElem;
-
-                contentTPElem = aDialogTPElem.get('bodyGroup').
-                                                    getFirstChildElement();
-
-                contentTPElem.set('data',
-                    TP.hc(
-                        'insertionPosition', this.get('insertionPosition'),
-                        'insertionPoint', targetElem));
-            }.bind(this));
-    }
-
-    containingBlockElem = this.get('$containingBlockElem');
-
-    if (TP.isElement(containingBlockElem)) {
-        TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
-        this.set('$containingBlockElem', null);
-    }
 
     return this;
 });
@@ -682,6 +879,13 @@ function(aSignal) {
 
 TP.sherpa.outliner.Inst.defineMethod('resetVisualizationParameters',
 function() {
+
+    /**
+     * @method resetVisualizationParameters
+     * @summary Resets all of the visualization parameters to their default
+     *     value.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
 
     this.set('insertionPosition', TP.BEFORE_END);
 
@@ -700,6 +904,12 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('rotateDown',
 function() {
 
+    /**
+     * @method rotateDown
+     * @summary Rotates the '3D extrusion' view 'down' along the X axis.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     this.set('xRotation', this.get('xRotation') - 5);
     this.updateTargetElementStyle();
 
@@ -710,6 +920,12 @@ function() {
 
 TP.sherpa.outliner.Inst.defineMethod('rotateLeft',
 function() {
+
+    /**
+     * @method rotateLeft
+     * @summary Rotates the '3D extrusion' view 'left' along the Y axis.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
 
     this.set('yRotation', this.get('yRotation') - 5);
     this.updateTargetElementStyle();
@@ -722,6 +938,12 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('rotateRight',
 function() {
 
+    /**
+     * @method rotateRight
+     * @summary Rotates the '3D extrusion' view 'right' along the Y axis.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     this.set('yRotation', this.get('yRotation') + 5);
     this.updateTargetElementStyle();
 
@@ -733,8 +955,42 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('rotateUp',
 function() {
 
+    /**
+     * @method rotateUp
+     * @summary Rotates the '3D extrusion' view 'up' along the X axis.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     this.set('xRotation', this.get('xRotation') + 5);
     this.updateTargetElementStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('setInsertionPosition',
+function(aPosition) {
+
+    /**
+     * @method setInsertionPosition
+     * @summary Sets the 'insertion position' of the drop target. This is the
+     *     position that the insertion will be made at if it is dropped under
+     *     the current conditions.
+     * @param {String} aPosition The insertion position. This could be
+     *     TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END, TP.AFTER_END.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var targetElement;
+
+    this.$set('insertionPosition', aPosition);
+
+    targetElement = TP.unwrap(this.get('targetTPElement'));
+
+    if (TP.isElement(targetElement)) {
+        TP.elementSetAttribute(targetElement, 'position', aPosition, true);
+    }
 
     return this;
 });
@@ -761,6 +1017,7 @@ function() {
     outlinerStyleElement = TP.byId('outliner_injected', doc, false);
 
     if (!TP.isElement(outlinerStyleElement)) {
+
         outlinerStyleElement = TP.documentAddCSSElement(
             doc,
             TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner_injected.css').
@@ -795,29 +1052,48 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('setupTargetElement',
 function() {
 
-    var topLevelElem,
+    /**
+     * @method setupTargetElement
+     * @summary Sets up the outliner-specific constructs that need to be placed
+     *     on the target element or its descendants to allow the outliner to
+     *     work.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var targetElement,
         prevValue,
 
         labelStr;
 
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    targetElement = TP.unwrap(this.get('targetTPElement'));
 
-    prevValue = TP.elementPopStyleProperty(topLevelElem, 'transform');
+    prevValue = TP.elementPopStyleProperty(targetElement, 'transform');
 
     //  NB: We use isValid(), not isEmpty(), here since an empty String is a
     //  valid CSS value.
     if (TP.isValid(prevValue)) {
-        TP.elementSetStyleProperty(topLevelElem, 'transform', prevValue);
+        TP.elementSetStyleProperty(targetElement, 'transform', prevValue);
     }
 
-    TP.elementAddClass(topLevelElem, 'sherpa-outliner');
+    //  Add the top-level 'sherpa-outliner' class. This let's the rules in the
+    //  injected style sheet work as they are qualified by this class.
+    TP.elementAddClass(targetElement, 'sherpa-outliner');
 
-    TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
+    //  Enable DND by setting this attribute.
+    TP.elementSetAttribute(targetElement, 'dnd:accept', 'tofu', true);
 
-    this.observe(this.get('topLevelTPElem'),
-                    TP.ac('TP.sig.DOMDNDTargetOver',
-                            'TP.sig.DOMDNDTargetOut'));
+    //  Set the 'position' attribute to the insertion position that the user has
+    //  specified. This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
+    //  TP.AFTER_END.
+    TP.elementSetAttribute(targetElement,
+                            'position',
+                            this.get('insertionPosition'),
+                            true);
 
+    //  Define a Function that will compute the tag label either by using the
+    //  name in the 'tibet:tag' attribute (preferred since it was set by the
+    //  system during some sort of compilation phase) or, lacking that, using
+    //  the element's 'tagName'.
     labelStr = function(anElement) {
 
         var tagName;
@@ -830,20 +1106,17 @@ function() {
         return tagName;
     };
 
-    TP.elementSetAttribute(topLevelElem,
+    //  Add a 'tagname' attribute on the target and all of its descendants.
+    //  This is used by a CSS rule to display the tagname labels for each
+    //  element in the outline.
+
+    TP.elementSetAttribute(targetElement,
                             'tagname',
-                            labelStr(topLevelElem),
+                            labelStr(targetElement),
                             true);
-
-    TP.elementSetAttribute(topLevelElem,
-                            'position',
-                            this.get('insertionPosition'),
-                            true);
-
     TP.nodeDescendantElementsPerform(
-                    topLevelElem,
+                    targetElement,
                     function(anElement) {
-
                         TP.elementSetAttribute(
                                         anElement,
                                         'tagname',
@@ -856,58 +1129,65 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineMethod('setInsertionPosition',
-function(aPosition) {
-
-    var topLevelElem;
-
-    this.$set('insertionPosition', aPosition);
-
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
-
-    if (TP.isElement(topLevelElem)) {
-        TP.elementSetAttribute(topLevelElem, 'position', aPosition, true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.outliner.Inst.defineMethod('showOutliner',
 function() {
+
+    /**
+     * @method showOutliner
+     * @summary Shows the outliner.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
 
     var canvasTPDoc,
 
         haloTPElem;
 
+    //  Grab the canvas document and observe mutation detach and mutation style
+    //  change signals from it. This allows the outliner to update as the DOM
+    //  changes underneath it.
     canvasTPDoc = TP.sys.getUICanvas().getDocument();
-
     this.observe(canvasTPDoc,
-                    TP.ac('TP.sig.MutationDetach',
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach',
                             'TP.sig.MutationStyleChange'));
 
+    //  Observe DND targeting signals over the target element.
+    this.observe(this.get('targetTPElement'),
+                    TP.ac('TP.sig.DOMDNDTargetOver',
+                            'TP.sig.DOMDNDTargetOut'));
+
+    //  Reset our visualization parameters all back to 0
     this.resetVisualizationParameters();
 
-    this.set('topLevelTPElem', canvasTPDoc.getBody());
+    //  For now, we use the canvas document's body element as the target
+    this.set('targetTPElement', canvasTPDoc.getBody());
 
+    //  Set it up.
     this.setupTargetElement();
 
+    //  Inject the stylesheet that we need the canvas document to have to
+    //  display the outlines (if it's not already there).
     this.setupInjectedStyleSheet();
 
+    //  Update both the target element and it's descendants style.
     this.updateTargetElementStyle();
     this.updateOutlinedDescendantStyle();
 
+    //  Grab the halo, move and size it to its own target and update its style
+    //  to match what we need to display it properly.
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
     haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
     this.updateHaloStyle();
 
+    //  Observe the halo for when it focuses and blurs. We'll need to do this to
+    //  keep it's style in sync with what we're doing here.
+
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidFocus');
-
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
 
+    //  We are now officially active.
     this.set('isActive', true);
 
     return this;
@@ -918,29 +1198,36 @@ function() {
 TP.sherpa.outliner.Inst.defineMethod('teardownTargetElement',
 function() {
 
-    var topLevelElem;
+    /**
+     * @method teardownTargetElement
+     * @summary Tears down the outliner-specific constructs that were placed on
+     *     the target element or its descendants to allow the outliner to work.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
 
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    var targetElement;
 
-    this.ignore(this.get('topLevelTPElem'),
-                    TP.ac('TP.sig.DOMDNDTargetOver',
-                            'TP.sig.DOMDNDTargetOut'));
+    //  Grab the target element
+    targetElement = TP.unwrap(this.get('targetTPElement'));
 
-    this.ignore(TP.ANY, 'TP.sig.DOMDNDTerminate');
+    //  Set it's transform back to ''
+    TP.elementSetStyleProperty(targetElement, 'transform', '');
 
-    TP.elementSetStyleProperty(topLevelElem, 'transform', '');
+    //  Remove the top-level 'sherpa-outliner' class
+    TP.elementRemoveClass(targetElement, 'sherpa-outliner');
 
-    TP.elementRemoveClass(topLevelElem, 'sherpa-outliner');
+    //  No longer need this attribute - no more DND here.
+    TP.elementRemoveAttribute(targetElement, 'dnd:accept');
 
-    TP.elementRemoveAttribute(topLevelElem, 'tibet:ctrl');
-    TP.elementRemoveAttribute(topLevelElem, 'dnd:accept');
+    //  No longer going to display the insertion position.
+    TP.elementRemoveAttribute(targetElement, 'position', true);
 
-    TP.elementRemoveAttribute(topLevelElem, 'tagname', true);
-
-    TP.elementRemoveAttribute(topLevelElem, 'position', true);
-
+    //  Remove the 'tagname' attribute on the target and all of its descendants.
+    //  This is used by a CSS rule to display the tagname labels for each
+    //  element in the outline.
+    TP.elementRemoveAttribute(targetElement, 'tagname', true);
     TP.nodeDescendantElementsPerform(
-                    topLevelElem,
+                    targetElement,
                     function(anElement) {
                         TP.elementRemoveAttribute(anElement, 'tagname', true);
                     });
@@ -950,34 +1237,39 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineMethod('updateOutlinedDescendantStyle',
-function() {
-
-    this.get('$hudOutlinerDescendantsRule').style.transform =
-                'translate3d(0px, 0px, ' + this.get('spread') + 'px)';
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.outliner.Inst.defineMethod('updateHaloStyle',
 function() {
 
+    /**
+     * @method updateHaloStyle
+     * @summary Updates the halo element's style to try to match the current
+     *     outliner's projection.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
     var haloTPElem,
 
-        topLevelElem,
+        targetElement,
+
+        haloTargetElem,
 
         xRotation,
         yRotation,
 
-        scale,
+        scale;
+
+    /*
         spread,
 
         haloTargetElem,
 
         parent,
         depthCount,
+
+        margins,
+        outlineOffset,
+
+        targetBox;
 
         zVal,
 
@@ -990,11 +1282,12 @@ function() {
         targetBox,
         transformOriginX,
         transformOriginY;
+    */
 
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
 
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
-    if (!TP.isElement(topLevelElem)) {
+    targetElement = TP.unwrap(this.get('targetTPElement'));
+    if (!TP.isElement(targetElement)) {
         haloTPElem.setTransform('');
         haloTPElem.setTransformOrigin('');
 
@@ -1009,17 +1302,17 @@ function() {
         return this;
     }
 
-    var topLevelTPElem;
-
-    topLevelTPElem = this.get('topLevelTPElem');
-
     xRotation = this.get('xRotation');
     yRotation = this.get('yRotation');
 
     scale = this.get('scale');
 
     /*
-    topLevelTPElem.setTransform(
+    var targetTPElement;
+
+    targetTPElement = this.get('targetTPElement');
+
+    targetTPElement.setTransform(
         ' rotateX(' + 0 + 'deg)' +
         ' rotateY(' + 0 + 'deg)' +
         ' scale(' + 0 + ')');
@@ -1027,6 +1320,7 @@ function() {
 
     haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
 
+    /*
     spread = this.get('spread');
 
     parent = haloTargetElem.parentNode;
@@ -1039,12 +1333,10 @@ function() {
 
     depthCount -= 1;
 
-    /*
-     * TODO: Fix the problem with the wrong spread on inline elements.
+    TODO: Fix the problem with the wrong spread on inline elements.
     if (!TP.XHTML_10_NONINLINE_ELEMENTS.at(haloTargetElem.tagName)) {
         zVal = spread * depthCount;
     }
-    */
 
     zVal = spread * depthCount;
 
@@ -1053,29 +1345,30 @@ function() {
 
     outlineOffset = 2;
 
-    if (topLevelElem === haloTargetElem) {
+    if (targetElement === haloTargetElem) {
         offsetX = -outlineOffset;
         offsetY = -outlineOffset;
     } else {
-        margins = TP.elementGetMarginInPixels(topLevelElem);
+        margins = TP.elementGetMarginInPixels(targetElement);
         offsetX = margins.at(3) - outlineOffset;
         offsetY = margins.at(0) - outlineOffset;
     }
+    */
 
     haloTPElem.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
         ' scale(' + scale + ')');
-        //' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
+    /*
+    // ' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
 
     targetBox = TP.elementGetBorderBox(haloTargetElem);
     transformOriginX = targetBox.at('left');
     transformOriginY = targetBox.at('top');
 
-    //haloTPElem.setTransformOrigin(transformOriginX, transformOriginY);
+    // haloTPElem.setTransformOrigin(transformOriginX, transformOriginY);
 
-    /*
-    topLevelTPElem.setTransform(
+    targetTPElement.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
         ' scale(' + scale + ')');
@@ -1086,24 +1379,50 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.outliner.Inst.defineMethod('updateOutlinedDescendantStyle',
+function() {
+
+    /**
+     * @method updateOutlinedDescendantStyle
+     * @summary Updates the style governing the 'outlined' descendants of the
+     *     target element to adjust properties such as the '3D spread' of
+     *     elements.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    this.get('$hudOutlinerDescendantsRule').style.transform =
+                'translate3d(0px, 0px, ' + this.get('spread') + 'px)';
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.outliner.Inst.defineMethod('updateTargetElementStyle',
 function() {
+
+    /**
+     * @method updateTargetElementStyle
+     * @summary Updates the outliner's target element's style (the scale and
+     *     transform that is currently displaying the outliner's projection).
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
 
     var xRotation,
         yRotation,
 
         scale,
 
-        topLevelTPElem;
+        targetTPElement;
 
     xRotation = this.get('xRotation');
     yRotation = this.get('yRotation');
 
     scale = this.get('scale');
 
-    topLevelTPElem = this.get('topLevelTPElem');
+    targetTPElement = this.get('targetTPElement');
 
-    topLevelTPElem.setTransform(
+    targetTPElement.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
         ' scale(' + scale + ')');
@@ -1131,7 +1450,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
      */
 
     var keyName;
@@ -1150,56 +1469,6 @@ function(aSignal) {
 TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Esc_Up',
 function(aSignal) {
     TP.signal(TP.ANY, 'TP.sig.EndOutlineMode');
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('OutlineEnter',
-function(aSignal) {
-
-    /**
-     * @method handleOutlineEnter
-     * @summary Invoked when the receiver enters it's 'main state'.
-     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
-     *     machine to enter a state that matches the receiver's 'main state'.
-     * @returns {TP.core.OutlineKeyResponder} The receiver.
-     */
-
-    var outliner;
-
-    this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
-
-    outliner = TP.bySystemId('SherpaOutliner');
-
-    outliner.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-    outliner.showOutliner();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('OutlineExit',
-function(aSignal) {
-
-    /**
-     * @method handleOutlineExit
-     * @summary Invoked when the receiver exits it's 'main state'.
-     * @param {TP.sig.StateExit} aSignal The signal that caused the state
-     *     machine to exit a state that matches the receiver's 'main state'.
-     * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
-     */
-
-    var outliner;
-
-    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
-
-    outliner = TP.bySystemId('SherpaOutliner');
-
-    outliner.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-    outliner.hideOutliner();
-
-    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -1318,6 +1587,56 @@ function(aSignal) {
     TP.bySystemId('SherpaOutliner').deactivateMouseHandler();
 
     aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('OutlineEnter',
+function(aSignal) {
+
+    /**
+     * @method handleOutlineEnter
+     * @summary Invoked when the receiver enters it's 'main state'.
+     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
+     *     machine to enter a state that matches the receiver's 'main state'.
+     * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
+     */
+
+    var outliner;
+
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
+    outliner = TP.bySystemId('SherpaOutliner');
+
+    outliner.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    outliner.showOutliner();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('OutlineExit',
+function(aSignal) {
+
+    /**
+     * @method handleOutlineExit
+     * @summary Invoked when the receiver exits it's 'main state'.
+     * @param {TP.sig.StateExit} aSignal The signal that caused the state
+     *     machine to exit a state that matches the receiver's 'main state'.
+     * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
+     */
+
+    var outliner;
+
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
+    outliner = TP.bySystemId('SherpaOutliner');
+
+    outliner.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    outliner.hideOutliner();
 
     return this;
 });
