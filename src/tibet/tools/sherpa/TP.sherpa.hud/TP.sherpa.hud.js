@@ -140,7 +140,10 @@ function(beClosed) {
 
     var wasClosed,
 
-        drawerElement;
+        drawerElement,
+
+        doc,
+        hudStyleElement;
 
     wasClosed = TP.bc(this.getAttribute('closed'));
 
@@ -152,14 +155,28 @@ function(beClosed) {
 
     drawerElement = TP.byId('south', this.getNativeWindow(), false);
 
+    doc = TP.sys.uidoc(true);
+
     if (TP.isTrue(beClosed)) {
 
         TP.elementGetStyleObj(drawerElement).height = '';
 
         this.hideAllHUDDrawers();
 
+        hudStyleElement = TP.byId('hud_injected', doc, false);
+        if (TP.isElement(hudStyleElement)) {
+            hudStyleElement.disabled = true;
+        }
+        TP.elementRemoveClass(doc.documentElement, 'sherpa-hud');
+
         this.getNativeWindow().focus();
     } else {
+
+        hudStyleElement = TP.byId('hud_injected', doc, false);
+        if (TP.isElement(hudStyleElement)) {
+            hudStyleElement.disabled = false;
+        }
+        TP.elementAddClass(doc.documentElement, 'sherpa-hud');
 
         this.showAllHUDDrawers();
     }
@@ -295,8 +312,6 @@ function() {
         //  considered in CSS queries, etc.
         hudStyleElement[TP.GENERATED] = true;
     }
-
-    TP.elementAddClass(doc.documentElement, 'sherpa-hud');
 
     return this;
 });
