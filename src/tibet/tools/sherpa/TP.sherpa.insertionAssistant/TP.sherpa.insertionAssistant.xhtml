@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<sherpa:insertionAssistant tibet:nomutationtracking="true">
+    <div class="head">
+		<tibet:data name="urn:tibet:attr_data_blank">
+			<![CDATA[
+			{"tagAttrName":"", "tagAttrValue":""}
+			]]>
+		</tibet:data>
+	</div>
+    <div class="body">
+        <div class="supertype_chooser">
+            Choose from list:
+            <br/>
+            <br/>
+            <xctrls:list id="InsertionAssistantTagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:info_source#jpath($.info.chosenTagName)}"/>
+            <br/>
+            <br/>
+            Or type new tag name:
+            <br/>
+            <br/>
+            <input type="text" id="newTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:info_source#jpath($.info.enteredTagName)}"/>
+        </div>
+        <div class="insertion_details">
+			<form bind:scope="urn:tibet:info_source#jpath($.info)">
+                <ul class="flex_outer">
+					<li>
+                        <label>Insertion Point:</label>
+						<sherpa:breadcrumb id="InsertionBreadcrumb"/>
+					</li>
+                    <li>
+                        <label>Insertion position:</label>
+                        <ul class="flex_inner">
+                            <li>
+                                <input type="radio" name="insertion_radio" value="BeforeBegin" id="InsertionPointRadio1" bind:io="{checked: insertionPosition}"/>
+                                <label for="InsertionPointRadio1">Previous Sibling</label>
+                                <input type="radio" name="insertion_radio" value="AfterBegin" id="InsertionPointRadio2"/>
+                                <label for="InsertionPointRadio2">First Child</label>
+                                <input type="radio" name="insertion_radio" value="BeforeEnd" id="InsertionPointRadio3"/>
+                                <label for="InsertionPointRadio3">Last Child</label>
+                                <input type="radio" name="insertion_radio" value="AfterEnd" id="InsertionPointRadio4"/>
+                                <label for="InsertionPointRadio4">Next Sibling</label>
+                            </li>
+                        </ul>
+                    </li>
+					<li id="AttributesTable">
+                        <label>Attributes:</label>
+						<div id="attributes" bind:repeat="tagAttrs">
+								<input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
+								<input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
+								<span class="deleter" on:click="{signal: DeleteItem, origin: 'attributes', payload: {index:TP.TARGET}}"/>
+							<br/>
+
+                        </div>
+					</li>
+                    <li>
+                        <div class="inserter" on:click="{signal: InsertItem, origin: 'attributes', payload: {source: 'urn:tibet:attr_data_blank', copy: true}}"></div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+    <div class="foot">
+        <code id="generatedTag"/>
+		<br/>
+		<br/>
+        <button on:click="DialogCancel">Cancel</button>
+        <button on:click="DialogOk">Insert Tag</button>
+    </div>
+</sherpa:insertionAssistant>

@@ -10969,11 +10969,15 @@ function(anElement, nodesAdded) {
     for (i = 0; i < len; i++) {
         root = rootNodesAdded.at(i);
 
-        mutatedGIDs.push(TP.gid(root));
-
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
-        if (root.$$awakened) {
+        if (root[TP.AWAKENED]) {
+            continue;
+        }
+
+        //  Check to make sure this isn't a 'generated node'. If so we want to
+        //  exit.
+        if (root[TP.GENERATED]) {
             continue;
         }
 
@@ -10999,6 +11003,11 @@ function(anElement, nodesAdded) {
                                         root, 'tibet:noawaken', null, true))) {
             continue;
         }
+
+        //  Note here how we assign the global ID if there isn't one present.
+        //  This is important for observers of this signal who will want to come
+        //  back and reference these elements.
+        mutatedGIDs.push(TP.gid(root, true));
 
         processor.processTree(root);
 
@@ -11085,7 +11094,16 @@ function(anElement, nodesRemoved) {
 
         root = rootNodesRemoved.at(i);
 
-        mutatedGIDs.push(TP.gid(root));
+        //  Check to make sure this isn't a 'generated node'. If so we want to
+        //  exit.
+        if (root[TP.GENERATED]) {
+            continue;
+        }
+
+        //  Note here how we assign the global ID if there isn't one present.
+        //  This is important for observers of this signal who will want to come
+        //  back and reference these elements.
+        mutatedGIDs.push(TP.gid(root, true));
 
         //  Initially we're set to process this markup.
         shouldProcess = true;
@@ -11267,7 +11285,7 @@ function(aNode) {
 
     //  Flag the node as having been awakened. This state is checked by mutation
     //  handlers etc. to avoid duplicate effort.
-    aNode.$$awakened = true;
+    aNode[TP.AWAKENED] = true;
 
     return;
 });

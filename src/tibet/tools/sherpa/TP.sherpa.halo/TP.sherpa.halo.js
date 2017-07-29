@@ -421,6 +421,71 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler('MutationAttach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationAttach
+     * @summary Handles notifications of node attachment from the overall canvas
+     *     that the halo is working with.
+     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var mutatedIDs,
+
+        newTargetTPElem,
+        currentTargetTPElem;
+
+    if (TP.isEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
+        return this;
+    }
+
+    newTargetTPElem = TP.bySystemId(mutatedIDs.last());
+    if (TP.notValid(newTargetTPElem) ||
+        TP.notValid(TP.unwrap(newTargetTPElem)[TP.SHERPA_MUTATION])) {
+        return this;
+    }
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    //  If the new target is not the same as the current target (which in all
+    //  likelihood will not be), then we refocus ourself onto the newly inserted
+    //  node as our target.
+    if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+        //  See if we can focus the new target element - if not, we'll search up
+        //  the parent chain for the nearest focusable element
+        if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
+        }
+
+        //  Couldn't find a focusable target... exit.
+        if (TP.notValid(newTargetTPElem)) {
+            return this;
+        }
+
+        if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+            !newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+            //  This will move the halo off of the old element.
+            this.blur();
+
+            //  This will move the halo to the new element.
+            this.focusOn(newTargetTPElem);
+        }
+
+        //  This will 'unhide' the halo.
+        this.setAttribute('hidden', false);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineHandler('MutationDetach',
 function(aSignal) {
 
@@ -627,59 +692,6 @@ function(aSignal) {
 
     //  Show the busy layer. We'll do more when we get the NodeDidRecast
     this.displayBusy();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('OutlinerDOMInsert',
-function(aSignal) {
-
-    /**
-     * @method handleOutlinerDOMInsert
-     * @summary Handles notifications of node insertions from the outliner.
-     * @param {TP.sig.OutlinerDOMInsert} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var newTargetTPElem,
-        currentTargetTPElem;
-
-    newTargetTPElem = aSignal.at('insertedTPElem');
-    currentTargetTPElem = this.get('currentTargetTPElem');
-
-    //  If the new target is not the same as the current target (which in all
-    //  likelihood will not be), then we refocus ourself onto the newly inserted
-    //  node as our target.
-    if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
-
-        //  See if we can focus the new target element - if not, we'll search up
-        //  the parent chain for the nearest focusable element
-        if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
-            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
-                                                            this, aSignal);
-        }
-
-        //  Couldn't find a focusable target... exit.
-        if (TP.notValid(newTargetTPElem)) {
-            return this;
-        }
-
-        if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
-            !newTargetTPElem.identicalTo(currentTargetTPElem)) {
-
-            //  This will move the halo off of the old element.
-            this.blur();
-
-            //  This will move the halo to the new element.
-            this.focusOn(newTargetTPElem);
-        }
-
-        //  This will 'unhide' the halo.
-        this.setAttribute('hidden', false);
-    }
 
     return this;
 });
@@ -1368,7 +1380,8 @@ function(beHidden) {
         this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
 
         this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationDetach',
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach',
                             'TP.sig.MutationStyleChange'));
 
         this.ignore(this.getDocument(),
@@ -1393,7 +1406,8 @@ function(beHidden) {
         this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
 
         this.observe(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationDetach',
+                    TP.ac('TP.sig.MutationAttach',
+                            'TP.sig.MutationDetach',
                             'TP.sig.MutationStyleChange'));
 
         this.observe(this.getDocument(),
@@ -1440,8 +1454,6 @@ function() {
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
-
-    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
 
     this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
 

@@ -753,11 +753,13 @@ TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
 TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
 TP.GENERATED = 'tp_generated';
+TP.AWAKENED = 'tp_awakened';
 TP.APPLIED_RULES = 'tp_appliedrules';
 TP.TIBET_PRIVATE = 'tp_tibetprivate';
 TP.PREVIOUS_POSITION = 'tp_previousposition';
 TP.INSERTION_POSITION = 'tp_insertionposition';
 TP.RESIZE_LISTENERS = 'tp_resize_listeners';
+TP.SHERPA_MUTATION = 'tp_sherpa_mutated';
 
 TP.OLD_TOP = 'tp_top';
 TP.OLD_LEFT = 'tp_left';
