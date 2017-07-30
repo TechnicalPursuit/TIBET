@@ -1818,14 +1818,32 @@ function() {
         TP.ALL);
 
     //  Add a managed Mutation Observer filter Function that will filter
-    //  mutation records for flipping 'pclass:hover' attribute changes.
+    //  mutation records for:
+    //
+    //      - style attribute changes.
+    //      - flipping 'pclass:hover' attribute changes.
+
     TP.addMutationObserverFilter(
         function(aMutationRecord) {
 
-            if (aMutationRecord.type === 'attributes' &&
-                aMutationRecord.attributeName === 'hover' &&
-                aMutationRecord.attributeNamespace === TP.w3.Xmlns.PCLASS) {
-                return false;
+            if (aMutationRecord.type === 'attributes') {
+
+                switch (aMutationRecord.attributeName) {
+
+                    case 'style':
+                        return false;
+
+                    case 'hover':
+                        if (aMutationRecord.attributeNamespace ===
+                            TP.w3.Xmlns.PCLASS) {
+                            return false;
+                        }
+
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
             return true;
