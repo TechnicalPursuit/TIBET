@@ -127,7 +127,7 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.tsh.CommandAssistant.Inst.defineHandler('ValueChange',
-function() {
+function(aSignal) {
 
     /**
      * @method handleValueChange
@@ -139,9 +139,11 @@ function() {
     var result,
         data,
         typeInfo,
-        str;
+        str,
 
-    result = TP.uc('urn:tibet:method_cmd_source').getResource().get('result');
+        cmdLineTPElem;
+
+    result = aSignal.getOrigin().getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -153,8 +155,10 @@ function() {
 
     typeInfo = TP.hc(data).at('info');
 
+    cmdLineTPElem = this.get('generatedCmdLine');
+
     str = this.generateCommand(typeInfo);
-    this.get('generatedCmdLine').setTextContent(str);
+    cmdLineTPElem.setTextContent(str);
 
     return this;
 });
