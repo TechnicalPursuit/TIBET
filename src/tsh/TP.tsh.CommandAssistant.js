@@ -71,7 +71,7 @@ function(anObject) {
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
-    modelURI = TP.uc('urn:tibet:method_cmd_source');
+    modelURI = this.get('assistantModelURI');
     this.ignore(modelURI, 'ValueChange');
 
     return this;
@@ -100,10 +100,10 @@ function(anObject) {
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
-    modelURI = TP.uc('urn:tibet:method_cmd_source');
+    modelURI = this.get('assistantModelURI');
     this.ignore(modelURI, 'ValueChange');
 
-    result = TP.uc('urn:tibet:method_cmd_source').getResource().get('result');
+    result = modelURI.getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -143,7 +143,7 @@ function(aSignal) {
 
         cmdLineTPElem;
 
-    result = aSignal.getOrigin().getResource().get('result');
+    result = this.get('assistantModelURI').getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;

@@ -72,6 +72,21 @@ function(info) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.type_assistant.Inst.defineMethod('getAssistantModelURI',
+function() {
+
+    /**
+     * @method getAssistantModelURI
+     * @summary Returns the URI containing the model that the assistant is using
+     *     to manage all of the selections in its panel.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    return TP.uc('urn:tibet:type_cmd_source');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.type_assistant.Inst.defineMethod('setOriginalRequest',
 function(anObj) {
 
