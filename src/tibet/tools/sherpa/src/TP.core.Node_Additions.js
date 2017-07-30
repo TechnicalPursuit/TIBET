@@ -19,6 +19,19 @@
 TP.core.Node.Inst.defineMethod('haloCanBlur',
 function(aHalo, aSignal) {
 
+    /**
+     * @method haloCanBlur
+     * @summary Returns whether or not the halo can blur (i.e. no longer focus
+     *     on) the receiver.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can blur the receiver.
+     * @param {TP.sig.Signal} aSignal The signal that initiated the blurring
+     *     activity.
+     * @returns {Boolean} Whether or not the halo can blur the receiver.
+     */
+
+    //  We return false here because, at this level, the halo should be neither
+    //  focusing or blurring.
     return false;
 });
 
@@ -27,6 +40,18 @@ function(aHalo, aSignal) {
 TP.core.Node.Inst.defineMethod('haloCanFocus',
 function(aHalo, aSignal) {
 
+    /**
+     * @method haloCanFocus
+     * @summary Returns whether or not the halo can focus on the receiver.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can focus the receiver.
+     * @param {TP.sig.Signal} aSignal The signal that initiated the focusing
+     *     activity.
+     * @returns {Boolean} Whether or not the halo can focus the receiver.
+     */
+
+    //  We return false here because, at this level, the halo should be neither
+    //  focusing or blurring.
     return false;
 });
 
@@ -402,9 +427,12 @@ function(aHalo) {
 
     /**
      * @method getHaloParent
-     * @summary
-     * @param
-     * @returns {TP.core.ElementNode}
+     * @summary Returns the next 'haloable' ancestor element of the receiver.
+     *     Not all ancestors in the receiver's ancestor chain are 'haloable'.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
+     *     to use to display itself.
+     * @returns {TP.core.ElementNode} The next haloable ancestor of the
+     *     receiver.
      */
 
     var parentElem;
@@ -485,6 +513,19 @@ function(aHalo) {
 TP.core.UIElementNode.Inst.defineMethod('getNearestHaloGenerator',
 function(aHalo, aspectPathParts) {
 
+    /**
+     * @method getNearestHaloGenerator
+     * @summary Returns the next 'generator' ancestor element of the receiver.
+     * @description This method returns the next parent up the ancestor chain
+     *     that is a 'tag generator'. A generator is an Element that is usually
+     *     a compiled or templated tag that is responsible for generating
+     *     content.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
+     *     generator ancestor.
+     * @returns {TP.core.ElementNode} The next generator ancestor of the
+     *     receiver.
+     */
+
     var generatorTPElem;
 
     /* eslint-disable consistent-this */
@@ -495,6 +536,9 @@ function(aHalo, aspectPathParts) {
         return generatorTPElem;
     }
 
+    //  Keep iterating up the *haloable* ancestors of the receiver, looking for
+    //  one that is a TP.core.CustomTag (the parent type of compiled and
+    //  templated tag types). Return the first one found.
     while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
 
         if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
@@ -509,6 +553,20 @@ function(aHalo, aspectPathParts) {
 
 TP.core.UIElementNode.Inst.defineMethod('getNearestHaloFocusable',
 function(aHalo, aSignal) {
+
+    /**
+     * @method getNearestHaloFocusable
+     * @summary Returns the next focusable (by the halo ) ancestor element of
+     *     the receiver. Not all ancestors in the receiver's ancestor chain are
+     *     'focusable' by the halo. Only ones that respond true to haloCanFocus
+     *     are.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
+     *     halo-focusable ancestor.
+     * @param {TP.sig.Signal} aSignal The signal that initiated the focusing
+     *     activity.
+     * @returns {TP.core.ElementNode} The next halo-focusable ancestor of the
+     *     receiver.
+     */
 
     var canFocus,
         focusableTPElem;
@@ -541,11 +599,18 @@ function(aHalo, aSignal) {
 
     /**
      * @method getNextHaloChild
-     * @summary
-     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the next halo
-     *     child.
-     * @param {TP.sig.Signal} aSignal
-     * @returns {TP.core.ElementNode}
+     * @summary Returns the next 'haloable' child element of the receiver.
+     * @description This method uses the target of the supplied signal to
+     *     compute a possible haloable child. If that child is not haloable, it
+     *     then traverses its ancestor chain until it comes to the receiver,
+     *     looking for a haloable Element. If it doesn't find one and comes to
+     *     the receiver, it exits and returns null.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the next
+     *     halo-focusable child.
+     * @param {TP.sig.Signal} aSignal The signal that initiated the search for a
+     *     haloable child.
+     * @returns {TP.core.ElementNode} The next haloable child between the
+     *     receiver and the target of the supplied signal.
      */
 
     var evtTarget,
@@ -587,7 +652,7 @@ function() {
     /**
      * @method getUIEditorType
      * @summary Returns the UIEditor subtype used to edit any UI elements.
-     * @returns {Type}
+     * @returns {TP.meta.core.UIElementNodeEditor}
      */
 
     return TP.core.UIElementNodeEditor;
@@ -597,6 +662,17 @@ function() {
 
 TP.core.UIElementNode.Inst.defineMethod('haloCanBlur',
 function(aHalo, aSignal) {
+
+    /**
+     * @method haloCanBlur
+     * @summary Returns whether or not the halo can blur (i.e. no longer focus
+     *     on) the receiver.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can blur the receiver.
+     * @param {TP.sig.Signal} aSignal The signal that initiated the blurring
+     *     activity.
+     * @returns {Boolean} Whether or not the halo can blur the receiver.
+     */
 
     /*
     var evtWin,
@@ -630,6 +706,15 @@ function(aHalo, aSignal) {
 TP.core.UIElementNode.Inst.defineMethod('haloCanDelete',
 function(aHalo) {
 
+    /**
+     * @method haloCanDelete
+     * @summary Returns whether or not the halo can delete the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can focus the receiver.
+     * @returns {Boolean} Whether or not the halo can delete the receiver.
+     */
+
     var currentTargetTPElem,
 
         ourName,
@@ -661,6 +746,17 @@ function(aHalo) {
 TP.core.UIElementNode.Inst.defineMethod('haloCanFocus',
 function(aHalo, aSignal) {
 
+    /**
+     * @method haloCanFocus
+     * @summary Returns whether or not the halo can focus on the receiver.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can focus the receiver.
+     * @param {TP.sig.Signal} aSignal The signal that initiated the focusing
+     *     activity.
+     * @returns {Boolean} Whether or not the halo can focus the receiver.
+     */
+
+    //  We cannot focus on elements that are Sherpa elements themselves.
     if (this.getNSURI() === TP.w3.Xmlns.SHERPA) {
         return false;
     }
