@@ -29,7 +29,7 @@ TP.tsh.CommandAssistant.Inst.defineAttribute('body',
     TP.cpc('> .body', TP.hc('shouldCollapse', true)));
 
 TP.tsh.CommandAssistant.Inst.defineAttribute('generatedCmdLine',
-    TP.cpc('> .body > #generatedCmdLine', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .foot > #generatedCmdLine', TP.hc('shouldCollapse', true)));
 
 TP.tsh.CommandAssistant.Inst.defineAttribute('foot',
     TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
