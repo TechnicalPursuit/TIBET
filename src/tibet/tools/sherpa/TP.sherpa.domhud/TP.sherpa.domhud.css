@@ -33,13 +33,20 @@ sherpa|domhud > ul {
     overflow: auto;
 }
 
-sherpa|domhud > ul.content > li {
+/* All items */
+
+sherpa|domhud > ul.content > li.item {
+
+    margin: 1px 5px 1px 5px;
+}
+
+/* DOM node items */
+
+sherpa|domhud > ul.content > li.domnode {
 
     height: 18px;
 
     padding-left: 0.25em;
-
-    margin: 0.5em;
 
     border: 1px solid #666;
     border-radius: 9px;
@@ -50,23 +57,45 @@ sherpa|domhud > ul.content > li {
     cursor: pointer;
 }
 
-sherpa|domhud > ul.content > li[child="true"] {
+sherpa|domhud > ul.content > li.domnode[child="true"] {
 
     margin-left: 2em;
 }
 
-sherpa|domhud > ul.content > li:hover {
+sherpa|domhud > ul.content > li.domnode:hover {
 
     background-color: rgba(255, 215, 0, 0.5);
     color: #666;
 }
 
-sherpa|domhud > ul.content > li[pclass|selected] {
+sherpa|domhud > ul.content > li.domnode[pclass|selected] {
 
     background-color: gold;
 }
 
-sherpa|domhud > ul.content > li[pclass|selected]:hover {
+sherpa|domhud > ul.content > li.domnode[pclass|selected]:hover {
 
     background-color: gold;
 }
+
+/* spacer items */
+
+sherpa|domhud > ul.content > li.spacer {
+
+    background-color: transparent;
+
+    height: 3px;
+
+    border: none;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: default;
+}
+
+sherpa|domhud > ul.content > li.spacer.sherpa_droptarget {
+
+    background-color: red;
+}
+

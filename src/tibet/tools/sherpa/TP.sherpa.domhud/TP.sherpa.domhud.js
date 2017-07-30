@@ -17,8 +17,50 @@
 TP.sherpa.hudsidebar.defineSubtype('domhud');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description Because tibet:data tag content drives binds and we need to
+     *     notify even without a full page load, we notify from here once the
+     *     attachment is complete (instead of during tagAttachData).
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.observe(tpElem.get('listcontent'),
+                    TP.ac('TP.sig.DOMDNDTargetOver',
+                            'TP.sig.DOMDNDTargetOut'));
+
+    tpElem.observe(TP.ANY, 'TP.sig.DOMDNDTerminate');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineAttribute('$currentDNDTarget');
 
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
@@ -151,42 +193,95 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var newContent;
+    var domContent;
 
-    newContent = enterSelection.append('li');
-    newContent.attr(
+    domContent = enterSelection.append('li');
+
+    domContent.attr(
             'pclass:selected',
             function(d) {
-                if (TP.isValid(d[2])) {
-                    if (d[2] === 'target') {
-                        return true;
-                    }
+                if (d[2] === 'target') {
+                    return true;
                 }
-            }).attr('child',
+            }).attr(
+            'child',
             function(d) {
-                if (TP.isValid(d[2])) {
-                    if (d[2] === 'child') {
-                        return true;
-                    }
+                if (d[2] === 'child') {
+                    return true;
                 }
             }).attr(
             'indexInData',
             function(d, i) {
                 return i;
             }).attr(
-            'title',
-            function(d) {
-                return d[1];
-            }).attr(
             'peerID',
             function(d, i) {
-                return d[0];
+                if (d[2] !== 'spacer') {
+                    return d[0];
+                }
             }).text(
             function(d) {
-                return d[1];
-            }).classed('item', true);
+                if (d[2] !== 'spacer') {
+                    return d[1];
+                }
+            }).attr(
+            'class',
+            function(d) {
+                var val;
 
-    return newContent;
+                val = 'item';
+
+                if (d[2] === 'spacer') {
+                    val += ' spacer';
+                } else {
+                    val += ' domnode';
+                }
+
+                return val;
+            }).each(
+            function(d, i) {
+                if (d[2] === 'spacer') {
+                    TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
+                } else {
+                    TP.elementRemoveAttribute(this, 'dnd:accept', true);
+                }
+            });
+
+    return domContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('computeSelectionData',
+function() {
+
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {Object} The selection data.
+     */
+
+    var data,
+        newData,
+
+        len,
+        i;
+
+    data = this.get('data');
+
+    newData = TP.ac();
+
+    len = data.getSize();
+    for (i = 0; i < len; i++) {
+        newData.push(data.at(i), TP.ac('spacer', 'spacer', 'spacer'));
+    }
+
+    return newData;
 });
 
 //  ------------------------------------------------------------------------
@@ -206,34 +301,51 @@ function(updateSelection) {
     updateSelection.attr(
             'pclass:selected',
             function(d) {
-                if (TP.isValid(d[2])) {
-                    if (d[2] === 'target') {
-                        return true;
-                    }
+                if (d[2] === 'target') {
+                    return true;
                 }
             }).attr('child',
             function(d) {
-                if (TP.isValid(d[2])) {
-                    if (d[2] === 'child') {
-                        return true;
-                    }
+                if (d[2] === 'child') {
+                    return true;
                 }
             }).attr(
             'indexInData',
             function(d, i) {
                 return i;
             }).attr(
-            'title',
-            function(d) {
-                return d[1];
-            }).attr(
             'peerID',
             function(d, i) {
-                return d[0];
+                if (d[2] !== 'spacer') {
+                    return d[0];
+                }
             }).text(
             function(d) {
-                return d[1];
-            }).classed('item', true);
+                if (d[2] !== 'spacer') {
+                    return d[1];
+                }
+            }).attr(
+            'class',
+            function(d) {
+                var val;
+
+                val = 'item';
+
+                if (d[2] === 'spacer') {
+                    val += ' spacer';
+                } else {
+                    val += ' domnode';
+                }
+
+                return val;
+            }).each(
+            function(d, i) {
+                if (d[2] === 'spacer') {
+                    TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
+                } else {
+                    TP.elementRemoveAttribute(this, 'dnd:accept', true);
+                }
+            });
 
     return updateSelection;
 });
@@ -267,6 +379,146 @@ function(aSignal) {
     return this;
 }, {
     origin: 'SherpaHUD'
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('DOMDNDTargetOver',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDNDTargetOver
+     * @summary Handles when the drag and drop system enters a possible drop
+     *     target.
+     * @param {TP.sig.DOMDNDTargetOver} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var dndTargetTPElem,
+        dndTargetElem;
+
+    dndTargetTPElem = aSignal.getDOMTarget();
+    dndTargetElem = TP.unwrap(dndTargetTPElem);
+
+    this.set('$currentDNDTarget', dndTargetElem);
+
+    //  Put a CSS class on the current drop target element for visual
+    //  highlighting purposes
+    TP.elementAddClass(dndTargetElem, 'sherpa_droptarget');
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('DOMDNDTargetOut',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDNDTargetOut
+     * @summary Handles when the drag and drop system exits a possible drop
+     *     target.
+     * @param {TP.sig.DOMDNDTargetOut} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var dndTargetTPElem,
+        dndTargetElem;
+
+    dndTargetTPElem = aSignal.getDOMTarget();
+    dndTargetElem = TP.unwrap(dndTargetTPElem);
+
+    //  Remove the CSS class placed on the drop target and set the attribute we
+    //  use to track the current DND target to null.
+    TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+    this.set('$currentDNDTarget', null);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('DOMDNDTerminate',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDNDTerminate
+     * @summary Handles when the drag and drop system terminates a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDTerminate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var dndTargetElem,
+
+        peerID,
+
+        insertionPosition,
+
+        peerElem,
+
+        doc;
+
+    dndTargetElem = this.get('$currentDNDTarget');
+
+    if (TP.isElement(dndTargetElem)) {
+
+        //  Remove the class placed on the drop target and set the attribute we
+        //  use to track the current DND target to null.
+        TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+        this.set('$currentDNDTarget', null);
+
+        //  If the canvas document contains the target element, then we want to
+        //  be the controller that does the possible insertion.
+        if (this.contains(dndTargetElem, TP.IDENTITY)) {
+
+            //  If the spacer DND target element has a next sibling, then try to
+            //  get it's peerID and set the insertion position to
+            //  TP.BEFORE_BEGIN.
+            if (TP.isElement(dndTargetElem.nextSibling)) {
+                //  We go to the item after us to determine the peerID
+                peerID = TP.elementGetAttribute(
+                            dndTargetElem.nextSibling,
+                            'peerID',
+                            true);
+                insertionPosition = TP.BEFORE_BEGIN;
+            }
+
+            //  Couldn't find one after us - try the spacer DND target element
+            //  before us.
+            if (TP.isEmpty(peerID) &&
+                TP.isElement(dndTargetElem.previousSibling)) {
+                //  We go to the item before us to determine the peerID
+                peerID = TP.elementGetAttribute(
+                            dndTargetElem.previousSibling,
+                            'peerID',
+                            true);
+                insertionPosition = TP.AFTER_END;
+            }
+
+            //  If we succesfully got a peerID, then get the Element it matches
+            //  in the UI canvas DOM.
+            if (TP.notEmpty(peerID)) {
+
+                doc = TP.sys.uidoc(true);
+
+                peerElem = TP.byId(peerID, doc, false);
+                if (TP.isElement(peerElem)) {
+
+                    //  We found a peer ELement. Use it as the insertion point
+                    //  and use it's parent node as the receiver of the message
+                    //  that the Sherpa dropped tofu.
+                    TP.wrap(peerElem.parentNode).sherpaDidInsertTofu(
+                                            peerElem, insertionPosition);
+                }
+            }
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
