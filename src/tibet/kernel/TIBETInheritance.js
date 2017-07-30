@@ -11546,10 +11546,47 @@ function() {
     /**
      * @method getCustomTypeNames
      * @summary Returns the list of all known custom type names in the system.
-     * @returns {Array[TP.meta.*]} A list of type names.
+     * @returns {String[]} A list of type names.
      */
 
-    return TP.sys.getCustomTypes().getKeys();
+    var typeKeys;
+
+    typeKeys = TP.copy(TP.sys.getMetadata('types').getKeys());
+    typeKeys.sort();
+
+    return typeKeys;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getCustomTypeNameKVPairs',
+function() {
+
+    /**
+     * @method getCustomTypeNameKVPairs
+     * @summary Returns a hash of all known custom type names in the system as a
+     *     set of pairs where the type name is both the key and the value.
+     * @returns {TP.core.Hash} A hash of type names in both the key and value
+     *     slots.
+     */
+
+    var typeKeys,
+
+        result,
+        len,
+        i;
+
+    typeKeys = TP.copy(TP.sys.getMetadata('types').getKeys());
+    typeKeys.sort();
+
+    result = TP.hc();
+
+    len = typeKeys.getSize();
+    for (i = 0; i < len; i++) {
+        result.atPut(typeKeys.at(i), typeKeys.at(i));
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -11560,10 +11597,15 @@ function() {
     /**
      * @method getTypeNames
      * @summary Returns the list of all known types in the system.
-     * @returns {Array[TP.meta.*]} A list of type names.
+     * @returns {String[]} A list of type names.
      */
 
-    return TP.sys.getTypes().getKeys();
+    var typeKeys;
+
+    typeKeys = TP.copy(TP.sys.getTypes().getKeys());
+    typeKeys.sort();
+
+    return typeKeys;
 });
 
 //  ------------------------------------------------------------------------
