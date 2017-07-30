@@ -129,16 +129,16 @@ function(anObj) {
         typeInfo.atPut('typeNSAndName', '');
     }
 
+    typeInfo.atPut('supertype',
+                    TP.ifInvalid(args.at('tsh:supertype'), ''));
+    typeInfo.atPut('dna',
+                    TP.ifInvalid(args.at('tsh:dna'), ''));
     typeInfo.atPut('package',
                     TP.ifInvalid(args.at('tsh:package'), ''));
     typeInfo.atPut('config',
                     TP.ifInvalid(args.at('tsh:config'), ''));
     typeInfo.atPut('dir',
                     TP.ifInvalid(args.at('tsh:dir'), ''));
-    typeInfo.atPut('dna',
-                    TP.ifInvalid(args.at('tsh:dna'), ''));
-    typeInfo.atPut('supertype',
-                    TP.ifInvalid(args.at('tsh:supertype'), ''));
 
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
