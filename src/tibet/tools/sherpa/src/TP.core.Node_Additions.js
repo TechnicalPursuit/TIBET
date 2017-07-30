@@ -510,47 +510,6 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getNearestHaloGenerator',
-function(aHalo, aspectPathParts) {
-
-    /**
-     * @method getNearestHaloGenerator
-     * @summary Returns the next 'generator' ancestor element of the receiver.
-     * @description This method returns the next parent up the ancestor chain
-     *     that is a 'tag generator'. A generator is an Element that is usually
-     *     a compiled or templated tag that is responsible for generating
-     *     content.
-     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
-     *     generator ancestor.
-     * @returns {TP.core.ElementNode} The next generator ancestor of the
-     *     receiver.
-     */
-
-    var generatorTPElem;
-
-    /* eslint-disable consistent-this */
-    generatorTPElem = this;
-    /* eslint-enable consistent-this */
-
-    if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
-        return generatorTPElem;
-    }
-
-    //  Keep iterating up the *haloable* ancestors of the receiver, looking for
-    //  one that is a TP.core.CustomTag (the parent type of compiled and
-    //  templated tag types). Return the first one found.
-    while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
-
-        if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
-            return generatorTPElem;
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.UIElementNode.Inst.defineMethod('getNearestHaloFocusable',
 function(aHalo, aSignal) {
 
@@ -590,6 +549,47 @@ function(aHalo, aSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getNearestHaloGenerator',
+function(aHalo, aspectPathParts) {
+
+    /**
+     * @method getNearestHaloGenerator
+     * @summary Returns the next 'generator' ancestor element of the receiver.
+     * @description This method returns the next parent up the ancestor chain
+     *     that is a 'tag generator'. A generator is an Element that is usually
+     *     a compiled or templated tag that is responsible for generating
+     *     content.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
+     *     generator ancestor.
+     * @returns {TP.core.ElementNode} The next generator ancestor of the
+     *     receiver.
+     */
+
+    var generatorTPElem;
+
+    /* eslint-disable consistent-this */
+    generatorTPElem = this;
+    /* eslint-enable consistent-this */
+
+    if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
+        return generatorTPElem;
+    }
+
+    //  Keep iterating up the *haloable* ancestors of the receiver, looking for
+    //  one that is a TP.core.CustomTag (the parent type of compiled and
+    //  templated tag types). Return the first one found.
+    while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
+
+        if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
+            return generatorTPElem;
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
