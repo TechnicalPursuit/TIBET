@@ -6132,7 +6132,9 @@ function(recordsHandler, observerConfig, observerID) {
      */
 
     var registry,
-        registryRecord;
+        registryRecord,
+
+        filterFunctions;
 
     registry = TP.$$mutationObserverRegistry;
 
@@ -6143,17 +6145,36 @@ function(recordsHandler, observerConfig, observerID) {
         TP.$$mutationObserverRegistry = registry;
     }
 
-    if (registry.hasKey(observerID)) {
-        TP.ifWarn() ?
-            TP.warn('Existing managed mutation observer already registered: ',
-                                                                observerID) : 0;
+    registryRecord = registry.at(observerID);
+
+    //  Grab a copy of the filter functions registered as meant for 'ALL'.
+    filterFunctions = TP.copy(registry.at('$ALL_FILTER_FUNCS'));
+
+    //  If we have a valid registry record, then we may be a dup or we may have
+    //  just had filter functions registered for us before this call was made.
+    if (TP.isValid(registryRecord)) {
+
+        //  If we have an observerConfig, then it's highly likely that this is a
+        //  duplicate and not just filter functions that got registered for us.
+        if (TP.isValid(registryRecord.at('observerConfig'))) {
+            TP.ifWarn() ?
+                TP.warn('Existing managed mutation observer already' +
+                            ' registered: ', observerID) : 0;
+        }
+
+        //  There may have been existing filter functions for this managed
+        //  mutation observer if they were registered before this call was made.
+        //  Concatenate them onto the end of the 'all filter function' set that
+        //  we grabbed above for use below.
+        filterFunctions = filterFunctions.concat(
+                            registryRecord.at('filterFunctions'));
     }
 
     registryRecord = TP.hc(
                 'recordsHandler', recordsHandler,
                 'observerConfig', observerConfig,
                 'observerID', observerID,
-                'filterFunctions', TP.copy(registry.at('$ALL_FILTER_FUNCS'))
+                'filterFunctions', filterFunctions
                 );
 
     registry.atPut(observerID, registryRecord);
@@ -6200,11 +6221,19 @@ function(filterFunction, observerID) {
 
         registryRecord = registry.at(observerID);
 
+        //  It looks like the managed mutation observer hasn't been registered
+        //  yet, so we create a (mostly) blank record, but with the
+        //  'filterFunctions' set to an empty Array.
         if (TP.notValid(registryRecord)) {
-            return TP.raise(
-                    this,
-                    'TP.sig.InvalidObject',
-                    'No managed Mutation Observer entry for: ' + observerID);
+
+            registryRecord = TP.hc(
+                        'recordsHandler', null,
+                        'observerConfig', null,
+                        'observerID', null,
+                        'filterFunctions', TP.ac()
+                        );
+
+            registry.atPut(observerID, registryRecord);
         }
 
         registryRecord.at('filterFunctions').push(filterFunction);
