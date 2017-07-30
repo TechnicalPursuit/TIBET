@@ -23,10 +23,18 @@ TP.sherpa.TemplatedTag.defineSubtype('workbench');
 TP.sherpa.workbench.Inst.defineMethod('setup',
 function() {
 
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     var win,
 
         sherpaInspectorTPElem,
         arrows,
+
+        breadcrumbTPElem,
 
         sherpaHaloTPElem,
 
@@ -34,28 +42,33 @@ function() {
 
     win = this.getNativeWindow();
 
+    //  Set up the inspector scroll buttons
     sherpaInspectorTPElem = TP.byId('SherpaInspector', win);
 
     arrows = TP.byCSSPath('sherpa|scrollbutton', win, false, true);
-
     arrows.forEach(
             function(anArrow) {
                 anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
             });
 
-    this.setupBreadcrumb();
+    //  Set up the breadcrumb bar
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
+    breadcrumbTPElem.setValue(TP.ac());
 
+    //  Update the navigation and toolbar buttons to match the initial Sherpa
+    //  Inspector values, etc.
     this.updateNavigationButtons();
     this.updateToolbarButtons();
 
+    //  Inspector observations
     this.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
 
-    //  Halo
+    //  Halo observations
     sherpaHaloTPElem = TP.byId('SherpaHalo', win);
     this.observe(sherpaHaloTPElem,
                     TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
 
-    //  Outliner
+    //  Outliner observations
     sherpaOutliner = TP.bySystemId('SherpaOutliner');
     this.observe(sherpaOutliner,
                     TP.ac('TP.sig.BeginOutlineMode', 'TP.sig.EndOutlineMode'));
@@ -65,37 +78,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineMethod('setupBreadcrumb',
-function() {
-
-    var breadcrumbTPElem;
-
-    //  Set up the breadcrumb bar
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
-
-    breadcrumbTPElem.setValue(TP.ac());
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.workbench.Inst.defineMethod('updateNavigationButtons',
 function() {
+
+    /**
+     * @method updateNavigationButtons
+     * @summary Updates the workbench's navigation buttons.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
 
     var backButton,
         forwardButton,
 
+        sherpaInspectorTPElem,
+
         pathStack,
         pathStackIndex;
 
+    //  Grab the 'back' and 'forward' buttons.
     backButton = TP.byId('navigateback', this.getNativeNode(), false);
     forwardButton = TP.byId('navigateforward', this.getNativeNode(), false);
 
-    pathStack = TP.byId('SherpaInspector', TP.win('UIROOT')).get('pathStack');
-    pathStackIndex = TP.byId('SherpaInspector',
-                                TP.win('UIROOT')).get('pathStackIndex');
+    sherpaInspectorTPElem = TP.byId('SherpaInspector', this.getNativeWindow());
 
+    //  Grab the current 'path stack' and 'path stack index' from the inspector.
+    pathStack = sherpaInspectorTPElem.get('pathStack');
+    pathStackIndex = sherpaInspectorTPElem.get('pathStackIndex');
+
+    //  If the path stack index is at 0 or less, then disable the 'back' button.
+    //  Otherwise, enable it.
     if (pathStackIndex <= 0) {
         TP.elementRemoveClass(backButton, 'more');
         TP.elementSetAttribute(backButton, 'disabled', true, true);
@@ -104,6 +115,8 @@ function() {
         TP.elementRemoveAttribute(backButton, 'disabled', true);
     }
 
+    //  If the path stack index is the last position in the pathStack, then
+    //  disable the 'forward' button. Otherwise, enable it.
     if (pathStackIndex === pathStack.getSize() - 1) {
         TP.elementRemoveClass(forwardButton, 'more');
         TP.elementSetAttribute(forwardButton, 'disabled', true, true);
@@ -120,6 +133,12 @@ function() {
 TP.sherpa.workbench.Inst.defineMethod('updateToolbarButtons',
 function() {
 
+    /**
+     * @method updateToolbarButtons
+     * @summary Updates the workbench's toolbar buttons.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     var workbenchToggleButtons,
 
         sherpaHaloTPElem,
@@ -127,18 +146,23 @@ function() {
 
         sherpaOutliner;
 
+    //  Grab the group of toggle buttons uses for toggling the halo and the
+    //  outliner.
     workbenchToggleButtons = TP.byId('workbenchToggleButtons',
                                         this.getNativeWindow());
 
+    //  If the halo is focused, then turn the button on - otherwise, turn it
+    //  off.
     sherpaHaloTPElem = TP.byId('SherpaHalo', this.getNativeWindow());
     isFocused = sherpaHaloTPElem.isFocused();
-
     if (isFocused) {
         workbenchToggleButtons.addSelection('halo', 'value');
     } else {
         workbenchToggleButtons.removeSelection('halo', 'value');
     }
 
+    //  If the outliner is active (i.e. showing outlines), then turn the button
+    //  on - otherwise, turn it off.
     sherpaOutliner = TP.bySystemId('SherpaOutliner');
     if (!sherpaOutliner.get('isActive')) {
         workbenchToggleButtons.removeSelection('outline', 'value');
@@ -156,11 +180,21 @@ function() {
 TP.sherpa.workbench.Inst.defineHandler('AddBookmark',
 function(aSignal) {
 
+    /**
+     * @method handleAddBookmark
+     * @summary Handles notifications of when the user wants to add a bookmarked
+     *     inspector location to their list of bookmarked locations.
+     * @param {TP.sig.AddBookmark} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     var currentHistoryEntry,
         cmdVal;
 
-    currentHistoryEntry =
-        TP.byId('SherpaInspector', TP.win('UIROOT')).get('currentHistoryEntry');
+    //  Grab the current history entry as computed by the Sherpa Inspector.
+    currentHistoryEntry = TP.byId('SherpaInspector', this.getNativeWindow()).
+                                                    get('currentHistoryEntry');
 
     if (TP.isEmpty(currentHistoryEntry)) {
         return this;
@@ -175,8 +209,8 @@ function(aSignal) {
     //  Join them together with a slash
     cmdVal = currentHistoryEntry.join('/');
 
+    //  Build the command and execute it.
     cmdVal = ':bookmark \'' + cmdVal + '\'';
-
     TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
 
     return this;
@@ -187,16 +221,27 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('InspectorDidFocus',
 function(aSignal) {
 
+    /**
+     * @method handleInspectorDidFocus
+     * @summary Handles notifications of when the Sherpa inspector has focused
+     *     on a particular target.
+     * @param {TP.sig.InspectorDidFocus} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     var origin,
         sigOriginTPElem,
 
         inspectorSelectedItemLabels,
         breadcrumbTPElem;
 
+    //  Make sure that the navigation buttons are updated to reflect the new
+    //  location.
     this.updateNavigationButtons();
 
+    //  The origin should be the inspector
     origin = aSignal.getOrigin();
-
     if (TP.isString(origin)) {
         sigOriginTPElem = TP.bySystemId(origin);
     } else {
@@ -206,9 +251,11 @@ function(aSignal) {
     //  Grab the selected *labels* from the inspector.
     inspectorSelectedItemLabels = sigOriginTPElem.get('selectedLabels');
 
-    //  Set up the breadcrumb bar
+    //  Grab the breadcrumb bar
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
 
+    //  Set the value of the breadcrumb bar, which will cause the breadcrumb to
+    //  redraw.
     breadcrumbTPElem.setValue(inspectorSelectedItemLabels);
 
     return this;
@@ -219,6 +266,15 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    //  The halo changed it's focus - we need to update our toolbar buttons.
     this.updateToolbarButtons();
 
     return this;
@@ -231,6 +287,15 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    //  The halo changed it's focus - we need to update our toolbar buttons.
     this.updateToolbarButtons();
 
     return this;
@@ -243,6 +308,17 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('BeginOutlineMode',
 function(aSignal) {
 
+    /**
+     * @method handleBeginOutlineMode
+     * @summary Handles notifications of when the Sherpa outliner has activated
+     *     its 'outline mode'.
+     * @param {TP.sig.BeginOutlineMode} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    //  The outliner turned on outline mode - we need to update our toolbar
+    //  buttons.
     this.updateToolbarButtons();
 
     return this;
@@ -255,6 +331,17 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('EndOutlineMode',
 function(aSignal) {
 
+    /**
+     * @method handleEndOutlineMode
+     * @summary Handles notifications of when the Sherpa outliner has
+     *     deactivated its 'outline mode'.
+     * @param {TP.sig.EndOutlineMode} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    //  The outliner turned off outline mode - we need to update our toolbar
+    //  buttons.
     this.updateToolbarButtons();
 
     return this;
@@ -267,7 +354,19 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('NavigateBack',
 function(aSignal) {
 
+    /**
+     * @method handleNavigateBack
+     * @summary Handles notifications of when the user wants to navigate 'back'
+     *     in the 'stack' of navigated locations.
+     * @param {TP.sig.NavigateBack} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     this.signal('NavigateInspector', TP.hc('direction', TP.PREVIOUS));
+
+    //  Make sure that the navigation buttons are updated to reflect the new
+    //  location.
     this.updateNavigationButtons();
 
     return this;
@@ -278,7 +377,19 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('NavigateForward',
 function(aSignal) {
 
+    /**
+     * @method handleNavigateForward
+     * @summary Handles notifications of when the user wants to navigate
+     *     'forward' in the 'stack' of navigated locations.
+     * @param {TP.sig.NavigateForward} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     this.signal('NavigateInspector', TP.hc('direction', TP.NEXT));
+
+    //  Make sure that the navigation buttons are updated to reflect the new
+    //  location.
     this.updateNavigationButtons();
 
     return this;
@@ -288,6 +399,15 @@ function(aSignal) {
 
 TP.sherpa.workbench.Inst.defineHandler('NavigateHome',
 function(aSignal) {
+
+    /**
+     * @method handleNavigateHome
+     * @summary Handles notifications of when the user wants to navigate 'home'
+     *     to the inspector root bay.
+     * @param {TP.sig.NavigateHome} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
 
     this.signal('NavigateInspector', TP.hc('direction', TP.HOME));
 
@@ -323,6 +443,15 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('ShowBookmarks',
 function(aSignal) {
 
+    /**
+     * @method handleShowBookmarks
+     * @summary Handles notifications of when the user wants to show the menu of
+     *     saved bookmarks.
+     * @param {TP.sig.ShowBookmarks} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     TP.byId('SherpaBookmarkMenu', this.getNativeWindow()).activate();
 
     return this;
@@ -332,35 +461,122 @@ function(aSignal) {
 
 TP.sherpa.workbench.Inst.defineHandler('ToggleHalo',
 function(aSignal) {
+
+    /**
+     * @method handleToggleHalo
+     * @summary Handles notifications of when the user wants to toggle the halo
+     *     on and off. In the case where the halo is being toggled off, the last
+     *     halo'ed element will be preserved and will become focused by the halo
+     *     if this signal is used again to toggle the halo back on.
+     * @param {TP.sig.ToggleHalo} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     this.signal('SherpaHaloToggle', aSignal, TP.FIRE_ONE);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('ToggleOutlines',
 function(aSignal) {
+
+    /**
+     * @method handleToggleOutlines
+     * @summary Handles notifications of when the user wants to toggle the
+     *     outliner's outline mode on and off.
+     * @param {TP.sig.ToggleOutlines} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
     this.signal('SherpaOutlinerToggle', aSignal, TP.FIRE_ONE);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('TSHBuild',
 function(aSignal) {
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':build');
+
+    /**
+     * @method handleTSHBuild
+     * @summary Handles notifications of when the receiver wants to build their
+     *     project using the TSH.
+     * @param {TP.sig.TSHBuild} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var cmdVal;
+
+    //  Build the command and execute it.
+    cmdVal = ':build';
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('TSHDeploy',
 function(aSignal) {
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':deploy');
+
+    /**
+     * @method handleTSHDeploy
+     * @summary Handles notifications of when the receiver wants to deploy their
+     *     project using the TSH.
+     * @param {TP.sig.TSHDeploy} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var cmdVal;
+
+    //  Build the command and execute it.
+    cmdVal = ':deploy';
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('TSHTest',
 function(aSignal) {
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':test');
+
+    /**
+     * @method handleTSHTest
+     * @summary Handles notifications of when the receiver wants to test their
+     *     project using the TSH.
+     * @param {TP.sig.TSHTest} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var cmdVal,
+
+        shell,
+        haloType;
+
+    //  Build the command and execute it.
+    cmdVal = ':test';
+
+    shell = TP.bySystemId('TSH');
+    if (TP.isValid(shell)) {
+
+        haloType = shell.getVariable('HALO_TYPE');
+        if (TP.isType(haloType)) {
+            cmdVal += ' $HALO_TYPE';
+        }
+    }
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
