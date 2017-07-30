@@ -960,6 +960,7 @@ function(aTPElem) {
                     'cmdText',
                         ':type --assist' +
                                 ' --name=\'' + newTagName + '\'' +
+                                ' --supertype=\'TP.core.TemplatedTag\'' +
                                 ' --dna=\'templatedtag\''
                 ));
 
