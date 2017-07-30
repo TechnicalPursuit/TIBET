@@ -1016,11 +1016,26 @@ function(aTPElem) {
             this.saveElementSerialization(
                     serializationStorage,
                     function() {
-                        var newElem;
+                        var oldElem,
+                            parentElem,
+                            newElem;
 
                         newElem = TP.nodeFromString('<' + tagName + '/>');
+
+                        //  If we can make a new Element from the tagName, then
+                        //  we grab the oldNode, run the new Element through the
+                        //  compiler (thereby setting up proper registrations,
+                        //  etc. for it) and then replace the old element with
+                        //  the new one.
                         if (TP.isElement(newElem)) {
-                            aTPElem.replaceWith(newElem);
+
+                            oldElem = aTPElem.getNativeNode();
+                            parentElem = oldElem.parentNode;
+
+                            newElem = aTPElem.compile(null, true, newElem);
+
+                            newElem = TP.unwrap(newElem);
+                            TP.nodeReplaceChild(parentElem, newElem, oldElem);
                         }
                     });
         }
