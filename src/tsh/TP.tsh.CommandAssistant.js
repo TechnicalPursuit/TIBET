@@ -154,10 +154,9 @@ function(aSignal) {
     }
 
     typeInfo = TP.hc(data).at('info');
+    str = this.generateCommand(typeInfo);
 
     cmdLineTPElem = this.get('generatedCmdLine');
-
-    str = this.generateCommand(typeInfo);
     cmdLineTPElem.setTextContent(str);
 
     return this;
