@@ -244,7 +244,7 @@ function(aDocument) {
     };
 
     TP.addMutationObserver(
-            aDocument, recordsHandler, observerConfig, 'THUMBNAIL_OBSERVER');
+            recordsHandler, observerConfig, 'THUMBNAIL_OBSERVER');
 
     //  We install the html2canvas 'element present' observer filter for the
     //  THUMBNAIL_OBSERVER managed mutation observer *only*. This is what
@@ -266,7 +266,7 @@ function(aDocument) {
         TP.$$html2CanvasElementInsertedOrRemovedObserverFilter,
         TP.ALL);
 
-    TP.activateMutationObserver('THUMBNAIL_OBSERVER');
+    TP.activateMutationObserver(aDocument, 'THUMBNAIL_OBSERVER');
 
     return this;
 });

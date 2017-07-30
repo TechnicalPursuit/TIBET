@@ -1989,13 +1989,12 @@ function(aDocument) {
 
     //  Add it as a managed Mutation Observer.
     TP.addMutationObserver(
-            aDocument,
             recordsHandler,
             observerConfig,
             mutationObserverID);
 
     //  Activate it.
-    TP.activateMutationObserver(mutationObserverID);
+    TP.activateMutationObserver(aDocument, mutationObserverID);
 
     //  Install a managed MutationObserver that will observe changes to style
     //  sheet elements (link, style, etc.) and will refresh the rules caches
@@ -2100,13 +2099,14 @@ function(aDocument) {
     mutationObserverID = 'STYLE_CHANGES_OBSERVER_' + TP.gid(aDocument);
 
     TP.addMutationObserver(
-            TP.documentEnsureHeadElement(aDocument),
             styleChangesHandler,
             observerConfig,
             mutationObserverID);
 
     //  Activate it.
-    TP.activateMutationObserver(mutationObserverID);
+    TP.activateMutationObserver(
+        TP.documentEnsureHeadElement(aDocument),
+        mutationObserverID);
 
     return this;
 });

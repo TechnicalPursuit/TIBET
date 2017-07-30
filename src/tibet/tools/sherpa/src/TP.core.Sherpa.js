@@ -1355,13 +1355,13 @@ function() {
 
     resizer = TP.byCSSPath('div#northResizer', win, true, false);
     TP.addMutationObserver(
-            resizer, resizingHandler, observerConfig, 'N_RESIZING_OBSERVER');
-    TP.activateMutationObserver('N_RESIZING_OBSERVER');
+            resizingHandler, observerConfig, 'N_RESIZING_OBSERVER');
+    TP.activateMutationObserver(resizer, 'N_RESIZING_OBSERVER');
 
     resizer = TP.byCSSPath('div#southResizer', win, true, false);
     TP.addMutationObserver(
-            resizer, resizingHandler, observerConfig, 'S_RESIZING_OBSERVER');
-    TP.activateMutationObserver('S_RESIZING_OBSERVER');
+            resizingHandler, observerConfig, 'S_RESIZING_OBSERVER');
+    TP.activateMutationObserver(resizer, 'S_RESIZING_OBSERVER');
 
     //  ---
 

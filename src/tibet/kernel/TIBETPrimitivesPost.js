@@ -6115,7 +6115,7 @@ function(eventObj) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('addMutationObserver',
-function(targetNode, recordsHandler, observerConfig, observerID) {
+function(recordsHandler, observerConfig, observerID) {
 
     /**
      * @method addMutationObserver
@@ -6124,7 +6124,6 @@ function(targetNode, recordsHandler, observerConfig, observerID) {
      * @description Note that you must call 'TP.activateMutationObserver()' in
      *     order to actually activate the Mutation Observer. This method merely
      *     creates a registry entry.
-     * @param {Node} targetNode The node that will be observed for mutations.
      * @param {Function} recordsHandler A function that will take in an Array of
      *     MutationRecord objects and process them.
      * @param {Object} observerConfig A plain JS object that will be passed
@@ -6151,7 +6150,6 @@ function(targetNode, recordsHandler, observerConfig, observerID) {
     }
 
     registryRecord = TP.hc(
-                'targetNode', targetNode,
                 'recordsHandler', recordsHandler,
                 'observerConfig', observerConfig,
                 'observerID', observerID,
@@ -6236,11 +6234,12 @@ function(filterFunction, observerID) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('activateMutationObserver',
-function(observerID) {
+function(targetNode, observerID) {
 
     /**
      * @method activateMutationObserverFilter
      * @summary Activates a previously added managed Mutation Observer.
+     * @param {Node} targetNode The node that will be observed for mutations.
      * @param {String} observerID The ID of the observer to activate.
      */
 
@@ -6340,9 +6339,11 @@ function(observerID) {
     //  inside of the callback handler above to avoid closure issues.
     observerObj.registryRecord = registryRecord;
 
-    observerObj.observe(
-                    registryRecord.at('targetNode'),
-                    registryRecord.at('observerConfig'));
+    observerObj.observe(targetNode, registryRecord.at('observerConfig'));
+
+    //  Stash the target node into the registry record for this managed Mutation
+    //  Observer for convenience.
+    registryRecord.atPut('targetNode', targetNode);
 
     //  Stash the native Mutation Observer object into the registry record for
     //  this managed Mutation Observer for use in deactivation.
@@ -6399,6 +6400,9 @@ function(observerID) {
     //  activate.
     observerObj.takeRecords();
     observerObj.disconnect();
+
+    //  The target node is of no use to us now - remove it.
+    registryRecord.removeKey('targetNode');
 
     //  The native observer object is of no use to us now - remove it.
     registryRecord.removeKey('$observerObj');
