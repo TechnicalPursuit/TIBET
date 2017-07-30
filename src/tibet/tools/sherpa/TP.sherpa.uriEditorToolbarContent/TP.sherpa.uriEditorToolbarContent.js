@@ -149,8 +149,8 @@ TP.sherpa.uriEditorToolbarContent.Inst.defineMethod('refreshControls',
 function(editorIsDirty, uriIsDirty) {
 
     /**
-     * @method tagDetachDOM
-     * @summary Tears down runtime machinery for the element in aRequest.
+     * @method refreshControls
+     * @summary Refreshes the toolbar buttons based on the supplied dirty flags.
      * @param {Boolean} [editorIsDirty] Whether or not the editor is dirty. If
      *     not supplied, this defaults by querying the editor directly.
      * @param {Boolean} [uriIsDirty] Whether or not the URI the editor is
