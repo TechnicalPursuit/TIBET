@@ -86,6 +86,7 @@ function(anObject) {
         val,
 
         tagName,
+        tagType,
 
         autodefineMissingTags,
 
@@ -121,6 +122,25 @@ function(anObject) {
         if (!TP.regex.HAS_COLON.test(tagName)) {
             tagName = 'html:' + tagName;
         }
+
+        //  Make sure that if the tagName resolves to a type, that that type is
+        //  a subtype of TP.core.ElementNode
+        tagType = TP.sys.getTypeByName(tagName);
+
+        if (TP.isType(tagType)) {
+
+            //  If the resolved type is not a subtype of TP.core.ElementNode,
+            //  then it's an error. Warn the user and return.
+            if (!TP.isSubtypeOf(tagType, TP.core.ElementNode)) {
+                TP.alert('Type matching tag: ' +
+                            tagName +
+                            ' is not an Element.' +
+                            ' Element not inserted.');
+
+                return this;
+            }
+        }
+
     } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
         //  After checking for an entered tag name, see if one was chosen from
         //  the list.
