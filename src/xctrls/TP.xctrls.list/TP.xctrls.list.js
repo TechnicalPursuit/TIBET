@@ -215,7 +215,9 @@ function(anAspect) {
 
         data,
 
-        indexes;
+        indexes,
+
+        selectionData;
 
     //  Grab the selection model.
     selectionModel = this.$getSelectionModel();
@@ -245,7 +247,7 @@ function(anAspect) {
 
             case 'value':
                 //  Remove any TP.GROUPING or TP.SPACING data rows.
-                data = data.select(
+                selectionData = data.select(
                         function(anItem) {
                             if (TP.regex.GROUPING.test(anItem) ||
                                 TP.regex.SPACING.test(anItem)) {
@@ -272,18 +274,18 @@ function(anAspect) {
                             return true;
                         });
 
-                data = indexes;
+                selectionData = indexes;
 
                 break;
 
             default:
 
                 //  It was an aspect that we don't know how to process.
-                data = null;
+                selectionData = null;
                 break;
         }
 
-        selectionModel.atPut(aspect, data);
+        selectionModel.atPut(aspect, selectionData);
     }
 
     return this;
@@ -568,7 +570,7 @@ function(aValue) {
 
         allowsMultiples,
 
-        data,
+        dataKeys,
 
         selectionEntry,
 
@@ -639,13 +641,14 @@ function(aValue) {
 
     selectionEntry = TP.ac();
 
-    data = this.get('$dataKeys');
+    dataKeys = this.get('$dataKeys');
 
-    if (TP.isEmpty(data)) {
+    if (TP.isEmpty(dataKeys)) {
         return this;
     }
 
-    leni = data.getSize();
+
+    leni = dataKeys.getSize();
 
     if (TP.isArray(value)) {
 
@@ -653,7 +656,7 @@ function(aValue) {
 
             lenj = value.getSize();
             for (j = 0; j < lenj; j++) {
-                if (data.at(i) === value.at(j)) {
+                if (dataKeys.at(i) === value.at(j)) {
                     selectionEntry.push(value.at(j));
                     if (!allowsMultiples) {
                         break;
@@ -670,7 +673,7 @@ function(aValue) {
 
         for (i = 0; i < leni; i++) {
 
-            if (data.at(i) === value) {
+            if (dataKeys.at(i) === value) {
                 selectionEntry.push(value);
                 if (!allowsMultiples) {
                     break;
@@ -1318,7 +1321,7 @@ function(aValue, anIndex, shouldSignal) {
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
-    var data,
+    var dataKeys,
 
         matches,
 
@@ -1333,7 +1336,7 @@ function(aValue, anIndex, shouldSignal) {
 
         retVal;
 
-    data = this.get('$dataKeys');
+    dataKeys = this.get('$dataKeys');
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -1342,10 +1345,10 @@ function(aValue, anIndex, shouldSignal) {
 
         matches = TP.ac();
 
-        len = data.getSize();
+        len = dataKeys.getSize();
         for (i = 0; i < len; i++) {
 
-            value = data.at(i);
+            value = dataKeys.at(i);
 
             if (aValue.test(value)) {
                 matches.push(value);
@@ -1371,9 +1374,9 @@ function(aValue, anIndex, shouldSignal) {
     if (retVal) {
 
         if (TP.isArray(selectVal)) {
-            itemIndex = data.indexOf(selectVal.first());
+            itemIndex = dataKeys.indexOf(selectVal.first());
         } else {
-            itemIndex = data.indexOf(selectVal);
+            itemIndex = dataKeys.indexOf(selectVal);
         }
 
         this.scrollTopToRow(itemIndex);
@@ -1404,7 +1407,7 @@ function(aValue, anIndex, shouldSignal) {
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
-    var data,
+    var dataKeys,
 
         matches,
 
@@ -1419,7 +1422,7 @@ function(aValue, anIndex, shouldSignal) {
 
         retVal;
 
-    data = this.get('$dataKeys');
+    dataKeys = this.get('$dataKeys');
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -1428,10 +1431,10 @@ function(aValue, anIndex, shouldSignal) {
 
         matches = TP.ac();
 
-        len = data.getSize();
+        len = dataKeys.getSize();
         for (i = 0; i < len; i++) {
 
-            value = data.at(i);
+            value = dataKeys.at(i);
 
             if (aValue.test(value)) {
                 matches.push(value);
@@ -1457,9 +1460,9 @@ function(aValue, anIndex, shouldSignal) {
     if (retVal) {
 
         if (TP.isArray(selectVal)) {
-            itemIndex = data.indexOf(selectVal.first());
+            itemIndex = dataKeys.indexOf(selectVal.first());
         } else {
-            itemIndex = data.indexOf(selectVal);
+            itemIndex = dataKeys.indexOf(selectVal);
         }
 
         this.scrollTopToRow(itemIndex);
