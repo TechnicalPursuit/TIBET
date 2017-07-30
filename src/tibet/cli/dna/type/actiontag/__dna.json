@@ -1,0 +1,19 @@
+{
+    "default": {
+        "supertype": "TP.core.ActionTag"
+    },
+    "APP": {
+        "dir": "~app_src/tags",
+        "nsroot": "APP",
+        "nsname": "{{appname}}",
+        "package": "~app_cfg/{{appname}}.xml",
+        "config": "scripts"
+    },
+    "LIB": {
+        "dir": "~lib_src/{{nsname}}",
+        "nsroot": "TP",
+        "nsname": "core",
+        "package": "~lib_cfg/lib_namespaces.xml",
+        "config": "{{nsname}}"
+    }
+}
