@@ -140,6 +140,18 @@ function(anObj) {
     typeInfo.atPut('dir',
                     TP.ifInvalid(args.at('tsh:dir'), ''));
 
+    //  Set up the type list value holder
+
+    typesURI = TP.uc('urn:tibet:typelist');
+
+    //  Grab all of the type names here as key/value pairs containing the type
+    //  name in both slots.
+    typesObj = TP.sys.getCustomTypeNameKVPairs();
+
+    //  Set the types value holder to the Array we computed here. We also tell
+    //  it to go ahead and signal change to kick things off.
+    typesURI.setResource(typesObj, TP.hc('signalChange', true));
+
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:type_cmd_source');
@@ -155,21 +167,6 @@ function(anObj) {
     //  and signal change to kick things off.
     modelURI.setResource(
         modelObj, TP.hc('observeResource', true, 'signalChange', true));
-
-    //  Set up the type list value holder
-
-    typesURI = TP.uc('urn:tibet:typelist');
-
-    //  Grab all of the type names here. Note that because this list contains
-    //  type names that are signal names themselves, we need to make sure to
-    //  configure this Array to not consider itself an 'origin set'. Otherwise,
-    //  there will be spurious triggering of signals.
-    typesObj = TP.copy(TP.sys.getCustomTypeNames().sort());
-    typesObj.isOriginSet(false);
-
-    //  Set the types value holder to the Array we computed here. We also tell
-    //  it to go ahead and signal change to kick things off.
-    typesURI.setResource(typesObj, TP.hc('signalChange', true));
 
     return this;
 });
