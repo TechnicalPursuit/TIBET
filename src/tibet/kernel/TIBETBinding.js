@@ -965,6 +965,25 @@ function(aSignal) {
                 //  have 'changed data paths' to go by, we update all 'direct
                 //  GUI' bindings.
 
+                //  Sort the attribute nodes so that 'bind:in' attributes come
+                //  first. This is important when an element has both 'bind:in'
+                //  and 'bind:io' attributes, since we want the 'in' bindings to
+                //  be refreshed first to have that data available to the 'io'
+                //  bindings.
+                boundAttrNodes.sort(
+                    function(a, b) {
+
+                        if (a.nodeName === 'bind:in' &&
+                            b.nodeName !== 'bind:in') {
+                            return -1;
+                        } else if (a.nodeName !== 'bind:in' &&
+                                    b.nodeName === 'bind:in') {
+                            return 1;
+                        }
+
+                        return 0;
+                    });
+
                 len = boundAttrNodes.getSize();
                 for (i = 0; i < len; i++) {
 
@@ -2624,6 +2643,22 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             }
         }
     }
+
+    //  Sort the attribute nodes so that 'bind:in' attributes come first. This
+    //  is important when an element has both 'bind:in' and 'bind:io'
+    //  attributes, since we want the 'in' bindings to be refreshed first to
+    //  have that data available to the 'io' bindings.
+    boundAttrNodes.sort(
+        function(a, b) {
+
+            if (a.nodeName === 'bind:in' && b.nodeName !== 'bind:in') {
+                return -1;
+            } else if (a.nodeName !== 'bind:in' && b.nodeName === 'bind:in') {
+                return 1;
+            }
+
+            return 0;
+        });
 
     //  TIMING: var endQuery = Date.now();
     //  TIMING: TP.totalBranchQueryTime += (endQuery - startQuery);
