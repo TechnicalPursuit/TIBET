@@ -765,5 +765,63 @@ function(aHalo, aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('sherpaDidInsertTofu',
+function(insertionPointElement, insertionPosition) {
+
+    /**
+     * @method sherpaDidInsertTofu
+     * @summary Responds to the fact that the Sherpa initiated a DOM insertion
+     *     by dropping a 'tofu' element somewhere in a DOM visualization.
+     * @param {Element} insertionPointElement The element that provides the
+     *     insertion point to the insertion operation. This, in combination with
+     *     the insertion position, will provide the place in the DOM to insert
+     *     the new DOM node.
+     * @param {Constant} insertionPosition The insertion position, relative to
+     *     the insertion point element, that the new node should be inserted at.
+     *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
+     *     TP.AFTER_END.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var assistantContentTPElem,
+        dialogPromise;
+
+    //  Grab the TP.sherpa.insertionAssistant type's template.
+    assistantContentTPElem =
+        TP.sherpa.insertionAssistant.getResourceElement(
+                        'template',
+                        TP.ietf.Mime.XHTML);
+
+    //  Open a dialog with the insertion assistant's content.
+    dialogPromise = TP.dialog(
+        TP.hc(
+            'dialogID', 'AssistantDialog',
+            'isModal', true,
+            'title', 'Insert New Tag',
+            'templateContent', assistantContentTPElem));
+
+    //  After the dialog is showing, set the assistant parameters on the content
+    //  object from those defined in the original signal's payload.
+    dialogPromise.then(
+        function(aDialogTPElem) {
+
+            var contentTPElem;
+
+            contentTPElem = aDialogTPElem.get('bodyGroup').
+                                        getFirstChildElement();
+
+            //  Pass along the insertion position and the peer element as the
+            //  insertion point to the dialog info.
+            contentTPElem.set('data',
+                TP.hc(
+                    'insertionPosition', insertionPosition,
+                    'insertionPoint', insertionPointElement));
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

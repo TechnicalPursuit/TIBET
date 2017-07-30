@@ -495,14 +495,17 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var wasActive,
+    var targetTPElement,
+
+        wasActive,
 
         dndTargetElem,
 
-        assistantContentTPElem,
-
-        dialogPromise,
         containingBlockElem;
+
+    //  Capture this *before* we hide ourself - it will be nulled out by that
+    //  method.
+    targetTPElement = this.get('targetTPElement');
 
     //  Were we active *before* the DND session.
     wasActive = this.get('$wasActive');
@@ -525,37 +528,15 @@ function(aSignal) {
         TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
-        //  Grab the TP.sherpa.insertionAssistant type's template.
-        assistantContentTPElem =
-            TP.sherpa.insertionAssistant.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
+        //  If the canvas document contains the target element, then we want to
+        //  be the controller that does the possible insertion.
+        if (targetTPElement.contains(dndTargetElem, TP.IDENTITY)) {
 
-        //  Open a dialog with the insertion assistant's content.
-        dialogPromise = TP.dialog(
-            TP.hc(
-                'dialogID', 'AssistantDialog',
-                'isModal', true,
-                'title', 'Insert New Tag',
-                'templateContent', assistantContentTPElem));
-
-        //  After the dialog is showing, set the assistant parameters on the
-        //  content object from those defined in the original signal's payload.
-        dialogPromise.then(
-            function(aDialogTPElem) {
-
-                var contentTPElem;
-
-                contentTPElem = aDialogTPElem.get('bodyGroup').
-                                                    getFirstChildElement();
-
-                //  Pass along the insertion position and the drop target
-                //  element as the insertion point to the dialog info.
-                contentTPElem.set('data',
-                    TP.hc(
-                        'insertionPosition', this.get('insertionPosition'),
-                        'insertionPoint', dndTargetElem));
-            }.bind(this));
+            //  Message the drop target that we dropped tofu into it at the
+            //  insertion position determined by the user.
+            TP.wrap(dndTargetElem).sherpaDidInsertTofu(
+                                dndTargetElem, this.get('insertionPosition'));
+        }
     }
 
     //  Remove the containing block CSS class from the drop zone element that
