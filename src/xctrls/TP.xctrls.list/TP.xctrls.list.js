@@ -574,6 +574,8 @@ function(aValue) {
 
         selectionEntry,
 
+        firstSelectionIndex,
+
         leni,
         i,
 
@@ -647,6 +649,7 @@ function(aValue) {
         return this;
     }
 
+    firstSelectionIndex = TP.NOT_FOUND;
 
     leni = dataKeys.getSize();
 
@@ -658,6 +661,9 @@ function(aValue) {
             for (j = 0; j < lenj; j++) {
                 if (dataKeys.at(i) === value.at(j)) {
                     selectionEntry.push(value.at(j));
+                    if (firstSelectionIndex === TP.NOT_FOUND) {
+                        firstSelectionIndex = i;
+                    }
                     if (!allowsMultiples) {
                         break;
                     }
@@ -675,6 +681,9 @@ function(aValue) {
 
             if (dataKeys.at(i) === value) {
                 selectionEntry.push(value);
+                if (firstSelectionIndex === TP.NOT_FOUND) {
+                    firstSelectionIndex = i;
+                }
                 if (!allowsMultiples) {
                     break;
                 }
@@ -697,6 +706,8 @@ function(aValue) {
         } else {
             this.render();
         }
+
+        this.scrollTopToRow(firstSelectionIndex);
 
         this.changed('selection', TP.UPDATE);
     }
