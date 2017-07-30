@@ -13089,6 +13089,9 @@ function(storageInfo) {
 
         elemTagName,
 
+        realElemPrefix,
+        realElemLocalName,
+
         computedElemName,
         computedElemNameParts,
         computedElemPrefix,
@@ -13128,6 +13131,9 @@ function(storageInfo) {
             return;
         }
     }
+
+    realElemPrefix = this.getNamespacePrefix();
+    realElemLocalName = this.getTagName();
 
     computedElemName = this.getFullName();
     computedElemNameParts = computedElemName.split(':');
@@ -13234,6 +13240,12 @@ function(storageInfo) {
                 if (attrValue.startsWith(
                         computedElemPrefix + '_' +
                         computedElemLocalName + '_')) {
+                    continue;
+                }
+
+                if (attrValue.startsWith(
+                        realElemPrefix + '_' +
+                        realElemLocalName + '_')) {
                     continue;
                 }
 
