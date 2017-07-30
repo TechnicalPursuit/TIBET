@@ -106,6 +106,10 @@ function(options) {
     target = params.at('target');
     if (TP.isValid(target)) {
 
+        //  Remove key so we don't think we want filtering etc. down below and
+        //  can exit with just the suites by ID.
+        params.removeKey('target');
+
         id = TP.id(target);
         if (TP.isEmpty(id)) {
             this.raise('InvalidID');
@@ -128,8 +132,10 @@ function(options) {
                         });
     }
 
-    //  No options, or empty options (after conversion to hash) means full list.
-    if (TP.notValid(options) || TP.isEmpty(params)) {
+    //  If params is empty it means it was either empty to begin with or had
+    //  only a target (which we remove to support just returning all suites for
+    //  the ID of the target).
+    if (TP.isEmpty(params)) {
         return suites;
     }
 
@@ -168,7 +174,36 @@ function(options) {
     //  context filter
     //  ---
 
-    context = params.at('context') || 'app';
+    //  Use explicit context, or context of the target(s).
+    context = params.at('context');
+    if (TP.notValid(context)) {
+        if (TP.notEmpty(targets)) {
+            targets.forEach(function(t) {
+                var c;
+
+                //  Already been through and found at least two variants.
+                if (context === 'all') {
+                    return;
+                }
+
+                c = TP.id(t);
+                if (TP.notValid(c)) {
+                    return;
+                }
+
+                if (c.indexOf('TP.') === 0) {
+                    context = context === 'app' ? 'all' : 'lib';
+                } else if (c.indexOf('APP.') === 0) {
+                    context = context === 'lib' ? 'all' : 'app';
+                } else {
+                    return;
+                }
+            });
+        } else {
+            context = 'app';
+        }
+    }
+
     if (context !== 'all') {
 
         suites = suites.filter(
