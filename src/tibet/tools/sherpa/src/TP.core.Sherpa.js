@@ -430,6 +430,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('asTP_sherpa_pp',
+function() {
+
+    /**
+     * @method asTP_sherpa_pp
+     * @summary Returns a String compatible with other productions in the
+     *     TP.sherpa.pp formatting type.
+     * @returns {String} The receiver as a String producing output compatible
+     *     with TP.sherpa.pp type.
+     */
+
+    return '';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('finishSetup',
 function() {
 
