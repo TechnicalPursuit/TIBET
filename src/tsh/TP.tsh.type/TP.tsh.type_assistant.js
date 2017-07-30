@@ -36,13 +36,18 @@ function(info) {
 
     var str,
 
+        data,
         val;
 
     str = ':type --name=\'' +
             info.at('topLevelNS') + '.' + info.at('typeNSAndName') + '\'';
 
     if (TP.notEmpty(val = info.at('supertype'))) {
-        val = TP.uc('urn:tibet:typelist').getResource().get('result').at(val);
+        data = TP.uc('urn:tibet:typelist').getResource().get('result');
+        if (TP.isValid(data)) {
+            val = data.at(val);
+        }
+
         str += ' --supertype=\'' + val + '\'';
     }
 
