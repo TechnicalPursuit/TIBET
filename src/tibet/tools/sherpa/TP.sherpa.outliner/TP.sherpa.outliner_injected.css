@@ -81,7 +81,7 @@
     display: inline-block !important;
 }
 
-.sherpa-outliner *.sherpa_containingblock {
+.sherpa-outliner *.sherpa-outliner-containingblock {
 
     outline-style: solid;
 }
@@ -103,8 +103,8 @@
     background-color: red;
 }
 
-.sherpa-outliner .sherpa_droptarget::after,
-.sherpa-outliner [class~="sherpa_droptarget"]::after {
+.sherpa-outliner .sherpa-outliner-droptarget::after,
+.sherpa-outliner [class~="sherpa-outliner-droptarget"]::after {
 
     position: absolute;
 
@@ -119,8 +119,8 @@
     background-color: black;
 }
 
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] .sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] [class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] [class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     left: -2em;
@@ -128,8 +128,8 @@
     content: "\2190 PREV SIB";
 }
 
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"] .sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"] [class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"] [class~="sherpa-outliner-droptarget"]::after {
 
     top: 0;
     left: 0;
@@ -137,8 +137,8 @@
     content: "FIRST CHILD \2192";
 }
 
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] .sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] [class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] [class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     right: 0;
@@ -146,8 +146,8 @@
     content: "\2190 LAST CHILD";
 }
 
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"] .sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"] [class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"] [class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     right: -2em;
@@ -155,8 +155,8 @@
     content: "NEXT SIB \2192";
 }
 
-.sherpa-outliner.sherpa_droptarget::after,
-.sherpa-outliner[class~="sherpa_droptarget"]::after {
+.sherpa-outliner.sherpa-outliner-droptarget::after,
+.sherpa-outliner[class~="sherpa-outliner-droptarget"]::after {
 
     position: absolute;
 
@@ -171,8 +171,8 @@
     background-color: black;
 }
 
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"].sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"][class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"].sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"][class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     left: -2em;
@@ -180,8 +180,8 @@
     content: "\2190 PREV SIB";
 }
 
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"].sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"][class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"].sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"][class~="sherpa-outliner-droptarget"]::after {
 
     top: 0;
     left: 0;
@@ -189,8 +189,8 @@
     content: "FIRST CHILD \2192";
 }
 
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"].sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"][class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"].sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"][class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     right: 0;
@@ -198,8 +198,8 @@
     content: "\2190 LAST CHILD";
 }
 
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"].sherpa_droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"][class~="sherpa_droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"].sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"][class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     right: -2em;

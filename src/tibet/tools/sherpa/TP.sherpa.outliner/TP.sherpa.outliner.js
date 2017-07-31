@@ -427,7 +427,7 @@ function(aSignal) {
 
     //  Put a CSS class on the current drop target element for visual
     //  highlighting purposes
-    TP.elementAddClass(dndTargetElem, 'sherpa_droptarget');
+    TP.elementAddClass(dndTargetElem, 'sherpa-outliner-droptarget');
 
     //  If the element is positioned, then the drop containing block is that
     //  element. Otherwise, grab its containing block element and use that.
@@ -440,7 +440,7 @@ function(aSignal) {
 
     //  Add a CSS class to the containing block for visual highlighting
     //  purposes.
-    TP.elementAddClass(containingBlockElem, 'sherpa_containingblock');
+    TP.elementAddClass(containingBlockElem, 'sherpa-outliner-containingblock');
 
     return this;
 });
@@ -469,13 +469,13 @@ function(aSignal) {
 
     //  Remove the CSS class placed on the drop target and set the attribute we
     //  use to track the current DND target to null.
-    TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+    TP.elementRemoveClass(dndTargetElem, 'sherpa-outliner-droptarget');
     this.set('$currentDNDTarget', null);
 
     //  Remove the containing block CSS class from the drop zone element that
     //  we're hovering over.
     containingBlockElem = this.get('$containingBlockElem');
-    TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
+    TP.elementRemoveClass(containingBlockElem, 'sherpa-outliner-containingblock');
     this.set('$containingBlockElem', null);
 
     return this;
@@ -525,7 +525,7 @@ function(aSignal) {
 
         //  Remove the class placed on the drop target and set the attribute we
         //  use to track the current DND target to null.
-        TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+        TP.elementRemoveClass(dndTargetElem, 'sherpa-outliner-droptarget');
         this.set('$currentDNDTarget', null);
 
         //  If the canvas document contains the target element, then we want to
@@ -544,7 +544,8 @@ function(aSignal) {
     containingBlockElem = this.get('$containingBlockElem');
 
     if (TP.isElement(containingBlockElem)) {
-        TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
+        TP.elementRemoveClass(
+            containingBlockElem, 'sherpa-outliner-containingblock');
         this.set('$containingBlockElem', null);
     }
 
