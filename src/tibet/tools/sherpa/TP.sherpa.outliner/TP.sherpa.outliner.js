@@ -1588,14 +1588,19 @@ function(aSignal) {
      * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
      */
 
-    var outliner;
+    var outliner,
+        canvasTPDoc;
 
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
     outliner = TP.bySystemId('SherpaOutliner');
 
-    outliner.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    //  NB: Do this first so that 'targetTPElement' is real.
     outliner.showOutliner();
+
+    //  Observe mouse wheel signals from the target element's document.
+    canvasTPDoc = outliner.get('targetTPElement').getDocument();
+    outliner.observe(canvasTPDoc, 'TP.sig.DOMMouseWheel');
 
     return this;
 });
@@ -1613,13 +1618,17 @@ function(aSignal) {
      * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
      */
 
-    var outliner;
+    var outliner,
+        canvasTPDoc;
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
     outliner = TP.bySystemId('SherpaOutliner');
 
-    outliner.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    //  Ignore mouse wheel signals from the target element's document.
+    canvasTPDoc = outliner.get('targetTPElement').getDocument();
+    outliner.ignore(canvasTPDoc, 'TP.sig.DOMMouseWheel');
+
     outliner.hideOutliner();
 
     return this;
