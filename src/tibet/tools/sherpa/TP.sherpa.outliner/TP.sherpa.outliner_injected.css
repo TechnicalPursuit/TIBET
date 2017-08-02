@@ -11,23 +11,6 @@
     overflow: visible;
 }
 
-.sherpa-outliner::before {
-
-    position: absolute;
-
-    font-size: 0.75rem;
-
-    content: attr(sherpa-outliner-tagname);
-
-    min-width: 2em;
-
-    text-align: center;
-
-    color: white;
-
-    background-color: blue;
-}
-
 .sherpa-outliner > * {
 
     /* Need to force opacity, or otherwise 'extrusion' won't work. See:
@@ -86,7 +69,10 @@
     outline-style: solid;
 }
 
-.sherpa-outliner *::before {
+.sherpa-outliner:not(.sherpa-outliner-haloed)::before,
+.sherpa-outliner:not([class~="sherpa-outliner-haloed"])::before,
+.sherpa-outliner *:not(.sherpa-outliner-haloed)::before,
+.sherpa-outliner *:not([class~="sherpa-outliner-haloed"])::before {
 
     position: absolute;
 
@@ -103,60 +89,69 @@
     background-color: red;
 }
 
-.sherpa-outliner .sherpa-outliner-droptarget::after,
-.sherpa-outliner [class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner:not(.sherpa-outliner-haloed)::before,
+.sherpa-outliner:not([class~="sherpa-outliner-haloed"])::before {
+
+    background-color: blue;
+}
+
+/* The following rules selectors both for highlighting the current outliner target itself as the haloed element and highlighting a descendant of the current outliner target as the haloed element. These rules apply both to XHTML (where the . class shorthand can be used) and non-XHTML custom elements */
+
+.sherpa-outliner.sherpa-outliner-haloed,
+.sherpa-outliner[class~="sherpa-outliner-haloed"],
+.sherpa-outliner .sherpa-outliner-haloed,
+.sherpa-outliner *|*[class~="sherpa-outliner-haloed"] {
+
+    outline-style: solid;
+    outline-color: black;
+}
+
+.sherpa-outliner.sherpa-outliner-haloed::before,
+.sherpa-outliner[class~="sherpa-outliner-haloed"]::before,
+.sherpa-outliner.sherpa-outliner-haloed::after,
+.sherpa-outliner[class~="sherpa-outliner-haloed"]::after,
+.sherpa-outliner .sherpa-outliner-haloed::before,
+.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::before,
+.sherpa-outliner .sherpa-outliner-haloed::after,
+.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::after {
 
     position: absolute;
 
-    font-size: 0.75rem;
-
-    min-width: 2em;
-
-    text-align: center;
-
-    color: white;
-
-    background-color: black;
-}
-
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] [class~="sherpa-outliner-droptarget"]::after {
-
-    bottom: 0;
-    left: -2em;
-
-    content: "\2190 PREV SIB";
-}
-
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"] [class~="sherpa-outliner-droptarget"]::after {
-
     top: 0;
+
+    width: 20px;
+    height: calc(100% + 30px);
+
+    content: "";
+
+    background-image: radial-gradient(circle at center, #acd 5px, transparent 6px), radial-gradient(circle at center, #acd 5px, transparent 6px);
+    background-size: 20px 20px;
+    background-position: top center, bottom center;
+    background-repeat: no-repeat;
+
+    margin: -15px;
+}
+
+.sherpa-outliner.sherpa-outliner-haloed::before,
+.sherpa-outliner[class~="sherpa-outliner-haloed"]::before,
+.sherpa-outliner .sherpa-outliner-haloed::before,
+.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::before {
+
     left: 0;
-
-    content: "FIRST CHILD \2192";
 }
 
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] [class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner.sherpa-outliner-haloed::after,
+.sherpa-outliner[class~="sherpa-outliner-haloed"]::after,
+.sherpa-outliner .sherpa-outliner-haloed::after,
+.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::after {
 
-    bottom: 0;
     right: 0;
-
-    content: "\2190 LAST CHILD";
-}
-
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"] [class~="sherpa-outliner-droptarget"]::after {
-
-    bottom: 0;
-    right: -2em;
-
-    content: "NEXT SIB \2192";
 }
 
 .sherpa-outliner.sherpa-outliner-droptarget::after,
-.sherpa-outliner[class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner[class~="sherpa-outliner-droptarget"]::after,
+.sherpa-outliner .sherpa-outliner-droptarget::after,
+.sherpa-outliner *|*[class~="sherpa-outliner-droptarget"]::after {
 
     position: absolute;
 
@@ -172,7 +167,9 @@
 }
 
 .sherpa-outliner[sherpa-outliner-position="BeforeBegin"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"][class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"][class~="sherpa-outliner-droptarget"]::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] *|*[class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     left: -2em;
@@ -181,7 +178,9 @@
 }
 
 .sherpa-outliner[sherpa-outliner-position="AfterBegin"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"][class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"][class~="sherpa-outliner-droptarget"]::after,
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="AfterBegin"] *|*[class~="sherpa-outliner-droptarget"]::after {
 
     top: 0;
     left: 0;
@@ -190,7 +189,9 @@
 }
 
 .sherpa-outliner[sherpa-outliner-position="BeforeEnd"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"][class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"][class~="sherpa-outliner-droptarget"]::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] *|*[class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     right: 0;
@@ -199,7 +200,9 @@
 }
 
 .sherpa-outliner[sherpa-outliner-position="AfterEnd"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"][class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"][class~="sherpa-outliner-droptarget"]::after,
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"] .sherpa-outliner-droptarget::after,
+.sherpa-outliner[sherpa-outliner-position="AfterEnd"] *|*[class~="sherpa-outliner-droptarget"]::after {
 
     bottom: 0;
     right: -2em;
