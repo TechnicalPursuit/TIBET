@@ -124,6 +124,9 @@ function() {
     outlineresponder.addStateMachine(keyboardSM);
     outlineresponder.addInputState('outline');
 
+    this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+                    'ClosedChange');
+
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
                                 'TP.sig.DOMDNDTerminate'));
 
@@ -364,6 +367,51 @@ function() {
     }
 
     return val;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var hud,
+        hudIsHidden,
+
+        isActive;
+
+    //  Grab the HUD and see if it's currently open or closed.
+    hud = TP.byId('SherpaHUD', TP.win('UIROOT'));
+    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+
+    isActive = this.get('isActive');
+
+    //  If the HUD is hidden, then we deactivate ourself. But not before
+    //  capturing whether we were 'currently active' or not (i.e. the HUD can
+    //  hide or show independent of us). Otherwise, if the HUD is showing, then
+    //  we set ourself to whatever value we had when the HUD last hid.
+    if (hudIsHidden) {
+        if (isActive) {
+            this.signal('TP.sig.EndOutlineMode');
+        }
+    } else {
+        if (this.get('$wasActive')) {
+            this.signal('TP.sig.BeginOutlineMode');
+        }
+    }
+
+    this.set('$wasActive', isActive);
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ----------------------------------------------------------------------------
