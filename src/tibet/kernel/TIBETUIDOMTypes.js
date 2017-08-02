@@ -4156,10 +4156,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @returns {Object} The receiver.
      */
 
-    var attrName,
-        parts,
-
-        funcName;
+    var funcName;
 
     //  If the facet is 'value', then use the standard 'set' mechanism.
     if (facetName === 'value') {
@@ -4170,22 +4167,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         //  receiver (i.e. both attribute 'foo' and the internal 'foo' property
         //  will be set).
 
-        //  try attribute manipulation naming convention first
+        funcName = this.computeAttrMethodName('setAttr', aspectName);
 
-        //  if the attribute is namespace qualified, we 'start upper' each
-        //  piece.
-        //  e.g. 'foo:bar' -> 'FooBar'
-        if (/:/.test(attrName = aspectName)) {
-            parts = attrName.split(/:/);
-            attrName = TP.makeStartUpper(parts.first()) +
-                        TP.makeStartUpper(parts.last());
-        } else {
-            //  Otherwise, we just 'start upper' the whole piece
-            //  'foo' -> 'Foo'
-            attrName = TP.makeStartUpper(attrName);
-        }
-
-        funcName = 'setAttr' + attrName;
         if (TP.canInvoke(this, funcName)) {
             this[funcName](facetValue);
         } else {
