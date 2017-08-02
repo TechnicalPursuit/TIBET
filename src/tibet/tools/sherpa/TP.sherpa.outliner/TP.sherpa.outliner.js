@@ -228,7 +228,6 @@ function() {
 
         //  Update both the target element and halo style.
         thisref.updateTargetElementStyle();
-        thisref.updateHaloStyle();
 
         mouse.last.x = currentX;
         mouse.last.y = currentY;
@@ -293,7 +292,6 @@ function() {
 
     //  Update both the target element and it's descendants style.
     this.updateOutlinedDescendantStyle();
-    this.updateHaloStyle();
 
     return this;
 });
@@ -313,7 +311,6 @@ function() {
 
     //  Update both the target element and it's descendants style.
     this.updateOutlinedDescendantStyle();
-    this.updateHaloStyle();
 
     return this;
 });
@@ -586,7 +583,6 @@ function(aSignal) {
 
     //  Update both the target element and halo style.
     this.updateTargetElementStyle();
-    this.updateHaloStyle();
 
     return this;
 });
@@ -603,11 +599,7 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var haloTPElem;
 
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTPElem.setTransform('');
-    haloTPElem.setTransformOrigin('');
 
     return this;
 });
@@ -624,7 +616,6 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    this.updateHaloStyle();
 
     return this;
 });
@@ -1159,8 +1150,6 @@ function() {
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
-    this.updateHaloStyle();
 
     //  Observe the halo for when it focuses and blurs. We'll need to do this to
     //  keep it's style in sync with what we're doing here.
@@ -1216,147 +1205,9 @@ function() {
                             anElement, 'sherpa-outliner-tagname', true);
                     });
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('updateHaloStyle',
-function() {
-
-    /**
-     * @method updateHaloStyle
-     * @summary Updates the halo element's style to try to match the current
-     *     outliner's projection.
-     * @returns {TP.sherpa.outliner} The receiver.
-     */
-
-    var haloTPElem,
-
-        targetElement,
-
-        haloTargetElem,
-
-        xRotation,
-        yRotation,
-
-        scale;
-
-    /*
-        spread,
-
-        haloTargetElem,
-
-        parent,
-        depthCount,
-
-        margins,
-        outlineOffset,
-
-        targetBox;
-
-        zVal,
-
-        offsetX,
-        offsetY,
-
-        margins,
-        outlineOffset,
-
-        targetBox,
-        transformOriginX,
-        transformOriginY;
-    */
-
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
 
-    targetElement = TP.unwrap(this.get('targetTPElement'));
-    if (!TP.isElement(targetElement)) {
-        haloTPElem.setTransform('');
-        haloTPElem.setTransformOrigin('');
-
-        return this;
     }
-
-    haloTargetElem = TP.unwrap(haloTPElem.get('currentTargetTPElem'));
-    if (!TP.isElement(haloTargetElem)) {
-        haloTPElem.setTransform('');
-        haloTPElem.setTransformOrigin('');
-
-        return this;
-    }
-
-    xRotation = this.get('xRotation');
-    yRotation = this.get('yRotation');
-
-    scale = this.get('scale');
-
-    /*
-    var targetTPElement;
-
-    targetTPElement = this.get('targetTPElement');
-
-    targetTPElement.setTransform(
-        ' rotateX(' + 0 + 'deg)' +
-        ' rotateY(' + 0 + 'deg)' +
-        ' scale(' + 0 + ')');
-    */
-
-    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
-
-    /*
-    spread = this.get('spread');
-
-    parent = haloTargetElem.parentNode;
-
-    depthCount = 0;
-    while (TP.isElement(parent)) {
-        depthCount++;
-        parent = parent.parentNode;
-    }
-
-    depthCount -= 1;
-
-    TODO: Fix the problem with the wrong spread on inline elements.
-    if (!TP.XHTML_10_NONINLINE_ELEMENTS.at(haloTargetElem.tagName)) {
-        zVal = spread * depthCount;
-    }
-
-    zVal = spread * depthCount;
-
-    offsetX = 0;
-    offsetY = 0;
-
-    outlineOffset = 2;
-
-    if (targetElement === haloTargetElem) {
-        offsetX = -outlineOffset;
-        offsetY = -outlineOffset;
-    } else {
-        margins = TP.elementGetMarginInPixels(targetElement);
-        offsetX = margins.at(3) - outlineOffset;
-        offsetY = margins.at(0) - outlineOffset;
-    }
-    */
-
-    haloTPElem.setTransform(
-        ' rotateX(' + xRotation + 'deg)' +
-        ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale + ')');
-    /*
-    // ' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
-
-    targetBox = TP.elementGetBorderBox(haloTargetElem);
-    transformOriginX = targetBox.at('left');
-    transformOriginY = targetBox.at('top');
-
-    // haloTPElem.setTransformOrigin(transformOriginX, transformOriginY);
-
-    targetTPElement.setTransform(
-        ' rotateX(' + xRotation + 'deg)' +
-        ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale + ')');
-    */
 
     return this;
 });
