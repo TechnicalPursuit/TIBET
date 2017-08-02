@@ -13806,7 +13806,18 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The value to set.
      */
 
-    var methodName;
+    var suspendedAttrs,
+
+        methodName;
+
+    //  Make sure that we're not suspending changes to the supplied attribute.
+    //  If we are, then just return.
+    suspendedAttrs = this.$get('$suspendedAttributes');
+    if (TP.isValid(suspendedAttrs) &&
+        suspendedAttrs.indexOf(attributeName) !== TP.NOT_FOUND) {
+        //  returns null according to the spec for DOM 'setAttribute'.
+        return;
+    }
 
     //  try attribute manipulation naming convention first
     methodName = this.computeAttrMethodName('setAttr', attributeName);
