@@ -11,8 +11,8 @@
     margin: 1px;
 }
 
-.sherpa-hud .sherpa-hud-highlight,
-.sherpa-hud *|*[class~="sherpa-hud-highlight"] {
+.sherpa-hud .sherpa-hud-highlight:not(.sherpa-outliner-haloed),
+.sherpa-hud *|*[class~="sherpa-hud-highlight"]:not([class~="sherpa-outliner-haloed"]) {
 
     outline: dashed 1px red !important;
 }
