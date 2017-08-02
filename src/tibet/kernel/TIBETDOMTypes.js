@@ -11797,6 +11797,13 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  An Array of attributes that we're suspending from setting temporarily.
+TP.core.ElementNode.Inst.defineAttribute('$suspendedAttributes');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -13006,6 +13013,31 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('resumeSettingOf',
+function(attributeName) {
+
+    /**
+     * @method resumeSettingOf
+     * @summary Removes a previous suspension of setting of the supplied
+     *     attribute name by the suspendSettingOf method.
+     * @param {String} attributeName The attribute name to resume.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var suspendedAttrs;
+
+    suspendedAttrs = this.get('$suspendedAttributes');
+    if (TP.notValid(suspendedAttrs)) {
+        return this;
+    }
+
+    suspendedAttrs.remove(attributeName);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('serializeCloseTag',
 function(storageInfo) {
 
@@ -13853,6 +13885,35 @@ function(aValue, shouldSignal) {
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('suspendSettingOf',
+function(attributeName) {
+
+    /**
+     * @method suspendSettingOf
+     * @summary Suspends the setting of the supplied attribute name. Setting can
+     *     be resumed by using the resumeSettingOf method.
+     * @param {String} attributeName The attribute name to suspend.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var suspendedAttrs;
+
+    suspendedAttrs = this.get('$suspendedAttributes');
+    if (TP.notValid(suspendedAttrs)) {
+        suspendedAttrs = TP.ac();
+        this.set('$suspendedAttributes', suspendedAttrs);
+    }
+
+    suspendedAttrs.push(attributeName);
+
+    //  NB: This mutates the Array
+    suspendedAttrs.unique();
 
     return this;
 });
