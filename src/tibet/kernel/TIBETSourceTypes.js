@@ -1890,7 +1890,7 @@ function() {
 
             val = TP.elementGetAttribute(
                             target, 'tibet:nomutationtracking', true);
-            if (val === 'ansorself') {
+            if (val === TP.ANCESTOR_OR_SELF) {
                 return false;
             }
 
@@ -1902,7 +1902,7 @@ function() {
                 val = TP.elementGetAttribute(
                             ans, 'tibet:nomutationtracking', true);
 
-                if (val === 'true' || val === 'ans') {
+                if (val === 'true' || val === TP.ANCESTOR) {
                     return false;
                 }
             }
