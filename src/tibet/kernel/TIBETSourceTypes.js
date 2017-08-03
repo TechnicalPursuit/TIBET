@@ -970,6 +970,7 @@ function(evt) {
                 'sourceURL', source.url
                 );
 
+    //  If a signalName was placed onto the event by the caller, then use it.
     signalName = evt.signalName || 'TP.sig.SourceDataReceived';
 
     this.signal(signalName, payload);
@@ -1019,7 +1020,10 @@ function(signalTypes) {
 
                 signalName = aSignalType.getSignalName();
 
-                eventName = TP.ifEmpty(aSignalType.REMOTE_NAME, signalName);
+                //  Get the eventName from the signal type. This might be null
+                //  or undefined, which means that we'll take a different path
+                //  below.
+                eventName = aSignalType.REMOTE_NAME;
 
                 //  If there's already a handler registered for this native
                 //  event type then just return here. We don't want multiple
@@ -1039,6 +1043,11 @@ function(signalTypes) {
                         evt.signalName = signalName;
                         this.onmessage(evt);
                     }.bind(thisref);
+
+                    //  We need to default the eventName to 'message' here, so
+                    //  that if one wasn't supplied, the addEventListener below
+                    //  will work.
+                    eventName = TP.ifInvalid(eventName, 'message');
                 }
 
                 //  Put it in the handler registry in case we went to
