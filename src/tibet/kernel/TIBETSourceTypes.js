@@ -1100,19 +1100,15 @@ function(signalTypes) {
 
                 handlerFunc;
 
-            //  If the signal type has a REMOTE_NAME slot, then remove the
-            //  custom handler that we would've set up using that value as the
-            //  event name.
-            if (TP.notEmpty(customName = aSignalType.REMOTE_NAME)) {
+            customName = TP.ifInvalid(aSignalType.REMOTE_NAME, 'message');
 
-                //  If there is a callable function registered in the handler
-                //  registry under the custom event name, remove it.
-                if (TP.isCallable(handlerFunc =
-                                    handlerRegistry.atPut(customName))) {
+            //  If there is a callable function registered in the handler
+            //  registry under the custom event name, remove it.
+            if (TP.isCallable(handlerFunc =
+                                handlerRegistry.atPut(customName))) {
 
-                    handlerRegistry.removeKey(customName);
-                    source.removeEventListener(customName, handlerFunc, false);
-                }
+                handlerRegistry.removeKey(customName);
+                source.removeEventListener(customName, handlerFunc, false);
             }
         });
 
