@@ -1903,8 +1903,8 @@
     //  which CouchDB change feed URLs do we want to observe?
     TP.sys.setcfg('uri.watch_couchdb_uris', [
         // '_db_updates?feed=eventsource'                        //  all server
-        // '{dbname}_changes?feed=eventsource',                  //  no docs
-        // '{dbname}_changes?feed=eventsource&include_docs=true' //  with docs
+        // '{dbname}/_changes?feed=eventsource',                  //  no docs
+        // '{dbname}/_changes?feed=eventsource&include_docs=true' //  with docs
     ]);
 
     //  ---
