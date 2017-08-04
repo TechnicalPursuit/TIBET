@@ -347,7 +347,7 @@ function(storageInfo) {
     }
 
     //  Turn the serializing flag on.
-    this.set('$areSerializing', true);
+    this.set('$areSerializing', true, false);
 
     //  Grab our template's resource URI - we'll use this as our 'store' key.
     resourceURI = this.getType().getResourceURI(
@@ -384,7 +384,7 @@ function(storageInfo) {
     }
 
     //  Turn the serializing flag off.
-    this.set('$areSerializing', false);
+    this.set('$areSerializing', false, false);
 
     //  If we're not actually serializing our own template, then return an empty
     //  version of ourself as the placeholder in the 'higher level' markup that
