@@ -534,11 +534,21 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    var cmdVal;
+    TP.prompt('If you\'re using ShipIt to deploy, enter environment name.' +
+                    ' Otherwise, this should be blank.',
+                'production').then(
+        function(userValue) {
+            var cmdVal;
 
-    //  Build the command and execute it.
-    cmdVal = ':deploy';
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+            //  Build the command and execute it.
+            cmdVal = ':deploy';
+
+            if (TP.notEmpty(userValue)) {
+                cmdVal += ' ' + userValue;
+            }
+
+            TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+        });
 
     return this;
 });
