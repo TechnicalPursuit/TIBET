@@ -1213,7 +1213,6 @@ function() {
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
 
     //  Capture whether the halo is hidden or not. If it is, hide it.
     if (TP.isFalse(TP.bc(haloTPElem.getAttribute('hidden')))) {
@@ -1226,9 +1225,12 @@ function() {
     //  Ask the halo to suspend any other object's attempt to show it.
     haloTPElem.suspendSettingOf('hidden');
 
-    //  Set a class on the current halo target that allows us to apply 'halo
-    //  style' to it, even though the halo is hidden.
-    haloTargetTPElem.addClass('sherpa-outliner-haloed');
+    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+    if (TP.isValid(haloTargetTPElem)) {
+        //  Set a class on the current halo target that allows us to apply 'halo
+        //  style' to it, even though the halo is hidden.
+        haloTargetTPElem.addClass('sherpa-outliner-haloed');
+    }
 
     //  Observe the halo for when it focuses and blurs. We'll need to do this to
     //  keep it's style in sync with what we're doing here.
@@ -1288,10 +1290,11 @@ function() {
 
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
-
-    //  Remove the class on the current halo target that allowed us to apply
-    //  'halo style' to it, even though the halo is hidden.
-    haloTargetTPElem.removeClass('sherpa-outliner-haloed');
+    if (TP.isValid(haloTargetTPElem)) {
+        //  Remove the class on the current halo target that allowed us to apply
+        //  'halo style' to it, even though the halo is hidden.
+        haloTargetTPElem.removeClass('sherpa-outliner-haloed');
+    }
 
     //  Ask the halo to go ahead and resume any other object's attempt to show
     //  it.
