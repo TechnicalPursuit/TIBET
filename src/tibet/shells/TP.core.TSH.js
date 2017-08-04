@@ -2714,6 +2714,11 @@ function(aRequest) {
             if (TP.notEmpty(result.data)) {
                 request.stdout(result.data);
             }
+
+            if (TP.notEmpty(result.error)) {
+                request.stderr(result.reason);
+                request.fail();
+            }
         } else {
             if (result.status !== undefined) {
                 request.fail();
