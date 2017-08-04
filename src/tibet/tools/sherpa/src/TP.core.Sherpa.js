@@ -2695,6 +2695,7 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
                                     attributeValue,
                                     true);
         } else {
+            //  Empty
         }
     }
 
