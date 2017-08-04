@@ -1776,6 +1776,33 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementClean',
+function(anElement) {
+
+    /**
+     * @method elementClean
+     * @summary Cleans off all of the TIBET-specific or other
+     *     'instance-specific' information from the supplied Element.
+     * @description This method cleans off the following attributes and
+     *     properties from the supplied element:
+     *         - The 'id' attribute.
+     * @param {Element} anElement The target element.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement',
+                                'Must provide a valid Element node.');
+    }
+
+    TP.elementRemoveAttribute(anElement, 'id', true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementCopyAttributes',
 function(fromElement, toElement) {
 

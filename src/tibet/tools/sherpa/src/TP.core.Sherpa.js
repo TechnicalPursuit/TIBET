@@ -498,6 +498,10 @@ function() {
     //  Set up the thumbnail viewer
     this.setupThumbnail();
 
+    //  Set up the mutation observer that manages keeping all of the DOM and
+    //  markup that we're managing in sync.
+    this.setupBuilderObserver();
+
     //  Configure the north and south drawers to not track mutations for
     //  performance (we don't use mutation signals there anyway) and to set up
     //  the console service's keyboard state machine. Note that we do this in a
@@ -741,6 +745,58 @@ function(aSignal) {
                                     aSignal.getPayload().at('assistantParams'));
             });
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin;
+
+    //  Set up managed mutation observer machinery that uses our
+    //  'processUICanvasMutationRecords' method to manage changes to the UI
+    //  canvas.
+
+    if (!this.get('setupComplete')) {
+        return this;
+    }
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    TP.activateMutationObserver(
+        currentScreenTPWin.getNativeDocument(),
+        'BUILDER_OBSERVER');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    TP.removeMutationObserver('BUILDER_OBSERVER');
 
     return this;
 });
@@ -1120,6 +1176,122 @@ function(anID, headerText, tileParent, shouldDock) {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('processUICanvasMutationRecords',
+function(mutationRecords) {
+
+    /**
+     * @method processUICanvasMutationRecords
+     * @summary Processes records from a Mutation Observer against the source of
+     *     the document currently rendered as the UI canvas.
+     * @param {MutationRecord[]} mutationRecords The Array of MutationRecords
+     *     that we are being asked to process.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var len,
+        i,
+        record,
+
+        lenj,
+        j,
+
+        attrName,
+        attrValue,
+
+        attrIsEmpty,
+        attrWasEmpty,
+
+        node;
+
+    len = mutationRecords.getSize();
+    for (i = 0; i < len; i++) {
+
+        record = mutationRecords.at(i);
+
+        switch (record.type) {
+            case 'attributes':
+
+                attrName = record.attributeName;
+
+                attrValue = TP.elementGetAttribute(
+                                record.target,
+                                attrName,
+                                true);
+
+                //  Ensure that the target Element is indeed an Element and that
+                //  it's not detached. We're not interested in attributes on
+                //  detached Elements.
+                if (TP.isElement(record.target) &&
+                    !TP.nodeIsDetached(record.target)) {
+
+                    //  Detect whether this is a TP.CREATE, TP.UPDATE or
+                    //  TP.DELETE base on whether there is a (new) attribute
+                    //  value and whether there was an existing old attribute
+                    //  value.
+
+                    attrIsEmpty = TP.isEmpty(attrValue);
+                    attrWasEmpty = TP.isEmpty(record.oldValue);
+
+                    if (!attrIsEmpty && attrWasEmpty) {
+                        this.updateUICanvasSource(record.target,
+                                                    null,
+                                                    TP.CREATE,
+                                                    attrName,
+                                                    attrValue,
+                                                    null);
+                    } else if (!attrIsEmpty && !attrWasEmpty) {
+                        this.updateUICanvasSource(record.target,
+                                                    null,
+                                                    TP.UPDATE,
+                                                    attrName,
+                                                    attrValue,
+                                                    record.oldValue);
+                    } else if (attrIsEmpty && !attrWasEmpty) {
+                        this.updateUICanvasSource(record.target,
+                                                    null,
+                                                    TP.DELETE,
+                                                    attrName,
+                                                    null,
+                                                    record.oldValue);
+                    }
+                }
+
+                break;
+
+            case 'childList':
+
+                if (TP.notEmpty(record.addedNodes)) {
+                    lenj = record.addedNodes.length;
+                    for (j = 0; j < lenj; j++) {
+
+                        node = record.addedNodes[j];
+                        this.updateUICanvasSource(
+                                    node, record.target, TP.CREATE);
+                    }
+                }
+
+                if (TP.notEmpty(record.removedNodes)) {
+                    lenj = record.removedNodes.length;
+                    for (j = 0; j < lenj; j++) {
+
+                        node = record.removedNodes[j];
+                        this.updateUICanvasSource(
+                                    node, record.target, TP.DELETE);
+                    }
+                }
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('saveElementSerialization',
 function(storageSerialization, successFunc, failFunc) {
 
@@ -1424,6 +1596,295 @@ function() {
                                 val + 'px');
             }
         });
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupBuilderObserver',
+function() {
+
+    /**
+     * @method setupBuilderObserver
+     * @summary Sets up a managed Mutation Observer that handles insertions and
+     *     deletions as GUI is built using various parts of the Sherpa.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var observerConfig,
+
+        world,
+        currentScreenTPWin;
+
+    //  Add a managed Mutation Observer filter Function that will filter
+    //  attribute mutation records for:
+    //
+    //      - TIBET-related namespace prefixes:
+    //          'dnd'
+    //          'xmlns'
+    //          'pclass'
+    //      - TIBET attributes:
+    //          'tibet:for'
+    //          'tibet:globalDocID'
+    //          'tibet:type'
+    //      - generated 'id' attributes
+    //      - Sherpa-related 'class' attributes
+    //      - Sherpa-related other attributes
+
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+
+            var attrName,
+                attrValue,
+                attrOldValue,
+                attrPrefix,
+
+                realElemPrefix,
+                realElemLocalName,
+
+                computedElemName,
+                computedElemNameParts,
+                computedElemPrefix,
+                computedElemLocalName;
+
+            if (aMutationRecord.type === 'attributes') {
+
+                //  Compute attribute name, value, old value and prefix
+
+                attrName = aMutationRecord.attributeName;
+
+                attrValue = TP.elementGetAttribute(
+                                aMutationRecord.target,
+                                attrName,
+                                true);
+                attrOldValue = aMutationRecord.oldValue;
+
+                if (TP.notEmpty(aMutationRecord.attributeNamespace)) {
+                    if (!TP.regex.HAS_COLON.test(attrName)) {
+                        attrPrefix = TP.w3.Xmlns.getURIPrefix(
+                                        aMutationRecord.attributeNamespace,
+                                        aMutationRecord.target);
+                        attrName = attrPrefix + ':' + attrName;
+                    } else {
+                        attrPrefix = attrName.slice(
+                                        0, attrName.indexOf(':'));
+                    }
+                }
+
+                switch (attrPrefix) {
+
+                    //  Ignore any attributes with these prefixes
+                    case 'dnd':
+                    case 'xmlns':
+                    case 'pclass':
+                        return false;
+                    default:
+                        break;
+                }
+
+                switch (attrName) {
+
+                    case 'tibet:for':
+                    case 'tibet:globalDocID':
+                    case 'tibet:type':
+                        return false;
+
+                    case 'id':
+
+                        //  Test to see if the 'id' attribute value is one that
+                        //  is generated by TIBET.
+
+                        //  If it ends with '_generated', then we know it is.
+                        if (attrValue.endsWith('_generated')) {
+                            return false;
+                        }
+
+                        //  In the first case, we use the real element name
+                        //  prefix and tagName and see if they're joined
+                        //  together with an underscore ('_'). If so, then it's
+                        //  very likely that TIBET generated it and so we ignore
+                        //  it.
+                        realElemPrefix = aMutationRecord.target.prefix;
+                        realElemLocalName = aMutationRecord.target.tagName;
+
+                        if (attrValue.startsWith(
+                                realElemPrefix + '_' +
+                                realElemLocalName + '_')) {
+                            return false;
+                        }
+
+                        //  In the second case, we use the computed element name
+                        //  prefix and computed tag name and see if they're
+                        //  joined together with an underscore ('_'). If so,
+                        //  then it's very likely that TIBET generated it and so
+                        //  we ignore it.
+                        computedElemName =
+                                TP.elementGetFullName(aMutationRecord.target);
+                        computedElemNameParts =
+                                computedElemName.split(':');
+                        computedElemPrefix =
+                                computedElemNameParts.first();
+                        computedElemLocalName =
+                                computedElemNameParts.last();
+
+                        if (attrValue.startsWith(
+                                computedElemPrefix + '_' +
+                                computedElemLocalName + '_')) {
+                            return false;
+                        }
+
+                        break;
+
+                    case 'class':
+
+                        //  If either the new or old 'class' attribute value
+                        //  contains 'sherpa-', we ignore it
+
+                        if (TP.notEmpty(attrValue) &&
+                            attrValue.contains('sherpa-')) {
+                            return false;
+                        }
+
+                        if (TP.notEmpty(attrOldValue) &&
+                            attrOldValue.contains('sherpa-')) {
+                            return false;
+                        }
+
+                        break;
+
+                    default:
+
+                        //  If the attribute name starts with 'sherpa-', we
+                        //  ignore it.
+                        if (attrName.startsWith('sherpa-')) {
+                            return false;
+                        }
+
+                        break;
+                }
+            }
+
+            return true;
+        },
+        'BUILDER_OBSERVER');
+
+    //  Add a managed Mutation Observer filter Function that will filter
+    //  child tree mutation records for:
+    //
+    //      - generated elements
+
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+
+            var len,
+                i,
+
+                node,
+                elem,
+                attrValue;
+
+            if (TP.notEmpty(aMutationRecord.addedNodes)) {
+
+                len = aMutationRecord.addedNodes.length;
+                for (i = 0; i < len; i++) {
+
+                    node = aMutationRecord.addedNodes[i];
+
+                    //  Nodes that are generated by TIBET, such as dragging
+                    //  elements and resize trackers.
+                    if (TP.isTrue(node[TP.GENERATED])) {
+                        return false;
+                    }
+
+                    if (TP.isElement(node)) {
+                        elem = node;
+                        attrValue = TP.elementGetAttribute(elem, 'id', true);
+                        if (attrValue.endsWith('_generated')) {
+                            return false;
+                        }
+                    } else if (TP.isTextNode(node)) {
+                        elem = node.parentNode;
+
+                        //  Nodes that are generated by TIBET, such as
+                        //  dragging elements and resize trackers.
+                        if (TP.isTrue(elem[TP.GENERATED])) {
+                            return false;
+                        }
+
+                        attrValue = TP.elementGetAttribute(elem, 'id', true);
+                        if (attrValue.endsWith('_generated')) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            if (TP.notEmpty(aMutationRecord.removedNodes)) {
+
+                len = aMutationRecord.removedNodes.length;
+                for (i = 0; i < len; i++) {
+
+                    node = aMutationRecord.removedNodes[i];
+
+                    //  Nodes that are generated by TIBET, such as dragging
+                    //  elements and resize trackers.
+                    if (TP.isTrue(node[TP.GENERATED])) {
+                        return false;
+                    }
+
+                    if (TP.isElement(node)) {
+                        elem = node;
+                        attrValue = TP.elementGetAttribute(elem, 'id', true);
+                        if (attrValue.endsWith('_generated')) {
+                            return false;
+                        }
+                    } else if (TP.isTextNode(node)) {
+                        elem = node.parentNode;
+
+                        //  Nodes that are generated by TIBET, such as
+                        //  dragging elements and resize trackers.
+                        if (TP.isTrue(elem[TP.GENERATED])) {
+                            return false;
+                        }
+
+                        attrValue = TP.elementGetAttribute(elem, 'id', true);
+                        if (attrValue.endsWith('_generated')) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        },
+        'BUILDER_OBSERVER');
+
+    //  Set up managed mutation observer machinery that uses our
+    //  'processUICanvasMutationRecords' method to manage changes to the UI
+    //  canvas.
+
+    observerConfig = {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeOldValue: true
+    };
+
+    TP.addMutationObserver(
+        this.processUICanvasMutationRecords.bind(this),
+        observerConfig,
+        'BUILDER_OBSERVER');
+
+    //  Because the 'DocumentLoaded' handler that normally activates this
+    //  managed mutation observer has already been executed when the UI canvas
+    //  was first displayed, we need to activate the first time here.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    TP.activateMutationObserver(
+        currentScreenTPWin.getNativeDocument(),
+        'BUILDER_OBSERVER');
 
     return this;
 });
@@ -1913,6 +2374,332 @@ function() {
 
     //  Otherwise, execute the setup process.
     this.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('updateUICanvasSource',
+function(anElement, updatingAncestor, operation, attributeName, attributeValue,
+         oldAttributeValue) {
+
+    /**
+     * @method updateUICanvasSource
+     * @summary Updates the source of the document currently being displayed as
+     *     the UI canvas.
+     * @param {Element} anElement The target Element that the mutation occurred
+     *     against.
+     * @param {Element} updatingAncestor The ancestor of the mutating Element.
+     *     This is particularly useful when deleting nodes because the mutating
+     *     Element will already be detached from the DOM.
+     * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
+     *     TP.DELETE that is currently causing the mutation.
+     * @param {String} attributeName The name of the attribute that is changing
+     *     (if this is an 'attributes' mutation).
+     * @param {String} attributeValue The value of the attribute that is
+     *     changing (if this is an 'attributes' mutation).
+     * @param {String} oldAttributeValue The prior value of the attribute that
+     *     is changing (if this is an 'attributes' mutation and the operation is
+     *     TP.UPDATE or TP.DELETE).
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var isAttrChange,
+
+        xhtmlURIs,
+
+        xmlns,
+
+        tagSrcElem,
+        wasSrcRoot,
+
+        searchElem,
+
+        originatingDoc,
+
+        sourceLoc,
+        sourceURI,
+
+        sourceNode,
+
+        originatingAddress,
+        addresses,
+        ancestorAddresses,
+
+        currentNode,
+
+        len,
+        i,
+
+        address,
+
+        insertionParent,
+
+        newNode;
+
+    /*
+    console.log('localName: ' + anElement.localName + '\n' +
+                'operation: ' + operation + '\n' +
+                'attrName: ' + attributeName + '\n' +
+                'oldAttrValue: ' + oldAttributeValue + '\n' +
+                'attrValue: ' + attributeValue);
+    */
+
+    if (!TP.isElement(anElement)) {
+        //  TODO: Raise an exception here
+        return this;
+    }
+
+    isAttrChange = TP.notEmpty(attributeName);
+
+    xhtmlURIs = TP.w3.Xmlns.getXHTMLURIs();
+
+    //  Whether or not the target Element is actually a 'source root' (i.e. is
+    //  it itself a custom tag of some sort with a source). Initially set to
+    //  false.
+    wasSrcRoot = false;
+
+    //  If the target Element is detached, that means it must be being deleted
+    //  from the visible DOM. By the time this method is called, because of the
+    //  way MutationObservers work, its parentNode will be set to null and we
+    //  have to use a more complex mechanism to get it's position in the DOM.
+    if (TP.nodeIsDetached(anElement)) {
+        searchElem = updatingAncestor;
+    } else {
+        searchElem = anElement;
+    }
+
+    //  If the Element we're using to search for the source is itself a) not in
+    //  the XHTML namespace and b) has a 'tibet:tag' attribute, then its acting
+    //  as it's own tag source. So we make it such and flip our wasSrcRoot flag.
+    xmlns = searchElem.namespaceURI;
+    if (!xhtmlURIs.contains(xmlns) ||
+        TP.elementHasAttribute(searchElem, 'tibet:tag', true)) {
+
+        tagSrcElem = searchElem;
+        wasSrcRoot = true;
+    } else {
+
+        //  Otherwise, we have to search up the ancestor hierarchy for the
+        //  nearest custom tag (using the same search criteria as above) to set
+        //  as the tag source element.
+        tagSrcElem = TP.nodeDetectAncestor(
+                searchElem,
+                function(anAncestor) {
+
+                    var ansXmlns;
+
+                    ansXmlns = anAncestor.namespaceURI;
+                    if (!xhtmlURIs.contains(ansXmlns) ||
+                        TP.elementHasAttribute(anAncestor, 'tibet:tag', true)) {
+                        return true;
+                    }
+
+                    return false;
+                });
+    }
+
+    //  If no tag source element could be computed, that means we're going to
+    //  use the whole document as the source.
+    if (!TP.isElement(tagSrcElem)) {
+        originatingDoc = TP.nodeGetDocument(searchElem);
+        sourceLoc = originatingDoc[TP.SRC_LOCATION];
+    } else {
+        //  Otherwise, grab the computed resource URI for the 'template' of the
+        //  tag source element.
+        sourceLoc = TP.wrap(tagSrcElem).
+                        getType().
+                        computeResourceURI('template');
+    }
+
+    if (TP.isEmpty(sourceLoc)) {
+        //  TODO: Raise an exception here
+        return this;
+    }
+
+    //  Make a URI from the source location and fetch its results
+    //  *synchronously*. This will provide the 'source DOM' that we must modify.
+    sourceURI = TP.uc(sourceLoc);
+    sourceNode =
+        sourceURI.getResource(
+            TP.hc('async', false, 'resultType', TP.DOM)).get('result');
+
+    //  Find the location in the *source* DOM (the one that we just retrieved)
+    //  that represents the underlying DOM structure of the source that rendered
+    //  the current GUI that we're modifying.
+
+    if (!wasSrcRoot) {
+
+        if (TP.nodeIsDetached(anElement)) {
+
+            //  If anElement was detached and the operation is *not* TP.DELETE,
+            //  then we have a problem. Raise an exception and exit.
+            if (operation !== TP.DELETE) {
+                //  TODO: Raise an exception here
+                return this;
+            }
+
+            //  Now, we need to make sure that our detached node has a
+            //  TP.PREVIOUS_POSITION value. This is placed by TIBET routines
+            //  before the node is deleted and provides the document position
+            //  that the node had before it was removed. We need this, because
+            //  the node is detached and we no longer have access to its
+            //  (former) parentNode
+            originatingAddress = anElement[TP.PREVIOUS_POSITION];
+            if (TP.isEmpty(originatingAddress)) {
+                //  TODO: Raise an exception here
+                return this;
+            }
+
+            addresses = originatingAddress.split('.');
+
+            //  Note here how we get the ancestor addresses all the way to the
+            //  top of the document. This is by design because the
+            //  TP.PREVIOUS_POSITION for the detached node will have been
+            //  computed the same way.
+            ancestorAddresses =
+                TP.nodeGetDocumentPosition(updatingAncestor).split('.');
+
+            //  If the size difference between the ancestor addresses and the
+            //  originating address is more than 1, then the node is more than 1
+            //  level 'deeper' from the ancestor and we don't worry about it
+            //  because we assume that one of the direct children of the
+            //  ancestor (an ancestor of our detached node) will be detached via
+            //  this mechanism, thereby taking care of us.
+            if (addresses.getSize() - ancestorAddresses.getSize() > 1) {
+                return this;
+            }
+
+            //  Now, we recompute the addresses for the traversal below to be
+            //  between the updating ancestor and the tag source Element. This
+            //  will then be accurate to update the source DOM, which is always
+            //  relative to the tag source element.
+            ancestorAddresses = TP.nodeGetDocumentPosition(updatingAncestor,
+                                                            null,
+                                                            tagSrcElem);
+            ancestorAddresses = ancestorAddresses.split('.');
+
+            //  Finally, we push on the last position of the address that the
+            //  detached node had. Given our test above of 'not more than 1
+            //  level between the updating ancestor and the detached node', this
+            //  will complete the path that we need to update the source DOM
+            ancestorAddresses.push(addresses.last());
+
+            //  Set it to be ready to go for logic below.
+            addresses = ancestorAddresses;
+        } else {
+            //  Now we get the address from the target element that the user is
+            //  actually manipulating up through the tag source element. We will
+            //  use this address information to traverse the source DOM.
+            originatingAddress = TP.nodeGetDocumentPosition(anElement,
+                                                            null,
+                                                            tagSrcElem);
+            addresses = originatingAddress.split('.');
+        }
+
+        //  Make sure that the source node is not a Document.
+        if (TP.isDocument(sourceNode)) {
+            sourceNode = TP.nodeGetDocument(sourceNode);
+        }
+
+        insertionParent = null;
+
+        currentNode = sourceNode;
+
+        len = addresses.getSize();
+        for (i = 0; i < len; i++) {
+
+            address = addresses.at(i);
+
+            if (TP.isTextNode(currentNode)) {
+                if (TP.regex.ACP_BEGIN_CONTROL_STATEMENT.test(
+                    TP.nodeGetTextContent(currentNode))) {
+                    while (!TP.regex.ACP_END_CONTROL.STATEMENT.test(
+                            TP.nodeGetTextContent(currentNode))) {
+                        currentNode = currentNode.nextSibling;
+                    }
+                }
+            }
+
+            if (i === len - 1) {
+
+                insertionParent = currentNode;
+
+                //  If there isn't a Node (even a Text node) at the final
+                //  address, then we're doing a pure append (in the case of the
+                //  operation being a TP.CREATE). Therefore, we set currentNode
+                //  (our insertion point) to null.
+                if (!TP.isNode(currentNode.childNodes[address])) {
+                    currentNode = null;
+                } else {
+                    //  Otherwise, set the currentNode (used as the insertion
+                    //  point in a TP.CREATE) to the childNode at the last
+                    //  address.
+                    currentNode = currentNode.childNodes[address];
+                }
+
+                break;
+            }
+
+            currentNode = currentNode.childNodes[address];
+        }
+    } else {
+
+        //  Otherwise, the tag source element is itself being modified, so we
+        //  can shortcut the whole search process here.
+        currentNode = sourceNode;
+    }
+
+    //  If we're changing the attribute, but don't have an element to change it
+    //  one, then raise an exception and exit
+    if (isAttrChange && !TP.isElement(currentNode)) {
+
+        //  TODO: Raise an exception.
+        return this;
+    }
+
+    if (operation === TP.CREATE) {
+
+        if (isAttrChange) {
+            TP.elementSetAttribute(currentNode,
+                                    attributeName,
+                                    attributeValue,
+                                    true);
+        } else {
+
+            if (TP.isElement(insertionParent)) {
+
+                newNode = TP.nodeCloneNode(anElement, true, false);
+                TP.elementClean(newNode);
+
+                TP.nodeInsertBefore(insertionParent,
+                                    newNode,
+                                    currentNode,
+                                    false);
+            }
+        }
+    } else if (operation === TP.DELETE) {
+
+        if (isAttrChange) {
+            TP.elementRemoveAttribute(currentNode, attributeName, true);
+        } else {
+            TP.nodeDetach(currentNode);
+        }
+
+    } else if (operation === TP.UPDATE) {
+
+        if (isAttrChange) {
+            TP.elementSetAttribute(currentNode,
+                                    attributeName,
+                                    attributeValue,
+                                    true);
+        } else {
+        }
+    }
+
+    //  Set the resource of the sourceURI back to the updated source node.
+    sourceURI.setResource(sourceNode, TP.request('signalChange', false));
 
     return this;
 });
