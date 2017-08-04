@@ -619,6 +619,12 @@ function(aSignal) {
     //  consoleService's 'model' - i.e. the TSH).
     originalArgs = consoleService.get('model').getArguments(originalRequest);
 
+    //  Iterate over the ARGV, processing any unnamed arguments
+    originalArgs.at('ARGV').forEach(
+            function(argName) {
+                cmdText += ' ' + argName;
+            });
+
     //  This is a TP.core.Hash - iterate over it and gather up the arguments.
     originalArgs.perform(
             function(kvPair) {
@@ -627,6 +633,12 @@ function(aSignal) {
 
                 argName = kvPair.first();
                 argValue = kvPair.last();
+
+                //  We already processed ARGV above, which includes all ARG*
+                //  arguments.
+                if (/^ARG/.test(argName)) {
+                    return;
+                }
 
                 //  Note that we only gather arguments that are 'tsh:'
                 //  arguments.
