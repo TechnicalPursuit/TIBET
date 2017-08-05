@@ -409,6 +409,20 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+String.Inst.defineMethod('asURI',
+function() {
+
+    /**
+     * @method asURI
+     * @summary A shorthand method for TP.core.URI.construct().
+     * @returns {TP.core.URI} The new instance.
+     */
+
+    return TP.core.URI.construct(this.asString());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Type.defineMethod('fromDocument',
 function(aDocument) {
 
