@@ -32,5 +32,12 @@ TP.xctrls.panel.defineAttribute('styleURI', TP.NO_RESULT);
 TP.xctrls.panel.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.panel.Inst.defineAttribute('contentElement',
+    TP.cpc('> xctrls|content', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

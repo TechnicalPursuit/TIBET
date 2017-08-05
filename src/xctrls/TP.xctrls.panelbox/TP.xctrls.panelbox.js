@@ -84,13 +84,19 @@ function(aContentObject, aRequest) {
     //  will allow us to find it later.
     if (TP.isEmpty(panelTPElem)) {
         panelTPElem = this.addRawContent(
-                        '<xctrls:panel><xctrls:value>' +
-                        contentKey +
-                        '</xctrls:value></xctrls:panel>');
+                            '<xctrls:panel tibet:tag="xctrls:panel">' +
+                                '<xctrls:value>' +
+                                contentKey +
+                                '</xctrls:value>' +
+                            '<xctrls:content/>' +
+                            '</xctrls:panel>');
 
         //  NB: We don't need the result here - just ensuring that that new
         //  panel has an ID (hence the 'true' supplied here).
         panelTPElem.getLocalName(true);
+    }
+
+    if (TP.isValid(aContentObject)) {
 
         //  Observe the new panel when it gets attached to the DOM. When it
         //  does, refresh its bound data.
@@ -105,9 +111,8 @@ function(aContentObject, aRequest) {
 
         handler.observe(panelTPElem, 'TP.sig.AttachComplete');
 
-        //  Note 'addContent' here to avoid blowing away the 'xctrls:value' tag
-        //  holding our key.
-        panelTPElem.addContent(aContentObject);
+        //  Grab the panel's content element and set its content.
+        panelTPElem.get('contentElement').setContent(aContentObject);
     }
 
     this.setValue(contentKey);
