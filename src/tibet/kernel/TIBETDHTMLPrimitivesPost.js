@@ -4477,9 +4477,12 @@ function(anElement) {
         busyElement.busyResizeFunction = null;
     }
 
-    //  reset the overflow so scrollbars return to their old config
-    if (anElement.oldOverflow) {
-        TP.elementGetStyleObj(anElement).overflow = anElement.oldOverflow;
+    //  reset the overflow so scrollbars return to their old config. Note how we
+    //  use the 'TP.isValid' test here, since the original value might have been
+    //  the empty String.
+    if (TP.isValid(anElement[TP.OLD_OVERFLOW])) {
+        TP.elementGetStyleObj(anElement).overflow = anElement[TP.OLD_OVERFLOW];
+        delete anElement[TP.OLD_OVERFLOW];
     }
 
     return busyElement;
@@ -5877,7 +5880,7 @@ function(anElement, aMessage) {
     styleObj = TP.elementGetStyleObj(anElement);
 
     //  capture and turn off overflow that would show scrollbars
-    anElement.oldOverflow = styleObj.overflow;
+    anElement[TP.OLD_OVERFLOW] = styleObj.overflow;
     styleObj.overflow = 'hidden';
 
     //  Go ahead and show the busy element.
