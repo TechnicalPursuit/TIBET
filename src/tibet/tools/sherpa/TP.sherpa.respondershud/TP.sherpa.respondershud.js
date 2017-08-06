@@ -249,6 +249,10 @@ function(aSignal) {
 
     this.callNextMethod();
 
+    if (this.get('$isRecasting')) {
+        return this;
+    }
+
     //  Hide the tile.
     tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
     if (TP.isValid(tile)) {

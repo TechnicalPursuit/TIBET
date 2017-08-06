@@ -104,6 +104,12 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineAttribute('$isRecasting');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -206,6 +212,10 @@ function(aSignal) {
     var halo,
         haloTarget;
 
+    if (this.get('$isRecasting')) {
+        return this;
+    }
+
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
     haloTarget = halo.get('currentTargetTPElem');
 
@@ -231,10 +241,63 @@ function(aSignal) {
     var halo,
         haloTarget;
 
+    if (this.get('$isRecasting')) {
+        return this;
+    }
+
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
     haloTarget = halo.get('currentTargetTPElem');
 
     this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('NodeDidRecast',
+function(aSignal) {
+
+    /**
+     * @method handleNodeDidRecast
+     * @summary Handles notifications of when a node is finished being 'recast'
+     *     by the TIBET tag processor. This allows the sidebar to provide
+     *     feedback to the user that this is happening.
+     * @param {TP.sig.NodeDidRecast} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var recastTPNode;
+
+    this.set('$isRecasting', false);
+
+    //  See if we can get a recasting target from the signal. If so, and it's a
+    //  type of TP.core.Node, then focus ourself on it.
+    recastTPNode = aSignal.at('recastTarget');
+    if (TP.isKindOf(recastTPNode, TP.core.Node)) {
+        this.focusOnTarget(recastTPNode);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('NodeWillRecast',
+function(aSignal) {
+
+    /**
+     * @method handleNodeWillRecast
+     * @summary Handles notifications of when a node is about to be 'recast' by
+     *     the TIBET tag processor. This allows the sidebar to provide feedback
+     *     to the user that this is happening.
+     * @param {TP.sig.NodeWillRecast} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    this.set('$isRecasting', true);
 
     return this;
 });
@@ -252,6 +315,8 @@ function() {
 
     this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
                             'ClosedChange');
+
+    this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
 
     return this;
 });

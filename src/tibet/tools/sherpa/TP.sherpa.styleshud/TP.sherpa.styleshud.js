@@ -185,6 +185,10 @@ function(aSignal) {
 
     var tile;
 
+    if (this.get('$isRecasting')) {
+        return this;
+    }
+
     this.callNextMethod();
 
     //  Hide the tile.
