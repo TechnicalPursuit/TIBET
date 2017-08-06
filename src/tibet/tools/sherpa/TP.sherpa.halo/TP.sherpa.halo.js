@@ -21,7 +21,7 @@ TP.sherpa.Element.defineSubtype('halo');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
-TP.sherpa.halo.Inst.defineAttribute('$dontSignalBlurFocus');
+TP.sherpa.halo.Inst.defineAttribute('$isRecasting');
 
 TP.sherpa.halo.Inst.defineAttribute('$lastTargetTPElem');
 
@@ -96,7 +96,7 @@ function() {
     //  ahead and signal. Note that we only set this flag when we're doing the
     //  minimal work to reset the focus on top of the current target where it
     //  has been refreshed from its underlying content.
-    if (TP.notTrue(this.get('$dontSignalBlurFocus'))) {
+    if (TP.notTrue(this.get('$isRecasting'))) {
         this.signal('TP.sig.HaloDidBlur',
                     TP.hc('haloTarget', currentTargetTPElem),
                     TP.OBSERVER_FIRING);
@@ -351,7 +351,7 @@ function(newTargetTPElem) {
         //  go ahead and signal. Note that we only set this flag when we're
         //  doing the minimal work to reset the focus on top of the current
         //  target where it has been refreshed from its underlying content.
-        if (TP.notTrue(this.get('$dontSignalBlurFocus'))) {
+        if (TP.notTrue(this.get('$isRecasting'))) {
             this.signal('TP.sig.HaloDidFocus',
                         TP.hc('haloTarget', newTargetTPElem),
                         TP.OBSERVER_FIRING);
@@ -512,6 +512,12 @@ function(aSignal) {
 
         newTargetTPElem;
 
+    //  We don't want to do the back and forth with the halo if we're just
+    //  recasting the target.
+    if (TP.isTrue(this.get('$isRecasting'))) {
+        return this;
+    }
+
     currentTargetTPElem = this.get('currentTargetTPElem');
     if (!TP.isKindOf(currentTargetTPElem, TP.core.ElementNode)) {
         return this;
@@ -668,9 +674,10 @@ function(aSignal) {
     //  type of TP.core.Node, then focus ourself on it.
     recastTPNode = aSignal.at('recastTarget');
     if (TP.isKindOf(recastTPNode, TP.core.Node)) {
-
         this.focusOn(recastTPNode);
     }
+
+    this.set('$isRecasting', false);
 
     return this;
 });
@@ -690,7 +697,9 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    //  Show the busy layer. We'll do more when we get the NodeDidRecast
+    this.set('$isRecasting', true);
+
+    //  Show the busy layer. We'll do more when we get the NodeDidRecast.
     this.displayBusy();
 
     return this;
