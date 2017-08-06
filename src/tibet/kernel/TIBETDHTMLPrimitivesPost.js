@@ -2349,7 +2349,7 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement', anElement);
     }
 
-    if (TP.isElement(busyElement = anElement.busyElement)) {
+    if (TP.isElement(busyElement = anElement[TP.BUSY_ELEMENT])) {
         return busyElement;
     }
 
@@ -2388,8 +2388,8 @@ function(anElement) {
     //  Cache the busy element, the busy control image element and the busy
     //  message element as slots on the element they were created for for
     //  much faster display next time.
-    anElement.busyElement = busyElement;
-    anElement.busyMessageElement = busyMessageElement;
+    anElement[TP.BUSY_ELEMENT] = busyElement;
+    anElement[TP.BUSY_MSG_ELEMENT] = busyMessageElement;
     anElement.busyControlImageElement = busyControlImageElement;
 
     return busyElement;
@@ -4460,7 +4460,7 @@ function(anElement) {
 
     //  We only do this if there is actually a busy element for the supplied
     //  element.
-    if (TP.isElement(busyElement = anElement.busyElement)) {
+    if (TP.isElement(busyElement = anElement[TP.BUSY_ELEMENT])) {
 
         TP.elementSetAttribute(busyElement, 'pclass:hidden', true, true);
 
@@ -5527,7 +5527,7 @@ function(anElement, aMessage) {
 
     var busyMessageElement;
 
-    if (TP.notValid(busyMessageElement = anElement.busyMessageElement)) {
+    if (TP.notValid(busyMessageElement = anElement[TP.BUSY_MSG_ELEMENT])) {
         return;
     }
 
@@ -5788,8 +5788,8 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
         msg = ' ';
     }
 
-    busyElement = anElement.busyElement;
-    busyMessageElement = anElement.busyMessageElement;
+    busyElement = anElement[TP.BUSY_ELEMENT];
+    busyMessageElement = anElement[TP.BUSY_MSG_ELEMENT];
 
     busyElemStyleObj = TP.elementGetStyleObj(busyElement);
 
