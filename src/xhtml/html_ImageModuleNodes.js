@@ -118,5 +118,26 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.img.Inst.defineMethod('setAttrSrc',
+function(aSrc) {
+
+    /**
+     * @method setAttrSrc
+     * @summary Sets the src that the receiver will use to retrieve its
+     *     content.
+     * @param {String} aSrc The URL that the receiver will use to fetch its
+     *     content.
+     */
+
+    this.$setAttribute('src', aSrc);
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
