@@ -2367,6 +2367,10 @@ function(aSignal) {
     this.buildRootBayData();
     this.refreshBay(0);
 
+    //  Reset the halo target GID tracking attribute that we use to make sure to
+    //  not focus on the same object twice in a row.
+    this.set('$lastHaloTargetGID', null);
+
     return this;
 });
 
