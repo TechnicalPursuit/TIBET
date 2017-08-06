@@ -2303,7 +2303,7 @@ function(aMutationRecord) {
                                 val;
 
                             //  If the node that got removed is an Element and
-                            //  it has a value of 'ansorself' for the
+                            //  it has a value of 'true' or 'ansorself' for the
                             //  'tibet:nomutationtracking' attribute, then
                             //  return false to filter out this node from the
                             //  'removed' data set.
@@ -2312,7 +2312,7 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
 
-                                if (val === 'ansorself') {
+                                if (val === 'true' || val === 'ansorself') {
                                     return false;
                                 }
                             }
@@ -2370,7 +2370,7 @@ function(aMutationRecord) {
                                 val;
 
                             //  If the node that got added is an Element and
-                            //  it has a value of 'ansorself' for the
+                            //  it has a value of 'true' or 'ansorself' for the
                             //  'tibet:nomutationtracking' attribute, then
                             //  return false to filter out this node from the
                             //  'added' data set.
@@ -2379,7 +2379,7 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
 
-                                if (val === 'ansorself') {
+                                if (val === 'true' || val === 'ansorself') {
                                     return false;
                                 }
                             }
