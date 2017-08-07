@@ -5845,6 +5845,10 @@ function(aNode, joinChar, stopAncestor) {
         node = aNode.parentNode;
     }
 
+    if (TP.isNode(stopAncestor) && node === stopAncestor) {
+        return '';
+    }
+
     while (TP.isElement(node) &&
             node !== stopAncestor &&
             (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
