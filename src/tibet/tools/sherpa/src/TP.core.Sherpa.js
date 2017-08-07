@@ -2619,7 +2619,14 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
             ancestorAddresses = TP.nodeGetDocumentPosition(updatingAncestor,
                                                             null,
                                                             tagSrcElem);
-            ancestorAddresses = ancestorAddresses.split('.');
+
+            //  This will be empty if updatingAncestor and tagSrcElem are the
+            //  same node.
+            if (TP.isEmpty(ancestorAddresses)) {
+                ancestorAddresses = TP.ac();
+            } else {
+                ancestorAddresses = ancestorAddresses.split('.');
+            }
 
             //  Finally, we push on the last position of the address that the
             //  detached node had. Given our test above of 'not more than 1
