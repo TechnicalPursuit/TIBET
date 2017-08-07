@@ -808,7 +808,7 @@ function(aSignal) {
      * @returns {TP.core.sherpa} The receiver.
      */
 
-    TP.removeMutationObserver('BUILDER_OBSERVER');
+    TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
     return this;
 });
