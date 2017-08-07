@@ -8090,8 +8090,6 @@ function(aNode) {
     /**
      * @method nodeGetChildNodes
      * @summary Returns an Array of the child nodes of the provided node.
-     * @description Note that the node is normalized before returning this list
-     *     so that child text nodes are coalesced for consistency.
      * @param {Node} aNode The DOM node to operate on.
      * @example Get all of the child nodes of an XML element:
      *     <code>
@@ -8116,11 +8114,6 @@ function(aNode) {
     if (!TP.isCollectionNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
-    }
-
-    if (TP.isElement(aNode)) {
-        //  condense multiple text node children
-        TP.nodeNormalize(aNode);
     }
 
     //  NOTE the conversion to array here
