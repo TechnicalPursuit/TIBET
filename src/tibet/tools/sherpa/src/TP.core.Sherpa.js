@@ -1997,7 +1997,8 @@ function() {
 
     //  Grab the panel that the TSH is supposed to go into
     tshPanel = TP.byPath(
-        './xctrls:panelbox/xctrls:panel[./xctrls:value/. = "TSH"]',
+        './xctrls:panelbox/xctrls:panel[./xctrls:value/. = "TSH"]' +
+            '/xctrls:content',
         sherpaSouthDrawer,
         true);
 
