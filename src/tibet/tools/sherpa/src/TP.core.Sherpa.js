@@ -1040,7 +1040,9 @@ function(aTPElem) {
             tagName,
 
             resourceURI,
-            serializationStorage;
+            serializationStorage,
+
+            viewDoc;
 
         //  Make sure to unregister the handler - this is a one shot.
         handler.ignore(TP.ANY, 'TypeAdded');
@@ -1079,6 +1081,9 @@ function(aTPElem) {
             //  Run the serialization engine on it.
             aTPElem.serializeForStorage(serializationStorage);
 
+            //  The document that we were installed into.
+            viewDoc = this.get('vWin').document;
+
             //  Save the template to the file system. If this succeeds, then
             //  replace the supplied TP.core.Element with the new custom tag.
             this.saveElementSerialization(
@@ -1086,7 +1091,10 @@ function(aTPElem) {
                     function() {
                         var oldElem,
                             parentElem,
-                            newElem;
+                            newTPElem,
+                            newElem,
+
+                            halo;
 
                         newElem = TP.nodeFromString('<' + tagName + '/>');
 
@@ -1100,10 +1108,18 @@ function(aTPElem) {
                             oldElem = aTPElem.getNativeNode();
                             parentElem = oldElem.parentNode;
 
-                            newElem = aTPElem.compile(null, true, newElem);
+                            newTPElem = aTPElem.compile(null, true, newElem);
 
-                            newElem = TP.unwrap(newElem);
-                            TP.nodeReplaceChild(parentElem, newElem, oldElem);
+                            newElem = TP.unwrap(newTPElem);
+                            newElem = TP.nodeReplaceChild(
+                                        parentElem, newElem, oldElem);
+                            newTPElem = TP.wrap(newElem);
+
+                            halo = TP.byId('SherpaHalo', viewDoc);
+
+                            //  Blur and refocus the halo on the haloTarget.
+                            halo.blur();
+                            halo.focusOn(newTPElem);
                         }
                     });
         }
