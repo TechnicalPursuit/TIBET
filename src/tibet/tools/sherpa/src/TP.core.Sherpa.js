@@ -1272,15 +1272,11 @@ function(mutationRecords) {
 
             case 'childList':
 
-                if (TP.notEmpty(record.addedNodes)) {
-                    lenj = record.addedNodes.length;
-                    for (j = 0; j < lenj; j++) {
-
-                        node = record.addedNodes[j];
-                        this.updateUICanvasSource(
-                                    node, record.target, TP.CREATE);
-                    }
-                }
+                //  NB: We process the removed nodes *first* here. This allows
+                //  us to keep things in sync much better when replacing one
+                //  node with another. They will typically come in on the same
+                //  mutation record with 1 node removed and 1 node added and we
+                //  want to keep that order.
 
                 if (TP.notEmpty(record.removedNodes)) {
                     lenj = record.removedNodes.length;
@@ -1289,6 +1285,16 @@ function(mutationRecords) {
                         node = record.removedNodes[j];
                         this.updateUICanvasSource(
                                     node, record.target, TP.DELETE);
+                    }
+                }
+
+                if (TP.notEmpty(record.addedNodes)) {
+                    lenj = record.addedNodes.length;
+                    for (j = 0; j < lenj; j++) {
+
+                        node = record.addedNodes[j];
+                        this.updateUICanvasSource(
+                                    node, record.target, TP.CREATE);
                     }
                 }
 
