@@ -1786,14 +1786,17 @@ function(anElement) {
     /**
      * @method elementClean
      * @summary Cleans off all of the TIBET-specific or other
-     *     'instance-specific' information from the supplied Element.
+     *     'instance-specific' information from the supplied Element and any
+     *     Element descendants.
      * @description This method cleans off the following attributes and
-     *     properties from the supplied element:
+     *     properties from the supplied element and any Element descendants:
      *         - The 'id' attribute.
      * @param {Element} anElement The target element.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      */
+
+    var allElems;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement',
@@ -1801,6 +1804,14 @@ function(anElement) {
     }
 
     TP.elementRemoveAttribute(anElement, 'id', true);
+
+    //  Get all descendants, as long as they're Elements.
+    allElems = TP.nodeGetDescendantElements(anElement);
+
+    allElems.forEach(
+        function(anElem) {
+            TP.elementRemoveAttribute(anElem, 'id', true);
+        });
 
     return;
 });
