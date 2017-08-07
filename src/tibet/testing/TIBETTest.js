@@ -395,7 +395,10 @@ function(options) {
             ignored + ' todo, ' +
             exclusives + ' only.');
 
-        TP.sys.isTesting(false);
+        setTimeout(
+            function() {
+                TP.sys.isTesting(false);
+            }, TP.sys.cfg('test.reset_flag_timeout', 5000));
     };
 
     msg = '# ' + suites.getSize() +
