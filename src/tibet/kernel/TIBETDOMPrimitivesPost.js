@@ -659,6 +659,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
 
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        nodeContent[TP.PREVIOUS_POSITION] = null;
+
         //  Make sure to clone this content since we're going to be manipulating
         //  it below and don't want to modify the original.
         nodeContent = TP.nodeCloneNode(nodeContent, true);
@@ -4639,6 +4643,11 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
+
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        nodeContent[TP.PREVIOUS_POSITION] = null;
+
     } else if (TP.isString(theContent)) {
         //  Convert any entities to literals, since the caller assumed that they
         //  could pass entities, but this may create a Text node which will want
@@ -4810,6 +4819,11 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
+
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        nodeContent[TP.PREVIOUS_POSITION] = null;
+
     } else if (TP.isString(theContent)) {
 
         //  Convert any entities to literals, since the caller assumed that they
@@ -4927,6 +4941,11 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
+
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        nodeContent[TP.PREVIOUS_POSITION] = null;
+
     } else if (TP.isString(theContent)) {
 
         //  Convert any entities to literals, since the caller assumed that they
@@ -5467,6 +5486,10 @@ function(aNode, newNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
+
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -5832,6 +5855,11 @@ function(aNode, joinChar, stopAncestor) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
+    path = aNode[TP.PREVIOUS_POSITION];
+    if (TP.notEmpty(path)) {
+        return path;
+    }
+
     path = TP.ac();
 
     if (TP.isAttributeNode(aNode)) {
@@ -6100,6 +6128,10 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
+
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -6270,6 +6302,10 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                     TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
+
+    //  Clear out any previous position information that might have come from
+    //  this content being in another DOM tree.
+    content[TP.PREVIOUS_POSITION] = null;
 
     switch (aNode.nodeType) {
         case Node.ELEMENT_NODE:
@@ -6609,6 +6645,10 @@ function(aNode, newNode, oldNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
+
+        //  Clear out any previous position information that might have come
+        //  from this content being in another DOM tree.
+        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -6672,6 +6712,10 @@ function(aNode, newNode, oldNode, shouldAwake) {
     if (awakenContent || TP.isFragment(childContent)) {
         start = TP.nodeGetChildIndex(targetNode, oldNode);
     }
+
+    //  Capture the position old node in the document and store it as the
+    //  'previous position'
+    oldNode[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(oldNode);
 
     try {
         //  Replace the new content in. This will (or should) change the
@@ -6739,10 +6783,10 @@ function(aNode, oldNode) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    //  For now, this is simple. But, as we've learned, we wrap
-    //  *everything* because as sure as this is running in a browser it'll
-    //  end up with bugs/differences on at least one platform/version
-    //  eventually
+    //  Capture the position old node in the document and store it as the
+    //  'previous position'
+    oldNode[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(oldNode);
+
     return aNode.removeChild(oldNode);
 });
 
