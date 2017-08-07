@@ -1651,6 +1651,17 @@ function() {
         world,
         currentScreenTPWin;
 
+    //  Add a managed Mutation Observer filter Function that will filter all
+    //  mutation records for when we're testing:
+
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+            if (TP.sys.isTesting()) {
+                return false;
+            }
+        },
+        'BUILDER_OBSERVER');
+
     //  Add a managed Mutation Observer filter Function that will filter
     //  attribute mutation records for:
     //
