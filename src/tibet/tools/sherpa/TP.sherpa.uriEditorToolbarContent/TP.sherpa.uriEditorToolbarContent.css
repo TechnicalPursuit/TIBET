@@ -57,3 +57,12 @@ sherpa|uriEditorToolbarContent > .detach_mark {
     background-position-x: 1px;
 }
 
+sherpa|uriEditorToolbarContent > .detach_mark:hover {
+
+    background-color: gold;
+}
+
+sherpa|uriEditorToolbarContent[class~="tabbed"] > .detach_mark {
+
+    display: none;
+}

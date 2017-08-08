@@ -193,6 +193,113 @@ function(aProperty, aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineHandler('DetachIntoConsoleTab',
+function(aSignal) {
+
+    /**
+     * @method handleDetachIntoConsoleTab
+     * @summary Handles when the user has clicked the 'detach' arrow button to
+     *     detach ourself into a Sherpa console tab.
+     * @param {TP.sig.ResourceApply} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var inspector,
+
+        sourceURI,
+        sourceLoc,
+
+        tabName,
+        tabValue,
+
+        newPanel,
+
+        editorLID,
+
+        panelContentElem,
+
+        toolbar,
+        toolbarContent,
+
+        elem,
+
+        selectedItems,
+        info;
+
+    inspector = TP.byId('SherpaInspector', this.getNativeWindow());
+
+    //  Grab our source URI's location.
+    sourceURI = this.get('sourceURI');
+    sourceLoc = sourceURI.getLocation();
+
+    //  The value for the tab will be our source location, which is unique.
+    tabValue = sourceLoc;
+
+    //  The tab name is the URL end location.
+    tabName = sourceLoc.slice(sourceLoc.lastIndexOf('/') + 1);
+
+    //  Ask the inspector to create a new console tab with that value and name.
+    //  This will return the new panel that we can add content to it.
+    newPanel = inspector.createNewConsoleTab(tabValue, tabName);
+    newPanel.setAttribute('tibet:nomutationtracking', 'true');
+
+    //  Compute a unique ID for the editor, based on the number of tabs that are
+    //  already in the console tab view.
+    editorLID = 'editor_' + (inspector.getConsoleTabCount() - 1);
+
+    //  Grab the 'xctrls:content' element from it.
+    panelContentElem = newPanel.get('contentElement').getNativeNode();
+
+    //  First we move the toolbar content that is already in inspector down into
+    //  our tab panel content.
+
+    //  Grab the inspector's tab control and the content under it. This will
+    //  have been placed by the inspector when this editor was first shown
+    toolbar = TP.byId('SherpaToolbar', this.getNativeWindow());
+    toolbarContent = toolbar.getFirstChildElement();
+
+    //  Grab the toolbar's native element and reset the 'tibet:ctrl' attribute
+    //  (used for dispatching responder signals) to the new unique ID that we
+    //  computed above so that responder signals from this particular toolbar
+    //  will go to the right place (ourself, via our new ID).
+    elem = TP.unwrap(toolbarContent);
+    TP.elementSetAttribute(elem, 'tibet:ctrl', editorLID, true);
+
+    //  Add a class of 'tabbed' and move the toolbar into place in our panel
+    //  content.
+    TP.elementAddClass(elem, 'tabbed');
+    TP.nodeAppendChild(panelContentElem, elem, false);
+
+    //  Grab our native element and reset the 'id' to the new unique ID that we
+    //  computed above. This will tie us together with the toolbar via it's
+    //  now-reset 'tibet:ctrl' attribute above.
+    elem = TP.unwrap(this);
+    TP.elementSetAttribute(elem, 'id', editorLID, true);
+
+    //  Remove our bind:in so that we're no longer bound - we don't want to
+    //  change along with the inspector anymore ;-).
+    TP.elementRemoveAttribute(elem, 'bind:in', editorLID);
+
+    //  Add a class of 'tabbed' and move ourself into place in our panel
+    //  content.
+    TP.elementAddClass(elem, 'tabbed');
+    TP.nodeAppendChild(panelContentElem, elem, false);
+
+    //  Re-run the toolbar's setup  This will cause the toolbar to adjust its
+    //  signal observations, etc. based on the new DOM structure.
+    toolbarContent.setup();
+
+    //  Repopulate the current bay content. This should cause a message to
+    //  display to the user that the content can now be found in the tabbed
+    //  view.
+    inspector.repopulateBay();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineHandler('ResourceApply',
 function(aSignal) {
 
