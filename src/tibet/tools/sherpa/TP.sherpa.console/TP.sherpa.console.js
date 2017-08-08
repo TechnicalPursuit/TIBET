@@ -427,37 +427,71 @@ function(aSignal) {
 
     isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
+    southDrawer = aSignal.getOrigin();
+
+    drawerIsOpenFunc = function(transitionSignal) {
+
+        var consoleInput;
+
+        //  Turn off any future notifications.
+        drawerIsOpenFunc.ignore(southDrawer, 'TP.sig.DOMTransitionEnd');
+
+        if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+            consoleInput.refreshEditor();
+            consoleInput.focus();
+        }
+
+    }.bind(this);
+
+    drawerIsOpenFunc.observe(southDrawer, 'TP.sig.DOMTransitionEnd');
+
     if (!isClosed) {
-
-        southDrawer = aSignal.getOrigin();
-
-        drawerIsOpenFunc = function(transitionSignal) {
-
-            var consoleInput;
-
-            //  Turn off any future notifications.
-            drawerIsOpenFunc.ignore(southDrawer, 'TP.sig.DOMTransitionEnd');
-
-            if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-                consoleInput.refreshEditor();
-            }
-
-        }.bind(this);
-
-        drawerIsOpenFunc.observe(southDrawer, 'TP.sig.DOMTransitionEnd');
 
         TP.elementGetStyleObj(TP.unwrap(southDrawer)).height = '';
         TP.elementGetStyleObj(TP.unwrap(this)).height = '';
 
     } else {
-        //  Adjust the input size and animate the drawer if it's configured to
-        //  do so.
+        //  Adjust the input size - by passing true here, we're anticipating
+        //  animating the drawer.
         this.adjustInputSize(true);
     }
 
     return this;
 }, {
     origin: 'south'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary
+     * @param {TP.sig.ValueChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var value,
+
+        consoleInput;
+
+    value = aSignal.getOrigin().getResource().get('result');
+
+    if (value === 'TSH') {
+        if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+            consoleInput.refreshEditor();
+            setTimeout(
+                function() {
+                    consoleInput.refreshEditor();
+                    consoleInput.focus();
+                }, 100);
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
