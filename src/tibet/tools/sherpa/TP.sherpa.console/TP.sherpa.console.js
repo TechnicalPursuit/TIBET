@@ -84,7 +84,9 @@ function() {
 
         isHidden,
 
-        consoleDrawerTPElem;
+        consoleDrawerTPElem,
+
+        tabSelectionURI;
 
     consoleInputTPElem = this.get('consoleInput');
 
@@ -320,6 +322,11 @@ function() {
     consoleDrawerTPElem = TP.byId('south', TP.win('UIROOT'));
     this.observe(consoleDrawerTPElem, 'ClosedChange');
 
+    //  Observe the current tab selection for the tabbar in the source drawer
+    //  for when its value changes.
+    tabSelectionURI = TP.uc('urn:tibet:current_tab_selection#tibet(selection)');
+    this.observe(tabSelectionURI, 'ValueChange');
+
     return this;
 });
 
@@ -474,7 +481,8 @@ function(aSignal) {
 
     /**
      * @method handleValueChange
-     * @summary
+     * @summary Handles when the underlying value of the tabbar selection of our
+     *     tabbar editing changes.
      * @param {TP.sig.ValueChange} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.console} The receiver.
@@ -486,9 +494,12 @@ function(aSignal) {
 
     value = aSignal.getOrigin().getResource().get('result');
 
+    //  If the new value is 'TSH', then we need to grab the console input and
+    //  set up a timeout to refresh the editor and focus. This causes the
+    //  embedded CodeMirror editor to redraw properly.
     if (value === 'TSH') {
+
         if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-            consoleInput.refreshEditor();
             setTimeout(
                 function() {
                     consoleInput.refreshEditor();
