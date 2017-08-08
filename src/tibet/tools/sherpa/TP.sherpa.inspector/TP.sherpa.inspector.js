@@ -2825,6 +2825,64 @@ function(aBayNum) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('repopulateBay',
+function(aBayNum) {
+
+    /**
+     * @method repopulateBay
+     * @summary Repopulates the content in the bay at the supplied index, or the
+     *     "last" bay if it is not supplied.
+     * @param {Number} [aBayNum] The bay number to repopulate. If this is not
+     *     supplied, the "last" bay is repopulated.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var selectedItems,
+        bayNum,
+
+        inspectorBays,
+        inspectorBay,
+
+        config,
+
+        info;
+
+    selectedItems = this.get('selectedItems');
+    bayNum = aBayNum;
+    if (TP.notValid(bayNum)) {
+
+        //  We're interested in refreshing the 'next bay over' where there is
+        //  currently no selection.
+        bayNum = selectedItems.getSize();
+    }
+
+    //  Grab the inspector bay corresponding to that bay number
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBay = inspectorBays.at(bayNum);
+
+    if (TP.notValid(inspectorBay)) {
+        //  TODO: Raise an exception - can't find a bay object
+        return this;
+    }
+
+    config = inspectorBay.get('config');
+
+    if (TP.notValid(config.at('targetObject'))) {
+        //  TODO: Raise an exception - can't find a target object
+        return this;
+    }
+
+    info = TP.hc('targetObject', config.at('targetObject'),
+                    'targetAspect', config.at('targetAspect'),
+                    'bayIndex', bayNum);
+
+    this.populateBayUsing(info);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('removeDynamicRoot',
 function(target, forceRefresh) {
 
