@@ -50,6 +50,59 @@ TP.xctrls.panelbox.Inst.defineAttribute('selectedValue',
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panelbox.Inst.defineMethod('addPanel',
+function(aValue, aContentObject) {
+
+    /**
+     * @method addPanel
+     * @summary Adds a panel to the panel box.
+     * @param {String} aValue The value that will be assigned to the panel. When
+     *     the panelbox gets its value set, it will match the two values to
+     *     determine which panel is to be selected.
+     * @param {Object} aContentObject An object to use for content.
+     * @returns {TP.xctrls.panel} The newly added panel.
+     */
+
+    var panelTPElem,
+
+        handler;
+
+    panelTPElem = this.addRawContent(
+                    '<xctrls:panel tibet:tag="xctrls:panel">' +
+                        '<xctrls:value>' +
+                        aValue +
+                        '</xctrls:value>' +
+                        '<xctrls:content/>' +
+                    '</xctrls:panel>');
+
+    //  NB: We don't need the result here - just ensuring that that new
+    //  panel has an ID (hence the 'true' supplied here).
+    panelTPElem.getLocalName(true);
+
+    if (TP.isValid(aContentObject)) {
+
+        //  Observe the new panel when it gets attached to the DOM. When it
+        //  does, refresh its bound data.
+        handler = function() {
+
+            //  Make sure to ignore here - otherwise, we'll fill up the signal
+            //  map.
+            handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
+
+            panelTPElem.refresh();
+        };
+
+        handler.observe(panelTPElem, 'TP.sig.AttachComplete');
+
+        //  Grab the panel's content element and set its content.
+        panelTPElem.get('contentElement').setContent(aContentObject);
+    }
+
+    return panelTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.panelbox.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
