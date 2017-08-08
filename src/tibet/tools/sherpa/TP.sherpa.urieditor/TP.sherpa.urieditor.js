@@ -222,10 +222,7 @@ function(aSignal) {
         toolbar,
         toolbarContent,
 
-        elem,
-
-        selectedItems,
-        info;
+        elem;
 
     inspector = TP.byId('SherpaInspector', this.getNativeWindow());
 
