@@ -22,6 +22,53 @@ TP.core.URI.addTraits(TP.sherpa.ToolAPI);
 //  Inspector API
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('canReuseContentForInspector',
+function(options) {
+
+    /**
+     * @method canReuseContentForInspector
+     * @summary Returns whether or not content hosted in an inspector bay can be
+     *     'reused', even though the underlying data will change. If this
+     *     returns true, then the underlying content needs to be able to respond
+     *     to its data changing underneath it. It can leverage the TIBET data
+     *     binding system to do this.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     check the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Boolean} Whether or not the current content can be reused even
+     *     though the underlying data is changing.
+     */
+
+    var loc,
+        tabHasURI;
+
+    //  Grab our location and see if there's already tab representing us in the
+    //  inspector.
+    loc = this.getLocation();
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                loc);
+
+    //  If so, then we want to return false to force the inspector bay to use
+    //  whatever content we hand it. This is based on more sophisticated logic
+    //  than what is inherited.
+    if (tabHasURI) {
+        return false;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
@@ -49,26 +96,48 @@ function(options) {
      *                                      placed in it.
      */
 
-    var result,
+    var loc,
+        tabHasURI,
+
+        resp,
+        result,
+
         str;
 
     this.callNextMethod();
 
-    result = this.getResource().get('result');
+    //  Initially configure the content type to be an 'html:div'.
+    options.atPut(TP.ATTR + '_contenttype', 'html:div');
 
-    if (TP.isValid(result)) {
+    //  Grab our location and see if there's already tab representing us in
+    //  the inspector.
+    loc = this.getLocation();
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                loc);
 
-        str = TP.str(result);
-        if (str.getSize() <=
-            TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
-            options.atPut(
-                TP.ATTR + '_contenttype', 'sherpa:urieditor');
+    //  If not, then possibly reset the content type to be that for a Sherpa
+    //  urieditor.
+    if (!tabHasURI) {
 
-            return options;
+        //  Force refresh to false, we only want cached data access here. If in
+        //  doubt (i.e. the data isn't available), we'll go ahead and generate the
+        //  editor. NOTE that this avoids any async issues as well.
+        resp = this.getResource(TP.hc('refresh', false, 'async', false));
+        result = resp.get('result');
+
+        if (TP.isValid(result)) {
+
+            //  Check the String size of the result. If it's not greater than a
+            //  maximum size determined by the inspector, then reset the content
+            //  type to be 'sherpa:urieditor'.
+            str = TP.str(result);
+            if (str.getSize() <=
+                TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
+                options.atPut(
+                    TP.ATTR + '_contenttype', 'sherpa:urieditor');
+            }
         }
     }
-
-    options.atPut(TP.ATTR + '_contenttype', 'html:div');
 
     return options;
 });
@@ -99,16 +168,40 @@ function(options) {
      */
 
     var resp,
-
         result,
+
         str,
+
+        loc,
+        tabHasURI,
 
         dataURI,
 
         inspectorElem,
         uriEditorTPElem;
 
-    //  force refresh to false, we only want cached data access here. If in
+    //  Grab our location and see if there's already tab representing us in
+    //  the inspector.
+    loc = this.getLocation();
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                loc);
+
+
+    //  If so, then set the value of both the tabbar and the panel box to our
+    //  location, causing them to switch. And return content that points the
+    //  user down to the tabbar in the south drawer.
+    if (tabHasURI) {
+        TP.byId('SherpaConsoleTabbar', TP.win('UIROOT')).setValue(loc);
+        TP.byId('SherpaConsolePanelbox', TP.win('UIROOT')).
+                                                        setValue(loc);
+
+        return TP.xhtmlnode(
+                    '<div>' +
+                        'This content is open in the tabbed content below.' +
+                    '</div>');
+    }
+
+    //  Force refresh to false, we only want cached data access here. If in
     //  doubt (i.e. the data isn't available), we'll go ahead and generate the
     //  editor. NOTE that this avoids any async issues as well.
     resp = this.getResource(TP.hc('refresh', false, 'async', false));
@@ -271,8 +364,21 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem(
-        '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+    var loc,
+        tabHasURI;
+
+    //  Grab our location and see if there's already tab representing us in
+    //  the inspector.
+    loc = this.getLocation();
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                loc);
+
+    //  If not, then return the uri toolbar content for placement into the
+    //  proper place in the inspector.
+    if (!tabHasURI) {
+        return TP.elem(
+            '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+    }
 });
 
 //  ------------------------------------------------------------------------
