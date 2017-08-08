@@ -27,6 +27,12 @@ TP.sherpa.console.Type.defineConstant('DEFAULT_PROMPT', '&#160;&#187;');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  the minimum height of the console editor.
+TP.sherpa.console.Inst.defineAttribute('$minEditorHeight');
+
+//  the minimum height of the console drawer.
+TP.sherpa.console.Inst.defineAttribute('$minDrawerHeight');
+
 //  should IO be concealed? this is used to simulate "password" mode
 TP.sherpa.console.Inst.defineAttribute('conceal', false);
 
@@ -1122,6 +1128,7 @@ function(shouldAnimate) {
         styleVals,
 
         drawerElement,
+        drawerHeight,
 
         panelboxElem;
 
@@ -1134,9 +1141,11 @@ function(shouldAnimate) {
     consoleInput = this.get('consoleInput');
     editorHeight = consoleInput.getEditorHeight();
 
-    styleVals = TP.elementGetComputedStyleValuesInPixels(
-                    this.getNativeNode(),
-                    TP.ac('paddingTop', 'paddingBottom'));
+    if (TP.notValid(this.get('$minEditorHeight'))) {
+        this.set('$minEditorHeight', editorHeight);
+    } else {
+        editorHeight = editorHeight.max(this.get('$minEditorHeight'));
+    }
 
     this.setHeight(editorHeight);
 
@@ -1150,8 +1159,15 @@ function(shouldAnimate) {
         TP.elementSetStyleString(drawerElement, 'transition: none');
     }
 
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
+                    this.getNativeNode(),
+                    TP.ac('paddingTop', 'paddingBottom'));
+
+    //  We compute the drawer height from the editor height.
+    drawerHeight = editorHeight;
+
     //  Add in the padding offsets from ourself.
-    editorHeight += styleVals.at('paddingTop') + styleVals.at('paddingBottom');
+    drawerHeight += styleVals.at('paddingTop') + styleVals.at('paddingBottom');
 
     //  Grab the xctrls:panelbox element that we're contained in
     panelboxElem = TP.byCSSPath('xctrls|panelbox', consoleDrawer, true, false);
@@ -1163,7 +1179,7 @@ function(shouldAnimate) {
                     TP.ac('borderTopWidth', 'borderBottomWidth',
                             'top', 'bottom'));
 
-    editorHeight += styleVals.at('top') +
+    drawerHeight += styleVals.at('top') +
                     styleVals.at('bottom') +
                     styleVals.at('borderBottomWidth') +
                     styleVals.at('borderTopWidth');
@@ -1171,9 +1187,15 @@ function(shouldAnimate) {
     //  Add a 1-pixel fudge factor here. This is probably compensating for the
     //  fact that the xctrls:codeeditor has a 1 pixel margin on top and bottom
     //  or that the CodeMirror code imposes some sort of overlap.
-    editorHeight += 1;
+    drawerHeight += 1;
 
-    TP.elementSetHeight(drawerElement, editorHeight);
+    if (TP.notValid(this.get('$minDrawerHeight'))) {
+        this.set('$minDrawerHeight', drawerHeight);
+    } else {
+        drawerHeight = drawerHeight.max(this.get('$minDrawerHeight'));
+    }
+
+    TP.elementSetHeight(drawerElement, drawerHeight);
 
     if (TP.isFalse(shouldAnimate)) {
         (function() {
