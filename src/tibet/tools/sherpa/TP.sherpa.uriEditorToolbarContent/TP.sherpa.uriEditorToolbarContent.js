@@ -49,10 +49,7 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem,
-
-        editorTPElem,
-        uri;
+        tpElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -65,22 +62,7 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    //  NB: We need to cache references to our editor and it's URI - they might
-    //  get detached before we do.
-
-    editorTPElem = TP.byId('inspectorEditor', TP.doc(elem));
-    tpElem.$set('$editor', editorTPElem, false);
-
-    uri = editorTPElem.get('sourceURI');
-    tpElem.$set('$editorURI', uri);
-
-    //  TODO: Fix this - Arrays of Change signals don't seem to work (maybe
-    //  don't expand the name??)
-    // tpElem.observe(editorTPElem, TP.ac('DirtyChange', 'SourceURIChange'));
-
-    tpElem.observe(editorTPElem, 'DirtyChange');
-
-    tpElem.refreshControls();
+    tpElem.setup();
 
     return;
 });
@@ -139,8 +121,6 @@ function(aSignal) {
     aSignal.stopPropagation();
 
     return this;
-}, {
-    origin: 'inspectorEditor'
 });
 
 //  ------------------------------------------------------------------------
@@ -162,7 +142,8 @@ function(editorIsDirty, uriIsDirty) {
     var editorTPElem,
         isDirty;
 
-    editorTPElem = TP.byId('inspectorEditor', this.getNativeDocument());
+    editorTPElem = TP.byId(this.getAttribute('tibet:ctrl'),
+                            this.getNativeDocument());
 
     isDirty = editorTPElem.isDirty();
     if (isDirty) {
@@ -181,6 +162,44 @@ function(editorIsDirty, uriIsDirty) {
         this.get('pushButton').setAttribute('disabled', true);
         this.get('refreshButton').setAttribute('disabled', true);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.uriEditorToolbarContent.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.uriEditorToolbarContent} The receiver.
+     */
+
+    var editorTPElem,
+        uri;
+
+    //  If the editor is set here, maybe because this toolbar was already in use
+    //  someplace. In any case, we want to ignore signals from it before we
+    //  reset it.
+    if (TP.isValid(this.$get('$editor'))) {
+        this.ignore(this.$get('$editor'), 'DirtyChange');
+    }
+
+    //  NB: We need to cache references to our editor and it's URI - they might
+    //  get detached before we do.
+
+    editorTPElem = TP.byId(this.getAttribute('tibet:ctrl'),
+                            this.getNativeDocument());
+    this.$set('$editor', editorTPElem, false);
+
+    uri = editorTPElem.get('sourceURI');
+    this.$set('$editorURI', uri);
+
+    this.observe(editorTPElem, 'DirtyChange');
+
+    this.refreshControls();
 
     return this;
 });
