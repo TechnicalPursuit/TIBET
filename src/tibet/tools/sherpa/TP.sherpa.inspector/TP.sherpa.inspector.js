@@ -2883,7 +2883,10 @@ function(aBayNum) {
 
         config,
 
-        info;
+        info,
+
+        toolbar,
+        toolbarContent;
 
     selectedItems = this.get('selectedItems');
     bayNum = aBayNum;
@@ -2912,9 +2915,25 @@ function(aBayNum) {
 
     info = TP.hc('targetObject', config.at('targetObject'),
                     'targetAspect', config.at('targetAspect'),
-                    'bayIndex', bayNum);
+                    'bayIndex', bayNum,
+                    'pathParts', this.get('selectedItems'));
 
     this.populateBayUsing(info);
+
+    //  Update the toolbar (or clear it)
+
+    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+    toolbarContent = TP.getContentForTool(
+                        info.at('targetObject'),
+                        'toolbar',
+                        info);
+
+    if (TP.isElement(toolbarContent)) {
+        toolbarContent = toolbar.setContent(toolbarContent);
+        toolbarContent.awaken();
+    } else {
+        toolbar.empty();
+    }
 
     return this;
 });
@@ -3834,6 +3853,7 @@ function(options) {
             TP.ac('Local Storage', 'Local Storage'),
             TP.ac('Session Storage', 'Session Storage'),
             TP.ac('Signal Map', 'Signal Map'),
+            TP.ac('Routes', 'Routes'),
             TP.ac('Types', 'Types'),
             TP.ac('URIs', 'URIs')
     );
@@ -3872,6 +3892,9 @@ function(anAspect, options) {
 
         case 'Signal Map':
             return TP.sherpa.TIBETSignalMapListInspectorSource.construct();
+
+        case 'Routes':
+            return TP.sherpa.TIBETRouteListInspectorSource.construct();
 
         case 'Types':
             return TP.sherpa.TIBETTypeListInspectorSource.construct();
