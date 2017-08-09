@@ -324,6 +324,11 @@ function(aSignal) {
         //  Grab the old value before we set it.
         oldValue = this.getValue();
 
+        //  If the two values are equivalent, than just return
+        if (TP.equal(oldValue, newValue)) {
+            return;
+        }
+
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
 
