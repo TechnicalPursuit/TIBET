@@ -35,7 +35,6 @@ TP.xctrls.tabbar.Inst.resolveTrait('render', TP.core.D3Tag);
 
 TP.xctrls.tabbar.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
-            'TP.sig.DOMClick',
             'TP.sig.DOMDblClick',
 
             'TP.sig.DOMKeyDown',
@@ -299,6 +298,15 @@ function(aSignal) {
         wasSignalingChange;
 
     if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Get the DOM target as the event system originally sees it. If the
+        //  event happened inside of our element with a '.close_mark' class,
+        //  then we just return here. The signal dispatched from that element
+        //  will handle the rest.
+        domTarget = aSignal.getDOMTarget();
+        if (TP.elementHasClass(domTarget, 'close_mark')) {
+            return;
+        }
 
         //  Get the resolved DOM target - this should be the list item that was
         //  activated (i.e. because of a mouse up or a Enter key up, etc)
@@ -1414,6 +1422,18 @@ TP.xctrls.item.defineSubtype('tabitem');
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.tabitem.defineAttribute('styleURI', TP.NO_RESULT);
 TP.xctrls.tabitem.defineAttribute('themeURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.tabitem.Type.defineAttribute('opaqueCapturingSignalNames',
+        TP.ac('TP.sig.DOMMouseDown',
+                'TP.sig.DOMMouseUp',
+                'TP.sig.DOMMouseOver',
+                'TP.sig.DOMMouseOut',
+                'TP.sig.DOMFocus',
+                'TP.sig.DOMBlur'));
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
