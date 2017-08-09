@@ -908,6 +908,7 @@ function(enterSelection) {
     newContent.each(
         function() {
             var labelContent,
+                markContent,
                 valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
@@ -916,6 +917,13 @@ function(enterSelection) {
                     return d[1];
                 }
             );
+
+            markContent = TP.extern.d3.select(this).insert('xhtml:div');
+            markContent.classed('close_mark', true);
+            TP.elementSetAttribute(markContent.node(),
+                                    'on:click',
+                                    'RemoveConsoleTab',
+                                    true);
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
@@ -1250,7 +1258,7 @@ function(updateSelection) {
             );
 
             valueContent = TP.extern.d3.select(
-                                    TP.nodeGetChildElementAt(this, 1));
+                                    TP.nodeGetChildElementAt(this, 2));
             valueContent.text(
                 function(d, i) {
 
