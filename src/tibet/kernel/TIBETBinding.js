@@ -1984,6 +1984,71 @@ function(scopeVals, bindingInfoValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getFullBindingExpressionFor',
+function(anAspect) {
+
+    /**
+     * @method getFullBindingExpression
+     * @summary Returns the 'fully expanded' binding expression in which all
+     *     of the scoping values plus the local expression are expanded into the
+     *     fully expanded binding expression.
+     * @param {String} anAspect The name of the aspect to get the full binding
+     *     expression for.
+     * @returns {String} The fully-formed binding expression on the receiver for
+     *     the supplied aspect name.
+     */
+
+    var elem,
+
+        attrName,
+
+        scopeVals,
+        attrVal,
+
+        info,
+        dataExpr,
+
+        allVals,
+        fullExpr;
+
+    elem = this.getNativeNode();
+
+    //  Grab the name of the attribute, according to our precedence hierarchy.
+    //  First, bind:in, then bind:io, then bind:out.
+    if (TP.elementHasAttribute(elem, 'bind:in', true)) {
+        attrName = 'bind:in';
+    } else if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrName = 'bind:io';
+    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
+        attrName = 'bind:out';
+    }
+
+    if (TP.isEmpty(attrName)) {
+        return this;
+    }
+
+    //  Get all of the scoping values and the local attribute value for the
+    //  attribute name computed above.
+    scopeVals = this.getBindingScopeValues();
+    attrVal = this.getAttribute(attrName);
+
+    //  Grab the binding info for that local attribute value.
+    info = this.getBindingInfoFrom(attrVal);
+
+    //  Get the data expression for the named aspect.
+    //  TODO: Support more than 1 data expression.
+    dataExpr = info.at(anAspect).at('dataExprs').first();
+
+    //  Join together the data expression along with the scoping values to
+    //  calculate the 'fully formed' binding expression.
+    allVals = scopeVals.concat(dataExpr);
+    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+    return fullExpr;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('$getNearestRepeatIndex',
 function() {
 
