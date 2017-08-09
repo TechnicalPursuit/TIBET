@@ -463,6 +463,58 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.tabbar.Inst.defineMethod('removeItem',
+function(itemValue) {
+
+    /**
+     * @method removeItem
+     * @summary Removes the item that has a value matching the supplied value.
+     * @param {String} itemValue The value of the item to remove. This will be
+     *     used to match the first item with that value, and so it should be
+     *     unique.
+     * @returns {TP.xctrls.tabbar} The receiver.
+     */
+
+    var keys,
+
+        dataIndex,
+        data,
+
+        newValue;
+
+    //  Grab our keys and find the index of the supplied value in them.
+    keys = this.get('$dataKeys');
+    dataIndex = keys.indexOf(itemValue);
+
+    if (dataIndex === TP.NOT_FOUND) {
+        return this;
+    }
+
+    data = this.get('data');
+
+    //  If the index is greater than 0, then we'll set our value to 1 less than
+    //  the current value.
+    if (dataIndex > 0) {
+        newValue = keys.at(dataIndex - 1);
+    } else {
+
+        //  Otherwise, set our value to the second key (which will become the
+        //  first key after the removal).
+        newValue = keys.at(1);
+    }
+
+    //  Remove the datum at the removal index. Note that this will recompute our
+    //  data and data keys if we are bound!
+    data.removeAt(dataIndex);
+
+    //  Set our new value, passing true to trigger change notification.
+    this.setValue(newValue, true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.tabbar.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
