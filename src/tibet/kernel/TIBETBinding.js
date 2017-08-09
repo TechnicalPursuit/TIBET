@@ -1882,9 +1882,9 @@ TP.core.ElementNode.Inst.defineMethod('getBoundValues',
 function(scopeVals, bindingInfoValue) {
 
     /**
-     * @method getBoundValue
+     * @method getBoundValues
      * @summary Returns a hash of the bound values of the receiver.
-     * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
+     * @param {String[]} scopeVals The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
