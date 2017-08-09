@@ -44,8 +44,7 @@ TP.xctrls.panelbox.Inst.defineAttribute('itemWithValue',
         TP.hc('shouldCollapse', true)));
 
 TP.xctrls.panelbox.Inst.defineAttribute('selectedValue',
-    TP.xpc('string(./xctrls:panel' +
-            '[@pclass:selected = "true"]/xctrls:value)',
+    TP.xpc('string(./xctrls:panel[@pclass:selected = "true"]/xctrls:value)',
         TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
@@ -96,6 +95,30 @@ function(aValue, aContentObject) {
 
         //  Grab the panel's content element and set its content.
         panelTPElem.get('contentElement').setContent(aContentObject);
+    }
+
+    return panelTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.panelbox.Inst.defineMethod('removePanel',
+function(aValue) {
+
+    /**
+     * @method removePanel
+     * @summary Removes a panel from the panel box.
+     * @param {String} aValue The value that is assigned to the panel to be
+     *     removed.
+     * @returns {TP.xctrls.panel} The newly removed panel.
+     */
+
+    var panelTPElem;
+
+    panelTPElem = this.get('itemWithValue', aValue);
+
+    if (TP.isValid(panelTPElem)) {
+        panelTPElem.detach();
     }
 
     return panelTPElem;
