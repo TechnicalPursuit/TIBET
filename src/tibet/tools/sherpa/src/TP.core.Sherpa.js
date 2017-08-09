@@ -2804,6 +2804,8 @@ TP.sig.ResponderSignal.defineSubtype('AssistObject');
 TP.sig.ResponderSignal.defineSubtype('EditObject');
 TP.sig.ResponderSignal.defineSubtype('InspectObject');
 
+TP.sig.ResponderSignal.defineSubtype('RemoveConsoleTab');
+
 //  Keyboard handling signals
 TP.sig.SherpaSignal.defineSubtype('EndAutocompleteMode');
 TP.sig.SherpaSignal.defineSubtype('EndSearchMode');

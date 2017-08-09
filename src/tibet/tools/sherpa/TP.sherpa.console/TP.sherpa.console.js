@@ -476,6 +476,60 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineHandler('RemoveConsoleTab',
+function(aSignal) {
+
+    /**
+     * @method handleRemoveConsoleTab
+     * @summary Handles when the user clicked the 'close mark' on a particular
+     *     tab to close it.
+     * @param {TP.sig.RemoveConsoleTab} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var tabItem,
+        tabValue,
+
+        tabbar,
+        newTabValue,
+
+        panelBox,
+        inspector;
+
+    //  The tab item will be the parent of the signal's target (which is the
+    //  'div' with the close mark on it).
+    tabItem = TP.wrap(aSignal.getTarget().parentNode);
+
+    //  Grab its value.
+    if (TP.isValid(tabItem)) {
+        tabValue = tabItem.get('value');
+    }
+
+    //  Remove the item from the tabbar matching that value.
+    tabbar = TP.byId('SherpaConsoleTabbar', this.getNativeDocument());
+    tabbar.removeItem(tabValue);
+
+    //  Remove the item from the panelbox matching that value.
+    panelBox = TP.byId('SherpaConsolePanelbox', this.getNativeDocument());
+    panelBox.removePanel(tabValue);
+
+    //  Grab the new tab value (which will have already been computed by the tab
+    //  item removal code) and set the panel box to it.
+    newTabValue = tabbar.get('value');
+    panelBox.setValue(newTabValue);
+
+    //  Repopulate the current bay in the inspector. That way, if the content
+    //  that the tab was holding should now (again) be displayed in the
+    //  inspector, it will be redisplayed.
+    inspector = TP.byId('SherpaInspector', this.getNativeDocument());
+    inspector.repopulateBay();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
