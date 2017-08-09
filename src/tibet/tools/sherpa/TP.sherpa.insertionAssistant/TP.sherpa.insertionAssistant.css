@@ -56,7 +56,7 @@ sherpa|insertionAssistant > .body .insertion_details .flex_outer {
 sherpa|insertionAssistant > .body .insertion_details .flex_outer li,
 .flex-inner {
 
-	position: relative;
+    position: relative;
 
     display: flex;
     flex-wrap: wrap;
@@ -73,7 +73,7 @@ sherpa|insertionAssistant > .body .insertion_details .flex_outer > li > label {
 sherpa|insertionAssistant > .body .insertion_details .flex_outer > li > label + *,
 .flex_inner {
 
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 sherpa|insertionAssistant > .body .insertion_details .flex_inner {
@@ -92,19 +92,19 @@ sherpa|insertionAssistant > .foot {
 
 sherpa|insertionAssistant > .body .insertion_details input {
 
-	margin-left: 10px;
+    margin-left: 10px;
 }
 
 sherpa|insertionAssistant > .body .insertion_details input:checked + label {
 
-	font-weight: bold;
+    font-weight: bold;
 }
 
 #AttributesTable input {
 
     height: 1em;
 
-    margin-left: 0px;
+    margin-left: 0;
     margin-bottom: 2px;
 }
 
@@ -115,11 +115,11 @@ sherpa|insertionAssistant > .body .insertion_details input:checked + label {
     width: 24px;
     height: 24px;
 
-    margin-top: 0px;
+    margin-top: 0;
 
     cursor: pointer;
 
-	background-image: url("../media/ic_close_black_24px.svg");
+    background-image: url("../media/ic_close_black_24px.svg");
 }
 
 sherpa|insertionAssistant > .body .insertion_details .inserter {
@@ -131,14 +131,14 @@ sherpa|insertionAssistant > .body .insertion_details .inserter {
 
     margin-left: 446px;
 
-	background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
 #InsertionBreadcrumb {
 
     display: block;
 
-    top: 0px;
+    top: 0;
     left: 115px;
 }
 
