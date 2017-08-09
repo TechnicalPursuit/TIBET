@@ -1,6 +1,6 @@
 
 /*
-	CSS styles common across 'xctrls:tabbar' controls for any theme.
+    CSS styles common across 'xctrls:tabbar' controls for any theme.
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
@@ -28,6 +28,31 @@
         & xctrls|tabitem:first-of-type {
 
             margin-left: 0;
+        }
+
+        & xctrls|tabitem > .close_mark {
+
+            display: inline-block;
+
+            position: relative;
+
+            top: 1px;
+            left: 4px;
+
+            width: 10px;
+            height: 10px;
+        }
+
+        & xctrls|tabitem > .close_mark::after {
+
+            position: absolute;
+
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            text-align: center;
         }
     }
 

@@ -132,6 +132,24 @@
 
                 color: @xctrls_tabitem-font-color-disabled;
             }
+
+            & > .close_mark {
+
+                color: @xctrls_tabitem-close_mark-color-normal;
+            }
+
+            & > .close_mark::after {
+
+                content: "\00d7";
+                font-size: 20px;
+
+                line-height: 10px;
+            }
+
+            & > .close_mark:hover {
+
+                color: @xctrls_tabitem-close_mark-color-hover;
+            }
         }
     }
 }
