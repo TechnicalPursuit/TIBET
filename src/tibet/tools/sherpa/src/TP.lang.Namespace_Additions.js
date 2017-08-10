@@ -9,14 +9,10 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.sherpa.AppRootInspectorSource
+//  TP.lang.Namespace Additions
 //  ========================================================================
 
-/**
- * @type {TP.sherpa.AppRootInspectorSource}
- */
-
-TP.sherpa.InspectorSource.defineSubtype('sherpa.AppRootInspectorSource');
+TP.lang.Namespace.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -26,7 +22,66 @@ TP.sherpa.InspectorSource.defineSubtype('sherpa.AppRootInspectorSource');
 //  Inspector API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AppRootInspectorSource.Inst.defineMethod('getConfigForInspector',
+TP.lang.Namespace.Inst.defineMethod('canReuseContentForInspector',
+function(options) {
+
+    /**
+     * @method canReuseContentForInspector
+     * @summary Returns whether or not content hosted in an inspector bay can be
+     *     'reused', even though the underlying data will change. If this
+     *     returns true, then the underlying content needs to be able to respond
+     *     to its data changing underneath it. It can leverage the TIBET data
+     *     binding system to do this.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     check the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Boolean} Whether or not the current content can be reused even
+     *     though the underlying data is changing.
+     */
+
+    var config,
+        bayInspectorItem,
+
+        firstChildElem,
+
+        bayContentElementName;
+
+    config = this.getConfigForInspector(options);
+
+    bayInspectorItem = options.at('bayInspectorItem');
+
+    if (TP.notValid(bayInspectorItem)) {
+        return false;
+    }
+
+    firstChildElem = TP.nodeGetFirstChildElement(
+                                bayInspectorItem.getNativeNode());
+
+    if (!TP.isNode(firstChildElem)) {
+        return false;
+    }
+
+    bayContentElementName = TP.elementGetFullName(firstChildElem);
+
+    if (bayContentElementName === config.at('attr_contenttype')) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
     /**
@@ -55,12 +110,12 @@ function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
 
-    return options.merge(this.get('additionalConfig'));
+    return options;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AppRootInspectorSource.Inst.defineMethod('getContentForInspector',
+TP.lang.Namespace.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
@@ -94,7 +149,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AppRootInspectorSource.Inst.defineMethod('getDataForInspector',
+TP.lang.Namespace.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -118,14 +173,14 @@ function(options) {
      *     a bay.
      */
 
-    var fullNames,
+    var typeNames,
         data;
 
-    fullNames = APP.getSubNamespaceNames();
+    typeNames = this.getTypeNames();
 
     data = TP.ac();
 
-    fullNames.forEach(
+    typeNames.forEach(
         function(aName) {
             data.push(TP.ac(aName, aName));
         });
@@ -135,7 +190,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AppRootInspectorSource.Inst.defineMethod('resolveAspectForInspector',
+TP.lang.Namespace.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
     /**
@@ -153,7 +208,7 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    return TP.sys.getMetadata('namespaces').at(anAspect);
+    return TP.sys.getTypeByName(anAspect);
 });
 
 //  ------------------------------------------------------------------------
