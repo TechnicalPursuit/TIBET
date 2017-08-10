@@ -3719,7 +3719,7 @@ function(options) {
     //  object.
     if (options.at('targetAspect') === TP.NOT_FOUND) {
         return TP.xhtmlnode(
-                '<div class="wrapped noselect comingsoon">' +
+                '<div class="wrapped noselect usermessage">' +
                     '<div>Uninspectable Object</div>' +
                 '</div>');
     }

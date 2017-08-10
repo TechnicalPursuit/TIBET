@@ -51,7 +51,7 @@ sherpa|inspectoritem > div.readonly {
     border: dashed 1px #aaa;
 }
 
-sherpa|inspectoritem > div.comingsoon {
+sherpa|inspectoritem > div.usermessage {
 
     display: flex;
 

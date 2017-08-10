@@ -84,7 +84,7 @@ function(options) {
      */
 
     return TP.xhtmlnode(
-            '<div class="wrapped noselect comingsoon">' +
+            '<div class="wrapped noselect usermessage">' +
                 '<div>Coming Soon</div>' +
             '</div>');
 });
