@@ -89,13 +89,23 @@ function(options) {
      *     a bay.
      */
 
-    var data;
+    var data,
+        thisref;
 
-    data = TP.ac(TP.ac('Type', 'Type'));
-    this.getKeys().sort().perform(
-                function(aKey) {
-                    data.add(TP.ac(aKey, aKey));
-                });
+    if (options.at('targetAspect') === this.getID()) {
+        data = TP.ac(TP.ac('Type', 'Type'));
+        this.getKeys().sort().perform(
+                    function(aKey) {
+                        data.add(TP.ac(aKey, aKey));
+                    });
+    } else {
+        data = this.get(options.at('targetAspect'));
+        if (data === undefined) {
+            data = 'undefined';
+        } else if (data === null) {
+            data = 'null';
+        }
+    }
 
     return data;
 });
@@ -125,7 +135,7 @@ function(anAspect, options) {
     if (anAspect === 'Type') {
         source = this.getType();
     } else {
-        source = this.callNextMethod();
+        source = this;
     }
 
     return source;
@@ -202,10 +212,14 @@ function(options) {
 
     var dataURI;
 
-    dataURI = TP.uc(options.at('bindLoc'));
+    if (options.at('targetAspect') === this.getID()) {
+        dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
+        return TP.elem(
+                '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -239,12 +253,16 @@ function(options) {
 
         data;
 
-    stdSlots = this.callNextMethod();
-    customTagSlots = TP.ac(
-                        TP.ac('Structure', 'Structure'),
-                        TP.ac('Style', 'Style'));
+    if (options.at('targetAspect') === this.getID()) {
+        stdSlots = this.callNextMethod();
+        customTagSlots = TP.ac(
+                            TP.ac('Structure', 'Structure'),
+                            TP.ac('Style', 'Style'));
 
-    data = stdSlots.concat(customTagSlots);
+        data = stdSlots.concat(customTagSlots);
+    } else {
+        data = this.callNextMethod();
+    }
 
     return data;
 });
