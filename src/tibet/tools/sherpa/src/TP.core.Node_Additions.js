@@ -89,17 +89,21 @@ function(options) {
      *     a bay.
      */
 
-    var data,
+    var targetAspect,
+
+        data,
         thisref;
 
-    if (options.at('targetAspect') === this.getID()) {
+    targetAspect = options.at('targetAspect');
+
+    if (targetAspect === this.getID()) {
         data = TP.ac(TP.ac('Type', 'Type'));
         this.getKeys().sort().perform(
                     function(aKey) {
                         data.add(TP.ac(aKey, aKey));
                     });
     } else {
-        data = this.get(options.at('targetAspect'));
+        data = this.get(targetAspect);
         if (data === undefined) {
             data = 'undefined';
         } else if (data === null) {
