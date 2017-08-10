@@ -305,34 +305,9 @@ function(options) {
      *     though the underlying data is changing.
      */
 
-    var config,
-        bayInspectorItem,
-
-        firstChildElem,
-
-        bayContentElementName;
-
-    config = this.getConfigForInspector(options);
-
-    bayInspectorItem = options.at('bayInspectorItem');
-
-    if (TP.notValid(bayInspectorItem)) {
-        return false;
-    }
-
-    firstChildElem = TP.nodeGetFirstChildElement(
-                                bayInspectorItem.getNativeNode());
-
-    if (!TP.isNode(firstChildElem)) {
-        return false;
-    }
-
-    bayContentElementName = TP.elementGetFullName(firstChildElem);
-
-    if (bayContentElementName === config.at('attr_contenttype')) {
-        return true;
-    }
-
+    //  We return false here because, since we generate unique content with the
+    //  data embedded (see the 'getContentForInspector' method for this type),
+    //  we cannot reuse content.
     return false;
 });
 
@@ -472,12 +447,15 @@ function(options) {
      *     a bay.
      */
 
-    var data;
+    var thisref,
+        data;
+
+    thisref = this;
 
     data = TP.ac();
     this.getKeys().sort().perform(
         function(aKey) {
-            data.add(TP.ac(aKey, TP.id(this.get(aKey))));
+            data.add(TP.ac(aKey, TP.id(thisref.get(aKey))));
         });
 
     return data;
