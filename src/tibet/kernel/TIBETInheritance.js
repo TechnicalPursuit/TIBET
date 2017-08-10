@@ -11261,6 +11261,52 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Namespace.Inst.defineMethod('getSubNamespaceNames',
+function() {
+
+    /**
+     * @method getSubNamespaceNames
+     * @summary Returns the list of namespaces names attached to this namespace
+     *     object that are considered 'sub' namespaces.
+     * @returns {String[]} A list of namespace names attached to (or 'under')
+     *     the receiver.
+     */
+
+    var keys,
+
+        namelist,
+
+        len,
+        j,
+
+        nsname;
+
+    //  Grab the keys from ourself. This will not grab internal slot keys, but
+    //  that's ok since no namespaces should be registered under those kind of
+    //  keys.
+    keys = TP.keys(this);
+
+    namelist = TP.ac();
+
+    //  Iterate over the keys, prepend our name and a '.' onto the front of it,
+    //  which should be the 'full' namespace name. If resolving that String as a
+    //  namespace name results in a namespace, then push that name onto our
+    //  results.
+    len = keys.getSize();
+    for (j = 0; j < len; j++) {
+
+        nsname = keys.at(j);
+
+        if (TP.isNamespace(this[nsname])) {
+            namelist.push(this[TP.NAME] + '.' + nsname);
+        }
+    }
+
+    return namelist;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Namespace.Inst.defineMethod('getTypeNames',
 function() {
 
