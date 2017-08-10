@@ -1857,7 +1857,7 @@ function(anInfo) {
     //  targetObject to be ourself), but with a target aspect of TP.NOT_FOUND.
     //  This will trigger the config, content, etc. methods on ourself to return
     //  config and content suitable for an uninspectable object.
-    if (TP.notValid(target) &&  TP.isEmpty(targetPath)) {
+    if (TP.notValid(target) && TP.isEmpty(targetPath)) {
         info = TP.hc('targetObject', this,
                         'targetAspect', TP.NOT_FOUND,
                         'bayIndex', currentBayIndex + 1);

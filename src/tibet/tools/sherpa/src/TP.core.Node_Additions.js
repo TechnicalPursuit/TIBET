@@ -91,8 +91,7 @@ function(options) {
 
     var targetAspect,
 
-        data,
-        thisref;
+        data;
 
     targetAspect = options.at('targetAspect');
 
@@ -139,7 +138,9 @@ function(anAspect, options) {
     if (anAspect === 'Type') {
         source = this.getType();
     } else {
+        /* eslint-disable consistent-this */
         source = this;
+        /* eslint-enable consistent-this */
     }
 
     return source;
