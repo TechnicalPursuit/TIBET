@@ -1073,7 +1073,7 @@ function() {
     var data,
         dataURI;
 
-    data = this.getDataForInspector();
+    data = this.getDataForInspector(TP.hc());
 
     dataURI = TP.uc('urn:tibet:sherpa_bay_0');
     dataURI.setResource(data);
