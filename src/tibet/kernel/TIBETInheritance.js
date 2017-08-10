@@ -11268,14 +11268,17 @@ function() {
      * @method getTypeNames
      * @summary Returns the list of type names attached to this namespace
      *     object.
-     * @returns {Array[TP.meta.*]} A list of type names attached to (or 'under')
-     *     the receiver.
+     * @returns {String[]} A list of type names attached to (or 'under') the
+     *     receiver.
      */
 
     var keys,
+
         namelist,
+
         len,
         j,
+
         typename;
 
     //  Grab the keys from ourself. This will not grab internal slot keys, but
@@ -11298,7 +11301,6 @@ function() {
     }
 
     return namelist;
-
 });
 
 //  ------------------------------------------------------------------------
