@@ -1852,6 +1852,21 @@ function(anInfo) {
         }
     }
 
+    //  If there was no computed target and no target path, then we have an
+    //  uninspectable object on our hands. Redirect to ourself (by setting the
+    //  targetObject to be ourself), but with a target aspect of TP.NOT_FOUND.
+    //  This will trigger the config, content, etc. methods on ourself to return
+    //  config and content suitable for an uninspectable object.
+    if (TP.notValid(target) &&  TP.isEmpty(targetPath)) {
+        info = TP.hc('targetObject', this,
+                        'targetAspect', TP.NOT_FOUND,
+                        'bayIndex', currentBayIndex + 1);
+
+        //  Note here how we pass false to avoid creating a history entry for
+        //  this action.
+        this.populateBayUsing(info, false);
+    }
+
     //  Note here how we use the last populated 'info' object
     this.finishUpdateAfterNavigation(info);
 
@@ -3700,6 +3715,15 @@ function(options) {
 
     var dataURI;
 
+    //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
+    //  object.
+    if (options.at('targetAspect') === TP.NOT_FOUND) {
+        return TP.xhtmlnode(
+                '<div class="wrapped noselect comingsoon">' +
+                    '<div>Uninspectable Object</div>' +
+                '</div>');
+    }
+
     dataURI = TP.uc(options.at('bindLoc'));
 
     return TP.elem(
@@ -3738,6 +3762,12 @@ function(options) {
         staticData,
 
         data;
+
+    //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
+    //  object.
+    if (options.at('targetAspect') === TP.NOT_FOUND) {
+        return TP.ac();
+    }
 
     //  This logic must produce values in its first slot that can then be
     //  resolved by 'resolveAspectForInspector' below.
@@ -3783,6 +3813,12 @@ function(anAspect, options) {
 
     var target,
         dynamicContentEntries;
+
+    //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
+    //  object.
+    if (options.at('targetAspect') === TP.NOT_FOUND) {
+        return null;
+    }
 
     dynamicContentEntries = this.get('dynamicContentEntries');
     target = dynamicContentEntries.detect(
