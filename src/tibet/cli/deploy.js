@@ -132,26 +132,30 @@ Cmd.prototype.executeViaShipit = function() {
         proc,
         child,
         argv,
-        target;
+        params,
+        envname;
 
     cmd = this;
     argv = this.getArgv();
 
     //  NOTE argv[0] is the command name.
-    target = argv[1];
+    envname = argv[1];
 
     proc = require('child_process');
 
-    if (target) {
-        this.warn('Delegating to \'shipit ' + target + ' deploy\'');
+    params = [];
+
+    params[0] = envname;
+    params[1] = argv.indexOf('--rollback') === -1 ? 'deploy' : 'rollback';
+
+    if (envname) {
+        this.warn('Delegating to \'shipit ' + envname + ' ' + params[1] + '\'');
     } else {
         this.error('No shipit environment specified.');
         return 1;
     }
 
-    argv.push('deploy');
-
-    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), argv);
+    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), params);
 
     child.stdout.on('data', function(data) {
         var msg;
