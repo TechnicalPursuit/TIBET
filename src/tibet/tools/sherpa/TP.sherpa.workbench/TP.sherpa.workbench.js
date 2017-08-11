@@ -552,9 +552,8 @@ function(aSignal) {
 
             if (TP.notEmpty(userValue)) {
                 cmdVal += ' ' + userValue;
+                TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
             }
-
-            TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
         });
 
     return this;
