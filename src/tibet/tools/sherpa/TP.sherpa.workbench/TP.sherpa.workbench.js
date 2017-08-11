@@ -539,7 +539,7 @@ function(aSignal) {
     //  Grab the profile name and slice off everything after the '#'. That will
     //  be what we default the 'ShipIt environment name'.
     profileName = TP.sys.getcfg('boot.profile');
-    profileName = profileName.slice(0, profileName.indexOf('#'))
+    profileName = profileName.slice(0, profileName.indexOf('#'));
 
     TP.prompt('If you\'re using ShipIt to deploy, enter environment name.' +
                     ' Otherwise, this should be blank.',
