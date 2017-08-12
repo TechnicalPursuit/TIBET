@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 
-<sherpa:insertionAssistant tibet:nomutationtracking="true">
+<sherpa:insertionAssistant>
     <div class="head">
-		<tibet:data name="urn:tibet:attr_data_blank">
-			<![CDATA[
-			{"tagAttrName":"", "tagAttrValue":""}
-			]]>
-		</tibet:data>
-	</div>
+        <tibet:data name="urn:tibet:attr_data_blank">
+            <![CDATA[
+            {"tagAttrName":"", "tagAttrValue":""}
+            ]]>
+        </tibet:data>
+    </div>
     <div class="body">
         <div class="supertype_chooser">
             Choose from list:
@@ -22,12 +22,12 @@
             <input type="text" id="newTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:info_source#jpath($.info.enteredTagName)}"/>
         </div>
         <div class="insertion_details">
-			<form bind:scope="urn:tibet:info_source#jpath($.info)">
+            <form bind:scope="urn:tibet:info_source#jpath($.info)">
                 <ul class="flex_outer">
-					<li>
+                    <li>
                         <label>Insertion Point:</label>
-						<sherpa:breadcrumb id="InsertionBreadcrumb"/>
-					</li>
+                        <sherpa:breadcrumb id="InsertionBreadcrumb"/>
+                    </li>
                     <li>
                         <label>Insertion position:</label>
                         <ul class="flex_inner">
@@ -43,16 +43,16 @@
                             </li>
                         </ul>
                     </li>
-					<li id="AttributesTable">
+                    <li id="AttributesTable">
                         <label>Attributes:</label>
-						<div id="attributes" bind:repeat="tagAttrs">
-								<input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
-								<input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
-								<span class="deleter" on:click="{signal: DeleteItem, origin: 'attributes', payload: {index:TP.TARGET}}"/>
-							<br/>
+                        <div id="attributes" bind:repeat="tagAttrs">
+                                <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
+                                <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
+                                <span class="deleter" on:click="{signal: DeleteItem, origin: 'attributes', payload: {index:TP.TARGET}}"/>
+                            <br/>
 
                         </div>
-					</li>
+                    </li>
                     <li>
                         <div class="inserter" on:click="{signal: InsertItem, origin: 'attributes', payload: {source: 'urn:tibet:attr_data_blank', copy: true}}"></div>
                     </li>
@@ -62,8 +62,8 @@
     </div>
     <div class="foot">
         <code id="generatedTag"/>
-		<br/>
-		<br/>
+        <br/>
+        <br/>
         <button on:click="DialogCancel">Cancel</button>
         <button on:click="DialogOk">Insert Tag</button>
     </div>
