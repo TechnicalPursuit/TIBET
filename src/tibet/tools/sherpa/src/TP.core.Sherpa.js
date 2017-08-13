@@ -1670,9 +1670,11 @@ function() {
     //          'xmlns'
     //          'pclass'
     //      - TIBET attributes:
+    //          'tibet:focuscontext'
     //          'tibet:for'
     //          'tibet:globalDocID'
     //          'tibet:originalHref'
+    //          'tibet:recasting'
     //          'tibet:type'
     //      - generated 'id' attributes
     //      - Sherpa-related 'class' attributes
@@ -1731,9 +1733,11 @@ function() {
 
                 switch (attrName) {
 
+                    case 'tibet:focuscontext':
                     case 'tibet:for':
                     case 'tibet:globalDocID':
                     case 'tibet:originalHref':
+                    case 'tibet:recasting':
                     case 'tibet:type':
                         return false;
 
