@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
 <sherpa:uriEditorToolbarContent>
-	<span class="detach_mark" on:click="TP.sig.DetachIntoConsoleTab"/>
-	<button action="apply" disabled="disabled" on:click="TP.sig.ResourceApply">Apply</button>
-	<button action="push" disabled="disabled" on:click="TP.sig.ResourcePush">Push</button>
-	<button action="revert" disabled="disabled" on:click="TP.sig.ResourceRevert">Revert</button>
+    <span class="detach_mark" on:click="TP.sig.DetachIntoConsoleTab"/>
+    <button action="apply" disabled="disabled" on:click="TP.sig.ResourceApply">Apply</button>
+    <button action="push" disabled="disabled" on:click="TP.sig.ResourcePush">Push</button>
+    <button action="revert" disabled="disabled" on:click="TP.sig.ResourceRevert">Revert</button>
     <button action="refresh" disabled="disabled" on:click="{signal: 'TP.sig.ResourceRevert', payload: {refresh: true}}">Refresh</button>
 </sherpa:uriEditorToolbarContent>
 

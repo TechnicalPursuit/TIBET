@@ -166,6 +166,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('$computeDetachedValueAndName',
+function() {
+
+    /**
+     * @method $computedDetachedValueAndName
+     * @summary Computes the receiver's 'value' and 'name' that will be used by
+     *     the control that it is being detached into
+     * @returns {String[]} A pair with the value as the item in the first
+     *     position and the name as the item in the last position.
+     */
+
+    var sourceURI,
+        sourceLoc,
+
+        tabValue,
+        tabName;
+
+    //  Grab our source URI's location.
+    sourceURI = this.get('sourceURI');
+    sourceLoc = sourceURI.getLocation();
+
+    //  The value will be our source location, which is unique.
+    tabValue = sourceLoc;
+
+    //  The name is the URL end location.
+    tabName = sourceLoc.slice(sourceLoc.lastIndexOf('/') + 1);
+
+    return TP.ac(tabValue, tabName);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('$flag',
 function(aProperty, aFlag) {
 
@@ -207,11 +239,7 @@ function(aSignal) {
 
     var inspector,
 
-        sourceURI,
-        sourceLoc,
-
-        tabName,
-        tabValue,
+        detachedValueAndName,
 
         newPanel,
 
@@ -226,19 +254,15 @@ function(aSignal) {
 
     inspector = TP.byId('SherpaInspector', this.getNativeWindow());
 
-    //  Grab our source URI's location.
-    sourceURI = this.get('sourceURI');
-    sourceLoc = sourceURI.getLocation();
-
-    //  The value for the tab will be our source location, which is unique.
-    tabValue = sourceLoc;
-
-    //  The tab name is the URL end location.
-    tabName = sourceLoc.slice(sourceLoc.lastIndexOf('/') + 1);
+    //  Compute the value and name for the receiver that it will use as the name
+    //  and value for the tab.
+    detachedValueAndName = this.$computeDetachedValueAndName();
 
     //  Ask the inspector to create a new console tab with that value and name.
     //  This will return the new panel that we can add content to it.
-    newPanel = inspector.createNewConsoleTab(tabValue, tabName);
+    newPanel = inspector.createNewConsoleTab(detachedValueAndName.first(),
+                                                detachedValueAndName.last());
+
     newPanel.setAttribute('tibet:nomutationtracking', 'true');
 
     //  Compute a unique ID for the editor, based on the number of tabs that are
