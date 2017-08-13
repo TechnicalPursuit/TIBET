@@ -412,6 +412,15 @@ sherpa|urieditor[class~="tabbed"] {
 }
 
 /* -----------------------------*
+ * methodeditor
+ * ---------------------------- */
+
+sherpa|methodeditor[class~="tabbed"] {
+
+    top: 26px;
+}
+
+/* -----------------------------*
  * Middle
  * ---------------------------- */
 

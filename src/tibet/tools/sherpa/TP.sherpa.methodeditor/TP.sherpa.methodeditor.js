@@ -91,6 +91,36 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.methodeditor.Inst.defineMethod('$computeDetachedValueAndName',
+function() {
+
+    /**
+     * @method $computedDetachedValueAndName
+     * @summary Computes the receiver's 'value' and 'name' that will be used by
+     *     the control that it is being detached into
+     * @returns {String[]} A pair with the value as the item in the first
+     *     position and the name as the item in the last position.
+     */
+
+    var sourceObj,
+
+        tabValue,
+        tabName;
+
+    //  Grab our source object.
+    sourceObj = this.get('sourceObject');
+
+    //  The value will be our TP.DISPLAY name, for uniqueness.
+    tabValue = sourceObj[TP.DISPLAY];
+
+    //  The name will be our user-visible name.
+    tabName = sourceObj[TP.NAME];
+
+    return TP.ac(tabValue, tabName);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.methodeditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 

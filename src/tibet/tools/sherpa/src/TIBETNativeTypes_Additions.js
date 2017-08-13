@@ -173,12 +173,28 @@ function(options) {
      *     though the underlying data is changing.
      */
 
-    var config,
+    var displayName,
+        tabHasURI,
+
+        config,
         bayInspectorItem,
 
         firstChildElem,
 
         bayContentElementName;
+
+    //  Grab our display name and see if there's already tab representing us in
+    //  the inspector.
+    displayName = this[TP.DISPLAY];
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                displayName);
+
+    //  If so, then we want to return false to force the inspector bay to use
+    //  whatever content we hand it. This is based on more sophisticated logic
+    //  than what is inherited.
+    if (tabHasURI) {
+        return false;
+    }
 
     config = this.getConfigForInspector(options);
 
@@ -233,6 +249,22 @@ function(options) {
      *                                      placed in it.
      */
 
+    var displayName,
+        tabHasURI;
+
+    //  Grab our display name and see if there's already tab representing us in
+    //  the inspector.
+    displayName = this[TP.DISPLAY];
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                displayName);
+
+    if (tabHasURI) {
+        //  Initially configure the content type to be an 'html:div'.
+        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+
+        return options;
+    }
+
     options.atPut(TP.ATTR + '_class', 'doublewide');
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
 
@@ -264,9 +296,31 @@ function(options) {
      *     bay.
      */
 
-    var dataURI,
+    var displayName,
+        tabHasURI,
+
+        dataURI,
         methodEditorTPElem;
 
+    //  Grab our display name and see if there's already tab representing us in
+    //  the inspector.
+    displayName = this[TP.DISPLAY];
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                displayName);
+
+    //  If so, then set the value of both the tabbar and the panel box to our
+    //  location, causing them to switch. And return content that points the
+    //  user down to the tabbar in the south drawer.
+    if (tabHasURI) {
+        TP.byId('SherpaConsoleTabbar', TP.win('UIROOT')).setValue(displayName);
+        TP.byId('SherpaConsolePanelbox', TP.win('UIROOT')).
+                                                        setValue(displayName);
+
+        return TP.xhtmlnode(
+                    '<div>' +
+                        'This content is open in the tabbed content below.' +
+                    '</div>');
+    }
 
     dataURI = TP.uc(options.at('bindLoc'));
 
@@ -368,8 +422,21 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<sherpa:methodEditorToolbarContent' +
-                    ' tibet:ctrl="inspectorEditor"/>');
+    var displayName,
+        tabHasURI;
+
+    //  Grab our display name and see if there's already tab representing us in
+    //  the inspector.
+    displayName = this[TP.DISPLAY];
+    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+                                                                displayName);
+
+    //  If not, then return the uri toolbar content for placement into the
+    //  proper place in the inspector.
+    if (!tabHasURI) {
+        return TP.elem('<sherpa:methodEditorToolbarContent' +
+                        ' tibet:ctrl="inspectorEditor"/>');
+    }
 });
 
 //  ------------------------------------------------------------------------
