@@ -159,6 +159,27 @@ function(anObject) {
         return this;
     }
 
+    //  If the tagName has a colon, then we try to match its namespace to the
+    //  namespace of the insertion target. If they're the same, then we insert
+    //  an Element with that tag name, minus its prefix.
+    if (TP.regex.HAS_COLON.test(tagName)) {
+
+        //  Grab the namespace of the inserted tag.
+        tagParts = tagName.split(':');
+        tagXmlns = TP.w3.Xmlns.getPrefixURI(tagParts.first());
+
+        //  Grab the namespaces of the element at the insertion point.
+        currentDefaultXmlns = TP.elementGetDefaultXMLNS(targetElem);
+
+        //  If they're the same, then strip off the prefix, but add an
+        //  'xmlns="..."' with that namespace so that the element goes into the
+        //  correct namespace.
+        if (tagXmlns === currentDefaultXmlns) {
+            tagName = tagName.slice(tagName.indexOf(':') + 1);
+            tagName += ' xmlns="' + currentDefaultXmlns + '"';
+        }
+    }
+
     targetTPElem = TP.wrap(targetElem);
 
     //  If the user has entered a tag that we don't know about, we force the
