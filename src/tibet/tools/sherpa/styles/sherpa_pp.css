@@ -84,7 +84,7 @@
 
     display: table;
 
-    white-space: pre-wrap;
+    white-space: pre;
 }
 
 .sherpa_pp.TP_boot_Log > span {
