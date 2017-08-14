@@ -22,17 +22,15 @@ sherpa|bookmarkMenuContent > .content {
     position: absolute;
 
     top: 0;
-    bottom: 0;
+    bottom: 25px;
     right: 0;
     left: 0;
 
     min-width: auto;
 
-    margin: 2px;
-
-    border: 1px solid #666;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-left: 2px;
 
     background-color: #fff;
 
@@ -83,14 +81,31 @@ sherpa|bookmarkMenuContent > .content > ul > li:last-child:hover {
     border-bottom: 1px solid #666;
 }
 
+sherpa|bookmarkMenuContent > .footer {
+
+    position: absolute;
+
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    height: 25px;
+
+    background-color: #eee;
+
+    border-top: solid 1px #666;
+
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-bottom: 2px;
+}
+
 sherpa|bookmarkMenuContent > sherpa|scrollbutton {
 
-    box-shadow: 1px -1px 1px #888;
 }
 
 sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="up"] {
 
-    bottom: 10px;
     right: 28px;
 }
 
@@ -102,7 +117,6 @@ sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="up"] .icon::after 
 
 sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="down"] {
 
-    bottom: 10px;
     right: 8px;
 }
 

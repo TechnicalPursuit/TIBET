@@ -22,17 +22,15 @@ sherpa|snippetMenuContent > .content {
     position: absolute;
 
     top: 0;
-    bottom: 0;
+    bottom: 25px;
     right: 0;
     left: 0;
 
     min-width: auto;
 
-    margin: 2px;
-
-    border: 1px solid #666;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-left: 2px;
 
     background-color: #fff;
 
@@ -83,36 +81,52 @@ sherpa|snippetMenuContent > .content > ul > li:last-child:hover {
     border-bottom: 1px solid #666;
 }
 
-sherpa|snippetMenuContent > sherpa|scrollbutton {
+sherpa|snippetMenuContent > .footer {
 
-    box-shadow: 1px -1px 1px #888;
+    position: absolute;
+
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    height: 25px;
+
+    background-color: #eee;
+
+    border-top: solid 1px #666;
+
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-bottom: 2px;
 }
 
-sherpa|snippetMenuContent > sherpa|scrollbutton[orientation="up"] {
+sherpa|snippetMenuContent > .footer > sherpa|scrollbutton {
 
-    bottom: 10px;
+}
+
+sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="up"] {
+
     right: 28px;
 }
 
-sherpa|snippetMenuContent > sherpa|scrollbutton[orientation="up"] .icon::after {
+sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="up"] .icon::after {
 
     /* This is the same as '&#8593' */
     content: "\2191";
 }
 
-sherpa|snippetMenuContent > sherpa|scrollbutton[orientation="down"] {
+sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="down"] {
 
-    bottom: 10px;
     right: 8px;
 }
 
-sherpa|snippetMenuContent > sherpa|scrollbutton[orientation="down"] .icon::after {
+sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="down"] .icon::after {
 
     /* This is the same as '&#8595' */
     content: "\2193";
 }
 
-sherpa|snippetMenuContent[class~="overflowing"] sherpa|scrollbutton {
+sherpa|snippetMenuContent[class~="overflowing"] .footer > sherpa|scrollbutton {
 
     display: block;
 }
