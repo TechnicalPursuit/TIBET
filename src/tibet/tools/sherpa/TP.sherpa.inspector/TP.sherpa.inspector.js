@@ -51,14 +51,12 @@ function() {
      * @returns {TP.sherpa.InspectorSource} The receiver.
      */
 
-    var retVal;
-
-    retVal = this.callNextMethod();
+    this.callNextMethod();
 
     this.$set('entries', TP.hc(), false);
     this.$set('additionalConfig', TP.hc(), false);
 
-    return retVal;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
