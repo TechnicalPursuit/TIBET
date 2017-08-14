@@ -90,6 +90,10 @@ function(anObject) {
 
         autodefineMissingTags,
 
+        tagParts,
+        tagXmlns,
+        currentDefaultXmlns,
+
         targetElem,
         targetTPElem,
 
