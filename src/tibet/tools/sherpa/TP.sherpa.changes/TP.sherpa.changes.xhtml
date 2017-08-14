@@ -1,15 +1,37 @@
 <!DOCTYPE html>
 
 <sherpa:changes>
+    <tibet:data name="urn:tibet:current_changes_tab">
+        <![CDATA[
+            {
+            "selection": "server"
+            }
+        ]]>
+    </tibet:data>
     <div class="header">
-        <div class="trigger button" on:click="Toggle">
-        </div>
-            <sherpa:count name="server" on:click="ShowServerChanges">0</sherpa:count>
-            <sherpa:sync on:click="SyncAllChanges"/>
-            <sherpa:count name="client" on:click="ShowClientChanges">0</sherpa:count>
+        <div class="trigger button" on:click="Toggle"/>
+        <sherpa:count name="server" on:click="ShowServerChanges">0</sherpa:count>
+        <sherpa:sync on:click="SyncAllChanges"/>
+        <sherpa:count name="client" on:click="ShowClientChanges">0</sherpa:count>
     </div>
     <div class="content">
-        <span>Changed URIs (server &amp; client)</span>
-        <xctrls:list/>
+        <xctrls:panelbox id="SherpaChangesPanelbox" bind:in="urn:tibet:current_changes_tab#tibet(selection)">
+            <xctrls:panel pclass:selected="true">
+                <xctrls:value>server</xctrls:value>
+                <xctrls:content>
+                    <span class="title">Changed server URIs</span>
+                    <br/>
+                    <xctrls:list bind:in="urn:tibet:changedServerURIs"/>
+                </xctrls:content>
+            </xctrls:panel>
+            <xctrls:panel>
+                <xctrls:value>client</xctrls:value>
+                <xctrls:content>
+                    <span class="title">Changed client URIs</span>
+                    <br/>
+                    <xctrls:list bind:in="urn:tibet:changedClientURIs"/>
+                </xctrls:content>
+            </xctrls:panel>
+        </xctrls:panelbox>
     </div>
 </sherpa:changes>

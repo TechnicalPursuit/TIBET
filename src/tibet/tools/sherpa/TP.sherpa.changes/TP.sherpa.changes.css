@@ -75,20 +75,43 @@ sherpa|changes > .content {
 }
 
 sherpa|changes > .content > span {
+
     line-height: 2em;
+
     margin: 0;
     padding: 0;
 }
 
-sherpa|changes > .content > xctrls|list {
+sherpa|changes > .content > xctrls|panelbox {
+
+    width: 100%;
+    height: 100%;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|content .title {
+
     position: absolute;
+
+    width: 100%;
+
+    margin-top: 4px;
+
+    text-align: center;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
+
+    position: absolute;
+
     top: 2em;
     right: 0;
     bottom: 24px;
     left: 0;
+
     width: auto;
     height: auto;
-    margin: 0 40px 4px;
+
+    margin: 0 20px 4px;
 }
 
 sherpa|changes > .header > .trigger.button {

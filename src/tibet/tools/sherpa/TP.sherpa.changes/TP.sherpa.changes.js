@@ -17,5 +17,45 @@
 TP.sherpa.TemplatedTag.defineSubtype('changes');
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.changes.Inst.defineHandler('ShowClientChanges',
+function(aSignal) {
+
+    /**
+     * @method handleShowClientChanges
+     * @summary Handles notifications of when the user wants to show the client
+     *     URIs that have changed.
+     * @param {TP.sig.ShowClientChanges} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    TP.uc('urn:tibet:current_changes_tab#tibet(selection)').setResource(
+                                                                    'client');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.changes.Inst.defineHandler('ShowServerChanges',
+function(aSignal) {
+
+    /**
+     * @method handleShowServerChanges
+     * @summary Handles notifications of when the user wants to show the server
+     *     URIs that have changed.
+     * @param {TP.sig.ShowServerChanges} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    TP.uc('urn:tibet:current_changes_tab#tibet(selection)').setResource(
+                                                                    'server');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
