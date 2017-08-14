@@ -384,7 +384,7 @@ function() {
 
     keyFunc =
         function(d, i) {
-            return i;
+            return d + '__' + i;
         };
 
     return keyFunc;
