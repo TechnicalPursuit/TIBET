@@ -128,7 +128,6 @@ sherpa|worldthumbnails > .content > ul > li:not([pclass|selected]):hover {
 
 sherpa|worldthumbnails > sherpa|scrollbutton {
 
-    box-shadow: 1px -1px 1px #888;
 }
 
 sherpa|worldthumbnails > sherpa|scrollbutton[orientation="up"] {

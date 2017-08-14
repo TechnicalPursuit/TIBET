@@ -294,7 +294,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 
 .flex-item > .content > sherpa|scrollbutton {
 
-    box-shadow: 1px -1px 1px #888;
 }
 
 .flex-item > .content > sherpa|scrollbutton[orientation="up"] {
