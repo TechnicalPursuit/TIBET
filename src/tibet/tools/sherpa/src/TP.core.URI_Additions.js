@@ -272,6 +272,58 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getEntryAt',
+function(aSourceName) {
+
+    /**
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {String} aSourceName The name of the entry to retrieve.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
+     */
+
+    var result;
+
+    result = this.getResource().get('result');
+
+    if (TP.isType(result)) {
+        return result;
+    }
+
+    if (TP.isKindOf(result, TP.core.Content)) {
+        result = result.get('data');
+    }
+
+    if (TP.isString(result) ||
+        TP.isNode(result) ||
+        TP.isKindOf(result, TP.core.Node)) {
+
+        return this.getEntryAt(aSourceName);
+    }
+
+    return result.getEntryAt(aSourceName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getEntryLabel',
+function(anItem) {
+
+    /**
+     * @method getEntryLabel
+     * @summary Returns the 'entry label' used in the receiver for the supplied
+     *     Object in the receiver.
+     * @param {Object} anItem The object to return the label for.
+     * @returns {String} The label to be used for the supplied item.
+     */
+
+    return anItem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getPathPartsForInspector',
 function(options) {
 

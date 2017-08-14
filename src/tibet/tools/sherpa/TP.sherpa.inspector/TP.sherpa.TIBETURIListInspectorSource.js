@@ -120,29 +120,22 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETURIListInspectorSource.Inst.defineMethod(
-'resolveAspectForInspector',
-function(anAspect, options) {
+TP.sherpa.TIBETURIListInspectorSource.Inst.defineMethod('getEntryAt',
+function(aSourceName) {
 
     /**
-     * @method resolveAspectForInspector
-     * @summary Returns the object that is produced when resolving the aspect
-     *     against the receiver.
-     * @param {String} anAspect The aspect to resolve against the receiver to
-     *     produce the return value.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the configuration data. This will have the following keys,
-     *     amongst others:
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     * @returns {Object} The object produced when resolving the aspect against
-     *     the receiver.
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {String} aSourceName The name of the entry to retrieve.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
      */
 
     var fullURIStr,
         source;
 
-    fullURIStr = TP.uriResolveVirtualPath(anAspect);
+    fullURIStr = TP.uriResolveVirtualPath(aSourceName);
 
     source = TP.core.URI.get('instances').at(fullURIStr);
 
