@@ -383,6 +383,8 @@ function(anObj) {
 
     this.$set('data', anObj);
 
+    //  ---
+
     typesURI = TP.uc('urn:tibet:tagtypelist');
 
     typesObj = TP.ac();
@@ -468,13 +470,14 @@ function(anObj) {
                     return TP.ac(entry, entry);
                 });
 
-
+    //  Set the resource of the types URI to the computed object containing our
+    //  types, telling the URI to go ahead and signal change to kick things off.
     typesURI.setResource(typesObj, TP.hc('signalChange', true));
 
+    //  ---
 
     //  Build the model object.
     modelObj = TP.hc();
-
 
     //  Register a hash to be placed at the top-level 'info' slot in the model.
     newInsertionInfo = TP.hc();
