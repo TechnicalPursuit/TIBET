@@ -56,12 +56,6 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidFocus');
-
-    tpElem.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidBlur');
-
     tpElem.setup();
 
     return;
@@ -312,6 +306,9 @@ function() {
      * @summary Perform the initial setup for the receiver.
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
+
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
 
     this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
                             'ClosedChange');
