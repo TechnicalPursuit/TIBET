@@ -5991,6 +5991,9 @@ function(aNode, aSignal) {
 
     var node,
         win,
+
+        attrVal,
+
         type,
         frame;
 
@@ -6017,20 +6020,40 @@ function(aNode, aSignal) {
         return;
     }
 
-    //  Attribute checks are the fastest option.
-    if (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
-            TP.elementHasAttribute(aNode, 'tibet:ctrl', true)) {
+    //  Check first for a 'tibet:ctrl' attribute. This overrides all of the
+    //  other logic. If we have a 'tibet:ctrl' attribute, then this element is
+    //  definitely a responder element (for *some* signal). Whether or not the
+    //  object that is named here via this attribute (either a type of some sort
+    //  or a registered object) can actually respond to the signal is determined
+    //  later by the signaling system.
+    if (TP.elementHasAttribute(aNode, 'tibet:ctrl', true)) {
         return aNode;
     }
 
-    //  Native types may be responders but not have a tibet:tag or tibet:ctrl
-    //  attribute so we need to query them by type.
+    //  Next, check to see if a 'tibet:tag' attribute is defined. If so, then it
+    //  will point to a TIBET type of some sort. This mechanism allows the
+    //  author to override the TIBET type that this tag would normally resolve
+    //  to. Therefore, in the case of custom tags that have been 'compiled' into
+    //  platform native markup (i.e. XHTML or SVG), this attribute will probably
+    //  point to the custom TIBET type that the platform-native markup is
+    //  standing in for.
+    attrVal = TP.elementGetAttribute(aNode, 'tibet:tag', true);
+    if (TP.notEmpty(attrVal)) {
+        type = TP.sys.getTypeByName(attrVal);
+    }
 
-    //  NB: Many times the node will already have it's node type, so we use a
-    //  fast way to get that here.
-    type = aNode[TP.NODE_TYPE];
-    if (TP.notValid(type)) {
-        type = TP.nodeGetConcreteType(aNode);
+    if (!TP.isType(type)) {
+
+        //  Native types may be responders but not have a tibet:tag or
+        //  tibet:ctrl attribute so we need to query them by type.
+
+        //  NB: Many times the node will already have it's node type, so we
+        //  use a fast way to get that here.
+        type = aNode[TP.NODE_TYPE];
+        if (TP.notValid(type)) {
+            type = TP.nodeGetConcreteType(aNode);
+            aNode[TP.NODE_TYPE] = type;
+        }
     }
 
     if (TP.canInvoke(type, 'isResponderFor')) {
