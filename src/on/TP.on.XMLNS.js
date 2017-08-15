@@ -132,6 +132,8 @@ function(aSignal) {
                     sigData,
                     originElem,
                     aSignal,
+                    null,   //  payload
+                    null,   //  policy
                     TP.sig.ResponderSignal);
     }
 

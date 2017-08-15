@@ -11377,7 +11377,9 @@ function(aRequest) {
                 TP.queueSignalFromData(
                     sigData,
                     node,
-                    null,
+                    null,   //  signal
+                    null,   //  payload
+                    null,   //  policy
                     TP.sig.ResponderSignal);
             }
         }
@@ -11587,7 +11589,9 @@ function(aRequest) {
                 TP.queueSignalFromData(
                     sigData,
                     node,
-                    null,
+                    null,   //  signal
+                    null,   //  payload
+                    null,   //  policy
                     TP.sig.ResponderSignal);
             }
         }
