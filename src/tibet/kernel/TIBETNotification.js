@@ -5698,6 +5698,8 @@ function(originSet, aSignal, aPayload, aType) {
                                 sigdata,
                                 origin,
                                 sig,
+                                null,   //  payload
+                                null,   //  policy
                                 TP.sig.ResponderSignal);
                 }
 

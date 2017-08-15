@@ -2479,6 +2479,8 @@ function(aSignalName, aTriggerSignal) {
                     sigData,
                     originElem,
                     aTriggerSignal,
+                    null,   //  payload
+                    null,   //  policy
                     TP.sig.ResponderSignal);
     }
 
