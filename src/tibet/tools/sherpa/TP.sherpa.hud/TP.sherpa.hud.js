@@ -40,7 +40,26 @@ TP.sherpa.hud.Inst.defineAttribute('currentBackgroundClassNames');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.hud.Inst.defineMethod('isVisible',
-function() {
+function(partial, direction, wantsTransformed) {
+
+    /**
+     * @method isVisible
+     * @summary Returns whether or not the receiver is *really* visible to the
+           user, no matter what its CSS setting is.
+     * @description In addition to the standard CSS properties of 'display' and
+           'visibility', this call also takes into account scrolling and any
+           CSS transformation that has been applied to the element.
+     * @param {Boolean} [partial=false] Whether or not the element can be
+     *     partially visible or has to be completely visible. The default is
+     *     false (i.e. it should be completely visible).
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
+     * @param {Boolean} [wantsTransformed=false] An optional parameter that
+     *     determines whether to use 'transformed' values if the element has
+     *     been transformed with a CSS transformation. The default is false.
+     * @returns {Boolean} Whether or not anElement is visible.
+     */
 
     return !TP.bc(this.getAttribute('hidden'));
 });
@@ -52,7 +71,7 @@ function() {
 
     /**
      * @method hideAllHUDDrawers
-     * @summary
+     * @summary Hides all of the HUD drawers.
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -64,15 +83,20 @@ function() {
         backgroundElem;
 
     win = this.getNativeWindow();
-    hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
 
+    //  Grab all of the drawers by querying for elements with the '.framing'
+    //  CSS class.
+    hudDrawers = TP.byCSSPath('.framing', win);
+
+    //  Set them all to be hidden.
     hudDrawers.perform(
         function(aHUDDrawer) {
             aHUDDrawer.setAttribute('hidden', true);
         });
 
+    //  Set the '#center' element to be fullscreen by adding the '.fullscreen'
+    //  CSS class.
     centerElem = TP.byId('center', win, false);
-
     TP.elementAddClass(centerElem, 'fullscreen');
 
     //  Capture the current classes for the 'visible' state for the background
@@ -84,6 +108,8 @@ function() {
     this.set('currentBackgroundClassNames',
                 TP.elementGetAttribute(backgroundElem, 'class', true));
 
+    //  Set the background element's 'class' attribute to be whatever was the
+    //  initial set of background class names.
     TP.elementSetAttribute(
         backgroundElem,
         'class',
@@ -134,7 +160,9 @@ function(beClosed) {
 
     /**
      * @method setAttrClosed
-     * @summary
+     * @summary Sets the 'closed' attribute of the receiver. This method causes
+     *     the HUD to show or hide itself.
+     * @param {Boolean} beClosed Whether or not the console should be closed.
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -155,29 +183,42 @@ function(beClosed) {
 
     drawerElement = TP.byId('south', this.getNativeWindow(), false);
 
+    //  Grab the current UI canvas document.
     doc = TP.sys.uidoc(true);
 
     if (TP.isTrue(beClosed)) {
 
         TP.elementGetStyleObj(drawerElement).height = '';
 
+        //  Hide all of the HUD drawers.
         this.hideAllHUDDrawers();
 
+        //  Grab the styles that the HUD injects into the UI canvas and disable
+        //  that style element.
         hudStyleElement = TP.byId('hud_injected', doc, false);
         if (TP.isElement(hudStyleElement)) {
             hudStyleElement.disabled = true;
         }
+
+        //  Remove the CSS class from the UI canvas's document element that
+        //  qualifies elements in the injected style element
         TP.elementRemoveClass(doc.documentElement, 'sherpa-hud');
 
         this.getNativeWindow().focus();
     } else {
 
+        //  Grab the styles that the HUD injects into the UI canvas and enable
+        //  that style element.
         hudStyleElement = TP.byId('hud_injected', doc, false);
         if (TP.isElement(hudStyleElement)) {
             hudStyleElement.disabled = false;
         }
+
+        //  Add the CSS class to the UI canvas's document element that qualifies
+        //  elements in the injected style element
         TP.elementAddClass(doc.documentElement, 'sherpa-hud');
 
+        //  Show all of the HUD drawers.
         this.showAllHUDDrawers();
     }
 
@@ -191,7 +232,7 @@ function() {
 
     /**
      * @method showAllHUDDrawers
-     * @summary
+     * @summary Shows all of the HUD drawers.
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -205,15 +246,20 @@ function() {
         currentBackgroundClassNames;
 
     win = this.getNativeWindow();
-    hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
 
+    //  Grab all of the drawers by querying for elements with the '.framing'
+    //  CSS class.
+    hudDrawers = TP.byCSSPath('.framing', win);
+
+    //  Set them all to be shown.
     hudDrawers.perform(
         function(aHUDDrawer) {
             aHUDDrawer.setAttribute('hidden', false);
         });
 
+    //  Set the '#center' element to not be fullscreen by removing the
+    //  '.fullscreen' CSS class.
     centerElem = TP.byId('center', win, false);
-
     TP.elementRemoveClass(centerElem, 'fullscreen');
 
     //  Restore the current classes for the 'visible' state for the background
@@ -230,6 +276,8 @@ function() {
         this.set('currentBackgroundClassNames',
                     this.get('initialBackgroundClassNames'));
     } else {
+        //  Set the background element's 'class' attribute to be whatever is the
+        //  current set of background class names.
         TP.elementSetAttribute(
             backgroundElem,
             'class',
@@ -247,7 +295,7 @@ function() {
 
     /**
      * @method setup
-     * @summary
+     * @summary Perform the initial setup for the receiver.
      * @returns {TP.sherpa.hud} The receiver.
      */
 

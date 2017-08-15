@@ -23,6 +23,14 @@ TP.sherpa.TemplatedTag.defineSubtype('drawer');
 TP.sherpa.drawer.Inst.defineHandler('Toggle',
 function(aSignal) {
 
+    /**
+     * @method handleToggle
+     * @summary Handles notifications of drawer toggle signals.
+     * @param {TP.sig.Toggle} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.drawer} The receiver.
+     */
+
     var origin,
         sigOriginTPElem,
 
@@ -36,6 +44,8 @@ function(aSignal) {
         sigOriginTPElem = TP.wrap(origin);
     }
 
+    //  If the origin is closed, then we use that as our value as to whether we
+    //  should be open or closed.
     isClosed = TP.bc(sigOriginTPElem.getAttribute('closed'));
 
     if (isClosed) {
@@ -54,8 +64,10 @@ function(beClosed) {
 
     /**
      * @method setAttrClosed
-     * @summary
-     * @returns {TP.sherpa.hud} The receiver.
+     * @summary Sets the 'closed' attribute of the receiver. This method causes
+     *     the drawer to show or hide itself.
+     * @param {Boolean} beClosed Whether or not the console should be closed.
+     * @returns {TP.sherpa.drawer} The receiver.
      */
 
     var wasClosed,
