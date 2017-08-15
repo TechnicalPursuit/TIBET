@@ -33,7 +33,7 @@
         ]]>
     </tibet:data>
 
-    <tibet:data name="urn:tibet:current_tab_selection">
+    <tibet:data name="urn:tibet:current_console_tab">
         <![CDATA[
             {
             "selection": "TSH"
@@ -102,8 +102,8 @@
 
         <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
             <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--sherpa-drawer-south-open-height"/>
-            <xctrls:tabbar id="SherpaConsoleTabbar" bind:io="{data: urn:tibet:sherpa_tabs, value: urn:tibet:current_tab_selection#tibet(selection)}" tibet:ctrl="SherpaConsole"/>
-            <xctrls:panelbox id="SherpaConsolePanelbox" bind:in="urn:tibet:current_tab_selection#tibet(selection)">
+            <xctrls:tabbar id="SherpaConsoleTabbar" bind:io="{data: urn:tibet:sherpa_tabs, value: urn:tibet:current_console_tab#tibet(selection)}" tibet:ctrl="SherpaConsole"/>
+            <xctrls:panelbox id="SherpaConsolePanelbox" bind:in="urn:tibet:current_console_tab#tibet(selection)">
                 <xctrls:panel>
                     <xctrls:value>TSH</xctrls:value>
                     <xctrls:content/>

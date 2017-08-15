@@ -324,7 +324,7 @@ function() {
 
     //  Observe the current tab selection for the tabbar in the source drawer
     //  for when its value changes.
-    tabSelectionURI = TP.uc('urn:tibet:current_tab_selection#tibet(selection)');
+    tabSelectionURI = TP.uc('urn:tibet:current_console_tab#tibet(selection)');
     this.observe(tabSelectionURI, 'ValueChange');
 
     return this;
