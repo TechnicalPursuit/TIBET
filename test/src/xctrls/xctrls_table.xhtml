@@ -166,33 +166,33 @@
     <br/>
     <br/>
 
-	<br/>
-	table #8:
-	<br/>
-	A standard XControls table with single selection enabled showing dynamic content and value bound to a selection model:
+    <br/>
+    table #8:
+    <br/>
+    A standard XControls table with single selection enabled showing dynamic content and value bound to a selection model:
     <xctrls:table id="table8" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	table #9:
-	<br/>
-	A standard XControls table with multiple selection enabled showing dynamic content and value bound to a selection model:
+    <br/>
+    table #9:
+    <br/>
+    A standard XControls table with multiple selection enabled showing dynamic content and value bound to a selection model:
     <xctrls:table id="table9" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}" multiple="true"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<div class="controlBox">
-		<button onclick="TP.byId('table1').signal('UIDisabled');">Disable table #1</button>
-		<button onclick="TP.byId('table1').signal('UIEnabled');">Enable table #1</button>
+    <div class="controlBox">
+        <button onclick="TP.byId('table1').signal('UIDisabled');">Disable table #1</button>
+        <button onclick="TP.byId('table1').signal('UIEnabled');">Enable table #1</button>
 
-		<br/>
+        <br/>
 
         <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
         <button onclick="setTimeout(function() {TP.byId('table1').signal('UIFocused');}, 100)">Focus table #1</button>
-	</div>
+    </div>
 
 </body>
 </html>

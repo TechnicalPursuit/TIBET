@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="../../../lib/src/tibet_hook.min.js"></script>
 
@@ -14,59 +14,59 @@
 </head>
 
 <body data-theme="tpi">
-	<table>
-		<thead class="states">
-			<tr>
-				<th colspan="2">States</th>
-			</tr>
-		</thead>
-		<tbody class="states">
-			<tr>
-				<td>normal</td>
-				<td>
-					<xctrls:button>
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:button>
-				</td>
-			</tr>
-			<tr>
-				<td>:active</td>
-				<td>
-					<xctrls:button pclass:active="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:button>
-				</td>
-			</tr>
-			<tr>
-				<td>:disabled</td>
-				<td>
-					<xctrls:button pclass:disabled="true" disabled="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br/>
-	Button #1:
-	<br/>
-	A standard XControls button showing a label.
-	<xctrls:button id="button1">
-		<xctrls:label>Button #1</xctrls:label>
-	</xctrls:button>
+    <table>
+        <thead class="states">
+            <tr>
+                <th colspan="2">States</th>
+            </tr>
+        </thead>
+        <tbody class="states">
+            <tr>
+                <td>normal</td>
+                <td>
+                    <xctrls:button>
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:button>
+                </td>
+            </tr>
+            <tr>
+                <td>:active</td>
+                <td>
+                    <xctrls:button pclass:active="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:button>
+                </td>
+            </tr>
+            <tr>
+                <td>:disabled</td>
+                <td>
+                    <xctrls:button pclass:disabled="true" disabled="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    Button #1:
+    <br/>
+    A standard XControls button showing a label.
+    <xctrls:button id="button1">
+        <xctrls:label>Button #1</xctrls:label>
+    </xctrls:button>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<div class="controlBox">
-		<button onclick="TP.byId('button1').signal('UIDisabled');">Disable button #1</button>
-		<button onclick="TP.byId('button1').signal('UIEnabled');">Enable button #1</button>
+    <div class="controlBox">
+        <button onclick="TP.byId('button1').signal('UIDisabled');">Disable button #1</button>
+        <button onclick="TP.byId('button1').signal('UIEnabled');">Enable button #1</button>
 
-		<br/>
+        <br/>
 
         <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
         <button onclick="setTimeout(function() {TP.byId('button1').signal('UIFocused');}, 100)">Focus button #1</button>
-	</div>
+    </div>
 
 </body>
 </html>

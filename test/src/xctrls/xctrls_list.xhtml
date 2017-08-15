@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="../../../lib/src/tibet_hook.min.js"></script>
 
@@ -101,104 +101,104 @@
 </head>
 
 <body data-theme="tpi">
-	<table>
-		<thead class="states">
-			<tr>
-				<th>Name</th>
-				<th>Unselected</th>
-				<th>Selected</th>
-			</tr>
-		</thead>
-		<tbody class="states" bind:scope="urn:tibet:one_dim_array">
-			<tr>
-				<td>normal</td>
-				<td>
+    <table>
+        <thead class="states">
+            <tr>
+                <th>Name</th>
+                <th>Unselected</th>
+                <th>Selected</th>
+            </tr>
+        </thead>
+        <tbody class="states" bind:scope="urn:tibet:one_dim_array">
+            <tr>
+                <td>normal</td>
+                <td>
                     <xctrls:list bind:in="{data: #tibet(names)}"/>
-				</td>
-				<td>
+                </td>
+                <td>
                     <xctrls:list bind:in="{data: #tibet(names), value: 'Jones'}"/>
-				</td>
-			</tr>
-			<tr>
-				<td>:active</td>
-				<td>
+                </td>
+            </tr>
+            <tr>
+                <td>:active</td>
+                <td>
                     <xctrls:list pclass:active="true" bind:in="{data: #tibet(names)}"/>
-				</td>
-				<td>
+                </td>
+                <td>
                     <xctrls:list pclass:active="true" pclass:selected="true" bind:in="{data: #tibet(names), value: 'Jones'}"/>
-				</td>
-			</tr>
-			<tr>
-				<td>:disabled</td>
-				<td>
+                </td>
+            </tr>
+            <tr>
+                <td>:disabled</td>
+                <td>
                     <xctrls:list pclass:disabled="true" disabled="true" bind:in="{data: #tibet(names)}"/>
-				</td>
-				<td>
+                </td>
+                <td>
                     <xctrls:list pclass:disabled="true" disabled="true" pclass:selected="true" bind:in="{data: #tibet(names), value: 'Jones'}"/>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
 
-	<br/>
-	list #1:
-	<br/>
-	A standard XControls list showing dynamic content of a single dimensional Array:
+    <br/>
+    list #1:
+    <br/>
+    A standard XControls list showing dynamic content of a single dimensional Array:
     <xctrls:list id="list1" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #2:
-	<br/>
-	A standard XControls list showing dynamic content of a two dimensional Array:
+    <br/>
+    list #2:
+    <br/>
+    A standard XControls list showing dynamic content of a two dimensional Array:
     <xctrls:list id="list2" bind:in="{data: urn:tibet:two_dim_array#tibet(names)}"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #3:
-	<br/>
-	A standard XControls list showing dynamic content of an Object hash:
+    <br/>
+    list #3:
+    <br/>
+    A standard XControls list showing dynamic content of an Object hash:
     <xctrls:list id="list3" bind:in="{data: urn:tibet:object_hash#tibet(names)}"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #4:
-	<br/>
-	A standard XControls list with single selection enabled showing dynamic content:
+    <br/>
+    list #4:
+    <br/>
+    A standard XControls list with single selection enabled showing dynamic content:
     <xctrls:list id="list4" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #5:
-	<br/>
-	A standard XControls list with multiple selection enabled showing dynamic content:
+    <br/>
+    list #5:
+    <br/>
+    A standard XControls list with multiple selection enabled showing dynamic content:
     <xctrls:list id="list5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" multiple="true"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #6:
-	<br/>
-	A standard XControls list with single selection enabled showing dynamic content using a non-default item tag type:
+    <br/>
+    list #6:
+    <br/>
+    A standard XControls list with single selection enabled showing dynamic content using a non-default item tag type:
     <xctrls:list id="list6" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" itemTag="xctrls:checkitem"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #7:
-	<br/>
-	A standard XControls list with single selection enabled showing dynamic content with a template:
+    <br/>
+    list #7:
+    <br/>
+    A standard XControls list with single selection enabled showing dynamic content with a template:
     <xctrls:list id="list7" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}" multiple="true">
         <xctrls:textitem>
             <xctrls:label fooattr="it was [[value.1]]">Key: [[value.0 .% upperCase]] Value: [[value.1]]</xctrls:label>
@@ -206,36 +206,36 @@
         </xctrls:textitem>
     </xctrls:list>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #8:
-	<br/>
-	A standard XControls list with single selection enabled showing dynamic content and value bound to a selection model:
+    <br/>
+    list #8:
+    <br/>
+    A standard XControls list with single selection enabled showing dynamic content and value bound to a selection model:
     <xctrls:list id="list8" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<br/>
-	list #9:
-	<br/>
-	A standard XControls list with multiple selection enabled showing dynamic content and value bound to a selection model:
+    <br/>
+    list #9:
+    <br/>
+    A standard XControls list with multiple selection enabled showing dynamic content and value bound to a selection model:
     <xctrls:list id="list9" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}" multiple="true"/>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<div class="controlBox">
-		<button onclick="TP.byId('list1').signal('UIDisabled');">Disable list #1</button>
-		<button onclick="TP.byId('list1').signal('UIEnabled');">Enable list #1</button>
+    <div class="controlBox">
+        <button onclick="TP.byId('list1').signal('UIDisabled');">Disable list #1</button>
+        <button onclick="TP.byId('list1').signal('UIEnabled');">Enable list #1</button>
 
-		<br/>
+        <br/>
 
         <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
         <button onclick="setTimeout(function() {TP.byId('list1').signal('UIFocused');}, 100)">Focus list #1</button>
-	</div>
+    </div>
 
 </body>
 </html>

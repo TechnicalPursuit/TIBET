@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="../../../lib/src/tibet_hook.min.js"></script>
 
@@ -20,74 +20,74 @@
 </head>
 
 <body data-theme="tpi">
-	<table>
-		<thead class="states">
-			<tr>
-				<th>Name</th>
-				<th>Unselected</th>
-				<th>Selected</th>
-			</tr>
-		</thead>
-		<tbody class="states">
-			<tr>
-				<td>normal</td>
-				<td>
-					<xctrls:buttonitem>
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:buttonitem>
-				</td>
-				<td>
-					<xctrls:buttonitem pclass:selected="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:buttonitem>
-				</td>
-			</tr>
-			<tr>
-				<td>:active</td>
-				<td>
-					<xctrls:buttonitem pclass:active="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:buttonitem>
-				</td>
-				<td>
-					<xctrls:buttonitem pclass:active="true" pclass:selected="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:buttonitem>
-				</td>
-			</tr>
-			<tr>
-				<td>:disabled</td>
-				<td>
-					<xctrls:buttonitem pclass:disabled="true" disabled="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:buttonitem>
-				</td>
-				<td>
-					<xctrls:buttonitem pclass:disabled="true" disabled="true" pclass:selected="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:buttonitem>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br/>
-	buttonitem #1:
-	<br/>
-	A standard XControls buttonitem showing a label.
-	<xctrls:buttonitem id="buttonitem1">
-		<xctrls:label>buttonitem #1</xctrls:label>
-		<xctrls:value>foo</xctrls:value>
-	</xctrls:buttonitem>
+    <table>
+        <thead class="states">
+            <tr>
+                <th>Name</th>
+                <th>Unselected</th>
+                <th>Selected</th>
+            </tr>
+        </thead>
+        <tbody class="states">
+            <tr>
+                <td>normal</td>
+                <td>
+                    <xctrls:buttonitem>
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:buttonitem>
+                </td>
+                <td>
+                    <xctrls:buttonitem pclass:selected="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:buttonitem>
+                </td>
+            </tr>
+            <tr>
+                <td>:active</td>
+                <td>
+                    <xctrls:buttonitem pclass:active="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:buttonitem>
+                </td>
+                <td>
+                    <xctrls:buttonitem pclass:active="true" pclass:selected="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:buttonitem>
+                </td>
+            </tr>
+            <tr>
+                <td>:disabled</td>
+                <td>
+                    <xctrls:buttonitem pclass:disabled="true" disabled="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:buttonitem>
+                </td>
+                <td>
+                    <xctrls:buttonitem pclass:disabled="true" disabled="true" pclass:selected="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:buttonitem>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    buttonitem #1:
+    <br/>
+    A standard XControls buttonitem showing a label.
+    <xctrls:buttonitem id="buttonitem1">
+        <xctrls:label>buttonitem #1</xctrls:label>
+        <xctrls:value>foo</xctrls:value>
+    </xctrls:buttonitem>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     <br/>
     <br/>
 
     A set of buttonitems to check value setting. This item group does not allow multiple selections.
-	<br/>
-	<br/>
+    <br/>
+    <br/>
     <xctrls:itemgroup id="testGroup1">
         <xctrls:buttonitem id="databuttonitem1">
             <xctrls:label>data buttonitem #1</xctrls:label>
@@ -103,12 +103,12 @@
         </xctrls:buttonitem>
     </xctrls:itemgroup>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     A set of buttonitems to check value setting. This item group allows multiple selections.
-	<br/>
-	<br/>
+    <br/>
+    <br/>
     <xctrls:itemgroup id="testGroup2" multiple="true">
         <xctrls:buttonitem id="databuttonitem4">
             <xctrls:label>data buttonitem #4</xctrls:label>
@@ -131,8 +131,8 @@
     <br/>
 
     A set of buttonitems to check data binding. This item group does not allow multiple selections.
-	<br/>
-	<br/>
+    <br/>
+    <br/>
     <xctrls:itemgroup id="testGroup3" bind:io="{value: urn:tibet:test_data#tibet(selection_set_1)}">
         <xctrls:buttonitem id="databuttonitem7">
             <xctrls:label>data buttonitem #7</xctrls:label>
@@ -148,12 +148,12 @@
         </xctrls:buttonitem>
     </xctrls:itemgroup>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     A set of buttonitems to check data binding. This item group allows multiple selections.
-	<br/>
-	<br/>
+    <br/>
+    <br/>
     <xctrls:itemgroup id="testGroup4" multiple="true" bind:io="{value: urn:tibet:test_data#tibet(selection_set_2)}">
         <xctrls:buttonitem id="databuttonitem10">
             <xctrls:label>data buttonitem #10</xctrls:label>
@@ -169,21 +169,21 @@
         </xctrls:buttonitem>
     </xctrls:itemgroup>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     <br/>
     <br/>
 
-	<div class="controlBox">
-		<button onclick="TP.byId('buttonitem1').signal('UIDisabled');">Disable buttonitem #1</button>
-		<button onclick="TP.byId('buttonitem1').signal('UIEnabled');">Enable buttonitem #1</button>
+    <div class="controlBox">
+        <button onclick="TP.byId('buttonitem1').signal('UIDisabled');">Disable buttonitem #1</button>
+        <button onclick="TP.byId('buttonitem1').signal('UIEnabled');">Enable buttonitem #1</button>
 
-		<br/>
+        <br/>
 
         <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
         <button onclick="setTimeout(function() {TP.byId('buttonitem1').signal('UIFocused');}, 100)">Focus buttonitem #1</button>
-	</div>
+    </div>
 
 </body>
 </html>
