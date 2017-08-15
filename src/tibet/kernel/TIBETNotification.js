@@ -5926,7 +5926,8 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     //  NOTE that we only do this if the target is a responder element...
     //  otherwise we don't really have a valid 'at target' step.
-    if (TP.isValid(target) && TP.nodeGetResponderElement(target) === target) {
+    if (TP.isValid(target) &&
+        TP.nodeGetResponderElement(target, sig) === target) {
 
         //  tibet:ctrl and tibet:tag found on the element.
         shouldContinue = TP.sig.SignalMap.$notifyResponders(target, sig);
