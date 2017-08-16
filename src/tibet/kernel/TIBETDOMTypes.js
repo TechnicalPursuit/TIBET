@@ -907,7 +907,9 @@ function(aNode, aSignal) {
     if (TP.isValid(aSignal)) {
         desc = {
             signal: aSignal,
-            dontTraverseSpoofs: true,   //  We're not interested in spoofs
+            //  TODO: determine why we thought this was a good idea. It's
+            //  commented out because it means many on: scenarios will fail.
+            // dontTraverseSpoofs: true,   //  We're not interested in spoofs
             phase: '*'                  //  We want handler methods of any phase
                                         //  since all we're doing is returning a
                                         //  Boolean.
