@@ -478,6 +478,11 @@ TP.hc(
                 //  Not currently supported to generate these by most browsers.
                 break;
 
+            //  Animation Events
+            case 'animationend':
+                //  Not currently supported to generate these by most browsers.
+                break;
+
             default:
                 evt = doc.createEvent('Events');
                 evt.initEvent(

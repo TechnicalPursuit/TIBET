@@ -2229,6 +2229,11 @@ TP.sig.DOMAbort.Type.defineConstant('NATIVE_NAME', 'abort');
 
 //  ---
 
+TP.sig.DOMUISignal.defineSubtype('DOMAnimationEnd');
+TP.sig.DOMAnimationEnd.Type.defineConstant('NATIVE_NAME', 'animationend');
+
+//  ---
+
 TP.sig.DOMUISignal.defineSubtype('DOMBlur');
 TP.sig.DOMBlur.Type.defineConstant('NATIVE_NAME', 'blur');
 

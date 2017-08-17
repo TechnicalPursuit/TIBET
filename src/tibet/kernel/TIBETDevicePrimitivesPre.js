@@ -147,6 +147,7 @@ TP.DOM_MUTATION_EVENT_PROPERTIES = TP.DOM_EVENT_PROPERTIES.concat(
 if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
     TP.DOM_SIGNAL_TYPE_MAP = TP.hc(
         'abort', 'TP.sig.DOMAbort',
+        'animationend', 'TP.sig.DOMAnimationEnd',
         'blur', 'TP.sig.DOMBlur',
         'change', 'TP.sig.DOMChange',
         'click', 'TP.sig.DOMClick',

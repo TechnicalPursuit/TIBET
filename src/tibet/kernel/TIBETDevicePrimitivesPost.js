@@ -87,6 +87,7 @@ function(anEvent) {
 
         //  UI Events
         case 'abort':
+        case 'animationend':
         case 'error':
         case 'load':
         case 'resize':
@@ -1259,6 +1260,20 @@ function(anEvent) {
     /**
      * @method $$handleFocus
      * @summary Document-level focus handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleAnimationEnd',
+function(anEvent) {
+
+    /**
+     * @method $$handleAnimationEnd
+     * @summary Document-level animationend handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
