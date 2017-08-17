@@ -1033,7 +1033,7 @@ function() {
 
             if (computedRowCount > realDataSize) {
 
-                newSpacingRowCount = computedRowCount - realDataSize;
+                newSpacingRowCount = (computedRowCount - realDataSize) + 1;
 
                 for (i = realDataSize;
                         i < realDataSize + newSpacingRowCount;
