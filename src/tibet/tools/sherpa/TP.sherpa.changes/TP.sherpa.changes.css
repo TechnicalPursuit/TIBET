@@ -126,6 +126,30 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
     line-height: 1.5em;
 }
 
+sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem button {
+
+    position: absolute;
+    display: none;
+
+    right: 5px;
+
+    height: 1.5em;
+
+    font-size: 69%;
+
+    margin: 0;
+    margin-top: 2px;
+
+    padding-top: 0;
+
+    vertical-align: middle;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem:hover button {
+
+    display: inline-block;
+}
+
 sherpa|changes > .header > .trigger.button {
 
     position: absolute;

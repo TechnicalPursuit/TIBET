@@ -29,7 +29,12 @@
                     <span class="title">Changed server URIs</span>
                     <span id="processRemoteChanges"><input type="checkbox"/>Process remote changes immediately</span>
                     <br/>
-                    <xctrls:list bind:in="{data: urn:tibet:changedServerURIs}"/>
+                    <xctrls:list bind:in="{data: urn:tibet:changedServerURIs}">
+                        <xctrls:textitem>
+                            <xctrls:label>[[value.1]]<button>Process Now</button></xctrls:label>
+                            <xctrls:value>[[value.0]]</xctrls:value>
+                        </xctrls:textitem>
+                    </xctrls:list>
                 </xctrls:content>
             </xctrls:panel>
             <xctrls:panel>
@@ -37,7 +42,13 @@
                 <xctrls:content>
                     <span class="title">Changed client URIs</span>
                     <br/>
-                    <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}"/>
+                    <!--<xctrls:list bind:in="{data: urn:tibet:changedClientURIs}"/>-->
+                    <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}">
+                        <xctrls:textitem>
+                            <xctrls:label>[[value.1]]<button>Push Now</button></xctrls:label>
+                            <xctrls:value>[[value.0]]</xctrls:value>
+                        </xctrls:textitem>
+                    </xctrls:list>
                 </xctrls:content>
             </xctrls:panel>
         </xctrls:panelbox>
