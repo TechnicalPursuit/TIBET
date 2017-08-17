@@ -6945,7 +6945,8 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
         //  It's empty, which means ANY
         signal = TP.ANY;
     } else if (TP.isArray(aSignal)) {
-        //  It's an Array - check to make sure each one is a real type.
+        //  It's an Array - check to make sure each one is a real type. If we
+        //  can't resolve to a type name then it must be a spoofed signal.
         signal = aSignal.collect(
                         function(sig) {
                             var sigTypeName;
@@ -6955,6 +6956,8 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
+
+                            return sig;
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
@@ -7197,7 +7200,8 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
         //  It's empty, which means ANY
         signal = TP.ANY;
     } else if (TP.isArray(aSignal)) {
-        //  It's an Array - check to make sure each one is a real type.
+        //  It's an Array - check to make sure each one is a real type. If we
+        //  can't resolve to a type name then it must be a spoofed signal.
         signal = aSignal.collect(
                         function(sig) {
                             var sigTypeName;
@@ -7207,6 +7211,8 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
+
+                            return sig;
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
@@ -7360,7 +7366,8 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
         //  It's empty, which means ANY
         signal = TP.ANY;
     } else if (TP.isArray(aSignal)) {
-        //  It's an Array - check to make sure each one is a real type.
+        //  It's an Array - check to make sure each one is a real type. If we
+        //  can't resolve to a type name then it must be a spoofed signal.
         signal = aSignal.collect(
                         function(sig) {
                             var sigTypeName;
@@ -7370,6 +7377,8 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
+
+                            return sig;
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
@@ -7512,7 +7521,8 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
         //  It's empty, which means ANY
         signal = TP.ANY;
     } else if (TP.isArray(aSignal)) {
-        //  It's an Array - check to make sure each one is a real type.
+        //  It's an Array - check to make sure each one is a real type. If we
+        //  can't resolve to a type name then it must be a spoofed signal.
         signal = aSignal.collect(
                         function(sig) {
                             var sigTypeName;
@@ -7522,6 +7532,8 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
+
+                            return sig;
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
