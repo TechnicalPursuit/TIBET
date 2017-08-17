@@ -134,7 +134,7 @@ function() {
     //  If we have a 'maximum height' in our computed style then return the
     //  maximum height.
     maxHeight = this.getComputedStyleProperty('max-height', true);
-    if (TP.isNumber(maxHeight)) {
+    if (TP.isNumber(maxHeight) && maxHeight > 0) {
         return maxHeight;
     }
 
@@ -142,7 +142,8 @@ function() {
     //  height is less than (shouldn't be, according to CSS) or equal to that,
     //  then return the minium height.
     minHeight = this.getComputedStyleProperty('min-height', true);
-    if (TP.isNumber(minHeight) && currentHeight <= minHeight) {
+    if (TP.isNumber(minHeight) && minHeight > 0 &&
+        currentHeight <= minHeight) {
         return minHeight;
     }
 
