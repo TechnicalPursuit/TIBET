@@ -3131,17 +3131,36 @@ function(aProperty, aFlag) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('isDirty',
-function(aFlag) {
+function(aFlag, shouldSignal) {
 
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
      *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} [aFlag] The new value to optionally set.
+     * @param {Boolean} [shouldSignal=false] Should changes to the value be
+     *     signaled?
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
-    return this.$flag('dirty', aFlag);
+    var wasDirty;
+
+    if (TP.isValid(aFlag) && shouldSignal) {
+        wasDirty = this.$flag('dirty');
+        this.$flag('dirty', aFlag);
+
+        if (wasDirty !== aFlag) {
+            TP.$changed.call(
+                        this,
+                        'dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, aFlag));
+        }
+
+        return this.$flag('dirty');
+    } else {
+        return this.$flag('dirty', aFlag);
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -7720,13 +7739,15 @@ function(aRequest, filterResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.JSURI.Inst.defineMethod('isDirty',
-function(aFlag) {
+function(aFlag, shouldSignal) {
 
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
      *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
+     * @param {Boolean} [shouldSignal=false] Should changes to the value be
+     *     signaled?
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
@@ -9373,20 +9394,22 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('isDirty',
-function(aFlag) {
+function(aFlag, shouldSignal) {
 
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
      *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
+     * @param {Boolean} [shouldSignal=false] Should changes to the value be
+     *     signaled?
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
     //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getConcreteURI().isDirty(aFlag);
+        return this.getConcreteURI().isDirty(aFlag, shouldSignal);
     }
 
     return this.callNextMethod();
