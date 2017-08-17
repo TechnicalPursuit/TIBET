@@ -974,7 +974,7 @@ function(aURI, aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  Remote Resource Change Queuing
+//  Remote Resource Change Handling
 //  ------------------------------------------------------------------------
 
 /**
@@ -1005,9 +1005,12 @@ function(aURI) {
 
     var shouldProcess,
         watched,
+
+        loc,
+
         resourceHash,
         locHash,
-        loc,
+
         count;
 
     //  Track system-wide process flag.
@@ -1040,7 +1043,7 @@ function(aURI) {
     count = locHash.at('count');
     locHash.atPut('count', count + 1);
 
-    resourceHash.changed();
+    aURI.signal('RemoteResourceDirty');
 
     return TP.extern.Promise.resolve();
 });
