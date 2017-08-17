@@ -1456,7 +1456,7 @@ function(anElement) {
     TP.elementSetAttribute(anElement, 'pseudoinline', elemID);
 
     //  Compute the selector text
-    selectorText = '*[id="' + elemID + '"][pseudoinline="' + elemID + '"]';
+    selectorText = '#' + elemID + '[pseudoinline="' + elemID + '"]';
 
     //  If we didn't create a new sheet, then maybe we just lost the rule
     //  somewhere in the existing sheet...
