@@ -125,7 +125,9 @@ function(targetURI, aRequest) {
             }.bind(this)).then(
             function(successfulPatch) {
 
-                targetURI.isDirty(false);
+                //  Note passing the second 'true' here to signal change of the
+                //  'dirty' flag.
+                targetURI.isDirty(false, true);
 
                 request.set('result', successfulPatch);
                 request.complete();

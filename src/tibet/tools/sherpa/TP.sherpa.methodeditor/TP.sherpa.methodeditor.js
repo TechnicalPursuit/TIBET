@@ -76,7 +76,9 @@ function() {
     this.set('localSourceContent', newSourceText);
 
     //  Mark our source URI as dirty, since we just set new content into it.
-    this.get('sourceURI').isDirty(true);
+    //  Note passing the second 'true' here to signal change of the 'dirty'
+    //  flag.
+    this.get('sourceURI').isDirty(true, true);
 
     //  Now that we've marked things dirty that need to be, mark ourself as
     //  *not* dirty. This will cause other controls watching us to update.
@@ -269,7 +271,9 @@ function() {
 
                     //  Mark our source URI as *not* dirty, since we just pushed
                     //  it's new content to the server.
-                    sourceURI.isDirty(false);
+                    //  Note passing the second 'true' here to signal change of
+                    //  the 'dirty' flag.
+                    sourceURI.isDirty(false, true);
 
                     //  We need to signal that we are not dirty - we're not
                     //  really dirty anyway, since the applyResource() above set

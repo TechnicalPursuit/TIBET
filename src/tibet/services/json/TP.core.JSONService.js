@@ -183,7 +183,10 @@ function(aRequest) {
 
                     url.$setPrimaryResource(undefined, request);
                     url.isLoaded(false);
-                    url.isDirty(true);
+
+                    //  Note passing the second 'true' here to signal change of
+                    //  the 'dirty' flag.
+                    url.isDirty(true, true);
 
                     request.fail(resultData);
                 } else {
@@ -215,7 +218,10 @@ function(aRequest) {
                     url.$setPrimaryResource(dat, request);
                     */
                     url.isLoaded(true);
-                    url.isDirty(false);
+
+                    //  Note passing the second 'true' here to signal change of
+                    //  the 'dirty' flag.
+                    url.isDirty(false, true);
 
                     request.complete(dat);
                 }
