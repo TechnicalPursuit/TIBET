@@ -92,11 +92,19 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content .title {
 
     position: absolute;
 
-    width: 100%;
+    margin-top: 6px;
+    margin-left: 4px;
 
-    margin-top: 4px;
+    height: 1.5em;
+}
 
-    text-align: center;
+sherpa|changes #SherpaChangesPanelbox xctrls|content #processRemoteChanges {
+
+    position: absolute;
+
+    right: 4px;
+
+    height: 1.5em;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {

@@ -8,6 +8,13 @@
             }
         ]]>
     </tibet:data>
+    <tibet:data name="urn:tibet:process_remote_changes">
+        <![CDATA[
+            {
+            "selection": "true"
+            }
+        ]]>
+    </tibet:data>
     <div class="header">
         <div class="trigger button" on:click="Toggle"/>
         <sherpa:count name="server" on:click="ShowServerChanges" pclass:selected="true">0</sherpa:count>
@@ -20,6 +27,7 @@
                 <xctrls:value>server</xctrls:value>
                 <xctrls:content>
                     <span class="title">Changed server URIs</span>
+                    <span id="processRemoteChanges"><input type="checkbox"/>Process remote changes immediately</span>
                     <br/>
                     <xctrls:list bind:in="{data: urn:tibet:changedServerURIs}"/>
                 </xctrls:content>
