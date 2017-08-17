@@ -928,6 +928,7 @@ function() {
 
     selectionData = this.get('$convertedData');
 
+    //  First, make sure the converted data is valid. If not, then convert it.
     if (TP.notValid(selectionData)) {
 
         wholeData = this.get('data');
@@ -1006,7 +1007,7 @@ function() {
         this.set('$numSpacingRows', 0);
     }
 
-    if (TP.notEmpty(selectionData)) {
+    if (TP.isValid(selectionData)) {
 
         containerHeight = this.computeHeight();
         rowHeight = this.getRowHeight();
