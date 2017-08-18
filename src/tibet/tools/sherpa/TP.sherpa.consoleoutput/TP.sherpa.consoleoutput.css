@@ -509,6 +509,8 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     margin: 0;
 
     line-height: 2em;
+
+    user-select: text;
 }
 
 .flex-item > .content dl > dd:nth-of-type(even) {
