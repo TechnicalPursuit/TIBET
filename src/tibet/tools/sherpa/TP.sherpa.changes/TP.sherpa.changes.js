@@ -64,7 +64,10 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var dataURI;
+    var dataURI,
+
+        shouldProcessURI,
+        shouldProcessValue;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -78,6 +81,11 @@ function(aRequest) {
     //  'empty full row' list.
     dataURI = TP.uc('urn:tibet:changedClientURIs');
     dataURI.setResource(TP.ac());
+
+    shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
+
+    shouldProcessValue = TP.sys.cfg('uri.process_remote_changes');
+    shouldProcessURI.setContent('{"selected":' + shouldProcessValue + '}');
 
     return;
 });
@@ -239,6 +247,32 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.changes.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles when the user changes the value of the underlying model.
+     * @param {ValueChange} aSignal The signal that caused this handler to trip.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    var shouldProcessSelectedURI,
+        isSelectedVal;
+
+    shouldProcessSelectedURI = TP.uc(
+        'urn:tibet:process_remote_changes#tibet(selected)');
+    isSelectedVal = shouldProcessSelectedURI.getResource().get('result');
+
+    this.get('lists').first().setAttrDisabled(isSelectedVal);
+
+    TP.sys.setcfg('uri.process_remote_changes', isSelectedVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.changes.Inst.defineMethod('setSelectedPanel',
 function(panelName) {
 
@@ -289,7 +323,12 @@ function() {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
+    var shouldProcessURI;
+
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
+
+    shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
+    this.observe(shouldProcessURI, 'ValueChange');
 
     return this;
 });

@@ -8,13 +8,6 @@
             }
         ]]>
     </tibet:data>
-    <tibet:data name="urn:tibet:process_remote_changes">
-        <![CDATA[
-            {
-            "selection": "true"
-            }
-        ]]>
-    </tibet:data>
     <div class="header">
         <div class="trigger button" on:click="Toggle"/>
         <sherpa:count name="server" on:click="ShowServerChanges" pclass:selected="true">0</sherpa:count>
@@ -27,7 +20,7 @@
                 <xctrls:value>server</xctrls:value>
                 <xctrls:content>
                     <span class="title">Changed server URIs</span>
-                    <span id="processRemoteChanges"><input type="checkbox"/>Process remote changes immediately</span>
+                    <span id="processRemoteChanges"><input type="checkbox" bind:io="{checked: urn:tibet:process_remote_changes#tibet(selected)}"/><label>Process remote changes immediately</label></span>
                     <br/>
                     <xctrls:list bind:in="{data: urn:tibet:changedServerURIs}">
                         <xctrls:textitem>
@@ -42,7 +35,6 @@
                 <xctrls:content>
                     <span class="title">Changed client URIs</span>
                     <br/>
-                    <!--<xctrls:list bind:in="{data: urn:tibet:changedClientURIs}"/>-->
                     <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}">
                         <xctrls:textitem>
                             <xctrls:label>[[value.1]]<button>Push Now</button></xctrls:label>
