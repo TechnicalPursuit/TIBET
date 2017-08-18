@@ -4156,15 +4156,13 @@ function(shouldRender) {
             //  compute a model reference.
             dataExprs = bindVal.at('dataExprs');
             for (i = 0; i < dataExprs.getSize(); i++) {
-                dataExpr = dataExprs.at(i);
+                dataExpr = TP.trim(dataExprs.at(i));
 
                 //  If the data expression is a 'whole URI' (without a
                 //  fragment), then it's not scoped no matter whether we have
                 //  scoping values or not.
                 if (TP.isURIString(dataExpr) &&
                     !TP.regex.URI_FRAGMENT.test(dataExpr)) {
-
-                    dataExpr = TP.trim(dataExpr);
 
                     //  Grab the primary URI from a URI computed from the value
                     //  expression and append a '#tibet(.)' on it (which will
@@ -4197,7 +4195,8 @@ function(shouldRender) {
                     //  If we weren't able to compute a real URI from the
                     //  fully expanded URI value, then raise an exception
                     //  and return here.
-                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                    if (!TP.isURIString(dataExpr) &&
+                            !TP.regex.URI_FRAGMENT.test(dataExpr)) {
                         this.raise('TP.sig.InvalidURI');
                         break;
                     }
