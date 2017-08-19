@@ -1031,6 +1031,8 @@ function(aURI) {
     }
 
     //  All marked but unprocessed locations get tracked for later processing.
+    //  These entries will be removed in the refreshFromRemoteResource method
+    //  when all processing is complete.
     loc = aURI.getLocation();
     resourceHash = TP.core.URI.get('remoteChangeList');
     locHash = resourceHash.at(loc);
@@ -1068,18 +1070,18 @@ function() {
 
     //  NOTE we iterate in this fashion so we don't remove a referenced URI
     //  unless we're sure processing it doesn't throw an error.
-    keys.perform(function(key) {
-        var hash;
+    keys.perform(
+        function(key) {
+            var hash;
 
-        hash = resourceHash.at(key);
-        try {
-            hash.at('targetURI').refreshFromRemoteResource();
-            resourceHash.removeKey(key);
-        } catch (e) {
-            TP.error('Error processing URI refresh for ' +
-                hash.at('targetURI'), e);
-        }
-    });
+            hash = resourceHash.at(key);
+            try {
+                hash.at('targetURI').refreshFromRemoteResource();
+            } catch (e) {
+                TP.error('Error processing URI refresh for ' +
+                            hash.at('targetURI'), e);
+            }
+        });
 
     return this;
 });
@@ -6643,7 +6645,8 @@ function() {
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function(result) {
 
-        var url;
+        var url,
+            resourceHash;
 
         if (TP.isError(result)) {
             TP.error(result);
@@ -6677,6 +6680,13 @@ function() {
 
         //  Trigger post-processing for specific URIs.
         url.processRefreshedContent();
+
+        //  Grab the resource hash of changed remotes and remote the url that we
+        //  just processed from the list.
+        resourceHash = TP.core.URI.get('remoteChangeList');
+        resourceHash.removeKey(url.getLocation());
+
+        url.signal('RemoteResourceChanged', TP.hc('isDirty', false));
     };
 
     //  If the receiver refers to a file that was loaded (meaning it's mentioned
