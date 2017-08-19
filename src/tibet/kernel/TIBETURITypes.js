@@ -1043,7 +1043,7 @@ function(aURI) {
     count = locHash.at('count');
     locHash.atPut('count', count + 1);
 
-    aURI.signal('RemoteResourceDirty');
+    aURI.signal('RemoteResourceChanged', TP.hc('isDirty', true));
 
     return TP.extern.Promise.resolve();
 });

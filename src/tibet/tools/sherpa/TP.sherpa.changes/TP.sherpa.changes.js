@@ -133,9 +133,9 @@ function(aSignal) {
     hudIsHidden = TP.bc(hud.getAttribute('closed'));
 
     if (!hudIsHidden) {
-        this.observe(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceDirty'));
+        this.observe(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceChanged'));
     } else {
-        this.ignore(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceDirty'));
+        this.ignore(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceChanged'));
     }
 
     return this;
@@ -165,13 +165,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.changes.Inst.defineHandler('RemoteResourceDirty',
+TP.sherpa.changes.Inst.defineHandler('RemoteResourceChanged',
 function(aSignal) {
 
     /**
      * @method handleResourceDirty
      * @summary Handles when any URI's server-side 'dirty' state changes.
-     * @param {TP.sig.RemoteResourceDirty} aSignal The TIBET signal which
+     * @param {TP.sig.RemoteResourceChanged} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.changes} The receiver.
      */

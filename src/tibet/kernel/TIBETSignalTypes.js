@@ -1168,7 +1168,7 @@ TP.sig.Signal.defineSubtype('NodeDidRecast');
 //  SYSTEM SIGNALS
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('RemoteResourceDirty');
+TP.sig.Signal.defineSubtype('RemoteResourceChanged');
 
 TP.sig.Signal.defineSubtype('ScriptImported');
 
