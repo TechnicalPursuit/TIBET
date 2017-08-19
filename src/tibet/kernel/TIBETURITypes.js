@@ -5207,7 +5207,8 @@ function(aResource, aRequest, shouldSignal) {
             break;
         case 'set':
             this.$set('resource', newResource, false);
-            this.isLoaded(true);    //  arguable semantics but important for preloaded URIs
+            this.isLoaded(true);    //  arguable semantics but important for
+                                    //  preloaded URIs
             if (loaded) {
                 this.isDirty(dirty);
             } else {
