@@ -24,7 +24,7 @@
                     <br/>
                     <xctrls:list bind:in="{data: urn:tibet:changedServerURIs}">
                         <xctrls:textitem>
-                            <xctrls:label>[[value.1]]<button>Process Now</button></xctrls:label>
+                            <xctrls:label>[[value.1]]<button on:click="ProcessRemoteResource">Process Now</button></xctrls:label>
                             <xctrls:value>[[value.0]]</xctrls:value>
                         </xctrls:textitem>
                     </xctrls:list>

@@ -165,6 +165,39 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.changes.Inst.defineHandler('ProcessRemoteResource',
+function(aSignal) {
+
+    /**
+     * @method handleProcessRemoteResource
+     * @summary Handles when the user wants the system to process a particular
+     *     remote resource.
+     * @param {TP.sig.ProcessRemoteResource} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    var labelText;
+
+    //  Grab the label text by getting the button's previous sibling, which will
+    //  be the bound expression 'span'. It will contain the URL location to
+    //  process.
+    labelText = TP.wrap(
+        aSignal.getResolvedDOMTarget().previousSibling).getTextContent();
+
+    //  Fire a ConsoleCommand that will pull that remote resource in and process
+    //  it.
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText', ':pull ' + labelText
+                ));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.changes.Inst.defineHandler('RemoteResourceChanged',
 function(aSignal) {
 

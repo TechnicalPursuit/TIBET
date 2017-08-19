@@ -178,6 +178,9 @@
     <script src="tsh/TP.tsh.method/TP.tsh.method_assistant.js"/>
 
     <script src="tsh/TP.tsh.open.js"/>
+
+    <script src="tsh/TP.tsh.pull.js"/>
+
     <script src="tsh/TP.tsh.reflect.js"/>
     <script src="tsh/TP.tsh.screen.js"/>
     <script src="tsh/TP.tsh.snippet.js"/>
