@@ -102,6 +102,9 @@ function(aSignal) {
     var domTarget,
         wrappedDOMTarget,
 
+        altItemTag,
+        itemType,
+
         valueTPElem,
 
         newValue,
@@ -123,12 +126,32 @@ function(aSignal) {
             return;
         }
 
+        //  See if we have an alternate item tag name that resolves to a TIBET
+        //  type.
+        altItemTag = this.getAttribute('itemTag');
+        if (TP.notEmpty(altItemTag)) {
+            itemType = TP.sys.getTypeByName(altItemTag);
+        }
+
+        //  If one couldn't be computed, then we just use our standard
+        //  TP.xctrls.item
+        if (!TP.isType(itemType)) {
+            itemType = TP.xctrls.item;
+        }
+
+        //  If the deactivate didn't happen in a target that was one of our item
+        //  types, then return. This typically happens if we're using a template
+        //  and there are events happening in embedded controls.
+        if (!TP.isKindOf(wrappedDOMTarget, itemType)) {
+            return;
+        }
+
         //  If the DOM target has either a 'spacer' or 'grouping' attribute,
         //  then we're not interested in adding or removing it from the
         //  selection - exit here.
         if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
             TP.elementHasAttribute(domTarget, 'grouping', true)) {
-            return this;
+            return;
         }
 
         //  Grab the value element of the list item.
