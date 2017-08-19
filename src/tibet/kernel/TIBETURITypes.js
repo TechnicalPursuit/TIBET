@@ -1232,6 +1232,10 @@ TP.core.URI.Inst.defineAttribute('computedMIMEType');
 //  the controller instance for this instance
 TP.core.URI.Inst.defineAttribute('controller');
 
+//  a hash of the options used when manipulating this instance (i.e loading,
+//  saving, etc.)
+TP.core.URI.Inst.defineAttribute('operationOptions');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1285,6 +1289,39 @@ function(aURIString, aResource) {
 
         return this.raise('TP.sig.InvalidURI', 'Invalid URL: ' + aURIString);
     }
+
+    this.set('operationOptions', TP.hc());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('addOperationOptions',
+function(operationName, optionsHash) {
+
+    /**
+     * @method addOperationOptions
+     * @summary Adds options that will be used in the request when performing
+     *     a particular operation (i.e. 'load', 'save', etc) on the receiver.
+     * @param {String} operationName The name of the operation to use these
+     *     options for.
+     * @param {TP.core.Hash} optionsHash A hash containing options to be added
+     *     to the operation's request.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var operationHashList;
+
+    //  Make sure the Array of Hashes exists for that operation. If not, create
+    //  it.
+    operationHashList = this.get('operationOptions').at(operationName);
+    if (TP.notValid(operationHashList)) {
+        operationHashList = TP.ac();
+        this.get('operationOptions').atPut(operationName, operationHashList);
+    }
+
+    operationHashList.push(optionsHash);
 
     return this;
 });
