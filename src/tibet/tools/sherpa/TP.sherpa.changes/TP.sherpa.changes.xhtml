@@ -37,7 +37,7 @@
                     <br/>
                     <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}">
                         <xctrls:textitem>
-                            <xctrls:label>[[value.1]]<button>Push Now</button></xctrls:label>
+                            <xctrls:label>[[value.1]]<button on:click="PushLocalResource">Push Now</button></xctrls:label>
                             <xctrls:value>[[value.0]]</xctrls:value>
                         </xctrls:textitem>
                     </xctrls:list>

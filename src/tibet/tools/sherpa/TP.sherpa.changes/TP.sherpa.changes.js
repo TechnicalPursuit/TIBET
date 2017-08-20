@@ -198,6 +198,38 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.changes.Inst.defineHandler('PushLocalResource',
+function(aSignal) {
+
+    /**
+     * @method handlePushLocalResource
+     * @summary Handles when the user wants the system to push a particular
+     *     local resource to its remote server.
+     * @param {TP.sig.PushLocalResource} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    var labelText;
+
+    //  Grab the label text by getting the button's previous sibling, which will
+    //  be the bound expression 'span'. It will contain the URL location to
+    //  push.
+    labelText = TP.wrap(
+        aSignal.getResolvedDOMTarget().previousSibling).getTextContent();
+
+    //  Fire a ConsoleCommand that will push the local resource to the server.
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText', ':push ' + labelText
+                ));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.changes.Inst.defineHandler('RemoteResourceChanged',
 function(aSignal) {
 
