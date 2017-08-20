@@ -918,7 +918,9 @@ function() {
 
             if (computedRowCount > realDataSize) {
 
+                /* eslint-disable no-extra-parens */
                 newSpacingRowCount = (computedRowCount - realDataSize) + 1;
+                /* eslint-enable no-extra-parens */
 
                 for (i = realDataSize;
                         i < realDataSize + newSpacingRowCount;
