@@ -115,6 +115,33 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getEntryAt',
+function(aSourceName) {
+
+    /**
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {String} aSourceName The name of the entry to retrieve.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
+     */
+
+    var source;
+
+    if (aSourceName === 'Type') {
+        source = this.getType();
+    } else {
+        /* eslint-disable consistent-this */
+        source = this;
+        /* eslint-enable consistent-this */
+    }
+
+    return source;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
@@ -133,17 +160,7 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    var source;
-
-    if (anAspect === 'Type') {
-        source = this.getType();
-    } else {
-        /* eslint-disable consistent-this */
-        source = this;
-        /* eslint-enable consistent-this */
-    }
-
-    return source;
+    return this.getEntryAt(anAspect);
 });
 
 //  ========================================================================
