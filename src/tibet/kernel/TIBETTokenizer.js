@@ -104,6 +104,7 @@ TP.boot.defineAttribute('$futureReservedString',
 //  also take ES6 bits into account.
 TP.boot.defineAttribute('$operators',
     TP.ac(
+        '#',
         ';',
         ',',
         '=',
@@ -533,7 +534,7 @@ function(src, ops, tsh, exp, alias, args) {
 
                 /* eslint-disable no-extra-parens */
                 (tsh && (c === '~' ||
-                         c === '#' ||
+                        (c === '#' && !/\d/.test(src.charAt(i + 1))) ||
                         (c === '.' && src.charAt(i + 1) === '/') ||
                         (c === '.' && src.charAt(i + 1) === '.' &&
                             src.charAt(i + 2) === '/')
