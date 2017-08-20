@@ -100,33 +100,33 @@ sherpa|bookmarkMenuContent > .footer {
     margin-bottom: 2px;
 }
 
-sherpa|bookmarkMenuContent > sherpa|scrollbutton {
+sherpa|bookmarkMenuContent > .footer > sherpa|scrollbutton {
 
 }
 
-sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="up"] {
+sherpa|bookmarkMenuContent > .footer > sherpa|scrollbutton[orientation="up"] {
 
     right: 28px;
 }
 
-sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="up"] .icon::after {
+sherpa|bookmarkMenuContent > .footer > sherpa|scrollbutton[orientation="up"] .icon::after {
 
     /* This is the same as '&#8593' */
     content: "\2191";
 }
 
-sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="down"] {
+sherpa|bookmarkMenuContent > .footer > sherpa|scrollbutton[orientation="down"] {
 
     right: 8px;
 }
 
-sherpa|bookmarkMenuContent > sherpa|scrollbutton[orientation="down"] .icon::after {
+sherpa|bookmarkMenuContent > .footer > sherpa|scrollbutton[orientation="down"] .icon::after {
 
     /* This is the same as '&#8595' */
     content: "\2193";
 }
 
-sherpa|bookmarkMenuContent[class~="overflowing"] sherpa|scrollbutton {
+sherpa|bookmarkMenuContent[class~="overflowing"] .footer > sherpa|scrollbutton {
 
     display: block;
 }
