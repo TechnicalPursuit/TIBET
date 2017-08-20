@@ -1414,7 +1414,7 @@ function(source, shell, sibling, request) {
 
                                 if (next && (/^\d+/.test(next.value) ||
                                         next.value === '/')) {
-                                    command.push('<tsh:snippet');
+                                    command.push('<tsh:history');
 
                                     //  snippet is of the form #n or #/foo/
                                     //  collect all tokens until whitespace
