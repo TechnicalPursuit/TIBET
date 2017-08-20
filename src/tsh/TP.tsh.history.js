@@ -95,6 +95,10 @@ function(aRequest) {
                                     '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\'!' + id + '\'); return false;">' +
                                     '!' + id +
                                     '</a>' +
+                                    '&#160;&#160;' +
+                                    '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\'#' + id + '\'); return false;">' +
+                                    '#' + id +
+                                    '</a>' +
                                 '</dt>' +
                                 '<dd>' +
                 //  We don't use a CDATA section here because we can't copy and
