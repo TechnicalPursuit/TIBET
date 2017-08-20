@@ -1636,13 +1636,18 @@ function(anInfo) {
 
         //  Compute the target
 
-        //  First, try the dynamic entries
+        //  First, try the static entries
+        target = this.getEntryAt(pathParts.first());
 
-        //  See if we've already got the target as a current dynamic root.
-        target = dynamicContentEntries.detect(
-                        function(anItem) {
-                            return TP.id(anItem) === pathParts.first();
-                        });
+        //  If a target couldn't be found, try the dynamic entries
+        if (TP.notValid(target)) {
+
+            //  See if we've already got the target as a current dynamic root.
+            target = dynamicContentEntries.detect(
+                            function(anItem) {
+                                return TP.id(anItem) === pathParts.first();
+                            });
+        }
 
         //  If not, see if we can find the target somewhere in the system.
         //  Because the 'path' that gets bookmarked when a dynamic root is
@@ -1694,8 +1699,6 @@ function(anInfo) {
             inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
         } else {
-
-            //  Second, try the static root entries
 
             //  Get the root resolver
             rootEntryResolver = this.getEntryAt(pathParts.first());
