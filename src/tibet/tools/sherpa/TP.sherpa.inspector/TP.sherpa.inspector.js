@@ -3794,6 +3794,51 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getEntryAt',
+function(aSourceName) {
+
+    /**
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {String} aSourceName The name of the entry to retrieve.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
+     */
+
+    var target,
+        dynamicContentEntries;
+
+    //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
+    //  object.
+    if (aSourceName === TP.NOT_FOUND) {
+        return null;
+    }
+
+    dynamicContentEntries = this.get('dynamicContentEntries');
+    target = dynamicContentEntries.detect(
+                    function(anItem) {
+                        return TP.id(anItem) === aSourceName;
+                    });
+
+    if (TP.notValid(target)) {
+        target = this.get('entries').at(aSourceName);
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.bySystemId(aSourceName);
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.bySystemId('TSH').resolveObjectReference(
+                                                aSourceName, TP.request());
+    }
+
+    return target;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
@@ -3812,35 +3857,7 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    var target,
-        dynamicContentEntries;
-
-    //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
-    //  object.
-    if (options.at('targetAspect') === TP.NOT_FOUND) {
-        return null;
-    }
-
-    dynamicContentEntries = this.get('dynamicContentEntries');
-    target = dynamicContentEntries.detect(
-                    function(anItem) {
-                        return TP.id(anItem) === anAspect;
-                    });
-
-    if (TP.notValid(target)) {
-        target = this.getEntryAt(anAspect);
-    }
-
-    if (TP.notValid(target)) {
-        target = TP.bySystemId(anAspect);
-    }
-
-    if (TP.notValid(target)) {
-        target = TP.bySystemId('TSH').resolveObjectReference(
-                                                anAspect, TP.request());
-    }
-
-    return target;
+    return this.getEntryAt(anAspect);
 });
 
 //  ========================================================================
