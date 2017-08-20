@@ -4276,9 +4276,9 @@ function(shouldRender) {
 
     var retVal;
 
-    retVal = this.$refresh();
+    retVal = this.$refresh(shouldRender);
 
-    this.refreshBoundDescendants();
+    this.refreshBoundDescendants(shouldRender);
 
     return retVal;
 });
