@@ -1085,7 +1085,8 @@ function() {
 
             TP.uc('urn:tibet:tsh_snippets').setResource(
                                             snippetEntries,
-                                            TP.hc('observeResource', true));
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
             //  ---
             //  Bookmarks
             //  ---
@@ -1098,7 +1099,8 @@ function() {
 
             TP.uc('urn:tibet:sherpa_bookmarks').setResource(
                                             bookmarkEntries,
-                                            TP.hc('observeResource', true));
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
             //  ---
             //  Screens
             //  ---
@@ -1120,7 +1122,8 @@ function() {
             snippetEntries = this.getType().STARTER_SNIPPETS.copy();
             TP.uc('urn:tibet:tsh_snippets').setResource(
                                             snippetEntries,
-                                            TP.hc('observeResource', true));
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
 
             //  ---
             //  Bookmarks
@@ -1129,7 +1132,8 @@ function() {
             bookmarkEntries = TP.ac();
             TP.uc('urn:tibet:sherpa_bookmarks').setResource(
                                             bookmarkEntries,
-                                            TP.hc('observeResource', true));
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
         }
     }
 
