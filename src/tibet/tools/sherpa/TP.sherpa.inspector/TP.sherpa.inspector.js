@@ -2326,9 +2326,9 @@ function(aSignal) {
                 });
 
     haloTarget.defineMethod(
-                'getPathPartsForInspector',
-                function() {
-                    return TP.ac(this.getID());
+                'getEntryLabel',
+                function(anItem) {
+                    return anItem;
                 });
 
     //  Make sure that we don't already have the target in our list of dynamic
