@@ -6521,8 +6521,7 @@ function(aRequest) {
 
     /**
      * @method delete
-     * @summary Destroys the target URL at the storage location. We'd have
-     *     called this delete but that's a JS keyword.
+     * @summary Destroys the target URL at the storage location.
      * @description This method is a "mapped" action, meaning the URI undergoes
      *     rewriting and routing as part of the delete process. This may, as you
      *     might expect, alter the physical location being targeted for
