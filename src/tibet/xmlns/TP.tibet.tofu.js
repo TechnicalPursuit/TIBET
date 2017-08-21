@@ -122,13 +122,17 @@ function(aSignal) {
 
     //  Fire a 'ConsoleCommand' with a ':tag --assist' command, supplying the
     //  name and the DNA for a templated tag.
+
+    //  NB: 'tsh:roottype' is a TSH-only parameter used just for communicating
+    //  where to 'root' the supertype list.
     TP.signal(null,
                 'ConsoleCommand',
                 TP.hc(
                     'cmdText',
                         ':type --assist' +
                                 ' --name=\'' + newTagName + '\'' +
-                                ' --dna=\'templatedtag\''
+                                ' --dna=\'templatedtag\'' +
+                                ' --roottype=\'TP.core.ElementNode\''
                 ));
 
     return this;

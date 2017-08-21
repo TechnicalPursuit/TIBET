@@ -112,6 +112,9 @@ function(anObj) {
         modelObj,
 
         typesURI,
+
+        rootType,
+
         typesObj;
 
     this.callNextMethod();
@@ -164,9 +167,26 @@ function(anObj) {
 
     typesURI = TP.uc('urn:tibet:typelist');
 
-    //  Grab all of the type names here as key/value pairs containing the type
-    //  name in both slots.
-    typesObj = TP.sys.getCustomTypeNameKVPairs();
+    //  NB: 'tsh:roottype' is a TSH-only parameter used just for communicating
+    //  where to 'root' the supertype list.
+    if (TP.notEmpty(args.at('tsh:roottype'))) {
+        rootType = TP.sys.getTypeByName(args.at('tsh:roottype'));
+        if (TP.isType(rootType)) {
+            typesObj = TP.hc();
+            rootType.getSubtypeNames(true).sort().perform(
+                function(aTypeName) {
+                    typesObj.atPut(aTypeName, aTypeName);
+                });
+        } else {
+        }
+    }
+
+    //  Couldn't obtain a types hash above.
+    if (TP.notValid(typesObj)) {
+        //  Grab all of the type names here as key/value pairs containing the
+        //  type name in both slots.
+        typesObj = TP.sys.getCustomTypeNameKVPairs();
+    }
 
     //  Set the types value holder to the Array we computed here. We also tell
     //  it to go ahead and signal change to kick things off.
