@@ -2386,8 +2386,8 @@ function(aSignal) {
         delete haloTarget.getSherpaInspectorLabel;
     }
 
-    if (TP.owns(haloTarget, 'getPathPartsForInspector')) {
-        delete haloTarget.getPathPartsForInspector;
+    if (TP.owns(haloTarget, 'getEntryLabel')) {
+        delete haloTarget.getEntryLabel;
     }
 
     haloTargetID = TP.id(haloTarget);
