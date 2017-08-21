@@ -3319,6 +3319,347 @@ function() {
 });
 
 //  ========================================================================
+//  LocalDBURL
+//  ========================================================================
+
+TP.core.LocalDBURL.Inst.describe('getResource',
+function() {
+
+    var storage;
+
+    //  Make sure there's an entry for 'localdb://' URL testing
+    storage = TP.core.LocalStorage.construct();
+
+    this.before(
+        function() {
+            var storageStr;
+
+            storageStr = TP.js2json(
+                {
+                    local_test: {
+                        author_info: {
+                            _id: 'author_info',
+                            _date_created: TP.dc(),
+                            _date_modified: TP.dc(),
+                            _body: {
+                                firstName: 'Bill',
+                                lastName: 'Edney'
+                            }
+                        }
+                    }
+                });
+
+            storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
+        });
+
+    //  ---
+
+    this.it('LocalDBURL: Retrieve resource', function(test, options) {
+
+        var url,
+            obj;
+
+        //  A GET request here using the ID causes a RETRIEVE
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  Implied method here is TP.HTTP_GET. Also, by default, localdb://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+        obj = url.getResource().get('result').at('_body');
+
+        test.assert.isTrue(
+            obj.hasKey('firstName'),
+            TP.sc('Expected that result would have a key of \'firstName\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+                obj.at('firstName'),
+                'Bill',
+                TP.sc('Expected: ', '"Bill"',
+                        ' and got instead: ', obj.at('firstName'), '.'));
+
+        test.assert.isTrue(
+            obj.hasKey('lastName'),
+            TP.sc('Expected that result would have a key of \'lastName\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+                obj.at('lastName'),
+                'Edney',
+                TP.sc('Expected: ', '"Edney"',
+                        ' and got instead: ', obj.at('lastName'), '.'));
+
+        url.unregister();
+    });
+
+    //  ---
+
+    this.it('LocalDBURL: Retrieve resource info', function(test, options) {
+
+        var url,
+            obj;
+
+        //  A HEAD request here causes a RETRIEVE of '_date_created' and
+        //  '_date_modified'.
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh' automatically.
+        obj = url.getResource(TP.hc('method', TP.HTTP_HEAD)).get('result');
+
+        test.assert.isTrue(
+            obj.hasKey('_date_created'),
+            TP.sc('Expected that result would have a key of \'_date_created\'',
+                    ' and it doesn\'t'));
+
+        test.assert.isTrue(
+            obj.hasKey('_date_modified'),
+            TP.sc('Expected that result would have a key of \'_date_modified\'',
+                    ' and it doesn\'t'));
+
+        url.unregister();
+    });
+
+    //  ---
+
+    this.it('LocalDBURL: Retrieve listing of all documents in db', function(test, options) {
+
+        var url,
+            obj;
+
+        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE of
+        //  all documents in the DB
+
+        url = TP.uc('localdb://local_test/_all_docs');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  Implied method here is TP.HTTP_GET. Also, by default, localdb://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+        obj = url.getResource().get('result');
+
+        test.assert.isTrue(
+            obj.hasKey('total_rows'),
+            TP.sc('Expected that result would have a key of \'total_rows\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+            obj.at('total_rows'),
+            1,
+            TP.sc('Expected: ', '1',
+                    ' and got instead: ', obj.at('total_rows'), '.'));
+
+        test.assert.isTrue(
+            obj.hasKey('rows'),
+            TP.sc('Expected that result would have a key of \'rows\' and',
+                    ' it doesn\'t'));
+
+        url.unregister();
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
+        });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.LocalDBURL.Inst.describe('setResource',
+function() {
+
+    this.it('LocalDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var url,
+
+            saveResult,
+
+            obj;
+
+        //  A PUT request here using the ID causes an UPDATE
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh' automatically.
+
+        url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
+        saveResult = url.save(TP.hc('method', TP.HTTP_PUT)).get('result');
+
+        test.assert.isValid(
+            saveResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        obj = url.getResource().get('result').at('_body');
+
+        test.assert.isTrue(
+            obj.hasKey('firstName'),
+            TP.sc('Expected that result would have a key of \'firstName\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+                obj.at('firstName'),
+                'November',
+                TP.sc('Expected: ', '"November"',
+                        ' and got instead: ', obj.at('firstName'), '.'));
+
+        test.assert.isTrue(
+            obj.hasKey('lastName'),
+            TP.sc('Expected that result would have a key of \'lastName\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+                obj.at('lastName'),
+                'Jones',
+                TP.sc('Expected: ', '"Jones"',
+                        ' and got instead: ', obj.at('lastName'), '.'));
+
+        url.unregister();
+    });
+
+    this.it('LocalDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var url,
+            saveResult,
+            obj;
+
+        //  A POST request here without the ID causes a CREATE and an
+        //  auto-generated ID
+
+        url = TP.uc('localdb://local_test/');
+
+        //  Implied method here is TP.HTTP_POST. Also, by default, localdb://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+
+        url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
+        saveResult = url.save().get('result');
+
+        test.assert.isValid(
+            saveResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Compute a URL using the '_id' that was generated
+        url = TP.uc('localdb://local_test/' + saveResult.at('_id'));
+
+        obj = url.getResource().get('result').at('_body');
+
+        test.assert.isTrue(
+            obj.hasKey('firstName'),
+            TP.sc('Expected that result would have a key of \'firstName\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+                obj.at('firstName'),
+                'John',
+                TP.sc('Expected: ', '"John"',
+                        ' and got instead: ', obj.at('firstName'), '.'));
+
+        test.assert.isTrue(
+            obj.hasKey('lastName'),
+            TP.sc('Expected that result would have a key of \'lastName\' and',
+                    ' it doesn\'t'));
+
+        test.assert.isEqualTo(
+                obj.at('lastName'),
+                'Smith',
+                TP.sc('Expected: ', '"Smith"',
+                        ' and got instead: ', obj.at('lastName'), '.'));
+
+        url.unregister();
+    });
+
+    this.it('LocalDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+        var url,
+
+            deleteResult,
+
+            obj;
+
+        //  A DELETE request here with the ID causes a DELETE
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh'.
+
+        url.setResource(null);
+        deleteResult = url.delete(TP.hc('method', TP.HTTP_DELETE)).get('result');
+
+        test.assert.isValid(
+            deleteResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        obj = url.getResource().get('result');
+
+        test.refute.isValid(
+            obj,
+            TP.sc('Expected that result would not be valid'));
+
+        url.unregister();
+    });
+
+    this.it('LocalDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+        var url,
+
+            deleteResult,
+
+            obj;
+
+        //  A DELETE request here without the ID causes a DELETE (of the whole
+        //  DB)
+
+        url = TP.uc('localdb://local_test');
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh'.
+
+        url.setResource(null);
+        deleteResult = url.delete(TP.hc('method', TP.HTTP_DELETE)).get('result');
+
+        test.assert.isValid(
+            deleteResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        obj = url.getResource().get('result');
+
+        test.refute.isValid(
+            obj,
+            TP.sc('Expected that result would not be valid'));
+
+        url.unregister();
+    });
+});
+
+//  ========================================================================
 //  PouchDBURL
 //  ========================================================================
 

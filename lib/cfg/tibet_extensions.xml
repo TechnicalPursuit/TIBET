@@ -64,6 +64,14 @@
     <script src="./storage/TP.core.DeviceStorage.js"/>
     <script src="./storage/TP.core.LocalStorage.js"/>
     <script src="./storage/TP.core.SessionStorage.js"/>
+
+    <script src="./storage/localdb/TP.sig.LocalDBStorageRequest.js"/>
+    <script src="./storage/localdb/TP.sig.LocalDBStorageResponse.js"/>
+    <script src="./storage/localdb/TP.core.LocalDBStorageService.js"/>
+
+    <script src="./storage/localdb/TP.core.LocalDBURL.js"/>
+    <script src="./storage/localdb/TP.core.LocalDBURLHandler.js"/>
+
     <script src="./storage/TP.core.StorageURL.js"/>
 </config>
 

@@ -5670,6 +5670,352 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Type.describe('Shell LOCALDB URL',
+function() {
+
+    var shellDriver,
+        storage;
+
+    //  Make sure there's an entry for 'localdb://' URL testing
+    storage = TP.core.LocalStorage.construct();
+
+    this.before(function(suite, options) {
+        var storageStr;
+
+        shellDriver = TP.tsh.Driver.construct();
+        this.get('drivers').atPut('shell', shellDriver);
+
+        storageStr = TP.js2json(
+            {
+                local_test: {
+                    author_info: {
+                        _id: 'author_info',
+                        _date_created: TP.dc(),
+                        _date_modified: TP.dc(),
+                        _body: {
+                            firstName: 'Bill',
+                            lastName: 'Edney'
+                        }
+                    }
+                }
+            });
+
+        storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Retrieve resource', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'localdb://local_test/author_info';
+
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                var obj;
+
+                obj = testResult.at('_body');
+
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('firstName'),
+                        'Bill',
+                        TP.sc('Expected: ', '"Bill"',
+                                ' and got instead: ', obj.at('firstName'), '.'));
+
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('lastName'),
+                        'Edney',
+                        TP.sc('Expected: ', '"Edney"',
+                                ' and got instead: ', obj.at('lastName'), '.'));
+
+                TP.uc(locStr).unregister();
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Retrieve resource info', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'localdb://local_test/author_info';
+
+        inputVal = locStr + ' -refresh --method="head"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isTrue(
+                    testResult.hasKey('_date_created'),
+                    TP.sc('Expected that result would have a key of \'_date_created\'',
+                            ' and it doesn\'t'));
+
+                test.assert.isTrue(
+                    testResult.hasKey('_date_modified'),
+                    TP.sc('Expected that result would have a key of \'_date_modified\'',
+                            ' and it doesn\'t'));
+
+                TP.uc(locStr).unregister();
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Retrieve listing of all documents in db', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'localdb://local_test/_all_docs';
+
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isTrue(
+                    testResult.hasKey('total_rows'),
+                    TP.sc('Expected that result would have a key of \'total_rows\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                    testResult.at('total_rows'),
+                    1,
+                    TP.sc('Expected: ', '1',
+                            ' and got instead: ', testResult.at('total_rows'), '.'));
+
+                test.assert.isTrue(
+                    testResult.hasKey('rows'),
+                    TP.sc('Expected that result would have a key of \'rows\' and',
+                            ' it doesn\'t'));
+
+                TP.uc(locStr).unregister();
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        //  A PUT request here using the ID causes an UPDATE
+        locStr = 'localdb://local_test/author_info';
+
+        testBody = TP.hc('firstName', 'November', 'lastName', 'Jones');
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  method here since the default for localdb: URLs is POST.
+        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --method="put"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+
+        shellDriver.execShellTest(
+            test,
+            'localdb://local_test/author_info' + ' -refresh',
+            function(testResult) {
+
+                var obj;
+
+                obj = testResult.at('_body');
+
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('firstName'),
+                        'November',
+                        TP.sc('Expected: ', '"November"',
+                                ' and got instead: ', obj.at('firstName'), '.'));
+
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('lastName'),
+                        'Jones',
+                        TP.sc('Expected: ', '"Jones"',
+                                ' and got instead: ', obj.at('lastName'), '.'));
+
+                TP.uc(locStr).unregister();
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal,
+
+            saveID;
+
+        //  A POST request here without the ID causes a CREATE and an
+        //  auto-generated ID
+        locStr = 'localdb://local_test/';
+
+        testBody = TP.hc('firstName', 'John', 'lastName', 'Smith');
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'.
+        inputVal = testBody.asSource() + ' .>! ' + locStr;
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(saveResult) {
+                test.assert.isValid(
+                    saveResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+
+                saveID = saveResult.at('_id');
+            });
+
+        test.chain(
+            function() {
+                shellDriver.execShellTest(
+                    test,
+                    'localdb://local_test/' + saveID + ' -refresh',
+                    function(testResult) {
+
+                        var obj;
+
+                        obj = testResult.at('_body');
+
+                        test.assert.isTrue(
+                            obj.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of \'firstName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                obj.at('firstName'),
+                                'John',
+                                TP.sc('Expected: ', '"John"',
+                                        ' and got instead: ', obj.at('firstName'), '.'));
+
+                        test.assert.isTrue(
+                            obj.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of \'lastName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                obj.at('lastName'),
+                                'Smith',
+                                TP.sc('Expected: ', '"Smith"',
+                                        ' and got instead: ', obj.at('lastName'), '.'));
+
+                        TP.uc(locStr).unregister();
+                    });
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+        var locStr,
+
+            testBody,
+
+            inputVal;
+
+        //  A DELETE request here using the ID causes a DELETE
+        locStr = 'localdb://local_test/author_info';
+
+        testBody = 'DELETE test content';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+
+                TP.uc(locStr).unregister();
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+
+        var locStr,
+            testBody,
+            inputVal;
+
+        //  A DELETE request here without the ID causes a DELETE (of the whole
+        //  DB)
+        locStr = 'localdb://local_test';
+
+        testBody = 'DELETE test content';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+
+                TP.uc(locStr).unregister();
+            });
+    });
+
+    //  ---
+
+    this.after(function(suite, options) {
+
+        storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Type.describe('Shell POUCHDB URL',
 function() {
 
