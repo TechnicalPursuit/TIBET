@@ -638,8 +638,8 @@ TP.core.TSH.addHelpTopic('reflect',
     TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
     ':reflect [target] [--interface <interface>]' +
-    ' [-filter <filter> [--types] [--methods] [--owners] [--attributes]',
-    '');
+    ' [-filter <filter>] [--types] [--methods] [--owners] [--slots]',
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

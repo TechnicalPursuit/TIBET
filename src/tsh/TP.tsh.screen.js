@@ -65,6 +65,11 @@ function(aRequest) {
         return;
     }
 
+    //  No arguments means we dump usage.
+    if (!shell.hasArguments(aRequest)) {
+        return this.printUsage(aRequest);
+    }
+
     arg0 = shell.getArgument(aRequest, 'ARG0');
 
     //  :screen 3
@@ -103,8 +108,8 @@ function(aRequest) {
 TP.core.TSH.addHelpTopic('screen',
     TP.tsh.screen.Type.getMethod('tshExecute'),
     'Sets the canvas being viewed to a screen.',
-    ':screen',
-    '');
+    ':screen <screen_number>',
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -56,15 +56,17 @@ function(aRequest) {
 
     //  Fetch and normalize any includes so all consumers see consistent value.
     includes = TP.sys.cfg('tds.watch.include');
-    includes.convert(function(aLocation) {
-        return TP.uriInTIBETFormat(TP.uriExpandPath(aLocation));
-    });
+    includes.convert(
+        function(aLocation) {
+            return TP.uriInTIBETFormat(TP.uriExpandPath(aLocation));
+        });
 
     //  Fetch and normalize any excludes so all consumers see consistent value.
     excludes = TP.sys.cfg('tds.watch.exclude');
-    excludes.convert(function(aLocation) {
-        return TP.uriInTIBETFormat(TP.uriExpandPath(aLocation));
-    });
+    excludes.convert(
+        function(aLocation) {
+            return TP.uriInTIBETFormat(TP.uriExpandPath(aLocation));
+        });
 
     //  The actual 'toggle' happens here.
     if (TP.isTrue(currentlyWatching)) {
@@ -107,7 +109,7 @@ TP.core.TSH.addHelpTopic('toggleRemoteWatch',
     TP.tsh.toggleRemoteWatch.Type.getMethod('tshExecute'),
     'Toggles whether to watch remote resource changes. Requires TDS.',
     ':toggleRemoteWatch',
-    '');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

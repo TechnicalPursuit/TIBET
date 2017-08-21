@@ -66,7 +66,7 @@ TP.core.TSH.addHelpTopic('processChangedRemotes',
     TP.tsh.processChangedRemotes.Type.getMethod('tshExecute'),
     'Refreshes pending file system changes. Requires TDS.',
     ':processChangedRemotes',
-    '');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

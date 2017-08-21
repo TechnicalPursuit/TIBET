@@ -51,11 +51,6 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  No arguments means we dump usage.
-    if (!shell.hasArguments(aRequest)) {
-        return this.printUsage(aRequest);
-    }
-
     aRequest.stdout('Coming soon.');
 
     aRequest.complete(TP.TSH_NO_VALUE);
@@ -69,7 +64,7 @@ TP.core.TSH.addHelpTopic('interests',
     TP.tsh.interests.Type.getMethod('tshExecute'),
     'Displays the system signal interest map.',
     ':interests',
-    'Coming soon.');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

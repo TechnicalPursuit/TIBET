@@ -27,7 +27,6 @@ TP.lang.Object.defineSubtype('tsh.pp');
 //  Objects with as() but without an asTP_tsh_pp...
 //  ========================================================================
 
-
 TP.tsh.pp.Type.defineMethod('fromArray',
 function(anObject, optFormat) {
 

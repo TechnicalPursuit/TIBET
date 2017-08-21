@@ -193,7 +193,7 @@ TP.core.TSH.addHelpTopic('import',
     TP.tsh.import.Type.getMethod('tshExecute'),
     'Loads/executes a JavaScript/TIBET source file.',
     ':import',
-    '');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

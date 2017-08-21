@@ -82,5 +82,13 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.TSH.addHelpTopic('build',
+    TP.tsh.build.Type.getMethod('tshExecute'),
+    'Builds a release of a TIBET application.',
+    ':build',
+    'See CLI documentation');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

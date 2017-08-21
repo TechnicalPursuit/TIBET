@@ -975,8 +975,8 @@ function(aRequest) {
 TP.core.TSH.addHelpTopic('doclint',
     TP.tsh.doclint.Type.getMethod('tshExecute'),
     'Run a lint check on all method comments.',
-    ':doclint',
-    '');
+    ':doclint [<target>] [--filter <filter>] [--context <app|lib|all>]',
+    'See CLI documentation');
 
 //  ------------------------------------------------------------------------
 //  end

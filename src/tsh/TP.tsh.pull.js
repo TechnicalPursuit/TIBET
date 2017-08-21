@@ -65,6 +65,12 @@ function(aRequest) {
         //  from all remotely changed URIs.
         TP.core.URI.processRemoteChangeList();
     } else {
+
+        //  No arguments and no '--all' parameter means we dump usage.
+        if (!shell.hasArguments(aRequest)) {
+            return this.printUsage(aRequest);
+        }
+
         arg0 = shell.getArgument(aRequest, 'ARG0');
 
         url = TP.uc(arg0);
@@ -85,9 +91,10 @@ function(aRequest) {
 
 TP.core.TSH.addHelpTopic('pull',
     TP.tsh.pull.Type.getMethod('tshExecute'),
-    '',
-    ':pull',
-    '');
+    'Pulls pending remote file system changes into the running system.' +
+        ' Requires TDS.',
+    ':pull [<target>] [--all]',
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

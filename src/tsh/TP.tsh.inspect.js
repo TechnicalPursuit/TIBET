@@ -117,8 +117,8 @@ function(aRequest) {
 TP.core.TSH.addHelpTopic('inspect',
     TP.tsh.inspect.Type.getMethod('tshExecute'),
     'Generates an inspector for stdin data.',
-    ':inspect [target]',
-    '');
+    ':inspect <target>',
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

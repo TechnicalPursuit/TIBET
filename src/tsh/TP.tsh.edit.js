@@ -96,9 +96,9 @@ function(aRequest) {
 
 TP.core.TSH.addHelpTopic('edit',
     TP.tsh.edit.Type.getMethod('tshExecute'),
-    'Generates an editor for the value at stdin.',
-    ':edit [target]',
-    '');
+    'Opens an editor for the value at stdin.',
+    ':edit <target>',
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

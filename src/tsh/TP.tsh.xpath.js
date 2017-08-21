@@ -69,7 +69,7 @@ TP.core.TSH.addHelpTopic('xpath',
     TP.tsh.xpath.Type.getMethod('tshExecute'),
     'Executes an XPath expression against a node.',
     ':xpath',
-    'Coming soon.');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

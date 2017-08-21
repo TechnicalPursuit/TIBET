@@ -54,11 +54,6 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  No arguments means we dump usage.
-    if (!shell.hasArguments(aRequest)) {
-        return this.printUsage(aRequest);
-    }
-
     resourceHash = TP.core.URI.get('remoteChangeList');
 
     handler =
@@ -122,7 +117,7 @@ TP.core.TSH.addHelpTopic('toggleReportChangedRemotes',
     TP.tsh.toggleReportChangedRemotes.Type.getMethod('tshExecute'),
     'Toggles whether to report remote resource changes. Requires TDS.',
     ':toggleReportChangedRemotes',
-    '');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end

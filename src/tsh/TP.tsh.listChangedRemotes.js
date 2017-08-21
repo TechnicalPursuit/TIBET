@@ -70,7 +70,7 @@ TP.core.TSH.addHelpTopic('listChangedRemotes',
     TP.tsh.listChangedRemotes.Type.getMethod('tshExecute'),
     'Displays a list of pending remote resource changes. Requires TDS.',
     ':listChangedRemotes',
-    '');
+    'Coming Soon');
 
 //  ------------------------------------------------------------------------
 //  end
