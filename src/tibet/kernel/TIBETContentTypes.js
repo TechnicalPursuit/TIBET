@@ -1785,7 +1785,8 @@ function(data, uri) {
      *     given the parameters provided.
      * @param {String} data The content data in question.
      * @param {URI} uri The TIBET URI object which loaded the content.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     if (TP.regex.CONTAINS_CSS.test(data)) {
@@ -1856,7 +1857,8 @@ function(data, uri) {
      *     given the parameters provided.
      * @param {String} data The content data in question.
      * @param {URI} uri The TIBET URI object which loaded the content.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     return TP.isJSONString(data);
@@ -2528,7 +2530,8 @@ function(data, uri) {
      *     given the parameters provided.
      * @param {String} data The content data in question.
      * @param {URI} uri The TIBET URI object which loaded the content.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     return TP.isString(data);
@@ -2593,7 +2596,8 @@ function(data, uri) {
      *     given the parameters provided.
      * @param {String} data The content data in question.
      * @param {URI} uri The TIBET URI object which loaded the content.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     return TP.isNode(data) || TP.isXMLString(data);
@@ -11855,7 +11859,8 @@ function(data, uri) {
      *     given the parameters provided.
      * @param {String} data The content data in question.
      * @param {URI} uri The TIBET URI object which loaded the content.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     //  Must be JSON for starters...but we also want to restrict it to

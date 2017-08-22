@@ -645,7 +645,8 @@ function() {
      *     given the parameters provided. This method is invoked by supertype
      *     processing of the constructViaSubtype method when searching for a
      *     potential subtype to manage the instance.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     //  note that the default is false, subtypes must actively validate
@@ -3259,7 +3260,8 @@ function() {
      *     given the parameters provided. This method is invoked by supertype
      *     processing of the constructViaSubtype() method when searching for a
      *     potential subtype to manage the instance.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     //  note that the default is false, subtypes must actively validate

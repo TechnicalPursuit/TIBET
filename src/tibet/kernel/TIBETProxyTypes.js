@@ -126,7 +126,8 @@ function() {
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     var type;

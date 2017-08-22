@@ -31,7 +31,9 @@ function(data) {
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
-     * @returns {Boolean}
+     * @param {Object} data The content data in question.
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
      */
 
     //  Must be JSON for starters...but we also want to restrict it to
