@@ -83,7 +83,8 @@ function(aRequest) {
         return aRequest.fail('Invalid target url.');
     }
 
-    hid = TP.elementGetAttribute(aRequest.at('cmdNode'), 'tsh:hid', true);
+    hid = shell.getArgument(aRequest, 'tsh:hid', null, false);
+
     hid = TP.ifEmpty(hid, -2);
     hid = parseInt(hid, 10);
     if (TP.notValid(hid) || TP.isNaN(hid)) {

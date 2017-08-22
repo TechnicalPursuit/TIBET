@@ -50,8 +50,7 @@ function(aRequest) {
      * @returns {Object}
      */
 
-    var node,
-        shell,
+    var shell,
 
         hid,
 
@@ -73,9 +72,7 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    node = aRequest.at('cmdNode');
-
-    hid = TP.elementGetAttribute(node, 'tsh:hid', true);
+    hid = shell.getArgument(aRequest, 'tsh:hid', null, false);
 
     //  Initial ! is stripped by desugaring so we have just the "second char"
     //  which should either be ? or blank for "all history" shorthand.
@@ -144,7 +141,7 @@ function(aRequest) {
         origReq = aRequest;
     }
 
-    isEdit = TP.elementGetAttribute(node, 'tsh:edit', true);
+    isEdit = shell.getArgument(aRequest, 'tsh:edit', false, false);
     if (TP.bc(isEdit)) {
         req = TP.sig.ConsoleRequest.construct(
                                     TP.hc('cmd', 'input', 'body', str));
