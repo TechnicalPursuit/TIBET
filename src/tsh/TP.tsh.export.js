@@ -111,8 +111,8 @@ function(aRequest) {
 
 TP.core.TSH.addHelpTopic('export',
     TP.tsh.export.Type.getMethod('tshExecute'),
-    'Writes the previous buffer to a target.',
-    ':export',
+    'Writes a previous command to a target URL.',
+    ':export --href <exporturl> [--hid <hidnum>]',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

@@ -148,6 +148,7 @@ function(aRequest) {
 
             debug = TP.sys.shouldUseDebugger();
             TP.sys.shouldUseDebugger(false);
+
             TP.boot.$sourceImport(src, null, TP.str(url), true);
 
             //  Grab the location of the URL, trim it down so that its only
@@ -192,7 +193,7 @@ function(aRequest) {
 TP.core.TSH.addHelpTopic('import',
     TP.tsh.import.Type.getMethod('tshExecute'),
     'Loads/executes a JavaScript/TIBET source file.',
-    ':import',
+    ':import [--href <importurl>] | <importurl>',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------
