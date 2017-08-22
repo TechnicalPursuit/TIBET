@@ -109,8 +109,9 @@ function(aRequest) {
                                 '</dd>';
                         });
 
-        aRequest.atPut('cmdAsIs', true);
         output += '</dl>';
+
+        aRequest.atPut('cmdAsIs', true);
 
         return aRequest.complete(output);
     }
