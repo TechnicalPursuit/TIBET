@@ -177,7 +177,6 @@ function(anObj) {
                 function(aTypeName) {
                     typesObj.atPut(aTypeName, aTypeName);
                 });
-        } else {
         }
     }
 
