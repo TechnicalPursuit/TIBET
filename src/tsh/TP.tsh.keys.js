@@ -37,7 +37,9 @@ function(aRequest) {
      */
 
     var shell,
-        keys;
+        keys,
+
+        output;
 
     shell = aRequest.at('cmdShell');
 
@@ -50,10 +52,41 @@ function(aRequest) {
     }
 
     keys = TP.hc(
-        'Shift-Return', 'Execute',
-        'Alt-Up', 'Show/Hide HUD');
+        'Alt-UpArrow-Up', 'Show/Hide HUD',
+        'Shift-Return-Up', 'Execute',
+        'Shift-Up-Shift-Up', 'Focus Input Cell',
 
-    aRequest.complete(keys);
+        'Shift-DownArrow-Up', 'Move to "next" history entry (will not wrap)',
+        'Shift-UpArrow-Up', 'Move to "last" history entry (will not wrap)',
+
+        'Ctrl-DownArrow-Up', 'Cycle output mode downward (will wrap)',
+        'Ctrl-UpArrow-Up', 'Cycle output mode upward (will wrap)',
+
+        'Ctrl-U-Up', 'Clears the input cell of content',
+        'Ctrl-K-Up', 'Clears the output area of all output cells',
+
+        'DownArrow-Down', 'Scroll last output cell down 1 line',
+        'UpArrow-Down', 'Scroll last output cell up 1 line',
+
+        'PageDown-Down', 'Scroll last output cell down 1 page',
+        'PageUp-Down', 'Scroll last output cell up 1 page',
+
+        'Shift-Esc-Up', 'Cancels a multi-prompt operations'
+    );
+
+    output = '<dl>';
+
+    keys.perform(
+        function(kvPair) {
+            output += '<dt>' + kvPair.first() + '</dt>' +
+                        '<dd>' + kvPair.last() + '</dd>';
+        });
+
+    output += '</dl>';
+
+    aRequest.atPut('cmdAsIs', true);
+
+    aRequest.complete(output);
 
     return;
 });
