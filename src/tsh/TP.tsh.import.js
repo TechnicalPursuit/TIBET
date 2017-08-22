@@ -10,8 +10,6 @@
 
 /**
  * @type {TP.tsh.import}
- * @summary A subtype of TP.core.ActionTag that knows how to
- *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
