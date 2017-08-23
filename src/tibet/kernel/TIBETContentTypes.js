@@ -6729,11 +6729,13 @@ function(attributeName, attributeValue, shouldSignal) {
      * @returns {TP.core.Content} The receiver.
      */
 
-    var xmlPath;
+    var xmlPath,
+        mirroredAttrs;
 
     //  For certain properties we mirror their settings onto our internal
     //  xmlPath.
-    if (this.getType().get('$mirroredAttributes').contains(attributeName)) {
+    mirroredAttrs = this.getType().get('$mirroredAttributes');
+    if (TP.isValid(mirroredAttrs) && mirroredAttrs.contains(attributeName)) {
         if (TP.isValid(xmlPath = this.get('$xmlPath'))) {
             xmlPath.set(attributeName, attributeValue, shouldSignal);
         }
