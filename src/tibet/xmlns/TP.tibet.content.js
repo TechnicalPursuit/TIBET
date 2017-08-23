@@ -49,7 +49,7 @@ function(aRequest) {
         type,
 
         schema,
-        schemas,
+        schemaLocs,
 
         computeFacetSetting,
 
@@ -98,14 +98,25 @@ function(aRequest) {
 
     //  Import any schemas required - they'll be a set of space-separated URLs
     if (TP.notEmpty(schema = elemTPNode.getAttribute('schema'))) {
-        if (TP.notEmpty(schemas = schema.split(' '))) {
-            schemas.perform(
-                function(aSchemaURL) {
-                    var resp,
+        if (TP.notEmpty(schemaLocs = schema.split(' '))) {
+            schemaLocs.perform(
+                function(aSchemaLoc) {
+                    var schemaURI,
+
+                        fetchParams,
+
+                        resp,
                         schemaObj;
 
-                    resp = TP.uc(aSchemaURL).getResource(
-                                TP.hc('async', false, 'resultType', TP.WRAP));
+                    schemaURI = TP.uc(aSchemaLoc);
+                    fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
+
+                    if (schemaURI.getExtension() === 'json') {
+                        fetchParams.atPut('contenttype',
+                                            TP.json.JSONSchemaContent);
+                    }
+
+                    resp = schemaURI.getResource(fetchParams);
 
                     if (TP.isValid(schemaObj = resp.get('result'))) {
                         if (TP.isKindOf(schemaObj, TP.core.XMLDocumentNode)) {
