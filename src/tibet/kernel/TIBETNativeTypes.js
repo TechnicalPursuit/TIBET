@@ -3670,6 +3670,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Number.Inst.defineMethod('isInteger',
+function() {
+
+    /**
+     * @method isInteger
+     * @summary Returns whether the receiver is an integer. An integer number
+     *     is defined as a number that has no fractional component.
+     * @returns {Boolean} Whether or not the receiver is an integer.
+     */
+
+    /* eslint-disable no-extra-parens */
+    return (this % 1 === 0);
+    /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
 Number.Inst.defineMethod('isNegative',
 function() {
 
