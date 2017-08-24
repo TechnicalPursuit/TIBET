@@ -1,0 +1,79 @@
+/*
+    CSS styles for 'xctrls:propertysheet' controls.
+*/
+
+@import url("@{xctrls_src}/TP.xctrls_mixins.less");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The propertysheet */
+
+xctrls|propertysheet {
+
+    display: block;
+
+    font-size: 77%;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: auto;
+}
+
+xctrls|propertysheet fieldset {
+
+    & div {
+
+        display: flex;
+        align-items: center;
+    }
+
+    & input,
+    & textarea,
+    & select {
+
+        font-size: 1em;
+        padding: 2px 5px 4px;
+        border-radius: 2px;
+    }
+
+    & label {
+
+        order: 1;
+        width: 5em;
+        text-align: right;
+        padding-right: 0.5em;
+        white-space: nowrap;
+        user-select: none;
+        cursor: pointer;
+    }
+
+    & input,
+    & textarea,
+    & select {
+
+        order: 2;
+        flex: 1 1 auto;
+    }
+
+    & input[type="checkbox"],
+    & input[type="radio"] {
+
+        margin-left: -4px;
+    }
+
+    & input[type="checkbox"] ~ label,
+    & input[type="radio"] ~ label {
+
+        width: auto;
+        text-align: left;
+        padding-left: 0.4em;
+    }
+
+    & input:checked ~ label {
+
+        font-weight: bold;
+    }
+}

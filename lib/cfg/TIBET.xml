@@ -151,6 +151,8 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.popup.TP.xctrls.popup.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.popup.TP.xctrls.popup.css.js"/>
 
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.propertysheet.TP.xctrls.propertysheet.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tabbar.TP.xctrls.tabbar.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tabbar.TP.xctrls.tabbar.css.js"/>
 
