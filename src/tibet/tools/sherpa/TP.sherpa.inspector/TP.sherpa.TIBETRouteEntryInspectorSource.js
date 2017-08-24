@@ -82,44 +82,28 @@ function(options) {
      *     bay.
      */
 
-    var dataURI;
+    var jsonURI,
 
-    dataURI = TP.uc(options.at('bindLoc'));
+        schemaResource,
+        schema,
 
-    return TP.xhtmlnode(
-        '<div class="property_sheet"' +
-                ' bind:scope="' + dataURI.asString() + '">' +
-            '<fieldset>' +
-                '<div>' +
-                    '<input id="RouteContent" type="text" bind:io="{value: content}"/><br/>' +
-                    '<label for="RouteContent">Content:</label>' +
-                '</div>' +
-                '<div>' +
-                    '<input id="RouteTarget" type="text" bind:io="target"/><br/>' +
-                    '<label for="RouteTarget">Target:</label>' +
-                '</div>' +
-                '<div>' +
-                    '<input id="RouteController" type="text" bind:io="controller"/><br/>' +
-                    '<label for="RouteController">Controller:</label>' +
-                '</div>' +
-                '<div>' +
-                    '<input id="RouteSignal" type="text" bind:io="signal"/><br/>' +
-                    '<label for="RouteSignal">Signal:</label>' +
-                '</div>' +
-                '<div>' +
-                    '<input id="RouteRedirect" type="text" bind:io="redirect"/><br/>' +
-                    '<label for="RouteRedirect">Redirect:</label>' +
-                '</div>' +
-                '<div>' +
-                    '<input id="RouteReroute" type="text" bind:io="reroute"/><br/>' +
-                    '<label for="RouteReroute">Reroute:</label>' +
-                '</div>' +
-                '<div>' +
-                    '<input id="RouteDeeproot" type="checkbox" bind:io="{checked: deeproot}"/><br/>' +
-                    '<label for="RouteDeeproot">Deep Root:</label>' +
-                '</div>' +
-            '</fieldset>' +
-        '</div>');
+        propertySheet;
+
+    jsonURI = TP.uc('~ide_root/schema/tibet_tooling_types.json');
+    schemaResource = TP.uc(jsonURI).getResource(
+                        TP.hc('async', false,
+                                'refresh', true,
+                                'contenttype', TP.json.JSONSchemaContent));
+    schema = schemaResource.get('result');
+
+    propertySheet = TP.xctrls.propertysheet.from(
+                        schema,
+                        TP.hc(
+                            'sheetAttrs',
+                            TP.hc('bind:scope',
+                                    options.at('bindLoc').asString())));
+
+    return TP.unwrap(propertySheet);
 });
 
 //  ------------------------------------------------------------------------
