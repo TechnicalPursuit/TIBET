@@ -113,7 +113,8 @@ function(pluginKey) {
             allPlugins = navigator.plugins;
 
             for (i = 0; i < allPlugins.length; i++) {
-                if (allPlugins[i].name.indexOf(pluginInfo.at('name')) !== -1) {
+                if (allPlugins[i].name.indexOf(pluginInfo.at('name')) !==
+                                                            TP.NOT_FOUND) {
                     thePlugin = allPlugins[i];
 
                     //  Found a matching native plugin Object in the system,

@@ -1558,7 +1558,7 @@ TP.boot.PHash = function() {
          */
 
         //  Nothing on Object.prototype, this should work.
-        return TP.objectGetKeys(this.$$hash).indexOf(aKey) !== -1;
+        return TP.objectGetKeys(this.$$hash).indexOf(aKey) !== TP.NOT_FOUND;
     };
 
     //  register with TIBET by hand
@@ -2320,7 +2320,7 @@ TP.functionNeedsCallee = function(aFunction, aName) {
     //  find first mention of 'function' after the opening one. if that's after
     //  the index to callee this one is before any possible embedded functions.
     func = str.indexOf('function');
-    if (func === -1 || callee.index < func) {
+    if (func === TP.NOT_FOUND || callee.index < func) {
         return true;
     }
 
@@ -7337,7 +7337,7 @@ function(unwrapped) {
     //  Proposed window name was not found. The thing is, TIBET always needs a
     //  canvas so we have to work our way up the proposed path until we find a
     //  window that is valid.
-    while (name.indexOf('.') !== -1) {
+    while (name.indexOf('.') !== TP.NOT_FOUND) {
         name = name.slice(0, name.lastIndexOf('.'));
         obj = TP.sys.getWindowById(name);
 

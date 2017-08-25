@@ -5305,7 +5305,7 @@ function() {
     //  like: ' ,  1,234.56'. Then rebuild the result string with the new
     //  front piece.
     indexOfSpace = str.lastIndexOf(' ');
-    if (indexOfSpace !== -1) {
+    if (indexOfSpace !== TP.NOT_FOUND) {
         matcher = Number.getThousandsMatcher();
         matcher.lastIndex = 0;
 

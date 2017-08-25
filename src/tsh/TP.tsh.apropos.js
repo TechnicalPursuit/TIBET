@@ -150,7 +150,7 @@ function(aRequest) {
                                 parts = text.split(term);
                                 count += parts.getSize() - 1;
 
-                                if (method.indexOf(term) !== -1) {
+                                if (method.indexOf(term) !== TP.NOT_FOUND) {
                                     nameMatch = true;
                                     count += 1;
                                     ands += 1;

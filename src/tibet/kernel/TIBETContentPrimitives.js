@@ -1020,7 +1020,8 @@ function(aString) {
 
         for (leafName in data) {
 
-            if (data.hasOwnProperty(leafName) && leafName.indexOf('@') === -1) {
+            if (data.hasOwnProperty(leafName) && leafName.indexOf('@') ===
+                                                            TP.NOT_FOUND) {
                 return processLeaf(leafName, data[leafName], {});
             }
         }

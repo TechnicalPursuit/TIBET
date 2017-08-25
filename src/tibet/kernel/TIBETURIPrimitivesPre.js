@@ -632,7 +632,7 @@ function(aURI, textOnly) {
     hash = url.slice(url.indexOf('#') + 1);
     hash = decodeURIComponent(hash);
 
-    if (hash.indexOf('?') === -1) {
+    if (hash.indexOf('?') === TP.NOT_FOUND) {
 
         return TP.notFalse(textOnly) ? '' : {};
     } else {
@@ -1907,7 +1907,7 @@ function(firstPath, secondPath, filePath) {
 
     count = 0;
     ndx = second.lastIndexOf('/');
-    while (ndx !== -1) {
+    while (ndx !== TP.NOT_FOUND) {
         //  peel off the last segment
         second = second.slice(0, ndx);
 

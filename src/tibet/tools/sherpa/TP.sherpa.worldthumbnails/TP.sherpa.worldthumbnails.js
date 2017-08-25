@@ -180,7 +180,7 @@ function(aSignal) {
 
     screenIndex = aSignal.at('screenIndex');
 
-    if (screenIndex === -1) {
+    if (screenIndex === TP.NOT_FOUND) {
         this.uninstallCurrentMutationObserver();
         this.set('selectedIndex', -1);
 

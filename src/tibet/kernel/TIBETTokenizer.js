@@ -1617,7 +1617,7 @@ function(tokens, separators) {
     arr = TP.ac();
     str = '';
     tokens.forEach(function(token) {
-        if (seps.indexOf(token.name) !== -1) {
+        if (seps.indexOf(token.name) !== TP.NOT_FOUND) {
             //  Separator, close off string, push, and start a new one.
             arr.push(str);
             str = '';

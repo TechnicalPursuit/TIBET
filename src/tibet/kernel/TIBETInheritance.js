@@ -2030,7 +2030,7 @@ function(aSignal, flags) {
                 bIndex = signalNames === bMatch[1] ? 0 : -1;
             }
 
-            if (aIndex === -1 || bIndex === -1) {
+            if (aIndex === TP.NOT_FOUND || bIndex === TP.NOT_FOUND) {
                 //  TODO:   log a nice warning/error here. shouldn't happen.
                 void 0;
             }

@@ -136,7 +136,7 @@ TP.definePrimitive('atob',
 
             /* eslint-disable no-extra-parens */
 
-            if ((f >= 0) && (f < 128) && (i !== -1)) {
+            if ((f >= 0) && (f < 128) && (i !== TP.NOT_FOUND)) {
                 if (n % 4 === 0) {
                     c = i << 2;
                 } else if (n % 4 === 1) {
@@ -500,7 +500,7 @@ function(aStr, startDelim, endDelim, startPos) {
     endSize = endDelim.getSize();
 
     //  While there are still end delimiters in the String, keep looping.
-    while ((ind = aStr.indexOf(endDelim, startInd)) !== -1) {
+    while ((ind = aStr.indexOf(endDelim, startInd)) !== TP.NOT_FOUND) {
         //  Slice off a chunk from the current starting index to where we
         //  found an end delimiter.
         str = aStr.slice(startInd, ind);
@@ -519,7 +519,7 @@ function(aStr, startDelim, endDelim, startPos) {
             //  end delimiter that we found. Loop until a) we can no longer
             //  find end delimiters and b) there are still start delimiters
             //  left.
-            while ((ind = aStr.indexOf(endDelim, newStart)) !== -1 &&
+            while ((ind = aStr.indexOf(endDelim, newStart)) !== TP.NOT_FOUND &&
                     startCount > 0) {
                 //  We found an end delimiter, so decrease the number of
                 //  start delimiters.
@@ -742,7 +742,7 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
 
     //  Find the index for the matching ending delimiter.
     while ((anIndex = TP.stringFindDelimiterIndex(
-                            aStr, startDelim, endDelim, startIndex)) !== -1) {
+                    aStr, startDelim, endDelim, startIndex)) !== TP.NOT_FOUND) {
         //  Slice from just over our start delimiter to that index (which
         //  won't include the ending delimiter itself).
         exprArray.push(aStr.slice(startIndex + startSize, anIndex));

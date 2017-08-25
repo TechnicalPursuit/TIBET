@@ -3474,7 +3474,7 @@ function(anObject, anAspect, autoCollapse) {
         aspect = 'value';
     } else if (TP.isPlainObject(anObject)) {
         //  Really only one approach in this case...
-        if (anAspect.indexOf('.') !== -1) {
+        if (anAspect.indexOf('.') !== TP.NOT_FOUND) {
 
             parts = anAspect.split('.');
             obj = anObject;

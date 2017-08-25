@@ -1202,7 +1202,7 @@ function(anAttributeNode) {
     //  'whole name' will be returned since there is no concept of
     //  prefixes, namespaces, etc.
     lname = anAttributeNode.localName;
-    if ((index = lname.indexOf(':')) !== -1) {
+    if ((index = lname.indexOf(':')) !== TP.NOT_FOUND) {
         lname = lname.slice(index + 1);
     }
 
@@ -2505,7 +2505,7 @@ function(anElement, attributeName, stripPrefixes) {
         if (stripPrefixes) {
             attrName = attrName.slice(attrName.indexOf(':') + 1);
             dict.atPut(attrName, attrs[i].value);
-        } else if (attrName.indexOf(':') !== -1) {
+        } else if (attrName.indexOf(':') !== TP.NOT_FOUND) {
             //  Otherwise, if we have a prefix, then put in one entry with the
             //  prefixed named
             dict.atPut(attrName, attrs[i].value);
@@ -2607,7 +2607,7 @@ function(anElement, stripPrefixes) {
         if (stripPrefixes) {
             attrName = attrName.slice(attrName.indexOf(':') + 1);
             names.push(attrName);
-        } else if ((nsIndex = attrName.indexOf(':')) !== -1) {
+        } else if ((nsIndex = attrName.indexOf(':')) !== TP.NOT_FOUND) {
             //  Otherwise, if we have a prefix, then put in two entries: one
             //  with the prefix and one without.
             names.push(attrName);
@@ -2731,7 +2731,7 @@ function(anElement, attributeName, stripPrefixes) {
         if (stripPrefixes) {
             attrName = attrName.slice(attrName.indexOf(':') + 1);
             dict.atPut(attrName, parseFloat(attrs[i].value));
-        } else if ((nsIndex = attrName.indexOf(':')) !== -1) {
+        } else if ((nsIndex = attrName.indexOf(':')) !== TP.NOT_FOUND) {
             //  Otherwise, if we have a prefix, then put in two entries: one
             //  with the prefix and one without.
             dict.atPut(attrName, parseFloat(attrs[i].value));

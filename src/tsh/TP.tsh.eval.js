@@ -719,7 +719,7 @@ function(aliasString, aTokenArray) {
             //  Slice off the leading '${' and trailing '}'
             name = token.value.slice(2, token.value.length - 1);
 
-            if (name.indexOf('|') !== -1) {
+            if (name.indexOf('|') !== TP.NOT_FOUND) {
                 arr = name.split('|');
                 name = arr.at(0);
                 format = arr.at(1);
