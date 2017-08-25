@@ -38,7 +38,7 @@ function(anEntry) {
 
     str = '';
 
-    // The arglist may have multiple elements in it which we need to handle.
+    //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
     if (TP.isValid(arglist)) {
         arglist.forEach(function(item) {

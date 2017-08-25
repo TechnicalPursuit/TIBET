@@ -383,8 +383,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         return this;
     }
 
-    // TODO: setting undefined here may throw off reflection which depends on
-    // the difference to know what attributes are "known" vs. "unknown".
+    //  TODO: setting undefined here may throw off reflection which depends on
+    //  the difference to know what attributes are "known" vs. "unknown".
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
@@ -493,7 +493,7 @@ function(aResult) {
             this.completeJob();
         }
     } catch (e) {
-        // Make sure we don't think the job succeeded or bury the error.
+        //  Make sure we don't think the job succeeded or bury the error.
         this.set('statusCode', TP.FAILED);
         this.set('result', e);
 
@@ -742,7 +742,7 @@ function() {
      * @returns {Number} A TIBET fault code constant.
      */
 
-// TODO: direct slot access?
+    // TODO: direct slot access?
     if (TP.notDefined(this.faultCode)) {
         this.getType().Inst.defineAttribute('faultCode');
     }
@@ -762,7 +762,7 @@ function() {
      *     about the failure.
      */
 
-// TODO: direct slot access?
+    // TODO: direct slot access?
     if (TP.notDefined(this.faultInfo)) {
         this.getType().Inst.defineAttribute('faultInfo');
     }
@@ -781,7 +781,7 @@ function() {
      * @returns {String} A text description of the fault.
      */
 
-// TODO: direct slot access?
+    // TODO: direct slot access?
     if (TP.notDefined(this.faultText)) {
         this.getType().Inst.defineAttribute('faultText');
     }
@@ -800,7 +800,7 @@ function() {
      * @returns {Number} A TIBET status code constant.
      */
 
-// TODO: direct slot access?
+    // TODO: direct slot access?
     if (TP.notDefined(this.statusCode)) {
         this.getType().Inst.defineAttribute('statusCode', TP.READY);
     }
@@ -819,7 +819,7 @@ function() {
      * @returns {String} The current status in text form.
      */
 
-// TODO: direct slot access?
+    // TODO: direct slot access?
     if (TP.notDefined(this.statusText)) {
         this.getType().Inst.defineAttribute('statusText', TP.READY);
     }

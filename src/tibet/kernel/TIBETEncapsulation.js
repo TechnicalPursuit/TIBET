@@ -758,7 +758,7 @@ function(anIndex, varargs, aValue) {
 
             /* eslint-enable consistent-this */
 
-            // fall through so we can do change notification
+            //  fall through so we can do change notification
     }
 
     /* eslint-disable eqeqeq */
@@ -1098,7 +1098,7 @@ function() {
         case 0:
             return [];
         case 1:
-            // Flatten argument lists, node lists and named node maps.
+            //  Flatten argument lists, node lists and named node maps.
             arg = arguments[0];
             if (TP.isArgArray(arg) ||
                 TP.isNodeList(arg) ||

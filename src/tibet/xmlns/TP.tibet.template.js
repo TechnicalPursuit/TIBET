@@ -157,8 +157,8 @@ function(anElement, aName, aURI) {
         //  be enclosed in an element.
         elements = TP.nodeGetChildElements(anElement);
 
-        // Prefer singly-rooted templates, but fragment-based processing can
-        // be done.
+        //  Prefer singly-rooted templates, but fragment-based processing can
+        //  be done.
         switch (elements.getSize()) {
             case 0:
 

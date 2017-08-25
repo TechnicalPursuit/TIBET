@@ -14,33 +14,38 @@
  *     service is only available to browsers which support an XMLHttpRequest API
  *     such as IE or Mozilla.
  * @examples
- // construct a simple request, this one's for Flickr:
+ *     Construct a simple request, this one's for Flickr:
  *
- *     request = TP.sig.SOAPRequest.construct(); request.atPut('uri',
- *     'http://api.flickr.com/services/soap/');
+ *     request = TP.sig.SOAPRequest.construct();
+ *     request.atPut('uri', 'http://api.flickr.com/services/soap/');
  *
- *     // in this case we'll construct a temporary payload object // that knows
- *     what flickr wants to see in SOAP calls
+ *     In this case we'll construct a temporary payload object that knows what
+ *     flickr wants to see in SOAP calls
  *
  *     payload = TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db',
- *     'test','echo', 'method','flickr.test.echo');
+ *                      'test','echo',
+ *                      'method','flickr.test.echo');
  *
- *     payload.defineMethod('asSOAPBody', function(aRequest) {
+ *     payload.defineMethod('asSOAPBody',
+ *              function(aRequest) {
  *
- *     var body;
+ *              var body;
  *
- *     body = TP.join( '<x:FlickrRequest xmlns:x="urn:flickr">',
- *     TP.str(TP.js2xml(this)), '</x:FlickrRequest>');
+ *              body = TP.join( '<x:FlickrRequest xmlns:x="urn:flickr">',
+ *              TP.str(TP.js2xml(this)), '</x:FlickrRequest>');
  *
- *     return body; });
+ *              return body;
+ *          });
  *
  *     request.atPut('body', payload);
  *
- *     request.defineHandler('RequestSucceeded', function(aResponse) {
+ *     request.defineHandler('RequestSucceeded',
+ *              function(aResponse) {
  *
- *     TP.info(aResponse.getResult()); });
+ *              TP.info(aResponse.getResult());
+ *          });
  *
- *     // activate the request:
+ *     //   Activate the request:
  *
  *     request.fire();
  */

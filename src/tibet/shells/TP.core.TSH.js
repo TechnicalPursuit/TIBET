@@ -911,109 +911,102 @@ function(aString) {
 //  ------------------------------------------------------------------------
 
 /**
- * @Methods in this section support the core processing pipeline for shell
+ *     Methods in this section support the core processing pipeline for shell
  *     requests. In particular, the execute method and the various helper
  *     functionsit relies upon are defined here.
  *
- *     // The invoker is responsible for reading cached reps and submitting //
- *     them to the pipeline, the pipeline only runs on content and skips //
- *     steps until reaching the phase the content already exists at. NOTE //
- *     that for shell and console input there's never a cache so things // just
- *     run as expected. for URIs it means processing is always invoked // from
- *     the URI initially so the URI can manage cached URI content.
+ *     The invoker is responsible for reading cached reps and submitting them to
+ *     the pipeline, the pipeline only runs on content and skips steps until
+ *     reaching the phase the content already exists at. NOTE that for shell and
+ *     console input there's never a cache so things just run as expected. For
+ *     URIs it means processing is always invoked from the URI initially so the
+ *     URI can manage cached URI content.
  *
- *     // IFF the page is in a "relativized" state then the page is "revived"
- *     // by invoking each tag's revive method. NOTE that when a request's //
- *     XML shows that it's a compiled representation the previous steps // are
- *     all skipped and processing begins with this step.
+ *     IFF the page is in a "relativized" state then the page is "revived" by
+ *     invoking each tag's revive method. NOTE that when a request's XML shows
+ *     that it's a compiled representation the previous steps are all skipped
+ *     and processing begins with this step.
  *
- *     // any tag-specific URI attributes are converted to app paths
+ *     - any tag-specific URI attributes are converted to app paths
  *
- *     // xml:base markers are resolved to application-specific paths
+ *     - xml:base markers are resolved to application-specific paths
  *
- *     // --- // XML PRE-PROCESSING // ---
+ *     --- XML PRE-PROCESSING ---
  *
- *     // resulting XML is now processed consistently with XML and browser //
+ *     - resulting XML is now processed consistently with XML and browser
  *     precedence rules to complete any "pre-processing" transformations.
  *
- *     // NOTE that doing these at this point implies that xi:include and //
- *     early-stage XSLT etc. can produce tsh:eval tags whose content is // still
- *     in sugared form. We can allow this _when_ there is already // tsh:eval
- *     content and the request is sugared. otherwise we should // be prepared to
- *     strip such content or "disable" it so the exec loop // ignores tags
- *     injected through those means.
+ *     NOTE that doing these at this point implies that xi:include and
+ *     early-stage XSLT etc. can produce tsh:eval tags whose content is still in
+ *     sugared form. We can allow this _when_ there is already tsh:eval content
+ *     and the request is sugared. otherwise we should be prepared to strip such
+ *     content or "disable" it so the exec loop ignores tags injected through
+ *     those means.
  *
- *     // xi:include
+ *     //   xi:include
  *
- *     // <?tibet?> processing instructions
+ *     //   <?tibet?> processing instructions
  *
- *     // <?xsl-stylesheet?> instructions
+ *     //   <?xsl-stylesheet?> instructions
  *
- *     // --- // MACRO EXPANSION // ---
+ *     --- MACRO EXPANSION ---
  *
- *     // tags are invoked to produce their "expanded" representation, which //
- *     typically means producing XHTML content that could be injected into // a
- *     rendering surface. action tags produce XHTML as well, but rarely // alter
+ *     tags are invoked to produce their "expanded" representation, which
+ *     typically means producing XHTML content that could be injected into a
+ *     rendering surface. action tags produce XHTML as well, but rarely alter
  *     their child content since that's often runtime-sensitive.
  *
- *     // NOTE that we only need to message the root node since expansion is a
- *     // recursive descent process and descendant content will be managed by //
- *     the initial node itself as it expands its child content
+ *     NOTE that we only need to message the root node since expansion is a
+ *     recursive descent process and descendant content will be managed by the
+ *     initial node itself as it expands its child content
  *
- *     // NOTE that in the past this process started with XMLNS XSLT //
- *     transformations and moved on to individual tags. The proposed // approach
- *     now is that we run the tag method and let the tag fall // back to the
+ *     NOTE that in the past this process started with XMLNS XSLT
+ *     transformations and moved on to individual tags. The proposed approach
+ *     now is that we run the tag method and let the tag fall  back to the
  *     namespace as needed
  *
- *     // NOTE that for a lot of these a single global "turn it into a // span"
- *     process could be used as a final backstop rather than // using that logic
+ *     NOTE that for a lot of these a single global "turn it into a span"
+ *     process could be used as a final backstop rather than using that logic
  *     but separately for each unique namespace
  *
- *     // NOTE that this approach could use an array/push method such that //
- *     each entry in the array could be either a string/template or a // node
- *     based on the particular tag's situation. the resulting // array is then
- *     combined into a new document via a custom join() // which first converts
- *     nodes to strings, joins, then TP.node()s.
+ *     NOTE that this approach could use an array/push method such that each
+ *     entry in the array could be either a string/template or a node based on
+ *     the particular tag's situation. The resulting array is then combined
+ *     into a new document via a custom join() which first converts nodes to
+ *     strings, joins, then TP.node()s.
  *
- *     // NOTE that the tsh:script and tsh:eval tags injected during // the
- *     initial processing phase can be produced in "pre-compiled // form" to
- *     keep this overhead low for interactive scripts
+ *     NOTE that the tsh:script and tsh:eval tags injected during the initial
+ *     processing phase can be produced in "pre-compiled form" to keep this
+ *     overhead low for interactive scripts
  *
- *     // --- // DOCUMENT REPAIR // ---
+ *     --- DOCUMENT REPAIR ---
  *
- *     // with or without caching in place we want to "repair" the document so
- *     // it won't give other tools (or the browser) too much heartburn. (NOTE
- *     // that this used to be part of the finalize call, but it's not really //
- *     canvas-specific so that was an inappropriate location). if
- *     (TP.notEmpty(doc = TP.nodeGetDocument(node))) { if (TP.notEmpty(root =
- *     doc.documentElement)) { if (TP.notEmpty(wrap = TP.tpnode(root))) { if
- *     (TP.canInvoke(wrap, 'tshTidy')) { wrap.tshRepair(aRequest); }; }; }; };
+ *     With or without caching in place we want to "repair" the document so it
+ *     won't give other tools (or the browser) too much heartburn. (NOTE that
+ *     this used to be part of the finalize call, but it's not really
+ *     canvas-specific so that was an inappropriate location).
  *
- *     // --- // CACHING // ---
+ *     --- CACHING ---
  *
- *     // requestor is told to cache content. remaining question of what is //
- *     cached if anything is handled by the specific content type(s) if
- *     (TP.notEmpty(requestor = aRequest.get('requestor'))) { if
- *     (TP.canInvoke(requestor, 'tshStore')) { // xml:base and "base aware"
- *     attributes are marked (WHY) // any tag-specific URI attribute values are
- *     updated (WHY) requestor.tshStore(aRequest); }; };
+ *     Requestor is told to cache content. remaining question of what is cached
+ *     if anything is handled by the specific content type(s).
  *
- *     // --- // PRE-RENDERING // ---
+ *     --- PRE-RENDERING ---
  *
- *     // MOVE MOVE MOVE to setContent as a built-in transform call, so the //
- *     shell won't actually be involved here
+ *     MOVE MOVE MOVE to setContent as a built-in transform call, so the shell
+ *     won't actually be involved here
  *
- *     // IFF node implements finalize content, finalize for canvas, making //
- *     it possible to handle variables and processing logic that should be //
- *     updated each time a page or content is actually rendered
+ *     IFF node implements finalize content, finalize for canvas, making it
+ *     possible to handle variables and processing logic that should be updated
+ *     each time a page or content is actually rendered
  *
- *     // <?tibet?> instructions are executed (do we still want this?)
+ *     <?tibet?> instructions are executed (do we still want this?)
  *
- *     // `command substitution` expansions (is this secure?)
+ *     `command substitution` expansions (is this secure?)
  *
- *     // NEW: replace above with string template execution/evaluation // where
- *     the template is provided with the request as the // source data and the
- *     window and document are injected?
+ *     NEW: replace above with string template execution/evaluation where the
+ *     template is provided with the request as the source data and the window
+ *     and document are injected?
  */
 
 //  ------------------------------------------------------------------------

@@ -3337,8 +3337,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
 
             result = aResult;
             if (TP.canInvoke(thisref, successFName)) {
-                // Note that two of these parameters come from the outer
-                // function and only aResult is provided by the inner one.
+                //  Note that two of these parameters come from the outer
+                //  function and only aResult is provided by the inner one.
                 result = thisref[successFName](aRequest,
                                                 aResult,
                                                 aResource);

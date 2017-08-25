@@ -1997,7 +1997,7 @@ function(aString, aShell, aRequest) {
                         err)));
             }
         } finally {
-            // Reset our flags...
+            //  Reset our flags...
             TP.sys.shouldThrowExceptions(flag);
         }
 

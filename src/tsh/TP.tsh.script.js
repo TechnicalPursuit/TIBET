@@ -3117,7 +3117,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
                 break;
             case 2:
                 if (TP.isError(aFaultString)) {
-                    // Try to keep messaging consistent...
+                    //  Try to keep messaging consistent...
                     str = faultCode + ': ' + aFaultString.message;
                     aFaultString.message = str;
                     this.stderr(aFaultString);
@@ -3129,7 +3129,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
             case 3:
                 info = TP.hc(aFaultInfo);
                 if (info.at('error')) {
-                    // Try to keep messaging consistent...
+                    //  Try to keep messaging consistent...
                     str = faultCode + ': ' +
                             info.at('error').message +
                             ' ' + aFaultString;
@@ -3170,7 +3170,7 @@ function(aResult) {
 
     if (arguments.length > 0) {
 
-        // Allow undefined to be set as a result.
+        //  Allow undefined to be set as a result.
         this.$set('result', aResult, null, true);
 
         if (TP.notTrue(this.at('cmdSilent'))) {
@@ -3218,7 +3218,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
                 break;
             case 2:
                 if (TP.isError(aFaultString)) {
-                    // Try to keep messaging consistent...
+                    //  Try to keep messaging consistent...
                     str = faultCode + ': ' + aFaultString.message;
                     aFaultString.message = str;
                     this.stderr(aFaultString);
@@ -3230,7 +3230,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
             case 3:
                 info = TP.hc(aFaultInfo);
                 if (info.at('error')) {
-                    // Try to keep messaging consistent...
+                    //  Try to keep messaging consistent...
                     str = faultCode + ': ' +
                             info.at('error').message +
                             ' ' + aFaultString;

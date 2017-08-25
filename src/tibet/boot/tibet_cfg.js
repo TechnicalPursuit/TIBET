@@ -193,7 +193,7 @@
     //  how far from lib_root is the phantom loader?
     TP.sys.setcfg('boot.phantom_offset', '../../..');
 
-    // Ensure we use the tibet_dir approach to computing root paths.
+    //  Ensure we use the tibet_dir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
 
     //  ---

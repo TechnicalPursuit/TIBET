@@ -339,7 +339,7 @@ function(httpMethod, targetUrl, aRequest) {
         return;
     }
 
-    // Ensure headers are converted to a hash
+    //  Ensure headers are converted to a hash
     headers = TP.hc(request.at('headers'));
     request.atPut('headers', headers);
 

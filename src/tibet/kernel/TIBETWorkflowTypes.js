@@ -3511,8 +3511,8 @@ function(aResult) {
 
     request = this.get('request');
     if (TP.canInvoke(request, 'completeJob')) {
-        // Don't make the called routine thing we're setting 'undefined' as a
-        // result by accident.
+        //  Don't make the called routine thing we're setting 'undefined' as a
+        //  result by accident.
         if (arguments.length > 0) {
             return request.completeJob(aResult);
         } else {

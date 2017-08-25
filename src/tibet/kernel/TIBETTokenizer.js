@@ -744,7 +744,7 @@ function(src, ops, tsh, exp, alias, args) {
                                         str += encodeURIComponent(attr);
                                         i += 1;
                                         c = src.charAt(i);
-                                        break; // break out of this for loop
+                                        break; //   break out of this for loop
                                     }
 
                                     if (c === '\\' &&

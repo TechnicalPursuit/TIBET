@@ -16,8 +16,11 @@
  *
  *     1. Define the operation you want to perform via a set of 'request
  *     parameters'. The 'action' parameter will tell the service servicing this
- *     request what sort of action you want the service to perform. 2.
- *     Instantiating an TP.sig.XMPPRequest object, supplying those parameters.
+ *     request what sort of action you want the service to perform.
+ *
+ *     2. Instantiating an TP.sig.XMPPRequest object, supplying those
+ *     parameters.
+ *
  *     3. Firing the request.
  *
  *     Defining request parameters:
@@ -34,17 +37,18 @@
  *     application's 'cfg' hash or by prompting the user.
  *
  *     Here is an example of request parameters defined in the request (this
- *     example adds the JID 'inforat
- * @infohost.com' to our roster under the name 'My buddy' in the group 'rats'):
+ *     example adds the JID 'inforat @infohost.com' to our roster under the name
+ *     'My buddy' in the group 'rats'):
  *
- *     requestParams = TP.hc( 'action', 'roster', 'toJID', TP.jid('inforat
- * @infohost.com'),
- 'name', 'My buddy', 'group', 'rats', 'serverName',
- *     'infohost.com', 'serviceURI', 'http://localhost:5280/http-bind/',
- *     'connectionJID', TP.jid('testrat
- * @infohost.com'),
- 'connectionPassword', 'testrat', 'connectionType',
- *     TP.xmpp.XMLNS.BINDING);
+ *     requestParams = TP.hc('action', 'roster',
+ *                          'toJID', TP.jid('inforat@infohost.com'),
+ *                          'name', 'My buddy',
+ *                          'group', 'rats',
+ *                          'serverName', 'infohost.com',
+ *                          'serviceURI', 'http://localhost:5280/http-bind/',
+ *                          'connectionJID', TP.jid('testrat@infohost.com'),
+ *                          'connectionPassword', 'testrat',
+ *                          'connectionType', TP.xmpp.XMLNS.BINDING);
  *
  *     Request parameters examples:
  *
@@ -56,9 +60,12 @@
  *
  *     Send an ad-hoc XMPP command:
  *
- *     // 'cmd_action' can be [cancel|complete|execute|next|prev] requestParams
- *     = TP.hc( 'action', 'command', 'toJID', TP.jid('infohost.com'),
- *     'cmd_action', 'execute', 'node', '<Escaped XML...>');
+ *     //   'cmd_action' can be [cancel|complete|execute|next|prev]
+ *
+ *     requestParams = TP.hc('action', 'command',
+ *                              'toJID', TP.jid('infohost.com'),
+ *                              'cmd_action', 'execute',
+ *                              'node', '<Escaped XML...>');
  *
  *     OR
  *
@@ -77,21 +84,23 @@
  *
  *     Send a message:
  *
- *     // 'type' can be [normal|chat|groupchat|headline] requestParams = TP.hc(
- *     'action', 'message', 'toJID', TP.jid('inforat
- * @infohost.com'),
- 'subject', 'A message for inforat', 'body', 'Inforat, come
- *     here I want you', 'thread', '7dae34', 'from', 'testrat
- * @infohost.com'),
- 'name', 'My buddy');
+ *     // 'type' can be [normal|chat|groupchat|headline]
+ *     requestParams = TP.hc('action', 'message',
+ *                              'toJID', TP.jid('inforat@infohost.com'),
+ *                              'subject', 'A message for inforat',
+ *                              'body', 'Inforat, come here I want you',
+ *                              'thread', '7dae34',
+ *                              'from', TP.jid('testrat@infohost.com'),
+ *                              'name', 'My buddy');
  *
  *     OR
  *
  *     Add or edit a roster item:
  *
- *     requestParams = TP.hc( 'action', 'roster', 'toJID', TP.jid('inforat
- * @infohost.com'),
- 'name', 'My buddy', 'group', 'rats');
+ *     requestParams = TP.hc('action', 'roster',
+ *                              'toJID', TP.jid('inforat@infohost.com'),
+ *                              'name', 'My buddy',
+ *                              'group', 'rats');
  *
  *     OR
  *
@@ -101,41 +110,51 @@
  *
  *     Subscribe to a JID:
  *
- *     requestParams = TP.hc( 'action', 'subscribe', 'toJID', TP.jid('inforat
- * @infohost.com', // currently unused by // TIBET 'id', 'message1', 'type',
- *     'normal');
+ *     requestParams = TP.hc('action', 'subscribe',
+ *                              'toJID', TP.jid('inforat@infohost.com',
+ *                              'id', 'message1',
+ *                              'type', 'normal');
  *
  *     OR
  *
  *     Create a pubsub node:
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action', 'create',
- *     'pubsubServiceJID', TP.jid('pubsub.infohost.com'), 'nodeID',
- *     '/home/infohost/testrat', 'subAccessModel', TP.xmpp.Pubsub.OPEN,
- *     'pubAccessModel', TP.xmpp.Pubsub.OPEN);
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'create',
+ *                              'pubsubServiceJID',
+ *                                      TP.jid('pubsub.infohost.com'),
+ *                              'nodeID', '/home/infohost/testrat',
+ *                              'subAccessModel', TP.xmpp.Pubsub.OPEN,
+ *                              'pubAccessModel', TP.xmpp.Pubsub.OPEN);
  *
  *     OR
  *
  *     Subscribe to a pubsub node:
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action', 'subscribe',
- *     'pubsubServiceJID', TP.jid('pubsub.infohost.com'), 'nodeID',
- *     '/home/infohost/testrat');
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'subscribe',
+ *                              'pubsubServiceJID',
+ *                                      TP.jid('pubsub.infohost.com'),
+ *                              'nodeID', '/home/infohost/testrat');
  *
  *     OR
  *
  *     Unsubscribe from a pubsub node:
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action',
- *     'unsubscribe', 'pubsubServiceJID', TP.jid('pubsub.infohost.com'),
- *     'nodeID', '/home/infohost/testrat');
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'unsubscribe',
+ *                              'pubsubServiceJID',
+ *                                      TP.jid('pubsub.infohost.com'),
+ *                              'nodeID', '/home/infohost/testrat');
  *
  *     OR
  *
  *     Retrieve a list of current subscriptions (not part of XEP-147):
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action',
- *     'subscriptions', 'pubsubServiceJID', TP.jid('pubsub.infohost.com'));
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'subscriptions',
+ *                              'pubsubServiceJID',
+ *                                      TP.jid('pubsub.infohost.com'));
  *
  *     OR
  *
@@ -149,10 +168,10 @@
  *
  *     Remove a roster item:
  *
- *     requestParams = TP.hc( 'action', 'remove', 'toJID', TP.jid('inforat
- * @infohost.com'));
-
- OR
+ *     requestParams = TP.hc('action', 'remove',
+ *                              'toJID', TP.jid('inforat @infohost.com'));
+ *
+ *     OR
  *
  *     Unregister with server/service (not currently supported by TIBET):
  *
@@ -160,50 +179,65 @@
  *
  *     Unsubscribe from a JID:
  *
- *     requestParams = TP.hc( 'action', 'unsubscribe', 'toJID', TP.jid('inforat
- * @infohost.com'));
-
- OR
+ *     requestParams = TP.hc('action', 'unsubscribe',
+ *                              'toJID', TP.jid('inforat @infohost.com'));
+ *
+ *     OR
  *
  *     Change to a JID's presence (not part of XEP-147):
  *
- *     // 'show' can be
+ *     // 'show' can be:
+ *     TP.xmpp.XMLNS.ONLINE
+ *     TP.xmpp.XMLNS.AWAY
+ *     TP.xmpp.XMLNS.CHAT
+ *     TP.xmpp.XMLNS.DO_NOT_DISTURB
+ *     TP.xmpp.XMLNS.EXTENDED_AWAY
  *
- *     [TP.xmpp.XMLNS.ONLINE|TP.xmpp.XMLNS.AWAY|TP.xmpp.XMLNS.CHAT|TP.xmpp.XMLNS.DO_NOT_DISTURB|TP.xmpp.XMLNS.EXTENDED_AWAY]
- *     requestParams = TP.hc( 'action', 'presence', 'show', TP.xmpp.XMLNS.AWAY,
- *     'status', 'Gone for the day');
+ *     requestParams = TP.hc('action', 'presence',
+ *                              'show', TP.xmpp.XMLNS.AWAY,
+ *                              'status', 'Gone for the day');
  *
  *     OR
  *
  *     Publish an item to a pubsub node (not part of XEP-147):
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action', 'publish',
- *     'pubsubServiceJID', TP.jid('pubsub.infohost.com'), 'nodeID',
- *     '/home/infohost/testrat', 'payload', TP.doc('<foo><bar/></foo>'),
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'publish',
+ *                              'pubsubServiceJID',
+ *                                  TP.jid('pubsub.infohost.com'),
+ *                              'nodeID', '/home/infohost/testrat',
+ *                              'payload', TP.doc('<foo><bar/></foo>'),
  *     'subAccessModel', TP.xmpp.Pubsub.OPEN);
  *
  *     OR
  *
  *     Retract an item from a pubsub node:
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action', 'retract',
- *     'pubsubServiceJID', TP.jid('pubsub.infohost.com'), 'nodeID',
- *     '/home/infohost/testrat', 'itemID', '4D62E20579F7C');
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'retract',
+ *                              'pubsubServiceJID',
+ *                                  TP.jid('pubsub.infohost.com'),
+ *                              'nodeID', '/home/infohost/testrat',
+ *                              'itemID', '4D62E20579F7C');
  *
  *     OR
  *
  *     Delete a pubsub node (and all subscriptions):
  *
- *     requestParams = TP.hc( 'action', 'pubsub', 'pubsub_action', 'delete',
- *     'pubsubServiceJID', TP.jid('pubsub.infohost.com'), 'nodeID',
- *     '/home/infohost/testrat');
+ *     requestParams = TP.hc('action', 'pubsub',
+ *                              'pubsub_action', 'delete',
+ *                              'pubsubServiceJID',
+ *                                  TP.jid('pubsub.infohost.com'),
+ *                              'nodeID', '/home/infohost/testrat');
  *
  *     Package and fire the request:
  *
  *     msgReq = TP.sig.XMPPRequest.construct(requestParams);
- *     msgReq.defineHandler('RequestSucceeded', function(aResponse) {
- *
- *     TP.info(aResponse.getResult()); }); msgReq.fire();
+ *     msgReq.defineHandler('RequestSucceeded',
+ *                          function(aResponse) {
+ *                              TP.info(aResponse.getResult());
+ *                          });
+ *     msgReq.fire();
  */
 
 //  ------------------------------------------------------------------------

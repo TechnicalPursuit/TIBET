@@ -1060,8 +1060,8 @@ function(options) {
                                 }
                                 break;
                             default:
-                                // If no viable status code the job never ran,
-                                // hence we'll consider it skipped.
+                                //  If no viable status code the job never ran,
+                                //  hence we'll consider it skipped.
                                 skipped += 1;
                                 break;
                         }

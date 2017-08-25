@@ -15,35 +15,43 @@
  *     also be used to construct simple query sequences or console 'wizards' to
  *     prompt the user for information in a sequence.
  * @example
- uis = TP.sig.UserInputSeries.construct();
+ *     uis = TP.sig.UserInputSeries.construct();
  *
  *     uis.addQuery(TP.hc('query', 'Knock Knock Neo...', 'validator',
- *     function(input) {
+ *                  function(input) {
+ *                      return /who.*s there/i.test(input);
+ *                  }));
  *
- *     return /who.*s there/i.test(input); }));
+ *     uis.addQuery(TP.hc('query', 'Hello', 'validator',
+ *                  function(input) {
+ *                      return /hello who/i.test(input);
+ *                  }));
  *
- *     uis.addQuery(TP.hc('query', 'Hello', 'validator', function(input) {
+ *     uis.addCancelHook(
+ *              function(series) {
+ *                  TP.sig.UserOutputRequest.construct(
+ *                      TP.hc( 'output','Quitter!', 'messageType','failure')).
+ *                                                  fire(series.get('origin'));
+ *              });
  *
- *     return /hello who/i.test(input); }));
+ *     uis.addFailureHook(
+ *              function(series) {
+ *                  TP.sig.UserOutputRequest.construct(
+ *                      TP.hc( 'output','Oops!', 'messageType','failure' )).
+ *                                                  fire(series.get('origin'));
+ *              });
  *
- *     uis.addCancelHook( function(series) {
+ *     uis.addSuccessHook(
+ *              function(series) {
+ *                  TP.sig.UserOutputRequest.construct(
+ *                      TP.hc('output','Hello World!')).
+ *                                                  fire(series.get('origin'));
+ *              });
  *
- *     TP.sig.UserOutputRequest.construct(TP.hc( 'output','Quitter!',
- *     'messageType','failure' )).fire(series.get('origin')); });
+ *     Note that we need to associate the request with a shell if we want a
+ *     console to respond since consoles only work on behalf of their models:
  *
- *     uis.addFailureHook( function(series) {
- *
- *     TP.sig.UserOutputRequest.construct(TP.hc( 'output','Oops!',
- *     'messageType','failure' )).fire(series.get('origin')); });
- *
- *     uis.addSuccessHook( function(series) {
- *
- *     TP.sig.UserOutputRequest.construct(TP.hc( 'output','Hello World!'
- *     )).fire(series.get('origin')); });
- *
- *     // note that we need to associate the request with a shell if // we want
- *     a console to respond since consoles only work on // behalf of their
- *     models uis.fire(this);
+ *     uis.fire(this);
  */
 
 //  ------------------------------------------------------------------------

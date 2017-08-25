@@ -362,7 +362,7 @@ function(aRequest) {
             } else if (TP.isFunction(obj)) {
 
                 if (owners) {
-                    // Query for owners, but just names.
+                    //  Query for owners, but just names.
                     results = TP.sys.getMethodOwners(arg0, true);
                     if (TP.notEmpty(results)) {
                         regex = RegExp.construct('(\\.|_)' + arg0 + '(_|$)');

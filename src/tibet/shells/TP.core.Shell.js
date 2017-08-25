@@ -118,7 +118,7 @@ function(aRequest) {
         return;
     }
 
-    // Configure the STDIO handler to be used for the request.
+    //  Configure the STDIO handler to be used for the request.
     stdio = TP.ifInvalid(params.at('cmdStdio'), '');
     if (TP.isString(stdio)) {
         stdio = TP.core.Resource.getResourceById(stdio);
@@ -2072,7 +2072,7 @@ function(anObject, aRequest) {
     } else if (TP.isKindOf(aRequest, TP.sig.UserIORequest)) {
         req = aRequest;
     } else {
-        // Need to repackage in the proper subtype for processing.
+        //  Need to repackage in the proper subtype for processing.
         req = TP.sig.UserOutputRequest.construct(aRequest);
         req.set('requestor', this);
     }
@@ -2736,8 +2736,9 @@ function(aString) {
 
                     value = this.getExecutionInstance().at('$' + varName);
 
-                    // If the variable isn't defined in scope return it so the
-                    // string value "exposes" that variable as being unresolved.
+                    //  If the variable isn't defined in scope return it so the
+                    //  string value "exposes" that variable as being
+                    //  unresolved.
                     if (TP.notDefined(value)) {
                         return wholeMatch;
                     }
@@ -3178,9 +3179,8 @@ function(aRequest, forms) {
                         }
 
                         if (val.startsWith('${') && val.endsWith('}')) {
-                            // This might not find a value, but if it
-                            // does we essentially are resolving the
-                            // identifier.
+                            //  This might not find a value, but if it does we
+                            //  essentially are resolving the identifier.
                             expandedVal = shell.getVariable(
                                 '$' + val.slice(2, -1));
                         } else if (part.name === 'identifier') {

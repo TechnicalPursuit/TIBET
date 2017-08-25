@@ -170,8 +170,8 @@ function(anObject, optFormat) {
 
     str = TP.str(anObject);
 
-    // NOTE the CDATA blocks here combined with <pre> to hold on to remaining
-    // whitespace while ensuring we ignore any embedded < or > symbols etc.
+    //  NOTE the CDATA blocks here combined with <pre> to hold on to remaining
+    //  whitespace while ensuring we ignore any embedded < or > symbols etc.
     return '<span class="tsh_pp Function"><pre><![CDATA[' + str +
         ']]></pre></span>';
 });
@@ -552,7 +552,7 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    // Requests that are not yet processed should format their command.
+    //  Requests that are not yet processed should format their command.
     if (anObject.isCompleted()) {
         data = anObject.getResult();
     } else {

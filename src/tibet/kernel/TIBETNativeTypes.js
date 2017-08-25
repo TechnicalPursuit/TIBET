@@ -4694,7 +4694,7 @@ if (!TP.isFunction(TP.StringProto.endsWith)) {
     });
 } else {
     //  Otherwise, just register the builtin.
-    String.Inst.defineMethod('endsWith', TP.StringProto.endsWith); // E6
+    String.Inst.defineMethod('endsWith', TP.StringProto.endsWith); //   E6
 }
 
 //  ------------------------------------------------------------------------

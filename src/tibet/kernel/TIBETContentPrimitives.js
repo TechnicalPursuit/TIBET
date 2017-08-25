@@ -60,7 +60,7 @@ function() {
         win = window;
     }
 
-    // Look up the frame name, or default to an easy-to-spot name.
+    //  Look up the frame name, or default to an easy-to-spot name.
     iframeName = TP.sys.cfg('jsonp.frame_id') || 'JSONP';
 
     if (!TP.isElement(iframeElem =

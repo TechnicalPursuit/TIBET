@@ -13,60 +13,66 @@
  * @summary A service supporting simple REST calls with minimal encoding and
  *     serialization logic.
  * @examples
- // To construct the service, provide a resourceID to // identify
- *     the service instance and an optional "service // URI" pointing to the
- *     target service endpoint which will // be the default target URI for
- *     requests handled by the // service instance:
+ *     To construct the service, provide a resourceID to identify the service
+ *     instance and an optional "service URI" pointing to the target service
+ *     endpoint which will be the default target URI for requests handled by the
+ *     service instance:
  *
  *     service = TP.core.RESTService.construct('XMLFetcher');
  *
- *     // if you will be using the service to handle asynchronous // calls you
- *     should invoke register on it so it observes // the trigger signals
- *     representing its request types:
+ *     If you will be using the service to handle asynchronous calls you should
+ *     invoke register on it so it observes the trigger signals representing its
+ *     request types:
  *
  *     service.register();
  *
- *     // NOTE that neither of the previous steps are necessary if // you can
- *     leverage a default service instance. Each // service type has the option
- *     of registering during type // initialize so that a default instance will
- *     handle // requests. TP.core.RESTService does that so you don't // really
- *     need a service instance.
+ *     NOTE that neither of the previous steps are necessary if you can
+ *     leverage a default service instance. Each service type has the option of
+ *     registering during type initialize so that a default instance will
+ *     handle requests. TP.core.RESTService does that so you don't really need a
+ *     service instance.
  *
- *     // To leverage the REST service simply construct request // objects
- *     configured to match the parameters the service // type expects. The key
- *     ones are 'uri' and 'method' which // are sufficient for GET requests. Add
- *     'uriparams' to put // additional qualifiers on the query portion of the
- *     URI. // Add 'body' to provide content for a POST, PUT, etc.
+ *     To leverage the REST service simply construct request objects configured
+ *     to match the parameters the service type expects. The key ones are 'uri'
+ *     and 'method' which are sufficient for GET requests. Add 'uriparams' to
+ *     put additional qualifiers on the query portion of the URI. Add 'body' to
+ *     provide content for a POST, PUT, etc.
  *
- *     // request a standard page's content asynchronously. To // handle the
- *     response we add a local method which does // any callback processing we
- *     want:
+ *     Request a standard page's content asynchronously:
+ *
+ *     To handle the response we add a local method which does any callback
+ *     processing we want:
  *
  *     request = TP.sig.RESTRequest.construct(
- *     TP.hc('uri','http://www.google.com'));
- *     request.defineHandler('RequestSucceeded', function(aResponse) {
+ *                          TP.hc('uri','http://www.foo.com'));
  *
- *     TP.info(aResponse.getResult()); }); request.fire();
+ *     request.defineHandler('RequestSucceeded',
+ *              function(aResponse) {
+ *                  TP.info(aResponse.getResult());
+ *              });
+ *     request.fire();
  *
- *     // request a standard page's content synchronously. The // interesting
- *     thing here is that the two approaches are // identical in terms of how
- *     result processing can be // approached...you can still use the same
- *     callback hook:
+ *     Request a standard page's content synchronously:
  *
- *     request = TP.sig.RESTRequest.construct( TP.hc('uri',
- *     'http://www.google.com', 'async', false));
- *     request.defineHandler('RequestSucceeded', function(aResponse) {
+ *     The interesting thing here is that the two approaches are identical in
+ *     terms of how result processing can be approached...you can still use the
+ *     same callback hook:
  *
- *     TP.info(aResponse.getResult()); }); request.fire();
+ *     request = TP.sig.RESTRequest.construct(
+ *                          TP.hc('uri', 'http://www.foo.com', 'async', false));
  *
- *     // request a standard page's content synchronously without // a callback
- *     method in place: request = TP.sig.RESTRequest.construct( TP.hc('uri',
- *     'http://www.google.com', 'async', false)); request.fire();
+ *     Request a standard page's content synchronously without a callback method
+ *     in place:
+ *
+ *     request = TP.sig.RESTRequest.construct(
+ *                          TP.hc('uri', 'http://www.foo.com', 'async', false));
+ *     request.fire();
+ *
  *     TP.info(request.getResponse().getResult());
  *
- *     // NOTE that if you have a specific service instance you // can trigger
- *     processing simply by asking the service to // handle the request. Note
- *     this example assumes sync:
+ *     NOTE that if you have a specific service instance you can trigger
+ *     processing simply by asking the service to handle the request. This
+ *     example assumes sync:
  *
  *     response = TP.handle(service, request); TP.info(response.getResult());
  */

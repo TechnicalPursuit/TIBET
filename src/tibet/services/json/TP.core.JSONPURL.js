@@ -18,10 +18,10 @@
  *
  * @example
 
- // Read JSON data using JSONP and the CrunchBase API on Facebook.
- *     // NOTE: We do *not* supply the callback parameter here - TIBET's //
- *     machinery takes care of that for us. We use standard TIBET // observation
- *     mechanisms to be notified when the data is ready.
+ *     Read JSON data using JSONP and the CrunchBase API on Facebook.
+ *     NOTE: We do *not* supply the callback parameter here - TIBET's machinery
+ *     takes care of that for us. We use standard TIBET observation mechanisms
+ *     to be notified when the data is ready.
  *
  *     myJSONPURL =
  *     TP.uc('jsonp://api.crunchbase.com/v/1/company/facebook.js');
@@ -32,8 +32,10 @@
  *     TP.ifInfo() ? TP.info('The results are: ' +
  *     TP.str(aRequest.getResult())): 0; });
  *
- *     // OR Fetch the content and ignore the URL cache, going to the // data
- *     source each time. myJSONPURL.getResource(jsonRequest);
+ *     OR Fetch the content and ignore the URL cache, going to the data source
+ *     each time:
+ *
+ *     myJSONPURL.getResource(jsonRequest);
  */
 
 //  ------------------------------------------------------------------------

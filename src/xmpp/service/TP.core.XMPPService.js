@@ -74,9 +74,9 @@
  *     that will be used as the 'connectionJID' (the 'from JID') for this
  *     connection.
  *
- *     There are several ways to use a connection. A connection can // be
- *     opened and authenticated or, if the 'connectionJID' is // 'new' to the
- *     server, it can try to register with it.
+ *     There are several ways to use a connection. A connection can be opened
+ *     and authenticated or, if the 'connectionJID' is 'new' to the server, it
+ *     can try to register with it.
  *
  *     Open and authenticate a connection:
  *
@@ -115,7 +115,7 @@
  *
  *         xmppService.setupCurrentUser();
  *     } else {
- *         // Can't open connection
+ *         //   Can't open connection
  *     };
  *
  *     Shut down a connection:

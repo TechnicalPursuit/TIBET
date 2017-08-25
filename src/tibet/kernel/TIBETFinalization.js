@@ -521,9 +521,9 @@ function() {
         return;
     }
 
-    // As long as we're not sharing a UI for booting with the final target UI we
-    // can go ahead and hide the root UI while keeping the boot UI visible in
-    // case errors occur.
+    //  As long as we're not sharing a UI for booting with the final target UI
+    //  we can go ahead and hide the root UI while keeping the boot UI visible
+    //  in case errors occur.
     if (TP.boot.getUIRoot() !== TP.boot.getUIBoot()) {
         TP.boot.hideUIRoot();
     }
@@ -579,7 +579,6 @@ function() {
                     'full_console');
             }
         }
-
     });
 
     request.atPut(TP.ONFAIL, function(req) {

@@ -439,7 +439,7 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    // TODO: The UICANVAS should be set to be the UIROOT here.
+    //  TODO: The UICANVAS should be set to be the UIROOT here.
 
     return this.callNextMethod();
 });

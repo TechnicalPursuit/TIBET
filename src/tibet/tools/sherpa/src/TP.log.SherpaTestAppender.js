@@ -60,7 +60,7 @@ function(anEntry) {
             stdio = 'stderr';
             break;
         default:
-            // trace, debug, info, system, all
+            //  trace, debug, info, system, all
             stdio = 'stdout';
             break;
     }

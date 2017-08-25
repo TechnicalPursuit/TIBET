@@ -7991,7 +7991,7 @@ function(anIndex, aValue) {
         //  NB: Here, we cannot use the normal TP.hc(arguments...) form of the
         //  constructor or we'll loop endlessly back into this method. We must
         //  use lower-level constructs.
-        // this.changed(anIndex, op, TP.hc(TP.OLDVAL, val, TP.NEWVAL, aValue));
+        //  this.changed(anIndex, op, TP.hc(TP.OLDVAL, val, TP.NEWVAL, aValue));
 
         changeRecord = TP.hc();
 
@@ -8530,7 +8530,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
  *         arr.push(it.nextValue());
  *     }
  *
- *     // get current value (what nextValue() last returned)
+ *     //   get current value (what nextValue() last returned)
  *     it.currentValue();
  */
 

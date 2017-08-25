@@ -258,7 +258,7 @@ function(aRequest) {
                         return obj.runTestSuites(options);
                     }).then(
                     function(result) {
-                        // TODO: should we pass non-null results?
+                        //  TODO: should we pass non-null results?
                         aRequest.complete(TP.TSH_NO_VALUE);
                         karma.complete();
                     },

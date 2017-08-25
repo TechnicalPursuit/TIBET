@@ -306,16 +306,16 @@ function(utf8) {
     while (i < utf8.length) {
         b1 = utf8.charCodeAt(i);
         if (b1 < 0x80) {
-            // One byte code: 0x00 0x7F
+            //  One byte code: 0x00 0x7F
             str += String.fromCharCode(b1);
             i++;
         } else if ((b1 >= 0xC0) && (b1 < 0xE0)) {
-            // Two byte code: 0x80 - 0x7FF
+            //  Two byte code: 0x80 - 0x7FF
             b2 = utf8.charCodeAt(i + 1);
             str += String.fromCharCode(((b1 & 0x1F) << 6) | (b2 & 0x3F));
             i += 2;
         } else {
-            // Three byte code: 0x800 - 0xFFFF
+            //  Three byte code: 0x800 - 0xFFFF
             b2 = utf8.charCodeAt(i + 1);
             b3 = utf8.charCodeAt(i + 2);
             str += String.fromCharCode(((b1 & 0xF) << 12) |
@@ -427,9 +427,9 @@ function(str) {
             utf8 += String.fromCharCode((c >> 6) | 0xC0);
             utf8 += String.fromCharCode((c & 0x3F) | 0x80);
         } else {
-            // 0x800 - 0xFFFF:  Output as three bytes, 0xE0 in first byte
-            //                                         0x80 in second byte
-            //                                         0x80 in third byte
+            //  0x800 - 0xFFFF:  Output as three bytes, 0xE0 in first byte
+            //                                          0x80 in second byte
+            //                                          0x80 in third byte
             utf8 += String.fromCharCode((c >> 12) | 0xE0);
             utf8 += String.fromCharCode(((c >> 6) & 0x3F) | 0x80);
             utf8 += String.fromCharCode((c & 0x3F) | 0x80);

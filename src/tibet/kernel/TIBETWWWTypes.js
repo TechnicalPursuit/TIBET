@@ -3002,39 +3002,46 @@ function(aURI, aRequest) {
  *
  * @example
 
- // session #1. Store the data in the default domain and path. This
- *     // will be cached in the URI until its cache is flushed or this //
- *     session is shutdown and another one started:
+ *     Session #1. Store the data in the default domain and path. This will be
+ *     cached in the URI until its cache is flushed or this session is shutdown
+ *     and another one started:
  *
  *     myCookieURI = TP.uc('cookie:///last_visited');
  *
- *     // Set the content to a Date of 'now'.
+ *     Set the content to a Date of 'now':
+ *
  *     myCookieURI.setContent(TP.dc().asString()); myCookieURI.save();
  *
- *     // session #2. Read the data back:
+ *     Session #2. Read the data back:
  *
  *     myCookieURI = TP.uc('cookie:///last_visited');
  *
- *     // Fetch the content and cache it in the URL the first time
+ *     fetch the content and cache it in the URL the first time:
+ *
  *     myCookieURI.getResource().get('result'); // -> Returns the date set
  *
- *     // OR Fetch the content and ignore the URL cache, going to the
- *     // database each time.
- *     myCookieURI.getResource(TP.hc('refresh', true)).get('result'); ->
- *     // Returns the date set.
+ *     OR Fetch the content and ignore the URL cache, going to the database each
+ *     time:
  *
- *     // session #3. Store the data using non-default values:
+ *     myCookieURI.getResource(TP.hc('refresh', true)).get('result'); -> The
+ *     date set.
  *
- *     // Set a cookie for the 'foo.com' domain, storing the data along // the
- *     'user_info' path under the 'last_visited' cookie name. Also, // set
- *     security to false and the expiration date to 'now + 2 days'. myCookieURI
- *     = TP.uc( TP.join('cookie://foo.com/user_info/last_visited?expires="',
- *     encodeURIComponent(TP.dc().addDuration('P2D')), '"&secure=false'));
+ *     Session #3. Store the data using non-default values:
  *
- *     // Set the content to a Date of 'now'.
+ *     Set a cookie for the 'foo.com' domain, storing the data along the
+ *     'user_info' path under the 'last_visited' cookie name. Also, set security
+ *     to false and the expiration date to 'now + 2 days':
+ *
+ *     myCookieURI = TP.uc(
+ *          TP.join('cookie://foo.com/user_info/last_visited?expires="',
+ *          encodeURIComponent(TP.dc().addDuration('P2D')), '"&secure=false'));
+ *
+ *     Set the content to a Date of 'now':
+ *
  *     myCookieURI.setContent(TP.dc().asString()); myCookieURI.save();
  *
- *     // Fetch the content and cache it in the URL the first time
+ *     Fetch the content and cache it in the URL the first time:
+ *
  *     myCookieURI.getResource().get('result'); // -> Returns the date set
  */
 

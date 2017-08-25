@@ -854,7 +854,7 @@ function() {
                 }
 
                 if (!example) {
-                    // str is already trimmed, just remove any leading '*' etc.
+                    //  str is already trimmed, just remove any leading '*' etc.
                     str = str.replace(/^\*\s*/, '');
                 } else {
                     str = aLine;
@@ -1563,7 +1563,7 @@ function(shouldDescend) {
         //  time via the iteration across all newly found subtypes
         types.addAll(type.getSubtypes(false) || emptyArr);
 
-        // update length in case we found some more to work through
+        //  update length in case we found some more to work through
         len = types.length;
     }
 
@@ -2223,7 +2223,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
 
 //  ------------------------------------------------------------------------
 
-// NOTE: DO NOT REGISTER THIS...
+//  NOTE: DO NOT REGISTER THIS...
 TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
     /**
@@ -3140,7 +3140,7 @@ function(aFilter) {
 
         propScope;
 
-        // TODO: why don't we use this value?
+        //  TODO: why don't we use this value?
         // proto;
 
     //  shortcut for using this method to get all keys of any kind.
@@ -9292,7 +9292,7 @@ function(aFunction, anObject) {
 
     //  only going to find one match if we're not global...but if we're
     //  global then we'd have to run it to see how many matches we get
-    // len = this.global ? NaN : 1;
+    //len = this.global ? NaN : 1;
 
     //  the replace call is what drives the actual iteration so we don't
     //  have to construct a loop here. what we do have to do is create a

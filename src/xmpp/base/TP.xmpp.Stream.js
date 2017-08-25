@@ -32,7 +32,7 @@ TP.xmpp.Stream.Type.defineAttribute(
             ' version="1.0">',  //  version="1.0" means XMPP 1.0
                                 //  compliance we'll add the 'xml:lang'
                                 //  in the element initialize
-            // get around mozilla, it wants to rewrite our xml
+            //  get around mozilla, it wants to rewrite our xml
             '<!-- TIBET(tm) Active Client Messaging -->',
             '</stream:stream>'));
 

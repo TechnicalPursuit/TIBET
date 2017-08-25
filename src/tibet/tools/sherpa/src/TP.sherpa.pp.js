@@ -464,7 +464,7 @@ function(anObject, optFormat) {
     } catch (e) {
         formatInLoop = false;
         try {
-            // Some objects don't even like Object.keys....sigh...
+            //  Some objects don't even like Object.keys....sigh...
             output.push('<span data-name="value">',
                         Object.prototype.toString.call(anObject),
                         '</span>');
@@ -847,7 +847,7 @@ function(anObject, optFormat) {
         void 0;
     }
 
-    // Requests that are not yet processed should format their command.
+    //  Requests that are not yet processed should format their command.
     if (anObject.isCompleted()) {
         data = anObject.getResult();
     } else {

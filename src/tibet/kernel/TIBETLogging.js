@@ -655,7 +655,7 @@ TP.log.Nestable.defineSubtype('log.Logger');
 TP.log.Logger.addTraits(TP.log.Leveled);
 TP.log.Logger.addTraits(TP.log.Filtered);
 
-// Logger's inherit from their ancestor chain so we need to preserve getters.
+//  Logger's inherit from their ancestor chain so we need to preserve getters.
 TP.log.Logger.Inst.resolveTraits(
     TP.ac('getFilters', 'getLevel', 'getParent'),
     TP.log.Logger);
@@ -1401,7 +1401,7 @@ function() {
         type = TP.sys.getTypeByName('TP.log.ConsoleLayout');
     }
 
-    // If the types in question can't be located use one from this file...
+    //  If the types in question can't be located use one from this file...
     if (TP.notValid(type)) {
         type = TP.sys.getTypeByName('TP.log.Layout');
     }
@@ -2306,9 +2306,9 @@ function(aFlag, aLogName) {
     var flag,
         owner;
 
-// TODO: the logic here should check the type, if the type is off then there's
-// no point in doing things at an instance level. We can rework this as a way to
-// override type settings.
+    //  TODO: the logic here should check the type, if the type is off then
+    //  there's no point in doing things at an instance level. We can rework
+    //  this as a way to override type settings.
 
     //  specific instruction/query regarding a particular log
     if (TP.isString(aLogName)) {
@@ -2346,7 +2346,7 @@ function(aFlag, aLogName) {
 //
 //  ----------------------------------------------------------------------------
 
-// TODO: migrate to housekeeping...
+//  TODO: migrate to housekeeping...
 TP.definePrimitive('$$log', TP.$$log);
 
 //  ----------------------------------------------------------------------------
@@ -2718,7 +2718,7 @@ function(aLogName) {
  * once the system has started (and can leverage all this nice TP.log stuff :)).
  */
 
-// TODO: migrate to housekeeping
+//  TODO: migrate to housekeeping
 TP.definePrimitive('trace', TP.trace);
 TP.definePrimitive('debug', TP.debug);
 TP.definePrimitive('info', TP.info);
@@ -3260,13 +3260,13 @@ function(anEntry) {
                 anEntry.getLogger().get('name') + ' ' +
                 anEntry.getLevel().get('name');
 
-    // If there's a marker we can output that as well...
+    //  If there's a marker we can output that as well...
     marker = anEntry.getMarker();
     if (TP.isValid(marker)) {
         str += ' [' + marker.get('name') + ']';
     }
 
-    // The arglist may have multiple elements in it which we need to handle.
+    //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
     if (TP.isValid(arglist)) {
         str += ' - ';
@@ -3314,7 +3314,7 @@ function(anEntry) {
 
     str = '';
 
-    // The arglist may have multiple elements in it which we need to handle.
+    //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
 
     if (TP.isValid(arglist)) {
@@ -3537,8 +3537,8 @@ function(anEntry) {
 
         rootRequest;
 
-    // Try to find a matching console API method to our level name. If we find
-    // it we'll use that to output the message content.
+    //  Try to find a matching console API method to our level name. If we find
+    //  it we'll use that to output the message content.
     name = anEntry.getLevel().get('name').toLowerCase();
     switch (name) {
         case 'warn':
@@ -3551,18 +3551,18 @@ function(anEntry) {
             stdio = 'stderr';
             break;
         default:
-            // trace, debug, info, system, all
+            //  trace, debug, info, system, all
             writer = 'log';
             stdio = 'stdout';
             break;
     }
 
-    // If the entry contains multiple parts and we have access to a
-    // group/groupEnd api via the console we'll group our output to help show
-    // that it's all the result of a single logging call...
-    // TODO:
+    //  If the entry contains multiple parts and we have access to a
+    //  group/groupEnd api via the console we'll group our output to help show
+    //  that it's all the result of a single logging call...
+    //  TODO:
 
-    // Format the little critter...
+    //  Format the little critter...
     layout = this.getLayout();
 
     results = layout.layout(anEntry);
@@ -3582,7 +3582,8 @@ function(anEntry) {
 
     asIs = results.at('cmdAsIs');
 
-    // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
+    //  If we don't use the console (but rely on stdio) PhantomJS won't be
+    //  happy.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
 
         //  If the content matches the TSH_NO_VALUE, exit here - we don't log

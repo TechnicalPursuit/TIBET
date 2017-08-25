@@ -2330,7 +2330,7 @@ function(anObject, aFormat, formatParams) {
         return aFormat.transform(anObject, formatParams);
     }
 
-    // Out of options. Return original object.
+    //  Out of options. Return original object.
     return anObject;
 });
 
@@ -6587,7 +6587,7 @@ TP.boot.$simplePropertyRetriever = {
         return this._getPropertyNames(
                         obj, true, true, this._enumerableAndNotEnumerable);
     },
-    // Private static property checker callbacks
+    //  Private static property checker callbacks
     _enumerable: function(obj, prop) {
         return obj.propertyIsEnumerable(prop);
     },
@@ -6597,7 +6597,7 @@ TP.boot.$simplePropertyRetriever = {
     _enumerableAndNotEnumerable: function(obj, prop) {
         return true;
     },
-    // Inspired by http://stackoverflow.com/a/8024294/271577
+    //  Inspired by http://stackoverflow.com/a/8024294/271577
     /* eslint-disable func-names */
     _getPropertyNames: function getAllPropertyNames(
                                     obj, iterateSelfBool,

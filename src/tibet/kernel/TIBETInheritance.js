@@ -257,8 +257,8 @@ function(name) {
     }
 
     //  build up names for our two constructors
-    typeName = wholeName + '.Type'; // TP.TYPEC;
-    instName = wholeName + '.Inst'; // TP.INSTC;
+    typeName = wholeName + '.Type'; //  TP.TYPEC;
+    instName = wholeName + '.Inst'; //  TP.INSTC;
 
     //  build a string appropriate to constructing a new subtype...we've
     //  tried a lot of ways to manage this process but this one seems to
@@ -389,7 +389,7 @@ function(name) {
     TP.defineNamespace(root + '.meta.' + nsName);
 
     if (TP.regex.HAS_PERIOD.test(nsName)) {
-        // Have to iterate our way down.
+        //  Have to iterate our way down.
         parts = nsName.split('.');
         root = TP.global[root].meta;
 
@@ -9355,8 +9355,8 @@ function() {
         theArgs = TP.$$currentArgs$$;
     }
 
-    // We could use this[functionName] but that won't provide a way to avoid
-    // recursions.
+    //  We could use this[functionName] but that won't provide a way to avoid
+    //  recursions.
     if (TP.notValid(theFunction)) {
         return this.raise('TP.sig.InvalidContext');
     }

@@ -194,8 +194,8 @@ function(aRequest) {
 
     async = TP.ifKeyInvalid(aRequest, 'async', null);
     refresh = TP.ifKeyInvalid(aRequest, 'refresh', null);
-    // TODO: on the wrong object this will cause a nasty recursion and blow up.
-    // Figure out why.
+    //  TODO: on the wrong object this will cause a nasty recursion and blow up.
+    //  Figure out why.
     // uri = TP.ifKeyInvalid(aRequest, 'uri', TP.str(TP.uri(this)));
 
     if (TP.notValid(async)) {

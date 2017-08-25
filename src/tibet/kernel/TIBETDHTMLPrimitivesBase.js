@@ -1573,7 +1573,7 @@ function(anElement) {
         return Math.sqrt(val[0] * val[0] + val[1] * val[1]);
     };
 
-    // normalizes the length of the passed point to 1
+    //  normalizes the length of the passed point to 1
 
     normalize = function(val) {
         var l;
@@ -1583,15 +1583,15 @@ function(anElement) {
         return l ? [val[0] / l, val[1] / l] : [0, 0];
     };
 
-    // returns the dot product of the passed points
+    //  returns the dot product of the passed points
 
     dot = function(left, right) {
         return left[0] * right[0] + left[1] * right[1];
     };
 
-    // returns the principal value of the arc tangent of
-    // y/x, using the signs of both arguments to determine
-    // the quadrant of the return value
+    //  returns the principal value of the arc tangent of
+    //  y/x, using the signs of both arguments to determine
+    //  the quadrant of the return value
 
     atan2 = Math.atan2;
 
@@ -1616,37 +1616,37 @@ function(anElement) {
     tx = transformMatrix[4];
     ty = transformMatrix[5];
 
-    // Make sure the matrix is invertible
+    //  Make sure the matrix is invertible
     if ((a * d - b * c) === 0) {
         return null;
     }
 
     /* eslint-enable no-extra-parens */
 
-    // Take care of translation
+    //  Take care of translation
 
     translate = [tx, ty];
 
-    // Put the components into a 2x2 matrix
+    //  Put the components into a 2x2 matrix
     m = [[a, b], [c, d]];
 
-    // Compute X scale factor and normalize first row.
+    //  Compute X scale factor and normalize first row.
 
     scale = [length(m[0])];
     m[0] = normalize(m[0]);
 
-    // Compute shear factor and make 2nd row orthogonal to 1st.
+    //  Compute shear factor and make 2nd row orthogonal to 1st.
 
     skew = dot(m[0], m[1]);
     m[1] = combine(m[1], m[0], 1, -skew);
 
-    // Now, compute Y scale and normalize 2nd row.
+    //  Now, compute Y scale and normalize 2nd row.
 
     scale[1] = length(m[1]);
-    // m[1] = normalize(m[1]) //
+    //m[1] = normalize(m[1]) //
     skew /= scale[1];
 
-    // Now, get the rotation out
+    //  Now, get the rotation out
 
     rotate = atan2(m[0][1], m[0][0]);
 
@@ -2300,7 +2300,7 @@ function(aWindow, objectName) {
                                             arguments[8]);
             break;
         default:
-            // TODO: reevaluate when this would be used.
+            //  TODO: reevaluate when this would be used.
             /* eslint-disable no-eval */
             eval('$$newinst = new constructorObj(' +
                 TP.sys.$buildArgString(2, arguments.length) + ');');

@@ -371,7 +371,7 @@ TP.registerLoadInfo(TP.sys.getGlobals);
  * @param {Object} data The release data structure.
  */
 TP.sys.release = function(data) {
-    // Only set this once.
+    //  Only set this once.
     if (!TP.sys.$version) {
         TP.sys.$version = data;
     }
@@ -1096,7 +1096,7 @@ TP.REJECTED = 13;                       //  outer multi-step job "failure"
 TP.AND = 'and';
 TP.OR = 'or';
 
-// Commonly used log names.
+//  Commonly used log names.
 TP.LOG = 'TP';
 TP.APP_LOG = 'APP';
 TP.BOOT_LOG = 'boot';
@@ -1716,7 +1716,7 @@ TP.SLOT_FILTERS = {
     },
 
     unique_attributes: {
-    },  // default values
+    },  //  default values
     local_attributes: {
         scope: TP.LOCAL
     },
@@ -2824,10 +2824,10 @@ TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
                                             '\\s*:\\s*' +
                                             '(' + '[^;]+' + ');?',
-                                        'g'); // needs reset
+                                        'g'); //    needs reset
 
 TP.regex.BINDING_STATEMENT_DETECT = /\[\[(.+?)\]\]/;
-TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
+TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; //   needs reset
 TP.regex.BINDING_ATTR_VALUE_DETECT = /\s*\{\s*\w+\s*:/;
 
 TP.regex.TSH_QUOTECHAR = /['"]/;
@@ -2843,7 +2843,7 @@ TP.regex.TSH_VARSUB_EXTRACT = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/g;
 //  Only matches the 'extended variable' format
 TP.regex.TSH_VARSUB_EXTENDED = /\$\{([A-Z_$]{1}[A-Z0-9_$]*)\}/g;
 
-// pseudo-acp plus format string means potentially transformable string
+//  pseudo-acp plus format string means potentially transformable string
 TP.regex.TRANSFORMABLE = /[$#%@]\{|`.+`/;
 
 TP.regex.CAMEL_CASE = /([-\s_]([a-z]))/g;       //  needs reset
@@ -2864,7 +2864,7 @@ TP.regex.PERCENTAGE = /^-?\d+%$/i;
 TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN =
                         /"(-?\d*\.?\d+|true|false)"/g;  //  needs reset
 
-// needs reset
+//  needs reset
 TP.regex.NON_UTF8_CHARS =
 /[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF4][\x80-\xBF]{3}/g;
 
@@ -2927,20 +2927,20 @@ TP.regex.XHTML_10_EMPTY_ELEMENTS = /^(area|base|basefont|bgsound|br|col|embed|hr
 
 //  Same as above, except it contains markup brackets for stripping purposes.
 /* eslint-disable max-len */
-TP.regex.XHTML_10_EMPTY_ELEMENTS_STRIP = /<\/(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)>/g; // needs reset
+TP.regex.XHTML_10_EMPTY_ELEMENTS_STRIP = /<\/(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)>/g; //  needs reset
 /* eslint-enable max-len */
 
 //  A RegExp that matches XML comments.
 
 //  The content of the comment can be found in group 2.
-TP.regex.XML_COMMENT = new RegExp(TP.XML_COMMENT_DEF, 'g'); // needs reset
+TP.regex.XML_COMMENT = new RegExp(TP.XML_COMMENT_DEF, 'g'); //  needs reset
 
 //  A RegExp that matches an XML comment that must be the whole content
 TP.regex.XML_COMMENT_WHOLE = new RegExp('^<!--(.+?)-->$');
 
 //  A RegExp that matches XML CDATA sections.
 
-TP.regex.XML_CDATA = new RegExp(TP.XML_CDATA_DEF, 'g'); // needs reset
+TP.regex.XML_CDATA = new RegExp(TP.XML_CDATA_DEF, 'g'); //  needs reset
 
 //  A RegExp that matches an XML CDATA section that must be the whole content
 TP.regex.XML_CDATA_WHOLE = new RegExp('^<!\\[CDATA\\[(.+?)\\]\\]>$');
@@ -2950,7 +2950,7 @@ TP.regex.XML_CDATA_WHOLE = new RegExp('^<!\\[CDATA\\[(.+?)\\]\\]>$');
 //  The content of the PI can be found in group 1 - including the trailing '?>'
 //  which may need to be sliced off
 
-TP.regex.XML_PI = new RegExp(TP.XML_PI_DEF, 'g'); // needs reset
+TP.regex.XML_PI = new RegExp(TP.XML_PI_DEF, 'g'); //    needs reset
 
 //  A RegExp that matches an XML processing instrction that must be the whole
 //  content
@@ -2997,17 +2997,17 @@ TP.regex.CONTAINS_ONLY_ELEM_START =
 
 //  A RegExp that matches various HTML tags.
 TP.regex.HTML_HTML_ELEM =
-        /<html((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/html)>/gi;   // needs reset
+        /<html((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/html)>/gi;   //  needs reset
 TP.regex.HTML_HEAD_ELEM =
-        /<head((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/head)>/gi;   // needs reset
+        /<head((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/head)>/gi;   //  needs reset
 TP.regex.HTML_BODY_ELEM =
-        /<body((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/body)>/gi;   // needs reset
+        /<body((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/body)>/gi;   //  needs reset
 
 TP.regex.HTML_SCRIPT_ELEM =
-        /<script((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/script)>/gi;   // needs reset
+        /<script((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/script)>/gi;   //  needs reset
 
 /* eslint-disable max-len */
-// needs reset
+//  needs reset
 TP.regex.HTML_CSS_LINK_ELEM =
 /<link((.*)?( rel="stylesheet"| type="text\/css")+([^\/>]*)?)(\/|>([^<]*)?<\/link)>/gi;
 /* eslint-enable max-len */
@@ -3224,11 +3224,11 @@ TP.regex.NS_QUALIFIED = /(.*):(.*)/;
 
 //  A RegExp that will strip the 'XML namespace' (as MSXML already defines
 //  it and doesn't like it at all when you try to redefine it).
-// needs reset
+//  needs reset
 TP.regex.XML_XMLNS_STRIP =
     /xmlns:xml=(['"])http:\/\/www.w3.org\/XML\/1998\/namespace(\1)/g;
 
-TP.regex.XMLNS_STRIP = /\s+xmlns([:\w]*?)=['"](.*?)['"]/g;  // needs reset
+TP.regex.XMLNS_STRIP = /\s+xmlns([:\w]*?)=['"](.*?)['"]/g;  //  needs reset
 TP.regex.XMLNS_ATTR = /xmlns[:=]/;
 
 //  ---

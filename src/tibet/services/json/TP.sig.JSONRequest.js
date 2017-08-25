@@ -28,14 +28,14 @@
  *
  *     Request parameters examples:
  *
- *     // JSON data retrieved via the JSONP transport mechanism.
+ *     JSON data retrieved via the JSONP transport mechanism:
  *
  *     requestParams = TP.hc( 'uri',
  *     'jsonp://ajax.googleapis.com/ajax/services/search/web', 'uriparams',
  *     TP.hc('q', 'football', 'v', '1.0') );
  *
- *     // JSON data retrieved via the JSONP transport mechanism - with //
- *     custom callback function.
+ *     JSON data retrieved via the JSONP transport mechanism - with custom
+ *     callback function:
  *
  *     requestParams = TP.hc( 'uri',
  *     'jsonp://ajax.googleapis.com/ajax/services/search/web', 'uriparams',
@@ -43,22 +43,22 @@
  *
  *     TP.info('Result: ' + TP.json(result)); } );
  *
- *     // JSON data retrieved via the JSONP transport mechanism - with //
- *     different callback parameter name than 'callback' (some // services don't
- *     call the parameter that you put the name of // the callback function into
- *     'callback').
+ *     JSON data retrieved via the JSONP transport mechanism - with different
+ *     callback parameter name than 'callback' (some services don't call the
+ *     parameter that you put the name of the callback function into
+ *     'callback'):
  *
  *     requestParams = TP.hc( 'uri',
  *     'jsonp://www.nonstandard.com/ajax/someservice', 'uriparams', TP.hc('q',
  *     'football', 'v', '1.0'), 'callbackParamName', 'jsoncallback', );
  *
- *     // JSON data retrieved via the HTTP transport mechanism.
+ *     JSON data retrieved via the HTTP transport mechanism:
  *
  *     requestParams = TP.hc( 'uri', 'http://search.twitter.com/search.json',
  *     'uriparams', TP.hc('q', 'devo', 'rpp', '15') );
  *
- *     // JSON data retrieved via the HTTP transport mechanism - with // custom
- *     callback function.
+ *     JSON data retrieved via the HTTP transport mechanism - with custom
+ *     callback function:
  *
  *     requestParams = TP.hc( 'uri', 'http://search.twitter.com/search.json',
  *     'uriparams', TP.hc('q', 'devo', 'rpp', '15'), 'callbackFunc',

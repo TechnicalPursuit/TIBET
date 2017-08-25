@@ -444,7 +444,7 @@ TP.isDNU[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isDNU[TP.DISPLAY] = 'TP.isDNU';
 TP.registerLoadInfo(TP.isDNU);
 
-// TODO: Remove after cleansing old name.
+//  TODO: Remove after cleansing old name.
 TP.$$isDNU = TP.isDNU;
 
 //  ------------------------------------------------------------------------
@@ -470,7 +470,7 @@ TP.makeStartUpper[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.makeStartUpper[TP.DISPLAY] = 'TP.makeStartUpper';
 TP.registerLoadInfo(TP.makeStartUpper);
 
-// TODO: Remove after cleansing old name.
+//  TODO: Remove after cleansing old name.
 TP.$$makeStartUpper = TP.makeStartUpper;
 
 //  ------------------------------------------------------------------------
@@ -1193,8 +1193,8 @@ TP.boot.PHash = function() {
          *     receiver.
          */
 
-        // Pray this doesn't get invoked before we rebuild with the real hash
-        // type (or better yet Map when it arrives).
+        //  Pray this doesn't get invoked before we rebuild with the real hash
+        //  type (or better yet Map when it arrives).
         return TP.hc(this.$$hash);
     };
 
@@ -1225,7 +1225,7 @@ TP.boot.PHash = function() {
             return this.$$hash[aKey];
         }
 */
-        // Nothing on Object.prototype, this should work.
+        //  Nothing on Object.prototype, this should work.
         return this.$$hash[aKey];
     };
 
@@ -1557,7 +1557,7 @@ TP.boot.PHash = function() {
          * @returns {Boolean} True if the key is defined.
          */
 
-        // Nothing on Object.prototype, this should work.
+        //  Nothing on Object.prototype, this should work.
         return TP.objectGetKeys(this.$$hash).indexOf(aKey) !== -1;
     };
 
@@ -1826,7 +1826,7 @@ TP.hc = function() {
         len,
         i;
 
-    // If we get invoked on a TP.boot.PHash just return it like a noop.
+    //  If we get invoked on a TP.boot.PHash just return it like a noop.
     if (arguments[0] instanceof TP.boot.PHash) {
         return arguments[0];
     } else if (TP.isPlainObject(arguments[0])) {
@@ -4253,7 +4253,7 @@ function(methodName, methodBody) {
             TP.global, methodName, methodBody,
             TP.GLOBAL_TRACK, null, 'TP.global.' + methodName);
 
-    // TODO: verify this is correct.
+    //  TODO: verify this is correct.
     TP.sys.defineGlobal(methodName, method, true);
 
     return method;
@@ -4561,7 +4561,7 @@ function(target, name, value, track, descriptor, owner) {
     desc[TP.NAME] = name;
     desc.value = val;
 
-    // Don't track metadata for local properties.
+    //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
     }
@@ -4620,7 +4620,7 @@ function(target, name, value, track, descriptor, owner) {
     desc[TP.NAME] = name;
     desc.value = val;
 
-    // Don't track metadata for local properties.
+    //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         //  NB: We register constants as 'TP.ATTRIBUTE's
         TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
@@ -12435,9 +12435,9 @@ function(release, meta) {
         semver = semver.split('+')[0];
     }
 
-    // A sanity check...
+    //  A sanity check...
     if (str !== semver) {
-        // Hmmm. Computation should be the same.
+        //  Hmmm. Computation should be the same.
         TP.error('Version string mismatch. source -> ' + data.at('semver') +
             ' !== ' + str + ' <- computed.');
     }

@@ -14,17 +14,24 @@
  *     particular service is only available to browsers which support an
  *     XMLHttpRequest object.
  * @examples
- // construct a simple request, this one's for Flickr:
  *
- *     request = TP.sig.XMLRPCRequest.construct(); request.atPut('uri',
- *     'http://api.flickr.com/services/xmlrpc/');
- *     request.atPut('method','flickr.test.echo'); request.atPut('body',
- *     TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db', 'test','echo' ));
- *     request.defineHandler('RequestSucceeded', function(aResponse) {
+ *     Construct a simple request, this one's for Flickr:
  *
- *     TP.info(aResponse.getResult()); });
+ *     request = TP.sig.XMLRPCRequest.construct();
  *
- *     // activate the request:
+ *     request.atPut('uri', 'http://api.flickr.com/services/xmlrpc/');
+ *
+ *     request.atPut('method','flickr.test.echo');
+ *     request.atPut('body',
+ *                      TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db',
+ *                              'test','echo' ));
+ *
+ *     request.defineHandler('RequestSucceeded',
+ *                              function(aResponse) {
+ *                                  TP.info(aResponse.getResult());
+ *                              });
+ *
+ *     Activate the request:
  *
  *     request.fire();
  */

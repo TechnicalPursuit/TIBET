@@ -2208,9 +2208,9 @@ TP.hc(
             return TP.raise(this, 'TP.sig.InvalidFunction');
         }
 
-        // TODO: 'window.$$newinst' used to be arguments.callee. verify this
-        // still works :) In fact, with eval changing to be globally scoped
-        // this entire thing may not work anyway.
+        //  TODO: 'window.$$newinst' used to be arguments.callee. verify this
+        //  still works :) In fact, with eval changing to be globally scoped
+        //  this entire thing may not work anyway.
         /* eslint-disable no-eval */
         eval(
             'aWindow.$$newinst = function () {window.$$newinst.$realFunc(' +

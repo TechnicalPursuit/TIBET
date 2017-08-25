@@ -79,8 +79,8 @@ function(aRequest) {
 
     results = TP.ac();
 
-    // The following tags allow duplicate entries for the same tag. This list is
-    // not strictly exhaustive, but it should be adequate for now.
+    //  The following tags allow duplicate entries for the same tag. This list is
+    //  not strictly exhaustive, but it should be adequate for now.
     dups = TP.ac(
             '@param', '@throws', '@exception', '@fires', '@listens', '@mixes',
             '@example', '@author');
@@ -113,8 +113,9 @@ function(aRequest) {
             '@fileoverview', '@overview',
             '@file', '@overview',
             '@emits', '@fires',
-            // NOTE we don't convert @exception to @throws, they're different in
-            // TIBET. @exception is based on raise() and @throws is via throw.
+            //  NOTE we don't convert @exception to @throws, they're different
+            //  in TIBET. @exception is based on raise() and @throws is via
+            //  throw.
             '@function', '@method',
             '@func', '@method',
             '@member', '@var',
@@ -274,7 +275,7 @@ function(aRequest) {
                     });
             } else {
 
-                // Comment. Question is, is it viable?
+                //  Comment. Question is, is it viable?
 
                 //  If we're only interested in missing/empty comment blocks
                 //  don't worry about processing details in ones that exist.

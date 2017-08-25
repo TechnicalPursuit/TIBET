@@ -474,7 +474,7 @@ TP.HAS_PATH_OFFSET_REGEX = /\/\.\./;
 TP.REMOVE_PATH_OFFSET_REGEX = /(^|\/)[^\/]*\/\.\./;
 TP.HAS_PATH_NOOP_REGEX = /\/\./;
 TP.REMOVE_PATH_NOOP_REGEX = /\/\./;
-TP.HAS_MARKUP_REGEX = /<\//;    // Simple but effective for boot code use.
+TP.HAS_MARKUP_REGEX = /<\//;    //  Simple but effective for boot code use.
 
 TP.BAD_WINDOW_ID_REGEX = /[:\/]/;
 TP.WINDOW_PREFIX_REGEX = /^window_[0-9]/;
@@ -700,8 +700,8 @@ TP.boot.$$styles.browser = {
     bgWhite: ['<span style="background-color:#d6d6d6;color:#646464;">', '</span>']
 };
 
-// Generate the browser console settings. This is essentially a set of empty
-// strings since we don't actually want to put markup into the JS console.
+//  Generate the browser console settings. This is essentially a set of empty
+//  strings since we don't actually want to put markup into the JS console.
 TP.boot.$$styles.console = (function() {
     var i,
         obj;
@@ -1091,7 +1091,7 @@ TP.boot.$isEmpty = function(value) {
      * @returns {Boolean} True if the value is invalid or empty.
      */
 
-    // Inadequate for real work but good enough for boot code.
+    //  Inadequate for real work but good enough for boot code.
     return value === null || value === undefined || value.length === 0;
 };
 
@@ -1105,8 +1105,8 @@ TP.boot.$isNumber = function(value) {
      * @returns {Boolean} True if the value is a number.
      */
 
-    // Sadly, some edge case things might not pass this, but they don't tend to
-    // show up during boot processing.
+    //  Sadly, some edge case things might not pass this, but they don't tend to
+    //  show up during boot processing.
     return typeof value === 'number' && !isNaN(value);
 };
 
@@ -1195,7 +1195,7 @@ TP.boot.$notEmpty = function(value) {
      * @returns {Boolean} True if the value is invalid or empty.
      */
 
-    // Inadequate for real work but good enough for boot code.
+    //  Inadequate for real work but good enough for boot code.
     return value !== null && value !== undefined &&
         value.length !== undefined && value.length !== 0;
 };
@@ -1651,7 +1651,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         key = aKey;
     }
 
-    // Don't override any user overrides, unless forced.
+    //  Don't override any user overrides, unless forced.
     if (TP.sys.overrides.hasOwnProperty(key)) {
         if (override !== true) {
             return;
@@ -1728,7 +1728,7 @@ if (Object.defineProperty) {
     };
 }
 
-// Cache values set on the launch URL which represent user overrides.
+//  Cache values set on the launch URL which represent user overrides.
 TP.sys.overrides = {};
 
 //  ----------------------------------------------------------------------------
