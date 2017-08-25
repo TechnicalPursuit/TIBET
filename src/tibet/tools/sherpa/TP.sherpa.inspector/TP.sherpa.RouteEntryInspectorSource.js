@@ -9,21 +9,21 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.sherpa.TIBETRouteEntryInspectorSource
+//  TP.sherpa.RouteEntryInspectorSource
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.TIBETRouteEntryInspectorSource}
+ * @type {TP.sherpa.RouteEntryInspectorSource}
  */
 
 TP.sherpa.InspectorSource.defineSubtype(
-                            'sherpa.TIBETRouteEntryInspectorSource');
+                            'sherpa.RouteEntryInspectorSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETRouteEntryInspectorSource.Inst.defineMethod(
+TP.sherpa.RouteEntryInspectorSource.Inst.defineMethod(
     'getConfigForInspector',
 function(options) {
 
@@ -58,7 +58,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETRouteEntryInspectorSource.Inst.defineMethod(
+TP.sherpa.RouteEntryInspectorSource.Inst.defineMethod(
     'getContentForInspector',
 function(options) {
 
@@ -108,7 +108,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TIBETRouteEntryInspectorSource.Inst.defineMethod(
+TP.sherpa.RouteEntryInspectorSource.Inst.defineMethod(
     'getDataForInspector',
 function(options) {
 

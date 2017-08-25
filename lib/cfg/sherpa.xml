@@ -77,7 +77,7 @@
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETTypeListInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETURIListInspectorSource.js"/>
 
-    <script src="./TP.sherpa.inspector/TP.sherpa.TIBETRouteEntryInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.RouteEntryInspectorSource.js"/>
 
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
 

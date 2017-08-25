@@ -97,7 +97,7 @@ function(anAspect, options) {
 
     var source;
 
-    source = TP.sherpa.TIBETRouteEntryInspectorSource.construct();
+    source = TP.sherpa.RouteEntryInspectorSource.construct();
     this.addEntry(anAspect);
 
     return source;
