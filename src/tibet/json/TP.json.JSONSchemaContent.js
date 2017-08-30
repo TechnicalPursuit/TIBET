@@ -47,7 +47,7 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.json.JSONSchemaContent.Inst.defineAttribute(
-    'schemas', TP.jpc('$.definitions'));
+    'definitions', TP.jpc('$.definitions'));
 
 TP.json.JSONSchemaContent.Inst.defineAttribute(
     'topLevelProperties', TP.jpc('$.definitions["{{0}}"]..properties'));

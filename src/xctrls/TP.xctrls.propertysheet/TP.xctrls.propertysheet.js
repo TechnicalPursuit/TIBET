@@ -28,7 +28,10 @@ TP.xctrls.propertysheet.addTraits(TP.xctrls.Element);
 TP.xctrls.propertysheet.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  This type captures no signals - it lets all signals pass through.
-TP.xctrls.propertysheet.Type.defineAttribute('opaqueCapturingSignalNames', null);
+TP.xctrls.propertysheet.Type.defineAttribute(
+                                    'opaqueCapturingSignalNames', null);
+
+TP.xctrls.propertysheet.defineAttribute('currentDefinitionName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -45,34 +48,51 @@ function(topLevelSchema, params) {
 
     var paramHash,
 
-        schemas,
+        definitions,
         str;
 
     paramHash = TP.ifInvalid(params, TP.hc());
 
-    schemas = topLevelSchema.get('schemas');
+    definitions = topLevelSchema.get('definitions');
 
     str = '';
 
-    schemas.perform(
+    definitions.perform(
         function(kvPair) {
 
-            var schemaName,
-                schema,
+            var definitionKey,
+                definitionDesc,
 
-                schemaTypeName,
-                schemaTypeNamePrefix,
+                prefix,
+
+                definitionName,
 
                 sheetAttrs,
 
-                topLevelProperties;
+                type;
 
-            schemaName = kvPair.first();
-            schema = kvPair.last();
+            definitionKey = kvPair.first();
+            definitionDesc = kvPair.last();
 
-            schemaTypeName = schema.at('name');
+            prefix = paramHash.at('prefix');
 
-            schemaTypeNamePrefix = TP.escapeTypeName(schemaTypeName);
+            if (TP.isEmpty(prefix)) {
+                definitionName = definitionDesc.at('name');
+                if (TP.notEmpty(definitionName)) {
+                    if (TP.isTypeName(definitionName)) {
+                        prefix = definitionName.slice(
+                                    0, definitionName.lastIndexOf('.'));
+                        prefix = TP.escapeTypeName(prefix);
+                    }
+                }
+            }
+
+            //  Force it to be the empty String just in case.
+            if (TP.isEmpty(prefix)) {
+                prefix = '';
+            }
+
+            this.set('currentDefinitionName', definitionKey);
 
             //  ---
 
@@ -89,41 +109,27 @@ function(topLevelSchema, params) {
                     });
             }
 
-            str += '>';
+            str += '>\n';
 
             //  ---
 
-            str += '<fieldset xmlns="' + TP.w3.Xmlns.XHTML + '">';
+            type = definitionDesc.at('type');
+
+            if (type === 'array') {
+                str += this.generateContentFromArrayDescription(
+                                                    definitionKey,
+                                                    definitionDesc,
+                                                    prefix);
+            } else {
+                str += this.generateContentFromObjectDescription(
+                                                    definitionKey,
+                                                    definitionDesc,
+                                                    prefix);
+            }
 
             //  ---
 
-            topLevelProperties =
-                topLevelSchema.get('topLevelProperties', schemaName);
-
-            topLevelProperties.perform(
-                function(propertyKVPair) {
-
-                    var name,
-                        id,
-
-                        propertyDesc;
-
-                    name = propertyKVPair.first();
-                    id = schemaTypeNamePrefix + '_' + propertyKVPair.first();
-
-                    propertyDesc = propertyKVPair.last();
-
-                    str += this.generateContentFromPropertyDescription(
-                                propertyDesc, id, name);
-                }.bind(this));
-
-            //  ---
-
-            str += '</fieldset>';
-
-            //  ---
-
-            str += '</xctrls:propertysheet>';
+            str += '</xctrls:propertysheet>\n';
         }.bind(this));
 
     return TP.tpelem(str);
@@ -132,78 +138,248 @@ function(topLevelSchema, params) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromPropertyDescription',
-function(propertyDesc, id, name) {
+    'generateContentFromArrayDescription',
+function(propertyKey, propertyDesc, prefix) {
 
-    var str,
+    var subPrefix,
 
-        label,
+        items,
+        str;
 
-        enumVals,
+    subPrefix = prefix + '_';
 
-        propertyType,
-        fieldType,
+    items = propertyDesc.at('items');
 
-        bindAspect;
+    str = '';
 
-    str = '<div>';
-
-    label = propertyDesc.atIfInvalid('title', name.asStartUpper());
-
-    enumVals = propertyDesc.at('enum');
-
-    if (TP.notEmpty(enumVals)) {
-
-        str += '<select' +
-                ' id="' + id + '"' +
-                ' bind:io="{value: ' + name + '}"' +
-                '>';
-
-        enumVals.forEach(
-            function(val) {
-                str += '<option value="' + val + '">' +
-                        val.asStartUpper() +
-                        '</option>';
-            });
-
-        str += '</select>';
+    if (TP.isArray(items)) {
+        items.forEach(
+            function(anItem, anIndex) {
+                str += this.generateContentFrom(
+                                        anItem.at('type'),
+                                        propertyKey,
+                                        anItem,
+                                        subPrefix + anIndex);
+            }.bind(this));
     } else {
-        propertyType = propertyDesc.at('type');
-
-        if (TP.isArray(propertyType)) {
-            fieldType = 'text';
-        } else {
-            switch (propertyType) {
-
-                case 'boolean':
-
-                    fieldType = 'checkbox';
-                    bindAspect = 'checked';
-                    break;
-
-                default:
-
-                    fieldType = 'text';
-                    bindAspect = 'value';
-                    break;
-            }
-        }
-
-        str +=
-            '<input' +
-            ' id="' + id + '"' +
-            ' type="' + fieldType + '"' +
-            ' bind:io="{' + bindAspect + ': ' + name + '}"' +
-            '/>';
+        str += this.generateContentFrom(
+                                items.at('type'),
+                                propertyKey,
+                                propertyDesc.at('items'),
+                                subPrefix + '0');
     }
 
-    str += '<label' +
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    'generateContentFromBooleanDescription',
+function(propertyKey, propertyDesc, prefix) {
+
+    var id,
+
+        label,
+        str;
+
+    id = prefix + '_' + propertyKey;
+
+    label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    str = '<label' +
             ' for="' + id + '"' +
             '>' +
             label + ': ' +
             '</label>';
 
-    str += '</div>';
+    str +=
+        '<input' +
+        ' id="' + id + '"' +
+        ' type="checkbox"' +
+        ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
+        '/>\n';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    'generateContentFromNumberDescription',
+function(propertyKey, propertyDesc, prefix) {
+
+    var id,
+        label,
+
+        str;
+
+    id = prefix + '_' + propertyKey;
+
+    label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    str = '<label' +
+            ' for="' + id + '"' +
+            '>' +
+            label + ': ' +
+            '</label>';
+
+    str +=
+        '<input' +
+        ' id="' + id + '"' +
+        ' type="number"' +
+        ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
+        '/>\n';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    'generateContentFromStringDescription',
+function(propertyKey, propertyDesc, prefix) {
+
+    var id,
+        label,
+
+        str;
+
+    id = prefix + '_' + propertyKey;
+
+    label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    str = '<label' +
+            ' for="' + id + '"' +
+            '>' +
+            label + ': ' +
+            '</label>';
+
+    str +=
+        '<input' +
+        ' id="' + id + '"' +
+        ' type="text"' +
+        ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
+        '/>\n';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    'generateContentFromObjectDescription',
+function(propertyKey, propertyDesc, prefix) {
+
+    var str,
+        properties,
+
+        subPrefix;
+
+    str = '<fieldset xmlns="' + TP.w3.Xmlns.XHTML + '"';
+
+    if (this.get('currentDefinitionName') !== propertyKey) {
+        str += ' bind:scope="' + propertyKey + '">\n';
+
+    } else {
+        str += '>\n';
+    }
+
+    //  ---
+
+    properties = propertyDesc.at('properties');
+
+    subPrefix = prefix + '_' + propertyKey;
+
+    properties.perform(
+        function(propertyKVPair) {
+
+            var objKey,
+                objDesc,
+
+                type;
+
+            objKey = propertyKVPair.first();
+            objDesc = propertyKVPair.last();
+
+            type = objDesc.at('type');
+
+            if (TP.isEmpty(type)) {
+                return;
+            }
+
+            str +=
+                '<div>\n' +
+                this.generateContentFrom(type, objKey, objDesc, subPrefix) +
+                '</div>\n';
+
+        }.bind(this));
+
+    //  ---
+
+    str += '</fieldset>\n';
+
+    //  ---
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    'generateContentFrom',
+function(type, propertyKey, propertyDesc, prefix) {
+
+    var str;
+
+    str = '';
+
+    switch (type) {
+
+        case 'array':
+
+            str += this.generateContentFromArrayDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix);
+            break;
+
+        case 'boolean':
+
+            str += this.generateContentFromBooleanDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix);
+            break;
+
+        case 'integer':
+        case 'number':
+
+            str += this.generateContentFromNumberDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix);
+            break;
+
+        case 'object':
+
+            str += this.generateContentFromObjectDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix);
+            break;
+
+        case 'string':
+
+            str += this.generateContentFromStringDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix);
+            break;
+
+        default:
+            break;
+    }
 
     return str;
 });
