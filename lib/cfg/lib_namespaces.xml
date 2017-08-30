@@ -282,7 +282,7 @@
 
     <script src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.js"/>
     <property name="path.TP.xctrls.propertysheet.style" value="~TP.xctrls.propertysheet/TP.xctrls.propertysheet.less"/>
-    <!--<property name="path.TP.xctrls.propertysheet.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.propertysheet_tpi.less"/>-->
+    <property name="path.TP.xctrls.propertysheet.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.propertysheet_tpi.less"/>
 
     <script src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.js"/>
     <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/TP.xctrls.tabbar.less"/>

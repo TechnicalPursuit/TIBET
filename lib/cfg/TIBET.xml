@@ -172,6 +172,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.button_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.radioitem_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.checkitem_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.propertysheet_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.tabbar_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.textitem_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.list_all.css.js"/>
@@ -188,6 +189,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.button_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.checkitem_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.radioitem_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.propertysheet_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.tabbar_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.textitem_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.list_tpi.css.js"/>

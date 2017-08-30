@@ -1,0 +1,76 @@
+/*
+	CSS styles for 'xctrls:propertysheet' controls for the 'tpi' theme.
+*/
+
+@import (reference) url("TP.xctrls_variables_tpi.less");
+
+@import url("../TP.xctrls.propertysheet_all.less");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The propertysheet */
+
+*[data-theme="tpi"] {
+
+    xctrls|propertysheet {
+
+        font-size: @xctrls_propertysheet-font-size;
+
+        /* The propertysheet is disabled */
+
+        /* doesn't work in any browser:
+        &:disabled
+        */
+        &[pclass|disabled] {
+        }
+
+        /* The propertysheet fieldset */
+
+        & > fieldset {
+
+            font-family: @xctrls_propertysheet-font-family;
+            color: @xctrls_propertysheet-font-color-normal;
+
+            background-color: @xctrls_propertysheet-background-color-normal;
+
+            & label {
+
+                width: 5em;
+            }
+
+            & input,
+            & textarea,
+            & select {
+
+                font-size: 1em;
+                padding: 2px 5px 4px;
+                border-radius: 2px;
+            }
+
+            & input[type="checkbox"],
+            & input[type="radio"] {
+
+                margin-left: -4px;
+            }
+
+            & input:checked ~ label {
+
+                font-weight: bold;
+            }
+        }
+
+        /* The propertysheet is disabled, so is the label */
+
+        /* doesn't work in any browser:
+        &:disabled > fieldset
+        */
+        &[pclass|disabled] > fieldset {
+
+            color: @xctrls_propertysheet-font-color-disabled;
+
+            background-color: @xctrls_propertysheet-background-color-disabled;
+        }
+    }
+}
