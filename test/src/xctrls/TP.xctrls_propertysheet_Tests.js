@@ -17,7 +17,7 @@ function() {
                 schemaResource;
 
             jsonURI = TP.uc(
-                    '~lib_test/src/xctrls/Xctrls_Property_Sheet_Test_Types.json');
+                    '~lib_test/src/xctrls/xctrls_property_sheet_test_types.json');
             schemaResource = TP.uc(jsonURI).getResource(
                             TP.hc('async', false,
                                     'refresh', true,
