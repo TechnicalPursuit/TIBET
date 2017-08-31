@@ -26,7 +26,7 @@
 
 <br/>
 
-### **A scalable <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts#pyramid">authoring pyramid</a> is just one of <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts">TIBET's Good Parts</a>.**
+#### <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Good-Parts">TIBET's Good Parts</a> focus groundbreaking technology on solving business problems.
 
 **TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">revolutionary tooling</a>**.
 
@@ -34,7 +34,7 @@
 
 **TIBET is easy to use**, reducing <a target="_blank" href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
 
-### **Building a desktop-class web application? We built TIBET for you.**
+#### **Building a desktop-class web application? We built TIBET for you.**
 
 <br/>
 
@@ -42,7 +42,7 @@
 
 <img alt="First Steps" src="./lib/media/first_steps.png" width="128px" height="128px"/>
 
-## Tour the web's best development platform for business:
+### Tour the web's best development platform for business:
 
 | TIBET Solutions | Description / Features |
 |:----------------|:-----------------------|
@@ -53,11 +53,11 @@
 | <a href="https://github.com/TechnicalPursuit/TIBET/wiki#cloud">Cloud Services</a> | Cloud-based services to offload application administration |
 
 
-## Explore TIBET's unique design goals: <a href="https://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf" target="_blank">The Zen Of TIBET</a>
+### Explore TIBET's unique design goals: <a href="https://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf" target="_blank">The Zen Of TIBET</a>
 
-## Experience TIBET for yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
+### Experience TIBET for yourself: <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>
 
-## See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
+### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>
 
 <br/>
 
@@ -84,7 +84,7 @@ Initial installation process can take several minutes depending on the speed of
 your network connection and the particular version being installed. Be patient
 :).
 
-Once your installation completes we recommend the <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
+Once your installation completes check out the <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
 
 ---
 
