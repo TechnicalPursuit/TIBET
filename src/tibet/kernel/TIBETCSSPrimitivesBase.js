@@ -2441,9 +2441,15 @@ function(aStylesheet) {
 
             appliedRules = matchingElement[TP.APPLIED_RULES];
 
+            //  If the element doesn't have a TP.APPLIED_RULES property, we
+            //  *don't* create one here. Otherwise, that cache will be
+            //  out-of-date because it will only reflect the rules in the
+            //  imported sheet. Much better to not install one and let the
+            //  element force a refresh of the document styles, which will
+            //  reflect all of the rules from all of the sheets that will be
+            //  applied to this element.
             if (TP.notValid(appliedRules)) {
-                appliedRules = TP.ac();
-                matchingElement[TP.APPLIED_RULES] = appliedRules;
+                continue;
             }
 
             appliedRules.push(aRule);
