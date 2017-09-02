@@ -103,6 +103,22 @@ function(aTagTypeName) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.tibet.tofu.Inst.defineMethod('getChildElements',
+function() {
+
+    /**
+     * @method getChildElements
+     * @summary Returns an Array of the children of the receiver which are
+     *     Element nodes. For this type, this returns the empty Array since tofu
+     *     elements are 'opaque' and don't show their structure.
+     * @returns {Array} An Array of the Element children of the supplied Node.
+     */
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.tofu.Inst.defineHandler('TagAssist',
 function(aSignal) {
 

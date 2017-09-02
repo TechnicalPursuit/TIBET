@@ -35,6 +35,12 @@ function(aTPElement) {
         node,
         rules;
 
+    //  If the element is tofu, then we don't show any responders for it.
+    if (aTPElement.getCanonicalName() === 'tibet:tofu') {
+        this.setValue(info);
+        return this;
+    }
+
     node = TP.canInvoke(aTPElement, 'getNativeNode') ?
                             aTPElement.getNativeNode() :
                             aTPElement;

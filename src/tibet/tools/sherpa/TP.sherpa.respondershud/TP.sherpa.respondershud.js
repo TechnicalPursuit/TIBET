@@ -40,6 +40,12 @@ function(aTPElement) {
 
     info = TP.ac();
 
+    //  If the element is tofu, then we don't show any responders for it.
+    if (aTPElement.getCanonicalName() === 'tibet:tofu') {
+        this.setValue(info);
+        return this;
+    }
+
     node = aTPElement.getNativeNode();
     while (TP.isNode(node)) {
         if (!TP.nodeIsResponder(node)) {
