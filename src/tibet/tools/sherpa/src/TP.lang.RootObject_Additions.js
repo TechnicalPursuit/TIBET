@@ -669,14 +669,9 @@ TP.sherpa.InstanceMethodsInspectorSource.Inst.defineHandler(
     'SherpaInspectorAddMethod',
 function(aSignal) {
 
-    var inspector,
-        pathParts,
-        typeName;
+    var typeName;
 
-    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
-
-    pathParts = inspector.get('selectedItems');
-    typeName = pathParts.at(pathParts.getSize() - 2);
+    typeName = this.getEntryAt('primary').getName();
 
     TP.signal(null,
                 'ConsoleCommand',
