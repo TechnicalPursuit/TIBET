@@ -768,7 +768,6 @@ function(aSignal) {
 
         this.changeHaloFocusOnClick(aSignal);
 
-        return;
     } else if (this.contains(aSignal.getTarget())) {
 
         //  Otherwise, dispatch off to a 'corner-based' click handler.
