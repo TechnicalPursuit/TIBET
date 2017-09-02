@@ -221,12 +221,12 @@ function(enterSelection) {
             }).attr(
             'peerID',
             function(d, i) {
-                if (d[2] !== 'spacer') {
+                if (d[1] !== 'spacer') {
                     return d[0];
                 }
             }).text(
             function(d) {
-                if (d[2] !== 'spacer') {
+                if (d[1] !== 'spacer') {
                     return d[1];
                 }
             }).attr(
@@ -236,7 +236,7 @@ function(enterSelection) {
 
                 val = 'item';
 
-                if (d[2] === 'spacer') {
+                if (d[1] === 'spacer') {
                     val += ' spacer';
                 } else {
                     val += ' domnode';
@@ -245,7 +245,7 @@ function(enterSelection) {
                 return val;
             }).each(
             function(d, i) {
-                if (d[2] === 'spacer') {
+                if (d[1] === 'spacer') {
                     TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
                 } else {
                     TP.elementRemoveAttribute(this, 'dnd:accept', true);
@@ -283,7 +283,18 @@ function() {
 
     len = data.getSize();
     for (i = 0; i < len; i++) {
-        newData.push(data.at(i), TP.ac('spacer', 'spacer', 'spacer'));
+
+        //  Push in a data row and then a spacer row.
+        //  NOTE: We construct the spacer row to take into account the fact, in
+        //  the 3rd slot, what the 'condition' (i.e. 'normal', 'target',
+        //  'child') is of the data row that it's a spacer for. This is because,
+        //  if the data row is being removed for some reason, we want the spacer
+        //  row to be removed as well. Otherwise, spurious spacer rows are left
+        //  around and, with the 'append' in the buildNewContent method, things
+        //  will get out of order in a hurry.
+        newData.push(
+            data.at(i),
+            TP.ac('spacer_' + i, 'spacer', 'spacer_' + data.at(i).at(2)));
     }
 
     return newData;
@@ -321,12 +332,12 @@ function(updateSelection) {
             }).attr(
             'peerID',
             function(d, i) {
-                if (d[2] !== 'spacer') {
+                if (d[1] !== 'spacer') {
                     return d[0];
                 }
             }).text(
             function(d) {
-                if (d[2] !== 'spacer') {
+                if (d[1] !== 'spacer') {
                     return d[1];
                 }
             }).attr(
@@ -336,7 +347,7 @@ function(updateSelection) {
 
                 val = 'item';
 
-                if (d[2] === 'spacer') {
+                if (d[1] === 'spacer') {
                     val += ' spacer';
                 } else {
                     val += ' domnode';
@@ -345,7 +356,7 @@ function(updateSelection) {
                 return val;
             }).each(
             function(d, i) {
-                if (d[2] === 'spacer') {
+                if (d[1] === 'spacer') {
                     TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
                 } else {
                     TP.elementRemoveAttribute(this, 'dnd:accept', true);
