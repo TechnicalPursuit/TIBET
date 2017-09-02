@@ -308,6 +308,7 @@ function(options) {
 
     return TP.ac(
             TP.ac('Instance Methods', 'Instance Methods'),
+            TP.ac('Instance Handlers', 'Instance Handlers'),
             TP.ac('Type Methods', 'Type Methods'),
             TP.ac('Instance Attributes', 'Instance Attributes'),
             TP.ac('Type Attributes', 'Type Attributes'),
@@ -359,6 +360,13 @@ function(aSourceName) {
         case 'Instance Methods':
 
             source = TP.sherpa.InstanceMethodsInspectorSource.construct();
+            source.addEntry('primary', this);
+
+            break;
+
+        case 'Instance Handlers':
+
+            source = TP.sherpa.InstanceHandlersInspectorSource.construct();
             source.addEntry('primary', this);
 
             break;
@@ -531,6 +539,11 @@ function(options) {
     rawData = instProto.getInterface(
                     TP.SLOT_FILTERS.known_introduced_methods).sort();
 
+    rawData = rawData.filter(
+                function(item) {
+                    return !/^handle/.test(item);
+                });
+
     result.push(rawData);
 
     //  ---
@@ -543,6 +556,10 @@ function(options) {
     rawData.forEach(
             function(item) {
                 var owner;
+
+                if (/^handle/.test(item)) {
+                    return;
+                }
 
                 //  Note here how we get the owner from our supertype's version
                 //  of the method - we know we've overridden it, so we want the
@@ -565,6 +582,10 @@ function(options) {
     rawData.forEach(
             function(item) {
                 var owner;
+
+                if (/^handle/.test(item)) {
+                    return;
+                }
 
                 if (TP.isValid(instProto[item]) &&
                     TP.isValid(owner = instProto[item][TP.OWNER])) {
@@ -679,6 +700,156 @@ function(aSignal) {
                     'cmdText',
                         ':method --assist' +
                                 ' --name=\'newmethod\'' +
+                                ' --owner=\'' + typeName + '\''
+                ));
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.InstanceHandlersInspectorSource
+//  ========================================================================
+
+TP.sherpa.InstanceMethodsInspectorSource.defineSubtype(
+                                            'InstanceHandlersInspectorSource');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InstanceHandlersInspectorSource.Inst.defineMethod(
+    'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceType,
+
+        result,
+
+        instProto,
+        superInstProto,
+
+        rawData;
+
+    sourceType = this.getEntryAt('primary');
+
+    result = TP.ac();
+
+    instProto = sourceType.getInstPrototype();
+    superInstProto = sourceType.getSupertype().getInstPrototype();
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Introduced');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_methods).sort();
+
+    rawData = rawData.filter(
+                function(item) {
+                    return /^handle/.test(item);
+                });
+
+    result.push(rawData);
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Overridden');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_methods).sort();
+
+    rawData.forEach(
+            function(item) {
+                var owner;
+
+                if (!/^handle/.test(item)) {
+                    return;
+                }
+
+                //  Note here how we get the owner from our supertype's version
+                //  of the method - we know we've overridden it, so we want the
+                //  owner we've overridden it from.
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = superInstProto[item][TP.OWNER])) {
+                    result.push(item + ' (' + TP.name(owner) + ')');
+                } else {
+                    result.push(item + ' (none)');
+                }
+            });
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Inherited');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_methods).sort();
+
+    rawData.forEach(
+            function(item) {
+                var owner;
+
+                if (!/^handle/.test(item)) {
+                    return;
+                }
+
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = instProto[item][TP.OWNER])) {
+                    result.push(item + ' (' + TP.name(owner) + ')');
+                } else {
+                    result.push(item + ' (none)');
+                }
+            });
+
+    result = result.flatten();
+
+    result = result.collect(
+                function(entry) {
+                    return TP.ac(
+                            entry,
+                            this.getEntryLabel(entry));
+                }.bind(this));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+//  Actions API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InstanceHandlersInspectorSource.Inst.defineHandler(
+    'SherpaInspectorAddMethod',
+function(aSignal) {
+
+    var typeName;
+
+    typeName = this.getEntryAt('primary').getName();
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':method --assist' +
+                                ' --name=\'SignalName\'' +
+                                ' --kind=\'handler\'' +
                                 ' --owner=\'' + typeName + '\''
                 ));
 
