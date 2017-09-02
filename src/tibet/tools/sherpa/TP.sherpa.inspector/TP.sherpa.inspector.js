@@ -129,7 +129,7 @@ function(sourcePathParts, newSource) {
         resolver.addEntry(TP.ac(newEntryPathPart), newSource);
     } else {
 
-        if (TP.isMutable(newSource)) {
+        if (TP.isMutable(newSource) && TP.canInvoke(newSource, 'set')) {
             //  Set the source's name to be the only item in the path parts.
             newSource.set('sourceName', pathParts.first());
         }
