@@ -1880,7 +1880,9 @@ function() {
         function(aMutationRecord) {
 
             var len,
-                i;
+                i,
+
+                node;
 
             if (TP.notEmpty(aMutationRecord.addedNodes)) {
 
