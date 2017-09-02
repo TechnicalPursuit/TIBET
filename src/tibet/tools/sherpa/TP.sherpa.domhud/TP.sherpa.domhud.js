@@ -129,12 +129,16 @@ function(aTPElement) {
             arr = TP.ac(
                     TP.lid(node, true),
                     TP.elementGetFullName(node));
+
             if (aNode === aTPElement) {
                 arr.push('target');
             } else if (aNode.getParentNode().getNativeNode() ===
                         aTPElement.getNativeNode()) {
                 arr.push('child');
+            } else {
+                arr.push('normal');
             }
+
             info.push(arr);
         });
 
@@ -168,7 +172,8 @@ function() {
 
     arr = TP.ac(
             TP.lid(root, true),
-            TP.elementGetFullName(root));
+            TP.elementGetFullName(root),
+            'normal');
 
     //  List expects an array of arrays containing IDs and full names.
     this.setValue(TP.ac(arr));
