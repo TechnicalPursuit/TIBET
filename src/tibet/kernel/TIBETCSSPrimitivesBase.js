@@ -844,6 +844,7 @@ function(aDocument, flushCaches) {
             }
 
             appliedRules.push(aRule);
+            appliedRules.unique();
         }
     }
 
@@ -2453,6 +2454,7 @@ function(aStylesheet) {
             }
 
             appliedRules.push(aRule);
+            appliedRules.unique();
         }
     }
 
