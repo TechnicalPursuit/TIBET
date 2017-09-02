@@ -366,7 +366,7 @@ function(anObj) {
     var typesURI,
         typesObj,
 
-        customTagData,
+        appTagNames,
 
         typeData,
 
@@ -389,17 +389,37 @@ function(anObj) {
 
     typesObj = TP.ac();
 
-    //  Custom tags
-    customTagData = TP.core.CustomTag.getSubtypes(true);
+    appTagNames = TP.ac();
+
+    //  Application tags
+    APP.getSubNamespaceNames().perform(
+        function(aSubnamespaceName) {
+
+            var localName;
+
+            //  Need to slice off the 'APP.'
+            localName = aSubnamespaceName.slice(4);
+
+            //  We don't want types in the 'APP.meta' namespace.
+            if (localName !== 'meta') {
+                appTagNames.push(APP[localName].getTypeNames());
+            }
+        });
+
+    appTagNames = appTagNames.flatten();
 
     typesObj.push(TP.GROUPING_PREFIX + ' - app tags');
-    typeData = customTagData.filter(
-                    function(item) {
-                        return /^APP/.test(item.getTypeName());
+    typeData = appTagNames.collect(
+                    function(name) {
+                        return TP.sys.getTypeByName(name);
+                    });
+    typeData = typeData.filter(
+                    function(aType) {
+                        return TP.isKindOf(aType, TP.core.ElementNode);
                     });
     typeData = typeData.collect(
-                    function(item) {
-                        return item.getCanonicalName();
+                    function(aType) {
+                        return aType.getCanonicalName();
                     });
     typeData.sort();
     typesObj.push(typeData);
@@ -411,8 +431,8 @@ function(anObj) {
                 TP.tibet.data,
                 TP.tibet.service);
     typeData = typeData.collect(
-                    function(item) {
-                        return item.getCanonicalName();
+                    function(aType) {
+                        return aType.getCanonicalName();
                     });
     typeData.sort();
     typesObj.push(typeData);
