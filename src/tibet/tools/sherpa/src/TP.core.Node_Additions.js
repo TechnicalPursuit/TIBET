@@ -65,6 +65,47 @@ TP.core.ElementNode.addTraits(TP.sherpa.ToolAPI);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
+     */
+
+    var targetAspect,
+
+        dataURI;
+
+    targetAspect = options.at('targetAspect');
+
+    if (targetAspect === 'Inst' || targetAspect === 'Local') {
+        dataURI = TP.uc(options.at('bindLoc'));
+
+        return TP.elem(
+                '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getDataForInspector',
 function(options) {
 
@@ -96,11 +137,25 @@ function(options) {
     targetAspect = options.at('targetAspect');
 
     if (targetAspect === this.getID()) {
-        data = TP.ac(TP.ac('Type', 'Type'));
+        data = TP.ac(TP.ac('Type', 'Type'),
+                        TP.ac('Inst', 'Inst'),
+                        TP.ac('Local', 'Local'));
+    } else if (targetAspect === 'Inst') {
+        data = TP.ac();
         this.getKeys().sort().perform(
                     function(aKey) {
-                        data.add(TP.ac(aKey, aKey));
-                    });
+                        if (!TP.owns(this, aKey)) {
+                            data.add(TP.ac(aKey, aKey));
+                        }
+                    }.bind(this));
+    } else if (targetAspect === 'Local') {
+        data = TP.ac();
+        this.getKeys().sort().perform(
+                    function(aKey) {
+                        if (TP.owns(this, aKey)) {
+                            data.add(TP.ac(aKey, aKey));
+                        }
+                    }.bind(this));
     } else {
         data = this.get(targetAspect);
         if (data === undefined) {
@@ -160,7 +215,20 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    return this.getEntryAt(anAspect);
+    var source;
+
+    if (anAspect === 'Type') {
+        return this.getType();
+    }
+
+    if (anAspect === 'Inst' || anAspect === 'Local') {
+        return this;
+    }
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.setPrimaryEntry(this.get(anAspect));
+
+    return source;
 });
 
 //  ========================================================================
