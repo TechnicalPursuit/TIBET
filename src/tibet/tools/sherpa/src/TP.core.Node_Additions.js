@@ -796,9 +796,24 @@ function(aHalo, aSignal) {
      * @returns {Boolean} Whether or not the halo can focus the receiver.
      */
 
+    var ancestors,
+
+        len,
+        i;
+
     //  We cannot focus on elements that are Sherpa elements themselves.
     if (this.getNSURI() === TP.w3.Xmlns.SHERPA) {
         return false;
+    }
+
+    //  We cannot focus on elements that are under a 'tibet:tofu' element
+    ancestors = this.getAncestors();
+
+    len = ancestors.getSize();
+    for (i = 0; i < len; i++) {
+        if (ancestors.at(i).getCanonicalName() === 'tibet:tofu') {
+            return false;
+        }
     }
 
     return true;
