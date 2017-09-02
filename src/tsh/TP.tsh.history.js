@@ -113,6 +113,7 @@ function(aRequest) {
         return aRequest.complete(output);
     }
 
+    hid = TP.str(hid);
     str = this.translateHistoryReference(hid, aRequest, shell, false);
     if (TP.isEmpty(str)) {
         //  report on specific error should come from translation
