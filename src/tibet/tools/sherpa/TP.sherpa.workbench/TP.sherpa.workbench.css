@@ -134,7 +134,7 @@ sherpa|workbench > .footer {
 
 .bookmarks > button.bookmarking {
 
-    float: right;
+    position: absolute;
 
     width: 20px;
     height: 20px;
@@ -145,10 +145,14 @@ sherpa|workbench > .footer {
 
 .bookmarks > button#addbookmark {
 
+    right: 35px;
+
     background-image: url("../media/ic_playlist_add_black_24px.svg");
 }
 
 .bookmarks > button#showbookmarks {
+
+    right: 5px;
 
     background-image: url("../media/ic_playlist_play_black_24px.svg");
 }
