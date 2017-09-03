@@ -425,6 +425,7 @@ function(aSignal) {
                                     aSignal.at('haloTarget').getType());
 
     this.get('$consoleGUI').focusInput();
+    this.get('$consoleGUI').setInputCursorToEnd();
 
     return this;
 });
@@ -1227,6 +1228,7 @@ function(rawInput, options) {
         }
 
         consoleGUI.focusInput();
+        consoleGUI.setInputCursorToEnd();
     }
 
     return req;

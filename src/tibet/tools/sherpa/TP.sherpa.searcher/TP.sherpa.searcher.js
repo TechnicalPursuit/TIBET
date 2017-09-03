@@ -1168,7 +1168,9 @@ function() {
 
     //  Clear the console's input
     consoleGUI = this.get('$consoleGUI');
+
     consoleGUI.focusInput();
+    consoleGUI.setInputCursorToEnd();
 
     //  Set the searcher's value to null, clearing it.
     searcher = this.get('searcher');
