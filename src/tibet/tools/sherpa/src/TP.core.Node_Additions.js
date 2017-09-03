@@ -197,6 +197,28 @@ function(aSourceName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getPathPartsForInspector',
+function(options) {
+
+    /**
+     * @method getPathPartsForInspector
+     * @summary Returns the source's path parts that the inspector should be
+     *     navigated to when it has neither a current resolver to resolve to or
+     *     a path that's been supplied by the caller.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the path parts. This will have the following keys, amongst
+     *     others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {String[]} The path parts that will navigate the inspector to
+     *     the receiver.
+     */
+
+    return TP.ac('_HALO_');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 

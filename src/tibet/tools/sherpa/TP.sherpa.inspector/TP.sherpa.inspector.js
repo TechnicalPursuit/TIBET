@@ -860,6 +860,8 @@ function(pathParts) {
 
         newPathParts,
 
+        haloTarget,
+
         aliases,
 
         i,
@@ -889,6 +891,13 @@ function(pathParts) {
 
         newPathParts = TP.ac('TIBET', 'Types', typeName, trackName, methodName);
 
+    } else if (pathParts.first() === '_HALO_') {
+
+        haloTarget = TP.byId('SherpaHalo', TP.win('UIROOT')).get(
+                                                        'currentTargetTPElem');
+        if (TP.isValid(haloTarget)) {
+            newPathParts = TP.ac(haloTarget.getID());
+        }
     } else {
 
         newPathParts = TP.ac();
