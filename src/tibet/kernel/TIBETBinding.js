@@ -3568,7 +3568,7 @@ function() {
     /**
      * @method $registerRepeatContent
      * @summary Registers the content under the receiver as repeat content with
-     * the receiver's TP.core.Document for iteration purposes.
+     *     the receiver's TP.core.Document for iteration purposes.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
