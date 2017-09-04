@@ -216,7 +216,7 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.insertionAssistant.Inst.defineHandler('ValueChange',
-function() {
+function(aSignal) {
 
     /**
      * @method handleValueChange
