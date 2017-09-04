@@ -2339,6 +2339,8 @@ function(aCollectionURI, aDeleteIndex) {
 
         deleteIndexes,
 
+        removedData,
+
         changedAddresses,
 
         len,
@@ -2370,9 +2372,10 @@ function(aCollectionURI, aDeleteIndex) {
         //  If we have an Array of deletion indexes, use a TIBET convenience
         //  method.
         if (TP.isArray(deleteIndexes)) {
+            removedData = targetCollection.atAll(deleteIndexes);
             targetCollection.removeAtAll(deleteIndexes);
         } else {
-            targetCollection.splice(deleteIndexes, 1);
+            removedData = targetCollection.splice(deleteIndexes, 1);
         }
 
     } else {
@@ -2419,6 +2422,7 @@ function(aCollectionURI, aDeleteIndex) {
                         TP.CHANGE_PATHS, changedPaths,
                         'target', this,
                         'indexes', deleteIndexes,
+                        'removedData', removedData,
                         TP.CHANGE_URIS, null,
                         TP.START_SIGNAL_BATCH, batchID,
                         TP.END_SIGNAL_BATCH, batchID));
@@ -3069,6 +3073,10 @@ function(aCollectionURI, aDeleteIndex) {
 
         i,
 
+        path,
+
+        removedData,
+
         changedAddresses,
         changedIndex,
         changedAspect,
@@ -3125,7 +3133,10 @@ function(aCollectionURI, aDeleteIndex) {
     //  Create an XPathPath object from the computed path and execute a delete.
     //  Note here how we supply 'false' as to whether we want the path machinery
     //  to signal a change. We'll do that here.
-    changedAddresses = TP.xpc(deletionPath).execRemove(itemParent, false);
+    path = TP.xpc(deletionPath);
+    removedData = path.exec(itemParent, false);
+
+    changedAddresses = path.execRemove(itemParent, false);
 
     //  And the first index that changed.
     changedIndex = deleteIndexes.first();
@@ -3152,6 +3163,7 @@ function(aCollectionURI, aDeleteIndex) {
                         TP.CHANGE_PATHS, changedPaths,
                         'target', this,
                         'indexes', deleteIndexes,
+                        'removedData', removedData,
                         TP.CHANGE_URIS, null,
                         TP.START_SIGNAL_BATCH, batchID,
                         TP.END_SIGNAL_BATCH, batchID));
@@ -6247,6 +6259,10 @@ function(targetObj, varargs) {
                 deleteIndex,
                 i,
 
+                path,
+
+                removedData,
+
                 changedAddresses,
                 changedIndex,
                 changedAspect,
@@ -6306,11 +6322,16 @@ function(targetObj, varargs) {
                 deleteIndexes.push(preDeleteSize - 1);
             }
 
+            path = TP.xpc(deletionPath);
+
+            removedData = path.exec(targetCollection, false);
+            removedData = TP.$xml2jsonObj(removedData);
+            removedData = TP.json2js(TP.json(removedData));
+
             //  Create an XPathPath object from the computed path and execute a
             //  delete. Note here how we supply 'false' as to whether we want
             //  the path machinery to signal a change. We'll do that here.
-            changedAddresses = TP.xpc(deletionPath).execRemove(
-                                                    targetCollection, false);
+            changedAddresses = path.execRemove(targetCollection, false);
 
             //  And the first index that changed.
             changedIndex = deleteIndexes.first();
@@ -6341,6 +6362,7 @@ function(targetObj, varargs) {
                                 TP.CHANGE_PATHS, changedPaths,
                                 'target', this,
                                 'indexes', deleteIndexes,
+                                'removedData', removedData,
                                 TP.CHANGE_URIS, null,
                                 TP.START_SIGNAL_BATCH, batchID,
                                 TP.END_SIGNAL_BATCH, batchID));
