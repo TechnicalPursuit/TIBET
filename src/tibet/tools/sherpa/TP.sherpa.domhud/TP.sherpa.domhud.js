@@ -696,6 +696,10 @@ function(aSignal) {
     }
 
     targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'domnode')) {
+        return this;
+    }
+
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
 
     if (TP.isEmpty(peerID)) {
