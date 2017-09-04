@@ -39,16 +39,15 @@
                     </li>
                     <li id="AttributesTable">
                         <label>Attributes:</label>
-                        <div id="attributes" bind:repeat="tagAttrs">
+                        <div id="ins_assist_attributes" bind:repeat="tagAttrs">
                                 <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
                                 <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
-                                <span class="deleter" on:click="{signal: DeleteItem, origin: 'attributes', payload: {index:TP.TARGET}}"/>
+                                <span class="deleter" on:click="{signal: DeleteItem, origin: 'ins_assist_attributes', payload: {index:TP.TARGET}}"/>
                             <br/>
-
                         </div>
                     </li>
                     <li>
-                        <div class="inserter" on:click="{signal: InsertItem, origin: 'attributes', payload: {source: 'urn:tibet:attr_data_blank', copy: true}}"></div>
+                        <div class="inserter" on:click="{signal: InsertItem, origin: 'ins_assist_attributes', payload: {source: 'urn:tibet:attr_data_blank', copy: true}}"></div>
                     </li>
                 </ul>
             </form>
