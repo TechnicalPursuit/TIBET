@@ -61,6 +61,10 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.domhud.Inst.defineAttribute('$currentDNDTarget');
+TP.sherpa.domhud.Inst.defineAttribute('$tileContentConstructed');
+TP.sherpa.domhud.Inst.defineAttribute('$attributeNames');
+
+TP.sherpa.domhud.Inst.defineAttribute('currentTarget');
 
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
@@ -716,6 +720,288 @@ function(aSignal) {
     target = target.getNativeNode();
     TP.elementAddClass(target, 'sherpa-hud-highlight');
     this.$set('highlighted', target, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('ToggleHighlightAndShowAttributes',
+function(aSignal) {
+
+    /**
+     * @method ToggleHighlightAndShowAttributes
+     * @summary Responds to mouse over/out notifications by toggling a
+     *     class on individual peer elements. The result is that as the user
+     *     hovers over elements in the sidebar the corresponding element in
+     *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
+     * @param {TP.sig.Signal} aSignal The over/out signal with the target.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var targetElem,
+        peerID,
+        target,
+
+        centerElem,
+        centerElemPageRect,
+
+        targetElemPageRect,
+
+        modelObj,
+        newInsertionInfo,
+
+        names,
+
+        tagAttrs,
+
+        modelURI,
+
+        showHandler;
+
+    //  Call the handler method directly to toggle the highlight.
+    this.handleToggleHighlightFromANYWhenANY(aSignal);
+
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'domnode')) {
+        return this;
+    }
+
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
+    target = TP.byId(peerID);
+    if (TP.notValid(target)) {
+        return this;
+    }
+    this.set('currentTarget', target);
+
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerElem = TP.byId('center', this.getNativeWindow());
+    centerElemPageRect = centerElem.getPageRect();
+
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    targetElemPageRect = TP.wrap(targetElem).getPageRect();
+
+    //  ---
+
+    //  Build the model object.
+    modelObj = TP.hc();
+
+    //  Register a hash to be placed at the top-level 'info' slot in the model.
+    newInsertionInfo = TP.hc();
+    modelObj.atPut('info', newInsertionInfo);
+
+    names = TP.ac();
+
+    //  Iterate over the target's attributes and populate the data model with
+    //  the name and value.
+    tagAttrs = TP.ac();
+    target.getAttributes().perform(
+        function(kvPair) {
+            tagAttrs.push(
+                TP.hc('tagAttrName', kvPair.first(),
+                        'tagAttrValue', kvPair.last())
+            );
+
+            names.push(kvPair.first());
+        });
+    this.set('$attributeNames', names);
+
+    newInsertionInfo.atPut('tagAttrs', tagAttrs);
+
+    //  Set up a model URI and observe it for change ourself. This will allow us
+    //  to regenerate the tag representation as the model changes.
+    modelURI = TP.uc('urn:tibet:dom_attr_source');
+
+    //  Construct a JSONContent object around the model object so that we can
+    //  bind to it using the more powerful JSONPath constructs
+    modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
+
+    //  If we've already constructed the tile content, just set the resource on
+    //  the model URI. This will cause the bindings to update.
+    if (this.get('$tileContentConstructed')) {
+        modelURI.setResource(modelObj, TP.hc('signalChange', true));
+    } else {
+
+        //  Observe the URI for when the whole value changes.
+        this.observe(modelURI, 'ValueChange');
+
+        showHandler =
+            function(aTileTPElem) {
+
+                var contentElem,
+                    newContentTPElem;
+
+                contentElem =
+                    TP.xhtmlnode(
+                        '<span class="dom_attributes" bind:scope="urn:tibet:dom_attr_source#jpath($.info)">' +
+
+                            '<div id="domhud_attributes" bind:repeat="tagAttrs">' +
+                                    '<input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>' +
+                                    '<input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>' +
+                                    '<span class="deleter" on:click="{signal: DeleteItem, origin: \'domhud_attributes\', payload: {index:TP.TARGET}}"/>' +
+                                '<br/>' +
+                            '</div>' +
+                            '<div class="inserter" on:click="{signal: InsertItem, origin: \'domhud_attributes\', payload: {source: \'urn:tibet:attr_data_blank\', copy: true}}"></div>' +
+                        '</span>');
+
+                newContentTPElem = aTileTPElem.setContent(contentElem);
+                newContentTPElem.awaken();
+
+                //  Set the resource of the model URI to the model object,
+                //  telling the URI that it should observe changes to the model
+                //  (which will allow us to get notifications from the URI which
+                //  we're observing above) and to go ahead and signal change to
+                //  kick things off.
+                modelURI.setResource(
+                    modelObj,
+                    TP.hc('observeResource', true, 'signalChange', true));
+
+                //  Position the tile
+                aTileTPElem.setPagePosition(
+                    TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+
+                this.set('$tileContentConstructed', true);
+            }.bind(this);
+    }
+
+    //  Show the rule text in the tile. Note how we wrap the content with a span
+    //  with a CodeMirror CSS class to make the styling work.
+    TP.bySystemId('Sherpa').showTileAt(
+        'DOMAttributes_Tile', 'Element Attributes', showHandler, showHandler);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles when the user changes the value of the underlying model.
+     * @param {ValueChange} aSignal The signal that caused this handler to trip.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var aspectPath,
+
+        attrIndex,
+
+        modelObj,
+
+        nameAspectPath,
+
+        name,
+        value,
+
+        currentTarget,
+
+        removedData;
+
+    aspectPath = aSignal.at('aspect');
+
+    //  If the whole value changed, we're not interested.
+    if (aspectPath === 'value') {
+        return this;
+    }
+
+    //  Make sure we have a valid current target.
+    currentTarget = this.get('currentTarget');
+    if (TP.notValid(currentTarget)) {
+        return this;
+    }
+
+    //  If the action is TP.UPDATE, then the user added an attribute or changed
+    //  one of the existing attributes. Note that we don't concern ourselves
+    //  with an action of TP.INSERT/TP.CREATE, because that means that the user
+    //  has clicked the '+' button to insert a new attribute row, but hasn't
+    //  filled out the name and value and we don't want to process blank
+    //  attributes..
+    if (aSignal.at('action') === TP.UPDATE) {
+
+        //  Grab the model object where our data is located.
+        modelObj = TP.uc('urn:tibet:dom_attr_source').getResource().get('result');
+
+        //  Compute a name aspect path by replacing 'tagAttrValue' with
+        //  'tagAttrName' in the value aspect path.
+        nameAspectPath = aspectPath.slice(0, aspectPath.lastIndexOf('.') + 1) +
+                            'tagAttrName';
+        valueAspectPath = aspectPath.slice(0, aspectPath.lastIndexOf('.') + 1) +
+                            'tagAttrValue';
+
+        //  Grab the name and value from the model.
+        name = modelObj.get(nameAspectPath);
+        value = modelObj.get(valueAspectPath);
+
+        //  If we're changing the attribute name, but we have an empty value,
+        //  then just exit here - no sense in doing a 'set'
+        if (aspectPath.endsWith('tagAttrName') && TP.isEmpty(value)) {
+            return this;
+        }
+
+        //  Grab an ordered list of all of the attribute names.
+        allAttrNames = this.get('$attributeNames');
+
+        //  If we're changing the attribute name at this point (with an
+        //  attribute that has a real value)
+        if (aspectPath.endsWith('tagAttrName')) {
+
+            //  Slice out the index, convert it to a number and get the
+            //  attribute name at that index in our list of all attribute names.
+            //  This will tell us the old attribute name.
+            attrIndex = aspectPath.slice(
+                        aspectPath.indexOf('[') + 1,
+                        aspectPath.indexOf(']'));
+            attrIndex = attrIndex.asNumber();
+            oldAttrName = allAttrNames.at(attrIndex);
+
+            //  If we got one, remove the attribute at that position.
+            if (TP.notEmpty(oldAttrName)) {
+                currentTarget.removeAttribute(oldAttrName);
+            }
+
+            //  Replace the old name with the new name in our list of
+            //  attributes.
+            allAttrNames.replace(oldAttrName, name);
+
+            //  Set the value using the new name.
+            currentTarget.setAttribute(name, value);
+
+        } else {
+
+            //  Set the attribute named by the name to the value
+            if (!currentTarget.hasAttribute(name)) {
+                allAttrNames.push(name);
+            }
+
+            //  Set the value using the computed name and value.
+            currentTarget.setAttribute(name, value);
+        }
+    } else if (aSignal.at('action') === TP.DELETE) {
+
+        //  If we're deleting an attribute (because the user clicked an 'X'),
+        //  then grab the removed data's 'name' value and remove the
+        //  corresponding attribute.
+        removedData = aSignal.at('removedData');
+        if (TP.isValid(removedData)) {
+            name = removedData.at('tagAttrs').at('tagAttrName');
+
+            //  Remove the name from our list of attribute names.
+            allAttrNames.remove(name);
+
+            //  Remove the attribute itself.
+            currentTarget.removeAttribute(name);
+        }
+    }
 
     return this;
 });

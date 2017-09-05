@@ -99,3 +99,63 @@ sherpa|domhud > ul.content > li.spacer.sherpa_droptarget {
     background-color: red;
 }
 
+#DOMAttributes_Tile {
+
+    min-width: 325px;
+    min-height: 200px;
+}
+
+#DOMAttributes_Tile > .body {
+
+    bottom: 0;
+
+    font-family: monospace;
+    font-size: 11px;
+}
+
+#DOMAttributes_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+#DOMAttributes_Tile > .footer {
+
+    display: none;
+}
+
+.dom_attributes input {
+
+    height: 1em;
+
+    margin-left: 0;
+    margin-bottom: 2px;
+}
+
+.dom_attributes .inserter {
+
+    position: absolute;
+
+    right: 8px;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+.dom_attributes .deleter {
+
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+
+    margin-top: 0;
+
+    cursor: pointer;
+
+    background-image: url("../media/ic_close_black_24px.svg");
+}
+
