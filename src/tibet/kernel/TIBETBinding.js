@@ -999,9 +999,16 @@ function(aSignal) {
 
                             ownerElem = boundAttrNodes.at(i).ownerElement;
                             ownerTPElem = TP.wrap(ownerElem);
+
+                            //  Note that we use sigOrigin here as the
+                            //  primarySource and initialValue. We let the
+                            //  observers of this element decide how to use this
+                            //  element based on their standard data binding /
+                            //  decoding methods (isSingleValued,
+                            //  isScalarValued, etc.)
                             ownerTPElem.refreshLeaf(
-                                    primarySource, aSignal,
-                                    primarySource, boundAttrNodes[i], null);
+                                    sigOrigin, aSignal,
+                                    sigOrigin, boundAttrNodes[i], null);
                         }
                     }
                 }
