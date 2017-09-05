@@ -1129,6 +1129,12 @@ function(aDataObject, shouldSignal) {
     }
 
     if (TP.notFalse(shouldSignal)) {
+
+        //  Note that we do not use $changed here - we still let the data
+        //  object decide whether it wants to send changed.
+        //  TODO: Find out why this needs to be this way. If shouldSignal is
+        //  true, we should be forcing change via $changed(). But changing that
+        //  here causes all of the tests to break.
         this.changed('value', TP.UPDATE);
     }
 
@@ -3366,7 +3372,7 @@ function(aNode, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('content', TP.UPDATE,
+        this.$changed('content', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldNode, TP.NEWVAL, aNode));
     }
 
@@ -11242,7 +11248,7 @@ function(aTPNode, shouldSignal) {
             elem.removeAttributeNode(node);
 
             if (signalChange) {
-                this.changed('@' + node.name, TP.DELETE);
+                this.$changed('@' + node.name, TP.DELETE);
             }
         } else {
             //  when dealing with other elements we get their parent node so
@@ -11262,7 +11268,7 @@ function(aTPNode, shouldSignal) {
             }
 
             if (signalChange) {
-                TP.wrap(elem).changed('content', TP.DELETE);
+                TP.wrap(elem).$changed('content', TP.DELETE);
             }
         }
     }

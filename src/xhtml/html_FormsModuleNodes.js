@@ -1193,7 +1193,7 @@ function(aValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('value', TP.UPDATE,
+        this.$changed('value', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
@@ -3308,7 +3308,7 @@ function(aValue) {
     }
 
     if (dirty) {
-        this.changed('selection', TP.UPDATE);
+        this.$changed('selection', TP.UPDATE);
     }
 
     return this;
@@ -3357,7 +3357,7 @@ function(aValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('value', TP.UPDATE,
+        this.$changed('value', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 

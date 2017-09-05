@@ -841,7 +841,7 @@ function(aValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('value', TP.UPDATE,
+        this.$changed('value', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 

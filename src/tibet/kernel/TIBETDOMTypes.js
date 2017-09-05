@@ -2753,7 +2753,7 @@ function(aNode, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('content', TP.UPDATE,
+        this.$changed('content', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldNode, TP.NEWVAL, aNode));
     }
 
@@ -2850,7 +2850,7 @@ function(attributeName, attributeValue, shouldSignal) {
             }
 
             if (flag) {
-                this.changed(attributeName, TP.UPDATE);
+                this.$changed(attributeName, TP.UPDATE);
             }
         } else {
             //  value didn't take...non-mutable model/aspect?
@@ -2917,7 +2917,7 @@ function(aValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('value', TP.UPDATE);
+        this.$changed('value', TP.UPDATE);
     }
 
     //  Since, at the TP.core.Node level, setting the value is equivalent to
@@ -4049,7 +4049,7 @@ function(aNode, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('content', TP.UPDATE);
+        this.$changed('content', TP.UPDATE);
     }
 
     return this;
@@ -12906,7 +12906,7 @@ function(attributeName, shouldSignal) {
     TP.elementRemoveAttribute(node, attributeName, true);
 
     if (flag) {
-        this.changed('@' + attributeName, TP.DELETE);
+        this.$changed('@' + attributeName, TP.DELETE);
     }
 
     //  removeAttribute returns void according to the spec
@@ -13712,7 +13712,7 @@ function(attributeName, attributeValue, shouldSignal) {
             attr.value = attributeValue;
 
             if (flag) {
-                this.changed('@' + attributeName,
+                this.$changed('@' + attributeName,
                                 hadAttribute ? TP.UPDATE : TP.CREATE,
                                 TP.hc(TP.OLDVAL, oldValue,
                                         TP.NEWVAL, attributeValue));
@@ -13749,7 +13749,7 @@ function(attributeName, attributeValue, shouldSignal) {
             //  NB: We don't 'flag changes' for setting an 'xmlns:*' attribute
 
             if (flag) {
-                this.changed('@' + attributeName, TP.CREATE);
+                this.$changed('@' + attributeName, TP.CREATE);
             }
 
             return;
@@ -13787,7 +13787,7 @@ function(attributeName, attributeValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('@' + attributeName,
+        this.$changed('@' + attributeName,
                         TP.CREATE,
                         TP.hc('oldValue', oldValue,
                                 'newValue', attributeValue));

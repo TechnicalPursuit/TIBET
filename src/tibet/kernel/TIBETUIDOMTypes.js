@@ -4070,7 +4070,7 @@ function(attributeName, attributeValue, shouldSignal) {
                                     attributeValue);
 
             if (flag) {
-                this.changed('@' + attributeName, TP.UPDATE);
+                this.$changed('@' + attributeName, TP.UPDATE);
             }
 
             return;
@@ -4094,12 +4094,13 @@ function(attributeName, attributeValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('@' + attributeName,
-                    hadAttribute ? TP.UPDATE : TP.CREATE,
-                    TP.hc(TP.OLDVAL,
-                            TP.elementGetAttribute(node, attributeName, true),
-                            TP.NEWVAL,
-                            attributeValue));
+        this.$changed('@' + attributeName,
+                        hadAttribute ? TP.UPDATE : TP.CREATE,
+                        TP.hc(TP.OLDVAL,
+                                TP.elementGetAttribute(
+                                    node, attributeName, true),
+                                TP.NEWVAL,
+                                attributeValue));
 
         //  Now, in case anyone is bound to this attribute, wrap it, configure
         //  it to signal Change and send it.
@@ -4112,7 +4113,7 @@ function(attributeName, attributeValue, shouldSignal) {
         attrTPNode.shouldSignalChange(true);
 
         //  Signal the Change and then put the value back to whatever it was.
-        attrTPNode.changed('value', TP.UPDATE);
+        attrTPNode.$changed('value', TP.UPDATE);
         attrTPNode.shouldSignalChange(attrFlag);
     }
 
@@ -5493,7 +5494,7 @@ function(stateAttribute, stateFlag, shouldSignal) {
         }
 
         if (flag) {
-            this.changed(stateAttribute.slice(7),
+            this.$changed(stateAttribute.slice(7),
                             TP.UPDATE,
                             TP.hc('baseSignalType', TP.sig.AttributeChange));
         }
