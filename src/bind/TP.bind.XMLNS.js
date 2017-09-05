@@ -140,7 +140,8 @@ function(anElement) {
                             }
                         }
                     }
-                } else if (TP.isURIString(attrVal)) {
+                } else if (TP.isURIString(attrVal) ||
+                            TP.regex.BARENAME.test(attrVal)) {
                     //  Otherwise, it's a 'bind:scope' or 'bind:repeat', which
                     //  can we extract the URI information directly.
                     location = attrVal;
