@@ -3795,10 +3795,8 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 primaryURI,
 
                 frag,
-                path,
 
                 result,
-                target,
                 newValue;
 
             attrName = bindEntry.first();
@@ -3882,22 +3880,15 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                     if (TP.isEmpty(frag)) {
                         result.set('value', aValue);
                     } else {
-                        //  Force a fragment prefix to ensure we get barename
-                        //  paths when appropriate.
-                        if (frag.charAt(0) !== '#') {
-                            frag = '#' + frag;
-                        }
-
-                        //  With fragment back to original form try to resolve
-                        //  to the targeted element or attribute. If found
-                        //  setValue on that, otherwise use path against the
-                        //  original result obj.
-                        path = TP.apc(frag, TP.hc('shouldCollapse', true));
-                        target = result.get(path);
-                        if (TP.isMutable(target)) {
-                            TP.wrap(target).set('value', aValue, true);
+                        //  If we got a Window wrapper as the result from the
+                        //  primary URI, then we're a 'direct to GUI' binding.
+                        //  Use the *whole* URI to get a reference to the
+                        //  (wrapped) element and set its value.
+                        if (TP.isKindOf(result, TP.core.Window)) {
+                            result = wholeURI.getResource().get('result');
+                            result.set('value', aValue);
                         } else {
-                            result.set(path, aValue);
+                            result.set(TP.apc(frag), aValue);
                         }
                     }
                 }
