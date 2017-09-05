@@ -3795,9 +3795,10 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 primaryURI,
 
                 frag,
+                path,
 
                 result,
-
+                target,
                 newValue;
 
             attrName = bindEntry.first();
@@ -3842,9 +3843,10 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                     //  If we weren't able to compute a real URI from the
                     //  fully expanded URI value, then raise an exception
                     //  and return here.
-                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                    dataExpr = TP.trim(dataExpr);
+                    if (!TP.isURIString(dataExpr) &&
+                            !TP.regex.URI_FRAGMENT.test(dataExpr)) {
                         this.raise('TP.sig.InvalidURI');
-
                         break;
                     }
 
@@ -3858,7 +3860,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 }
 
                 primaryURI = wholeURI.getPrimaryURI();
-                frag = wholeURI.getFragmentExpr();
+                frag = wholeURI.getFragment();
 
                 //  Grab the result from the 'primary URI'. If the value can't
                 //  be retrieved, then create an Object and set it's 'value'
@@ -3880,9 +3882,23 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                     if (TP.isEmpty(frag)) {
                         result.set('value', aValue);
                     } else {
-                        //  Otherwise, compute an AccessPath from the fragment
-                        //  and use that.
-                        result.set(TP.apc(frag), aValue);
+                        //  Force a fragment prefix to ensure we get barename
+                        //  paths when appropriate.
+                        if (frag.charAt(0) !== '#') {
+                            frag = '#' + frag;
+                        }
+
+                        //  With fragment back to original form try to resolve
+                        //  to the targeted element or attribute. If found
+                        //  setValue on that, otherwise use path against the
+                        //  original result obj.
+                        path = TP.apc(frag, TP.hc('shouldCollapse', true));
+                        target = result.get(path);
+                        if (TP.isMutable(target)) {
+                            TP.wrap(target).set('value', aValue, true);
+                        } else {
+                            result.set(path, aValue);
+                        }
                     }
                 }
             }

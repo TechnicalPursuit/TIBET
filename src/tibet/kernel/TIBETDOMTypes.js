@@ -13900,7 +13900,7 @@ function(aValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('value', TP.UPDATE);
+        this.$changed('value', TP.UPDATE);
     }
 
     return this;

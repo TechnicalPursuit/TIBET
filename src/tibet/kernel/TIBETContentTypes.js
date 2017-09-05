@@ -9354,7 +9354,14 @@ function(targetObj, varargs) {
 
     //  This kind of path only works against XML
     if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidNode');
+        if (TP.isWindow(target) || TP.isKindOf(target, TP.core.Window)) {
+            target = TP.unwrap(target).document;
+            if (!TP.isXMLDocument(target)) {
+                return this.raise('InvalidDocument');
+            }
+        } else {
+            return this.raise('TP.sig.InvalidNode');
+        }
     }
 
     srcPath = this.get('srcPath');
@@ -9564,7 +9571,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  This kind of path only works against XML
     if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath');
+        if (TP.isWindow(target) || TP.isKindOf(target, TP.core.Window)) {
+            target = TP.wrap(TP.unwrap(target).document);
+        } else {
+            return this.raise('TP.sig.InvalidNode');
+        }
     }
 
     if (TP.regex.HAS_ACP.test(this.get('srcPath'))) {
