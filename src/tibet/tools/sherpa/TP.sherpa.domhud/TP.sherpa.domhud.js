@@ -894,16 +894,20 @@ function(aSignal) {
 
     var aspectPath,
 
-        attrIndex,
+        currentTarget,
 
         modelObj,
 
         nameAspectPath,
+        valueAspectPath,
 
         name,
         value,
 
-        currentTarget,
+        allAttrNames,
+
+        attrIndex,
+        oldAttrName,
 
         removedData;
 
