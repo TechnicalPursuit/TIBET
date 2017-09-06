@@ -9,39 +9,39 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.insertionAssistant}
+ * @type {TP.sherpa.tofuInsertionAssistant}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('sherpa.insertionAssistant');
+TP.core.CustomTag.defineSubtype('sherpa.tofuInsertionAssistant');
 
 //  Note how this property is TYPE_LOCAL, by design.
-TP.sherpa.insertionAssistant.defineAttribute('themeURI', TP.NO_RESULT);
+TP.sherpa.tofuInsertionAssistant.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineAttribute('head',
+TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('head',
     TP.cpc('> .head', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.insertionAssistant.Inst.defineAttribute('body',
+TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('body',
     TP.cpc('> .body', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.insertionAssistant.Inst.defineAttribute('foot',
+TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('foot',
     TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.insertionAssistant.Inst.defineAttribute('generatedTag',
+TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('generatedTag',
     TP.cpc('> .foot > #generatedTag', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.insertionAssistant.Inst.defineAttribute('data');
+TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineHandler('DialogCancel',
+TP.sherpa.tofuInsertionAssistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
     /**
@@ -60,12 +60,25 @@ function(anObject) {
     modelURI = TP.uc('urn:tibet:info_source');
     this.ignore(modelURI, 'ValueChange');
 
+    //  Focus and set the cursor to the end of the Sherpa's input cell after
+    //  1000ms
+    setTimeout(
+        function() {
+            var consoleGUI;
+
+            consoleGUI =
+                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+
+            consoleGUI.focusInput();
+            consoleGUI.setInputCursorToEnd();
+        }, 1000);
+
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineHandler('DialogOk',
+TP.sherpa.tofuInsertionAssistant.Inst.defineHandler('DialogOk',
 function(anObject) {
 
     /**
@@ -210,12 +223,25 @@ function(anObject) {
             delete newElem[TP.SHERPA_MUTATION];
         }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
 
+    //  Focus and set the cursor to the end of the Sherpa's input cell after
+    //  1000ms
+    setTimeout(
+        function() {
+            var consoleGUI;
+
+            consoleGUI =
+                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+
+            consoleGUI.focusInput();
+            consoleGUI.setInputCursorToEnd();
+        }, 1000);
+
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineHandler('ValueChange',
+TP.sherpa.tofuInsertionAssistant.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -250,7 +276,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineMethod('generateTag',
+TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generateTag',
 function(info) {
 
     /**
@@ -258,7 +284,7 @@ function(info) {
      * @summary Generates the tag text that will be used to create a new Element
      *     and insert it if user dismisses the assistant by clicking 'ok'.
      * @param {TP.core.Hash} info The hash containing the tag information.
-     * @returns {TP.sherpa.insertionAssistant} The receiver.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
     var str,
@@ -299,7 +325,7 @@ function(info) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineMethod('generatePathData',
+TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generatePathData',
 function(anElement) {
 
     /**
@@ -308,7 +334,7 @@ function(anElement) {
      *     the top-level of the Element's document down through the descendant
      *     chain to the supplied Element.
      * @param {Element} anElement The element to generate the path to.
-     * @returns {TP.sherpa.insertionAssistant} The receiver.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
     var targetTPElem,
@@ -352,7 +378,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.insertionAssistant.Inst.defineMethod('setData',
+TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('setData',
 function(anObj) {
 
     /**
@@ -360,7 +386,7 @@ function(anObj) {
      * @summary Sets the receiver's data object to the supplied object.
      * @param {Object} aDataObject The object to set the receiver's internal
      *     data to.
-     * @returns {TP.sherpa.insertionAssistant} The receiver.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
     var typesURI,

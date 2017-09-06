@@ -934,14 +934,14 @@ function(insertionPointElement, insertionPosition) {
 
     //  Grab the TP.sherpa.insertionAssistant type's template.
     assistantContentTPElem =
-        TP.sherpa.insertionAssistant.getResourceElement(
+        TP.sherpa.tofuInsertionAssistant.getResourceElement(
                         'template',
                         TP.ietf.Mime.XHTML);
 
     //  Open a dialog with the insertion assistant's content.
     dialogPromise = TP.dialog(
         TP.hc(
-            'dialogID', 'AssistantDialog',
+            'dialogID', 'TofuAssistantDialog',
             'isModal', true,
             'title', 'Insert New Tag',
             'templateContent', assistantContentTPElem));

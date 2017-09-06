@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 
-<sherpa:insertionAssistant>
+<sherpa:tofuInsertionAssistant>
     <div class="head"/>
     <div class="body">
         <div class="supertype_chooser">
             Choose from list:
             <br/>
             <br/>
-            <xctrls:list id="InsertionAssistantTagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:info_source#jpath($.info.chosenTagName)}"/>
+            <xctrls:list id="tofuInsertionAssistantTagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:info_source#jpath($.info.chosenTagName)}"/>
             <br/>
             <br/>
             Or type new tag name:
@@ -60,4 +60,4 @@
         <button on:click="DialogCancel">Cancel</button>
         <button on:click="DialogOk">Insert Tag</button>
     </div>
-</sherpa:insertionAssistant>
+</sherpa:tofuInsertionAssistant>

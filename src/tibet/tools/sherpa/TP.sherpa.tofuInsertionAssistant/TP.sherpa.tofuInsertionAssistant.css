@@ -2,7 +2,7 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 
-sherpa|insertionAssistant {
+sherpa|tofuInsertionAssistant {
 
     position: absolute;
 
@@ -12,10 +12,10 @@ sherpa|insertionAssistant {
     right: 0;
 }
 
-sherpa|insertionAssistant > .head {
+sherpa|tofuInsertionAssistant > .head {
 }
 
-sherpa|insertionAssistant > .body {
+sherpa|tofuInsertionAssistant > .body {
 
     display: grid;
 
@@ -25,7 +25,7 @@ sherpa|insertionAssistant > .body {
     grid-template-columns: 1fr 3fr;
 }
 
-sherpa|insertionAssistant > .body .supertype_chooser {
+sherpa|tofuInsertionAssistant > .body .supertype_chooser {
 
     float: left;
 
@@ -33,7 +33,7 @@ sherpa|insertionAssistant > .body .supertype_chooser {
     margin-top: 43px;
 }
 
-xctrls|list#InsertionAssistantTagTypes {
+xctrls|list#tofuInsertionAssistantTagTypes {
 
     width: 100%;
     height: 14em;
@@ -43,17 +43,17 @@ xctrls|list#InsertionAssistantTagTypes {
     line-height: 1.5;
 }
 
-sherpa|insertionAssistant > .body .insertion_details {
+sherpa|tofuInsertionAssistant > .body .insertion_details {
 
     float: right;
 }
 
-sherpa|insertionAssistant > .body .insertion_details .flex_outer {
+sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer {
 
     margin-left: 0;
 }
 
-sherpa|insertionAssistant > .body .insertion_details .flex_outer li,
+sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer li,
 .flex-inner {
 
     position: relative;
@@ -63,39 +63,39 @@ sherpa|insertionAssistant > .body .insertion_details .flex_outer li,
     align-items: center;
 }
 
-sherpa|insertionAssistant > .body .insertion_details .flex_outer > li > label {
+sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer > li > label {
 
     flex: 1 0 100px;
 
     max-width: 100px;
 }
 
-sherpa|insertionAssistant > .body .insertion_details .flex_outer > li > label + *,
+sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer > li > label + *,
 .flex_inner {
 
     margin-left: 0;
 }
 
-sherpa|insertionAssistant > .body .insertion_details .flex_inner {
+sherpa|tofuInsertionAssistant > .body .insertion_details .flex_inner {
 
     justify-content: space-between;
 }
 
-sherpa|insertionAssistant > .body .insertion_details .flex_inner li {
+sherpa|tofuInsertionAssistant > .body .insertion_details .flex_inner li {
 
 }
 
-sherpa|insertionAssistant > .foot {
+sherpa|tofuInsertionAssistant > .foot {
 
     margin-top: -1em;
 }
 
-sherpa|insertionAssistant > .body .insertion_details input {
+sherpa|tofuInsertionAssistant > .body .insertion_details input {
 
     margin-left: 10px;
 }
 
-sherpa|insertionAssistant > .body .insertion_details input:checked + label {
+sherpa|tofuInsertionAssistant > .body .insertion_details input:checked + label {
 
     font-weight: bold;
 }
@@ -122,7 +122,7 @@ sherpa|insertionAssistant > .body .insertion_details input:checked + label {
     background-image: url("../media/ic_close_black_24px.svg");
 }
 
-sherpa|insertionAssistant > .body .insertion_details .inserter {
+sherpa|tofuInsertionAssistant > .body .insertion_details .inserter {
 
     width: 24px;
     height: 24px;
@@ -147,7 +147,7 @@ sherpa|insertionAssistant > .body .insertion_details .inserter {
     color: black;
 }
 
-sherpa|insertionAssistant > .foot #generatedTag {
+sherpa|tofuInsertionAssistant > .foot #generatedTag {
 
     margin-bottom: 10px;
     margin-left: 10px;
