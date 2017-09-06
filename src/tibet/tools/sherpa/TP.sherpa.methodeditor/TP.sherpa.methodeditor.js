@@ -283,6 +283,11 @@ function() {
                     this.changed('dirty',
                                     TP.UPDATE,
                                     TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
+
+                    //  Notify the user of success
+                    TP.bySystemId('SherpaConsoleService').notify(
+                        'Method successfully patched.');
+
                 }
             }.bind(this));
     }

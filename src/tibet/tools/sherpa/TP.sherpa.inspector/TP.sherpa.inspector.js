@@ -2454,6 +2454,9 @@ function(aSignal) {
     //  refresh.
     this.refreshBay();
 
+    //  Notify the user that we successfully added the method
+    TP.bySystemId('SherpaConsoleService').notify('Method Added');
+
     return this;
 });
 
@@ -2530,6 +2533,9 @@ function(aSignal) {
     //  Not supplying a bay number to refresh will cause the current bay to
     //  refresh.
     this.refreshBay();
+
+    //  Notify the user that we successfully added the method
+    TP.bySystemId('SherpaConsoleService').notify('Type Added');
 
     return this;
 });
