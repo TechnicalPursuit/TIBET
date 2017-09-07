@@ -1959,6 +1959,43 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getCurrentData',
+function() {
+
+    /**
+     * @method getCurrentData
+     * @summary Retrieves the data of the object currently selected in the
+     *     inspector.
+     * @returns {Object} The data of the currently selected object.
+     */
+
+    var inspectorBays,
+
+        lastResolver,
+
+        params,
+        data;
+
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    //  Grab the 'resolver' for the last inspector bay. This is the object that
+    //  will be messaged to get the data.
+    lastResolver = inspectorBays.last().get('config').at('resolver');
+    if (TP.notValid(lastResolver)) {
+        return null;
+    }
+
+    //  Construct a 'pathParts' by using our currently selected items.
+    params = TP.hc('pathParts', this.get('selectedItems'));
+
+    //  Grab the data from the computed resolver.
+    data = TP.getDataForTool(lastResolver, 'inspector', params);
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('getInspectorBayContentItem',
 function(bayNum) {
 
