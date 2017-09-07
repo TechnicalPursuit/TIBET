@@ -25,7 +25,7 @@ sherpa|tofuInsertionAssistant > .body {
     grid-template-columns: 1fr 3fr;
 }
 
-sherpa|tofuInsertionAssistant > .body .supertype_chooser {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_SupertypeChooser {
 
     float: left;
 
@@ -33,7 +33,7 @@ sherpa|tofuInsertionAssistant > .body .supertype_chooser {
     margin-top: 43px;
 }
 
-xctrls|list#tofuInsertionAssistantTagTypes {
+xctrls|list#tofuInsertionAssistant_TagTypes {
 
     width: 100%;
     height: 14em;
@@ -100,7 +100,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_details input:checked + label {
     font-weight: bold;
 }
 
-#AttributesTable input {
+#tofuInsertionAssistant_AttributesTable input {
 
     height: 1em;
 
@@ -108,7 +108,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_details input:checked + label {
     margin-bottom: 2px;
 }
 
-#AttributesTable .deleter {
+#tofuInsertionAssistant_AttributesTable .deleter {
 
     position: absolute;
 
@@ -134,7 +134,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_details .inserter {
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
-#InsertionBreadcrumb {
+#tofuInsertionAssistant_InsertionBreadcrumb {
 
     display: block;
 
@@ -142,7 +142,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_details .inserter {
     left: 115px;
 }
 
-#InsertionBreadcrumb > .content div.item {
+#tofuInsertionAssistant_InsertionBreadcrumb > .content div.item {
 
     color: black;
 }

@@ -3,51 +3,51 @@
 <sherpa:tofuInsertionAssistant>
     <div class="head"/>
     <div class="body">
-        <div class="supertype_chooser">
+        <div id="tofuInsertionAssistant_SupertypeChooser">
             Choose from list:
             <br/>
             <br/>
-            <xctrls:list id="tofuInsertionAssistantTagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:info_source#jpath($.info.chosenTagName)}"/>
+            <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:info_source#jpath($.info.chosenTagName)}"/>
             <br/>
             <br/>
             Or type new tag name:
             <br/>
             <br/>
-            <input type="text" id="newTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:info_source#jpath($.info.enteredTagName)}"/>
+            <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:info_source#jpath($.info.enteredTagName)}"/>
         </div>
         <div class="insertion_details">
             <form bind:scope="urn:tibet:info_source#jpath($.info)">
                 <ul class="flex_outer">
                     <li>
                         <label>Insertion Point:</label>
-                        <sherpa:breadcrumb id="InsertionBreadcrumb"/>
+                        <sherpa:breadcrumb id="tofuInsertionAssistant_InsertionBreadcrumb"/>
                     </li>
                     <li>
                         <label>Insertion position:</label>
                         <ul class="flex_inner">
                             <li>
-                                <input type="radio" name="insertion_radio" value="BeforeBegin" id="InsertionPointRadio1" bind:io="{checked: insertionPosition}"/>
-                                <label for="InsertionPointRadio1">Previous Sibling</label>
-                                <input type="radio" name="insertion_radio" value="AfterBegin" id="InsertionPointRadio2"/>
-                                <label for="InsertionPointRadio2">First Child</label>
-                                <input type="radio" name="insertion_radio" value="BeforeEnd" id="InsertionPointRadio3"/>
-                                <label for="InsertionPointRadio3">Last Child</label>
-                                <input type="radio" name="insertion_radio" value="AfterEnd" id="InsertionPointRadio4"/>
-                                <label for="InsertionPointRadio4">Next Sibling</label>
+                                <input type="radio" name="insertion_radio" value="BeforeBegin" id="tofuInsertionAssistant_InsertionPointRadio1" bind:io="{checked: insertionPosition}"/>
+                                <label for="tofuInsertionAssistant_InsertionPointRadio1">Previous Sibling</label>
+                                <input type="radio" name="insertion_radio" value="AfterBegin" id="tofuInsertionAssistant_InsertionPointRadio2"/>
+                                <label for="tofuInsertionAssistant_InsertionPointRadio2">First Child</label>
+                                <input type="radio" name="insertion_radio" value="BeforeEnd" id="tofuInsertionAssistant_InsertionPointRadio3"/>
+                                <label for="tofuInsertionAssistant_InsertionPointRadio3">Last Child</label>
+                                <input type="radio" name="insertion_radio" value="AfterEnd" id="tofuInsertionAssistant_InsertionPointRadio4"/>
+                                <label for="tofuInsertionAssistant_InsertionPointRadio4">Next Sibling</label>
                             </li>
                         </ul>
                     </li>
-                    <li id="AttributesTable">
+                    <li id="tofuInsertionAssistant_AttributesTable">
                         <label>Attributes:</label>
-                        <div id="ins_assist_attributes" bind:repeat="tagAttrs">
+                        <div id="tofuInsertionAssistant_Attributes" bind:repeat="tagAttrs">
                                 <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
                                 <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
-                                <span class="deleter" on:click="{signal: DeleteItem, origin: 'ins_assist_attributes', payload: {index:TP.TARGET}}"/>
+                                <span class="deleter" on:click="{signal: DeleteItem, origin: 'tofuInsertionAssistant_Attributes', payload: {index:TP.TARGET}}"/>
                             <br/>
                         </div>
                     </li>
                     <li>
-                        <div class="inserter" on:click="{signal: InsertItem, origin: 'ins_assist_attributes', payload: {source: 'urn:tibet:attr_data_blank', copy: true}}"></div>
+                        <div class="inserter" on:click="{signal: InsertItem, origin: 'tofuInsertionAssistant_Attributes', payload: {source: 'urn:tibet:attr_data_blank', copy: true}}"></div>
                     </li>
                 </ul>
             </form>

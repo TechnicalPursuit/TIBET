@@ -572,7 +572,8 @@ function(anObj) {
     }
 
     //  Set the value of the breadcrumb to that data.
-    breadcrumbTPElem = TP.byId('InsertionBreadcrumb', this.getNativeNode());
+    breadcrumbTPElem = TP.byId('tofuInsertionAssistant_InsertionBreadcrumb',
+                                this.getNativeNode());
     breadcrumbTPElem.setValue(breadcrumbData);
 
     return this;
