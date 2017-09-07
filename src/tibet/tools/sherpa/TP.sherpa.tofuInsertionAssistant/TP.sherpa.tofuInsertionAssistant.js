@@ -57,7 +57,7 @@ function(anObject) {
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
-    modelURI = TP.uc('urn:tibet:info_source');
+    modelURI = TP.uc('urn:tibet:tofuInsertionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
 
     //  Focus and set the cursor to the end of the Sherpa's input cell after
@@ -115,10 +115,10 @@ function(anObject) {
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
-    modelURI = TP.uc('urn:tibet:info_source');
+    modelURI = TP.uc('urn:tibet:tofuInsertionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
 
-    result = TP.uc('urn:tibet:info_source').getResource().get('result');
+    result = TP.uc('urn:tibet:tofuInsertionAssistant_source').getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -256,7 +256,7 @@ function(aSignal) {
         typeInfo,
         str;
 
-    result = TP.uc('urn:tibet:info_source').getResource().get('result');
+    result = TP.uc('urn:tibet:tofuInsertionAssistant_source').getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -545,7 +545,7 @@ function(anObj) {
 
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
-    modelURI = TP.uc('urn:tibet:info_source');
+    modelURI = TP.uc('urn:tibet:tofuInsertionAssistant_source');
     this.observe(modelURI, 'ValueChange');
 
     //  Construct a JSONContent object around the model object so that we can

@@ -7,16 +7,16 @@
             Choose from list:
             <br/>
             <br/>
-            <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:info_source#jpath($.info.chosenTagName)}"/>
+            <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.chosenTagName)}"/>
             <br/>
             <br/>
             Or type new tag name:
             <br/>
             <br/>
-            <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:info_source#jpath($.info.enteredTagName)}"/>
+            <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.enteredTagName)}"/>
         </div>
         <div class="insertion_details">
-            <form bind:scope="urn:tibet:info_source#jpath($.info)">
+            <form bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
                 <ul class="flex_outer">
                     <li>
                         <label>Insertion Point:</label>
