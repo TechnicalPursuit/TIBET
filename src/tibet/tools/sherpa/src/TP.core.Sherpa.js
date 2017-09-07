@@ -738,7 +738,7 @@ function(aSignal) {
 
         dialogPromise = TP.dialog(
             TP.hc(
-                'dialogID', 'AssistantDialog',
+                'dialogID', 'CmdAssistantDialog',
                 'isModal', true,
                 'title', aSignal.getPayload().at('title'),
                 'templateContent', assistantContentTPElem));

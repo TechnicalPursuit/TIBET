@@ -624,10 +624,19 @@ sherpa|hud:not([pclass|closed]) #center {
 }
 
 /* -----------------------------*
- * Modal assistant dialog
+ * Tofu assistant dialog
  * ---------------------------- */
 
 #TofuAssistantDialog {
+
+    height: 450px;
+}
+
+/* -----------------------------*
+ * Command assistant dialog
+ * ---------------------------- */
+
+#CmdAssistantDialog {
 
     height: 450px;
 }
