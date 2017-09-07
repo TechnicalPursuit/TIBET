@@ -128,7 +128,7 @@ function() {
                     'ClosedChange');
 
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
-                                'TP.sig.DOMDNDTerminate'));
+                                'TP.sig.DOMDNDCompleted'));
 
     this.observe(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
 
@@ -529,14 +529,14 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineHandler('DOMDNDTerminate',
+TP.sherpa.outliner.Inst.defineHandler('DOMDNDCompleted',
 function(aSignal) {
 
     /**
-     * @method handleDOMDNDTerminate
-     * @summary Handles when the drag and drop system terminates a dragging
+     * @method handleDOMDNDCompleted
+     * @summary Handles when the drag and drop system completes a dragging
      *     session.
-     * @param {TP.sig.DOMDNDTerminate} aSignal The TIBET signal which triggered
+     * @param {TP.sig.DOMDNDCompleted} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.outliner} The receiver.
      */

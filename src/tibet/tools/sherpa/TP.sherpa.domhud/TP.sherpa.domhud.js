@@ -51,7 +51,7 @@ function(aRequest) {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
-    tpElem.observe(TP.ANY, 'TP.sig.DOMDNDTerminate');
+    tpElem.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
 
     return;
 });
@@ -460,14 +460,14 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('DOMDNDTerminate',
+TP.sherpa.domhud.Inst.defineHandler('DOMDNDCompleted',
 function(aSignal) {
 
     /**
-     * @method handleDOMDNDTerminate
-     * @summary Handles when the drag and drop system terminates a dragging
+     * @method handleDOMDNDCompleted
+     * @summary Handles when the drag and drop system completes a dragging
      *     session.
-     * @param {TP.sig.DOMDNDTerminate} aSignal The TIBET signal which triggered
+     * @param {TP.sig.DOMDNDCompleted} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.domhud} The receiver.
      */
