@@ -439,7 +439,8 @@ function(options) {
 
                     var data;
 
-                    data = result.get('rows[0:].id');
+                    data = result.get(TP.tpc('rows[0:].id',
+                                        TP.hc('shouldCollapse', false)));
 
                     data = data.collect(
                             function(docID) {
