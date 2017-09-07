@@ -627,7 +627,7 @@ sherpa|hud:not([pclass|closed]) #center {
  * Modal assistant dialog
  * ---------------------------- */
 
-#AssistantDialog {
+#TofuAssistantDialog {
 
     height: 450px;
 }
