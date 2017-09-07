@@ -493,7 +493,9 @@ function(options) {
 
     var loc;
 
-    this.set('documentID', options.at('targetAspect'));
+    if (TP.notEmpty(options.at('targetAspect'))) {
+        this.set('documentID', options.at('targetAspect'));
+    }
 
     loc = this.get('serverAddress') +
             '/' +
