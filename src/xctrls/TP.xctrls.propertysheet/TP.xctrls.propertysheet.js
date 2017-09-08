@@ -23,10 +23,6 @@ TP.xctrls.propertysheet.addTraits(TP.xctrls.Element);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  This tag has no associated theme CSS. Note how this properties is
-//  TYPE_LOCAL, by design.
-TP.xctrls.propertysheet.defineAttribute('themeURI', TP.NO_RESULT);
-
 //  This type captures no signals - it lets all signals pass through.
 TP.xctrls.propertysheet.Type.defineAttribute(
                                     'opaqueCapturingSignalNames', null);
