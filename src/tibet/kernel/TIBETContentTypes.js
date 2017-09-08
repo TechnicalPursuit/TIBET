@@ -459,7 +459,7 @@ function() {
     var dataCopy,
         newinst;
 
-    dataCopy = TP.copy(this.$get('data'));
+    dataCopy = TP.copy(this.get('data'));
 
     newinst = this.getType().construct(dataCopy, this.get('sourceURI'));
 
@@ -5805,7 +5805,7 @@ function(targetObj, varargs) {
 
                     //  NB: In our particular encoding of JS<->XML, we use
                     //  the 'rootObj' slot as a top-level value. See below.
-                    return result.rootObj;
+                    return TP.json(result.rootObj);
                 } else {
                     TP.ifWarn() ?
                         TP.warn(TP.annotate(
@@ -5853,7 +5853,8 @@ function(targetObj, varargs) {
                 }
 
                 if (TP.isValid(tpValueDoc)) {
-                    return this.$convertXMLValueDocToJSON(tpValueDoc);
+                    return TP.json2js(
+                            this.$convertXMLValueDocToJSON(tpValueDoc));
                 }
 
                 return;
