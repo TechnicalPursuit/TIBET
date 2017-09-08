@@ -2782,6 +2782,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     continue;
                 }
 
+                //  If the attribute value is a whole URI, then just grab the
+                //  result of the URI and use that as the branch value to
+                //  process 'the next level down' in the branching.
                 if (TP.isURIString(attrVal)) {
                     branchURI = TP.uc(attrVal);
                     if (branchURI.hasFragment()) {
@@ -2789,6 +2792,18 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     } else {
                         branchVal = theVal;
                     }
+
+                    //  Try to detect the type of path based on tasting the
+                    //  branch value. This makes things much easier later on.
+                    if (TP.isXMLNode(branchVal)) {
+                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                    } else if (TP.isKindOf(branchVal, TP.core.Node)) {
+                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                    } else if (TP.regex.JSON_POINTER.test(attrVal) ||
+                                TP.regex.JSON_PATH.test(attrVal)) {
+                        pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+                    }
+
                 } else {
                     if (TP.isArray(theVal) &&
                         theVal.first() !== TP.NULL &&
