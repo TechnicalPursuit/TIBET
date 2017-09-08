@@ -1231,7 +1231,15 @@ function() {
      * @returns {Object} The object to use in a JSON representation.
      */
 
-    return this.getData().toJSON();
+    var data;
+
+    data = this.getData();
+
+    if (TP.canInvoke(data, 'toJSON')) {
+        return data.toJSON();
+    }
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
