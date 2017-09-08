@@ -35,18 +35,28 @@
 
             background-color: @xctrls_propertysheet-background-color-normal;
 
+            border-width: @xctrls_propertysheet-border-width;
+            border-style: @xctrls_propertysheet-border-style;
+            border-radius: @xctrls_propertysheet-border-radius;
+            border-color: @xctrls_propertysheet-border-color-normal;
+
             & label {
 
                 width: 5em;
+
+                margin-top: 2px;
             }
 
             & input,
             & textarea,
             & select {
 
-                font-size: 1em;
-                padding: 2px 5px 4px;
-                border-radius: 2px;
+                margin-bottom: 2px;
+
+                border-width: @xctrls_propertysheet-border-width;
+                border-style: @xctrls_propertysheet-border-style;
+                border-radius: @xctrls_propertysheet-border-radius;
+                border-color: @xctrls_propertysheet-border-color-normal;
             }
 
             & input[type="checkbox"],
@@ -59,6 +69,15 @@
 
                 font-weight: bold;
             }
+        }
+
+        /* The save button */
+
+        & > xctrls|button[class~="saveButton"] {
+
+            position: absolute;
+
+            margin-top: 10px;
         }
 
         /* The propertysheet is disabled, so is the label */
