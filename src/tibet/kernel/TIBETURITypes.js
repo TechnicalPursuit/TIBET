@@ -1226,9 +1226,6 @@ TP.core.URI.Inst.defineAttribute('$uriRewrite', null);
 //  the default MIME type for this instance
 TP.core.URI.Inst.defineAttribute('defaultMIMEType');
 
-//  the computed MIME type for this instance
-TP.core.URI.Inst.defineAttribute('computedMIMEType');
-
 //  the controller instance for this instance
 TP.core.URI.Inst.defineAttribute('controller');
 
@@ -5550,7 +5547,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.URL.Inst.defineMethod('getMIMEType',
-function() {
+function(newResource) {
 
     /**
      * @method getMIMEType
@@ -5558,6 +5555,9 @@ function() {
      *     TP.ietf.Mime.getMIMEType() method for more information about how
      *     TIBET tries to guess the MIME type based on file name and data
      *     content.
+     * @param {Object} [newResource] An optional resource object that will be
+     *     used to compute the MIME type. If this is not supplied, then the
+     *     receiver's existing resource object will be used.
      * @returns {String} The receiver's MIME type.
      */
 
@@ -5575,14 +5575,11 @@ function() {
         return url.getMIMEType();
     }
 
-    //  if there's a valid computed MIME we can use it first
-    if (TP.notEmpty(mimeType = this.get('computedMIMEType'))) {
-        return mimeType;
-    }
-
     //  Need to avoid recursion here so we check the resource slot, but
     //  don't actually invoke getResource
-    if (this.isLoaded()) {
+    if (TP.isValid(newResource)) {
+        content = newResource;
+    } else if (this.isLoaded()) {
         resource = this.$get('resource');
         if (this.hasFragment() && TP.canInvoke(resource, 'get')) {
             fragment = this.getFragment();
@@ -5595,19 +5592,12 @@ function() {
         } else {
             content = resource;
         }
+    }
 
-        //  assuming we got content we can ask it, which is what we'd
-        //  prefer to do to get the best value
-        if (TP.canInvoke(content, 'getContentMIMEType')) {
-            mimeType = content.getContentMIMEType(content);
-
-            //  if we found one cache it for next time :)
-            if (TP.isString(mimeType)) {
-                this.$set('computedMIMEType', mimeType);
-
-                return mimeType;
-            }
-        }
+    //  assuming we got content we can ask it, which is what we'd
+    //  prefer to do to get the best value
+    if (TP.canInvoke(content, 'getContentMIMEType')) {
+        mimeType = content.getContentMIMEType(content);
     }
 
     //  if we couldn't ask the content then we can try to guess via the
@@ -6160,7 +6150,7 @@ function(aRequest) {
         if (TP.notValid(handler)) {
             //  other possibility is a wrapper based on Content-type header
             //  or MIME value from the response itself.
-            mime = this.getMIMEType();
+            mime = this.getMIMEType(dom || dat);
             handler = TP.ietf.Mime.getConcreteType(mime);
         } else {
             //  Make sure that handler is a type.
@@ -6197,7 +6187,7 @@ function(aRequest) {
         //  for a node wrapper first. we're normally dealing with
         //  non-XML content here -- like CSS, JSON, etc.
 
-        mime = this.getMIMEType();
+        mime = this.getMIMEType(dat);
         type = TP.ietf.Mime.getConcreteType(mime);
 
         if (TP.canInvoke(type, 'constructContentObject')) {
