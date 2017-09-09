@@ -1226,6 +1226,9 @@ TP.core.URI.Inst.defineAttribute('$uriRewrite', null);
 //  the default MIME type for this instance
 TP.core.URI.Inst.defineAttribute('defaultMIMEType');
 
+//  the computed MIME type for this instance
+TP.core.URI.Inst.defineAttribute('computedMIMEType');
+
 //  the controller instance for this instance
 TP.core.URI.Inst.defineAttribute('controller');
 
@@ -5568,6 +5571,11 @@ function(newResource) {
         fragment,
         content;
 
+    //  if there's a valid computed MIME we can use it first
+    if (TP.notEmpty(mimeType = this.get('computedMIMEType'))) {
+        return mimeType;
+    }
+
     //  TODO:   if we're a fragment then is it possible that our MIME type
     //  could differ from that of our container?
     //  Always defer to the primary URI if we have a distinct one.
@@ -5598,6 +5606,13 @@ function(newResource) {
     //  prefer to do to get the best value
     if (TP.canInvoke(content, 'getContentMIMEType')) {
         mimeType = content.getContentMIMEType(content);
+
+        //  if we found one cache it for next time :)
+        if (TP.isString(mimeType)) {
+            this.$set('computedMIMEType', mimeType);
+
+            return mimeType;
+        }
     }
 
     //  if we couldn't ask the content then we can try to guess via the
@@ -6150,6 +6165,11 @@ function(aRequest) {
         if (TP.notValid(handler)) {
             //  other possibility is a wrapper based on Content-type header
             //  or MIME value from the response itself.
+
+            //  Set the computed MIME type to null to force recomputation based
+            //  on the possibly new MIME type of 'dat'.
+            this.$set('computedMIMEType', null);
+
             mime = this.getMIMEType(dom || dat);
             handler = TP.ietf.Mime.getConcreteType(mime);
         } else {
@@ -6186,6 +6206,10 @@ function(aRequest) {
         //  normally be run through this routine since getResource looks
         //  for a node wrapper first. we're normally dealing with
         //  non-XML content here -- like CSS, JSON, etc.
+
+        //  Set the computed MIME type to null to force recomputation based on
+        //  the possibly new MIME type of 'dat'.
+        this.$set('computedMIMEType', null);
 
         mime = this.getMIMEType(dat);
         type = TP.ietf.Mime.getConcreteType(mime);
