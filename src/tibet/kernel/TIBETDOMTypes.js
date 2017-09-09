@@ -1616,6 +1616,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('copy',
+function() {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver.
+     * @returns {TP.core.Node} A copy of the receiver.
+     */
+
+    var natNode,
+        newNatNode;
+
+    natNode = this.getNativeNode();
+
+    newNatNode = TP.copy(natNode);
+
+    return this.getType().fromNode(newNatNode);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('equalTo',
 function(aNode) {
 
