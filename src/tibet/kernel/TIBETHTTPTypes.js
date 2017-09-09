@@ -1021,11 +1021,11 @@ function(aRequest) {
         return;
     }
 
-    //  If the body is a Content object, then we want to encode its value.
-    if (TP.isKindOf(body, TP.core.Content)) {
-        body = body.get('value');
-        aRequest.atPut('body', body);
-    }
+    //  With some objects, like TP.core.Content objects, we want to encode their
+    //  value, not the wrapper. Therefore, we just call get('value') on all body
+    //  objects.
+    body = body.get('value');
+    aRequest.atPut('body', body);
 
     return TP.httpEncodeRequestBody(aRequest);
 });
