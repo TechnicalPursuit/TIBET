@@ -1014,6 +1014,19 @@ function(aRequest) {
      * @returns {String} The string value of the encoded body content.
      */
 
+    var body;
+
+    body = aRequest.at('body');
+    if (TP.notValid(body)) {
+        return;
+    }
+
+    //  If the body is a Content object, then we want to encode its value.
+    if (TP.isKindOf(body, TP.core.Content)) {
+        body = body.get('value');
+        aRequest.atPut('body', body);
+    }
+
     return TP.httpEncodeRequestBody(aRequest);
 });
 
