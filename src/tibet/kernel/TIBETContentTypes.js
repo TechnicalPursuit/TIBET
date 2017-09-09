@@ -5240,6 +5240,20 @@ function() {
     return parts;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.CompositePath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.COMPOSITE_PATH_TYPE;
+});
+
 //  ========================================================================
 //  TP.core.JSONPath
 //  ========================================================================
