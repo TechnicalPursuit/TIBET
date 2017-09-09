@@ -7582,7 +7582,7 @@ function(aFilterNameOrKeys) {
     len = keys.getSize();
     for (i = 0; i < len; i++) {
         ndx = keys.at(i);
-        newinst.$set(ndx, this.at(ndx), false);
+        newinst.$set(ndx, this.at(ndx), false, true);
     }
 
     return newinst;
