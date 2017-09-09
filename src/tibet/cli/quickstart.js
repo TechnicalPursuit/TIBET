@@ -76,7 +76,7 @@ Cmd.prototype.execute = function() {
 '\nWelcome to TIBET! This quickstart content is intended to get you up and running\n' +
 'with a minimum of overhead so we\'ll be working with a limited set of commands\n' +
 'and using their default options. Once you\'re done, check out the documentation\n' +
-'at https://www.technicalpursuit.com/docs/index.xhtml to dive deeper into TIBET.\n\n' +
+'at https://www.technicalpursuit.com/docs/index.html to dive deeper into TIBET.\n\n' +
 
 'CREATE A NEW PROJECT\n\n' +
 
@@ -119,7 +119,7 @@ Cmd.prototype.execute = function() {
 'for your project in a supported HTML5 browser and you\'ll see text directing\n' +
 'you on how to take the next step in your TIBET journey.\n\n' +
 
-'For more info visit https://www.technicalpursuit.com/docs/index.xhtml.\n';
+'For more info visit https://www.technicalpursuit.com/docs/index.html.\n';
 
     this.info(str);
 

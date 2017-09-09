@@ -10,5 +10,5 @@ TP.core.TemplatedTag.defineSubtype('APP.{{appname}}:app');
 /*
  * For information on how to expand the functionality in this type visit:
  *
- * https://www.technicalpursuit.com/docs/index.xhtml
+ * https://www.technicalpursuit.com/docs/index.html
  */
