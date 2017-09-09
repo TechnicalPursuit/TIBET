@@ -6251,7 +6251,16 @@ function(aRequest) {
         //  result _is_ a wrapper object of some form.
         resource = this.$normalizeRequestedResource(newResult);
     } else if (resourceIsContent && !resultIsContent) {
-        resource.set('data', newResult, false);
+
+        //  Make sure that the Content object that is the resource can handle
+        //  the result content. We may be holding a Content object that is
+        //  incompatible with the new content. We can check this by asking the
+        //  content's type if we could construct a new one given the data.
+        if (resource.getType().canConstruct(newResult, this)) {
+            resource.set('data', newResult, false);
+        } else {
+            resource = this.$normalizeRequestedResource(newResult);
+        }
     } else if (TP.canInvoke(resource, 'setNativeNode') &&
                 TP.isNode(newResult)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
