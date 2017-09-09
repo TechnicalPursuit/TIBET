@@ -3,54 +3,54 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-	<style type="text/css">
-	<![CDATA[
-	#containerDiv {
-		position: relative;
+    <style type="text/css">
+    <![CDATA[
+    #containerDiv {
+        position: relative;
 
-		top: 10px;
-		left: 10px;
+        top: 10px;
+        left: 10px;
 
-		height: 400px;
-		width: 400px;
+        height: 400px;
+        width: 400px;
 
-		background-color: yellow;
+        background-color: yellow;
 
-		border: solid 1px red;
-	}
-	#dragDiv {
-		position: absolute;
+        border: solid 1px red;
+    }
+    #dragDiv {
+        position: absolute;
 
-		top: 10px;
-		left: 10px;
+        top: 10px;
+        left: 10px;
 
-		height: 100px;
-		width: 100px;
+        height: 100px;
+        width: 100px;
 
-		background-color: blue;
+        background-color: blue;
 
-		border: solid 4px green;
-	}
-	]]>
-	</style>
+        border: solid 4px green;
+    }
+    ]]>
+    </style>
 
 </head>
 
 <body>
 
-	<h2>Drag Test #3</h2><br/>
-	<br/>
-	<br/>
-	This test sets up a regular XHTML &lt;div&gt; element to be moved within a container.<br/>
-	<br/>
-	<br/>
-	The &lt;div&gt; element has a 'drag:mover' value of 'true' and a 'drag:container' value of '..', which means that it can be picked up from any place inside of the element itself (but not within its border) and dragged to any position, but only within its container element. The value of 'drag:container' should be some type of access path that can deal with markup (that is, a CSS selector path or XPath).<br/>
+    <h2>Drag Test #3</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a regular XHTML &lt;div&gt; element to be moved within a container.<br/>
+    <br/>
+    <br/>
+    The &lt;div&gt; element has a 'drag:mover' value of 'true' and a 'drag:container' value of '..', which means that it can be picked up from any place inside of the element itself (but not within its border) and dragged to any position, but only within its container element. The value of 'drag:container' should be some type of access path that can deal with markup (that is, a CSS selector path or XPath).<br/>
 
     <div id="containerDiv">
         <div id="dragDiv" drag:mover="true" drag:container=".."/>

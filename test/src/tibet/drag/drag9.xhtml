@@ -1,174 +1,174 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-		xmlns:drag="http://www.technicalpursuit.com/2005/drag">
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+        xmlns:drag="http://www.technicalpursuit.com/2005/drag">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-	<style type="text/css">
-	<![CDATA[
-	html,body {
-		overflow: auto;
-	}
-	#draggingContainerDiv {
-		position: absolute;
+    <style type="text/css">
+    <![CDATA[
+    html,body {
+        overflow: auto;
+    }
+    #draggingContainerDiv {
+        position: absolute;
 
-		top: 10px;
-		left: 10px;
+        top: 10px;
+        left: 10px;
 
-		height: 400px;
-		width: 400px;
+        height: 400px;
+        width: 400px;
 
-		background-color: yellow;
+        background-color: yellow;
 
-		border: solid 1px red;
-	}
+        border: solid 1px red;
+    }
 
-	.draggingDiv {
-		position: absolute;
+    .draggingDiv {
+        position: absolute;
 
-		height: 100px;
-		width: 100px;
+        height: 100px;
+        width: 100px;
 
-		background-color: blue;
+        background-color: blue;
 
-		border: solid 4px green;
-	}
+        border: solid 4px green;
+    }
 
-	#drag_TOP_LEFT {
-		left: 10px;
-		top: 10px;
-	}
-	#drag_TOP {
-		left: 135px;
-		top: 10px;
-	}
-	#drag_TOP_RIGHT {
-		left: 260px;
-		top: 10px;
-	}
-	#drag_LEFT {
-		left: 10px;
-		top: 135px;
-	}
-	#drag_RIGHT {
-		top: 135px;
-		left: 260px;
-	}
-	#drag_BOTTOM_LEFT {
-		left: 10px;
-		top: 260px;
-	}
-	#drag_BOTTOM {
-		left: 135px;
-		top: 260px;
-	}
-	#drag_BOTTOM_RIGHT {
-		left: 260px;
-		top: 260px;
-	}
+    #drag_TOP_LEFT {
+        left: 10px;
+        top: 10px;
+    }
+    #drag_TOP {
+        left: 135px;
+        top: 10px;
+    }
+    #drag_TOP_RIGHT {
+        left: 260px;
+        top: 10px;
+    }
+    #drag_LEFT {
+        left: 10px;
+        top: 135px;
+    }
+    #drag_RIGHT {
+        top: 135px;
+        left: 260px;
+    }
+    #drag_BOTTOM_LEFT {
+        left: 10px;
+        top: 260px;
+    }
+    #drag_BOTTOM {
+        left: 135px;
+        top: 260px;
+    }
+    #drag_BOTTOM_RIGHT {
+        left: 260px;
+        top: 260px;
+    }
 
-	#resizingContainerDiv {
-		position: absolute;
+    #resizingContainerDiv {
+        position: absolute;
 
-		top: 500px;
-		left: 500px;
+        top: 500px;
+        left: 500px;
 
-		width: 400px;
-		height: 400px;
+        width: 400px;
+        height: 400px;
 
-		background-color: blue;
+        background-color: blue;
 
-		border: solid 1px green;
-	}
+        border: solid 1px green;
+    }
 
-	.resizingDiv {
-		position: absolute;
+    .resizingDiv {
+        position: absolute;
 
-		height: 100px;
-		width: 100px;
+        height: 100px;
+        width: 100px;
 
-		background-color: red;
+        background-color: red;
 
-		border: solid 4px orange;
-	}
+        border: solid 4px orange;
+    }
 
-	#resize_TOP_LEFT {
-		left: 10px;
-		top: 10px;
-	}
-	#resize_TOP {
-		left: 135px;
-		top: 10px;
-	}
-	#resize_TOP_RIGHT {
-		left: 260px;
-		top: 10px;
-	}
-	#resize_LEFT {
-		left: 10px;
-		top: 135px;
-	}
-	#resize_RIGHT {
-		top: 135px;
-		left: 260px;
-	}
-	#resize_BOTTOM_LEFT {
-		left: 10px;
-		top: 260px;
-	}
-	#resize_BOTTOM {
-		left: 135px;
-		top: 260px;
-	}
-	#resize_BOTTOM_RIGHT {
-		left: 260px;
-		top: 260px;
-	}
-	]]>
-	</style>
+    #resize_TOP_LEFT {
+        left: 10px;
+        top: 10px;
+    }
+    #resize_TOP {
+        left: 135px;
+        top: 10px;
+    }
+    #resize_TOP_RIGHT {
+        left: 260px;
+        top: 10px;
+    }
+    #resize_LEFT {
+        left: 10px;
+        top: 135px;
+    }
+    #resize_RIGHT {
+        top: 135px;
+        left: 260px;
+    }
+    #resize_BOTTOM_LEFT {
+        left: 10px;
+        top: 260px;
+    }
+    #resize_BOTTOM {
+        left: 135px;
+        top: 260px;
+    }
+    #resize_BOTTOM_RIGHT {
+        left: 260px;
+        top: 260px;
+    }
+    ]]>
+    </style>
 
 </head>
 
 <body>
 
-	<h2>Drag Test #9</h2><br/>
-	<br/>
-	<br/>
-	This test sets up a set of regular XHTML &lt;div&gt; elements to be moved and resized from various sides, showing that any side can be dragged or resized. All of these element are contained with a dragging container.<br/>
-	<br/>
-	<br/>
+    <h2>Drag Test #9</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a set of regular XHTML &lt;div&gt; elements to be moved and resized from various sides, showing that any side can be dragged or resized. All of these element are contained with a dragging container.<br/>
+    <br/>
+    <br/>
 
-	<div id="draggingContainerDiv">
-		<div id="drag_TOP_LEFT" class="draggingDiv" drag:mover="true" drag:corner="TOP_LEFT" drag:container="..">Drag from the TOP_LEFT corner</div>
-		<div id="drag_TOP" class="draggingDiv" drag:mover="true" drag:corner="TOP" drag:container="..">Drag from the TOP side</div>
-		<div id="drag_TOP_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="TOP_RIGHT" drag:container="..">Drag from the TOP_RIGHT corner</div>
+    <div id="draggingContainerDiv">
+        <div id="drag_TOP_LEFT" class="draggingDiv" drag:mover="true" drag:corner="TOP_LEFT" drag:container="..">Drag from the TOP_LEFT corner</div>
+        <div id="drag_TOP" class="draggingDiv" drag:mover="true" drag:corner="TOP" drag:container="..">Drag from the TOP side</div>
+        <div id="drag_TOP_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="TOP_RIGHT" drag:container="..">Drag from the TOP_RIGHT corner</div>
 
-		<div id="drag_LEFT" class="draggingDiv" drag:mover="true" drag:corner="LEFT" drag:container="..">Drag from the LEFT side</div>
-		<div id="drag_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="RIGHT" drag:container="..">Drag from the RIGHT side</div>
+        <div id="drag_LEFT" class="draggingDiv" drag:mover="true" drag:corner="LEFT" drag:container="..">Drag from the LEFT side</div>
+        <div id="drag_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="RIGHT" drag:container="..">Drag from the RIGHT side</div>
 
-		<div id="drag_BOTTOM_LEFT" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM_LEFT" drag:container="..">Drag from the BOTTOM_LEFT corner</div>
-		<div id="drag_BOTTOM" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM" drag:container="..">Drag from the BOTTOM side</div>
-		<div id="drag_BOTTOM_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM_RIGHT" drag:container="..">Drag from the BOTTOM_RIGHT corner</div>
-	</div>
+        <div id="drag_BOTTOM_LEFT" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM_LEFT" drag:container="..">Drag from the BOTTOM_LEFT corner</div>
+        <div id="drag_BOTTOM" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM" drag:container="..">Drag from the BOTTOM side</div>
+        <div id="drag_BOTTOM_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM_RIGHT" drag:container="..">Drag from the BOTTOM_RIGHT corner</div>
+    </div>
 
-	<div id="resizingContainerDiv">
-		<div id="resize_TOP_LEFT" class="resizingDiv" drag:resizer="true" drag:side="TOP_LEFT" drag:container="..">Resize from the TOP_LEFT corner</div>
-		<div id="resize_TOP" class="resizingDiv" drag:resizer="true" drag:side="TOP" drag:container="..">Resize from the TOP side</div>
-		<div id="resize_TOP_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="TOP_RIGHT" drag:container="..">Resize from the TOP_RIGHT corner</div>
+    <div id="resizingContainerDiv">
+        <div id="resize_TOP_LEFT" class="resizingDiv" drag:resizer="true" drag:side="TOP_LEFT" drag:container="..">Resize from the TOP_LEFT corner</div>
+        <div id="resize_TOP" class="resizingDiv" drag:resizer="true" drag:side="TOP" drag:container="..">Resize from the TOP side</div>
+        <div id="resize_TOP_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="TOP_RIGHT" drag:container="..">Resize from the TOP_RIGHT corner</div>
 
-		<div id="resize_LEFT" class="resizingDiv" drag:resizer="true" drag:side="LEFT" drag:container="..">Resize from the LEFT side</div>
-		<div id="resize_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="RIGHT" drag:container="..">Resize from the RIGHT side</div>
+        <div id="resize_LEFT" class="resizingDiv" drag:resizer="true" drag:side="LEFT" drag:container="..">Resize from the LEFT side</div>
+        <div id="resize_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="RIGHT" drag:container="..">Resize from the RIGHT side</div>
 
-		<div id="resize_BOTTOM_LEFT" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM_LEFT" drag:container="..">Resize from the BOTTOM_LEFT corner</div>
-		<div id="resize_BOTTOM" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM" drag:container="..">Resize from the BOTTOM side</div>
-		<div id="resize_BOTTOM_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM_RIGHT" drag:container="..">Resize from the BOTTOM_RIGHT corner</div>
-	</div>
+        <div id="resize_BOTTOM_LEFT" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM_LEFT" drag:container="..">Resize from the BOTTOM_LEFT corner</div>
+        <div id="resize_BOTTOM" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM" drag:container="..">Resize from the BOTTOM side</div>
+        <div id="resize_BOTTOM_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM_RIGHT" drag:container="..">Resize from the BOTTOM_RIGHT corner</div>
+    </div>
 </body>
 </html>

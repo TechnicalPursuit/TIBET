@@ -1,71 +1,71 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-		xmlns:drag="http://www.technicalpursuit.com/2005/drag">
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+        xmlns:drag="http://www.technicalpursuit.com/2005/drag">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-	<style type="text/css">
-	<![CDATA[
-	.draggingDiv {
+    <style type="text/css">
+    <![CDATA[
+    .draggingDiv {
         position: absolute;
 
-		height: 100px;
-		width: 100px;
+        height: 100px;
+        width: 100px;
 
         border: solid 1px orange;
-	}
+    }
 
-	#dragComplete {
-		background-color: red;
-	}
-	#dragInnerCommonSize {
-		background-color: red;
-		left: 125px;
-	}
-	#dragInnerDifferentSizes {
-		background-color: red;
-		left: 250px;
-	}
+    #dragComplete {
+        background-color: red;
+    }
+    #dragInnerCommonSize {
+        background-color: red;
+        left: 125px;
+    }
+    #dragInnerDifferentSizes {
+        background-color: red;
+        left: 250px;
+    }
 
-	#resizeComplete {
-		background-color: yellow;
-		left: 375px;
-	}
-	#resizeInnerCommonSize {
-		background-color: yellow;
-		left: 500px;
-	}
-	#resizeInnerDifferentSizes {
-		background-color: yellow;
-		left: 625px;
-	}
-	]]>
-	</style>
+    #resizeComplete {
+        background-color: yellow;
+        left: 375px;
+    }
+    #resizeInnerCommonSize {
+        background-color: yellow;
+        left: 500px;
+    }
+    #resizeInnerDifferentSizes {
+        background-color: yellow;
+        left: 625px;
+    }
+    ]]>
+    </style>
 
 </head>
 
 <body>
 
-	<h2>Drag Test #10</h2><br/>
-	<br/>
-	<br/>
-	This test sets up a set of regular XHTML &lt;div&gt; elements to be moved and resized from various sides with a variety of 'insets', showing that elements can be dragged or resized with either no inset or an inset that can be set 'per side'.<br/>
-	<br/>
-	<br/>
+    <h2>Drag Test #10</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a set of regular XHTML &lt;div&gt; elements to be moved and resized from various sides with a variety of 'insets', showing that elements can be dragged or resized with either no inset or an inset that can be set 'per side'.<br/>
+    <br/>
+    <br/>
 
-	<div id="dragComplete" class="draggingDiv" drag:mover="true">This has no insets -- drag from anywhere in the rectangle</div>
-	<div id="dragInnerCommonSize" class="draggingDiv" drag:mover="true" drag:insets="10px">Drag from anywhere in a block within the rectangle, 10px inset from each side</div>
-	<div id="dragInnerDifferentSizes" class="draggingDiv" drag:mover="true" drag:insets="10px 5px">Drag from anywhere in a block within the rectangle, 10px inset from the top and bottom sides and 5px inset from the left and right</div>
+    <div id="dragComplete" class="draggingDiv" drag:mover="true">This has no insets -- drag from anywhere in the rectangle</div>
+    <div id="dragInnerCommonSize" class="draggingDiv" drag:mover="true" drag:insets="10px">Drag from anywhere in a block within the rectangle, 10px inset from each side</div>
+    <div id="dragInnerDifferentSizes" class="draggingDiv" drag:mover="true" drag:insets="10px 5px">Drag from anywhere in a block within the rectangle, 10px inset from the top and bottom sides and 5px inset from the left and right</div>
 
-	<div id="resizeComplete" class="draggingDiv" drag:resizer="true">This has no insets -- resize from anywhere in the rectangle</div>
-	<div id="resizeInnerCommonSize" class="draggingDiv" drag:resizer="true" drag:insets="10px">Resize from anywhere in a block within the rectangle, 10px inset from each side</div>
-	<div id="resizeInnerDifferentSizes" class="draggingDiv" drag:resizer="true" drag:insets="10px 5px">Resize from anywhere in a block within the rectangle, 10px inset from the top and bottom sides and 5px inset from the left and right</div>
+    <div id="resizeComplete" class="draggingDiv" drag:resizer="true">This has no insets -- resize from anywhere in the rectangle</div>
+    <div id="resizeInnerCommonSize" class="draggingDiv" drag:resizer="true" drag:insets="10px">Resize from anywhere in a block within the rectangle, 10px inset from each side</div>
+    <div id="resizeInnerDifferentSizes" class="draggingDiv" drag:resizer="true" drag:insets="10px 5px">Resize from anywhere in a block within the rectangle, 10px inset from the top and bottom sides and 5px inset from the left and right</div>
 </body>
 </html>
