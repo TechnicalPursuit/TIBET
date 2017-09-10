@@ -307,6 +307,125 @@ function(url) {
     return newurl;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('load',
+function(targetURI, aRequest) {
+
+    /**
+     * @method load
+     * @summary Loads URI data content, returning the TP.sig.Response object
+     *     used to manage the low-level service response.
+     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     *     not have been rewritten/ resolved.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request;
+
+    request = TP.request(aRequest);
+
+    //  Currently, CouchDB can only deal with 'simple CORS' (i.e. no preflight
+    //  requests, etc.). Configure that here so that TIBET's low-level HTTP
+    //  machinery doesn't try to send such things.
+    request.atPut('simple_cors_only', true);
+
+    return this.callNextMethod(targetURI, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('delete',
+function(targetURI, aRequest) {
+
+    /**
+     * @method delete
+     * @summary Deletes a URI entirely, returning the TP.sig.Response object
+     *     used to manage the low-level service response.
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     *     not have been rewritten/ resolved.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request;
+
+    request = TP.request(aRequest);
+
+    //  Currently, CouchDB can only deal with 'simple CORS' (i.e. no preflight
+    //  requests, etc.). Configure that here so that TIBET's low-level HTTP
+    //  machinery doesn't try to send such things.
+    request.atPut('simple_cors_only', true);
+
+    return this.callNextMethod(targetURI, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('save',
+function(targetURI, aRequest) {
+
+    /**
+     * @method save
+     * @summary Saves URI data content. This is the default data persistence
+     *     method for most URI content. Important request keys include 'method',
+     *     'crud', and 'body'. Method will typically default to a POST unless
+     *     TP.sys.cfg(http.use_webdav) is true and the crud parameter is set to
+     *     'insert', in which case a PUT is used. The crud parameter effectively
+     *     defaults to 'update' so you should set it to 'insert' when new
+     *     content is being created. The 'body' should contain the new/updated
+     *     content, but this is normally configured by the URI's save() method
+     *     itself.
+     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     *     not have been rewritten/ resolved.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request,
+        saveURI;
+
+    //  TODO: Only do this if targetURI is pointing to a CouchDB document
+
+    request = TP.request(aRequest);
+
+    saveURI = targetURI;
+
+    //  Currently, CouchDB can only deal with 'simple CORS' (i.e. no preflight
+    //  requests, etc.). Configure that here so that TIBET's low-level HTTP
+    //  machinery doesn't try to send such things.
+    request.atPut('simple_cors_only', true);
+
+    //  Add a local handler for when the request succeeds that will update the
+    //  '_rev' in the locally cached data to the new 'rev' sent back by the
+    //  server.
+    request.defineHandler('RequestSucceeded',
+                function(aResponse) {
+                    var newRev,
+                        origData;
+
+                    //  Grab the new 'rev' number from the result of the server
+                    //  call.
+                    newRev = aResponse.get('result').get('$.rev');
+
+                    //  Using a JSONPath, set the value of '_rev' in the
+                    //  original data to the new rev. This original data may be
+                    //  used over and over again as updates are made, but per
+                    //  CouchDB rules, it needs a new rev each time
+                    origData = saveURI.getResource().get('result');
+                    origData.set('$._rev', newRev);
+                });
+
+    return this.callNextMethod(targetURI, request);
+});
+
 //  =======================================================================
 //  Registration
 //  ========================================================================
