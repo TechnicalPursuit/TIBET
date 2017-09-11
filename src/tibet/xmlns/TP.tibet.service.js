@@ -703,11 +703,20 @@ function(aSignal) {
      * @description This is triggered if we're watching the remote resource
      *     referenced by our 'href'.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {TP.tibet.service} The receiver.
      */
 
-    this.activate();
+    var newContent;
 
-    return;
+    //  Grab the new value from the signal, copy it and use it to update the
+    //  result URI. This will cause any data bindings that are using the result
+    //  URI to update.
+    newContent = aSignal.at(TP.NEWVAL);
+    newContent = TP.copy(newContent);
+
+    this.updateResultURI(newContent);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -770,6 +779,102 @@ function(anHref) {
 
     //  setting an attribute returns void according to the spec
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('updateResultURI',
+function(aResult) {
+
+    /**
+     * @method updateResultURI
+     * @summary Updates the result URI to the supplied object. This will cause
+     *     any data-bound objects that are using the result URI to update
+     * @param {Object} aResult The result object to set as the resource of the
+     *     result URI.
+     * @returns {TP.tibet.service} The receiver.
+     */
+
+    var href,
+        resultURI,
+
+        mimeType,
+        resultType,
+
+        isValid,
+
+        newResource;
+
+    //  See if a 'result' href is available and a URI can be created from it.
+    if (TP.notEmpty(href = this.getAttribute('result'))) {
+        if (!TP.isURI(resultURI = TP.uc(href))) {
+            //  Raise an exception
+            return this.raise('TP.sig.InvalidURI');
+        }
+    } else {
+        //  We might have be 'send only' service tag.
+        return this;
+    }
+
+    //  If the result URI's 'result' is already equal to what we're handing in,
+    //  then exit here
+    if (TP.equal(
+            resultURI.getResource(TP.hc('refresh', false)).get('result'),
+            aResult)) {
+        return this;
+    }
+
+    //  If the result is a String, try to turn it into more
+    if (TP.isString(aResult)) {
+
+        //  Obtain a MIME type for the result and use it to obtain a
+        //  result type.
+        mimeType = TP.ietf.Mime.guessMIMEType(aResult, uri);
+
+        resultType = thisref.getResultType(mimeType);
+
+        //  If a result type couldn't be determined, then just use
+        //  String.
+        if (!TP.isType(resultType)) {
+            resultType = String;
+        }
+
+        //  Make sure that it's valid for its container. Note that we
+        //  pass 'false' as a second parameter here for content
+        //  objects that do both trivial and full facet checks on
+        //  their data. We only want trival checks here (i.e. is the
+        //  XML inside of a TP.core.XMLContent really XML - same for
+        //  JSON)
+        isValid = resultType.validate(aResult, false);
+        if (!isValid) {
+            return this.raise('TP.sig.InvalidValue');
+        }
+
+        //  If the new resource result is a content object of some
+        //  sort (highly likely) then we should initialize it with
+        //  both the content String and the URI that it should be
+        //  associated with. The content object type will convert it
+        //  from a String to the proper type.
+        if (TP.isSubtypeOf(resultType, TP.core.Content)) {
+            newResource = resultType.construct(aResult, resultURI);
+        } else if (resultType === String) {
+            newResource = TP.str(aResult);
+        }
+
+    } else if (TP.isNode(aResult)) {
+        newResource = TP.wrap(aResult);
+    } else {
+        newResource = aResult;
+    }
+
+    //  Set the resource to the new resource (causing any observers
+    //  of the URI to get notified of a change) and signal
+    //  'TP.sig.UIDataConstruct'.
+    resultURI.setResource(
+        newResource,
+        TP.hc('observeResource', true, 'signalChange', true));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
