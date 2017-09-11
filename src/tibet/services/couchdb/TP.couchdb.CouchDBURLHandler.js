@@ -278,37 +278,6 @@ function(targetURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('maskCouchAuth',
-function(url) {
-
-    /**
-     * @method maskCouchAuth
-     * @summary Returns a version of the url provided with any user/pass
-     *     information masked out. This is used for prompts and logging where
-     *     basic auth data could potentially be exposed to view.
-     * @param {String} url The URL to mask.
-     * @returns {String} The masked URL.
-     */
-
-    var regex,
-        match,
-        newurl;
-
-    //  scheme://(user):(pass)@hostetc...
-    regex = /(.*)\/\/(.*):(.*)@(.*)/;
-
-    if (!regex.test(url)) {
-        return url;
-    }
-
-    match = regex.exec(url);
-    newurl = match[1] + '//' + match[4];
-
-    return newurl;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
