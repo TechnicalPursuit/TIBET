@@ -132,30 +132,49 @@ function() {
      * @method getWatcherSourceURIs
      * @summary Returns an array of URIs which are needed to observe CouchDBs
      *     various change feeds.
-     * @returns {TP.core.URI} A URI pointing to the resource that will notify
-     *     TIBET when the supplied URI's resource changes.
+     * @returns {TP.core.URI[]} An Array of URIs pointing to 'change feed'
+     *     resources that will notify TIBET when the supplied URI's resource
+     *     changes.
      */
 
-    var list,
-        rootURL,
+    var watcherSourceURIs,
+
+        rootURLs,
         targets;
 
-    rootURL = TP.sys.getcfg('uri.couchdb_urls').first().last();
+    watcherSourceURIs = TP.ac();
 
-    list = TP.ac();
+    //  Grab the CouchDB 'root' URLs (i.e. servers) that the system knows about
+    //  via the config system.
+    rootURLs = TP.sys.getcfg('uri.couchdb_urls');
 
-    targets = TP.sys.cfg('uri.watch_couchdb_uris');
-    targets.forEach(
-            function(target) {
-                var url;
+    //  Grab the non-server URI patterns that we should be watching.
+    targets = TP.sys.getcfg('uri.watch_couchdb_uris');
 
-                url = TP.uriJoinPaths(rootURL, target);
-                if (TP.isURIString(url)) {
-                    list.push(url);
-                }
+    //  Iterate over the root server URLs and process them.
+    rootURLs.forEach(
+            function(aPair) {
+
+                var rootURL;
+
+                //  The rootURL will be the last part of the pair.
+                rootURL = aPair.last();
+
+                //  Join each URI pattern part onto the end of each root URL
+                //  and, if a URI string can be formed, add it to the watcher
+                //  source URI list.
+                targets.forEach(
+                        function(target) {
+                            var url;
+
+                            url = TP.uriJoinPaths(rootURL, target);
+                            if (TP.isURIString(url)) {
+                                watcherSourceURIs.push(TP.uc(url));
+                            }
+                        });
             });
 
-    return list;
+    return watcherSourceURIs;
 });
 
 //  ------------------------------------------------------------------------
