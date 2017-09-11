@@ -420,7 +420,10 @@ function(targetURI, aRequest) {
                     //  used over and over again as updates are made, but per
                     //  CouchDB rules, it needs a new rev each time
                     origData = saveURI.getResource().get('result');
-                    origData.set('$._rev', newRev);
+
+                    //  Note here that we pass 'false' to *not* signal changes
+                    //  here.
+                    origData.set('$._rev', newRev, false);
                 });
 
     return this.callNextMethod(targetURI, request);
