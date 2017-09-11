@@ -24,6 +24,18 @@ TP.core.HTTPURLHandler.defineSubtype('couchdb.CouchDBURLHandler');
 TP.couchdb.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineConstant(
+    'DATABASE_PATH_MATCHER',
+    /^[a-z]{1}[a-z0-9_$()+-]*\/$/);
+
+TP.couchdb.CouchDBURLHandler.Type.defineConstant(
+    'DATABASE_AND_DOCUMENT_PATH_MATCHER',
+    /^[a-z]{1}[a-z0-9_$()+-]*\/[a-z0-9]+$/);
+
+//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -160,18 +172,32 @@ function(aSignal) {
      */
 
     var payload,
+
         data,
+
         doc,
         attachments,
+
         rawRev,
         rev,
+
         entry,
+
         signalSourceURL,
+
         path,
         changesPathIndex,
+
         origin,
+
         urlLoc,
-        url;
+        url,
+
+        id,
+        dbDocPath,
+
+        processed,
+        docLoc;
 
     //  Make sure that we have a payload
     if (TP.notValid(payload = aSignal.getPayload())) {
@@ -251,7 +277,48 @@ function(aSignal) {
     //  If we can successfully create a URL from the data, then process the
     //  change.
     if (TP.isURI(url = TP.uc(urlLoc))) {
-        TP.core.URI.processRemoteResourceChange(url);
+
+        processed = false;
+
+        //  If the URL has subURIs, then we want to see if the change feed data
+        //  mentions any of them as the 'id' of the document that changed.
+        id = data.at('id');
+        if (TP.notEmpty(id)) {
+
+            //  Join the 'path' part of the URL (minus the root, and slicing off
+            //  the leading '/') and the ID (which should be the ID of the
+            //  document that changed).
+            dbDocPath = TP.uriJoinPaths(url.getPath().slice(1), data.at('id'));
+
+            //  Make sure that this path is pointing to a server/document.
+            if (this.DATABASE_AND_DOCUMENT_PATH_MATCHER.test(dbDocPath)) {
+
+                //  Join the whole URL's location with the ID. This will result
+                //  in a URL that represents the full path to the CouchDB
+                //  document.
+                docLoc = TP.uriJoinPaths(url.getLocation(), data.at('id'));
+
+                //  If there's a registered URL for that document, then we
+                //  should fetch it from the server and signal a change
+                if (TP.core.URI.hasInstance(docLoc)) {
+                    url = TP.uc(docLoc);
+                    url.getResource(
+                            TP.hc('refresh', true, 'signalChange', true));
+
+                    processed = true;
+                }
+            }
+        }
+
+        //  If we didn't process the URI, then it wasn't a regular document. We
+        //  should let the regular processing machinery handle it.
+        if (!processed) {
+
+            //  NB: This will only actually process the resource change if the
+            //  'uri.process_remote_changes' flag is true. Otherwise, it just
+            //  tracks changes.
+            TP.core.URI.processRemoteResourceChange(url);
+        }
     }
 
     return this;
