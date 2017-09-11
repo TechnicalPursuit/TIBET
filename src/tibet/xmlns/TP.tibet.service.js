@@ -145,6 +145,12 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineAttribute('isActivated');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -186,7 +192,12 @@ function() {
     //  developing with the Sherpa), then just return here. We don't want to do
     //  any further processing to process/register/unregister data.
     if (this.isRecasting()) {
-        return;
+        return this;
+    }
+
+    //  If we're already activated, just exit here.
+    if (TP.isTrue(this.get('isActivated'))) {
+        return this;
     }
 
     //  Make sure that a main href is available and a URI can be created from
@@ -222,7 +233,7 @@ function() {
             return this.raise('TP.sig.InvalidURI');
         }
     } else {
-        //  We might have a 'send only' service.
+        //  We might be a 'send only' service tag.
         void 0;
     }
 
@@ -482,7 +493,10 @@ function() {
 
                 updateURI.setResource(responseBodyContent);
             }
-        });
+
+            //  Mark us as no longer being activated
+            this.set('isActivated', false);
+        }.bind(this));
 
     dataWillSendSignal = this.signal('TP.sig.UIDataWillSend');
     if (dataWillSendSignal.shouldPrevent()) {
@@ -508,6 +522,9 @@ function() {
             request.atPut('headers', headerContent);
         }
     }
+
+    //  Mark us as having activated
+    this.set('isActivated', true);
 
     //  Process the method
     switch (request.at('method')) {
