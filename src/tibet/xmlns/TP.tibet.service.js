@@ -829,9 +829,9 @@ function(aResult) {
 
         //  Obtain a MIME type for the result and use it to obtain a
         //  result type.
-        mimeType = TP.ietf.Mime.guessMIMEType(aResult, uri);
+        mimeType = TP.ietf.Mime.guessMIMEType(aResult, this);
 
-        resultType = thisref.getResultType(mimeType);
+        resultType = this.getResultType(mimeType);
 
         //  If a result type couldn't be determined, then just use
         //  String.
