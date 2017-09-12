@@ -1077,21 +1077,6 @@ TP.core.TagProcessor.Type.defineAttribute('$tagTypeDict');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessor.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    //  Allocate a TP.core.Hash to stick our tag types in as we find them -
-    //  speeds up lookup in later stages of the processing considerably.
-    this.set('$tagTypeDict', TP.hc());
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
 function(phaseTypesArray) {
 
@@ -1287,6 +1272,10 @@ function(aNode, aProcessor) {
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
     tagTypeDict = aProcessor.getType().get('$tagTypeDict');
+    if (TP.notValid(tagTypeDict)) {
+        tagTypeDict = TP.hc();
+        aProcessor.getType().set('$tagTypeDict', tagTypeDict);
+    }
 
     //  Build a hash that will track whether certain tag types can invoke the
     //  target method for this phase.
@@ -1467,6 +1456,10 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
     tagTypeDict = aProcessor.getType().get('$tagTypeDict');
+    if (TP.notValid(tagTypeDict)) {
+        tagTypeDict = TP.hc();
+        aProcessor.getType().set('$tagTypeDict', tagTypeDict);
+    }
 
     //  Any nodes that are actually newly-produced (and returned) by running the
     //  processor over the supplied content.
