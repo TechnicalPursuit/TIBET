@@ -490,6 +490,8 @@ function(targetURI, aRequest) {
 
 //  Make sure the remote url watcher knows about this handler type, but wait to
 //  do this after the type has been fully configured to avoid api check error.
+//  This will cause the activateRemoteWatch method to be invoked on the
+//  TP.couchdb.CouchDBURLHandler to be invoked.
 TP.core.RemoteURLWatchHandler.registerWatcher(TP.couchdb.CouchDBURLHandler);
 
 //  =======================================================================

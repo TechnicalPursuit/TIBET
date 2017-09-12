@@ -1069,7 +1069,7 @@ TP.core.TagProcessor.Type.defineConstant(
 /**
  * A dictionary (hash) of tag types to tag identifiers. This is a cache so that
  * we don't have to look up the types each time.
- * @type {Array}
+ * @type {TP.core.Hash}
  */
 TP.core.TagProcessor.Type.defineAttribute('$tagTypeDict');
 
