@@ -111,7 +111,7 @@ recommend you take a few minutes to scan it.
 
 - <a href="https://www.technicalpursuit.com/docs/faq.html" target="_blank">TIBET FAQ</a> - Answers to common
   TIBET-related questions.
-- <a href="https://www.technicalpursuit.com/docs/tibet-for-javascript-programmers.html"
+- <a href="https://www.technicalpursuit.com/docs/tibet-for-js-programmers.html"
   target="_blank">TIBET For JS Programmers</a> - JavaScript: the TIBET
 parts&#8482;.
 - <a href="https://www.technicalpursuit.com/docs/coding-standards.html"
