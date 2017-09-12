@@ -178,6 +178,8 @@ function() {
         headerContent,
         bodyContent,
 
+        updateUponComplete,
+
         dataWillSendSignal;
 
     //  If the element is being 'recast' (i.e. recompiled in place, usually when
@@ -437,11 +439,19 @@ function() {
             thisref.dispatchResponderSignalFromAttr('UIDataFailed', null);
         });
 
+    //  Initially, set the 'update URI upon completion' flag to false. Some
+    //  calls, like PUT, POST and DELETE, will update the URI with their result
+    //  upon completion.
+    updateUponComplete = false;
+
     request.defineHandler('RequestCompleted',
         function(aResponse) {
 
             var statusCode,
-                statusText;
+                statusText,
+
+                updateURI,
+                responseBodyContent;
 
             //  If we can retrieve a communications object (an XHR for HTTP
             //  comm, or an emulated object for others), then we can extract a
@@ -452,6 +462,25 @@ function() {
 
                 thisref.setAttribute('statuscode', statusCode);
                 thisref.setAttribute('statustext', statusText);
+            }
+
+            //  If we're updating the URI when complete, then do so here. Note
+            //  that we only update the first body URI (if we were sending
+            //  multipart, there will be multiple body URIs).
+            if (updateUponComplete && TP.notEmpty(bodyURIs)) {
+
+                updateURI = bodyURIs.first();
+
+                responseBodyContent = uri.getResource(
+                                    TP.hc('async', false,
+                                            'refresh', false)).get('result');
+                responseBodyContent = TP.copy(responseBodyContent);
+
+                if (TP.isKindOf(responseBodyContent, TP.core.Content)) {
+                    responseBodyContent.set('sourceURI', updateURI);
+                }
+
+                updateURI.setResource(responseBodyContent);
             }
         });
 
@@ -530,7 +559,15 @@ function() {
                 //  If we had a body, set the resource of the URI to it. We
                 //  might not - we might have a simple payload in the query.
                 if (TP.isValid(bodyContent)) {
-                    bodyContent = bodyContent.get('value');
+
+                    //  Copy the body to be used as the resource of the URI to
+                    //  send and, if it's a Content object, update that copy's
+                    //  URI to the URI object that we're getting ready to send..
+                    bodyContent = TP.copy(bodyContent);
+                    if (TP.isKindOf(bodyContent, TP.core.Content)) {
+                        bodyContent.set('sourceURI', uri);
+                    }
+
                     uri.setResource(bodyContent);
                 } else {
                     uri.setResource('');
@@ -538,6 +575,10 @@ function() {
             } else {
                 uri.setResource('');
             }
+
+            //  We want to update the URI with the results when we complete the
+            //  remote call.
+            updateUponComplete = true;
 
             //  Set 'refresh' to false - we're not interested in what the server
             //  currently has.
@@ -547,6 +588,11 @@ function() {
 
             break;
         case TP.HTTP_DELETE:
+
+            //  We want to update the URI with the results when we complete the
+            //  remote call.
+            updateUponComplete = true;
+
             uri.delete(request);
 
             break;

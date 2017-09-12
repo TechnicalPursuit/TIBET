@@ -248,15 +248,6 @@ function(options) {
 
     uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
-    TP.elementSetAttribute(uriEditorElem,
-                            'extraLoadHeaders',
-                            '{simple_cors_only: true}',
-                            true);
-    TP.elementSetAttribute(uriEditorElem,
-                            'extraSaveHeaders',
-                            '{simple_cors_only: true}',
-                            true);
-
     return uriEditorElem;
 });
 
@@ -279,15 +270,6 @@ function(options) {
     locURI = TP.uc(loc);
 
     uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
-
-    TP.elementSetAttribute(uriEditorElem,
-                            'extraLoadHeaders',
-                            '{simple_cors_only: true}',
-                            true);
-    TP.elementSetAttribute(uriEditorElem,
-                            'extraSaveHeaders',
-                            '{simple_cors_only: true}',
-                            true);
 
     return uriEditorElem;
 });
@@ -322,15 +304,6 @@ function(options) {
 
     uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
-    TP.elementSetAttribute(uriEditorElem,
-                            'extraLoadHeaders',
-                            '{simple_cors_only: true}',
-                            true);
-    TP.elementSetAttribute(uriEditorElem,
-                            'extraSaveHeaders',
-                            '{simple_cors_only: true}',
-                            true);
-
     return uriEditorElem;
 });
 
@@ -355,8 +328,7 @@ function(options) {
 
         params = TP.request('refresh', true,
                             'async', true,
-                            'resultType', TP.WRAP,
-                            'simple_cors_only', true);
+                            'resultType', TP.WRAP);
 
         fetchRequest = TP.request(params);
 
@@ -414,8 +386,7 @@ function(options) {
 
         params = TP.request('refresh', true,
                             'async', true,
-                            'resultType', TP.WRAP,
-                            'simple_cors_only', true);
+                            'resultType', TP.WRAP);
 
         fetchRequest = TP.request(params);
 
