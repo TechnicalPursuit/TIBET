@@ -15,8 +15,8 @@ Outputs quick getting started information for new TIBET users.
 
     Welcome to TIBET! This quickstart content is intended to get you up and running
     with a minimum of overhead so we'll be working with a limited set of commands
-    and using their default options. Once you're done, check out the development wiki
-    at https://github.com/TechnicalPursuit/TIBET/wiki to dive deeper into TIBET.
+    and using their default options. Once you're done, check out the documentation
+    at https://www.technicalpursuit.com/docs/index.html to dive deeper into TIBET.
 
     CREATE A NEW PROJECT
 
@@ -57,6 +57,6 @@ Outputs quick getting started information for new TIBET users.
     for your project in an HTML5 browser and you should see text directing you
     on how to take the next step in your TIBET journey.
 
-    For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
+    For more info visit https://www.technicalpursuit.com/docs/index.html
 
 
