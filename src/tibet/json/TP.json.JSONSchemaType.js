@@ -191,5 +191,507 @@ function(aSchema) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('buildSchemaFrom',
+function(jsonObj, definitionName) {
+
+    /**
+     * @method buildSchemaFrom
+     * @summary Builds a JSON schema from the data in the supplied plain
+     *     JavaScript object.
+     * @param {Object} jsonObj The plain JavaScript object to build the schema
+     *     from.
+     * @param {String} definitionName The name to use for the 'definition' in
+     *     the JSON Schema.
+     * @returns {Object} The JSON schema expressed in a plain JavaScript object.
+     */
+
+    var tree,
+        schema;
+
+    //  NB: This method is one of the few places in TIBET where we use POJO
+    //  syntax, because it matches the process of building a JSON schema so
+    //  well.
+
+    //  Initialize a tree to hold AST metadata.
+    tree = {};
+
+    //  Build up an AST metadata into the supplied tree.
+    if (TP.isArray(jsonObj)) {
+        this.buildArraySchemaMetaFrom(tree, jsonObj);
+    } else {
+        this.buildObjectSchemaMetaFrom(tree, jsonObj);
+    }
+
+    //  Now compile a schema from that metadata.
+    schema = this.compileSchemaFromMeta(tree, definitionName);
+
+    return schema;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('buildArraySchemaMetaFrom',
+function(tree, jsonObj) {
+
+    /**
+     * @method buildArraySchemaMetaFrom
+     * @summary Builds a metadata AST description of the supplied Array into the
+     *     supplied metadata tree object.
+     * @param {Object} tree The plain JavaScript object holding the metadata
+     *     tree.
+     * @param {Array} jsonObj The object to describe in the AST metadata.
+     * @returns {TP.json.JSONSchemaType} The receiver.
+     */
+
+    var results,
+
+        len,
+        i,
+
+        val,
+
+        keys;
+
+    //  NB: This method is one of the few places in TIBET where we use POJO
+    //  syntax, because it matches the process of building a JSON schema so
+    //  well.
+
+    tree.type = 'array';
+    tree.children = {};
+
+    if (TP.isPlainObject(jsonObj.first())) {
+
+        results = this.$checkForSamenessIn(jsonObj);
+        if (results.at('isSame')) {
+
+            tree.uniqueItems = true;
+            tree.minItems = 1;
+
+            return this.buildObjectSchemaMetaFrom(tree, results.at('longest'));
+        }
+    }
+
+    len = jsonObj.getSize();
+    for (i = 0; i < len; i++) {
+
+        val = jsonObj.at(i);
+
+        if (TP.isPlainObject(val)) {
+
+            tree.children[i] = {};
+            tree.children[i].type = 'object';
+            keys = TP.keys(val);
+
+            if (TP.notEmpty(keys)) {
+                tree.children[i].required = true;
+            }
+
+            this.buildObjectSchemaMetaFrom(tree.children[i], val);
+
+        } else if (TP.isArray(val)) {
+
+            tree.children[i] = {};
+            tree.children[i].type = 'array';
+            tree.children[i].uniqueItems = true;
+
+            if (TP.notEmpty(val)) {
+                tree.children[i].required = true;
+            }
+
+            this.buildArraySchemaMetaFrom(tree.children[i], val);
+
+        } else {
+
+            if (tree.type === 'object') {
+                tree.children[i] = {};
+                this.buildPrimitiveSchemaMetaFrom(tree.children[i], val);
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('buildObjectSchemaMetaFrom',
+function(tree, jsonObj) {
+
+    /**
+     * @method buildObjectSchemaMetaFrom
+     * @summary Builds a metadata AST description of the supplied Object into
+     *     the supplied metadata tree object.
+     * @param {Object} tree The plain JavaScript object holding the metadata
+     *     tree.
+     * @param {Object} jsonObj The object to describe in the AST metadata.
+     * @returns {TP.json.JSONSchemaType} The receiver.
+     */
+
+    var keys,
+
+        len,
+        i,
+
+        key,
+        val;
+
+    //  NB: This method is one of the few places in TIBET where we use POJO
+    //  syntax, because it matches the process of building a JSON schema so
+    //  well.
+
+    tree.type = tree.type || 'object';
+    tree.children = tree.children || {};
+
+    keys = TP.keys(jsonObj);
+
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        key = keys.at(i);
+        val = jsonObj[key];
+
+        tree.children[key] = {};
+
+        switch (this.getSchemaType(val)) {
+
+            case 'object':
+                this.buildObjectSchemaMetaFrom(tree.children[key], val);
+                break;
+
+            case 'array':
+                this.buildArraySchemaMetaFrom(tree.children[key], val);
+                break;
+
+            default:
+                this.buildPrimitiveSchemaMetaFrom(tree.children[key], val);
+                break;
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('buildPrimitiveSchemaMetaFrom',
+function(tree, jsonObj) {
+
+    /**
+     * @method buildPrimitiveSchemaMetaFrom
+     * @summary Builds a metadata AST description of the supplied primitive
+     *     value object (i.e. a non-reference object) into the supplied metadata
+     *     tree object.
+     * @param {Object} tree The plain JavaScript object holding the metadata
+     *     tree.
+     * @param {Object} jsonObj The object to describe in the AST metadata.
+     * @returns {TP.json.JSONSchemaType} The receiver.
+     */
+
+    var objType;
+
+    //  NB: This method is one of the few places in TIBET where we use POJO
+    //  syntax, because it matches the process of building a JSON schema so
+    //  well.
+
+    objType = this.getSchemaType(jsonObj);
+
+    tree.type = objType;
+
+    if (objType === 'string') {
+        tree.minLength = jsonObj.length > 0 ? 1 : 0;
+    }
+
+    if (TP.isValid(jsonObj)) {
+        tree.required = true;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('$checkForSamenessIn',
+function(anArray) {
+
+    /**
+     * @method $checkForSamenessIn
+     * @summary Check for sameness of object entries within the supplied Array.
+     *     An object is the same if its keys and values are equivalent.
+     * @param {Object} anArray The Array to test for sameness.
+     * @returns {TP.core.Hash} A two-entry hash, 'isSame' a Boolean indicating
+     *     whether or not the entries are all the same and 'longest' which is
+     *     the entry in the Array that has the most number of keys.
+     */
+
+    var hashes,
+        max,
+        longest,
+
+        keys,
+
+        len,
+        i,
+
+        key,
+        val,
+
+        hash,
+
+        moreKeys,
+
+        hasSameStructure;
+
+    hashes = TP.hc();
+    max = 0;
+    longest = null;
+
+    keys = TP.keys(anArray);
+
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+
+        val = anArray[key];
+
+        if (TP.isPlainObject(val)) {
+            hash = TP.keys(val).sort().asJSONSource().asMD5();
+        } else if (TP.isArray(val)) {
+            hash = val.sort().asJSONSource().asMD5();
+        } else {
+            hash = val.asJSONSource().asMD5();
+        }
+
+        hashes.atPut(hash, true);
+
+        moreKeys = TP.keys(val);
+
+        if (max === 0 || moreKeys.getSize() > max) {
+            max = moreKeys.getSize();
+            longest = val;
+        }
+    }
+
+    hasSameStructure = hashes.getSize() === 1;
+
+    return TP.hc('isSame', hasSameStructure, 'longest', longest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('compile',
+function(tree, schema, parent) {
+
+    /**
+     * @method compile
+     * @summary Builds a JSON Schema object using the supplied metadata tree.
+     * @param {Object} tree The plain JavaScript object holding the metadata
+     *     tree.
+     * @param {Object} schema The JSON Schema object being built.
+     * @param {Object} parent The parent of the current JSON Schema object being
+     *     built.
+     * @returns {TP.json.JSONSchemaType} The receiver.
+     */
+
+    var keys,
+
+        len,
+        i,
+
+        child,
+
+        key;
+
+    //  NB: This method is one of the few places in TIBET where we use POJO
+    //  syntax, because it matches the process of building a JSON schema so
+    //  well.
+
+    keys = TP.keys(tree.children);
+
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        key = keys.at(i);
+
+        child = tree.children[key];
+
+        if (child.type === 'object') {
+
+            if (TP.isArray(parent.required)) {
+                parent.required.push(key);
+            }
+
+            schema[key] = {
+                type: 'object',
+                properties: {},
+                required: []
+            };
+
+            this.compile(child, schema[key].properties, schema[key]);
+
+        } else if (child.type === 'array') {
+
+            if (TP.isArray(parent.required)) {
+                parent.required.push(key);
+            }
+
+            schema[key] = {
+                type: 'array',
+                uniqueItems: child.uniqueItems,
+                minItems: child.minItems,
+                items: {
+                    required: [],
+                    properties: {}
+                }
+            };
+
+            this.compile(child, schema[key].items.properties, schema[key]);
+
+        } else {
+
+            schema[key] = {};
+            if (child.type) {
+                schema[key].type = child.type;
+            }
+
+            if (child.minLength) {
+                schema[key].minLength = child.minLength;
+            }
+
+            if (child.required) {
+                if (parent.items && TP.isArray(parent.items.required)) {
+                    parent.items.required.push(key);
+                } else {
+                    parent.required.push(key);
+                }
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('compileSchemaFromMeta',
+function(tree, definitionName) {
+
+    /**
+     * @method compileSchemaFromMeta
+     * @summary Builds a JSON Schema object using the supplied metadata tree and
+     *     definition name.
+     * @param {Object} tree The plain JavaScript object holding the metadata
+     *     tree.
+     * @param {String} definitionName The name of the JSON Schema 'definition'
+     *     to generate into the schema.
+     * @returns {TP.json.JSONSchemaType} The receiver.
+     */
+
+    var topSchema,
+        schema;
+
+    //  NB: This method is one of the few places in TIBET where we use POJO
+    //  syntax, because it matches the process of building a JSON schema so
+    //  well.
+
+    //  Define the top-level of the JSON Schema object.
+    topSchema = {
+        $schema: 'http://json-schema.org/draft-04/schema#',
+        definitions: {
+        }
+    };
+
+    if (tree.type === 'object') {
+
+        schema = {
+            description: '',
+            type: 'object',
+            properties: {},
+            required: []
+        };
+
+        this.compile(tree, schema.properties, schema);
+
+    } else {
+
+        schema = {
+            description: '',
+            type: 'array',
+            minItems: 1,
+            uniqueItems: true,
+            items: {
+                properties: {},
+                required: []
+            }
+        };
+
+        this.compile(tree, schema.properties, schema.items);
+    }
+
+    //  Register the schema under the top-level schema's 'definition' slot under
+    //  the supplied definition name.
+    topSchema.definitions[definitionName] = schema;
+
+    return topSchema;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('getSchemaType',
+function(aValue) {
+
+    /**
+     * @method getSchemaType
+     * @summary Returns the JSON Schema type of the supplied object
+     * @param {Object} aValue The object to determine the JSON Schema type of.
+     * @returns {String} The JSON Schema type of the supplied object.
+     */
+
+    if (TP.isNull(aValue)) {
+        return 'null';
+    }
+
+    if (TP.isArray(aValue)) {
+        return 'array';
+    }
+
+    if (TP.isPlainObject(aValue)) {
+        return 'object';
+    }
+
+    if (TP.isString(aValue)) {
+        return 'string';
+    }
+
+    if (TP.isNumber(aValue)) {
+        if (aValue.isInteger()) {
+            return 'integer';
+        } else {
+            return 'number';
+        }
+    }
+
+    if (TP.isBoolean(aValue)) {
+        return 'boolean';
+    }
+
+    if (TP.isDate(aValue)) {
+        return 'string';
+    }
+
+    if (TP.isRegExp(aValue)) {
+        return 'string';
+    }
+
+    if (TP.isFunction(aValue)) {
+        return 'string';
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
