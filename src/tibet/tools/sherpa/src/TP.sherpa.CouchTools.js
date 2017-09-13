@@ -93,6 +93,19 @@ function() {
                     'All Documents'
                     ));
 
+    this.registerMethodSuffixForPath(
+            'DesignDocuments',
+            TP.ac('CouchDB',
+                    TP.PATH_SEP,
+                    'CouchDB_Server_\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_SEP,
+                    '\.+',
+                    TP.PATH_SEP,
+                    'Design Documents'
+                    ));
+
     //  Documents
 
     this.registerMethodSuffixForPath(
@@ -105,7 +118,7 @@ function() {
                     TP.PATH_SEP,
                     '\.+',
                     TP.PATH_SEP,
-                    'All Documents',
+                    '(All|Design) Documents',
                     '\.+'
                     ));
 
@@ -129,6 +142,16 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDocuments',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDesignDocuments',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -205,6 +228,20 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForAllDocuments',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<xctrls:list bind:in="{data: ' +
+                    dataURI.asString() +
+                    '}"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDesignDocuments',
 function(options) {
 
     var dataURI;
@@ -432,6 +469,70 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDesignDocuments',
+function(options) {
+
+    var fetcher,
+
+        dataURI,
+        dbName,
+
+        loc;
+
+    fetcher = function(aURI) {
+        var params,
+
+            fetchRequest,
+            fetchResponse;
+
+        params = TP.request('refresh', true,
+                            'async', true,
+                            'resultType', TP.WRAP);
+
+        fetchRequest = TP.request(params);
+
+        aURI.getResource(fetchRequest);
+
+        fetchResponse = fetchRequest.getResponse();
+
+        return fetchResponse;
+    };
+
+    dataURI = TP.uc(options.at('bindLoc'));
+    dbName = this.get('databaseName');
+
+    loc = this.get('serverAddress') +
+            '/' +
+            dbName +
+            '/_all_docs?startkey="_design"&endkey="_design0"';
+
+    fetcher(TP.uc(loc)).then(
+                function(result) {
+
+                    var data;
+
+                    data = result.get(TP.tpc('rows[0:].id',
+                                        TP.hc('shouldCollapse', false)));
+
+                    data = data.collect(
+                            function(docID) {
+                                return TP.ac(docID, docID);
+                            });
+
+                    dataURI.setResource(data);
+                }).catch(
+                function(err) {
+                    TP.ifError() ?
+                        TP.error('Error fetching design documents for Couch' +
+                                    ' database:' + dbName + ': ' +
+                                    TP.str(err)) : 0;
+                });
+
+    return TP.ac('Data Loading...');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
 function(options) {
 
@@ -439,7 +540,8 @@ function(options) {
 
     return TP.ac(
             TP.ac('Database Info', 'Database Info'),
-            TP.ac('All Documents', 'All Documents')
+            TP.ac('All Documents', 'All Documents'),
+            TP.ac('Design Documents', 'Design Documents')
     );
 });
 
