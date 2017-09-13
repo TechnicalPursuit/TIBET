@@ -383,9 +383,10 @@ function(targetURI, aRequest) {
 
     request = TP.request(aRequest);
 
-    //  Currently, CouchDB can only deal with 'simple CORS' (i.e. no preflight
-    //  requests, etc.). Configure that here so that TIBET's low-level HTTP
-    //  machinery doesn't try to send such things.
+    //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
+    //  requests, etc.) if possible. Configure that here so that TIBET's
+    //  low-level HTTP machinery doesn't try to add headers, etc. that would
+    //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
 
     return this.callNextMethod(targetURI, request);
@@ -412,9 +413,10 @@ function(targetURI, aRequest) {
 
     request = TP.request(aRequest);
 
-    //  Currently, CouchDB can only deal with 'simple CORS' (i.e. no preflight
-    //  requests, etc.). Configure that here so that TIBET's low-level HTTP
-    //  machinery doesn't try to send such things.
+    //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
+    //  requests, etc.) if possible. Configure that here so that TIBET's
+    //  low-level HTTP machinery doesn't try to add headers, etc. that would
+    //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
 
     return this.callNextMethod(targetURI, request);
@@ -453,9 +455,10 @@ function(targetURI, aRequest) {
 
     saveURI = targetURI;
 
-    //  Currently, CouchDB can only deal with 'simple CORS' (i.e. no preflight
-    //  requests, etc.). Configure that here so that TIBET's low-level HTTP
-    //  machinery doesn't try to send such things.
+    //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
+    //  requests, etc.) if possible. Configure that here so that TIBET's
+    //  low-level HTTP machinery doesn't try to add headers, etc. that would
+    //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
 
     //  Add a local handler for when the request succeeds that will update the
