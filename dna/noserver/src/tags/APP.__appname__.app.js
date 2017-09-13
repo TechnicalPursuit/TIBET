@@ -7,6 +7,11 @@
 
 TP.core.TemplatedTag.defineSubtype('APP.{{appname}}:app');
 
+//  The app tag is not a themed tag. By default, since the body element has a
+//  'data-theme' attribute, we have to explicity say so.
+//  Note how this property is TYPE_LOCAL, by design.
+APP.{{appname}}.app.defineAttribute('themeURI', TP.NO_RESULT);
+
 /*
  * For information on how to expand the functionality in this type visit:
  *
