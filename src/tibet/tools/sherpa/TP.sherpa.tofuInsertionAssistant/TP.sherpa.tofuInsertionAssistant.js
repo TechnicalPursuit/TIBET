@@ -118,7 +118,8 @@ function(anObject) {
     modelURI = TP.uc('urn:tibet:tofuInsertionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
 
-    result = TP.uc('urn:tibet:tofuInsertionAssistant_source').getResource().get('result');
+    result = TP.uc('urn:tibet:tofuInsertionAssistant_source').
+                                                getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
