@@ -6485,6 +6485,10 @@ function(aMessage) {
     return promise;
 });
 
+//  Alias TP.$alert to TP.alert. That way if TP.alert gets redefined, the
+//  primitive version is still available under TP.$alert.
+TP.defineMethodAlias(TP, '$alert', TP.alert);
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('confirm',
@@ -6523,6 +6527,10 @@ function(anAction) {
 
     return promise;
 });
+
+//  Alias TP.$confirm to TP.confirm. That way if TP.confirm gets redefined, the
+//  primitive version is still available under TP.$confirm.
+TP.defineMethodAlias(TP, '$confirm', TP.confirm);
 
 //  ------------------------------------------------------------------------
 
@@ -6566,6 +6574,10 @@ function(aQuestion, aDefaultAnswer) {
 
     return promise;
 });
+
+//  Alias TP.$prompt to TP.prompt. That way if TP.prompt gets redefined, the
+//  primitive version is still available under TP.$prompt.
+TP.defineMethodAlias(TP, '$prompt', TP.prompt);
 
 //  ------------------------------------------------------------------------
 //  DEBUGGING/LOGGING
