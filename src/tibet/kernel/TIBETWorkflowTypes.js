@@ -6670,6 +6670,42 @@ function(aController) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Application.Inst.defineMethod('removeController',
+function(aController) {
+
+    /**
+     * @method removeController
+     * @summary Removes the supplied controller from the controller stack.
+     * @param {TP.core.Controller} aController The controller to remove.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var controllers;
+
+    if (TP.notValid(aController)) {
+        return this.raise('InvalidController');
+    }
+
+    controllers = this.$get('customControllers');
+    if (TP.notValid(controllers)) {
+        return this;
+    }
+
+    //  Make sure that the list of custom controllers includes the supplied
+    //  controller because once we remove then we have to rebuild the controller
+    //  list.
+    if (controllers.contains(aController, TP.IDENTITY)) {
+        controllers.remove(aController, TP.IDENTITY);
+
+        //  Refresh the main list of controllers.
+        this.refreshControllers();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Application.Inst.defineMethod('setControllers',
 function(aList) {
 
