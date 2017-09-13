@@ -2353,7 +2353,15 @@ function(aMutationRecord) {
                             //  it has a value of TP.ANCESTOR_OR_SELF for the
                             //  'tibet:nomutationtracking' attribute, then
                             //  return false to filter out this node from the
-                            //  'removed' data set.
+                            //  'removed' data set. Note that we do *NOT* check
+                            //  for a value of 'true' here. The element is
+                            //  supposed to be looking to its *ancestor*, not to
+                            //  itself, as to whether it should be tracked from
+                            //  a mutation perspective. In other words, a
+                            //  'tibet:nomutationtracking' attribute with a
+                            //  simple value of 'true' will have *no* effect on
+                            //  this element - only its descendants. There is a
+                            //  workaround to this by using TP.ANCESTOR_OR_SELF.
                             if (TP.isElement(aNode)) {
 
                                 val = TP.elementGetAttribute(
@@ -2420,7 +2428,15 @@ function(aMutationRecord) {
                             //  it has a value of TP.ANCESTOR_OR_SELF for the
                             //  'tibet:nomutationtracking' attribute, then
                             //  return false to filter out this node from the
-                            //  'added' data set.
+                            //  'added' data set. Note that we do *NOT* check
+                            //  for a value of 'true' here. The element is
+                            //  supposed to be looking to its *ancestor*, not to
+                            //  itself, as to whether it should be tracked from
+                            //  a mutation perspective. In other words, a
+                            //  'tibet:nomutationtracking' attribute with a
+                            //  simple value of 'true' will have *no* effect on
+                            //  this element - only its descendants. There is a
+                            //  workaround to this by using TP.ANCESTOR_OR_SELF.
                             if (TP.isElement(aNode)) {
 
                                 val = TP.elementGetAttribute(
