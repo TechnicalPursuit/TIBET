@@ -59,33 +59,14 @@ function() {
      *     remote URL changes.
      */
 
-    var sourceType,
-        signalType,
-        thisref;
-
+    //  If we're not watching CouchDB changes, then exit here.
     if (TP.notTrue(TP.sys.cfg('uri.watch_couchdb_changes'))) {
         return;
     }
 
-    sourceType = this.getWatcherSourceType();
-    signalType = this.getWatcherSignalType();
-
-    thisref = this;
-
-    //  For Couch we set up multiple observations against different URIs.
-    this.getWatcherSourceURIs().perform(
-        function(sourceURI) {
-            var signalSource;
-
-            signalSource = sourceType.construct(
-                                        sourceURI.getLocation(),
-                                        TP.hc('withCredentials', true));
-            if (TP.notValid(signalSource)) {
-                return thisref.raise('InvalidURLWatchSource');
-            }
-
-            thisref.observe(signalSource, signalType);
-        });
+    //  Push ourself as a controller onto the application's controller stack.
+    //  This will allow us to receive the TP.sig.AppDidStart signal below.
+    TP.sys.getApplication().pushController(this);
 
     return;
 });
@@ -175,6 +156,132 @@ function() {
             });
 
     return watcherSourceURIs;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineHandler('AppDidStart',
+function(aSignal) {
+
+    /**
+     * @method handleAppDidStart
+     * @summary Handles when a TDS-managed resource has changed.
+     * @param {TP.sig.AppDidStart} aSignal The signal indicating that the
+     *     application has completed all of its startup tasks.
+     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     */
+
+    var watcherURIs,
+        thisref;
+
+    //  Remove ourself from the application's controller stack - we won't be
+    //  needing to get any more signals from there.
+    TP.sys.getApplication().removeController(this);
+
+    //  Grab all of the 'watcher sources' (i.e. individual CouchDB server
+    //  instances) that we are watching.
+    watcherURIs = this.getWatcherSourceURIs();
+
+    thisref = this;
+
+    //  Iterate over each watcher source and authenticate with it using 'cookie
+    //  authentication'. The browser and CouchDB will manage authentication
+    //  after this by putting in the authentication token into the HTTP
+    //  headers for each roundtrip.
+    watcherURIs.perform(
+        function(aURI) {
+
+            var rootLoc,
+                href,
+
+                body,
+
+                username,
+                password,
+
+                request;
+
+            //  Construct the proper href to the authentication endpoint.
+            rootLoc = aURI.getRoot();
+            href = rootLoc + '/_session';
+
+            //  Prompt the user for the CouchDB username
+            TP.prompt('Enter CouchDB username:').then(
+                function(retVal) {
+
+                    //  If the value came back empty, then just return.
+                    if (TP.isEmpty(retVal)) {
+                        return;
+                    }
+
+                    username = retVal;
+
+                    //  Prompt the user for the CouchDB password
+                    TP.prompt('Enter CouchDB password:').then(
+                        function(retVal2) {
+
+                            var thisref2;
+
+                            //  If the value came back empty, then just return.
+                            if (TP.isEmpty(retVal2)) {
+                                return;
+                            }
+
+                            password = retVal2;
+
+                            //  Encode the body of the authentication request by
+                            //  formatting the username and password as JSON.
+                            body = TP.hc(
+                                    'username', username,
+                                    'password', password).asJSONSource();
+
+                            //  Build a request that we can post below.
+                            request = TP.request(
+                                    'uri', href,
+                                    'headers',
+                                        TP.hc('Content-Type', TP.JSON_ENCODED),
+                                    'body', body,
+                                    'simple_cors_only', true);
+
+                            thisref2 = thisref;
+
+                            //  Set up a RequestSucceeded handler that will set
+                            //  up a SSE observer on the CouchDB changes feed.
+                            request.defineHandler('RequestSucceeded',
+                                function(aResponse) {
+                                    var sourceType,
+                                        signalType;
+
+                                    sourceType = thisref2.getWatcherSourceType();
+                                    signalType = thisref2.getWatcherSignalType();
+
+                                    //  For Couch we set up multiple observations
+                                    //  against different URIs.
+                                    thisref2.getWatcherSourceURIs().perform(
+                                        function(sourceURI) {
+                                            var signalSource;
+
+                                            signalSource = sourceType.construct(
+                                                sourceURI.getLocation(),
+                                                TP.hc('withCredentials', true));
+
+                                            if (TP.notValid(signalSource)) {
+                                                return thisref2.raise(
+                                                        'InvalidURLWatchSource');
+                                            }
+
+                                            thisref2.observe(
+                                                signalSource, signalType);
+                                        });
+                                });
+
+                            //  Post the request to the authentication endpoint.
+                            TP.httpPost(href, request);
+                        });
+                });
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
