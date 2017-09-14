@@ -323,7 +323,11 @@ function(aSignal) {
         dbDocPath,
 
         processed,
-        docLoc;
+        docLoc,
+
+        subURIs,
+        matcher,
+        viewURLs;
 
     //  Make sure that we have a payload
     if (TP.notValid(payload = aSignal.getPayload())) {
@@ -445,6 +449,28 @@ function(aSignal) {
             //  tracks changes.
             TP.core.URI.processRemoteResourceChange(url);
         }
+
+        //  Update any view URLs that we know about
+
+        //  Compute a RegExp that will find 'view' URLs.
+        matcher = TP.rc(url.getLocation() + '/_design/\\w+/_view');
+
+        //  Grab the subURIs of the url that we know about and select out of
+        //  them ones that reference a view, per our computed match RegExp
+        //  above.
+        subURIs = url.getSubURIs();
+        viewURLs = subURIs.select(
+                    function(aURI) {
+                        return matcher.test(aURI.getLocation());
+                    });
+
+        //  Iterate over the view URLs and force them to refresh from the
+        //  server.
+        viewURLs.perform(
+            function(aViewURL) {
+                aViewURL.getResource(
+                            TP.hc('refresh', true, 'signalChange', true));
+            });
     }
 
     return this;
