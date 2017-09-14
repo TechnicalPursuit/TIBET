@@ -13,6 +13,31 @@ TP.sherpa.CouchTools.Inst.defineAttribute('databaseName');
 TP.sherpa.CouchTools.Inst.defineAttribute('documentID');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Type.defineMethod('fetchURI',
+function(aURI) {
+
+    var params,
+
+        fetchRequest,
+        fetchResponse;
+
+    params = TP.request('refresh', true,
+                        'async', true,
+                        'resultType', TP.WRAP);
+
+    fetchRequest = TP.request(params);
+
+    aURI.getResource(fetchRequest);
+
+    fetchResponse = fetchRequest.getResponse();
+
+    return fetchResponse;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -351,35 +376,14 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForAllDatabases',
 function(options) {
 
-    var fetcher,
-
-        dataURI,
+    var dataURI,
 
         loc;
-
-    fetcher = function(aURI) {
-        var params,
-
-            fetchRequest,
-            fetchResponse;
-
-        params = TP.request('refresh', true,
-                            'async', true,
-                            'resultType', TP.WRAP);
-
-        fetchRequest = TP.request(params);
-
-        aURI.getResource(fetchRequest);
-
-        fetchResponse = fetchRequest.getResponse();
-
-        return fetchResponse;
-    };
 
     dataURI = TP.uc(options.at('bindLoc'));
 
     loc = this.get('serverAddress') + '/_all_dbs';
-    fetcher(TP.uc(loc)).then(
+    this.getType().fetchURI(TP.uc(loc)).then(
                 function(result) {
                     var dbNames,
                         data;
@@ -408,31 +412,10 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForAllDocuments',
 function(options) {
 
-    var fetcher,
-
-        dataURI,
+    var dataURI,
         dbName,
 
         loc;
-
-    fetcher = function(aURI) {
-        var params,
-
-            fetchRequest,
-            fetchResponse;
-
-        params = TP.request('refresh', true,
-                            'async', true,
-                            'resultType', TP.WRAP);
-
-        fetchRequest = TP.request(params);
-
-        aURI.getResource(fetchRequest);
-
-        fetchResponse = fetchRequest.getResponse();
-
-        return fetchResponse;
-    };
 
     dataURI = TP.uc(options.at('bindLoc'));
     dbName = this.get('databaseName');
@@ -442,7 +425,7 @@ function(options) {
             dbName +
             '/_all_docs';
 
-    fetcher(TP.uc(loc)).then(
+    this.getType().fetchURI(TP.uc(loc)).then(
                 function(result) {
 
                     var data;
@@ -472,31 +455,10 @@ function(options) {
 TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDesignDocuments',
 function(options) {
 
-    var fetcher,
-
-        dataURI,
+    var dataURI,
         dbName,
 
         loc;
-
-    fetcher = function(aURI) {
-        var params,
-
-            fetchRequest,
-            fetchResponse;
-
-        params = TP.request('refresh', true,
-                            'async', true,
-                            'resultType', TP.WRAP);
-
-        fetchRequest = TP.request(params);
-
-        aURI.getResource(fetchRequest);
-
-        fetchResponse = fetchRequest.getResponse();
-
-        return fetchResponse;
-    };
 
     dataURI = TP.uc(options.at('bindLoc'));
     dbName = this.get('databaseName');
@@ -506,7 +468,7 @@ function(options) {
             dbName +
             '/_all_docs?startkey="_design"&endkey="_design0"';
 
-    fetcher(TP.uc(loc)).then(
+    this.getType().fetchURI(TP.uc(loc)).then(
                 function(result) {
 
                     var data;
