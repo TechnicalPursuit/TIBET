@@ -547,6 +547,9 @@ function(aSignal) {
 
         dndTargetElem,
 
+        dndSourceTPElem,
+        vendType,
+
         containingBlockElem;
 
     //  Capture this *before* we hide ourself - it will be nulled out by that
@@ -573,15 +576,48 @@ function(aSignal) {
         //  use to track the current DND target to null.
         TP.elementRemoveClass(dndTargetElem, 'sherpa-outliner-droptarget');
         this.set('$currentDNDTarget', null);
+    }
 
-        //  If the canvas document contains the target element, then we want to
-        //  be the controller that does the possible insertion.
-        if (targetTPElement.contains(dndTargetElem, TP.IDENTITY)) {
+    //  If the canvas document contains the target element, then we want to be
+    //  the controller that does the possible insertion.
+    if (TP.isElement(dndTargetElem) &&
+        targetTPElement.contains(dndTargetElem, TP.IDENTITY)) {
 
-            //  Message the drop target that we dropped tofu into it at the
-            //  insertion position determined by the user.
-            TP.wrap(dndTargetElem).sherpaDidInsertTofu(
-                                dndTargetElem, this.get('insertionPosition'));
+        //  Grab the 'drag and drop' source element.
+
+        //  If we have a drag and drop source, then try to process it.
+        dndSourceTPElem = aSignal.at('dndSource');
+        if (TP.isValid(dndSourceTPElem)) {
+
+            //  The value of the 'dnd:vend' attribute on the source will detail
+            //  what the kind of source just got dropped into the outliner.
+            vendType = dndSourceTPElem.getAttribute('dnd:vend');
+
+            switch (vendType) {
+
+                case 'breadcrumb':
+
+                    //  Message the drop target that we dropped a breadcrum into
+                    //  it at the insertion position determined by the user.
+                    TP.wrap(dndTargetElem).sherpaDidInsertBreadcrumb(
+                                            dndTargetElem,
+                                            this.get('insertionPosition'));
+
+                    break;
+
+                case 'tofu':
+
+                    //  Message the drop target that we dropped tofu into it
+                    //  at the insertion position determined by the user.
+                    TP.wrap(dndTargetElem).sherpaDidInsertTofu(
+                                            dndTargetElem,
+                                            this.get('insertionPosition'));
+
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 
@@ -1116,7 +1152,7 @@ function() {
     TP.elementAddClass(targetElement, 'sherpa-outliner');
 
     //  Enable DND by setting this attribute.
-    TP.elementSetAttribute(targetElement, 'dnd:accept', 'tofu', true);
+    TP.elementSetAttribute(targetElement, 'dnd:accept', 'tofu breadcrumb', true);
 
     //  Set the 'sherpa-outliner-position' attribute to the insertion position
     //  that the user has specified. This could be TP.BEFORE_BEGIN,
