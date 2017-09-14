@@ -1959,22 +1959,59 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getCurrentData',
+TP.sherpa.inspector.Inst.defineMethod('getCurrentPropertyValueForTool',
+function(propertyName, toolName) {
+
+    /**
+     * @method getCurrentPropertyValueForTool
+     * @summary Returns the value of the named property for the named tool.
+     * @param {String} propertyName The name of the property to return the value
+     *     for.
+     * @param {String} toolName The name of the tool to return the property
+     *     value for.
+     * @returns {Object} The current property value for the named property and
+     *     tool.
+     */
+
+    var currentResolver,
+
+        params,
+
+        methodName,
+        result;
+
+    //  Grab the current resolver. If there is none, then just exit and return
+    //  null.
+    currentResolver = this.getCurrentResolver();
+    if (TP.notValid(currentResolver)) {
+        return null;
+    }
+
+    //  Construct a 'pathParts' by using our currently selected items.
+    params = TP.hc('pathParts', this.get('selectedItems'));
+
+    //  Compute a method name for the 'TP' object that will attempt to retrieve
+    //  the named property value.
+    methodName = 'get' + propertyName.asTitleCase() + 'ForTool';
+    result = TP[methodName](currentResolver, toolName, params);
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getCurrentResolver',
 function() {
 
     /**
-     * @method getCurrentData
-     * @summary Retrieves the data of the object currently selected in the
-     *     inspector.
-     * @returns {Object} The data of the currently selected object.
+     * @method getCurrentResolver
+     * @summary Returns the resolver object of the currently selected bay.
+     * @returns {Object} The resolver object of the current bay.
      */
 
     var inspectorBays,
 
-        lastResolver,
-
-        params,
-        data;
+        lastResolver;
 
     inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
@@ -1985,13 +2022,7 @@ function() {
         return null;
     }
 
-    //  Construct a 'pathParts' by using our currently selected items.
-    params = TP.hc('pathParts', this.get('selectedItems'));
-
-    //  Grab the data from the computed resolver.
-    data = TP.getDataForTool(lastResolver, 'inspector', params);
-
-    return data;
+    return lastResolver;
 });
 
 //  ------------------------------------------------------------------------
