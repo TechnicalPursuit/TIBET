@@ -9292,7 +9292,7 @@ function(aFunction, anObject) {
 
     //  only going to find one match if we're not global...but if we're
     //  global then we'd have to run it to see how many matches we get
-    //len = this.global ? NaN : 1;
+    //  len = this.global ? NaN : 1;
 
     //  the replace call is what drives the actual iteration so we don't
     //  have to construct a loop here. what we do have to do is create a

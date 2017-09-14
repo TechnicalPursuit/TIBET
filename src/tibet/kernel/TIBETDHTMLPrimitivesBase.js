@@ -1643,7 +1643,7 @@ function(anElement) {
     //  Now, compute Y scale and normalize 2nd row.
 
     scale[1] = length(m[1]);
-    //m[1] = normalize(m[1]) //
+    // m[1] = normalize(m[1]) //
     skew /= scale[1];
 
     //  Now, get the rotation out
