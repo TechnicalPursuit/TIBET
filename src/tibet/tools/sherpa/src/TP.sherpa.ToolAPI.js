@@ -48,6 +48,18 @@ function(anObject, toolName, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('getContentTypeForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getContentTypeForTool')) {
+        return anObject.getContentTypeForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getDataForTool',
 function(anObject, toolName, options) {
 
@@ -189,6 +201,27 @@ function(toolName, options) {
     }
 
     //  TODO: As a fallback, we do a this.as(toolName + 'Content')
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ToolAPI.Inst.defineMethod('getContentTypeForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentTypeForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentTypeFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
