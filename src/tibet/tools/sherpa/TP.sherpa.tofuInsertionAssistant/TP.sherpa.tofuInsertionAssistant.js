@@ -544,6 +544,8 @@ function(anObj) {
 
     newInsertionInfo.atPut('tagAttrs', TP.ac());
 
+    //  ---
+
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:tofuInsertionAssistant_source');
@@ -560,6 +562,8 @@ function(anObj) {
     modelURI.setResource(
         modelObj,
         TP.hc('observeResource', true, 'signalChange', true));
+
+    //  ---
 
     insertionPointElem = anObj.at('insertionPoint');
     newInsertionInfo.atPut('insertionPoint', insertionPointElem);
