@@ -370,6 +370,15 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod(
+    'getContentTypeForCanvasForDocumentContent',
+function(options) {
+
+    return 'uri/CouchDB/document';
+});
+
+//  ------------------------------------------------------------------------
 //  Inspector Data Methods
 //  ------------------------------------------------------------------------
 

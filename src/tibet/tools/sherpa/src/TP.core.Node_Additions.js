@@ -911,6 +911,137 @@ function(aHalo, aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
+function(insertionPointElement, insertionPosition) {
+
+    /**
+     * @method sherpaDidInsertBreadcrumb
+     * @summary Responds to the fact that the Sherpa initiated a DOM insertion
+     *     by dropping a 'breadcrumb' element somewhere in a DOM visualization.
+     * @param {Element} insertionPointElement The element that provides the
+     *     insertion point to the insertion operation. This, in combination with
+     *     the insertion position, will provide the place in the DOM to insert
+     *     the new DOM node.
+     * @param {Constant} insertionPosition The insertion position, relative to
+     *     the insertion point element, that the new node should be inserted at.
+     *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
+     *     TP.AFTER_END.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var inspector,
+        contentType,
+
+        assistantContentTPElem,
+        dialogPromise;
+
+    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+
+    contentType = inspector.getCurrentPropertyValueForTool(
+                                'contentType',
+                                'canvas');
+
+    switch (contentType) {
+
+        case 'uri/CouchDB/document':
+
+            //  Grab the TP.sherpa.insertionAssistant type's template.
+            assistantContentTPElem =
+                TP.sherpa.couchDocumentURIInsertionAssistant.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
+
+            //  Open a dialog with the insertion assistant's content.
+            dialogPromise = TP.dialog(
+                TP.hc(
+                    'dialogID', 'CouchDocumentURIAssistantDialog',
+                    'isModal', true,
+                    'title', 'Insert New Schema-Driven Property Sheet',
+                    'templateContent', assistantContentTPElem));
+
+            //  After the dialog is showing, set the assistant parameters on the
+            //  content object from those defined in the original signal's
+            //  payload.
+            dialogPromise.then(
+                function(aDialogTPElem) {
+
+                    var contentTPElem,
+                        insertedURI;
+
+                    contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                getFirstChildElement();
+
+                    insertedURI = inspector.getCurrentPropertyValueForTool(
+                                                'data',
+                                                'inspector');
+
+                    //  Pass along the insertion position and the peer element
+                    //  as the insertion point to the dialog info.
+                    contentTPElem.set('data',
+                        TP.hc(
+                            'insertionPosition', insertionPosition,
+                            'insertionPoint', insertionPointElement,
+                            'uri', insertedURI,
+                            'insertionID',
+                                'couch_doc' + TP.genID().replace('$','_')));
+                });
+
+            break;
+
+        case 'uri/CouchDB/view':
+
+            //  Grab the TP.sherpa.insertionAssistant type's template.
+            assistantContentTPElem =
+                TP.sherpa.couchViewURIInsertionAssistant.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
+
+            //  Open a dialog with the insertion assistant's content.
+            dialogPromise = TP.dialog(
+                TP.hc(
+                    'dialogID', 'CouchViewURIAssistantDialog',
+                    'isModal', true,
+                    'title', 'Insert New Data Table',
+                    'templateContent', assistantContentTPElem));
+
+            //  After the dialog is showing, set the assistant parameters on the
+            //  content object from those defined in the original signal's
+            //  payload.
+            dialogPromise.then(
+                function(aDialogTPElem) {
+
+                    var contentTPElem,
+                        insertedURI;
+
+                    contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                getFirstChildElement();
+
+                    insertedURI = inspector.getCurrentPropertyValueForTool(
+                                                'data',
+                                                'inspector');
+
+                    //  Pass along the insertion position and the peer element
+                    //  as the insertion point to the dialog info.
+                    contentTPElem.set('data',
+                        TP.hc(
+                            'insertionPosition', insertionPosition,
+                            'insertionPoint', insertionPointElement,
+                            'uri', insertedURI,
+                            'insertionID',
+                                'couch_view' + TP.genID().replace('$','_')));
+                });
+
+            break;
+
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('sherpaDidInsertTofu',
 function(insertionPointElement, insertionPosition) {
 

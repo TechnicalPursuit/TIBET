@@ -633,6 +633,15 @@ sherpa|hud:not([pclass|closed]) #center {
 }
 
 /* -----------------------------*
+ * CouchDocumentURI assistant dialog
+ * ---------------------------- */
+
+#CouchDocumentURIAssistantDialog {
+
+    height: 450px;
+}
+
+/* -----------------------------*
  * Command assistant dialog
  * ---------------------------- */
 

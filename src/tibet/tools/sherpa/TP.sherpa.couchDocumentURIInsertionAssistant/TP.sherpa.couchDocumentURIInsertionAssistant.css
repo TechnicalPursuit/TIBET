@@ -1,0 +1,112 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+sherpa|couchDocumentURIInsertionAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .head {
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body {
+
+    margin-left: 50px;
+
+    text-align: left;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body > #couchDocumentURIAssistant_Schema {
+
+    width: 80%;
+    height: 185px;
+
+    margin-top: 20px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body > label[for="couchDocumentURIAssistant_Schema"] {
+
+    position: relative;
+    top: -92px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body > #couchDocumentURIAssistant_Schemafile {
+
+    margin: 13px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details {
+
+    width: 100%;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer {
+
+    margin-left: 0;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer li,
+.flex-inner {
+
+    position: relative;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer > li > label {
+
+    flex: 1 0 100px;
+
+    max-width: 100px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer > li > label + *,
+.flex_inner {
+
+    margin-left: 0;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_inner {
+
+    justify-content: space-between;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_inner li {
+
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .foot {
+
+    text-align: center;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input {
+
+    margin-left: 10px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input:checked + label {
+
+    font-weight: bold;
+}
+
+#couchDocumentURIInsertionAssistant_InsertionBreadcrumb {
+
+    display: block;
+
+    top: 0;
+    left: 115px;
+}
+
+#couchDocumentURIInsertionAssistant_InsertionBreadcrumb > .content div.item {
+
+    color: black;
+}
