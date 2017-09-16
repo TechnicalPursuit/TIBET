@@ -170,5 +170,25 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.svg.Element.Inst.defineMethod('isReadyToRender',
+function() {
+
+    /**
+     * @method isReadyToRender
+     * @summary Whether or not the receiver is 'ready to render'. Normally, this
+     *     means that all of the resources that the receiver relies on to render
+     *     have been loaded.
+     * @returns {Boolean} Whether or not the receiver is ready to render.
+     */
+
+    //  SVG elements are always ready to render (at least in modern browsers
+    //  ;-)
+    return true;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
