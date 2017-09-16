@@ -312,7 +312,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineMethod('focusOn',
-function(newTargetTPElem) {
+function(newTargetTPElem, shouldUnhide) {
 
     /**
      * @method focusOn
@@ -322,6 +322,9 @@ function(newTargetTPElem) {
      *     includes this method.
      * @param {TP.core.ElementNode} newTargetTPElem The element to focus the
      *     halo on.
+     * @param {Boolean} [shouldUnhide=false] Whether or not the halo should be
+     *     shown if it's hidden. Some scenarios allow the halo to be hidden, but
+     *     still focused.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -339,10 +342,8 @@ function(newTargetTPElem) {
             return this;
         }
 
-        //  If we're visible, then move and size the halo to the target
-        if (!this.getAttribute('hidden')) {
-            this.moveAndSizeToTarget(newTargetTPElem);
-        }
+        //  Move and size the halo to the target.
+        this.moveAndSizeToTarget(newTargetTPElem, shouldUnhide);
 
         //  Set the current halo target to be the target passed in.
         this.set('currentTargetTPElem', newTargetTPElem);
@@ -1278,7 +1279,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineMethod('moveAndSizeToTarget',
-function(newTargetTPElem) {
+function(newTargetTPElem, shouldUnhide) {
 
     /**
      * @method moveAndSizeToTarget
@@ -1287,29 +1288,35 @@ function(newTargetTPElem) {
      *     current target's visual location might have shifted).
      * @param {TP.core.ElementNode|undefined} [newTargetTPElem] The new target
      *     to move and resize the receiver around.
+     * @param {Boolean} [shouldUnhide=false] Whether or not the halo should be
+     *     shown if it's hidden. Some scenarios allow the halo to be hidden, but
+     *     still focused.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
     var currentTargetTPElem,
 
         theRect,
+
+        handler,
+
         ourRect,
 
         styleVals;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
+    //  If we don't have a valid new target or a valid current target, then set
+    //  haloRect to null and return here.
+    if (TP.notValid(newTargetTPElem) && TP.notValid(currentTargetTPElem)) {
+        //  No new target and no existing target either - reset the halo
+        //  rectangle and bail out.
+        this.set('haloRect', null);
+
+        return this;
+    }
+
     if (TP.notValid(newTargetTPElem)) {
-        //  No new target
-
-        if (TP.notValid(currentTargetTPElem)) {
-            //  No existing target either - reset the halo rectangle and bail
-            //  out.
-            this.set('haloRect', null);
-
-            return this;
-        }
-
         //  Grab rect for the existing target. Note that this will be supplied
         //  in *global* coordinates.
         theRect = currentTargetTPElem.getHaloRect(this);
@@ -1317,6 +1324,21 @@ function(newTargetTPElem) {
         //  Grab rect for the new target. Note that this will be supplied in
         //  *global* coordinates.
         theRect = newTargetTPElem.getHaloRect(this);
+
+        //  If the target element isn't ready to render (maybe its stylesheet
+        //  hasn't loaded yet, then set up a handler to wait for the element to
+        //  signal a TP.sig.DOMReady signal and then invoke this method again.
+        if (!newTargetTPElem.isReadyToRender()) {
+
+            handler = function() {
+                handler.ignore(newTargetTPElem, 'TP.sig.DOMReady');
+                this.moveAndSizeToTarget(newTargetTPElem, shouldUnhide);
+            }.bind(this);
+
+            handler.observe(newTargetTPElem, 'TP.sig.DOMReady');
+
+            return this;
+        }
     }
 
     //  Given that the halo rect returned by one of the targets above is in
@@ -1351,6 +1373,12 @@ function(newTargetTPElem) {
     } else {
         //  No valid new target - just remove the 'size' attribute
         this.removeAttribute('size');
+    }
+
+    //  If we should unhide ourself, then do so.
+    if (shouldUnhide) {
+        //  This will 'unhide' the halo.
+        this.setAttribute('hidden', false);
     }
 
     return this;
