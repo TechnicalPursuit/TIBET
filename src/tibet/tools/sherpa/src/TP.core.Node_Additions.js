@@ -983,7 +983,7 @@ function(insertionPointElement, insertionPosition) {
                             'insertionPoint', insertionPointElement,
                             'uri', insertedURI,
                             'insertionID',
-                                'couch_doc' + TP.genID().replace('$','_')));
+                                'couch_doc' + TP.genID().replace('$', '_')));
                 });
 
             break;
@@ -1028,7 +1028,7 @@ function(insertionPointElement, insertionPosition) {
                             'insertionPoint', insertionPointElement,
                             'uri', insertedURI,
                             'insertionID',
-                                'couch_view' + TP.genID().replace('$','_')));
+                                'couch_view' + TP.genID().replace('$', '_')));
                 });
 
             break;
