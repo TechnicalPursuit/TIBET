@@ -217,15 +217,8 @@ function(anObject) {
     newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
     newElem[TP.SHERPA_MUTATION] = TP.INSERT;
 
-    //  Set up a timeout to delete those flags after a set amount of time
-    setTimeout(
-        function() {
-            delete newElem[TP.INSERTION_POSITION];
-            delete newElem[TP.SHERPA_MUTATION];
-        }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
-
     //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  1000ms
+    //  500ms
     setTimeout(
         function() {
             var consoleGUI;
@@ -236,6 +229,26 @@ function(anObject) {
             consoleGUI.focusInput();
             consoleGUI.setInputCursorToEnd();
         }, 1000);
+
+    //  Focus the halo onto the inserted element after 1000ms
+    setTimeout(
+        function() {
+            var halo;
+
+            halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+            //  Blur and then focus the halo on our new element, passing true to
+            //  actually show the halo if it's hidden.
+            halo.blur();
+            halo.focusOn(newTPElem, true);
+        }.bind(this), 1000);
+
+    //  Set up a timeout to delete those flags after a set amount of time
+    setTimeout(
+        function() {
+            delete newElem[TP.INSERTION_POSITION];
+            delete newElem[TP.SHERPA_MUTATION];
+        }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
 
     return this;
 });
