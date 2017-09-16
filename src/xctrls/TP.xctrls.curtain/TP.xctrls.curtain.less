@@ -23,6 +23,9 @@ xctrls|curtain {
 
     opacity: @xctrls_curtain-opacity;
 
+    /* Make sure that mouse events cannot penetrate the curtain */
+    pointer-events: none;
+
     /* When the curtain is not hidden */
 
     &:not([pclass|hidden]) {
