@@ -579,12 +579,11 @@ function(aSignal) {
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
     if (haloTarget !== halo.get('currentTargetTPElem')) {
-        //  Blur and refocus the halo on the haloTarget.
+        //  Blur and then focus the halo on our new element, passing true to
+        //  actually show the halo if it's hidden.
         halo.blur();
-        halo.focusOn(haloTarget);
+        halo.focusOn(haloTarget, true);
     }
-
-    halo.setAttribute('hidden', false);
 
     return this;
 });
