@@ -30,11 +30,11 @@
 
 <br/>
 
-**TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#tools">revolutionary tooling</a>**.
+**TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a href="https://www.technicalpursuit.com/docs/platform.html#stack">the ultimate client stack</a>** coupled with **<a href="https://www.technicalpursuit.com/docs/platform.html#tools">revolutionary tooling</a>**.
 
-**TIBET is built for projects that need a turnkey <a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#client">client</a> OR <a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#server">full-stack</a> web platform** and the confidence that comes from using **a <a target="_blank" href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
+**TIBET is built for projects that need a turnkey <a href="https://www.technicalpursuit.com/docs/platform.html#client">client</a> OR <a href="https://www.technicalpursuit.com/docs/platform.html#server">full-stack</a> web platform** and the confidence that comes from using **a <a href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
 
-**TIBET is easy to use**, reducing <a target="_blank" href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
+**TIBET is easy to use**, reducing <a href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
 
 #### **Building a desktop-class web application? We built TIBET for you.**
 
@@ -86,7 +86,7 @@ Initial installation process can take several minutes depending on the speed of
 your network connection and the particular version being installed. Be patient
 :).
 
-Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html" target="_blank">TIBET Quickstart Guide</a>.
+Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.
 
 ---
 
@@ -96,30 +96,26 @@ Once your installation completes check out the <a href="https://www.technicalpur
 
 #### Concepts
 
-The <a href="https://www.technicalpursuit.com"
-target="_blank">Technical Pursuit website</a> provides extensive tutorials,
+The <a href="https://www.technicalpursuit.com">Technical Pursuit website</a> provides extensive tutorials,
 whitepapers, and other conceptual and design documentation. We strongly
 recommend you take a few minutes to scan it.
 
 <a name="tutorials" href="#"></a>
 #### Tutorials
 
-- <a href="https://www.technicalpursuit.com/docs/quickstart.html"
-  target="_blank">TIBET Quickstart Guide</a> - Hello World! for TIBET developers.
+- <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a> - Hello World! for TIBET developers.
 
 
 <a name="guidelines" href="#"></a>
 #### Guidelines
 
-- <a href="https://www.technicalpursuit.com/docs/faq.html" target="_blank">TIBET FAQ</a> - Answers to common
+- <a href="https://www.technicalpursuit.com/docs/faq.html">TIBET FAQ</a> - Answers to common
   TIBET-related questions.
-- <a href="https://www.technicalpursuit.com/docs/tibet4js.html"
-  target="_blank">TIBET For JS Programmers</a> - JavaScript: the TIBET
+- <a href="https://www.technicalpursuit.com/docs/tibet4js.html">TIBET For JS Programmers</a> - JavaScript: the TIBET
 parts&#8482;.
-- <a href="https://www.technicalpursuit.com/docs/coding-standards.html"
-  target="_blank">TIBET Coding Standards</a> - The coding standard used in
+- <a href="https://www.technicalpursuit.com/docs/coding-standards.html">TIBET Coding Standards</a> - The coding standard used in
 TIBET source.
-- <a href="https://www.technicalpursuit.com/docs/troubleshooting.html" target="_blank">TIBET Troubleshooting</a> -
+- <a href="https://www.technicalpursuit.com/docs/troubleshooting.html">TIBET Troubleshooting</a> -
   Solutions to keep you developing smoothly.
 
 <a name="whitepapers" href="#"></a>
@@ -140,8 +136,7 @@ the present.
 
 Use `tibet help` for more information on the TIBET CLI and the available command
 set for your version, or check out the full <a
-href="https://www.technicalpursuit.com/docs/cli.html"
-target="_blank">TIBET CLI</a> documentation.
+href="https://www.technicalpursuit.com/docs/cli.html">TIBET CLI</a> documentation.
 
 #### API Docs
 
@@ -149,16 +144,14 @@ target="_blank">TIBET CLI</a> documentation.
 
 API documentation is generated for your TIBET version via `tibet reflect` at
 the command line and via `:reflect` from within the <a
-href="https://www.technicalpursuit.com/docs/tsh.html"
-target="_blank">TIBET Shell</a>. TIBET's `reflect` options can output type
+href="https://www.technicalpursuit.com/docs/tsh.html">TIBET Shell</a>. TIBET's `reflect` options can output type
 lists, method lists, or individual object documentation.
 
 ##### `tibet apropos`
 
 To explore TIBET functionality use the `tibet apropos` command
 or `:apropos` from the <a
-href="https://www.technicalpursuit.com/docs/tsh.html"
-target="_blank">TIBET Shell</a>. The `apropos` feature scans method names and
+href="https://www.technicalpursuit.com/docs/tsh.html">TIBET Shell</a>. The `apropos` feature scans method names and
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
 
@@ -168,7 +161,7 @@ relates to a topic.
 
 TIBET's tools use runtime metadata and their knowledge of your code to produce
 documentation for both the library and your application code. All you need to do
-is use jsdoc3 comment syntax and <a target="_blank"
+is use jsdoc3 comment syntax and <a
 href="https://www.technicalpursuit.com/docs/coding-standards.html#commentinside">place
 your comments inside the method body</a>.
 
@@ -219,11 +212,10 @@ Node.js and switch between them with ease which is great for development and
 helpful if you need to adjust the version running in production while
 maintaining an easy rollback strategy.
 
-To install Node.js via `nvm` see the instructions at <a target="_blank"
+To install Node.js via `nvm` see the instructions at <a
 href="https://github.com/creationix/nvm">the nvm GitHub repo</a>.
 
-To install Node.js without `nvm` follow the instructions at <a href="http://nodejs.org"
-   target="_blank">nodejs.org</a>.
+To install Node.js without `nvm` follow the instructions at <a href="http://nodejs.org">nodejs.org</a>.
 
 #### Update/Adjust npm
 
@@ -238,7 +230,7 @@ npm install -g npm@3
 
 If you see errors from any npm-based operations mentioning `cb() never called!`
 you'll want to perform the step above, or the appropriate step for your
-operating system. See <a target="_blank"
+operating system. See <a
 href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
 
 ---
@@ -267,7 +259,7 @@ npm uninstall -g tibet
 If you are going to install TIBET via Git we recommend that you first create a
 fork of TIBET so you can manage updates in a stable, predictable fashion.
 
-Follow these instructions to <a target="_blank" href="https://help.github.com/articles/fork-a-repo/">create
+Follow these instructions to <a href="https://help.github.com/articles/fork-a-repo/">create
 your own fork</a>.
 
 ##### Clone your Fork
@@ -323,11 +315,9 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 
 The best way to communicate an issue, feature request, or code-related
 concern is to use the GitHub-based <a
-href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open"
-target="_blank">issues list</a> for TIBET.
+href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open">issues list</a> for TIBET.
 
-Additional contact info is provided on the <a href="http://www.technicalpursuit.com/community.xhtml"
-target="_blank">community page</a> at <a
+Additional contact info is provided on the <a href="http://www.technicalpursuit.com/contact.xhtml">contact page</a> at <a
 href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
 
 ---
@@ -336,7 +326,7 @@ href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
 
 # License
 
-TIBET is Open Source under the OSI-approved <a target="_blank"
+TIBET is Open Source under the OSI-approved <a
 href="http://opensource.org/licenses/RPL-1.5">Reciprocal Public License
 (RPL)</a>.
 
@@ -346,8 +336,7 @@ applications incorporating RPL'd code to reciprocate by open sourcing their code
 If you are unable to open source your TIBET-related code you can purchase a
 privacy waiver which allows you to keep your source code private while helping
 fund further TIBET development. Read more about privacy waivers at <a
-target="_blank"
-href="http://www.technicalpursuit.com/license.xhtml">http://www.technicalpursuit.com/license.xhtml</a>.
+href="http://www.technicalpursuit.com/license.xhtml">https://www.technicalpursuit.com/license.xhtml</a>.
 
 ---
 
