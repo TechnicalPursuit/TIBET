@@ -26,11 +26,13 @@
 
 <br/>
 
-#### TIBET's <a href="https://www.technicalpursuit.com/docs/good-parts.html">Good Parts</a> focus groundbreaking technology on solving business problems.
+#### TIBET's <a href="https://www.technicalpursuit.com/docs/good-parts.html">Good Parts</a> focus on solving business problems.
 
-**TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a target="_blank" href="https://www.technicalpursuit.com/docs/index.html#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://www.technicalpursuit.com/docs/index.html#tools">revolutionary tooling</a>**.
+<br/>
 
-**TIBET is built for projects that need a turnkey <a target="_blank" href="https://www.technicalpursuit.com/docs/index.html#client">client</a> OR <a target="_blank" href="https://www.technicalpursuit.com/docs/index.html#server">full-stack</a> web platform** and the confidence that comes from using **a <a target="_blank" href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
+**TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#stack">the ultimate client stack</a>** coupled with **<a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#tools">revolutionary tooling</a>**.
+
+**TIBET is built for projects that need a turnkey <a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#client">client</a> OR <a target="_blank" href="https://www.technicalpursuit.com/docs/platform.html#server">full-stack</a> web platform** and the confidence that comes from using **a <a target="_blank" href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
 
 **TIBET is easy to use**, reducing <a target="_blank" href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
 
@@ -46,11 +48,11 @@
 
 | TIBET Solutions | Description / Features |
 |:----------------|:-----------------------|
-| <a href="https://www.technicalpursuit.com/docs/index.html#stack">Client Stack</a> | The components every desktop-class application needs |
-| <a href="https://www.technicalpursuit.com/docs/index.html#tools">Power Tools</a> | Immersive tooling built to keep you in the flow full-time |
-| <a href="https://www.technicalpursuit.com/docs/index.html#server">Server-Side</a> | Optional full-stack server and micro-service components |
-| <a href="https://www.technicalpursuit.com/docs/index.html#desktop">Desktop Apps</a> | Desktop application options for zero server deployments |
-| <a href="https://www.technicalpursuit.com/docs/index.html#cloud">Cloud Services</a> | Cloud-based services to offload application administration |
+| <a href="https://www.technicalpursuit.com/docs/platform.html#stack">Client Stack</a> | The components every desktop-class application needs |
+| <a href="https://www.technicalpursuit.com/docs/platform.html#tools">Power Tools</a> | Immersive tooling built to keep you in the flow full-time |
+| <a href="https://www.technicalpursuit.com/docs/platform.html#server">Server-Side</a> | Optional full-stack server and micro-service components |
+| <a href="https://www.technicalpursuit.com/docs/platform.html#desktop">Desktop Apps</a> | Desktop application options for zero server deployments |
+| <a href="https://www.technicalpursuit.com/docs/platform.html#cloud">Cloud Services</a> | Cloud-based services to offload application administration |
 
 
 ### Explore TIBET's unique design goals: <a href="https://www.technicalpursuit.com/docs/TheZenOfTIBET.pdf" target="_blank">The Zen Of TIBET</a>
@@ -111,7 +113,7 @@ recommend you take a few minutes to scan it.
 
 - <a href="https://www.technicalpursuit.com/docs/faq.html" target="_blank">TIBET FAQ</a> - Answers to common
   TIBET-related questions.
-- <a href="https://www.technicalpursuit.com/docs/tibet-for-js-programmers.html"
+- <a href="https://www.technicalpursuit.com/docs/tibet4js.html"
   target="_blank">TIBET For JS Programmers</a> - JavaScript: the TIBET
 parts&#8482;.
 - <a href="https://www.technicalpursuit.com/docs/coding-standards.html"
@@ -349,6 +351,6 @@ href="http://www.technicalpursuit.com/license.xhtml">http://www.technicalpursuit
 
 ---
 
-<img alt="The Pup" src="./lib/media/thepup.jpg" width="20%" height="20%"/>
+<img alt="The Pup" src="./lib/media/thepup.jpg" width="92px" height="92px"/>
 
-<a href="mailto:tibet@technicalpursuit.com?subject=TIBET&amp;body=Hi,%0A%0APlease%20contact%20me%20regarding%20a%20possible%20TIBET%20project.%0A%0A%0AThanks!%0A%0A">Contact us</a> for more information, or to discuss how we can assist you.
+<a href="https://www.technicalpursuit.com/contact.xhtml">Contact us</a> for more information, or to discuss how we can assist you.
