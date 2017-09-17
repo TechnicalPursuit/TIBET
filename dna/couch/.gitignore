@@ -24,7 +24,7 @@ build/Release
 node_modules
 
 # TDS
-since.json
+.tds_watch_since.json
 
 # Operational directories.
 tmp/

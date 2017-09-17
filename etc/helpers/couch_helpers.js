@@ -217,7 +217,8 @@ helpers.getCouchParameters = function(options) {
         db_user,
         db_pass,
         db_name,
-        db_app;
+        db_app,
+        params;
 
     opts = options || {};
 
@@ -281,7 +282,7 @@ helpers.getCouchParameters = function(options) {
         }
     }
 
-    return {
+    params = {
         db_url: db_url,
         db_scheme: db_scheme,
         db_host: db_host,
@@ -291,6 +292,8 @@ helpers.getCouchParameters = function(options) {
         db_name: db_name,
         db_app: db_app
     };
+
+    return params;
 };
 
 

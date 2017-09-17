@@ -1205,7 +1205,7 @@
             dat,
             obj;
 
-        fullpath = TDS.expandPath('~/since.json');
+        fullpath = TDS.expandPath('~/.tds_watch_since.json');
         if (!sh.test('-e', fullpath)) {
             return 'now';
         }
@@ -1236,7 +1236,7 @@
             dat,
             obj;
 
-        fullpath = TDS.expandPath('~/since.json');
+        fullpath = TDS.expandPath('~/.tds_watch_since.json');
         if (!sh.test('-e', fullpath)) {
             //  file doesn't exist...we'll create it shortly...
             obj = {};
