@@ -239,7 +239,7 @@ helpers.getCouchParameters = function(options) {
         requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
             requestor.getcfg(cfg_root + '.port');
 
-    db_user = opts.db_user || process.env.COUCH_USER;
+    db_user = opts.db_user || process.env.COUCH_KEY || process.env.COUCH_USER;
     db_pass = opts.db_pass || process.env.COUCH_PASS;
 
     //  Watch out for special chars, esp in the password.
@@ -297,8 +297,8 @@ helpers.getCouchParameters = function(options) {
 /**
  * Computes the proper CouchDB URL for use with other CouchDB interfaces. The
  * computed URL will include user and password information as needed based on
- * COUCH_USER and COUCH_PASS environment settings. All other data is pulled from
- * tds configuration parameters.
+ * COUCH_KEY/COUCH_USER and COUCH_PASS environment settings. All other data is
+ * pulled from tds configuration parameters.
  * @param {Object} options A parameter block with at least a 'requestor'.
  * @returns {String} The database url.
  */
@@ -335,7 +335,8 @@ helpers.getCouchURL = function(options) {
             requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
                 requestor.getcfg(cfg_root + '.port');
 
-        db_user = opts.db_user || process.env.COUCH_USER;
+        db_user = opts.db_user || process.env.COUCH_KEY ||
+            process.env.COUCH_USER;
         db_pass = opts.db_pass || process.env.COUCH_PASS;
 
         //  Watch out for special chars, esp in the password.

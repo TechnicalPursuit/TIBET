@@ -23,6 +23,7 @@ can be turned off via the `--no-confirm` flag.
     $ export COUCH_APPLICATION=tws
     $ export COUCH_USER={username}
     $ export COUCH_PASS={password}
+    $ export COUCH_KEY={api_key}  # optional
 
     $ tibet couch view tasks --keys
     CouchDB url [http://127.0.0.1:5984] ?
@@ -46,10 +47,11 @@ view lookup and application-related operations. Defaults to project name.
   * `COUCH_URL` :
     The URL of the CouchDB server. For example `http://127.0.0.1:5984`. This URL
 can include username and password information but for more security it is
-recommended you use `COUCH_USER` and `COUCH_PASS` variables instead. If you do
-supply credentials be aware these values should be URL-encoded (for example
-'pass/word' must be provided as 'pass%2fword'). A sample basic auth URL will
-resemble the following: `http://admin:pass%2fword@127.0.0.1:5984`.
+recommended you use `COUCH_USER`, `COUCH_PASS`, and `COUCH_KEY` variables
+instead. If you do supply credentials be aware these values should be
+URL-encoded (for example 'pass/word' must be provided as 'pass%2fword'). A
+sample basic auth URL will resemble the following:
+`http://admin:pass%2fword@127.0.0.1:5984`.
 
   * `COUCH_USER` :
     The username for the CouchDB server being accessed. Should be exported as a
@@ -58,6 +60,11 @@ URL-encoded value.
   * `COUCH_PASS` :
     The password for the CouchDB server account being accessed. Should be
 exported as a URL-encoded value.
+
+  * `COUCH_KEY` :
+    The API key (if used) for the CouchDB server being accessed. Should be
+exported as a URL-encoded value.
+
 
 ## CONFIGURATION SETTINGS
 
