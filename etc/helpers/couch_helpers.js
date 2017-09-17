@@ -239,7 +239,7 @@ helpers.getCouchParameters = function(options) {
         requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
             requestor.getcfg(cfg_root + '.port');
 
-    db_user = opts.db_user || process.env.COUCH_USER;
+    db_user = opts.db_user || process.env.COUCH_KEY || process.env.COUCH_USER;
     db_pass = opts.db_pass || process.env.COUCH_PASS;
 
     //  Watch out for special chars, esp in the password.
@@ -297,8 +297,8 @@ helpers.getCouchParameters = function(options) {
 /**
  * Computes the proper CouchDB URL for use with other CouchDB interfaces. The
  * computed URL will include user and password information as needed based on
- * COUCH_USER and COUCH_PASS environment settings. All other data is pulled from
- * tds configuration parameters.
+ * COUCH_KEY/COUCH_USER and COUCH_PASS environment settings. All other data is
+ * pulled from tds configuration parameters.
  * @param {Object} options A parameter block with at least a 'requestor'.
  * @returns {String} The database url.
  */
@@ -324,7 +324,20 @@ helpers.getCouchURL = function(options) {
 
     cfg_root = opts.cfg_root || 'tds.couch';
 
+    db_user = opts.db_user || process.env.COUCH_KEY || process.env.COUCH_USER;
+    db_pass = opts.db_pass || process.env.COUCH_PASS;
+
+    //  Watch out for special chars, esp in the password.
+    if (db_user) {
+        db_user = encodeURIComponent(db_user);
+    }
+
+    if (db_pass) {
+        db_pass = encodeURIComponent(db_pass);
+    }
+
     db_url = opts.db_url || process.env.COUCH_URL;
+
     if (!db_url) {
         //  Build up from config or defaults as needed.
         db_scheme = opts.db_scheme ||
@@ -334,18 +347,6 @@ helpers.getCouchURL = function(options) {
         db_port = opts.db_port ||
             requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
                 requestor.getcfg(cfg_root + '.port');
-
-        db_user = opts.db_user || process.env.COUCH_USER;
-        db_pass = opts.db_pass || process.env.COUCH_PASS;
-
-        //  Watch out for special chars, esp in the password.
-        if (db_user) {
-            db_user = encodeURIComponent(db_user);
-        }
-
-        if (db_pass) {
-            db_pass = encodeURIComponent(db_pass);
-        }
 
         db_url = db_scheme + '://';
         if (db_user && db_pass) {
@@ -357,6 +358,8 @@ helpers.getCouchURL = function(options) {
         if (db_port) {
             db_url += ':' + db_port;
         }
+    } else if (db_user && db_pass && !/@/.test(db_url)) {
+        db_url = db_url.replace(/:\/\//, '://' + db_user + ':' + db_pass + '@');
     }
 
     if (requestor.prompt && opts.confirm !== false) {

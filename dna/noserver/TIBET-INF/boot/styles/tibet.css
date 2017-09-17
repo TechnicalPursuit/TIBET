@@ -97,16 +97,16 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
     0% {
         transform: scale(0.1, 0.1);
-        opacity: 0.0;
+        opacity: 0;
     }
 
     50% {
-        opacity: 1.0;
+        opacity: 1;
     }
 
     100% {
         transform: scale(1.2, 1.2);
-        opacity: 0.0;
+        opacity: 0;
     }
 }
 

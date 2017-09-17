@@ -927,6 +927,7 @@ Cmd.prototype.executeView = function() {
         method = 'viewAsyncRows';
     } else {
         method = 'viewAsyncDocs';
+        viewParams.include_docs = true;
     }
 
     db[method](appname, viewname, viewParams).then(function(rows) {
