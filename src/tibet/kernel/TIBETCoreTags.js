@@ -160,17 +160,17 @@ function(aRequest) {
 
     if (TP.sys.hasFeature('sherpa')) {
         str = '<a onclick="TP.bySystemId(\'SherpaConsoleService\')' +
-            '.sendConsoleRequest(\':inspect ' +
-            this.getID().replace(':', '.') + '.Type.tagCompile' +
-            '\'); return false;">' +
-            '&lt;' + this.getCanonicalName() + '/&gt;' +
-            '</a>';
+                '.sendConsoleRequest(\':inspect ' +
+                this.getID().replace(':', '.') + '.Type.tagCompile' +
+                '\'); return false;">' +
+                '&lt;' + this.getCanonicalName() + '/&gt;' +
+                '</a>';
     } else {
         str = '<a onclick="alert(\'Edit ' + this.getID() +
-            '.Type.tagCompile.\')" href="#" tibet:tag="' +
-            this.getCanonicalName() + '">' +
-            '&lt;' + this.getCanonicalName() + '/&gt;' +
-            '</a>';
+                '.Type.tagCompile.\')" href="#" tibet:tag="' +
+                this.getCanonicalName() + '">' +
+                '&lt;' + this.getCanonicalName() + '/&gt;' +
+                '</a>';
     }
 
     newElem = TP.xhtmlnode(str);
