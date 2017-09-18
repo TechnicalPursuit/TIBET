@@ -3654,6 +3654,11 @@ function(aRequest) {
                 //  assign an ID.
                 localID = TP.elementGetAttribute(elem, 'id', true);
                 if (originals.hasKey(localID)) {
+
+                    //  Make sure to set the result's ID here - this will link
+                    //  the result to the original element for future
+                    //  replacement.
+                    TP.elementSetAttribute(result, 'id', localID, true);
                     return result;
                 }
             }
