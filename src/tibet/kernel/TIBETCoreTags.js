@@ -162,7 +162,8 @@ function(aRequest) {
         str = '<a onclick="TP.bySystemId(\'SherpaConsoleService\')' +
                 '.sendConsoleRequest(\':inspect ' +
                 this.getID().replace(':', '.') + '.Type.tagCompile' +
-                '\'); return false;">' +
+                '\'); return false;" tibet:tag="' +
+                this.getCanonicalName() + '">' +
                 '&lt;' + this.getCanonicalName() + '/&gt;' +
                 '</a>';
     } else {
