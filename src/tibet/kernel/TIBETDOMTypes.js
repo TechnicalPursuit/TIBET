@@ -3652,7 +3652,7 @@ function(aRequest) {
                 //  doesn't already have the local id of the element in it. If
                 //  it does, just return. Note how we pass 'false' to *not*
                 //  assign an ID.
-                localID = TP.lid(elem, false);
+                localID = TP.elementGetAttribute(elem, 'id', true);
                 if (originals.hasKey(localID)) {
                     return result;
                 }
@@ -3660,7 +3660,7 @@ function(aRequest) {
 
             //  If the result defined an ID, then we use that - note how we pass
             //  'false' to *not* assign an ID.
-            localID = TP.lid(result, false);
+            localID = TP.elementGetAttribute(result, 'id', true);
 
             if (TP.isEmpty(localID)) {
                 //  The result didn't have an ID - compute one. This will be our
