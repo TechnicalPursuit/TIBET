@@ -28,6 +28,7 @@ For example:
 $ export COUCH_DATABASE=dbtest_tasks
 $ export COUCH_USER={username}
 $ export COUCH_PASS={password}
+$ export COUCH_KEY={api_key}  # optional
 
 $ tibet tws list \-\-flows
 mailtest::Team TIBET => ["smtp"] (31ee427eac51b94470bdfd14da00715e)
@@ -51,10 +52,11 @@ view lookup and application\-related operations\. Defaults to \fBtws\fP\|\.
 \fBCOUCH_URL\fP :
 The URL of the CouchDB server\. For example \fBhttp://127\.0\.0\.1:5984\fP\|\. This URL
 can include username and password information but for more security it is
-recommended you use \fBCOUCH_USER\fP and \fBCOUCH_PASS\fP variables instead\. If you do
-supply credentials be aware these values should be URL\-encoded (for example
-\|'pass/word' must be provided as 'pass%2fword')\. A sample basic auth URL will
-resemble the following: \fBhttp://admin:pass%2fword@127\.0\.0\.1:5984\fP\|\.
+recommended you use \fBCOUCH_USER\fP, \fBCOUCH_PASS\fP, and \fBCOUCH_KEY\fP variables
+instead\. If you do supply credentials be aware these values should be
+URL\-encoded (for example 'pass/word' must be provided as 'pass%2fword')\. A
+sample basic auth URL will resemble the following:
+\fBhttp://admin:pass%2fword@127\.0\.0\.1:5984\fP\|\.
 .IP \(bu 2
 \fBCOUCH_USER\fP :
 The username for the CouchDB server being accessed\. Should be exported as a
@@ -62,6 +64,10 @@ URL\-encoded value\.
 .IP \(bu 2
 \fBCOUCH_PASS\fP :
 The password for the CouchDB server account being accessed\. Should be
+exported as a URL\-encoded value\.
+.IP \(bu 2
+\fBCOUCH_KEY\fP :
+The API key (if used) for the CouchDB server being accessed\. Should be
 exported as a URL\-encoded value\.
 
 .RE
