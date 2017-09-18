@@ -340,6 +340,6 @@ href="http://www.technicalpursuit.com/license.xhtml">https://www.technicalpursui
 
 ---
 
-<img alt="The Pup" src="./lib/media/thepup.jpg" width="92px" height="92px"/>
+<img alt="The Pup" src="./lib/media/thepup.jpg" width="92px" height="138px"/>
 
 <a href="https://www.technicalpursuit.com/contact.xhtml">Contact us</a> for more information, or to discuss how we can assist you.
