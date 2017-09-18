@@ -379,7 +379,16 @@ function(moveAction) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    var nativeTA;
+    var currentlyFocusedElem,
+        nativeTA;
+
+    //  Grab the currently focused element, wrap it and blur it. This helps to
+    //  keep things synchronized around the focus stack, etc.
+    currentlyFocusedElem = TP.documentGetFocusedElement(
+                                            this.getNativeDocument());
+    if (TP.isElement(currentlyFocusedElem)) {
+        TP.wrap(currentlyFocusedElem).blur();
+    }
 
     //  Here we reach down into the private parts of CodeMirror and grab the
     //  textarea that serves as the focusable element for CodeMirror and
