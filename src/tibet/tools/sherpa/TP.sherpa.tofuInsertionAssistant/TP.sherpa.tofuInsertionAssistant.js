@@ -107,6 +107,8 @@ function(anObject) {
         tagXmlns,
         currentDefaultXmlns,
 
+        str,
+
         targetElem,
         targetTPElem,
 
