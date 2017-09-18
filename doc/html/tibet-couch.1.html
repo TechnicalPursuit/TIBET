@@ -37,6 +37,7 @@ $ export COUCH_DATABASE=dbtest_tasks
 $ export COUCH_APPLICATION=tws
 $ export COUCH_USER={username}
 $ export COUCH_PASS={password}
+$ export COUCH_KEY={api_key}  # optional
 
 $ tibet couch view tasks --keys
 CouchDB url [http://127.0.0.1:5984] ?
@@ -59,10 +60,11 @@ view lookup and application-related operations. Defaults to project name.</p>
 <li><p><code>COUCH_URL</code> :
 The URL of the CouchDB server. For example <code>http://127.0.0.1:5984</code>. This URL
 can include username and password information but for more security it is
-recommended you use <code>COUCH_USER</code> and <code>COUCH_PASS</code> variables instead. If you do
-supply credentials be aware these values should be URL-encoded (for example
-&#39;pass/word&#39; must be provided as &#39;pass%2fword&#39;). A sample basic auth URL will
-resemble the following: <code>http://admin:pass%2fword@127.0.0.1:5984</code>.</p>
+recommended you use <code>COUCH_USER</code>, <code>COUCH_PASS</code>, and <code>COUCH_KEY</code> variables
+instead. If you do supply credentials be aware these values should be
+URL-encoded (for example &#39;pass/word&#39; must be provided as &#39;pass%2fword&#39;). A
+sample basic auth URL will resemble the following:
+<code>http://admin:pass%2fword@127.0.0.1:5984</code>.</p>
 </li>
 <li><p><code>COUCH_USER</code> :
 The username for the CouchDB server being accessed. Should be exported as a
@@ -70,6 +72,10 @@ URL-encoded value.</p>
 </li>
 <li><p><code>COUCH_PASS</code> :
 The password for the CouchDB server account being accessed. Should be
+exported as a URL-encoded value.</p>
+</li>
+<li><p><code>COUCH_KEY</code> :
+The API key (if used) for the CouchDB server being accessed. Should be
 exported as a URL-encoded value.</p>
 </li>
 </ul>
