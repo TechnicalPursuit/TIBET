@@ -298,7 +298,7 @@ function(info) {
      * @summary Generates the tag text that will be used to create a new Element
      *     and insert it if user dismisses the assistant by clicking 'ok'.
      * @param {TP.core.Hash} info The hash containing the tag information.
-     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
+     * @returns {String} The tag markup text.
      */
 
     var str,
@@ -325,11 +325,8 @@ function(info) {
                 str +=
                     ' ' + hash.at('tagAttrName') +
                     '=' +
-                    '"' + hash.at('tagAttrValue') + '"' +
-                    ' ';
+                    '"' + hash.at('tagAttrValue') + '"';
             });
-
-        str = str.slice(0, -1);
     }
 
     str += '/>';
