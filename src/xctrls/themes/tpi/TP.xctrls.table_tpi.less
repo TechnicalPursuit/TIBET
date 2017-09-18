@@ -22,7 +22,7 @@
 
         width: 15em;
 
-        line-height: 1.2em;
+        line-height: 1.2;
 
         /* Hovering over the table */
 
@@ -62,22 +62,9 @@
 
             & > .row {
 
-                border-bottom: @xctrls_tableitem-border-width @xctrls_tableitem-border-style @xctrls_tableitem-border-color-normal;
+                /* We set the background-color of the row to be the normal border color - it shows through to show the cell borders */
 
-                &:first-child {
-
-                    border-top: 0;
-                }
-
-                &:last-child {
-
-                    border-bottom: 0;
-                }
-
-                &[pclass|focus] {
-
-                    border: @xctrls_tableitem-border-width @xctrls_tableitem-border-style @xctrls_tableitem-border-color-focus;
-                }
+                background-color: @xctrls_tableitem-border-color-normal;
 
                 /* Hovering over the table, label must highlight */
 
@@ -88,9 +75,28 @@
                     background-color: @xctrls_tableitem-background-color-hover;
                 }
 
-                &[pclass|selected] xctrls|label {
+                /* Selected list item, label must highlight */
 
-                    background-color: @xctrls_tableitem-background-color-selected-normal;
+                &[pclass|selected] {
+
+                    border-right: none;
+                    border-bottom: none;
+
+                    & xctrls|textitem {
+
+                        background-color: @xctrls_textitem-background-color-selected;
+                    }
+
+                    & xctrls|label {
+
+                        background-color: @xctrls_tableitem-background-color-selected-normal;
+                        top: 1px;
+                        right: 0;
+                        left: 1px;
+                        bottom: 0;
+
+                        margin-bottom: 1px;
+                    }
                 }
 
                 /* Focusing on the table, label must highlight */
@@ -129,16 +135,30 @@
 
                 > .cell {
 
-                    border-right: @xctrls_tableitem-border-width @xctrls_tableitem-border-style @xctrls_tableitem-border-color-normal;
+                    position: relative;
                 }
 
                 /* The table cell label */
 
                 xctrls|textitem {
 
+                    position: absolute;
+                    display: block;
+
                     width: 100%;
+                    height: 100%;
 
                     & > xctrls|label {
+
+                        position: absolute;
+                        display: block;
+
+                        top: 1px;
+                        right: 0;
+                        left: 1px;
+                        bottom: 0;
+
+                        padding-top: 1px;
 
                         padding-left: @xctrls_tableitem-padding-width;
                         padding-right: @xctrls_tableitem-padding-width;

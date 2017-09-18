@@ -22,7 +22,7 @@
 
         width: 10em;
 
-        line-height: 1.2em;
+        line-height: 1.2;
 
         /* Hovering over the list */
 
@@ -65,17 +65,18 @@
                 display: block;
 
                 border-right: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-normal;
-
                 border-bottom: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-normal;
 
                 &[pclass|focus] {
 
-                    border: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-focus;
                 }
 
                 /* The list label */
 
                 & > xctrls|label {
+
+                    bottom: @xctrls_listitem-border-width;
+                    right: @xctrls_listitem-border-width;
 
                     padding-left: @xctrls_listitem-padding-width;
                     padding-right: @xctrls_listitem-padding-width;
@@ -88,9 +89,15 @@
 
                 /* Selected list item, label must highlight */
 
-                &[pclass|selected] > xctrls|label {
+                &[pclass|selected] {
 
-                    background-color: @xctrls_listitem-background-color-selected-normal;
+                    border-right: none;
+                    border-bottom: none;
+
+                    & > xctrls|label {
+
+                        background-color: @xctrls_listitem-background-color-selected-normal;
+                    }
                 }
 
                 /* Hovering over the list, label must highlight */

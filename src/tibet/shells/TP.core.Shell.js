@@ -3763,22 +3763,89 @@ function(aRequest) {
      */
 
     var topics,
-        result;
+        result,
 
+        output;
+
+    //  Grab all of the help topics that were grabbed as the commands loaded
     topics = TP.core.Shell.get('helpTopics');
     result = TP.hc();
 
-    topics.perform(function(pair) {
-        var cmd,
-            func;
+    topics.perform(
+        function(pair) {
+            var cmd,
+                func;
 
-        cmd = pair.first();
-        func = pair.last();
+            cmd = pair.first();
+            func = pair.last();
 
-        result.atPut(cmd, func.$$abstract);
-    });
+            result.atPut(cmd, func.$$abstract);
+        });
 
-    return aRequest.complete(result);
+    //  ---
+
+    output = '<dl>';
+
+    result.perform(
+        function(kvPair) {
+
+            output +=
+                '<dt>' +
+                    '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').get(\'$consoleGUI\').setInputContent(\':' + kvPair.first() + ' \'); return false;">' +
+                    kvPair.first() +
+                    '</a>' +
+                '</dt>' +
+                '<dd>' +
+                    //  We don't use a CDATA section here because we can't copy
+                    //  and paste entries from history on Chrome when we do:
+                    //  https://bugs.chromium.org/p/chromium/issues/detail?id=696551
+                    TP.xmlLiteralsToEntities(kvPair.last()) +
+                '</dd>';
+        });
+
+    output += '</dl>';
+
+    //  ---
+
+    output += '<div style="text-align: center; font-weight: bold; font-size: large">Shortcuts</div>';
+
+    result = TP.hc(
+        '~', 'Used to reference virtual URIs',
+        '!', 'Used to repeat commands',
+        '%', 'Used to list jobs',
+        '&', 'Used to resolve an entity',
+        '=',
+            'Used to escape all following content and treat like regular JS',
+        ':foo',
+            'Used to output a tag in the shell’s current default namespace',
+        '.', 'Used as an alias for the ‘source’ or ‘import’ commands',
+        '/', 'Used as an alias for the ‘flag’ command',
+        '?', 'Used an an alias for the ‘help’ command'
+    );
+
+    //  ---
+
+    output += '<dl>';
+
+    result.perform(
+        function(kvPair) {
+            output +=
+                '<dt>' +
+                    TP.xmlLiteralsToEntities(kvPair.first()) +
+                '</dt>' +
+                '<dd>' +
+                    //  We don't use a CDATA section here because we can't copy
+                    //  and paste entries from history on Chrome when we do:
+                    //  https://bugs.chromium.org/p/chromium/issues/detail?id=696551
+                    TP.xmlLiteralsToEntities(kvPair.last()) +
+                '</dd>';
+        });
+
+    output += '</dl>';
+
+    aRequest.atPut('cmdAsIs', true);
+
+    return aRequest.complete(output);
 });
 
 TP.core.Shell.addHelpTopic('help',
