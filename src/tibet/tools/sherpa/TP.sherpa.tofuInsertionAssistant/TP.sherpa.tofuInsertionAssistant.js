@@ -198,6 +198,24 @@ function(anObject) {
         }
     }
 
+    str = '<' + tagName;
+
+    if (TP.notEmpty(val = info.at('tagAttrs'))) {
+        val.forEach(
+            function(attrInfo) {
+                var hash;
+
+                hash = TP.hc(attrInfo);
+
+                str +=
+                    ' ' + hash.at('tagAttrName') +
+                    '=' +
+                    '"' + hash.at('tagAttrValue') + '"';
+            });
+    }
+
+    str += '/>';
+
     targetTPElem = TP.wrap(targetElem);
 
     //  If the user has entered a tag that we don't know about, we force the
@@ -207,7 +225,7 @@ function(anObject) {
 
     //  Go ahead and insert the content.
     newTPElem = targetTPElem.insertContent(
-                        '<' + tagName + '/>',
+                        str,
                         info.at('insertionPosition'));
 
     //  Put the autodefine setting back to what it was.
