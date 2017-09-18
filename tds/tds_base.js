@@ -494,6 +494,7 @@
      */
     TDS.decrypt = function(text) {
         var key,
+            salt,
             cipher,
             decrypted;
 
@@ -503,12 +504,19 @@
                 'No key found for decryption. $ export TDS_CRYPTO_KEY="{{secret}}"');
         }
 
-        cipher = TDS.crypto.createDecipher(TDS.CRYPTO_ALGORITHM, key);
+        salt = process.env.TDS_CRYPTO_SALT || TDS.getcfg('tds.crypto.salt');
+        if (!salt) {
+            this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            this.warn('Defaulting to encryption salt default value');
+            salt = 'mmm...salty';
+        }
+
+        cipher = crypto.createDecipher(TDS.CRYPTO_ALGORITHM, key + salt);
 
         decrypted = cipher.update(text, 'hex', 'utf8');
         decrypted += cipher.final('utf8');
 
-        return decrypted;
+        return '' + decrypted;
     };
 
     /**
@@ -518,6 +526,7 @@
      */
     TDS.encrypt = function(text) {
         var key,
+            salt,
             cipher,
             encrypted;
 
@@ -527,12 +536,19 @@
                 'No key found for encryption. $ export TDS_CRYPTO_KEY="{{secret}}"');
         }
 
-        cipher = TDS.crypto.createCipher(TDS.CRYPTO_ALGORITHM, key);
+        salt = process.env.TDS_CRYPTO_SALT || TDS.getcfg('tds.crypto.salt');
+        if (!salt) {
+            this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+            this.warn('Defaulting to encryption salt default value');
+            salt = 'mmm...salty';
+        }
+
+        cipher = TDS.crypto.createCipher(TDS.CRYPTO_ALGORITHM, key + salt);
 
         encrypted = cipher.update(text, 'utf8', 'hex');
         encrypted += cipher.final('hex');
 
-        return encrypted;
+        return '' + encrypted;
     };
 
     /**
