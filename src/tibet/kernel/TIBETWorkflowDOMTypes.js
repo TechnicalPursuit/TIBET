@@ -1035,7 +1035,8 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.ResolvePhase',         //  resolve xml:base TP.core.URI references,
                                     //  decode etc.
 
-    'TP.core.LocalizePhase'         //  adjust for browser, lang, etc.
+    'TP.core.LocalizePhase',        //  adjust for browser, lang, etc.
+    'TP.core.CompileCompletePhase'
     ));
 
 //  A common query used by some phases to find custom nodes - elements or
@@ -2053,6 +2054,35 @@ function() {
      */
 
     return 'tagLocalize';
+});
+
+//  ========================================================================
+//  TP.core.CompileCompletePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.CompileCompletePhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.CompileCompletePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompileCompletePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagCompileComplete';
 });
 
 //  ========================================================================
