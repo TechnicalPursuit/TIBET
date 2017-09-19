@@ -12743,13 +12743,12 @@ function(aspectName) {
 
     elem = this.getNativeNode();
 
-    //  If this element has a 'tibet:isSingleValued' attribute, then we return
-    //  the value of that. This allows 'instance level' programming of a
-    //  particular element.
-    if (TP.elementHasAttribute(elem, 'tibet:isSingleValued', true)) {
+    //  If this element has a 'tibet:single' attribute, then we return the value
+    //  of that. This allows 'instance level' programming of a particular
+    //  element.
+    if (TP.elementHasAttribute(elem, 'tibet:single', true)) {
         if (TP.notEmpty(aspectName)) {
-            attrVal = TP.elementGetAttribute(
-                            elem, 'tibet:isSingleValued', true);
+            attrVal = TP.elementGetAttribute(elem, 'tibet:single', true);
             attrVal = attrVal.split(' ');
             return attrVal.contains(aspectName);
         }
@@ -12775,21 +12774,20 @@ function(aspectName) {
      * @returns {Boolean} True when scalar valued.
      */
 
-    //  If this element has a 'tibet:isScalarValued' attribute, then we return
-    //  the value of that. This allows 'instance level' programming of a
-    //  particular element.
+    //  If this element has a 'tibet:scalar' attribute, then we return the value
+    //  of that. This allows 'instance level' programming of a particular
+    //  element.
     var elem,
         attrVal;
 
     elem = this.getNativeNode();
 
-    //  If this element has a 'tibet:isScalarValued' attribute, then we return
-    //  the value of that. This allows 'instance level' programming of a
-    //  particular element.
-    if (TP.elementHasAttribute(elem, 'tibet:isScalarValued', true)) {
+    //  If this element has a 'tibet:scalar' attribute, then we return the value
+    //  of that. This allows 'instance level' programming of a particular
+    //  element.
+    if (TP.elementHasAttribute(elem, 'tibet:scalar', true)) {
         if (TP.notEmpty(aspectName)) {
-            attrVal = TP.elementGetAttribute(
-                            elem, 'tibet:isScalarValued', true);
+            attrVal = TP.elementGetAttribute(elem, 'tibet:scalar', true);
             attrVal = attrVal.split(' ');
             return attrVal.contains(aspectName);
         }

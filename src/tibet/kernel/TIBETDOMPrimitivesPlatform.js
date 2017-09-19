@@ -249,7 +249,7 @@ TP.hc(
                 if (isSingleValued) {
                     ownerElem.setAttributeNS(
                             TP.w3.Xmlns.TIBET,
-                            'tibet:isSingleValued',
+                            'tibet:single',
                             srcAttr.name);
                 }
             } else {
@@ -397,7 +397,7 @@ TP.hc(
                 if (isSingleValued) {
                     bindAttr = activeXDoc.createNode(
                                             Node.ATTRIBUTE_NODE,
-                                            'tibet:isSingleValued',
+                                            'tibet:single',
                                             TP.w3.Xmlns.TIBET);
 
                     ownerElem.setAttributeNode(bindAttr);

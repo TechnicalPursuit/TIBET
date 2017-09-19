@@ -291,7 +291,7 @@ function(anElement) {
                 //  'value' value that it is being updated to to a singular,
                 //  scalar value if possible.
                 TP.elementSetAttribute(newSpan,
-                                        'tibet:isScalarValued',
+                                        'tibet:scalar',
                                         'value',
                                         true);
 
