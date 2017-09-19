@@ -543,6 +543,17 @@ function(options) {
      *     context menu.
      */
 
+    var halo,
+        generator;
+
+    halo = TP.byId('SherpaHalo', TP.win('UIROOT'));
+
+    generator = this.getNearestHaloGenerator(halo);
+
+    if (TP.isKindOf(generator, TP.core.CompiledTag)) {
+        return TP.elem('<sherpa:compiledTagContextMenuContent/>');
+    }
+
     return TP.elem('<sherpa:elementContextMenuContent/>');
 });
 
