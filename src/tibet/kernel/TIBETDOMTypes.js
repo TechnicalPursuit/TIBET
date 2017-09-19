@@ -15536,7 +15536,6 @@ function() {
     var tpElem;
 
     if (TP.isValid(tpElem = this.getDocumentElement())) {
-
         return tpElem.getValue();
     }
 
