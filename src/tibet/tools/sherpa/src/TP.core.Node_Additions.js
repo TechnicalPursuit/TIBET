@@ -684,7 +684,7 @@ function(aHalo, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('getNearestHaloGenerator',
-function(aHalo, aspectPathParts) {
+function(aHalo) {
 
     /**
      * @method getNearestHaloGenerator
