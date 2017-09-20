@@ -530,9 +530,12 @@
                 last,
                 next,
                 list,
+                i,
+                len,
                 arr;
 
-            steps = job.steps;
+            //  Make a copy here...we don't want to change it.
+            steps = job.steps.slice(0);
             arr = [];
 
             tasks = job.tasks;
@@ -587,6 +590,7 @@
                             break;
 
                         case '$$complete':
+                            //  Last task has completed so we need next one.
                             //  Which task we pluck depends on how many we've
                             //  done that weren't retries or error handlers.
 
@@ -601,27 +605,23 @@
                                 break;
                             }
 
-                            //  Scan the list we need to complete and find the
-                            //  first one that we don't have a complete for.
-                            list = tasks.sequence;
-                            list.some(function(taskname, index) {
-                                var complete;
+                            len = steps.length;
 
-                                complete = steps.some(function(step) {
-                                    return step.name === taskname &&
-                                        step.state === '$$complete';
-                                });
+                            list = tasks.sequence.slice(0);
 
-                                if (!complete) {
-                                    next = index;
-                                    return true;
+                            //  For each $$complete found we throw away a task.
+                            //  Whatever's the first one in the list once we're
+                            //  out of previously run steps (if there are
+                            //  any) is the next task to run.
+                            for (i = 0; i < len; i++) {
+                                if (steps[i].state === '$$complete') {
+                                    list.shift();
                                 }
+                            }
 
-                                return false;
-                            });
-
+                            next = list[0];
                             if (next !== undefined) {
-                                arr.push(list[next]);
+                                arr.push(next);
                             }
                             break;
 
