@@ -38,6 +38,7 @@
             loggedInOrLocalDev,
             failJob,
             failTask,
+            remapStdioParams,
             retrieveFlow,
             retrieveTask,
             processOwnedTasks,
@@ -329,9 +330,12 @@
             //  the order here matters since TDS.blend will _not_ replace
             //  existing values, so we want to put in job values first, then any
             //  task values so they act as defaults for missing values only.
-            params = {};
 
-            //  First blend in state-specific (foo-N) parameters
+            //  We connect step output to step input via 'stdio' mappings
+            //  optionally provided in the task and/or flow definitions.
+            params = remapStdioParams(job, step, {});
+
+            //  Blend in state-specific (foo-N) parameters
             if (job.params && job.params[job.state]) {
                 TDS.blend(params, job.params[job.state]);
             }
@@ -349,22 +353,6 @@
             step.params = params;
 
             job.steps.push(step);
-
-            //  Last step's output becomes next step's input.
-            job.stdin = job.stdout.slice(0);
-            job.stdout.length = 0;
-
-            //  Confirm stdin is serializable. If not then the prior step is
-            //  doing something wrong...data between steps has to be storable.
-            try {
-                JSON.stringify(job.stdin);
-            } catch (e) {
-                logger.error(job,
-                    'Corrupt stdin data from step ' +
-                    (job.steps.length - 1));
-                job.stderr.push(e.message);
-                job.stdin.length = 0;
-            }
 
             dbSave(job);
         };
@@ -692,11 +680,6 @@
                 job.start = Date.now();
                 job.steps = [];
 
-                //  Create initial 'stdio' arrays for 'piped' io.
-                job.stdin = [];
-                job.stdout = [];
-                job.stderr = [];
-
                 dbSave(job);
 
             }).catch(function(err) {
@@ -929,6 +912,110 @@
 
         /*
          */
+        remapStdioParams = function(job, step, params) {
+            var stdio,
+                stdout,
+                prior,
+                index,
+                map,
+                keys;
+
+            //  If no prior steps then no stdout to potentially remap.
+            prior = job.steps[job.steps.length - 1];
+            if (!prior || !prior.stdout) {
+                return params;
+            } else {
+                //  Capture any exported data from the prior step.
+                stdout = prior.stdout;
+            }
+
+            stdio = job.tasks.stdio;
+            if (!stdio) {
+                return params;
+            }
+
+            //  We're looking for any remapping data for the stdout of the
+            //  prior step, so look to that step for its index.
+            index = prior.index;
+
+            map = stdio[index];
+            if (!map) {
+                return params;
+            }
+
+            //  For each key in the map take any stdout data for that key and
+            //  place it in the remapped target location in params.
+            keys = Object.keys(map);
+            keys.forEach(function(src) {
+                var obj,
+                    target,
+                    parts,
+                    tail,
+                    len,
+                    i,
+                    key,
+                    val;
+
+                val = stdout;
+
+                //  If we still have a valid obj value the key exists in the
+                //  stdout data. Now we have to use the value in the map to
+                //  determine where it should go in the params.
+                target = map[src];
+                if (target === null || target === undefined) {
+                    //  Empty target value means don't copy it over into params.
+                    return;
+                }
+
+                parts = src.split('.');
+                len = parts.length;
+
+                //  See if the source key is even found in the export data.
+                for (i = 0; i < len; i++) {
+                    key = parts[i];
+                    if (val !== null && val !== undefined &&
+                            val.hasOwnProperty(key)) {
+                        val = val[key];
+                    } else {
+                        //  not found, nothing to map for this key.
+                        return;
+                    }
+                }
+
+                //  If final value was not found there's nothing to map.
+                if (val === null || val === undefined) {
+                    return;
+                }
+
+                //  We'll be traversing down into params, building as we go
+                //  through the target path, then placing 'val' at that slot.
+                obj = params;
+
+                parts = target.split('.');
+                tail = parts[parts.length - 1];
+                parts = parts.slice(0, -1);
+                len = parts.length;
+
+                for (i = 0; i < len; i++) {
+                    key = parts[i];
+                    if (obj.hasOwnProperty(key)) {
+                        obj = obj[key];
+                    } else {
+                        obj[key] = {};
+                        obj = obj[key];
+                    }
+                }
+
+                if (obj) {
+                    obj[tail] = val;
+                }
+            });
+
+            return params;
+        };
+
+        /*
+         */
         retrieveFlow = function(job, flow, owner) {
 
             return dbView(db_app, 'flows', {keys: [flow + '::' + owner]}).then(
@@ -1006,9 +1093,11 @@
             retryStep.index = job.steps.length;
             job.state = task.name + '-' + retryStep.index;
 
-            params = {};
+            //  We connect step output to step input via 'stdio' mappings
+            //  optionally provided in the task and/or flow definitions.
+            params = remapStdioParams(job, retryStep, {});
 
-            //  First blend in state-specific (foo-N) parameters
+            //  Blend in state-specific (foo-N) parameters
             if (job.params && job.params[job.state]) {
                 TDS.blend(params, job.params[job.state]);
             }
@@ -1026,23 +1115,6 @@
             retryStep.params = params;
 
             job.steps.push(retryStep);
-
-            //  Last step's output becomes next step's input.
-            job.stdin = job.stdout.slice(0);
-            job.stdout.length = 0;
-
-            //  Confirm stdin is serializable. If not then the prior step is
-            //  doing something wrong...data between steps has to be storable.
-            try {
-                JSON.stringify(job.stdin);
-            } catch (e) {
-                logger.error(job,
-                    'Corrupt stdin data from step ' +
-                    (job.steps.length - 1));
-
-                job.stderr.push(e.message);
-                job.stdin.length = 0;
-            }
 
             //  Saving the job with the new step in place should trigger a
             //  process to pick it up and try to run with it :)
