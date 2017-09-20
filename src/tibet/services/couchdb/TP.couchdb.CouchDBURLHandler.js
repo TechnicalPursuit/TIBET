@@ -46,8 +46,26 @@ TP.couchdb.CouchDBURLHandler.set('includeConfigName',
 TP.couchdb.CouchDBURLHandler.set('excludeConfigName',
     'tds.couch.watch.exclude');
 
+//  Server roots that have been authenticated.
+TP.couchdb.CouchDBURLHandler.Type.defineAttribute('authenticatedRoots');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.set('authenticatedRoots', TP.ac());
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('activateRemoteWatch',
@@ -69,6 +87,159 @@ function() {
     TP.sys.getApplication().pushController(this);
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('addAuthenticatedRoot',
+function(aRootLocation) {
+
+    /**
+     * @method addAuthenticatedRoot
+     * @summary Adds the supplied root location to the list of authenticated
+     *     roots. This method will also cause that authentication to time out
+     *     according to the setting of 'uri.couchdb_auth_timeout' (defaulted to
+     *     600000ms).
+     * @param {String} aRootLocation The root location that has been
+     *     authenticated and needs to be tracked.
+     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     */
+
+    var authenticatedRoots;
+
+    authenticatedRoots = this.get('authenticatedRoots');
+
+    authenticatedRoots.add(aRootLocation);
+
+    //  Set a timeout that will remove the root from the list of authenticated
+    //  roots.
+    setTimeout(
+        function() {
+            authenticatedRoots.remove(aRootLocation);
+        }, (TP.sys.cfg('uri.couchdb_auth_timeout', 600) * 1000));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('authenticate',
+function(aURI, aRequest) {
+
+    /**
+     * @method authenticate
+     * @summary Authenticate the supplied URI. This will actually authenticate
+     *     the root of the supplied URI.
+     * @param {TP.core.URI} aURI The URI to authenticate.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     */
+
+    var reqParams,
+
+        newReqType,
+        newReq,
+
+        rootLoc,
+        href,
+        authRequest;
+
+    //  Construct a new request to perform the original operation when the
+    //  authentication is complete (if it succeeds).
+
+    reqParams = TP.copy(aRequest.getParameters());
+    reqParams.atPut('uri', aURI);
+
+    //  Depending on the original request's operation, compute the type of the
+    //  new operation.
+    switch (aRequest.at('operation')) {
+
+        case 'load':
+            newReqType = TP.sig.HTTPLoadRequest;
+            break;
+        case 'save':
+            newReqType = TP.sig.HTTPSaveRequest;
+            break;
+        case 'delete':
+            newReqType = TP.sig.HTTPDeleteRequest;
+            break;
+        default:
+            return aRequest.complete();
+    }
+
+    newReq = newReqType.construct(reqParams);
+
+    //  Join the new request as a child to the original request. This will cause
+    //  the original request to complete when the new one does.
+    aRequest.andJoinChild(newReq);
+
+    //  ---
+
+    //  Now, build an authentication request that we can post below.
+
+    //  Construct the proper href to the authentication endpoint.
+    rootLoc = aURI.getRoot();
+    href = rootLoc + '/_session';
+
+    authRequest = TP.request(
+            'uri', href,
+            'headers',
+                TP.hc('Content-Type', TP.JSON_ENCODED),
+            'simple_cors_only', true);
+
+    //  If the request succeeds, then add the root location as an authenticated
+    //  root and tell the HTTPService to handle the new request directly.
+    authRequest.defineHandler('RequestSucceeded',
+        function(aResponse) {
+
+            this.addAuthenticatedRoot(rootLoc);
+
+            TP.core.HTTPService.handle(newReq);
+        }.bind(this));
+
+    //  Prompt the user for the CouchDB username
+    TP.prompt('Enter CouchDB username:').then(
+        function(retVal) {
+
+            var username;
+
+            //  If the value came back empty, then just return.
+            if (TP.isEmpty(retVal)) {
+                return;
+            }
+
+            username = retVal;
+
+            //  Prompt the user for the CouchDB password
+            TP.prompt('Enter CouchDB password:').then(
+                function(retVal2) {
+
+                    var password,
+                        body;
+
+                    //  If the value came back empty, then just return.
+                    if (TP.isEmpty(retVal2)) {
+                        return;
+                    }
+
+                    password = retVal2;
+
+                    //  Encode the body of the authentication request by
+                    //  formatting the username and password as JSON.
+                    body = TP.hc(
+                            'username', username,
+                            'password', password).asJSONSource();
+
+                    authRequest.atPut('body', body);
+
+                    //  Post the authentication request to the auth endpoint.
+                    TP.httpPost(href, authRequest);
+                });
+        });
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -172,7 +343,10 @@ function(aSignal) {
      */
 
     var watcherURIs,
-        thisref;
+        watchSource,
+
+        authenticatedRoots,
+        authenticatingRoots;
 
     //  Remove ourself from the application's controller stack - we won't be
     //  needing to get any more signals from there.
@@ -182,7 +356,36 @@ function(aSignal) {
     //  instances) that we are watching.
     watcherURIs = this.getWatcherSourceURIs();
 
-    thisref = this;
+    //  Define a Function that will set up an EventSource on a supplied changes
+    //  feed source URI.
+    watchSource = function(aSourceURI) {
+        var sourceType,
+            signalType,
+
+            signalSource;
+
+        sourceType = this.getWatcherSourceType();
+        signalType = this.getWatcherSignalType();
+
+        signalSource = sourceType.construct(
+                            aSourceURI.getLocation(),
+                            TP.hc('withCredentials', true));
+
+        if (TP.notValid(signalSource)) {
+            return this.raise('InvalidURLWatchSource');
+        }
+
+        this.observe(signalSource, signalType);
+    }.bind(this);
+
+    authenticatedRoots = this.get('authenticatedRoots');
+
+    //  Set up a hash that will track the currently authenticating roots so that
+    //  we don't try to authenticate a particular root multiple times. This will
+    //  have a key of the authenticating root and an Array of source URIs under
+    //  that root that will be set up as EventSources after the connection is
+    //  authenticated.
+    authenticatingRoots = TP.hc();
 
     //  Iterate over each watcher source and authenticate with it using 'cookie
     //  authentication'. The browser and CouchDB will manage authentication
@@ -201,84 +404,106 @@ function(aSignal) {
 
                 request;
 
-            //  Construct the proper href to the authentication endpoint.
             rootLoc = aURI.getRoot();
-            href = rootLoc + '/_session';
 
-            //  Prompt the user for the CouchDB username
-            TP.prompt('Enter CouchDB username:').then(
-                function(retVal) {
+            if (TP.isValid(authenticatingRoots.at(rootLoc))) {
+                //  This root is in the process of being authenticated, so we
+                //  don't want to do that process again. We do, however, want to
+                //  track all of the URIs that need to be watched once this root
+                //  is authenticated.
+                authenticatingRoots.at(rootLoc).push(aURI);
+            } else if (authenticatedRoots.contains(rootLoc)) {
+                //  If its already authenticated, then just call the Function to
+                //  watch the source URI.
+                watchSource(aURI);
+            } else {
 
-                    //  If the value came back empty, then just return.
-                    if (TP.isEmpty(retVal)) {
-                        return;
-                    }
+                //  Add the root location and the source URI as the first item
+                //  in the Array to the hash of authenticating roots.
+                authenticatingRoots.atPut(rootLoc, TP.ac(aURI));
 
-                    username = retVal;
+                //  Construct the proper href to the authentication endpoint.
+                href = rootLoc + '/_session';
 
-                    //  Prompt the user for the CouchDB password
-                    TP.prompt('Enter CouchDB password:').then(
-                        function(retVal2) {
+                //  Prompt the user for the CouchDB username
+                TP.prompt('Enter CouchDB username:').then(
+                    function(retVal) {
 
-                            var thisref2;
+                        //  If the value came back empty, then just return.
+                        if (TP.isEmpty(retVal)) {
+                            return;
+                        }
 
-                            //  If the value came back empty, then just return.
-                            if (TP.isEmpty(retVal2)) {
-                                return;
-                            }
+                        username = retVal;
 
-                            password = retVal2;
+                        //  Prompt the user for the CouchDB password
+                        TP.prompt('Enter CouchDB password:').then(
+                            function(retVal2) {
 
-                            //  Encode the body of the authentication request by
-                            //  formatting the username and password as JSON.
-                            body = TP.hc(
-                                    'username', username,
-                                    'password', password).asJSONSource();
+                                //  If the value came back empty, then just
+                                //  return.
+                                if (TP.isEmpty(retVal2)) {
+                                    return;
+                                }
 
-                            //  Build a request that we can post below.
-                            request = TP.request(
-                                    'uri', href,
-                                    'headers',
-                                        TP.hc('Content-Type', TP.JSON_ENCODED),
-                                    'body', body,
-                                    'simple_cors_only', true);
+                                password = retVal2;
 
-                            thisref2 = thisref;
+                                //  Encode the body of the authentication
+                                //  request by formatting the username and
+                                //  password as JSON.
+                                body = TP.hc(
+                                        'username', username,
+                                        'password', password).asJSONSource();
 
-                            //  Set up a RequestSucceeded handler that will set
-                            //  up a SSE observer on the CouchDB changes feed.
-                            request.defineHandler('RequestSucceeded',
-                                function(aResponse) {
-                                    var sourceType,
-                                        signalType;
+                                //  Build a request that we can post below.
+                                request = TP.request(
+                                        'uri', href,
+                                        'headers',
+                                            TP.hc('Content-Type',
+                                                    TP.JSON_ENCODED),
+                                        'body', body,
+                                        'simple_cors_only', true);
 
-                                    sourceType = thisref2.getWatcherSourceType();
-                                    signalType = thisref2.getWatcherSignalType();
+                                //  Set up a RequestSucceeded handler that will
+                                //  set up a SSE observer on the CouchDB changes
+                                //  feed.
+                                request.defineHandler('RequestSucceeded',
+                                    function(aResponse) {
+                                        var authenticatedRoot,
+                                            watchingURIs;
 
-                                    //  For Couch we set up multiple observations
-                                    //  against different URIs.
-                                    thisref2.getWatcherSourceURIs().perform(
-                                        function(sourceURI) {
-                                            var signalSource;
+                                        //  Grab the root of the response's URI.
+                                        //  This will be the root that has been
+                                        //  authenticated.
+                                        authenticatedRoot =
+                                            TP.uc(aResponse.at('uri')).getRoot();
 
-                                            signalSource = sourceType.construct(
-                                                sourceURI.getLocation(),
-                                                TP.hc('withCredentials', true));
+                                        //  Add that to our list of
+                                        //  authenticated roots.
+                                        TP.couchdb.CouchDBURLHandler.
+                                            addAuthenticatedRoot(
+                                                authenticatedRoot);
 
-                                            if (TP.notValid(signalSource)) {
-                                                return thisref2.raise(
-                                                        'InvalidURLWatchSource');
-                                            }
+                                        //  Grab the Array of URIs that want to
+                                        //  be watched that are associated with
+                                        //  our now authentication root.
+                                        watchingURIs = authenticatingRoots.at(
+                                                            authenticatedRoot);
 
-                                            thisref2.observe(
-                                                signalSource, signalType);
-                                        });
-                                });
+                                        //  Call the function that will watch
+                                        //  them.
+                                        watchingURIs.forEach(
+                                            function(watchURI) {
+                                                watchSource(watchURI);
+                                            });
+                                    });
 
-                            //  Post the request to the authentication endpoint.
-                            TP.httpPost(href, request);
-                        });
-                });
+                                //  Post the request to the authentication
+                                //  endpoint.
+                                TP.httpPost(href, request);
+                            });
+                    });
+            }
         });
 
     return this;
@@ -478,6 +703,25 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('isAuthenticatedURI',
+function(targetURI) {
+
+    /**
+     * @method isAuthenticatedURI
+     * @summary Returns whether or not the URI is authenticated.
+     * @param {TP.core.URI} targetURI The URI to test.
+     * @returns {Boolean} true if the URI is authenticated.
+     */
+
+    var rootURI;
+
+    rootURI = targetURI.getRoot();
+
+    return this.get('authenticatedRoots').contains(rootURI);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('isWatchableURI',
 function(targetURI) {
 
@@ -522,6 +766,11 @@ function(targetURI, aRequest) {
     //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
 
+    //  Make sure that the connection has been authenticated.
+    if (!this.isAuthenticatedURI(targetURI)) {
+        return this.authenticate(targetURI, request);
+    }
+
     return this.callNextMethod(targetURI, request);
 });
 
@@ -551,6 +800,11 @@ function(targetURI, aRequest) {
     //  low-level HTTP machinery doesn't try to add headers, etc. that would
     //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
+
+    //  Make sure that the connection has been authenticated.
+    if (!this.isAuthenticatedURI(targetURI)) {
+        return this.authenticate(targetURI, request);
+    }
 
     return this.callNextMethod(targetURI, request);
 });
@@ -616,6 +870,11 @@ function(targetURI, aRequest) {
                     //  here.
                     origData.set('$._rev', newRev, false);
                 });
+
+    //  Make sure that the connection has been authenticated.
+    if (!this.isAuthenticatedURI(targetURI)) {
+        return this.authenticate(targetURI, request);
+    }
 
     return this.callNextMethod(targetURI, request);
 });
