@@ -11,6 +11,7 @@ TP.sherpa.InspectorPathSource.defineSubtype('sherpa.CouchTools');
 TP.sherpa.CouchTools.Inst.defineAttribute('serverAddress');
 TP.sherpa.CouchTools.Inst.defineAttribute('databaseName');
 TP.sherpa.CouchTools.Inst.defineAttribute('documentID');
+TP.sherpa.CouchTools.Inst.defineAttribute('appAndViewName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -131,6 +132,19 @@ function() {
                     'Design Documents'
                     ));
 
+    this.registerMethodSuffixForPath(
+            'Views',
+            TP.ac('CouchDB',
+                    TP.PATH_SEP,
+                    'CouchDB_Server_\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_SEP,
+                    '\.+',
+                    TP.PATH_SEP,
+                    'Views'
+                    ));
+
     //  Documents
 
     this.registerMethodSuffixForPath(
@@ -144,6 +158,22 @@ function() {
                     '\.+',
                     TP.PATH_SEP,
                     '(All|Design) Documents',
+                    '\.+'
+                    ));
+
+    //  Views
+
+    this.registerMethodSuffixForPath(
+            'ViewContent',
+            TP.ac('CouchDB',
+                    TP.PATH_SEP,
+                    'CouchDB_Server_\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_SEP,
+                    '\.+',
+                    TP.PATH_SEP,
+                    'Views',
                     '\.+'
                     ));
 
@@ -177,6 +207,16 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDesignDocuments',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForViews',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -267,6 +307,20 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDesignDocuments',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<xctrls:list bind:in="{data: ' +
+                    dataURI.asString() +
+                    '}"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForViews',
 function(options) {
 
     var dataURI;
@@ -371,11 +425,18 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod(
-    'getContentTypeForCanvasForDocumentContent',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentTypeForCanvasForDocumentContent',
 function(options) {
 
     return 'uri/CouchDB/document';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentTypeForCanvasForViewContent',
+function(options) {
+
+    return 'uri/CouchDB/view';
 });
 
 //  ------------------------------------------------------------------------
@@ -504,6 +565,93 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForViews',
+function(options) {
+
+    var dataURI,
+        dbName,
+
+        serverAddr,
+
+        loc,
+
+        appNames,
+
+        thisType;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+    dbName = this.get('databaseName');
+
+    serverAddr = this.get('serverAddress');
+
+    loc = serverAddr +
+            '/' +
+            dbName +
+            '/_all_docs?startkey="_design"&endkey="_design0"';
+
+    appNames = TP.ac();
+
+    thisType = this.getType();
+
+    this.getType().fetchURI(TP.uc(loc)).then(
+                function(result) {
+
+                    var data,
+
+                        startLoc,
+
+                        promises;
+
+                    data = result.get(TP.tpc('rows[0:].id',
+                                        TP.hc('shouldCollapse', false)));
+
+                    startLoc = serverAddr + '/' + dbName + '/';
+
+                    promises = data.collect(
+                            function(docID) {
+                                var fetchLoc;
+
+                                appNames.push(
+                                    docID.slice(docID.indexOf('/') + 1));
+
+                                fetchLoc = startLoc + docID;
+                                return thisType.fetchURI(TP.uc(fetchLoc));
+                            });
+
+                    return TP.extern.Promise.all(promises);
+                }).then(
+                function(result) {
+
+                    var data;
+
+                    data = result.collect(
+                            function(record) {
+                                return record.get(TP.tpc('views')).getKeys();
+                            });
+
+                    data = data.flatten();
+
+                    data = data.collect(
+                            function(docID, index) {
+                                return TP.ac(
+                                        appNames.at(index) + '/' + docID,
+                                        docID);
+                            });
+
+                    dataURI.setResource(data);
+                }).catch(
+                function(err) {
+                    TP.ifError() ?
+                        TP.error('Error fetching all documents for Couch' +
+                                    ' database:' + dbName + ': ' +
+                                    TP.str(err)) : 0;
+                });
+
+    return TP.ac('Data Loading...');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
 function(options) {
 
@@ -512,7 +660,8 @@ function(options) {
     return TP.ac(
             TP.ac('Database Info', 'Database Info'),
             TP.ac('All Documents', 'All Documents'),
-            TP.ac('Design Documents', 'Design Documents')
+            TP.ac('Design Documents', 'Design Documents'),
+            TP.ac('Views', 'Views')
     );
 });
 
@@ -569,6 +718,33 @@ function(options) {
     var loc;
 
     loc = this.get('serverAddress');
+
+    return TP.uc(loc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForViewContent',
+function(options) {
+
+    var appAndViewName,
+        nameParts,
+        loc;
+
+    if (TP.notEmpty(options.at('targetAspect'))) {
+        this.set('appAndViewName', options.at('targetAspect'));
+    }
+
+    appAndViewName = this.get('appAndViewName');
+    nameParts = appAndViewName.split('/');
+
+    loc = this.get('serverAddress') +
+            '/' +
+            this.get('databaseName') +
+            '/_design/' +
+            nameParts.first() +
+            '/_view/' +
+            nameParts.last();
 
     return TP.uc(loc);
 });
