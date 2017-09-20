@@ -685,7 +685,7 @@ div[busyFor="content"] > .busyImage {
 
 div[busyFor="content"] > .busyMessage {
 
-    margin-top: 90px;
+    margin-top: 0px;
 
     font-size: 116%;
     color: #fff;
