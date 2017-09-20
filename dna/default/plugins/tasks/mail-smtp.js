@@ -40,29 +40,55 @@
             var smtpOpts,
                 mailOpts,
                 transporter,
+                srctext,
+                format,
+                lookup,
                 template,
                 send;
 
+            logger.info(job, JSON.stringify(step));
+
             logger.debug(job, JSON.stringify(step));
 
-            //  Basic SMTP option sanity check
+            //  Basic SMTP option sanity check. These params should include the
+            //  service and auth (user/pass) data for the SMTP config.
             if (!params.smtp) {
                 return TDS.Promise.reject(new Error(
                     'Misconfigured SMTP task. No params.smtp.'));
             }
 
-            //  Basic mail options sanity check
-            if (!params.from || !params.subject) {
-                return TDS.Promise.reject(new Error(
-                'Misconfigured SMTP task. Missing params.from, ' +
-                'params.to, and/or ' +
-                'params.subject.'));
-            }
+            //  We need a minimum of from/to/subject to do any mailing.
+            ['from', 'to', 'subject'].forEach(function(key) {
+                if (!params[key]) {
+                    return TDS.Promise.reject(new Error(
+                    'Misconfigured SMTP task. Missing params.' + key + '.'));
+                }
+            });
 
-            //  Basic content sanity check
-            if (!params.text && !params.html) {
+            //  We can work from fallback text or html when no template...but if
+            //  there's a template key we need to see if we can look it up.
+            lookup = params.lookup;
+            if (lookup) {
+                if (!params[lookup]) {
+                    return TDS.Promise.reject(new Error(
+                        'Misconfigured SMTP task. Missing params.' +
+                        lookup + '.'));
+                } else {
+                    srctext = params[lookup];
+                    format = params.format || 'html';
+                }
+            } else if (!params.text && !params.html) {
                 logger.warn('Missing params.text and params.html.');
-                params.text = '';
+
+                //  We allow empty body, but not empty subject.
+                format = 'text';
+                srctext = '';
+            } else if (params.html) {
+                format = 'html';
+                srctext = params[format];
+            } else {
+                format = 'text';
+                srctext = params[format];
             }
 
             //  Map over the smtp parameters from the task as our top-level
@@ -93,26 +119,19 @@
             mailOpts.to = params.to;
 
             try {
-                if (params.html) {
-                    template = TDS.template.compile(params.html);
-                    mailOpts.html = template(
-                        {
-                            job: job,
-                            step: step,
-                            params: params
-                        });
-                } else if (params.text) {
-                    template = TDS.template.compile(params.text);
-                    mailOpts.text = template(
-                        {
-                            job: job,
-                            step: step,
-                            params: params
-                        });
-                }
+                template = TDS.template.compile(srctext);
+                mailOpts[format] = template(
+                    {
+                        job: job,
+                        step: step,
+                        params: params
+                    });
             } catch (e) {
                 return TDS.Promise.reject(e);
             }
+
+            //  Provide final mail content for any downstream services.
+            step.stdout = {mail: mailOpts, format: format};
 
             //  Create the transport instance and verify the connection.
             transporter = nodemailer.createTransport(smtpOpts);
