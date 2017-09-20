@@ -279,6 +279,8 @@
                         failJob(job, 'Missing task ' + fullname);
                         return;
                     }
+
+                    task.task_index = tasks.task_index;
                     acceptTask(job, task);
                 }).catch(function(err) {
                     logger.error(job,
@@ -538,7 +540,9 @@
 
                     //  No steps so far? First task in the list :)
                     if (!last) {
-                        return [tasks.sequence[0]];
+                        arr.task_index = 0;
+                        arr.push(tasks.sequence[0]);
+                        return arr;
                     }
 
                     switch (last.state) {
@@ -609,6 +613,7 @@
 
                             next = list[0];
                             if (next !== undefined) {
+                                arr.task_index = i;
                                 arr.push(next);
                             }
                             break;
@@ -936,7 +941,7 @@
 
             //  We're looking for any remapping data for the stdout of the
             //  prior step, so look to that step for its index.
-            index = prior.index;
+            index = prior.task_index;
 
             map = stdio[index];
             if (!map) {
