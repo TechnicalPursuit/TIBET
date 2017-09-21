@@ -99,6 +99,7 @@
 
     <script src="./TP.sherpa.tofuInsertionAssistant/TP.sherpa.tofuInsertionAssistant.js"/>
     <script src="./TP.sherpa.couchDocumentURIInsertionAssistant/TP.sherpa.couchDocumentURIInsertionAssistant.js"/>
+    <script src="./TP.sherpa.couchViewURIInsertionAssistant/TP.sherpa.couchViewURIInsertionAssistant.js"/>
 
     <!-- These may create subtypes defined in TP.sherpa.inspector.js, so we need
          to place them *after* that in the load order. -->
