@@ -638,7 +638,11 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #CouchDocumentURIAssistantDialog {
 
+    width: 60%;
     height: 450px;
+
+    margin-right: 20%;
+    margin-left: 20%;
 }
 
 /* -----------------------------*

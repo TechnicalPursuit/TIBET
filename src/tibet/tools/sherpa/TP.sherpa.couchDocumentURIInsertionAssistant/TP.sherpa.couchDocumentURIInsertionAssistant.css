@@ -17,7 +17,7 @@ sherpa|couchDocumentURIInsertionAssistant > .head {
 
 sherpa|couchDocumentURIInsertionAssistant > .body {
 
-    margin-left: 50px;
+    margin-left: 10px;
 
     text-align: left;
 }
@@ -59,19 +59,26 @@ sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+
+    min-height: 2em;
 }
 
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer > li > label {
 
-    flex: 1 0 100px;
+    flex: 1 0 150px;
 
-    max-width: 100px;
+    max-width: 150px;
 }
 
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer > li > label + *,
 .flex_inner {
 
-    margin-left: 0;
+    margin: 0;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer li#couchDBURIAssistant_Schemafile_row {
+
+    min-height: 3em;
 }
 
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_inner {
@@ -88,9 +95,25 @@ sherpa|couchDocumentURIInsertionAssistant > .foot {
     text-align: center;
 }
 
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input[type="text"] {
+
+    width: 50em;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details textarea {
+
+    width: 50em;
+    height: 16em;
+}
+
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input {
 
     margin-left: 10px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input:first-child {
+
+    margin-left: 0;
 }
 
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input:checked + label {
@@ -100,10 +123,10 @@ sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input:check
 
 #couchDocumentURIInsertionAssistant_InsertionBreadcrumb {
 
+    position: relative;
     display: block;
 
     top: 0;
-    left: 115px;
 }
 
 #couchDocumentURIInsertionAssistant_InsertionBreadcrumb > .content div.item {
