@@ -113,10 +113,12 @@ function(aRootLocation) {
 
     //  Set a timeout that will remove the root from the list of authenticated
     //  roots.
+    /* eslint-disable no-extra-parens */
     setTimeout(
         function() {
             authenticatedRoots.remove(aRootLocation);
         }, (TP.sys.cfg('uri.couchdb_auth_timeout', 600) * 1000));
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
