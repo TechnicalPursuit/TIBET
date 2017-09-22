@@ -76,7 +76,7 @@ sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer
     margin: 0;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer li#couchDBURIAssistant_Schemafile_row {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer li#couchDocumentURIAssistant_Schemafile_row {
 
     min-height: 3em;
 }
