@@ -5311,6 +5311,9 @@ TP.core.URL.Inst.defineAttribute('lastRequest');
 //  to false without changing the isWatched method logic. Null implies true.
 TP.core.URL.Inst.defineAttribute('watched', null);
 
+//  whether or not we should try to PATCH this instance
+TP.core.URL.Inst.defineAttribute('$shouldPatch');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -5352,6 +5355,10 @@ function() {
      */
 
     var mimeType;
+
+    if (TP.isFalse(this.get('$shouldPatch'))) {
+        return false;
+    }
 
     //  Mime type must match one we can actually diff.
     mimeType = this.getMIMEType();
@@ -6625,6 +6632,24 @@ function(aRequest) {
     handler = url.remap(this, request);
 
     return handler.save(url, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('setShouldPatch',
+function(shouldBePatched) {
+
+    /**
+     * @method setShouldPatch
+     * @summary Sets whether the URI is patched or not when storing to the
+     *     server. For TIBETURLs, this passes through to the concrete URI's
+     *     'patched' property.
+     * @param {Boolean} shouldBePatched Whether the URI should be patched or
+     *     not.
+     * @returns {TP.core.TIBETURL} The receiver.
+     */
+
+    return this.getConcreteURI().set('$shouldPatch', shouldBePatched);
 });
 
 //  ------------------------------------------------------------------------

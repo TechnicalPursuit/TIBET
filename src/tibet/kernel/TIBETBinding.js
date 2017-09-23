@@ -4264,7 +4264,7 @@ function(shouldRender) {
                     //  Otherwise, it's a binding expression to a data source.
                     //  Grab the result from the URI. Then use that value to set
                     //  our value in the receiver for that particular aspect.
-                    result = wholeURI.getResource().get('result');
+                    result = TP.val(wholeURI.getResource().get('result'));
                 }
 
                 if (TP.isCallable(

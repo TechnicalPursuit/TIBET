@@ -217,6 +217,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.tofuInsertionAssistant.TP.sherpa.tofuInsertionAssistant.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.couchDocumentURIInsertionAssistant.TP.sherpa.couchDocumentURIInsertionAssistant.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.couchDocumentURIInsertionAssistant.TP.sherpa.couchDocumentURIInsertionAssistant.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.couchViewURIInsertionAssistant.TP.sherpa.couchViewURIInsertionAssistant.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.couchViewURIInsertionAssistant.TP.sherpa.couchViewURIInsertionAssistant.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.world.TP.sherpa.world.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.screen.TP.sherpa.screen.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.tile.TP.sherpa.tile.xhtml.js"/>

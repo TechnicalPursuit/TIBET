@@ -638,7 +638,24 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #CouchDocumentURIAssistantDialog {
 
+    width: 60%;
     height: 450px;
+
+    margin-right: 20%;
+    margin-left: 20%;
+}
+
+/* -----------------------------*
+ * CouchViewURI assistant dialog
+ * ---------------------------- */
+
+#CouchViewURIAssistantDialog {
+
+    width: 60%;
+    height: 450px;
+
+    margin-right: 20%;
+    margin-left: 20%;
 }
 
 /* -----------------------------*
@@ -685,7 +702,7 @@ div[busyFor="content"] > .busyImage {
 
 div[busyFor="content"] > .busyMessage {
 
-    margin-top: 90px;
+    margin-top: 0px;
 
     font-size: 116%;
     color: #fff;
