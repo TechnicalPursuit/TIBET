@@ -543,59 +543,65 @@ function() {
     //  requires changing everywhere that expects TP.ONLOAD as a key (many DOM
     //  and DHTML primitives (ack TP.ONLOAD for the list).
 
-    request.atPut(TP.ONLOAD, function(aDocument) {
+    request.atPut(
+        TP.ONLOAD,
+        function(aDocument) {
 
-        //  If the boot didn't trigger ONFAIL but is stopping then we're still
-        //  essentially in failure mode. Make sure we do the right thing.
-        if (TP.boot.shouldStop()) {
-            request.at(TP.ONFAIL)(request);
-            return;
-        }
-
-        //  NOTE that we don't have logic here. Formerly we'd trigger app start
-        //  signaling here but we have to let that happen via either the
-        //  tibet:root or tibet:sherpa tag processing for proper sequencing.
-        if (inPhantom) {
-            //  Signal we are starting. This provides a hook for extensions etc.
-            //  to tap into the startup sequence before routing or other
-            //  behaviors but after we're sure the UI is finalized.
-            TP.signal('TP.sys', 'AppWillStart');
-
-            //  Signal actual start. The default handler on Application will
-            //  invoke the start() method in response to this signal.
-            TP.signal('TP.sys', 'AppStart');
-        } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
-
-            //  No hook file in the boot screen so we initialize manually.
-            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
-            if (TP.isValid(bootTPFrameElem)) {
-                TP.boot.initializeCanvas(
-                    bootTPFrameElem.getContentWindow().getNativeWindow());
+            //  If the boot didn't trigger ONFAIL but is stopping then we're
+            //  still essentially in failure mode. Make sure we do the right
+            //  thing.
+            if (TP.boot.shouldStop()) {
+                request.at(TP.ONFAIL)(request);
+                return;
             }
 
-            //  Prep the UI for full console mode.
-            if (TP.isValid(bootTPFrameElem)) {
-                bootTPFrameElem.getContentDocument().getBody().addClass(
-                    'full_console');
+            //  NOTE that we don't have logic here. Formerly we'd trigger app
+            //  start signaling here but we have to let that happen via either
+            //  the tibet:root or tibet:sherpa tag processing for proper
+            //  sequencing.
+            if (inPhantom) {
+                //  Signal we are starting. This provides a hook for extensions
+                //  etc. to tap into the startup sequence before routing or
+                //  other behaviors but after we're sure the UI is finalized.
+                TP.signal('TP.sys', 'AppWillStart');
+
+                //  Signal actual start. The default handler on Application will
+                //  invoke the start() method in response to this signal.
+                TP.signal('TP.sys', 'AppStart');
+            } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
+
+                //  No hook file in the boot screen so we initialize manually.
+                bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+                if (TP.isValid(bootTPFrameElem)) {
+                    TP.boot.initializeCanvas(
+                        bootTPFrameElem.getContentWindow().getNativeWindow());
+                }
+
+                //  Prep the UI for full console mode.
+                if (TP.isValid(bootTPFrameElem)) {
+                    bootTPFrameElem.getContentDocument().getBody().addClass(
+                        'full_console');
+                }
             }
-        }
-    });
+        });
 
-    request.atPut(TP.ONFAIL, function(req) {
-        var msg,
-            txt;
+    request.atPut(
+        TP.ONFAIL,
+        function(req) {
+            var msg,
+                txt;
 
-        //  Be certain our boot UI is displayed.
-        TP.boot.showUIBoot();
+            //  Be certain our boot UI is displayed.
+            TP.boot.showUIBoot();
 
-        txt = req.getFaultText();
-        msg = TP.sc('UIRoot Initialization Error') +
-                (txt ? ': ' + txt + '.' : '.');
+            txt = req.getFaultText();
+            msg = TP.sc('UIRoot Initialization Error') +
+                    (txt ? ': ' + txt + '.' : '.');
 
-        //  TODO: Dig around and figure out what went wrong. getFaultText is
-        //  pretty limited in terms of details.
-        TP.boot.$stderr(msg, TP.FATAL);
-    });
+            //  TODO: Dig around and figure out what went wrong. getFaultText is
+            //  pretty limited in terms of details.
+            TP.boot.$stderr(msg, TP.FATAL);
+        });
 
     //  If we're not running with a UI (not phantom), and we have a properly
     //  configured 'boot toggle' key, then set up an observation that will cause
