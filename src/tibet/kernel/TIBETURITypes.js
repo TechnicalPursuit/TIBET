@@ -11139,9 +11139,10 @@ function(aURIOrPushState, aDirection) {
             if (TP.isValid(TP.global.sessionStorage.getItem(
                                             'tibet_sessionHistory'))) {
 
-                //  The number we want to move back (to get to 0) is the history
-                //  index that will have been restored from session storage.
-                histIndex = TP.core.History.get('index');
+                //  The number we want to move back (to get to 0) is the 'last
+                //  deep root' history index that will have been restored from
+                //  session storage.
+                histIndex = TP.core.History.getLastDeepRootIndex();
 
                 //  Make sure this is greater than 0. Otherwise, the go() call
                 //  has issues.

@@ -7215,6 +7215,54 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('getLastDeepRootIndex',
+function() {
+
+    /**
+     * @method getLastDeepRootIndex
+     * @summary Returns the last 'deep root' index. That is, the index of the
+     *     history entry closest to the 'end' (or the 'top') of the history that
+     *     that can be considered a deep root
+     * @returns {Number} The index of the last deep root.
+     */
+
+    var entries,
+
+        len,
+        i,
+
+        url;
+
+    entries = this.get('history');
+
+    //  Iterate backwards through the history list.
+    len = entries.getSize();
+    for (i = len; i--; i >= 0) {
+
+        //  The URL is always in the second position of the entry.
+        url = entries.at(i).at(2);
+
+        //  If the URL has a '?' along with trailing parameter content, then
+        //  slice the '?' and that content off.
+        if (url.contains('?')) {
+            url = url.slice(0, url.indexOf('?'));
+        }
+
+        //  If the URL does not contain '/#' or contains '/#', but does not end
+        //  with it, then it can be considered the 'last deep root'.
+        /* eslint-disable no-extra-parens */
+        if (!url.contains('/#') ||
+            (url.contains('/#') && !url.endsWith('/#'))) {
+            return i;
+        }
+        /* eslint-enable no-extra-parens */
+    }
+
+    return TP.NOT_FOUND;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('getLastLocation',
 function() {
 
