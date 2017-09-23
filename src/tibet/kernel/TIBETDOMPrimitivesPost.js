@@ -839,7 +839,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             styleLink,
             styleSheets,
-            i,
+            j,
             len,
             foundOne;
 
@@ -861,8 +861,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             //  in the stylesheet we're processing. If we find one, flip the
             //  flag.
             len = styleSheets.length;
-            for (i = 0; i < len; i++) {
-                if (styleSheets[i].href === styleLink.href) {
+            for (j = 0; j < len; j++) {
+                if (styleSheets[j].href === styleLink.href) {
                     foundOne = true;
                     break;
                 }
