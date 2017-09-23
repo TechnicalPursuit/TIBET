@@ -1424,7 +1424,7 @@ function(updateSelection) {
             labelContent.html(
                 function(d) {
 
-                    if (TP.regex.SPACING.test(data[0])) {
+                    if (TP.regex.SPACING.test(d)) {
                         return '&#160;';
                     }
 
@@ -1441,7 +1441,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d) {
 
-                    if (TP.regex.SPACING.test(d[0])) {
+                    if (TP.regex.SPACING.test(d)) {
                         return '';
                     }
 
