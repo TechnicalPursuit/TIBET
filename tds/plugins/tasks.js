@@ -38,6 +38,7 @@
             loggedInOrLocalDev,
             failJob,
             failTask,
+            remapStdioParams,
             retrieveFlow,
             retrieveTask,
             processOwnedTasks,
@@ -278,6 +279,8 @@
                         failJob(job, 'Missing task ' + fullname);
                         return;
                     }
+
+                    task.task_index = tasks.task_index;
                     acceptTask(job, task);
                 }).catch(function(err) {
                     logger.error(job,
@@ -329,9 +332,12 @@
             //  the order here matters since TDS.blend will _not_ replace
             //  existing values, so we want to put in job values first, then any
             //  task values so they act as defaults for missing values only.
-            params = {};
 
-            //  First blend in state-specific (foo-N) parameters
+            //  We connect step output to step input via 'stdio' mappings
+            //  optionally provided in the task and/or flow definitions.
+            params = remapStdioParams(job, step, {});
+
+            //  Blend in state-specific (foo-N) parameters
             if (job.params && job.params[job.state]) {
                 TDS.blend(params, job.params[job.state]);
             }
@@ -349,22 +355,6 @@
             step.params = params;
 
             job.steps.push(step);
-
-            //  Last step's output becomes next step's input.
-            job.stdin = job.stdout.slice(0);
-            job.stdout.length = 0;
-
-            //  Confirm stdin is serializable. If not then the prior step is
-            //  doing something wrong...data between steps has to be storable.
-            try {
-                JSON.stringify(job.stdin);
-            } catch (e) {
-                logger.error(job,
-                    'Corrupt stdin data from step ' +
-                    (job.steps.length - 1));
-                job.stderr.push(e.message);
-                job.stdin.length = 0;
-            }
 
             dbSave(job);
         };
@@ -530,9 +520,12 @@
                 last,
                 next,
                 list,
+                i,
+                len,
                 arr;
 
-            steps = job.steps;
+            //  Make a copy here...we don't want to change it.
+            steps = job.steps.slice(0);
             arr = [];
 
             tasks = job.tasks;
@@ -547,7 +540,9 @@
 
                     //  No steps so far? First task in the list :)
                     if (!last) {
-                        return [tasks.sequence[0]];
+                        arr.task_index = 0;
+                        arr.push(tasks.sequence[0]);
+                        return arr;
                     }
 
                     switch (last.state) {
@@ -587,6 +582,7 @@
                             break;
 
                         case '$$complete':
+                            //  Last task has completed so we need next one.
                             //  Which task we pluck depends on how many we've
                             //  done that weren't retries or error handlers.
 
@@ -601,27 +597,24 @@
                                 break;
                             }
 
-                            //  Scan the list we need to complete and find the
-                            //  first one that we don't have a complete for.
-                            list = tasks.sequence;
-                            list.some(function(taskname, index) {
-                                var complete;
+                            len = steps.length;
 
-                                complete = steps.some(function(step) {
-                                    return step.name === taskname &&
-                                        step.state === '$$complete';
-                                });
+                            list = tasks.sequence.slice(0);
 
-                                if (!complete) {
-                                    next = index;
-                                    return true;
+                            //  For each $$complete found we throw away a task.
+                            //  Whatever's the first one in the list once we're
+                            //  out of previously run steps (if there are
+                            //  any) is the next task to run.
+                            for (i = 0; i < len; i++) {
+                                if (steps[i].state === '$$complete') {
+                                    list.shift();
                                 }
+                            }
 
-                                return false;
-                            });
-
+                            next = list[0];
                             if (next !== undefined) {
-                                arr.push(list[next]);
+                                arr.task_index = i;
+                                arr.push(next);
                             }
                             break;
 
@@ -691,11 +684,6 @@
                 job.state = '$$ready';
                 job.start = Date.now();
                 job.steps = [];
-
-                //  Create initial 'stdio' arrays for 'piped' io.
-                job.stdin = [];
-                job.stdout = [];
-                job.stderr = [];
 
                 dbSave(job);
 
@@ -929,6 +917,110 @@
 
         /*
          */
+        remapStdioParams = function(job, step, params) {
+            var stdio,
+                stdout,
+                prior,
+                index,
+                map,
+                keys;
+
+            //  If no prior steps then no stdout to potentially remap.
+            prior = job.steps[job.steps.length - 1];
+            if (!prior || !prior.stdout) {
+                return params;
+            } else {
+                //  Capture any exported data from the prior step.
+                stdout = prior.stdout;
+            }
+
+            stdio = job.tasks.stdio;
+            if (!stdio) {
+                return params;
+            }
+
+            //  We're looking for any remapping data for the stdout of the
+            //  prior step, so look to that step for its index.
+            index = prior.task_index;
+
+            map = stdio[index];
+            if (!map) {
+                return params;
+            }
+
+            //  For each key in the map take any stdout data for that key and
+            //  place it in the remapped target location in params.
+            keys = Object.keys(map);
+            keys.forEach(function(src) {
+                var obj,
+                    target,
+                    parts,
+                    tail,
+                    len,
+                    i,
+                    key,
+                    val;
+
+                val = stdout;
+
+                //  If we still have a valid obj value the key exists in the
+                //  stdout data. Now we have to use the value in the map to
+                //  determine where it should go in the params.
+                target = map[src];
+                if (target === null || target === undefined) {
+                    //  Empty target value means don't copy it over into params.
+                    return;
+                }
+
+                parts = src.split('.');
+                len = parts.length;
+
+                //  See if the source key is even found in the export data.
+                for (i = 0; i < len; i++) {
+                    key = parts[i];
+                    if (val !== null && val !== undefined &&
+                            val.hasOwnProperty(key)) {
+                        val = val[key];
+                    } else {
+                        //  not found, nothing to map for this key.
+                        return;
+                    }
+                }
+
+                //  If final value was not found there's nothing to map.
+                if (val === null || val === undefined) {
+                    return;
+                }
+
+                //  We'll be traversing down into params, building as we go
+                //  through the target path, then placing 'val' at that slot.
+                obj = params;
+
+                parts = target.split('.');
+                tail = parts[parts.length - 1];
+                parts = parts.slice(0, -1);
+                len = parts.length;
+
+                for (i = 0; i < len; i++) {
+                    key = parts[i];
+                    if (obj.hasOwnProperty(key)) {
+                        obj = obj[key];
+                    } else {
+                        obj[key] = {};
+                        obj = obj[key];
+                    }
+                }
+
+                if (obj) {
+                    obj[tail] = val;
+                }
+            });
+
+            return params;
+        };
+
+        /*
+         */
         retrieveFlow = function(job, flow, owner) {
 
             return dbView(db_app, 'flows', {keys: [flow + '::' + owner]}).then(
@@ -1006,9 +1098,11 @@
             retryStep.index = job.steps.length;
             job.state = task.name + '-' + retryStep.index;
 
-            params = {};
+            //  We connect step output to step input via 'stdio' mappings
+            //  optionally provided in the task and/or flow definitions.
+            params = remapStdioParams(job, retryStep, {});
 
-            //  First blend in state-specific (foo-N) parameters
+            //  Blend in state-specific (foo-N) parameters
             if (job.params && job.params[job.state]) {
                 TDS.blend(params, job.params[job.state]);
             }
@@ -1026,23 +1120,6 @@
             retryStep.params = params;
 
             job.steps.push(retryStep);
-
-            //  Last step's output becomes next step's input.
-            job.stdin = job.stdout.slice(0);
-            job.stdout.length = 0;
-
-            //  Confirm stdin is serializable. If not then the prior step is
-            //  doing something wrong...data between steps has to be storable.
-            try {
-                JSON.stringify(job.stdin);
-            } catch (e) {
-                logger.error(job,
-                    'Corrupt stdin data from step ' +
-                    (job.steps.length - 1));
-
-                job.stderr.push(e.message);
-                job.stdin.length = 0;
-            }
 
             //  Saving the job with the new step in place should trigger a
             //  process to pick it up and try to run with it :)
@@ -1327,31 +1404,16 @@
             return;
         });
 
-
         //  Activate the database changes feed follower.
-        nano.db.list(function(err, result) {
-            if (err) {
-                dbError(err);
-                return;
-            }
+        try {
+            logger.system('TWS CouchDB interface watching ' +
+                TDS.maskCouchAuth(feedopts.db) +
+                ' changes > ' + feedopts.since);
 
-            if (result.indexOf(db_name) === -1) {
-                logger.error(
-                    TDS.maskCouchAuth(feedopts.db) +
-                    ' database does not exist.');
-                return;
-            }
-
-            try {
-                logger.system('TWS CouchDB interface watching ' +
-                    TDS.maskCouchAuth(feedopts.db) +
-                    ' changes > ' + feedopts.since);
-
-                feed.follow();
-            } catch (e) {
-                dbError(e);
-            }
-        });
+            feed.follow();
+        } catch (e) {
+            dbError(e);
+        }
 
         //  ---
         //  Shutdown

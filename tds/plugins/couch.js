@@ -1022,29 +1022,15 @@
 
 
             //  Activate the database changes feed follower.
-            nano.db.list(function(err, result) {
-                if (err) {
-                    dbError(err);
-                    return;
-                }
+            try {
+                logger.system('TDS CouchDB interface watching ' +
+                    TDS.maskCouchAuth(feedopts.db) +
+                    ' changes > ' + feedopts.since);
 
-                if (result.indexOf(db_name) === -1) {
-                    logger.error(
-                        TDS.maskCouchAuth(feedopts.db) +
-                        ' database does not exist.');
-                    return;
-                }
-
-                try {
-                    logger.system('TDS CouchDB interface watching ' +
-                        TDS.maskCouchAuth(feedopts.db) +
-                        ' changes > ' + feedopts.since);
-
-                    feed.follow();
-                } catch (e) {
-                    dbError(e);
-                }
-            });
+                feed.follow();
+            } catch (e) {
+                dbError(e);
+            }
         }
     };
 

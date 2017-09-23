@@ -179,6 +179,16 @@
             };
 
             include = TDS.getcfg('tds.watch.include');
+
+            if (typeof include === 'string') {
+                try {
+                    include = JSON.parse(include);
+                } catch (e) {
+                    logger.error('Invalid tds.watch.include value: ' +
+                        e.message);
+                }
+            }
+
             if (TDS.notEmpty(include)) {
                 //  Build list of 'files', 'directories', etc. But keep in mind
                 //  this is a file-based system so don't retain virtual paths.
@@ -194,6 +204,16 @@
 
             //  Build a pattern we can use to test against ignore files.
             exclude = TDS.getcfg('tds.watch.exclude');
+
+            if (typeof exclude === 'string') {
+                try {
+                    exclude = JSON.parse(exclude);
+                } catch (e) {
+                    logger.error('Invalid tds.watch.exclude value: ' +
+                        e.message);
+                }
+            }
+
             if (exclude) {
                 pattern = exclude.reduce(function(str, item) {
                     var fullpath;
