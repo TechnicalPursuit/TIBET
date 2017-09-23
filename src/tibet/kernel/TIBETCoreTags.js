@@ -613,11 +613,11 @@ function(wantsSherpa) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.root.Type.defineMethod('tagAttachDOM',
+TP.tibet.root.Type.defineMethod('tagAttachComplete',
 function(aRequest) {
 
     /**
-     * @method tagAttachDOM
+     * @method tagAttachComplete
      * @summary Sets up runtime machinery for the element in aRequest.
      * @description In this type, if the Sherpa is not 'active' this method
      *     loads the URL pointed to by the TP.sys.getHomeURL method into the
