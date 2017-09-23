@@ -637,8 +637,11 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
         docHead,
 
+        styleLinks,
+
         loadFunc,
-        count;
+
+        scriptCount;
 
     if (!TP.isXMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -758,6 +761,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     docHead = TP.documentEnsureHeadElement(aDocument);
 
+    //  Grab all of the 'style related' link elements.
+    styleLinks = TP.ac(docHead.querySelectorAll('link[type="text/css"]'));
+
     //  Since script elements, if we have them and they have a 'src'
     //  attribute, may be processed and fully realized in an asynchronous
     //  manner, we define a callback function that 'finishes up' the last parts
@@ -813,27 +819,67 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             TP.core.Window.$$isDocumentWriting = false;
         };
 
-    //  Now, using the scriptURLs Array as a queue, create a script element for
-    //  each scriptURL, set its 'load' event handler to the Function it is
-    //  actually in, and then append the new script element to the head. This
-    //  will cause the script to load and for the load handler to be called
-    //  recursively.
+    //  Now, using the scriptURLs and styleLinks Arrays as queues, set up a
+    //  recursively called load handler that will be called back as each
+    //  'script' or 'link' element is processed.
+
+    //  For the gathered script URLs, we create a script element for each one,
+    //  set its 'load' event handler to the load handler and then append the
+    //  new script element to the head.
 
     //  This ensures that each script is loaded in order and is completely
     //  finished loading before the next script is loaded.
-    count = 0;
+    scriptCount = 0;
     loadFunc = function(evt) {
         var scriptURL,
 
             newScript,
 
-            textSiblingContent;
+            textSiblingContent,
+
+            styleLink,
+            styleSheets,
+            i,
+            len,
+            foundOne;
 
         if (TP.isEvent(evt)) {
             TP.eventGetTarget(evt).removeEventListener('load', loadFunc, false);
         }
 
-        if (TP.notEmpty(scriptURLs)) {
+        if (TP.notEmpty(styleLinks)) {
+
+            //  Shift off the next style link element out of the queue
+            styleLink = styleLinks.shift();
+
+            foundOne = false;
+
+            //  Grab the list of style sheets already installed in our document.
+            styleSheets = aDocument.styleSheets;
+
+            //  Iterate over them, looking for an href that will match the one
+            //  in the stylesheet we're processing. If we find one, flip the
+            //  flag.
+            len = styleSheets.length;
+            for (i = 0; i < len; i++) {
+                if (styleSheets[i].href === styleLink.href) {
+                    foundOne = true;
+                    break;
+                }
+            }
+
+            //  The stylesheet we're processing wasn't in the list of style
+            //  sheets already attached to the document (which will only happen
+            //  when they are done loading), so install a 'load' handler on it.
+            if (!foundOne) {
+                styleLink.addEventListener('load', loadFunc, false);
+            } else {
+                //  The stylesheet we are processing was already loaded. Since
+                //  we've already removed it from our list of style links, we
+                //  just need to re-invoke the load function manually.
+                loadFunc();
+            }
+        } else if (TP.notEmpty(scriptURLs)) {
 
             //  Shift off the next script URL out of the queue
             scriptURL = scriptURLs.shift();
@@ -848,7 +894,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             //  If there is text sibling content for this particular script
             //  node, then append it after the new script node.
-            textSiblingContent = scriptTextSiblingsContents.at(count);
+            textSiblingContent = scriptTextSiblingsContents.at(scriptCount);
             if (TP.notEmpty(textSiblingContent)) {
                 TP.nodeAppendChild(
                         docHead,
@@ -856,8 +902,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                         false);
             }
 
-            //  Make sure to increment the count for the next pass!
-            count++;
+            //  Make sure to increment the scriptCount for the next pass!
+            scriptCount++;
         } else {
 
             //  Make sure window listeners etc for content loaded are ready.
