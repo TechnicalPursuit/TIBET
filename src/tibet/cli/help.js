@@ -270,9 +270,12 @@ Cmd.prototype.executeForCommand = function(command) {
         }
     }
 
-    topic = 'tibet-' + command;
-    if (topics.indexOf(topic) !== -1) {
-        subjects.push(topic);
+    //  If nothing from project then attempt to find TIBET subject.
+    if (subjects.length === 0) {
+        topic = 'tibet-' + command;
+        if (topics.indexOf(topic) !== -1) {
+            subjects.push(topic);
+        }
     }
 
     if (subjects.length === 0) {
@@ -754,9 +757,9 @@ Cmd.prototype.executeTopics = function(silent) {
                 return;
             }
 
-            //  By convention man pages look like tibet-{topic}.{section} and
-            //  they will lay out into different section subdirectories. We want
-            //  to trim all that off and just list the topic.
+            //  By convention man pages look like {project}-{topic}.{section}
+            //  and they will lay out into different section subdirectories. We
+            //  want to trim all that off and just list the topic.
             name = path.basename(file).replace(path.extname(file), '');
             parts = name.split('-');
             if (parts.length > 1) {
@@ -773,7 +776,7 @@ Cmd.prototype.executeTopics = function(silent) {
                     cmd.logCommands(topics);
                 }
                 topics.forEach(function(topic) {
-                    results.push(cmd.cfg('npm.name') + '-' + topic);
+                    results.push(cmd.getcfg('npm.name') + '-' + topic);
                 });
             }
         } else {

@@ -17,6 +17,7 @@
     "ip": "*",
     "js-beautify": "*",
     "keygrip": "*",
+    "marked-man": "^0.2.1",
     "minimist": "*",
     "passport": "*",
     "passport-local": "*",
