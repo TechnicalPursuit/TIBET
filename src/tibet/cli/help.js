@@ -147,7 +147,7 @@ Cmd.prototype.execute = function() {
                         } else if (this.options.generate) {
                             return this.executeGenerate();
                         } else {
-                            this.executeTopics();
+                            this.executeHelp();
                             return 0;
                         }
                     default:
@@ -571,6 +571,36 @@ Cmd.prototype.executeGenerate = function() {
 /**
  *
  */
+Cmd.prototype.executeHelp = function() {
+    var intro;
+
+    intro =
+        '\nThe tibet command can invoke TIBET built-ins, custom commands,\n' +
+        'tibet make targets, grunt targets, or gulp targets based on your\n' +
+        'project configuration and your specific customizations.\n\n' +
+        'For a list of available commands use `tibet` or `tibet --help`.\n\n' +
+        '`tibet help` lets you view documentation found in both your\n' +
+        'project and in the TIBET library on any available subjects.';
+
+    this.info(intro);
+
+    this.executeTopics();
+
+    try {
+        this.info(CLI.getcfg('npm.name') + '@' +
+            CLI.getcfg('npm.version').split('+')[0] +
+            ' ' + sh.which('tibet'));
+    } catch (e) {
+        //  empty
+    }
+
+    return 0;
+};
+
+
+/**
+ *
+ */
 Cmd.prototype.executeIntro = function() {
     var intro,
         cmds;
@@ -772,7 +802,7 @@ Cmd.prototype.executeTopics = function(silent) {
         if (paths.length > 1 && index === 0) {
             if (topics.length > 0) {
                 if (!silent) {
-                    cmd.info('\nproject help topics:\n');
+                    cmd.info('\nProject help topics include:\n');
                     cmd.logCommands(topics);
                 }
                 topics.forEach(function(topic) {
@@ -781,7 +811,7 @@ Cmd.prototype.executeTopics = function(silent) {
             }
         } else {
             if (!silent) {
-                cmd.info('\nlibrary help topics:\n');
+                cmd.info('\nLibrary help topics include:\n');
                 cmd.logCommands(topics);
                 cmd.log('');
             }
