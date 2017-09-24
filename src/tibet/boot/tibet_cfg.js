@@ -1543,7 +1543,7 @@
 
     //  the output mode that the Sherpa will start with - 'none', 'one' or
     //  'all'.
-    TP.sys.setcfg('sherpa.tdc.output_mode', 'one');
+    TP.sys.setcfg('sherpa.tdc.output_mode', 'none');
 
     //  the amount of time that the Sherpa TDC will wait before fading out an
     //  output item.
