@@ -341,30 +341,41 @@
             nodeIP = '127.0.0.1';
         }
 
-        //  First output the 'default' or 'prod' or 'build' version which should
-        //  be the one all projects default to without any '#' parameters....but
-        //  only if we see build artifacts.
-        builddir = TDS.expandPath('~app_build');
-        if (sh.test('-d', builddir)) {
-            artifacts = sh.ls(builddir);
-            if (artifacts.length) {
-                logger.system(project +
-                    TDS.colorize(' @ ', 'dim') +
-                    TDS.colorize(protocol + '://' + nodeIP +
-                        (port === 80 ? '' : ':' + port), 'host') +
-                    TDS.colorize(' (production build)', 'dim'),
-                    {comp: 'TDS', type: 'tds', name: 'build'});
+        if (TDS.getNodeEnv() !== 'development') {
+            //  First output the 'default' or 'prod' or 'build' version which should
+            //  be the one all projects default to without any '#' parameters....but
+            //  only if we see build artifacts.
+            builddir = TDS.expandPath('~app_build');
+            if (sh.test('-d', builddir)) {
+                artifacts = sh.ls(builddir);
+                if (artifacts.length) {
+                    logger.system(project +
+                        TDS.colorize(' @ ', 'dim') +
+                        TDS.colorize(protocol + '://' + nodeIP +
+                            (port === 80 ? '' : ':' + port), 'host') +
+                        TDS.colorize(' (production build)', 'dim'),
+                        {comp: 'TDS', type: 'tds', name: 'build'});
+                }
             }
+        } else if (TDS.getcfg('sherpa.enabled')) {
+            //  And a sherpa-enabled link for those who want to run the sherpa.
+            logger.system(project +
+                TDS.colorize(' @ ', 'dim') +
+                TDS.colorize(protocol + '://' + nodeIP +
+                    (port === 80 ? '' : ':' + port +
+                     '#?boot.profile=development#developer'),
+                    'host'),
+                {comp: 'TDS', type: 'tds', name: 'sherpa'});
+        } else {
+            //  Output a development link for non-sherpa operation ala the basic
+            //  quickstart/essentials guide approach to development.
+            logger.system(project +
+                TDS.colorize(' @ ', 'dim') +
+                TDS.colorize(protocol + '://' + nodeIP +
+                    (port === 80 ? '' : ':' + port +
+                     '#?boot.profile=development'), 'host'),
+                {comp: 'TDS', type: 'tds', name: 'dev'});
         }
-
-        //  Also output a 'development link' that will ensure app source and
-        //  sherpa are loaded and ready for development.
-        logger.system(project +
-            TDS.colorize(' @ ', 'dim') +
-            TDS.colorize(protocol + '://' + nodeIP +
-                (port === 80 ? '' : ':' + port + '#?boot.profile=development'),
-                'host'),
-            {comp: 'TDS', type: 'tds', name: 'dev'});
     };
 
     /**
