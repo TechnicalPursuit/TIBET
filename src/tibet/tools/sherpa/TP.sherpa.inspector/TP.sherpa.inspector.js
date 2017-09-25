@@ -1806,10 +1806,10 @@ function(anInfo) {
 
             //  Now that we have more inspector items, obtain the list again.
             inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+        } else {
+            //  If any of these path parts returned an alias, look it up here.
+            pathParts = this.getType().resolvePathAliases(pathParts);
         }
-
-        //  If any of these path parts returned an alias, look it up here.
-        pathParts = this.getType().resolvePathAliases(pathParts);
 
         for (i = 0; i < pathParts.getSize(); i++) {
 
