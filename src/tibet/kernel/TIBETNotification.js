@@ -4745,7 +4745,6 @@ function(anOrigin, aSignalName, aSignal, options) {
      */
 
     var opts,
-        captureState,
         checkTarget,
         scanSupertypes,
         i,
@@ -4995,8 +4994,8 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  are either capturing or bubbling.
             if (checkTarget) {
                 //  It's easy to determine this based on the 'captureState'
-                //  flag.
-                if (captureState) {
+                //  flag (which is what capture was set to).
+                if (capture) {
                     phase = TP.CAPTURING;
                 } else {
                     phase = TP.BUBBLING;
