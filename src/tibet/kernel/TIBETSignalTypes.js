@@ -1678,19 +1678,26 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
  *     'false' to the native event handler. Therefore, the following signals
  *     have the following behavior:
  *
- *     TP.sig.DOMClick -> We don't want to perform the default behavior (esp.
- *     for Links, which would be to follow the link). TP.sig.DOMContextMenu ->
- *     We don't want the context menu to show. TP.sig.DOMMouseDown -> We don't
- *     want the mouse down's default action to happen. TP.sig.DOMMouseUp -> We
- *     don't want the mouse up's default action to happen. TP.sig.DOMReset -> In
- *     general, we don't reset FORMs this way in TIBET. TP.sig.DOMSubmit -> In
- *     general, we don't submit FORMs this way in TIBET.
+ *     TP.sig.DOMClick: We don't want to perform the default behavior (esp.
+ *     for Links, which would be to follow the link).
+ *
+ *     TP.sig.DOMContextMenu: We don't want the context menu to show.
+ *
+ *     TP.sig.DOMMouseDown: We don't want the mouse down's default action to
+ *     happen.
+ *
+ *     TP.sig.DOMMouseUp: We don't want the mouse up's default action to happen.
+ *
+ *     TP.sig.DOMReset: In general, we don't reset FORMs this way in TIBET.
+ *
+ *     TP.sig.DOMSubmit: In general, we don't submit FORMs this way in TIBET.
  *
  *     The following signal types override that behavior and return 'true':
  *
- *     TP.sig.DOMKeySignal -> All subtypes of the key signal want to perform
- *     their default behavior, which is to allow the key stroke.
- *     TP.sig.DOMMouseOver -> Don't show Link URLs in the status bar.
+ *     TP.sig.DOMKeySignal: All subtypes of the key signal want to perform their
+ *     default behavior, which is to allow the key stroke.
+ *
+ *     TP.sig.DOMMouseOver: Don't show Link URLs in the status bar.
  *
  *     This parameter can always be set to a different value in the signal
  *     handlers themselves.
