@@ -750,6 +750,8 @@ function(aSignal) {
         modelObj,
         newInsertionInfo,
 
+        tileTPElem,
+
         names,
 
         tagAttrs,
@@ -827,6 +829,11 @@ function(aSignal) {
     //  the model URI. This will cause the bindings to update.
     if (this.get('$tileContentConstructed')) {
         modelURI.setResource(modelObj, TP.hc('signalChange', true));
+
+        //  Position the tile
+        tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+        tileTPElem.setPagePosition(
+            TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
     } else {
 
         //  Observe the URI for when the whole value changes.
