@@ -1785,9 +1785,10 @@ function(anInfo) {
 
             //  Replace the entry by slicing off the '__TARGET__' entry and
             //  appending that to the computed path parts.
-            if (TP.notEmpty(originalPathParts)) {
-                pathParts = originalPathParts.concat(pathParts.slice(1));
-            }
+            pathParts = originalPathParts.concat(pathParts.slice(1));
+
+            //  If any of these path parts returned an alias, look it up here.
+            pathParts = this.getType().resolvePathAliases(pathParts);
 
             rootBayItem = pathParts.shift();
 
