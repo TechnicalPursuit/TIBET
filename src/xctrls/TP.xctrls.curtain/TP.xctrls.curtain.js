@@ -82,5 +82,119 @@ function(aTPDocument, aCurtainID) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.curtain.Inst.defineHandler('DOMUISignal',
+function(aSignal) {
+
+    /**
+     * @method handleDOMUISignal
+     * @summary Handles notifications of a variety of mouse and key signals.
+     * @param {TP.sig.DOMUISignal} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.xctrls.curtain} The receiver.
+     */
+
+    aSignal.preventDefault();
+    aSignal.stopPropagation();
+
+    return this;
+}, {
+    phase: TP.CAPTURING
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.curtain.Inst.defineMethod('setAttrHidden',
+function(beHidden) {
+
+    /**
+     * @method setAttrHidden
+     * @summary Sets the 'hidden' attribute of the receiver. This causes the
+     *     halo to show or hide itself independent of whether it's focused or
+     *     not.
+     * @param {Boolean} beHidden Whether or not the halo should be hidden.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
+        //  Exit here - no need to call up to our supertype to toggle the
+        //  attribute, since it already has the value we desire.
+        return this;
+    }
+
+    //  Set up a capturing handler that will capture the following signals:
+    trappedSignalNames =
+        TP.ac(
+            'TP.sig.DOMClick',
+            'TP.sig.DOMDblClick',
+
+            'TP.sig.DOMContextMenu',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+
+            'TP.sig.DOMMouseDown',
+            'TP.sig.DOMMouseEnter',
+            'TP.sig.DOMMouseLeave',
+            'TP.sig.DOMMouseMove',
+            'TP.sig.DOMMouseOut',
+            'TP.sig.DOMMouseOver',
+            'TP.sig.DOMMouseUp',
+            'TP.sig.DOMMouseWheel',
+            'TP.sig.DOMMouseHover',
+
+            'TP.sig.DOMFocus',
+            'TP.sig.DOMBlur',
+
+            'TP.sig.DOMCut',
+            'TP.sig.DOMCopy',
+            'TP.sig.DOMPaste',
+
+            'TP.sig.DOMScroll',
+
+            'TP.sig.DOMFocusIn',
+            'TP.sig.DOMFocusOut',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+            'TP.sig.DOMModifierKeyChange',
+
+            'TP.sig.DOMDragDown',
+            'TP.sig.DOMDragMove',
+            'TP.sig.DOMDragOut',
+            'TP.sig.DOMDragOver',
+            'TP.sig.DOMDragUp',
+            'TP.sig.DOMDragHover'
+        );
+
+    //  If we're hiding, ignore those signals.
+    if (TP.isTrue(beHidden)) {
+        this.ignore(
+            this,
+            trappedSignalNames,
+            null,
+            TP.sig.SignalMap.REGISTER_CAPTURING);
+    } else {
+        //  If we're showing, observe those signals.
+        this.observe(
+            this,
+            trappedSignalNames,
+            null,
+            TP.sig.SignalMap.REGISTER_CAPTURING);
+    }
+
+    //  Need to 'call up' to make sure the attribute value is actually captured.
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
