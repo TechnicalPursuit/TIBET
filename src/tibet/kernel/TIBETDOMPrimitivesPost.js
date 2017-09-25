@@ -3312,6 +3312,47 @@ function(anElement, ignoreSourcetag) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetGeneratingElement',
+function(anElement) {
+
+    /**
+     * @method elementGetGeneratingElement
+     * @summary Returns the 'generating element' that generated the supplied
+     *     element. This is usually an instance of some kind of TIBET custom
+     *     tag.
+     * @param {Element} anElement The element to get the generating element
+     *     for.
+     * @returns {Element|null} The generating element, if found.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var tpElement,
+        element;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement',
+                                'Must provide a target Element node.');
+    }
+
+    tpElement = TP.wrap(anElement);
+    if (TP.isKindOf(tpElement, TP.core.CustomTag)) {
+        return anElement;
+    }
+
+    element = anElement.parentNode;
+    while (TP.isElement(element)) {
+        tpElement = TP.wrap(element);
+        if (TP.isKindOf(tpElement, TP.core.CustomTag)) {
+            return element;
+        }
+        element = element.parentNode;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$elementGetPrefixedAttributeNode',
 function(anElement, attributeName, checkAttrNSURI) {
 
