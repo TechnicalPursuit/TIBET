@@ -118,7 +118,9 @@ function(beHidden) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var wasHidden;
+    var wasHidden,
+
+        trappedSignalNames;
 
     wasHidden = TP.bc(this.getAttribute('hidden'));
 

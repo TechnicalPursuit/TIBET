@@ -37,8 +37,6 @@ function(aRequest) {
 
     var shell,
 
-        shouldProcessValue,
-
         arg0,
         halo;
 
