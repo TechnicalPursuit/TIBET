@@ -173,6 +173,7 @@
     <script src="tsh/TP.tsh.inspect.js"/>
     <script src="tsh/TP.tsh.interests.js"/>
     <script src="tsh/TP.tsh.keys.js"/>
+    <script src="tsh/TP.tsh.halo.js"/>
 
     <script src="tsh/TP.tsh.method/TP.tsh.method.js"/>
     <script src="tsh/TP.tsh.method/TP.tsh.method_assistant.js"/>
