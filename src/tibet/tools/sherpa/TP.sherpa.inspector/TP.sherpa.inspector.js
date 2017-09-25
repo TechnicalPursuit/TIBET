@@ -924,7 +924,8 @@ function(pathParts) {
         haloTarget = TP.byId('SherpaHalo', TP.win('UIROOT')).get(
                                                         'currentTargetTPElem');
         if (TP.isValid(haloTarget)) {
-            newPathParts = TP.ac(haloTarget.getID());
+            newPathParts = pathParts.slice(1);
+            newPathParts.unshift(haloTarget.getID());
         }
     } else {
 
