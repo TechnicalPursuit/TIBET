@@ -191,6 +191,7 @@ function(aSignal) {
         this.signal('InspectObject',
                     TP.hc('targetObject', target,
                             'targetAspect', TP.id(target),
+                            'targetPath', '__TARGET__/Instance Handlers',
                             'showBusy', true));
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
