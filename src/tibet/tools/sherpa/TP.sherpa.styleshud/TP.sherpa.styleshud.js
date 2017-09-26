@@ -253,6 +253,10 @@ function(aSignal) {
         return this;
     }
 
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
+
     //  Convert to a Number and retrieve the entry Array from our data
     indexInData = indexInData.asNumber();
     itemData = data.at(indexInData);
