@@ -1799,14 +1799,16 @@ function(anInfo) {
 
             if (dynamicContentEntries.contains(target, TP.IDENTITY)) {
                 this.selectItemInBay(TP.id(target), 0);
+                rootEntryResolver = target;
             } else {
-                this.selectItemInBay(this.getEntryLabel(target), 0);
+                this.selectItemInBay(rootBayItem, 0);
+                rootEntryResolver = this.getEntryAt(rootBayItem);
             }
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
                                 'targetAspect', rootBayItem,
-                                'targetObject', target);
+                                'targetObject', rootEntryResolver);
             this.populateBayUsing(rootInfo, false);
 
             //  Now that we have more inspector items, obtain the list again.
