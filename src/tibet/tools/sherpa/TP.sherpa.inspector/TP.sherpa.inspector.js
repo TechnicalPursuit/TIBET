@@ -1469,6 +1469,11 @@ function(anInfo) {
     target = anInfo.at('targetObject');
     targetPath = anInfo.at('targetPath');
 
+    if (TP.notEmpty(targetPath)) {
+        //  Convert '/'s to TP.PATH_SEP (but preserve backslashed '/'s)
+        targetPath = TP.stringSplitSlashesAndRejoin(targetPath, TP.PATH_SEP);
+    }
+
     //  Grab all of the inspector bays in the receiver.
     inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
