@@ -253,7 +253,9 @@ function() {
     //  Now, we have to make sure that we can delete the target
     if (!currentTargetTPElem.haloCanDelete(this)) {
 
-        TP.alert('The halo\'ed element cannot be deleted');
+        TP.alert('The halo\'ed element \'&lt;' +
+                    currentTargetTPElem.getFullName() +
+                    '/&gt;\' cannot be deleted');
 
         return TP.TSH_NO_VALUE;
     }
