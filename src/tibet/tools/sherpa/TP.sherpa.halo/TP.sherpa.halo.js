@@ -344,11 +344,12 @@ function(newTargetTPElem, shouldUnhide) {
             return this;
         }
 
-        //  Move and size the halo to the target.
-        this.moveAndSizeToTarget(newTargetTPElem, shouldUnhide);
-
         //  Set the current halo target to be the target passed in.
         this.set('currentTargetTPElem', newTargetTPElem);
+
+        //  Now that we set the halo target, move and size the halo to the
+        //  target.
+        this.moveAndSizeToTarget(newTargetTPElem, shouldUnhide);
 
         //  If we haven't set the 'don't signal blur/focus signals' flag, then
         //  go ahead and signal. Note that we only set this flag when we're
