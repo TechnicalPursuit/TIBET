@@ -106,8 +106,8 @@
     },
     "devDependencies": {},
     "engines": {
-        "node": ">=4",
-        "npm": ">=2"
+        "node": ">=6",
+        "npm": ">=3"
     },
     "scripts": {
         "test": "./bin/tibet checkup",
