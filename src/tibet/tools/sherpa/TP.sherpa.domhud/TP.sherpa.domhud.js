@@ -681,7 +681,8 @@ function(aSignal) {
      *     class on individual peer elements. The result is that as the user
      *     hovers over elements in the sidebar the corresponding element in
      *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
-     * @param {TP.sig.Signal} aSignal The over/out signal with the target.
+     * @param {TP.sig.ToggleHighlight} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
@@ -725,16 +726,17 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('ToggleHighlightAndShowAttributes',
+TP.sherpa.domhud.Inst.defineHandler('ShowAttributes',
 function(aSignal) {
 
     /**
-     * @method ToggleHighlightAndShowAttributes
-     * @summary Responds to mouse over/out notifications by toggling a
+     * @method ShowAttributes
+     * @summary Responds to mouse contextmenu notifications by toggling a
      *     class on individual peer elements. The result is that as the user
-     *     hovers over elements in the sidebar the corresponding element in
-     *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
-     * @param {TP.sig.Signal} aSignal The over/out signal with the target.
+     *     right clicks over elements in the sidebar the attributes panel is
+     *     shown for the corresponding element.
+     * @param {TP.sig.ShowAttributes} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
@@ -760,9 +762,6 @@ function(aSignal) {
 
         showHandler;
 
-    //  Call the handler method directly to toggle the highlight.
-    this.handleToggleHighlightFromANYWhenANY(aSignal);
-
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'domnode')) {
         return this;
@@ -780,6 +779,11 @@ function(aSignal) {
     if (TP.notValid(target)) {
         return this;
     }
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
+
     this.set('currentTarget', target);
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
