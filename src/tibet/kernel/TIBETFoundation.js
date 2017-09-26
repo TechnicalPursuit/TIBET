@@ -2677,7 +2677,7 @@ function(signalName, aHandler, aDescriptor) {
      *          origin (object or String id)
      *          state (String state name)
      *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
-     * @returns {Object} The receiver.
+     * @returns {Function} The newly defined handler method.
      */
 
     var name,
@@ -2730,9 +2730,7 @@ function(signalName, aHandler, aDescriptor) {
     //  whining about us defining a method starting with 'handle'.
     //  NOTE that we pass the descriptor along to defineMethod in case it has
     //  other keys of interest to that method such as patchCallee.
-    this.defineMethod(name, aHandler, desc, null, true);
-
-    return this;
+    return this.defineMethod(name, aHandler, desc, null, true);
 });
 
 //  ------------------------------------------------------------------------
