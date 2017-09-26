@@ -191,6 +191,7 @@ function(aSignal) {
         this.signal('InspectObject',
                     TP.hc('targetObject', target,
                             'targetAspect', TP.id(target),
+                            'targetPath', '__TARGET__/Instance Handlers',
                             'showBusy', true));
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
@@ -318,6 +319,10 @@ function(aSignal) {
     if (TP.isEmpty(indexInData)) {
         return this;
     }
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
 
     //  Convert to a Number and retrieve the entry Array from our data
     indexInData = indexInData.asNumber();

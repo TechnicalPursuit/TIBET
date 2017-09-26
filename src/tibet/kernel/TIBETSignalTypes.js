@@ -2215,8 +2215,13 @@ function(aFlag) {
     if (TP.isEvent(evt = this.getEvent())) {
         if (TP.isTrue(aFlag)) {
             //  The hook file patches all native events to support this
-            //  call.
-            evt.preventDefault();
+            //  call. Note that we put this in an empty try...catch. Some native
+            //  events don't like to have preventDefault called on them.
+            try {
+                evt.preventDefault();
+            } catch (e) {
+                //  Empty
+            }
         }
     }
 
