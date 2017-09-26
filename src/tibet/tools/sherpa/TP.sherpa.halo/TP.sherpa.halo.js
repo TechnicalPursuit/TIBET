@@ -667,9 +667,6 @@ function(aSignal) {
 
     var recastTPNode;
 
-    //  Hide the busy layer.
-    this.hideBusy();
-
     //  Blur ourself. This will remove any focusing that might exist on previous
     //  DOM content that is now gone.
     this.blur();
@@ -702,9 +699,6 @@ function(aSignal) {
      */
 
     this.set('$isRecasting', true);
-
-    //  Show the busy layer. We'll do more when we get the NodeDidRecast.
-    this.displayBusy();
 
     return this;
 });
