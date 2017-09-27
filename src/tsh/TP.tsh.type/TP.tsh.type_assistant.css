@@ -84,6 +84,16 @@ tsh|type_assistant > .body .new_type_details .flex_inner li {
     width: 100px;
 }
 
+tsh|type_assistant > .body ul.dna_radios {
+
+    margin: 0;
+}
+
+tsh|type_assistant > .body ul.dna_radios label {
+
+    margin-left: 10px;
+}
+
 tsh|type_assistant > .foot {
 
     margin-top: 1em;

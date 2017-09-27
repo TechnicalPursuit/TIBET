@@ -47,8 +47,25 @@
                     </li>
 
                     <li>
-                        <label for="dnaField">DNA:</label>
-                        <input type="text" id="dnaField" bind:io="{value: dna}"/>
+                        <label>DNA:</label>
+                        <ul class="dna_radios">
+                            <li>
+                                <label for="dnaRadio1">default</label>
+                                <input type="radio" name="dna_radio" value="default" id="dnaRadio1" bind:io="{checked: dna}"/>
+                                <label for="dnaRadio2">action tag</label>
+                                <input type="radio" name="dna_radio" value="actiontag" id="dnaRadio2"/>
+                                <label for="dnaRadio3">compiled tag</label>
+                                <input type="radio" name="dna_radio" value="compiledtag" id="dnaRadio3"/>
+                                <label for="dnaRadio4">content</label>
+                                <input type="radio" name="dna_radio" value="content" id="dnaRadio4"/>
+                                <label for="dnaRadio5">controller</label>
+                                <input type="radio" name="dna_radio" value="controller" id="dnaRadio5"/>
+                                <label for="dnaRadio6">info tag</label>
+                                <input type="radio" name="dna_radio" value="infotag" id="dnaRadio6"/>
+                                <label for="dnaRadio7">templated tag</label>
+                                <input type="radio" name="dna_radio" value="templatedtag" id="dnaRadio7"/>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </form>
