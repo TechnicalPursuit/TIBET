@@ -20,6 +20,19 @@ TP.tsh.CommandAssistant.defineSubtype('tsh.type_assistant');
 TP.tsh.type_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.tsh.type_assistant.Type.defineConstant('BUILT_IN_DNA_TAG_TYPES',
+    TP.ac(
+        'TP.core.ActionTag',
+        'TP.core.CompiledTag',
+        'TP.core.Content',
+        'TP.core.Controller',
+        'TP.core.InfoTag',
+        'TP.core.TemplatedTag'));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -83,6 +96,85 @@ function() {
      */
 
     return TP.uc('urn:tibet:type_cmd_source');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.type_assistant.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles when the user changes the value of the underlying model.
+     * @param {ValueChange} aSignal The signal that caused this handler to trip.
+     * @returns {TP.tsh.type_assistant} The receiver.
+     */
+
+    var result,
+
+        currentDNA,
+        supertypeForDNA;
+
+    result = this.get('assistantModelURI').getResource().get('result');
+
+    if (TP.notValid(result)) {
+        return this;
+    }
+
+    currentDNA = result.get('$.info.dna');
+
+    switch (currentDNA) {
+
+        case 'default':
+
+            //  If the supertype is currently set to one of the tag types, then
+            //  we set it to the empty String, since we're setting it back to a
+            //  non preset supertype and we'll let the user choose.
+            if (this.getType().BUILT_IN_DNA_TAG_TYPES.contains(
+                    result.get('$.info.supertype'))) {
+                supertypeForDNA = '';
+            } else {
+                //  Otherwise, set it to null which will cause the logic below
+                //  to skip setting it - that way we won't override what the
+                //  user wants.
+                supertypeForDNA = null;
+            }
+
+            break;
+
+        case 'actiontag':
+            supertypeForDNA = 'TP.core.ActionTag';
+            break;
+
+        case 'compiledtag':
+            supertypeForDNA = 'TP.core.CompiledTag';
+            break;
+
+        case 'content':
+            supertypeForDNA = 'TP.core.Content';
+            break;
+
+        case 'controller':
+            supertypeForDNA = 'TP.core.Controller';
+            break;
+
+        case 'infotag':
+            supertypeForDNA = 'TP.core.InfoTag';
+            break;
+
+        case 'templatedtag':
+            supertypeForDNA = 'TP.core.TemplatedTag';
+            break;
+
+        default:
+            break;
+    }
+
+    if (TP.isValid(supertypeForDNA)) {
+        result.set('$.info.supertype', supertypeForDNA);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
