@@ -88,11 +88,18 @@ function(aTagTypeName) {
     allTofus.forEach(
             function(tofuTPElem) {
 
-                var newElem;
+                var newElem,
+                    newTPElem;
 
                 newElem = TP.nodeFromString('<' + tagName + '/>');
                 if (TP.isElement(newElem)) {
-                    tofuTPElem.replaceWith(newElem);
+
+                    //  Capture the return value of replacing the tofu and make
+                    //  sure to null out its global ID. This will help the
+                    //  Sherpa halo to obtain the proper lock on the new element
+                    //  and allow it to let go of the tofu element.
+                    newTPElem = tofuTPElem.replaceWith(newElem);
+                    TP.unwrap(newTPElem)[TP.GLOBAL_ID] = null;
                 }
             });
 

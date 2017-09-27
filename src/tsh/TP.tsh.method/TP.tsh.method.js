@@ -52,6 +52,7 @@ function(aRequest) {
         methodKind,
 
         defMethod,
+        desc,
         target,
 
         newMethod,
@@ -101,8 +102,6 @@ function(aRequest) {
         return;
     }
 
-    wholeName = methodName;
-
     //  It can be either a regular method or a handler
 
     methodKind = shell.getArgument(aRequest, 'tsh:kind', null, false);
@@ -113,9 +112,13 @@ function(aRequest) {
 
     if (methodKind === 'handler') {
         defMethod = 'defineHandler';
+        desc = {
+            signal: methodName
+        };
+        wholeName = TP.composeHandlerName(desc);
     } else {
         defMethod = 'defineMethod';
-        wholeName = 'handle' + wholeName.asTitleCase();
+        wholeName = methodName;
     }
 
     //  It can be a type, instance or type local method
@@ -128,13 +131,10 @@ function(aRequest) {
 
     if (methodTrack === 'type') {
         target = methodOwnerType.Type;
-        wholeName = TP.name(methodOwnerType) + '.Type.' + wholeName;
     } else if (methodTrack === 'instance') {
         target = methodOwnerType.Inst;
-        wholeName = TP.name(methodOwnerType) + '.Inst.' + wholeName;
     } else if (methodTrack === 'typelocal') {
         target = methodOwnerType;
-        wholeName = TP.name(methodOwnerType) + '.' + wholeName;
     }
 
     if (TP.notValid(target) || !TP.isMethod(target[defMethod])) {
@@ -143,7 +143,7 @@ function(aRequest) {
     }
 
     //  Make sure that the method isn't already defined
-    if (TP.owns(target, methodName)) {
+    if (TP.owns(target, wholeName)) {
         aRequest.stderr('Method already exists: ' + wholeName);
         aRequest.complete(TP.TSH_NO_VALUE);
 

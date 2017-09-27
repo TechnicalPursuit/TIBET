@@ -579,6 +579,12 @@ function(aSignal) {
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
     if (haloTarget !== halo.get('currentTargetTPElem')) {
+
+        //  Remove any highlighting that we were doing because we're going to
+        //  focus the halo.
+        haloTarget.removeClass('sherpa-hud-highlight');
+        this.$set('highlighted', null, false);
+
         //  Blur and then focus the halo on our new element, passing true to
         //  actually show the halo if it's hidden.
         halo.blur();
@@ -688,6 +694,9 @@ function(aSignal) {
 
     var targetElem,
         peerID,
+
+        halo,
+
         target;
 
     target = this.get('highlighted');
@@ -717,9 +726,14 @@ function(aSignal) {
         return this;
     }
 
-    target = target.getNativeNode();
-    TP.elementAddClass(target, 'sherpa-hud-highlight');
-    this.$set('highlighted', target, false);
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+    if (target !== halo.get('currentTargetTPElem')) {
+
+        target = target.getNativeNode();
+        TP.elementAddClass(target, 'sherpa-hud-highlight');
+        this.$set('highlighted', target, false);
+    }
 
     return this;
 });
