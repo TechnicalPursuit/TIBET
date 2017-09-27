@@ -2517,8 +2517,7 @@ function(anElement, attributeName, stripPrefixes) {
      *     provided to the method.
      */
 
-    var elementPrefix,
-        dict,
+    var dict,
         attrs,
         len,
         i,
@@ -2527,8 +2526,6 @@ function(anElement, attributeName, stripPrefixes) {
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
-
-    elementPrefix = anElement.prefix;
 
     dict = TP.hc();
 
@@ -2550,21 +2547,9 @@ function(anElement, attributeName, stripPrefixes) {
         //  with the unprefixed name.
         if (stripPrefixes) {
             attrName = attrName.slice(attrName.indexOf(':') + 1);
-            dict.atPut(attrName, attrs[i].value);
-        } else if (attrName.indexOf(':') !== TP.NOT_FOUND) {
-            //  Otherwise, if we have a prefix, then put in one entry with the
-            //  prefixed named
-            dict.atPut(attrName, attrs[i].value);
-        } else {
-            //  Otherwise, if we don't have a prefix, but the element has a
-            //  prefix, then put in two entries: one with the element's
-            //  prefix and one without.
-            if (TP.notEmpty(elementPrefix)) {
-                dict.atPut(elementPrefix + ':' + attrName, attrs[i].value);
-            }
-
-            dict.atPut(attrName, attrs[i].value);
         }
+
+        dict.atPut(attrName, attrs[i].value);
     }
 
     return dict;
