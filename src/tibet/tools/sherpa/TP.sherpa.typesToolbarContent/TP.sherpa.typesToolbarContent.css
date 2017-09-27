@@ -3,14 +3,12 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|typesToolbarContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 sherpa|typesToolbarContent > button.addtype {
-
-    position: absolute;
-
-    left: 0;
-
     width: 24px;
     height: 24px;
 

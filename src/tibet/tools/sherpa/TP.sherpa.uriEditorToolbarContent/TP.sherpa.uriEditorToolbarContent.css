@@ -3,9 +3,8 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|uriEditorToolbarContent {
-
     display: flex;
-
+    flex-direction: row;
     justify-content: flex-end;
 
     left: 0;
@@ -30,10 +29,7 @@ sherpa|uriEditorToolbarContent > .detach_mark {
 
     display: block;
 
-    margin: 0.25em;
-
-    margin-left: 0;
-    margin-right: 0;
+    margin: 4px;
 
     width: 16px;
     height: 16px;

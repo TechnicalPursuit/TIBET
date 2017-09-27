@@ -35,18 +35,8 @@
 
     <div class="footer">
         <div class="systemToolbar">
-            <button id="snippetMenuTrigger" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: 'SnippetsPopup'}}"/>
+            <sherpa:dispenser/>
 
-            <xctrls:button class="build" on:click="TSHBuild">
-                <xctrls:hint>Build project</xctrls:hint>
-            </xctrls:button>
-            <xctrls:button class="test" on:click="TSHTest">
-                <xctrls:hint>Test project</xctrls:hint>
-            </xctrls:button>
-            <xctrls:button class="deploy" on:click="TSHDeploy">
-                <xctrls:hint>Deploy project</xctrls:hint>
-            </xctrls:button>
-            <button class="spacer"/>
             <xctrls:itemgroup id="workbenchToggleButtons" multiple="true">
                 <xctrls:buttonitem id="haloToggleButton" class="halo" on:click="ToggleHalo">
                     <xctrls:label>&#160;</xctrls:label>
@@ -59,7 +49,21 @@
                     <xctrls:hint>Toggle Outlines</xctrls:hint>
                 </xctrls:buttonitem>
             </xctrls:itemgroup>
-            <sherpa:dispenser/>
+
+            <button class="spacer"/>
+
+            <xctrls:button class="deploy" on:click="TSHDeploy">
+                <xctrls:hint>Deploy project</xctrls:hint>
+            </xctrls:button>
+            <xctrls:button class="test" on:click="TSHTest">
+                <xctrls:hint>Test project</xctrls:hint>
+            </xctrls:button>
+            <xctrls:button class="build" on:click="TSHBuild">
+                <xctrls:hint>Build project</xctrls:hint>
+            </xctrls:button>
+
+            <button id="snippetMenuTrigger" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: 'SnippetsPopup'}}"/>
+
         </div>
         <sherpa:toolbar/>
     </div>

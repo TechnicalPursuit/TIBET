@@ -2,164 +2,119 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 sherpa|workbench {
-
     display: block;
     position: absolute;
-
     width: 100%;
     height: 100%;
 }
 
 sherpa|workbench > .header {
-
     position: absolute;
-
     top: 0;
-
     height: 30px;
     width: 100%;
-
     border-bottom: 1px solid #aaa;
 }
 
 .workbench-nav {
-
     position: absolute;
-
     left: 32px;
-
     height: 100%;
     width: 90px;
 }
 
 .workbench-path {
-
     position: absolute;
-
     right: 0;
-    left: 122px;
-
+    left: 108px;
     height: 100%;
 }
 
 sherpa|workbench > .content {
-
     position: absolute;
-
     top: 31px;
     bottom: 31px;
-
     min-width: 0;
     max-width: none;
-
     width: 100%;
-
     background-color: #eee;
-
     border-top: 1px solid #fff;
     border-bottom: 1px solid #aaa;
 }
 
 sherpa|workbench > .footer {
-
     position: absolute;
-
     bottom: 0;
     left: 0;
     right: 0;
-
     height: 30px;
     width: auto;
-
     border-top: 1px solid white;
-
     background-color: #eee;
 }
 
 .workbench-nav > button.navigation {
-
     float: left;
-
     opacity: 0.3;
-
     width: 20px;
     height: 20px;
-
+    margin: 4px 2px;
     background-size: 20px 20px;
     background-position: -1px -1px;
 }
 
 .workbench-nav > button.navigation.more {
-
     opacity: 1;
 }
 
 .workbench-nav > button#navigatehome {
-
     /* This button is always 'on' */
     opacity: 1;
-
     background-image: url("../media/ic_home_black_24px.svg");
 }
 
 .workbench-nav > button#navigateback {
-
     background-image: url("../media/ic_keyboard_arrow_left_black_24px.svg");
 }
 
 .workbench-nav > button#navigateforward {
-
     background-image: url("../media/ic_keyboard_arrow_right_black_24px.svg");
 }
 
 .workbench-path > .breadcrumbs {
-
     position: absolute;
-
     left: 0;
-    right: 96px;
-
+    right: 84px;
     height: 100%;
 }
 
 .workbench-path > .bookmarks {
-
     position: absolute;
-
-    right: 32px;
-
+    right: 30px;
     width: 64px;
     height: 100%;
 }
 
 .bookmarks > button.bookmarking {
-
     position: absolute;
-
     width: 20px;
     height: 20px;
-
     background-size: 20px 20px;
     background-position: -1px -1px;
 }
 
 .bookmarks > button#addbookmark {
-
-    right: 35px;
-
+    right: 24px;
     background-image: url("../media/ic_playlist_add_black_24px.svg");
 }
 
 .bookmarks > button#showbookmarks {
-
-    right: 5px;
-
+    right: 0px;
     background-image: url("../media/ic_playlist_play_black_24px.svg");
 }
 
 #snippetMenuTrigger {
-
-    float: left;
+    float: right;
     margin-left: 32px;
     width: 24px;
     height: 24px;
@@ -175,30 +130,22 @@ sherpa|workbench > .footer {
 }
 
 sherpa|workbench > .footer .systemToolbar {
-
     position: absolute;
-
     left: 0;
 }
 
 sherpa|workbench > .footer .systemToolbar sherpa|dispenser {
-
     position: relative;
-
     left: 0;
-
-    float: left;
-
+    float: right;
     margin: 5px;
 }
 
 sherpa|workbench > .footer xctrls|button[class~="build"] {
-
-    float: left;
-
+    float: right;
     width: 24px;
     height: 24px;
-
+    margin: 4px 2px;
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
@@ -206,12 +153,10 @@ sherpa|workbench > .footer xctrls|button[class~="build"] {
 }
 
 sherpa|workbench > .footer xctrls|button[class~="test"] {
-
-    float: left;
-
+    float: right;
     width: 24px;
     height: 24px;
-
+    margin: 4px 2px;
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
@@ -219,12 +164,10 @@ sherpa|workbench > .footer xctrls|button[class~="test"] {
 }
 
 sherpa|workbench > .footer xctrls|button[class~="deploy"] {
-
-    float: left;
-
+    float: right;
     width: 24px;
     height: 24px;
-
+    margin: 4px 2px;
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
@@ -232,120 +175,91 @@ sherpa|workbench > .footer xctrls|button[class~="deploy"] {
 }
 
 sherpa|workbench > .footer xctrls|buttonitem {
-
-    float: left;
-
+    float: right;
     width: 24px;
     height: 24px;
 }
 
 sherpa|workbench > .footer xctrls|buttonitem > xctrls|label {
-
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
 }
 
 sherpa|workbench > .footer xctrls|buttonitem[class~="halo"] > xctrls|label {
-
     background-image: url("../media/ic_format_shapes_black_24px.svg");
 }
 
 sherpa|workbench > .footer xctrls|buttonitem[class~="outline"] > xctrls|label {
-
     background-image: url("../media/ic_code_black_24px.svg");
 }
 
 sherpa|workbench > .footer button.spacer {
-
-    float: left;
-
+    float: right;
     width: 12px;
     height: 24px;
-
     border: 0;
-
     background: transparent;
-
     box-shadow: none;
-
     cursor: default;
-
     margin: 0;
     padding: 0;
 }
 
 sherpa|workbench sherpa|opener[class~="west"] {
-
     position: absolute;
-
     left: 0;
 }
 
 sherpa|workbench sherpa|opener[class~="east"] {
-
     position: absolute;
-
     right: 0;
 }
 
 sherpa|workbench .icon {
-
     margin-left: 0;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] {
-
     display: block;
-
     bottom: 75px;
     left: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] .icon::after {
-
     /* This is the same as '&#8592' */
     content: "\2190";
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] {
-
     display: block;
-
     bottom: 100px;
     left: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] .icon::after {
-
     /* This is the same as '&#8594' */
     content: "\2192";
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] {
-
     display: block;
-
     bottom: 75px;
     right: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] .icon::after {
-
     /* This is the same as '&#8592' */
     content: "\2190";
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] {
-
     display: block;
-
     bottom: 100px;
     right: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] .icon::after {
-
     /* This is the same as '&#8594' */
     content: "\2192";
 }

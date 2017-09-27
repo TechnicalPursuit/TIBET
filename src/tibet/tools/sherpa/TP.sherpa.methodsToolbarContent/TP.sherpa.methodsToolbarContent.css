@@ -3,13 +3,12 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|methodsToolbarContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 sherpa|methodsToolbarContent > button.addmethod {
-
-    position: absolute;
-
-    left: 0;
 
     width: 24px;
     height: 24px;

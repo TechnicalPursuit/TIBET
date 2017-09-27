@@ -93,7 +93,7 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content .title {
     position: absolute;
 
     margin-top: 6px;
-    margin-left: 4px;
+    margin-left: 20px;
 
     height: 1.5em;
 }
@@ -102,7 +102,7 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content #processRemoteChanges {
 
     position: absolute;
 
-    right: 4px;
+    right: 20px;
 
     height: 1.5em;
 }
@@ -111,9 +111,9 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
 
     position: absolute;
 
-    top: 2em;
+    top: 2.2em;
     right: 0;
-    bottom: 24px;
+    bottom: 2.2em;
     left: 0;
 
     width: auto;
