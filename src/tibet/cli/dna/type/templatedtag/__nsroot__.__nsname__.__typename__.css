@@ -3,7 +3,7 @@
  */
 
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
-@namespace {{nsname}} url("urn:tibet:{{nsname}}");
+@namespace {{nsname}} url("urn:app:{{nsname}}");
 
 /**
  * If your template/compile process transforms <{{nsname}}:{{typename}}/> tags
