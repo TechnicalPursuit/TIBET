@@ -881,8 +881,11 @@ function(pathParts) {
 
     var methodInfo,
         methodParts,
-
         methodName,
+        methodNameMatcher,
+
+        isHandler,
+
         trackName,
         typeName,
 
@@ -904,13 +907,24 @@ function(pathParts) {
         methodInfo = pathParts.last();
         methodParts = methodInfo.split('.');
 
-        methodName = TP.rc('^' + TP.regExpEscape(methodParts.last()));
+        methodName = methodParts.last();
+        methodNameMatcher = TP.rc('^' + TP.regExpEscape(methodName));
+
+        isHandler = TP.regex.HANDLER_NAME.test(methodName);
 
         if (/Inst\./.test(methodInfo)) {
-            trackName = 'Instance Methods';
+            if (isHandler) {
+                trackName = 'Instance Handlers';
+            } else {
+                trackName = 'Instance Methods';
+            }
             typeName = methodParts.slice(0, -2).join('.');
         } else if (/Type\./.test(methodInfo)) {
-            trackName = 'Type Methods';
+            if (isHandler) {
+                trackName = 'Type Handlers';
+            } else {
+                trackName = 'Type Methods';
+            }
             typeName = methodParts.slice(0, -2).join('.');
         } else {
             trackName = '';
