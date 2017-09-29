@@ -416,30 +416,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineHandler('SaveCanvas',
-function(aSignal) {
-
-    var uiDoc,
-        uiDocURI,
-
-        serializationStorage;
-
-    uiDoc = TP.sys.uidoc();
-
-    uiDocURI = TP.uc(uiDoc.getLocation());
-
-    serializationStorage = TP.hc();
-    serializationStorage.atPut('store', uiDocURI.getLocation());
-
-    uiDoc.serializeForStorage(serializationStorage);
-
-    TP.bySystemId('Sherpa').saveStorageSerialization(serializationStorage);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.workbench.Inst.defineHandler('ShowBookmarks',
 function(aSignal) {
 
