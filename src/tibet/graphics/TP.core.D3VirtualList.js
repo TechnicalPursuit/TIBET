@@ -27,6 +27,9 @@ TP.core.D3Tag.defineSubtype('D3VirtualList');
 //  instance creation
 TP.core.D3VirtualList.isAbstract(true);
 
+//  We don't need to order instances of these types.
+TP.core.D3VirtualList.Type.set('shouldOrder', false);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

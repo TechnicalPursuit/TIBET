@@ -29,6 +29,17 @@ TP.core.D3Tag.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 /**
+ * Whether or not d3.js should 'order' the DOM nodes based on the index of their
+ * data. The default is true.
+ * @type {Boolean}
+ */
+TP.core.D3Tag.Type.defineAttribute('shouldOrder');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
  * The registry of templating expressions used by the rendering methods.
  * @type {TP.core.hash}
  */
@@ -759,6 +770,12 @@ function() {
         //  Remove any content from the exit selection
         this.d3Exit();
         this.d3ExitTransition();
+
+        //  If we're supposed to maintain the order between data and DOM, then
+        //  do so here.
+        if (TP.notFalse(this.getType().get('shouldOrder'))) {
+            this.get('updateSelection').order();
+        }
     }
 
     //  Signal to observers that this control has rendered.
