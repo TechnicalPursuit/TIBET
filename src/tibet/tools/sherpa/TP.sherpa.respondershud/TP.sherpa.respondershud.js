@@ -221,6 +221,12 @@ function(aSignal) {
         //  Grab the method by going to the '.Inst' of our current target (which
         //  should be a type) and looking for that slot.
         target = this.get('currentTarget').Inst[val];
+        if (!TP.isMethod(target)) {
+            //  The value might have trailing content indicating the owner. We
+            //  need to slice that off here and try again.
+            val = val.slice(0, val.indexOf(' '));
+            target = this.get('currentTarget').Inst[val];
+        }
 
         //  Hide the tile.
         TP.byId('ResponderSummary_Tile', this.getNativeWindow()).setAttribute(
