@@ -452,7 +452,7 @@ function(aType) {
 
     rawData = rawData.filter(
                     function(anItem) {
-                        return /^handle/.test(anItem);
+                        return TP.regex.HANDLER_NAME.test(anItem);
                     });
 
     result.push(rawData);
@@ -468,7 +468,7 @@ function(aType) {
 
     rawData = rawData.filter(
                     function(anItem) {
-                        return /^handle/.test(anItem);
+                        return TP.regex.HANDLER_NAME.test(anItem);
                     });
 
     rawData.forEach(
