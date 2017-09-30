@@ -406,8 +406,8 @@ function(shouldRender) {
 
     var hasChanged;
 
-    //  Clear the selection model.
-    this.$getSelectionModel().empty();
+    //  Clear the selection.
+    this.setValue(null);
 
     //  Now call the next most specific method, which will re-render the
     //  receiver and the (now empty) selection.

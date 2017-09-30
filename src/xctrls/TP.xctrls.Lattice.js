@@ -311,6 +311,9 @@ function(shouldRender) {
         this.scrollTopToRow(0);
     }
 
+    //  Clear the selection.
+    this.setValue(null);
+
     //  Now call the next most specific method, which will re-render the
     //  receiver and the (now empty) selection.
     hasChanged = this.callNextMethod();
