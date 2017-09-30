@@ -899,7 +899,10 @@ function(aSignal) {
     //  Show the rule text in the tile. Note how we wrap the content with a span
     //  with a CodeMirror CSS class to make the styling work.
     TP.bySystemId('Sherpa').showTileAt(
-        'DOMAttributes_Tile', 'Element Attributes', showHandler, showHandler);
+        'DOMAttributes_Tile',
+        target.getFullName() + ' Attributes',
+        showHandler,
+        showHandler);
 
     return this;
 });
