@@ -376,7 +376,7 @@ function(aSignal) {
             aTileTPElem.setPagePosition(
                         TP.pc(xCoord, targetElemPageRect.getY()));
 
-            contentTPElem = aTileTPElem.getFirstChildElement();
+            contentTPElem = aTileTPElem.get('xctrls|list');
             contentTPElem.refresh();
         },
         function(aTileTPElem) {
