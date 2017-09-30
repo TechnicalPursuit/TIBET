@@ -14,7 +14,7 @@
                 <ul class="flex_outer">
                     <li>
                         <label>Root NS:</label>
-                        <ul class="flex_inner">
+                        <ul class="top_level_ns">
                             <li>
                                 <label for="topLevelNSRadio1">TP</label>
                                 <input type="radio" name="namespace_radio" value="TP" id="topLevelNSRadio1" bind:io="{checked: topLevelNS}"/>
@@ -52,16 +52,28 @@
                             <li>
                                 <label for="dnaRadio1">default</label>
                                 <input type="radio" name="dna_radio" value="default" id="dnaRadio1" bind:io="{checked: dna}"/>
+                            </li>
+                            <li>
                                 <label for="dnaRadio2">action tag</label>
                                 <input type="radio" name="dna_radio" value="actiontag" id="dnaRadio2"/>
+                            </li>
+                            <li>
                                 <label for="dnaRadio3">compiled tag</label>
                                 <input type="radio" name="dna_radio" value="compiledtag" id="dnaRadio3"/>
+                            </li>
+                            <li>
                                 <label for="dnaRadio4">content</label>
                                 <input type="radio" name="dna_radio" value="content" id="dnaRadio4"/>
+                            </li>
+                            <li>
                                 <label for="dnaRadio5">controller</label>
                                 <input type="radio" name="dna_radio" value="controller" id="dnaRadio5"/>
+                            </li>
+                            <li>
                                 <label for="dnaRadio6">info tag</label>
                                 <input type="radio" name="dna_radio" value="infotag" id="dnaRadio6"/>
+                            </li>
+                            <li>
                                 <label for="dnaRadio7">templated tag</label>
                                 <input type="radio" name="dna_radio" value="templatedtag" id="dnaRadio7"/>
                             </li>

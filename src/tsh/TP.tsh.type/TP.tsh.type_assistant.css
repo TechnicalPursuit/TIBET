@@ -53,8 +53,7 @@ tsh|type_assistant > .body .new_type_details .flex_outer {
     margin-left: 0;
 }
 
-tsh|type_assistant > .body .new_type_details .flex_outer li,
-.flex-inner {
+tsh|type_assistant > .body .new_type_details .flex_outer > li {
 
     display: flex;
     flex-wrap: wrap;
@@ -68,18 +67,12 @@ tsh|type_assistant > .body .new_type_details .flex_outer > li > label {
     max-width: 100px;
 }
 
-tsh|type_assistant > .body .new_type_details .flex_outer > li > label + *,
-.flex_inner {
+tsh|type_assistant > .body .new_type_details .flex_outer > li > label + * {
 
     flex: 1 0 100px;
 }
 
-tsh|type_assistant > .body .new_type_details .flex_inner {
-
-    justify-content: space-between;
-}
-
-tsh|type_assistant > .body .new_type_details .flex_inner li {
+tsh|type_assistant > .body .new_type_details .top_level_ns li {
 
     width: 100px;
 }
@@ -89,9 +82,21 @@ tsh|type_assistant > .body ul.dna_radios {
     margin: 0;
 }
 
-tsh|type_assistant > .body ul.dna_radios label {
+tsh|type_assistant > .body ul.dna_radios > li {
+
+    display: inline;
+
+    white-space: nowrap;
+}
+
+tsh|type_assistant > .body ul.dna_radios > li > label {
 
     margin-left: 10px;
+}
+
+tsh|type_assistant > .body ul.dna_radios > li > label + * {
+
+    vertical-align: middle;
 }
 
 tsh|type_assistant > .foot {
