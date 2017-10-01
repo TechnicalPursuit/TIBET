@@ -89,7 +89,6 @@ function(aSignal) {
      *     to trip.
      */
 
-    this.setAttribute('active', false);
     this.setAttribute('hidden', true);
 
     return;
@@ -106,7 +105,6 @@ function(aSignal) {
      *     this method.
      */
 
-    this.setAttribute('active', false);
     this.setAttribute('hidden', true);
 
     return;
@@ -123,7 +121,6 @@ function(aSignal) {
      *     this method.
      */
 
-    this.setAttribute('active', false);
     this.setAttribute('hidden', true);
 
     return this;
@@ -159,14 +156,14 @@ function(beHidden) {
         this.observe(TP.ANY, 'TP.sig.CloseTooltip');
 
         this.observe(elem, 'TP.sig.DOMTransitionEnd');
-
-        //  NB: We do this at the next repaint so that the 'pclass:hidden' flag
-        //  has a chance to take effect before flipping 'pclass:active' to true
-        //  as well.
-        (function() {
-            this.setAttribute('active', true);
-        }.bind(this)).queueForNextRepaint(this.getNativeWindow());
     }
+
+    //  NB: We do this at the next repaint so that the 'pclass:hidden' flag
+    //  has a chance to take effect before flipping 'pclass:active' to true
+    //  as well.
+    (function() {
+        this.setAttribute('active', !beHidden);
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });
