@@ -116,7 +116,7 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.hint.Type.defineMethod('setupHintOn',
-function(anElement, hintElement) {
+function(anElement, hintElement, tooltipParams) {
 
     /**
      * @method setupHintOn
@@ -125,10 +125,14 @@ function(anElement, hintElement) {
      *     The typical behavior here is to install a mouseover event listener
      *     that will dispatch the UIHint signal.
      * @param {Element} hintElement The corresponding xctrls:hint element.
+     * @param {TP.core.Hash} [tooltipParams] A hash of parameters to pass to the
+     *     signal that will open the hint in a tooltip.
      * @returns {TP.xctrls.hint} The receiver.
      */
 
-    var hintID;
+    var hintID,
+
+        params;
 
     if (!TP.isElement(anElement)) {
         //  TODO: Raise an exception
@@ -141,20 +145,27 @@ function(anElement, hintElement) {
                                 TP.xctrls.hint.$dispatchHintSignal,
                                 false);
 
+    if (TP.notValid(tooltipParams)) {
+        params = TP.hc();
+    } else {
+        params = tooltipParams.copy();
+    }
+
     hintID = TP.lid(hintElement, true);
+    params.atPut('contentID', hintID);
 
     //  Also, set 'on:mouseover' and 'on:mouseout' attributes that will send
     //  OpenTooltip/CloseTooltip signals respectively.
     TP.elementSetAttribute(
         anElement,
         'on:mouseover',
-        '{signal: OpenTooltip, payload: {contentID: ' + hintID + '}}',
+        '{"signal": "OpenTooltip", "payload": ' + params.asJSONSource() + '}',
         true);
 
     TP.elementSetAttribute(
         anElement,
         'on:mouseout',
-        '{signal: CloseTooltip}',
+        '{"signal": "CloseTooltip"}',
         true);
 
     return this;
