@@ -94,7 +94,8 @@ function(options) {
 
     targetAspect = options.at('targetAspect');
 
-    if (targetAspect === 'Inst' || targetAspect === 'Local') {
+    if (targetAspect === 'Node Instance Data' ||
+        targetAspect === 'Node Local Data') {
         dataURI = TP.uc(options.at('bindLoc'));
 
         return TP.elem(
@@ -137,10 +138,10 @@ function(options) {
     targetAspect = options.at('targetAspect');
 
     if (targetAspect === this.getID()) {
-        data = TP.ac(TP.ac('Type', 'Type'),
-                        TP.ac('Inst', 'Inst'),
-                        TP.ac('Local', 'Local'));
-    } else if (targetAspect === 'Inst') {
+        data = TP.ac(TP.ac('Node Type', 'Node Type'),
+                        TP.ac('Node Instance Data', 'Node Instance Data'),
+                        TP.ac('Node Local Data', 'Node Local Data'));
+    } else if (targetAspect === 'Node Instance Data') {
         data = TP.ac();
         this.getKeys().sort().perform(
                     function(aKey) {
@@ -148,7 +149,7 @@ function(options) {
                             data.add(TP.ac(aKey, aKey));
                         }
                     }.bind(this));
-    } else if (targetAspect === 'Local') {
+    } else if (targetAspect === 'Node Local Data') {
         data = TP.ac();
         this.getKeys().sort().perform(
                     function(aKey) {
@@ -184,7 +185,7 @@ function(aSourceName) {
 
     var source;
 
-    if (aSourceName === 'Type') {
+    if (aSourceName === 'Node Type') {
         source = this.getType();
     } else {
         /* eslint-disable consistent-this */
@@ -239,11 +240,11 @@ function(anAspect, options) {
 
     var source;
 
-    if (anAspect === 'Type') {
+    if (anAspect === 'Node Type') {
         return this.getType();
     }
 
-    if (anAspect === 'Inst' || anAspect === 'Local') {
+    if (anAspect === 'Node Instance Data' || anAspect === 'Node Local Data') {
         return this;
     }
 
