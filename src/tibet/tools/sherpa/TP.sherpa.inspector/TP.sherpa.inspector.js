@@ -882,7 +882,6 @@ function(pathParts) {
     var methodInfo,
         methodParts,
         methodName,
-        methodNameMatcher,
 
         isHandler,
 
@@ -908,7 +907,6 @@ function(pathParts) {
         methodParts = methodInfo.split('.');
 
         methodName = methodParts.last();
-        methodNameMatcher = TP.rc('^' + TP.regExpEscape(methodName));
 
         isHandler = TP.regex.HANDLER_NAME.test(methodName);
 
