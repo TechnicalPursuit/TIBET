@@ -1038,13 +1038,33 @@ function(options) {
      *     toolbar.
      */
 
-    if (TP.isMethod(this)) {
+    return TP.elem('<sherpa:methodsToolbarContent' +
+                    ' tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
+});
 
-        return TP.elem('<sherpa:methodsToolbarContent' +
-                        ' tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
-    }
+//  ------------------------------------------------------------------------
+//  Actions API
+//  ------------------------------------------------------------------------
 
-    return null;
+TP.sherpa.TypeMethodsInspectorSource.Inst.defineHandler(
+    'SherpaInspectorAddMethod',
+function(aSignal) {
+
+    var typeName;
+
+    typeName = this.getEntryAt('primary').getName();
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':method --assist' +
+                                ' --name=\'newmethod\'' +
+                                ' --track=\'type\'' +
+                                ' --owner=\'' + typeName + '\''
+                ));
+
+    return this;
 });
 
 //  ========================================================================
