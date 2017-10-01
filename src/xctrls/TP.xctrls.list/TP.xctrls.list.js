@@ -775,7 +775,10 @@ function(enterSelection) {
     newContent.each(
         function() {
             var labelContent,
-                valueContent;
+                valueContent,
+                hintContent,
+
+                hintElement;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
@@ -808,6 +811,20 @@ function(enterSelection) {
                     return d[0];
                 }
             );
+
+            hintContent = TP.extern.d3.select(this).append('xctrls:hint');
+            hintContent.html(
+                function(d, i) {
+                    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                            d[0] +
+                            '</span>';
+                }
+            );
+
+            hintElement = hintContent.node();
+
+            TP.xctrls.hint.setupHintOn(
+                this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
         });
 
     //  Make sure that the stylesheet for the default tag is loaded. This is
