@@ -92,11 +92,6 @@ function(options) {
 
     uriKeys = TP.keys(TP.core.URI.get('instances')).sort();
 
-    uriKeys = uriKeys.collect(
-            function(aURIStr) {
-                return TP.uriInTIBETFormat(aURIStr);
-            });
-
     //  Some URIs will resolve to the same 'TIBET format' strings as
     //  others - we need to unique them
     uriKeys.unique();
@@ -107,9 +102,9 @@ function(options) {
         data = sourceEntries.collect(
                     function(entry) {
                         return TP.ac(
-                                entry,
-                                this.getEntryLabel(entry));
-                    }.bind(this));
+                                TP.uriExpandPath(entry),
+                                entry);
+                    });
         data.sort(TP.sort.FIRST_ITEM);
     } else {
         data = TP.ac();
