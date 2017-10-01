@@ -114,6 +114,86 @@ function(anEvent) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.hint.Type.defineMethod('setupHintOn',
+function(anElement, hintElement) {
+
+    /**
+     * @method setupHintOn
+     * @summary Sets up the hint on the supplied element.
+     * @param {Element} anElement The element to install the hint behavior on.
+     *     The typical behavior here is to install a mouseover event listener
+     *     that will dispatch the UIHint signal.
+     * @param {Element} hintElement The corresponding xctrls:hint element.
+     * @returns {TP.xctrls.hint} The receiver.
+     */
+
+    var hintID;
+
+    if (!TP.isElement(anElement)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  If it's real, then install a listener on it that will call our
+    //  UIHint dispatch method.
+    anElement.addEventListener('mouseover',
+                                TP.xctrls.hint.$dispatchHintSignal,
+                                false);
+
+    hintID = TP.lid(hintElement, true);
+
+    //  Also, set 'on:mouseover' and 'on:mouseout' attributes that will send
+    //  OpenTooltip/CloseTooltip signals respectively.
+    TP.elementSetAttribute(
+        anElement,
+        'on:mouseover',
+        '{signal: OpenTooltip, payload: {contentID: ' + hintID + '}}',
+        true);
+
+    TP.elementSetAttribute(
+        anElement,
+        'on:mouseout',
+        '{signal: CloseTooltip}',
+        true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.hint.Type.defineMethod('teardownHintOn',
+function(anElement, hintElement) {
+
+    /**
+     * @method teardownHintOn
+     * @summary Tears down the hint on the supplied element.
+     * @param {Element} anElement The element to uninstall the hint behavior
+     *     from.
+     * @returns {TP.xctrls.hint} The receiver.
+     */
+
+    if (!TP.isElement(anElement)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  If it's real, then remove the listener that we installed in the
+    //  attach method that call our UIHints dispatch method.
+    anElement.removeEventListener('mouseover',
+                                    TP.xctrls.hint.$dispatchHintSignal,
+                                    false);
+
+    //  Also, remove the 'on:mouseover' and 'on:mouseout' attributes that we
+    //  set in the attach method.
+    TP.elementRemoveAttribute(anElement, 'on:mouseover', true);
+
+    TP.elementRemoveAttribute(anElement, 'on:mouseout', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
@@ -128,9 +208,7 @@ function(aRequest) {
      */
 
     var elem,
-        forElem,
-
-        hintID;
+        forElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -154,29 +232,8 @@ function(aRequest) {
         forElem = elem.parentNode;
     }
 
-    if (TP.isElement(forElem)) {
-        //  If it's real, then install a listener on it that will call our
-        //  UIHint dispatch method.
-        forElem.addEventListener('mouseover',
-                                    TP.xctrls.hint.$dispatchHintSignal,
-                                    false);
-
-        hintID = TP.lid(elem, true);
-
-        //  Also, set 'on:mouseover' and 'on:mouseout' attributes that will send
-        //  OpenTooltip/CloseTooltip signals respectively.
-        TP.elementSetAttribute(
-            forElem,
-            'on:mouseover',
-            '{signal: OpenTooltip, payload: {contentID: ' + hintID + '}}',
-            true);
-
-        TP.elementSetAttribute(
-            forElem,
-            'on:mouseout',
-            '{signal: CloseTooltip}',
-            true);
-    }
+    //  Setup the hint machinery
+    this.setupHintOn(forElem, elem);
 
     return;
 });
@@ -219,19 +276,8 @@ function(aRequest) {
         forElem = elem.parentNode;
     }
 
-    if (TP.isElement(forElem)) {
-        //  If it's real, then remove the listener that we installed in the
-        //  attach method that call our UIHints dispatch method.
-        forElem.removeEventListener('mouseover',
-                                        TP.xctrls.hint.$dispatchHintSignal,
-                                        false);
-
-        //  Also, remove the 'on:mouseover' and 'on:mouseout' attributes that we
-        //  set in the attach method.
-        TP.elementRemoveAttribute(forElem, 'on:mouseover', true);
-
-        TP.elementRemoveAttribute(forElem, 'on:mouseout', true);
-    }
+    //  Teardown the hint machinery
+    this.teardownHintOn(forElem);
 
     return;
 });
