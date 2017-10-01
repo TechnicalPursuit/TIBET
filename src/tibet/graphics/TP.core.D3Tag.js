@@ -398,26 +398,26 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('d3Exit',
-function(updateSelection) {
+function(exitSelection) {
 
     /**
      * @method d3Exit
      * @summary Processes any 'exit selection' by obtaining the d3.js exit
      *     selection and removing it from the drawing 'stage' by calling the
      *     'removeOldContent()' method on the receiver.
-     * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
-     *     selection that existing content should be altered in. If this is not
-     *     supplied, then the receiver's update selection will be used.
+     * @param {TP.extern.d3.selection} [exitSelection] The d3.js update
+     *     selection that existing content should be removed from. If this is
+     *     not supplied, then the receiver's update selection will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
     var selection;
 
     //  Grab the supplied update selection or use ours.
-    if (TP.notValid(updateSelection)) {
+    if (TP.notValid(exitSelection)) {
         selection = this.get('updateSelection').exit();
     } else {
-        selection = updateSelection;
+        selection = exitSelection;
     }
 
     if (TP.isValid(selection)) {
