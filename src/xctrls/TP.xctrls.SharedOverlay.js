@@ -498,7 +498,10 @@ function(openSignal, overlayContent) {
         triggerTPElem,
 
         tpContent,
-        handler;
+        handler,
+
+        lastMoveEvent,
+        lastMoveSignal;
 
     triggerTPElem = this.get('$triggerTPElement');
 
@@ -686,6 +689,10 @@ function(openSignal, overlayContent) {
         //  The point that the overlay should appear at is the 'edge point' for
         //  that compass edge of the trigger rectangle.
         overlayPoint = triggerRect.getEdgePoint(overlayCorner);
+    } else if (overlayPoint === TP.MOUSE) {
+        lastMoveEvent = TP.core.Mouse.$get('lastMove');
+        lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
+        overlayPoint = lastMoveSignal.getPagePoint();
     }
 
     //  Show the overlay content

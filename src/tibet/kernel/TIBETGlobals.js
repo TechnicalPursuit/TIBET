@@ -955,6 +955,9 @@ TP.KEYDOWN = 253;
 TP.KEYPRESS = 254;
 TP.KEYUP = 255;
 
+//  mouse
+TP.MOUSE = 'MOUSE';
+
 //  orientations
 TP.VERTICAL = 'VERT';                   //  VERTICAL orientation
 TP.HORIZONTAL = 'HORIZ';                //  HORIZONTAL orientation
