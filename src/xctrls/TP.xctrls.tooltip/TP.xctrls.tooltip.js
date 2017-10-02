@@ -75,7 +75,7 @@ function() {
      *     compass corner.
      */
 
-    return TP.SOUTHWEST;
+    return TP.SOUTHEAST;
 });
 
 //  ------------------------------------------------------------------------
