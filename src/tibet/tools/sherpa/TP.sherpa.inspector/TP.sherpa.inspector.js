@@ -2763,6 +2763,8 @@ function(info, createHistoryEntry) {
 
         selectedItems,
 
+        selectedAspect,
+
         newBayNum,
 
         bindLoc,
@@ -2801,7 +2803,9 @@ function(info, createHistoryEntry) {
 
         //  Put the (new) aspect name at the spot we're on now in the selected
         //  items.
-        selectedItems.atPut(newBayNum - 1, aspect);
+        selectedAspect = TP.ifInvalid(info.at('selectedAspect'), aspect);
+
+        selectedItems.atPut(newBayNum - 1, selectedAspect);
 
         //  'Slice back' to the spot just after us.
         selectedItems = selectedItems.slice(0, newBayNum);
