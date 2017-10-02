@@ -61,6 +61,40 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.TIBETURIListInspectorSource.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
+     */
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<xctrls:list bind:in="{data: ' +
+                    dataURI.asString() +
+                    '}" tooltips="true"/>');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.TIBETURIListInspectorSource.Inst.defineMethod('getDataForInspector',
 function(options) {
 
