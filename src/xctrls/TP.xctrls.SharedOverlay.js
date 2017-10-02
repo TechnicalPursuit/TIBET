@@ -692,7 +692,7 @@ function(openSignal, overlayContent) {
     } else if (overlayPoint === TP.MOUSE) {
         lastMoveEvent = TP.core.Mouse.$get('lastMove');
         lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-        overlayPoint = lastMoveSignal.getPagePoint();
+        overlayPoint = lastMoveSignal.getGlobalPoint();
     }
 
     //  Show the overlay content
