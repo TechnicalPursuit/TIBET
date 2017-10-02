@@ -112,7 +112,7 @@
 
         <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
             <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--sherpa-drawer-south-open-height"/>
-            <xctrls:tabbar id="SherpaConsoleTabbar" bind:io="{data: urn:tibet:sherpa_tabs, value: urn:tibet:current_console_tab#tibet(selection)}" tibet:ctrl="SherpaConsole"/>
+            <xctrls:tabbar id="SherpaConsoleTabbar" bind:io="{data: urn:tibet:sherpa_tabs, value: urn:tibet:current_console_tab#tibet(selection)}" tibet:ctrl="SherpaConsole" tooltips="true"/>
             <xctrls:panelbox id="SherpaConsolePanelbox" bind:in="urn:tibet:current_console_tab#tibet(selection)">
                 <xctrls:panel>
                     <xctrls:value>TSH</xctrls:value>
@@ -122,8 +122,13 @@
 
             <sherpa:opener class="south west"/>
             <sherpa:opener class="south east"/>
-            <div name="outputmode" class="indicator" onclick="TP.byId('SherpaConsole', TP.win('UIROOT')).increaseOutputDisplayMode()">&#160;</div>
-            <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput')"></div>
+            <div name="outputmode" class="indicator" onclick="TP.byId('SherpaConsole', TP.win('UIROOT')).increaseOutputDisplayMode()">
+                &#160;
+                <xctrls:hint>Change mode</xctrls:hint>
+            </div>
+            <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput')">
+                <xctrls:hint>Execute input</xctrls:hint>
+            </div>
             <button id="addsnippet" on:click="AddSnippet" tibet:ctrl="SherpaConsole">
                 <xctrls:hint>Add Snippet</xctrls:hint>
             </button>

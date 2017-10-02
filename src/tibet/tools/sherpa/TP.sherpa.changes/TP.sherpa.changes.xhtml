@@ -9,7 +9,9 @@
         ]]>
     </tibet:data>
     <div class="header">
-        <div class="trigger button" on:click="Toggle"/>
+        <div class="trigger button" on:click="Toggle">
+            <xctrls:hint>Changes</xctrls:hint>
+        </div>
         <sherpa:count name="server" on:click="ShowServerChanges" pclass:selected="true">0</sherpa:count>
         <sherpa:sync on:click="SyncAllChanges"/>
         <sherpa:count name="client" on:click="ShowClientChanges">0</sherpa:count>

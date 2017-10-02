@@ -62,7 +62,9 @@
                 <xctrls:hint>Build project</xctrls:hint>
             </xctrls:button>
 
-            <button id="snippetMenuTrigger" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: 'SnippetsPopup'}}"/>
+            <button id="snippetMenuTrigger" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: 'SnippetsPopup'}}">
+                <xctrls:hint>Snippet menu</xctrls:hint>
+            </button>
 
         </div>
         <sherpa:toolbar/>
