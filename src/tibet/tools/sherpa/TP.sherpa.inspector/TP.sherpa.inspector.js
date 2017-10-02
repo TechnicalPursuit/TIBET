@@ -1915,11 +1915,16 @@ function(anInfo) {
     //  uninspectable object on our hands. Redirect to ourself (by setting the
     //  targetObject to be ourself), but with a target aspect of TP.NOT_FOUND.
     //  This will trigger the config, content, etc. methods on ourself to return
-    //  config and content suitable for an uninspectable object.
+    //  config and content suitable for an uninspectable object. Note how we
+    //  supply an alternate 'selectedAspect' here (set to be the original
+    //  aspect). This allows controls that rely on the selectedItems property to
+    //  still gain access to the original aspect, while we signal to the rest of
+    //  the inspector machinery that we have an uninspectable object.
     if (TP.notValid(target) && TP.isEmpty(targetPath)) {
         info = TP.hc('targetObject', this,
                         'targetAspect', TP.NOT_FOUND,
-                        'bayIndex', currentBayIndex + 1);
+                        'bayIndex', currentBayIndex + 1,
+                        'selectedAspect', targetAspect);
 
         //  Note here how we pass false to avoid creating a history entry for
         //  this action.
