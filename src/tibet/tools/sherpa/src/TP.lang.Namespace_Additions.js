@@ -190,6 +190,39 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Namespace.Inst.defineMethod('getEntryAt',
+function(aSourceName) {
+
+    /**
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {String} aSourceName The name of the entry to retrieve.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
+     */
+
+    return TP.sys.getTypeByName(aSourceName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getEntryLabel',
+function(anItem) {
+
+    /**
+     * @method getEntryLabel
+     * @summary Returns the 'entry label' used in the receiver for the supplied
+     *     Object in the receiver.
+     * @param {Object} anItem The object to return the label for.
+     * @returns {String} The label to be used for the supplied item.
+     */
+
+    return anItem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Namespace.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
@@ -208,7 +241,7 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    return TP.sys.getTypeByName(anAspect);
+    return this.getEntryAt(anAspect);
 });
 
 //  ------------------------------------------------------------------------
