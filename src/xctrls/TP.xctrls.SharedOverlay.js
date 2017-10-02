@@ -359,7 +359,7 @@ function() {
      *     compass corner.
      */
 
-    return TP.NORTHWEST;
+    return TP.NORTHEAST;
 });
 
 //  ------------------------------------------------------------------------
