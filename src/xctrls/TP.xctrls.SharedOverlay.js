@@ -672,12 +672,6 @@ function(openSignal, overlayContent) {
     //  If no overlay point was given, compute one from the triggering element.
     if (TP.notValid(overlayPoint)) {
 
-        //  Compute the corner if its not supplied in the trigger signal.
-        overlayCorner = openSignal.at('corner');
-        if (TP.isEmpty(overlayCorner)) {
-            overlayCorner = TP.NORTHEAST;
-        }
-
         if (TP.notValid(triggerTPElem)) {
             //  TODO: Raise an exception
             return this;
@@ -685,6 +679,12 @@ function(openSignal, overlayContent) {
 
         //  Grab the global rect from the supplied element.
         triggerRect = triggerTPElem.getGlobalRect();
+
+        //  Compute the corner if its not supplied in the trigger signal.
+        overlayCorner = openSignal.at('corner');
+        if (TP.isEmpty(overlayCorner)) {
+            overlayCorner = this.getOverlayCorner();
+        }
 
         //  The point that the overlay should appear at is the 'edge point' for
         //  that compass edge of the trigger rectangle.
