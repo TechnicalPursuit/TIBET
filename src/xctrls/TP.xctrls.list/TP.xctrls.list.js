@@ -763,7 +763,9 @@ function(enterSelection) {
     var defaultTagName,
 
         attrSelectionInfo,
-        newContent;
+        newContent,
+
+        shouldConstructTooltips;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
@@ -771,6 +773,8 @@ function(enterSelection) {
 
     newContent = enterSelection.append(defaultTagName).attr(
                     attrSelectionInfo.first(), attrSelectionInfo.last());
+
+    shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 
     newContent.each(
         function() {
@@ -812,19 +816,21 @@ function(enterSelection) {
                 }
             );
 
-            hintContent = TP.extern.d3.select(this).append('xctrls:hint');
-            hintContent.html(
-                function(d, i) {
-                    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                            d[0] +
-                            '</span>';
-                }
-            );
+            if (shouldConstructTooltips) {
+                hintContent = TP.extern.d3.select(this).append('xctrls:hint');
+                hintContent.html(
+                    function(d, i) {
+                        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                                d[0] +
+                                '</span>';
+                    }
+                );
 
-            hintElement = hintContent.node();
+                hintElement = hintContent.node();
 
-            TP.xctrls.hint.setupHintOn(
-                this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
+                TP.xctrls.hint.setupHintOn(
+                    this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
+            }
         });
 
     //  Make sure that the stylesheet for the default tag is loaded. This is
