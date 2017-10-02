@@ -62,6 +62,20 @@ function(anEvent) {
     sig = TP.wrap(anEvent);
 
     targetElem = sig.getResolvedTarget();
+
+    //  If we can't get a resolved target, that might mean that the target is
+    //  itself disabled. We don't care here - we're just interested in any
+    //  target.
+    if (!TP.isElement(targetElem)) {
+        targetElem = sig.getTarget();
+    }
+
+    //  Still can't find a target? Exit here.
+    if (!TP.isElement(targetElem)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
     targetID = TP.elementGetAttribute(targetElem, 'id', true);
 
     targetTPElem = TP.wrap(targetElem);
