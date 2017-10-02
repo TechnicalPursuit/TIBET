@@ -907,17 +907,24 @@ function(enterSelection) {
 
     var defaultTagName,
 
-        newContent;
+        newContent,
+
+        shouldConstructTooltips;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
     newContent = enterSelection.append(defaultTagName);
 
+    shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
+
     newContent.each(
         function() {
             var labelContent,
                 markContent,
-                valueContent;
+                valueContent,
+                hintContent,
+
+                hintElement;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
@@ -939,6 +946,22 @@ function(enterSelection) {
                     return d[0];
                 }
             );
+
+            if (shouldConstructTooltips) {
+                hintContent = TP.extern.d3.select(this).append('xctrls:hint');
+                hintContent.html(
+                    function(d, i) {
+                        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                                d[0] +
+                                '</span>';
+                    }
+                );
+
+                hintElement = hintContent.node();
+
+                TP.xctrls.hint.setupHintOn(
+                    this, hintElement, TP.hc('corner', TP.SOUTHEAST));
+            }
         });
 
     return newContent;

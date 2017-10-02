@@ -807,6 +807,8 @@ function(enterSelection) {
 
         newContent,
 
+        shouldConstructTooltips,
+
         numCols,
 
         rowNum;
@@ -832,6 +834,8 @@ function(enterSelection) {
 
     newContent = newCells.append(defaultTagName);
 
+    shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
+
     numCols = this.getAttribute('colcount').asNumber();
 
     rowNum = 0;
@@ -839,7 +843,10 @@ function(enterSelection) {
     newContent.each(
         function(data, index) {
             var labelContent,
-                valueContent;
+                valueContent,
+                hintContent,
+
+                hintElement;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
@@ -874,6 +881,21 @@ function(enterSelection) {
                 }
             );
 
+            if (shouldConstructTooltips) {
+                hintContent = TP.extern.d3.select(this).append('xctrls:hint');
+                hintContent.html(
+                    function(d, i) {
+                        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                                d +
+                                '</span>';
+                    }
+                );
+
+                hintElement = hintContent.node();
+
+                TP.xctrls.hint.setupHintOn(
+                    this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
+            }
             if (index === numCols - 1) {
                 rowNum++;
             }
