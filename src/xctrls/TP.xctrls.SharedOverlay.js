@@ -338,9 +338,8 @@ function(anOverlayPoint) {
     overlayRect.addToX(bodyScrollOffsets.getX());
     overlayRect.addToY(bodyScrollOffsets.getY());
 
-    //  Now, get the coordinate of the overlay rectangle corresponding to the
-    //  'overlay corner. This will give us our true 'overlay point'.
-    overlayPoint = overlayRect.getEdgePoint(this.getOverlayCorner());
+    //  Now, get the 'top left' corner point of the rectangle.
+    overlayPoint = overlayRect.getXYPoint();
 
     return overlayPoint;
 });
