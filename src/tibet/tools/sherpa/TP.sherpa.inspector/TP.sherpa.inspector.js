@@ -2915,16 +2915,6 @@ function(info, createHistoryEntry) {
             return this;
         }
 
-        //  If we have an uninspectable object, then we focus on the home column
-        //  and display the uninspectable object message in the next bay over.
-        if (aspect === TP.NOT_FOUND) {
-
-            this.focusInspectorOnHome();
-
-            //  Make sure to set this flag so that a bay will be added below.
-            hasMinimumNumberOfBays = false;
-        }
-
         //  If we already have at least the minimum number of bays, then replace
         //  the item content in the target bay with the new content (clearing
         //  all of the bays to the right of it in the process).
