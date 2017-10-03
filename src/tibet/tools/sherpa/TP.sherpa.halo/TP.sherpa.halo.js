@@ -270,8 +270,6 @@ function() {
                 //  will blur the halo, etc. See that handler for more
                 //  information.
                 currentTargetTPElem.detach();
-                TP.bySystemId('SherpaConsoleService').notify(
-                    'Halo\'ed element deleted');
             }
         });
 
@@ -303,8 +301,6 @@ function() {
 
             if (shouldEmpty) {
                 currentTargetTPElem.empty();
-                TP.bySystemId('SherpaConsoleService').notify(
-                    'Halo\'ed element emptied');
             }
         });
 
