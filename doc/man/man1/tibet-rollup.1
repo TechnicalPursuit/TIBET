@@ -1,12 +1,12 @@
-.TH "TIBET\-ROLLUP" "1" "September 2017" "" ""
+.TH "TIBET\-ROLLUP" "1" "October 2017" "" ""
 .SH "NAME"
-\fBtibet-rollup\fR \- concatenates a package#config's resources
+\fBtibet-rollup\fR \- concatenates a package@config's resources
 .SH SYNOPSIS
 .P
 tibet rollup [package\-opts] [\-\-headers] [\-\-minify]
 .SH DESCRIPTION
 .P
-Creates a concatenated and optionally minified version of a \fBpackage#config\fP\|\.
+Creates a concatenated and optionally minified version of a \fBpackage@config\fP\|\.
 .P
 This command is normally invoked via \fBtibet build\fP rather than manually, however
 you can use it directly if you desire\.
@@ -53,14 +53,14 @@ minification\.
 .IP \(bu 2
 \fB[package\-opts]\fP :
 Refers to valid options for a TIBET Package object\. These include \-\-package,
-\-\-config, \-\-phase, \-\-assets, etc\. The package#config defaults to
-\fB~app_cfg/main\.xml\fP and its default config (usually #base) so your typical
+\-\-config, \-\-phase, \-\-assets, etc\. The package@config defaults to
+\fB~app_cfg/main\.xml\fP and its default config (usually @base) so your typical
 configuration is built\. See help on the \fBtibet package\fP command for more
 information\.
 
 .RE
 .SH EXAMPLES
-.SS Roll up the default package#config
+.SS Roll up the default package@config
 .P
 .RS 2
 .nf

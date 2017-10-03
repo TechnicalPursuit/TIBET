@@ -97,7 +97,7 @@ use this approach you should be referring to an existing namespace or you should
 be prepared to define the namespace as part of your application startup
 sequence.
 
-Also note that TIBET has also updated the package#config so our types load:
+Also note that TIBET has also updated the package@config so our types load:
 
     <config id="scripts">
         <!-- put your source scripts here -->

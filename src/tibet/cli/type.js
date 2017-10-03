@@ -449,7 +449,7 @@ Cmd.prototype.executePackage = function() {
     //  This may build the node if not currently found.
     cfgNode = this.readConfigNode(pkgName, cfgName, true);
     if (!cfgNode) {
-        this.error('Unable to find ' + pkgName + '#' + cfgName);
+        this.error('Unable to find ' + pkgName + '@' + cfgName);
         return 1;
     }
 
@@ -550,7 +550,7 @@ Cmd.prototype.executePackage = function() {
     //  This may build the node if not currently found.
     cfgNode = this.readConfigNode(pkgName, cfgName, true);
     if (!cfgNode) {
-        this.error('Unable to find ' + pkgName + '#' + cfgName);
+        this.error('Unable to find ' + pkgName + '@' + cfgName);
         return 1;
     }
 

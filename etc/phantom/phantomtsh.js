@@ -66,7 +66,7 @@
     /**
      * The default boot profile to attempt to load. This can be altered on the
      * command line via the --profile flag. The value here should be identical
-     * to the form used on a TIBET boot url (e.g. 'development#teamtibet-full').
+     * to the form used on a TIBET boot url (e.g. 'development@teamtibet-full').
      * @type {String}
      */
     PhantomTSH.DEFAULT_PROFILE = '~lib_etc/phantom/phantom';
@@ -121,7 +121,7 @@
         'You can use --profile to alter the profile used regardless of the boot URL.\n' +
         'Using a different boot profile is the best way to alter what code TIBET will\n' +
         'load prior to running your script. The profile value should match the form\n' +
-        'used on a TIBET launch URL: namely a config.xml#id pattern pointing to the\n' +
+        'used on a TIBET launch URL: namely a config.xml@id pattern pointing to the\n' +
         'manifest file and config tag you want to use as your boot profile.\n\n' +
 
         'You should not normally need to alter the url used to boot TIBET however\n' +

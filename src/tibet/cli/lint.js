@@ -246,7 +246,7 @@ Cmd.prototype.execute = function() {
     result = {linty: 0, errors: 0, warnings: 0, files: 0};
 
     // Build up the list of files to be processed either by scanning the
-    // directory or by leveraging package#config data.
+    // directory or by leveraging package@config data.
     if (this.options.scan) {
 
         // If we're scanning we won't get nodes, so turn that option off.
@@ -634,7 +634,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     //  We're linting :)
     this.pkgOpts.noattrmasks = ['lint'];
 
-    // Force the most comprehensive package#config we can given our context.
+    // Force the most comprehensive package@config we can given our context.
     if (CLI.inProject()) {
         if (CLI.notValid(this.pkgOpts.package)) {
             this.pkgOpts.package = CLI.getcfg('boot.default_package') ||

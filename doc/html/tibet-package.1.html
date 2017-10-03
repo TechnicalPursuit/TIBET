@@ -32,7 +32,7 @@
 command is to run it with various options, of which there are many:</p>
 <p>--package    the file path to the package to process.
 --config     the name of an individual config to process.
---profile    a profile in the form of package#config.
+--profile    a profile in the form of package@config.
 --all        process all config tags in the package recursively.
 --missing    output a list of missing assets of all types.
 --unlisted   output a list of potentially overlooked source files.</p>
@@ -53,8 +53,8 @@ command is to run it with various options, of which there are many:</p>
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
 ~app_src/tags/APP.sample.app.js
-</code></pre><h3 id="list-resources-from-a-specific-package-config-pair">List resources from a specific package#config pair</h3>
-<pre><code>$ tibet package --profile development#developer
+</code></pre><h3 id="list-resources-from-a-specific-package-config-pair">List resources from a specific package@config pair</h3>
+<pre><code>$ tibet package --profile development@developer
 
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
@@ -62,8 +62,8 @@ command is to run it with various options, of which there are many:</p>
 ~app_test/APP_test.js
 ~app_src/tags/APP.sample.app_test.js
 </code></pre><p>Here we see that the test files for our application are now listed.</p>
-<h3 id="list-resources-from-a-specific-package-config-pair-for-app-and-lib">List resources from a specific package#config pair for APP and LIB</h3>
-<pre><code>$ tibet package --profile development#developer --context all
+<h3 id="list-resources-from-a-specific-package-config-pair-for-app-and-lib">List resources from a specific package@config pair for APP and LIB</h3>
+<pre><code>$ tibet package --profile development@developer --context all
 
 ~lib_build/tibet_developer.min.js
 ~app_src/APP.sample.js
@@ -81,7 +81,7 @@ command is to run it with various options, of which there are many:</p>
 
 </div>
 <div id="footer">
-    TIBET v5.0.0-pre.13 - Copyright (C) 2017 Technical Pursuit Inc.
+    TIBET v5.0.0-pre.14 - Copyright (C) 2017 Technical Pursuit Inc.
 </div>
 </div>
 </body>

@@ -487,8 +487,8 @@ Cmd.prototype.finalizePackageOptions = function() {
 
     if (!this.pkgOpts.package) {
         if (this.options.profile) {
-            this.pkgOpts.package = this.options.profile.split('#')[0];
-            this.pkgOpts.config = this.options.profile.split('#')[1];
+            this.pkgOpts.package = this.options.profile.split('@')[0];
+            this.pkgOpts.config = this.options.profile.split('@')[1];
         } else {
             this.pkgOpts.package = CLI.getcfg('boot.package') ||
                 CLI.getcfg('boot.default_package') ||

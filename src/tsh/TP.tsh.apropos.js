@@ -268,7 +268,7 @@ function(aRequest) {
     //  If we found any minified source along the way point that out.
     if (minified) {
         results.unshift(
-            'Partial results. Some package#config files were minified.');
+            'Partial results. Some package@config files were minified.');
     }
 
     //  PhantomJS/CLI support requires output line-by-line.

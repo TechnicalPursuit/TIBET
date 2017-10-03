@@ -329,7 +329,7 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 /**
  * Computes and returns the full boot profile value, combining the profile
  * package name with any profile config ID.
- * @returns {String} The profile#config to boot.
+ * @returns {String} The profile@config to boot.
  */
 Cmd.prototype.getProfile = function() {
 
@@ -340,7 +340,7 @@ Cmd.prototype.getProfile = function() {
     config = this.getProfileConfig();
 
     if (CLI.notEmpty(config)) {
-        return root + '#' + config;
+        return root + '@' + config;
     }
 
     return root;

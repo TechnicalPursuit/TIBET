@@ -271,11 +271,11 @@ TP.sys.hasPackage = function(aPackageFile, aConfig) {
 
     //  if the full config has loaded we presume all other configs were a
     //  part of that and that the config is available
-    if (TP.boot.$$packages[aPackageFile + '#' + 'full'] === true) {
+    if (TP.boot.$$packages[aPackageFile + '@' + 'full'] === true) {
         return true;
     }
 
-    return TP.boot.$$packages[aPackageFile + '#' + config] === true;
+    return TP.boot.$$packages[aPackageFile + '@' + config] === true;
 };
 
 //  ============================================================================
@@ -8125,7 +8125,7 @@ TP.boot.$configurePackage = function() {
      * @summary Locates the package file if at all possible. The search checks
      *     both boot.profile and boot.package with profile taking precedence.
      *     Note that boot.profile can also override boot.config if it includes a
-     *     barename. The profile 'development#team-tibet' for example will load
+     *     barename. The profile 'development@team-tibet' for example will load
      *     the development profile file and use the team-tibet config. The value
      *     for boot.package on the other hand is a pure URL to the package file.
      * @returns {Document} The document containing the package XML.
@@ -8163,10 +8163,10 @@ TP.boot.$configurePackage = function() {
     //  boot.package and boot.config values contained in the profile.
     if (TP.boot.$notEmpty(profile)) {
 
-        //  If we see # it's a package#config description. Split and update the
+        //  If we see @ it's a package@config description. Split and update the
         //  proper elements as needed.
-        if (/#/.test(profile)) {
-            parts = profile.split('#');
+        if (/@/.test(profile)) {
+            parts = profile.split('@');
             package = parts[0];
 
             config = TP.sys.cfg('boot.config');
@@ -8177,7 +8177,7 @@ TP.boot.$configurePackage = function() {
                 if (TP.boot.$notEmpty(config)) {
                     TP.boot.$stdout(
                         'Overriding boot.config (' + config +
-                        ') with profile#config: ' + parts[1], TP.WARN);
+                        ') with profile@config: ' + parts[1], TP.WARN);
                 }
 
                 //  Configuration mismatch. We'll go with the one on the
@@ -8208,7 +8208,7 @@ TP.boot.$configurePackage = function() {
         TP.boot.$notEmpty(TP.sys.cfg('boot.package'))) {
         TP.boot.$stdout(
             'Overriding boot.package (' + TP.sys.cfg('boot.package') +
-            ') with profile#config: ' + package, TP.WARN);
+            ') with profile@config: ' + package, TP.WARN);
     }
 
     file = TP.boot.$uriExpandPath(package);
@@ -9735,7 +9735,7 @@ TP.boot.$expand = function() {
     file = TP.boot.$$bootfile;
     config = TP.sys.cfg('boot.config');
 
-    TP.boot.$stdout('Expanding package#config: ' + file + '#' + config,
+    TP.boot.$stdout('Expanding package@config: ' + file + '@' + config,
                     TP.DEBUG);
     TP.boot.$expandPackage(file, config);
 
@@ -9788,10 +9788,10 @@ TP.boot.$expandConfig = function(anElement) {
                                 anElement.ownerDocument, ref);
                             if (TP.boot.$notValid(config)) {
                                 throw new Error('config not found: ' +
-                                    TP.boot.$getCurrentPackage() + '#' + ref);
+                                    TP.boot.$getCurrentPackage() + '@' + ref);
                             }
 
-                            key = TP.boot.$getCurrentPackage() + '#' + ref;
+                            key = TP.boot.$getCurrentPackage() + '@' + ref;
                             if (TP.boot.$$configs.indexOf(key) !== -1) {
                                 //  A duplicate/circular reference of some type.
                                 TP.boot.$stderr(
@@ -9882,7 +9882,7 @@ TP.boot.$expandConfig = function(anElement) {
                                 child.setAttribute('config', config);
                             }
 
-                            key = src + '#' + config;
+                            key = src + '@' + config;
                             if (TP.boot.$$configs.indexOf(key) !== -1) {
                                 //  A duplicate/circular reference of some type.
                                 TP.boot.$stderr(
@@ -10054,7 +10054,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         node = TP.boot.$documentGetElementById(doc, config);
         if (!node) {
             throw new Error('config not found: ' +
-                TP.boot.$getCurrentPackage() + '#' + config);
+                TP.boot.$getCurrentPackage() + '@' + config);
         }
 
         //  Note that this may ultimately result in calls back into this routine
@@ -10333,7 +10333,7 @@ TP.boot.$isLoadableScript = function(aURI) {
     /**
      * @method $isLoadableScript
      * @summary Returns true if the URI provided is a script loaded as part of
-     *     the current application's package#config settings.
+     *     the current application's package@config settings.
      * @returns {Array} The array of loaded scripts.
      */
 
@@ -10372,7 +10372,7 @@ TP.boot.$isLoadedScript = function(aURI) {
     /**
      * @method $isLoadedScript
      * @summary Returns true if the URI provided is a script loaded as part of
-     *     the current application's package#config settings.
+     *     the current application's package@config settings.
      * @returns {Array} The array of loaded scripts.
      */
 
@@ -10569,7 +10569,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
 
         node = TP.boot.$documentGetElementById(doc, config);
         if (TP.boot.$notValid(node)) {
-            throw new Error('config not found: ' + path + '#' + config);
+            throw new Error('config not found: ' + path + '@' + config);
         }
 
         //  If aList is empty we're starting fresh which means we need a fresh

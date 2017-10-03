@@ -19,11 +19,11 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-rollup-1-concatenates-a-package-config-s-resources">tibet-rollup(1) -- concatenates a package#config&#39;s resources</h1>
+<h1 id="tibet-rollup-1-concatenates-a-package-config-s-resources">tibet-rollup(1) -- concatenates a package@config&#39;s resources</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>tibet rollup [package-opts] [--headers] [--minify]</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Creates a concatenated and optionally minified version of a <code>package#config</code>.</p>
+<p>Creates a concatenated and optionally minified version of a <code>package@config</code>.</p>
 <p>This command is normally invoked via <code>tibet build</code> rather than manually, however
 you can use it directly if you desire.</p>
 <p>Output from this command is written to stdout for use in redirection.
@@ -59,14 +59,14 @@ minification.</p>
 </li>
 <li><p><code>[package-opts]</code> :
 Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package#config defaults to
-<code>~app_cfg/main.xml</code> and its default config (usually #base) so your typical
+--config, --phase, --assets, etc. The package@config defaults to
+<code>~app_cfg/main.xml</code> and its default config (usually @base) so your typical
 configuration is built. See help on the <code>tibet package</code> command for more
 information.</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="roll-up-the-default-package-config">Roll up the default package#config</h3>
+<h3 id="roll-up-the-default-package-config">Roll up the default package@config</h3>
 <pre><code>$ tibet rollup
 
 TP.boot.$$srcPath = &#39;~app_src/APP.hello.js&#39;;
@@ -106,7 +106,7 @@ TP.uc(&#39;~app_src/tags/APP.hello.app.css&#39;).setContent(&#39;/**\n * @overvi
 
 </div>
 <div id="footer">
-    TIBET v5.0.0-pre.13 - Copyright (C) 2017 Technical Pursuit Inc.
+    TIBET v5.0.0-pre.14 - Copyright (C) 2017 Technical Pursuit Inc.
 </div>
 </div>
 </body>

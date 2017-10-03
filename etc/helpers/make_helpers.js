@@ -85,7 +85,7 @@ helpers.package_check = function(make, options) {
 
     deferred = Promise.pending();
 
-    make.log('verifying package#config');
+    make.log('verifying package@config');
 
     // The big path construction here is to locate the tibet command relative to
     // the current module. This is necessary for the npm prepublish step (used

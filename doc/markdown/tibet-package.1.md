@@ -18,7 +18,7 @@ command is to run it with various options, of which there are many:
 
 --package    the file path to the package to process.
 --config     the name of an individual config to process.
---profile    a profile in the form of package#config.
+--profile    a profile in the form of package@config.
 --all        process all config tags in the package recursively.
 --missing    output a list of missing assets of all types.
 --unlisted   output a list of potentially overlooked source files.
@@ -47,9 +47,9 @@ command is to run it with various options, of which there are many:
     ~app_src/APP.sample.Application.js
     ~app_src/tags/APP.sample.app.js
 
-### List resources from a specific package#config pair
+### List resources from a specific package@config pair
 
-    $ tibet package --profile development#developer
+    $ tibet package --profile development@developer
 
     ~app_src/APP.sample.js
     ~app_src/APP.sample.Application.js
@@ -59,9 +59,9 @@ command is to run it with various options, of which there are many:
 
 Here we see that the test files for our application are now listed.
 
-### List resources from a specific package#config pair for APP and LIB
+### List resources from a specific package@config pair for APP and LIB
 
-    $ tibet package --profile development#developer --context all
+    $ tibet package --profile development@developer --context all
 
     ~lib_build/tibet_developer.min.js
     ~app_src/APP.sample.js

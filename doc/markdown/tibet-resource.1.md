@@ -30,8 +30,8 @@ package with any missing resource entries.
 
   * `[package-opts]` :
     Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package#config defaults to
-`~app_cfg/main.xml` and its default config (usually #base) so your typical
+--config, --phase, --assets, etc. The package@config defaults to
+`~app_cfg/main.xml` and its default config (usually @base) so your typical
 configuration is built. See help on the `tibet package` command for more
 information.
 

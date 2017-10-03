@@ -1,4 +1,4 @@
-{{topic}}({{section}}) -- concatenates a package#config's resources
+{{topic}}({{section}}) -- concatenates a package@config's resources
 =============================================
 
 ## SYNOPSIS
@@ -7,7 +7,7 @@ tibet rollup [package-opts] [--headers] [--minify]
 
 ## DESCRIPTION
 
-Creates a concatenated and optionally minified version of a `package#config`.
+Creates a concatenated and optionally minified version of a `package@config`.
 
 This command is normally invoked via `tibet build` rather than manually, however
 you can use it directly if you desire.
@@ -51,14 +51,14 @@ minification.
 
   * `[package-opts]` :
     Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package#config defaults to
-`~app_cfg/main.xml` and its default config (usually #base) so your typical
+--config, --phase, --assets, etc. The package@config defaults to
+`~app_cfg/main.xml` and its default config (usually @base) so your typical
 configuration is built. See help on the `tibet package` command for more
 information.
 
 ## EXAMPLES
 
-### Roll up the default package#config
+### Roll up the default package@config
 
     $ tibet rollup
 

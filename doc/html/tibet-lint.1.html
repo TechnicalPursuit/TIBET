@@ -29,8 +29,8 @@ used to filter file names. If the filter begins and ends with / it is
 treated as a regular expression for purposes of file filtering.</p>
 <p>[package-opts] refers to valid options for a TIBET Package object and help
 determine which subset of the application&#39;s manifests should be targeted. These
-include --package, --config, --phase, --assets, etc. The package#config defaults
-to <code>~app_cfg/main.xml</code> and its default config (usually #base) so your typical
+include --package, --config, --phase, --assets, etc. The package@config defaults
+to <code>~app_cfg/main.xml</code> and its default config (usually @base) so your typical
 configuration is linted. See help on the <code>tibet package</code> command for more
 information.</p>
 <p>--scan overrides any package options and causes the lint command to scan the
@@ -51,7 +51,7 @@ currently supported linters.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
 <li><p><code>--scan</code> :
-Tells the linter to scan the directory tree and ignore any package#config
+Tells the linter to scan the directory tree and ignore any package@config
 specification. Without this flag only files found in the project package files
 will be linted, making it easy to lint only those files your project actually
 makes direct use of.</p>
@@ -86,7 +86,7 @@ Tells the linter to stop after the first file with errors.</p>
 
 </div>
 <div id="footer">
-    TIBET v5.0.0-pre.13 - Copyright (C) 2017 Technical Pursuit Inc.
+    TIBET v5.0.0-pre.14 - Copyright (C) 2017 Technical Pursuit Inc.
 </div>
 </div>
 </body>

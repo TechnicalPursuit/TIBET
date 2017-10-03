@@ -18,7 +18,7 @@ particular shell. For example, --script ':echo "Hi"'
 You can use --profile to alter the profile used regardless of the boot URL.
 Using a different boot profile is the best way to alter what code TIBET will
 load prior to running your script. The profile value should match the form
-used on a TIBET launch URL: namely a config.xml#id pattern pointing to the
+used on a TIBET launch URL: namely a config.xml@id pattern pointing to the
 manifest file and config tag you want to use as your boot profile.
 
 You should not normally need to alter the url used to boot TIBET however

@@ -596,7 +596,7 @@ TP.boot.$$workload = null;
 TP.boot.$$fullPaths = {};
 
 //  tracking for which packages and configs have loaded. key is
-//  package_file#config
+//  package_file@config
 TP.boot.$$packages = {};
 
 //  tracking for which scripts have loaded. key is script file path.
@@ -765,7 +765,7 @@ configuring: {
 expanding: {
     order: 2,
     log: 'Expanding',
-    head: 'Expanding package#config...',
+    head: 'Expanding package@config...',
     sub: '',
     image: '~app_boot/media/app_logo.png'
 },

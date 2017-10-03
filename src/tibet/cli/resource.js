@@ -885,7 +885,7 @@ Cmd.prototype.updatePackage = function() {
     //  This may build the node if not currently found.
     cfgNode = this.readConfigNode(pkgName, cfgName, true);
     if (!cfgNode) {
-        throw new Error('Unable to find ' + pkgName + '#' + cfgName);
+        throw new Error('Unable to find ' + pkgName + '@' + cfgName);
     }
 
     //  Ensure we have the right phase (in case we built the node)

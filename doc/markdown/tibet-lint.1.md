@@ -15,8 +15,8 @@ treated as a regular expression for purposes of file filtering.
 
 [package-opts] refers to valid options for a TIBET Package object and help
 determine which subset of the application's manifests should be targeted. These
-include --package, --config, --phase, --assets, etc. The package#config defaults
-to `~app_cfg/main.xml` and its default config (usually #base) so your typical
+include --package, --config, --phase, --assets, etc. The package@config defaults
+to `~app_cfg/main.xml` and its default config (usually @base) so your typical
 configuration is linted. See help on the `tibet package` command for more
 information.
 
@@ -44,7 +44,7 @@ currently supported linters.
 ## OPTIONS
 
   * `--scan` :
-    Tells the linter to scan the directory tree and ignore any package#config
+    Tells the linter to scan the directory tree and ignore any package@config
 specification. Without this flag only files found in the project package files
 will be linted, making it easy to lint only those files your project actually
 makes direct use of.

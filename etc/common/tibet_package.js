@@ -639,7 +639,7 @@
         pkg = this;
 
         this.trace('Expanding: ' +
-            this.getCurrentPackage() + '#' + anElement.getAttribute('id'), true);
+            this.getCurrentPackage() + '@' + anElement.getAttribute('id'), true);
 
         list = Array.prototype.slice.call(anElement.childNodes, 0);
         list.forEach(function(child) {
@@ -669,11 +669,11 @@
                         config = anElement.ownerDocument.getElementById(ref);
                         if (notValid(config)) {
                             msg = '<config> not found: ' +
-                                pkg.getCurrentPackage() + '#' + ref;
+                                pkg.getCurrentPackage() + '@' + ref;
                             throw new Error(msg);
                         }
 
-                        key = pkg.getCurrentPackage() + '#' + ref;
+                        key = pkg.getCurrentPackage() + '@' + ref;
                         if (pkg.configs.indexOf(key) !== -1) {
                             pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
@@ -761,7 +761,7 @@
                             child.setAttribute('config', config);
                         }
 
-                        key = src + '#' + config; // may be undefined, that's ok.
+                        key = src + '@' + config; // may be undefined, that's ok.
                         if (pkg.configs.indexOf(key) !== -1) {
                             pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
@@ -980,7 +980,7 @@
             node = doc.getElementById(config);
             if (!node) {
                 msg = '<config> not found: ' +
-                    this.getCurrentPackage() + '#' + config;
+                    this.getCurrentPackage() + '@' + config;
                 throw new Error(msg);
             }
 
@@ -2172,7 +2172,7 @@
                             throw new Error(msg);
                         }
 
-                        key = pkg.getCurrentPackage() + '#' + ref;
+                        key = pkg.getCurrentPackage() + '@' + ref;
                         if (pkg.configs.indexOf(key) !== -1) {
                             pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
@@ -2201,7 +2201,7 @@
                             throw new Error(msg);
                         }
 
-                        key = src + '#' + config; // may be undefined, that's ok.
+                        key = src + '@' + config; // may be undefined, that's ok.
                         if (pkg.configs.indexOf(key) !== -1) {
                             pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);

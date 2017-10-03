@@ -342,9 +342,9 @@
         }
 
         if (TDS.getNodeEnv() !== 'development') {
-            //  First output the 'default' or 'prod' or 'build' version which should
-            //  be the one all projects default to without any '#' parameters....but
-            //  only if we see build artifacts.
+            //  First output the 'default' or 'prod' or 'build' version which
+            //  should be the one all projects default to without any '@'
+            //  parameters....but only if we see build artifacts.
             builddir = TDS.expandPath('~app_build');
             if (sh.test('-d', builddir)) {
                 artifacts = sh.ls(builddir);
@@ -363,7 +363,7 @@
                 TDS.colorize(' @ ', 'dim') +
                 TDS.colorize(protocol + '://' + nodeIP +
                     (port === 80 ? '' : ':' + port +
-                     '#?boot.profile=development#developer'),
+                     '#?boot.profile=development@developer'),
                     'host'),
                 {comp: 'TDS', type: 'tds', name: 'sherpa'});
         } else {

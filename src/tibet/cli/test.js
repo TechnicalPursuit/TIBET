@@ -285,7 +285,7 @@ Cmd.prototype.getProfile = function() {
     }
 
     if (this.options.selftest) {
-        profile = '~lib_etc/phantom/phantom#selftest';
+        profile = '~lib_etc/phantom/phantom@selftest';
     } else if (CLI.notEmpty(this.options.profile)) {
         profile = this.options.profile;
     }
