@@ -3517,7 +3517,13 @@ function() {
      * @returns {Boolean} Whether or not the receiver is ready to render.
      */
 
-    var gids;
+    var styleURI,
+        gids;
+
+    styleURI = this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
+    if (TP.notValid(styleURI)) {
+        return true;
+    }
 
     //  Check with the set of global IDs that our type is keeping and see if
     //  that contains our document's global ID. If so, then that means that our
