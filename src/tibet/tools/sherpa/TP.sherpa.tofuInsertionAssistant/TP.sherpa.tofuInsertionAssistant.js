@@ -257,10 +257,17 @@ function(anObject) {
 
             halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
-            //  Blur and then focus the halo on our new element, passing true to
-            //  actually show the halo if it's hidden.
+            //  This will move the halo off of the old element. Note that we do
+            //  *not* check here whether or not we *can* blur - we definitely
+            //  want to blur off of the old DOM content - it's probably gone now
+            //  anyway.
             halo.blur();
-            halo.focusOn(newTPElem, true);
+
+            //  Focus the halo on our new element, passing true to actually
+            //  show the halo if it's hidden.
+            if (newTPElem.haloCanFocus(halo)) {
+                halo.focusOn(newTPElem, true);
+            }
         }.bind(this), 1000);
 
     //  Set up a timeout to delete those flags after a set amount of time
