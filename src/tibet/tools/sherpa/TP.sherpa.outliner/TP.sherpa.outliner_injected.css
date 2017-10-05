@@ -148,65 +148,11 @@
     right: 0;
 }
 
-.sherpa-outliner.sherpa-outliner-droptarget::after,
-.sherpa-outliner[class~="sherpa-outliner-droptarget"]::after,
-.sherpa-outliner .sherpa-outliner-droptarget::after,
-.sherpa-outliner *|*[class~="sherpa-outliner-droptarget"]::after {
+.sherpa-outliner.sherpa-outliner-droptarget,
+.sherpa-outliner[class~="sherpa-outliner-droptarget"],
+.sherpa-outliner .sherpa-outliner-droptarget,
+.sherpa-outliner *|*[class~="sherpa-outliner-droptarget"] {
 
-    position: absolute;
-
-    font-size: 0.75rem;
-
-    min-width: 2em;
-
-    text-align: center;
-
-    color: white;
-
-    background-color: black;
-}
-
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"][class~="sherpa-outliner-droptarget"]::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeBegin"] *|*[class~="sherpa-outliner-droptarget"]::after {
-
-    bottom: 0;
-    left: -2em;
-
-    content: "\2190 PREV SIB";
-}
-
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"][class~="sherpa-outliner-droptarget"]::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterBegin"] *|*[class~="sherpa-outliner-droptarget"]::after {
-
-    top: 0;
-    left: 0;
-
-    content: "FIRST CHILD \2192";
-}
-
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"][class~="sherpa-outliner-droptarget"]::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="BeforeEnd"] *|*[class~="sherpa-outliner-droptarget"]::after {
-
-    bottom: 0;
-    right: 0;
-
-    content: "\2190 LAST CHILD";
-}
-
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"].sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"][class~="sherpa-outliner-droptarget"]::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"] .sherpa-outliner-droptarget::after,
-.sherpa-outliner[sherpa-outliner-position="AfterEnd"] *|*[class~="sherpa-outliner-droptarget"]::after {
-
-    bottom: 0;
-    right: -2em;
-
-    content: "NEXT SIB \2192";
+    outline: dashed 2px black;
 }
 
