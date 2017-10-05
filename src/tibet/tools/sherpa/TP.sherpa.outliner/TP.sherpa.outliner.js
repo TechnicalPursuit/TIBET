@@ -31,6 +31,9 @@ TP.sherpa.outliner.Inst.defineAttribute('$hudOutlinerDescendantsRule');
 
 TP.sherpa.outliner.Inst.defineAttribute('$containingBlockElem');
 
+TP.sherpa.outliner.Inst.defineAttribute('$alteredTargetStyle');
+TP.sherpa.outliner.Inst.defineAttribute('$oldDisplayVal');
+
 TP.sherpa.outliner.Inst.defineAttribute('isActive');
 
 TP.sherpa.outliner.Inst.defineAttribute('xRotation');
@@ -684,13 +687,22 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var haloTargetTPElem;
+    var haloTargetTPElem,
+        oldDisplayVal;
 
     haloTargetTPElem = aSignal.at('haloTarget');
 
     //  Remove the class on the current halo target that allowed us to apply
     //  'halo style' to it, even though the halo is hidden.
     haloTargetTPElem.removeClass('sherpa-outliner-haloed');
+
+    if (this.get('$alteredTargetStyle')) {
+        oldDisplayVal = this.get('$oldDisplayVal');
+        haloTargetTPElem.setStyleProperty('display', oldDisplayVal);
+
+        this.set('$oldDisplayVal', null);
+        this.set('$alteredTargetStyle', false);
+    }
 
     return this;
 });
@@ -707,13 +719,35 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var haloTargetTPElem;
+    var haloTargetTPElem,
+        displayVal;
 
     haloTargetTPElem = aSignal.at('haloTarget');
 
     //  Set a class on the current halo target that allows us to apply 'halo
     //  style' to it, even though the halo is hidden.
     haloTargetTPElem.addClass('sherpa-outliner-haloed');
+
+    if (TP.isValid(haloTargetTPElem)) {
+        //  Set a class on the current halo target that allows us to apply 'halo
+        //  style' to it, even though the halo is hidden.
+        haloTargetTPElem.addClass('sherpa-outliner-haloed');
+
+        displayVal = haloTargetTPElem.getComputedStyleProperty('display');
+        if (displayVal === 'inline') {
+
+            //  NB: We actually capture any *local* style value that the target
+            //  has.
+            this.set('$oldDisplayVal',
+                        haloTargetTPElem.getStyleProperty('display'));
+
+            haloTargetTPElem.setStyleProperty('display', 'inline-block');
+            this.set('$alteredTargetStyle', true);
+        } else {
+            this.set('$oldDisplayVal', null);
+            this.set('$alteredTargetStyle', false);
+        }
+    }
 
     return this;
 });
@@ -892,7 +926,10 @@ function() {
         doc,
         outlinerStyleElement,
 
-        haloTPElem;
+        haloTPElem,
+        haloTargetTPElem,
+
+        oldDisplayVal;
 
     //  Grab the canvas document and ignore the mutation detach and mutation
     //  style change signals that were observed when the outliner was shown.
@@ -909,6 +946,31 @@ function() {
                             'TP.sig.DOMDNDTargetOut'));
 
     this.teardownTargetElement();
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+    if (TP.isValid(haloTargetTPElem)) {
+        //  Remove the class on the current halo target that allowed us to apply
+        //  'halo style' to it, even though the halo is hidden.
+        haloTargetTPElem.removeClass('sherpa-outliner-haloed');
+
+        if (this.get('$alteredTargetStyle')) {
+            oldDisplayVal = this.get('$oldDisplayVal');
+            haloTargetTPElem.setStyleProperty('display', oldDisplayVal);
+
+            this.set('$oldDisplayVal', null);
+            this.set('$alteredTargetStyle', false);
+        }
+    }
+
+    //  Ask the halo to go ahead and resume any other object's attempt to show
+    //  it.
+    haloTPElem.resumeSettingOf('hidden');
+
+    //  If the halo was showing when we were activated, go ahead and show it.
+    if (this.get('$haloWasShowing')) {
+        haloTPElem.setAttribute('hidden', false);
+    }
 
     doc = TP.sys.uidoc(true);
 
@@ -1186,6 +1248,7 @@ function() {
                             'sherpa-outliner-tagname',
                             labelStr(targetElement),
                             true);
+
     TP.nodeDescendantElementsPerform(
                     targetElement,
                     function(anElement) {
@@ -1213,7 +1276,9 @@ function() {
     var canvasTPDoc,
 
         haloTPElem,
-        haloTargetTPElem;
+        haloTargetTPElem,
+
+        displayVal;
 
     //  Grab the canvas document and observe mutation detach and mutation style
     //  change signals from it. This allows the outliner to update as the DOM
@@ -1266,6 +1331,21 @@ function() {
         //  Set a class on the current halo target that allows us to apply 'halo
         //  style' to it, even though the halo is hidden.
         haloTargetTPElem.addClass('sherpa-outliner-haloed');
+
+        displayVal = haloTargetTPElem.getComputedStyleProperty('display');
+        if (displayVal === 'inline') {
+
+            //  NB: We actually capture any *local* style value that the target
+            //  has.
+            this.set('$oldDisplayVal',
+                        haloTargetTPElem.getStyleProperty('display'));
+
+            haloTargetTPElem.setStyleProperty('display', 'inline-block');
+            this.set('$alteredTargetStyle', true);
+        } else {
+            this.set('$oldDisplayVal', null);
+            this.set('$alteredTargetStyle', false);
+        }
     }
 
     //  Observe the halo for when it focuses and blurs. We'll need to do this to
@@ -1294,9 +1374,7 @@ function() {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var targetElement,
-        haloTPElem,
-        haloTargetTPElem;
+    var targetElement;
 
     //  Grab the target element
     targetElement = TP.unwrap(this.get('targetTPElement'));
@@ -1323,23 +1401,6 @@ function() {
                         TP.elementRemoveAttribute(
                             anElement, 'sherpa-outliner-tagname', true);
                     });
-
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
-    if (TP.isValid(haloTargetTPElem)) {
-        //  Remove the class on the current halo target that allowed us to apply
-        //  'halo style' to it, even though the halo is hidden.
-        haloTargetTPElem.removeClass('sherpa-outliner-haloed');
-    }
-
-    //  Ask the halo to go ahead and resume any other object's attempt to show
-    //  it.
-    haloTPElem.resumeSettingOf('hidden');
-
-    //  If the halo was showing when we were activated, go ahead and show it.
-    if (this.get('$haloWasShowing')) {
-        haloTPElem.setAttribute('hidden', false);
-    }
 
     return this;
 });
