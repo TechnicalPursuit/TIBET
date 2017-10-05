@@ -3293,6 +3293,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getStyleProperty',
+function(aProperty) {
+
+    /**
+     * @method getStyleProperty
+     * @summary Gets the receiver's style property named by the supplied
+     *     property name. Note that this will be the *local* style value - not
+     *     the *computed* style value.
+     * @param {String} aProperty The name of the style property to get.
+     * @returns {Object} The current value of the local style property named by
+     *     aProperty on the supplied element.
+     */
+
+    return TP.elementGetStyleProperty(this.getNativeNode(), aProperty);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getSubmitName',
 function() {
 
