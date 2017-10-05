@@ -138,7 +138,7 @@ function(aSignal) {
     //      c) AND: the existing target can blur
     if (TP.isValid(currentTargetTPElem) &&
         aSignal.getButton() === TP.LEFT &&
-        currentTargetTPElem.haloCanBlur(this, aSignal)) {
+        currentTargetTPElem.haloCanBlur(this)) {
 
         //  NOTE: Make sure to hide the halo *before* we blur - this way any
         //  signal handlers that are watching the target element are properly
@@ -178,7 +178,7 @@ function(aSignal) {
                 //  new target. But first, we need to make sure it can be
                 //  halo'ed on. If not, find it's nearest haloable element 'up'
                 //  the parent hierarchy.
-                if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                if (!newTargetTPElem.haloCanFocus(this)) {
                     newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                             this, aSignal);
                 }
@@ -189,7 +189,7 @@ function(aSignal) {
             //  No current target - completely new selection.
 
             //  If it can't be focused, traverse 'up' the parent hierarchy.
-            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            if (!newTargetTPElem.haloCanFocus(this)) {
                 newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                                 this, aSignal);
             }
@@ -457,7 +457,7 @@ function(aSignal) {
 
         //  See if we can focus the new target element - if not, we'll search up
         //  the parent chain for the nearest focusable element
-        if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+        if (!newTargetTPElem.haloCanFocus(this)) {
             newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                             this, aSignal);
         }
@@ -932,7 +932,7 @@ function(aSignal) {
 
             //  See if we can focus the new target element - if not, we'll
             //  search up the parent chain for the nearest focusable element
-            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            if (!newTargetTPElem.haloCanFocus(this)) {
                 newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                                 this, aSignal);
             }

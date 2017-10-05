@@ -17,7 +17,7 @@
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     /**
      * @method haloCanBlur
@@ -25,8 +25,6 @@ function(aHalo, aSignal) {
      *     on) the receiver.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
      *     it can blur the receiver.
-     * @param {TP.sig.Signal} aSignal The signal that initiated the blurring
-     *     activity.
      * @returns {Boolean} Whether or not the halo can blur the receiver.
      */
 
@@ -38,15 +36,13 @@ function(aHalo, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     /**
      * @method haloCanFocus
      * @summary Returns whether or not the halo can focus on the receiver.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
      *     it can focus the receiver.
-     * @param {TP.sig.Signal} aSignal The signal that initiated the focusing
-     *     activity.
      * @returns {Boolean} Whether or not the halo can focus the receiver.
      */
 
@@ -792,7 +788,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     /**
      * @method haloCanBlur
@@ -800,33 +796,8 @@ function(aHalo, aSignal) {
      *     on) the receiver.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
      *     it can blur the receiver.
-     * @param {TP.sig.Signal} aSignal The signal that initiated the blurring
-     *     activity.
      * @returns {Boolean} Whether or not the halo can blur the receiver.
      */
-
-    /*
-    var evtWin,
-        targetWin,
-        haloWin,
-
-        sigTarget;
-
-    evtWin = TP.unwrap(aSignal.getWindow());
-    targetWin = this.getNativeWindow();
-    haloWin = aHalo.getNativeWindow();
-
-    sigTarget = aSignal.getTarget();
-
-    //  If the evtWin is the same as the targetWin OR the evtWin is the same as
-    //  the haloWin AND we contain the signal target.
-    if (evtWin === targetWin ||
-        (evtWin === haloWin && aHalo.contains(sigTarget))) {
-        return true;
-    }
-
-    return false;
-    */
 
     //  We can always blur
     return true;
@@ -875,15 +846,13 @@ function(aHalo) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     /**
      * @method haloCanFocus
      * @summary Returns whether or not the halo can focus on the receiver.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
      *     it can focus the receiver.
-     * @param {TP.sig.Signal} aSignal The signal that initiated the focusing
-     *     activity.
      * @returns {Boolean} Whether or not the halo can focus the receiver.
      */
 
