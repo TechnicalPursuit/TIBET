@@ -724,10 +724,6 @@ function(aSignal) {
 
     haloTargetTPElem = aSignal.at('haloTarget');
 
-    //  Set a class on the current halo target that allows us to apply 'halo
-    //  style' to it, even though the halo is hidden.
-    haloTargetTPElem.addClass('sherpa-outliner-haloed');
-
     if (TP.isValid(haloTargetTPElem)) {
         //  Set a class on the current halo target that allows us to apply 'halo
         //  style' to it, even though the halo is hidden.
