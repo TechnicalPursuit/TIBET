@@ -138,7 +138,7 @@ function(aSignal) {
     //      c) AND: the existing target can blur
     if (TP.isValid(currentTargetTPElem) &&
         aSignal.getButton() === TP.LEFT &&
-        currentTargetTPElem.haloCanBlur(this, aSignal)) {
+        currentTargetTPElem.haloCanBlur(this)) {
 
         //  NOTE: Make sure to hide the halo *before* we blur - this way any
         //  signal handlers that are watching the target element are properly
@@ -178,7 +178,7 @@ function(aSignal) {
                 //  new target. But first, we need to make sure it can be
                 //  halo'ed on. If not, find it's nearest haloable element 'up'
                 //  the parent hierarchy.
-                if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                if (!newTargetTPElem.haloCanFocus(this)) {
                     newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                             this, aSignal);
                 }
@@ -189,7 +189,7 @@ function(aSignal) {
             //  No current target - completely new selection.
 
             //  If it can't be focused, traverse 'up' the parent hierarchy.
-            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            if (!newTargetTPElem.haloCanFocus(this)) {
                 newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                                 this, aSignal);
             }
@@ -270,8 +270,6 @@ function() {
                 //  will blur the halo, etc. See that handler for more
                 //  information.
                 currentTargetTPElem.detach();
-                TP.bySystemId('SherpaConsoleService').notify(
-                    'Halo\'ed element deleted');
             }
         });
 
@@ -303,8 +301,6 @@ function() {
 
             if (shouldEmpty) {
                 currentTargetTPElem.empty();
-                TP.bySystemId('SherpaConsoleService').notify(
-                    'Halo\'ed element emptied');
             }
         });
 
@@ -322,6 +318,8 @@ function(newTargetTPElem, shouldUnhide) {
      *     this is different than showing/hiding the halo, although other halo
      *     machinery may show the halo as part of a 'focusing' process that
      *     includes this method.
+     * @description Note that this method does *not* check to see if the halo
+     *     can be blurred or focused. That is left up to the caller.
      * @param {TP.core.ElementNode} newTargetTPElem The element to focus the
      *     halo on.
      * @param {Boolean} [shouldUnhide=false] Whether or not the halo should be
@@ -461,7 +459,7 @@ function(aSignal) {
 
         //  See if we can focus the new target element - if not, we'll search up
         //  the parent chain for the nearest focusable element
-        if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+        if (!newTargetTPElem.haloCanFocus(this)) {
             newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                             this, aSignal);
         }
@@ -474,8 +472,20 @@ function(aSignal) {
         if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
             !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
-            //  This will move the halo off of the old element.
+            //  This will move the halo off of the old element. Note that we do
+            //  *not* check here whether or not we *can* blur - we definitely
+            //  want to blur off of the old DOM content - it's probably gone now
+            //  anyway.
             this.blur();
+
+            //  If we can't focus on the new target, then hide the halo and exit
+            //  here.
+            if (!newTargetTPElem.haloCanFocus(this)) {
+                //  This will 'hide' the halo.
+                this.setAttribute('hidden', true);
+
+                return this;
+            }
 
             //  This will move the halo to the new element.
             this.focusOn(newTargetTPElem);
@@ -557,7 +567,9 @@ function(aSignal) {
             currentTargetParentTPElem = this.get('currentTargetParentTPElem');
 
             //  Blur off of the 'old' target element. It's no longer part of our
-            //  DOM anyway.
+            //  DOM anyway. Note that we do *not* check here whether or not we
+            //  *can* blur - we definitely want to blur off of the old DOM
+            //  content - it's probably gone now anyway.
             this.blur();
 
             //  See if we can 'reacquire' a new target element, but ones that
@@ -567,7 +579,8 @@ function(aSignal) {
 
             //  If we got one, then focus on it - otherwise, make sure that
             //  we're hidden.
-            if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
+            if (TP.isKindOf(newTargetTPElem, TP.core.Node) &&
+                newTargetTPElem.haloCanFocus(this)) {
 
                 this.focusOn(newTargetTPElem);
 
@@ -577,7 +590,8 @@ function(aSignal) {
 
                 //  If we have a reference to the deleting element's halo
                 //  parent, then focus on that. Otherwise, hide the halo.
-                if (TP.isValid(currentTargetParentTPElem)) {
+                if (TP.isValid(currentTargetParentTPElem) &&
+                    currentTargetParentTPElem.haloCanFocus(this)) {
                     this.focusOn(currentTargetParentTPElem);
                 } else {
                     //  This will 'hide' the halo.
@@ -615,6 +629,10 @@ function(aSignal) {
     //  Otherwise, nothing else is possible. The halo target element is
     //  completely gone and we can't determine if it reappeared, so we just
     //  blur, hide ourself and exit.
+
+    //  Note that we do *not* check here whether or not we *can* blur - we
+    //  definitely want to blur off of the old DOM content - it's probably gone
+    //  now anyway.
     this.blur();
 
     //  This will 'hide' the halo.
@@ -668,14 +686,21 @@ function(aSignal) {
     var recastTPNode;
 
     //  Blur ourself. This will remove any focusing that might exist on previous
-    //  DOM content that is now gone.
+    //  DOM content that is now gone. Note that we do *not* check here whether
+    //  or not we *can* blur - we definitely want to blur off of the old DOM
+    //  content - it's probably gone now anyway.
     this.blur();
 
     //  See if we can get a recasting target from the signal. If so, and it's a
     //  type of TP.core.Node, then focus ourself on it.
     recastTPNode = aSignal.at('recastTarget');
     if (TP.isKindOf(recastTPNode, TP.core.Node)) {
-        this.focusOn(recastTPNode);
+        if (recastTPNode.haloCanFocus(this)) {
+            this.focusOn(recastTPNode);
+        } else {
+            //  This will 'hide' the halo.
+            this.setAttribute('hidden', true);
+        }
     }
 
     this.set('$isRecasting', false);
@@ -936,7 +961,7 @@ function(aSignal) {
 
             //  See if we can focus the new target element - if not, we'll
             //  search up the parent chain for the nearest focusable element
-            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            if (!newTargetTPElem.haloCanFocus(this)) {
                 newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                                 this, aSignal);
             }
@@ -951,14 +976,21 @@ function(aSignal) {
             if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
                 !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
-                //  This will move the halo off of the old element.
-                this.blur();
+                if (currentTargetTPElem.haloCanBlur(this)) {
+                    //  This will move the halo off of the old element.
+                    this.blur();
 
-                //  This will move the halo to the new element.
-                this.focusOn(newTargetTPElem);
+                    if (newTargetTPElem.haloCanFocus(this)) {
+                        //  This will move the halo to the new element.
+                        this.focusOn(newTargetTPElem);
 
-                //  NB: We don't worry about unhiding the halo here, since it
-                //  should've been already visible.
+                        //  NB: We don't worry about unhiding the halo here,
+                        //  since it should've been already visible.
+                    } else {
+                        //  This will 'hide' the halo.
+                        this.setAttribute('hidden', true);
+                    }
+                }
             }
         }
     }
@@ -1102,6 +1134,10 @@ function(aSignal) {
 
         //  This will 'hide' the halo.
         this.setAttribute('hidden', true);
+
+        //  Note that we do *not* check here whether or not we *can* blur - we
+        //  definitely want to blur off of the old DOM content - it's probably
+        //  gone now anyway.
         this.blur();
     } else {
 
@@ -1122,7 +1158,7 @@ function(aSignal) {
 
         //  If we actually got a target of some sort, then focus on it and
         //  unhide the halo
-        if (TP.isValid(targetTPElem)) {
+        if (TP.isValid(targetTPElem) && targetTPElem.haloCanFocus(this)) {
             this.focusOn(targetTPElem);
 
             //  This will 'unhide' the halo.
@@ -1233,11 +1269,17 @@ function(aspectPathParts) {
     //  focus on it.
     if (TP.isValid(newTargetTPElem)) {
 
-        this.blur();
-        this.focusOn(newTargetTPElem);
+        if (currentTargetTPElem.haloCanBlur(this)) {
 
-        //  This will 'unhide' the halo.
-        this.setAttribute('hidden', false);
+            this.blur();
+
+            if (newTargetTPElem.haloCanFocus(this)) {
+                this.focusOn(newTargetTPElem);
+
+                //  This will 'unhide' the halo.
+                this.setAttribute('hidden', false);
+            }
+        }
     } else {
         //  Otherwise, we just keep the same target.
         newTargetTPElem = currentTargetTPElem;

@@ -1117,9 +1117,18 @@ function(aTPElem) {
 
                             halo = TP.byId('SherpaHalo', viewDoc);
 
+                            //  This will move the halo off of the old element.
+                            //  Note that we do *not* check here whether or not
+                            //  we *can* blur - we definitely want to blur off
+                            //  of the old DOM content - it's probably gone now
+                            //  anyway.
+
                             //  Blur and refocus the halo on the haloTarget.
                             halo.blur();
-                            halo.focusOn(newTPElem);
+
+                            if (newTPElem.haloCanFocus(halo)) {
+                                halo.focusOn(newTPElem);
+                            }
                         }
                     });
         }

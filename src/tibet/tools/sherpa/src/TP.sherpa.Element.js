@@ -39,7 +39,7 @@ TP.sherpa.Element.Type.defineAttribute('themeURI', TP.NO_RESULT);
 //  ------------------------------------------------------------------------
 
 TP.sherpa.Element.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     return false;
 });
@@ -47,7 +47,7 @@ function(aHalo, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.Element.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     return false;
 });

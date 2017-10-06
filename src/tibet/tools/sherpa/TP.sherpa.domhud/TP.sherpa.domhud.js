@@ -558,9 +558,10 @@ function(aSignal) {
     var targetElem,
         peerID,
 
-        haloTarget,
+        newTargetTPElem,
 
-        halo;
+        halo,
+        currentTargetTPElem;
 
     //  Grab the target lozenge tile and get the value of its peerID attribute.
     //  This will be the ID of the element that we're trying to focus.
@@ -574,21 +575,27 @@ function(aSignal) {
 
     //  NB: We want to query the current UI canvas here - no node context
     //  necessary.
-    haloTarget = TP.byId(peerID);
+    newTargetTPElem = TP.byId(peerID);
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
-    if (haloTarget !== halo.get('currentTargetTPElem')) {
+    currentTargetTPElem = halo.get('currentTargetTPElem');
+    if (newTargetTPElem !== currentTargetTPElem) {
 
-        //  Remove any highlighting that we were doing because we're going to
-        //  focus the halo.
-        haloTarget.removeClass('sherpa-hud-highlight');
-        this.$set('highlighted', null, false);
+        if (currentTargetTPElem.haloCanBlur(halo)) {
+            halo.blur();
 
-        //  Blur and then focus the halo on our new element, passing true to
-        //  actually show the halo if it's hidden.
-        halo.blur();
-        halo.focusOn(haloTarget, true);
+            //  Remove any highlighting that we were doing *on the new target*
+            //  because we're going to focus the halo.
+            newTargetTPElem.removeClass('sherpa-hud-highlight');
+            this.$set('highlighted', null, false);
+
+            if (newTargetTPElem.haloCanFocus(halo)) {
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                halo.focusOn(newTargetTPElem, true);
+            }
+        }
     }
 
     return this;
@@ -612,9 +619,10 @@ function(aSignal) {
     var targetElem,
         peerID,
 
-        haloTarget,
+        newTargetTPElem,
 
-        halo;
+        halo,
+        currentTargetTPElem;
 
     //  Grab the target lozenge tile and get the value of its peerID attribute.
     //  This will be the ID of the element that we're trying to focus.
@@ -628,14 +636,22 @@ function(aSignal) {
 
     //  NB: We want to query the current UI canvas here - no node context
     //  necessary.
-    haloTarget = TP.byId(peerID);
+    newTargetTPElem = TP.byId(peerID);
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
-    if (haloTarget !== halo.get('currentTargetTPElem')) {
-        //  Blur and refocus the halo on the haloTarget.
-        halo.blur();
-        halo.focusOn(haloTarget);
+    currentTargetTPElem = halo.get('currentTargetTPElem');
+    if (newTargetTPElem !== currentTargetTPElem) {
+        //  Blur and refocus the halo on the newTargetTPElem.
+
+        if (currentTargetTPElem.haloCanBlur(halo)) {
+
+            halo.blur();
+
+            if (newTargetTPElem.haloCanFocus(halo)) {
+                halo.focusOn(newTargetTPElem);
+            }
+        }
     }
 
     halo.setAttribute('hidden', false);

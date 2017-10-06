@@ -198,7 +198,8 @@ For pixels (px) Declare this percent (%)
  *
  * ----------------------------------------------------------------------- */
 
-.select {
+.select,
+*|*[class~="select"] {
     -webkit-touch-callout: default;
     -webkit-user-select: auto;
     -khtml-user-select: auto;
@@ -209,7 +210,8 @@ For pixels (px) Declare this percent (%)
     cursor: auto;
 }
 
-.noselect {
+.noselect,
+*|*[class~="noselect"] {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

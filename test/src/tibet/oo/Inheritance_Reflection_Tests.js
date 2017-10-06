@@ -2367,7 +2367,7 @@ function() {
 
     //  ---
 
-    this.it('TIBET instance object local method property scop', function(test, options) {
+    this.it('TIBET instance object local method property scope', function(test, options) {
 
         var obj,
             propName,

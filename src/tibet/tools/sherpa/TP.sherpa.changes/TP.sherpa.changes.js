@@ -443,7 +443,7 @@ function() {
     //  Update the count for the server side, if required.
     serverCountTPElem = this.get('serverCount');
 
-    oldServerCount = serverCountTPElem.getTextContent().asNumber();
+    oldServerCount = serverCountTPElem.getContent().asNumber();
     newServerCount = TP.notEmpty(serverData) ? serverData.getSize() : 0;
 
     //  If the old and new server counts don't match, then update the server
@@ -452,7 +452,7 @@ function() {
 
         //  Set the text of the server count to the new count and add a class
         //  that will cause the count to animate.
-        serverCountTPElem.setTextContent(newServerCount);
+        serverCountTPElem.setContent(newServerCount);
         serverCountTPElem.addClass('contentrefreshed');
 
         //  Set up a signal handler that waits for the animation to finish. When
@@ -492,7 +492,7 @@ function() {
     //  Update the count for the client side, if required.
     clientCountTPElem = this.get('clientCount');
 
-    oldClientCount = clientCountTPElem.getTextContent().asNumber();
+    oldClientCount = clientCountTPElem.getContent().asNumber();
     newClientCount = TP.notEmpty(clientData) ? clientData.getSize() : 0;
 
     //  If the old and new client counts don't match, then update the client
@@ -501,7 +501,7 @@ function() {
 
         //  Set the text of the client count to the new count and add a class
         //  that will cause the count to animate.
-        clientCountTPElem.setTextContent(newClientCount);
+        clientCountTPElem.setContent(newClientCount);
         clientCountTPElem.addClass('contentrefreshed');
 
         //  Set up a signal handler that waits for the animation to finish. When

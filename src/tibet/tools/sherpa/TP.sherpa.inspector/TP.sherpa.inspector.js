@@ -2430,7 +2430,9 @@ function(aSignal) {
 
     var haloTarget,
 
-        dynamicEntries;
+        dynamicEntries,
+
+        selection;
 
     //  Grab the halo target and install local versions of some methods that the
     //  inspector will use.
@@ -2477,9 +2479,15 @@ function(aSignal) {
         this.set('$haloAddedTarget', false);
     }
 
+    //  Grab the current selection before we refresh
+    selection = this.getInspectorBayContentItem(0).get('value');
+
     //  Rebuild the root data entries and refresh bay 0
     this.buildRootBayData();
     this.refreshBay(0);
+
+    //  Set the selection back after we refresh
+    this.getInspectorBayContentItem(0).set('value', selection);
 
     return this;
 });
@@ -2505,7 +2513,9 @@ function(aSignal) {
         dynamicEntries,
         dynamicEntriesIds,
 
-        targetIndex;
+        targetIndex,
+
+        selection;
 
     //  Grab the halo target and remove any local versions of methods that the
     //  inspector will use that we would have installed when we focused the
@@ -2548,9 +2558,15 @@ function(aSignal) {
         }
     }
 
+    //  Grab the current selection before we refresh
+    selection = this.getInspectorBayContentItem(0).get('value');
+
     //  Rebuild the root data entries and refresh bay 0
     this.buildRootBayData();
     this.refreshBay(0);
+
+    //  Set the selection back after we refresh
+    this.getInspectorBayContentItem(0).set('value', selection);
 
     //  Reset the halo target GID tracking attribute that we use to make sure to
     //  not focus on the same object twice in a row.

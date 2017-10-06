@@ -307,11 +307,13 @@ function(options) {
      */
 
     return TP.ac(
+            TP.ac('Instance Attributes', 'Instance Attributes'),
             TP.ac('Instance Methods', 'Instance Methods'),
             TP.ac('Instance Handlers', 'Instance Handlers'),
-            TP.ac('Type Methods', 'Type Methods'),
-            TP.ac('Instance Attributes', 'Instance Attributes'),
             TP.ac('Type Attributes', 'Type Attributes'),
+            TP.ac('Type Methods', 'Type Methods'),
+            TP.ac('Local Attributes', 'Local Attributes'),
+            TP.ac('Local Methods', 'Local Methods'),
             TP.ac('Subtypes', 'Subtypes'),
             TP.ac('Tests', 'Tests')
         );
@@ -357,6 +359,13 @@ function(aSourceName) {
 
     switch (aSourceName) {
 
+        case 'Instance Attributes':
+
+            source = TP.sherpa.InstanceAttributesInspectorSource.construct();
+            source.addEntry('primary', this);
+
+            break;
+
         case 'Instance Methods':
 
             source = TP.sherpa.InstanceMethodsInspectorSource.construct();
@@ -371,9 +380,30 @@ function(aSourceName) {
 
             break;
 
+        case 'Type Attributes':
+
+            source = TP.sherpa.TypeAttributesInspectorSource.construct();
+            source.addEntry('primary', this);
+
+            break;
+
         case 'Type Methods':
 
             source = TP.sherpa.TypeMethodsInspectorSource.construct();
+            source.addEntry('primary', this);
+
+            break;
+
+        case 'Local Attributes':
+
+            source = TP.sherpa.LocalAttributesInspectorSource.construct();
+            source.addEntry('primary', this);
+
+            break;
+
+        case 'Local Methods':
+
+            source = TP.sherpa.LocalMethodsInspectorSource.construct();
             source.addEntry('primary', this);
 
             break;
@@ -481,6 +511,138 @@ function(aSignal) {
     TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmd);
 
     return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.InstanceAttributesInspectorSource
+//  ========================================================================
+
+TP.sherpa.InspectorSource.defineSubtype('InstanceAttributesInspectorSource');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InstanceAttributesInspectorSource.Inst.defineMethod(
+    'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceType,
+
+        result,
+
+        instProto,
+
+        rawData;
+
+    sourceType = this.getEntryAt('primary');
+
+    result = TP.ac();
+
+    instProto = sourceType.getInstPrototype();
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Introduced');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_attributes).sort();
+
+    result.push(rawData);
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Overridden');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_attributes).sort();
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Inherited');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_attributes).sort();
+
+    result = result.flatten();
+
+    result = result.collect(
+                function(entry) {
+                    return TP.ac(
+                            entry,
+                            this.getEntryLabel(entry));
+                }.bind(this));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InstanceAttributesInspectorSource.Inst.defineMethod(
+    'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var sourceType,
+
+        instProto,
+
+        aspect,
+
+        attributeName,
+        attributeValue,
+
+        source;
+
+    sourceType = this.getEntryAt('primary');
+
+    instProto = sourceType.getInstPrototype();
+
+    aspect = anAspect;
+    if (TP.isRegExp(aspect)) {
+        aspect = TP.regExpUnescape(aspect.source);
+    }
+
+    attributeName = /(\S+)\s*\(?/.exec(aspect)[1];
+    attributeValue = instProto[attributeName];
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.setPrimaryEntry(attributeValue);
+
+    return source;
 });
 
 //  ========================================================================
@@ -857,6 +1019,138 @@ function(aSignal) {
 });
 
 //  ========================================================================
+//  TP.sherpa.TypeAttributesInspectorSource
+//  ========================================================================
+
+TP.sherpa.InspectorSource.defineSubtype('TypeAttributesInspectorSource');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TypeAttributesInspectorSource.Inst.defineMethod(
+    'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceType,
+
+        result,
+
+        typeProto,
+
+        rawData;
+
+    sourceType = this.getEntryAt('primary');
+
+    result = TP.ac();
+
+    typeProto = sourceType.getPrototype();
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Introduced');
+
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_attributes).sort();
+
+    result.push(rawData);
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Overridden');
+
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_attributes).sort();
+
+    //  ---
+
+    result.push(TP.GROUPING_PREFIX + ' - Inherited');
+
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_attributes).sort();
+
+    result = result.flatten();
+
+    result = result.collect(
+                function(entry) {
+                    return TP.ac(
+                            entry,
+                            this.getEntryLabel(entry));
+                }.bind(this));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TypeAttributesInspectorSource.Inst.defineMethod(
+    'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var sourceType,
+
+        typeProto,
+
+        aspect,
+
+        attributeName,
+        attributeValue,
+
+        source;
+
+    sourceType = this.getEntryAt('primary');
+
+    typeProto = sourceType.getPrototype();
+
+    aspect = anAspect;
+    if (TP.isRegExp(aspect)) {
+        aspect = TP.regExpUnescape(aspect.source);
+    }
+
+    attributeName = /(\S+)\s*\(?/.exec(aspect)[1];
+    attributeValue = typeProto[attributeName];
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.setPrimaryEntry(attributeValue);
+
+    return source;
+});
+
+//  ========================================================================
 //  TP.sherpa.TypeMethodsInspectorSource
 //  ========================================================================
 
@@ -1061,6 +1355,272 @@ function(aSignal) {
                         ':method --assist' +
                                 ' --name=\'newmethod\'' +
                                 ' --track=\'type\'' +
+                                ' --owner=\'' + typeName + '\''
+                ));
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.LocalAttributesInspectorSource
+//  ========================================================================
+
+TP.sherpa.InspectorSource.defineSubtype('LocalAttributesInspectorSource');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.LocalAttributesInspectorSource.Inst.defineMethod(
+    'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceType,
+
+        result,
+
+        rawData;
+
+    sourceType = this.getEntryAt('primary');
+
+    result = TP.ac();
+
+    //  ---
+
+    rawData = sourceType.getInterface(
+                    TP.SLOT_FILTERS.known_local_attributes).sort();
+
+    result.push(rawData);
+
+    result = result.flatten();
+
+    result = result.collect(
+                function(entry) {
+                    return TP.ac(
+                            entry,
+                            this.getEntryLabel(entry));
+                }.bind(this));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.LocalAttributesInspectorSource.Inst.defineMethod(
+    'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var sourceType,
+
+        aspect,
+
+        attributeName,
+        attributeValue,
+
+        source;
+
+    sourceType = this.getEntryAt('primary');
+
+    aspect = anAspect;
+    if (TP.isRegExp(aspect)) {
+        aspect = TP.regExpUnescape(aspect.source);
+    }
+
+    attributeName = /(\S+)\s*\(?/.exec(aspect)[1];
+    attributeValue = sourceType[attributeName];
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.setPrimaryEntry(attributeValue);
+
+    return source;
+});
+
+//  ========================================================================
+//  TP.sherpa.LocalMethodsInspectorSource
+//  ========================================================================
+
+TP.sherpa.InspectorSource.defineSubtype('LocalMethodsInspectorSource');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.LocalMethodsInspectorSource.Inst.defineMethod(
+    'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceType,
+
+        result,
+
+        rawData;
+
+    sourceType = this.getEntryAt('primary');
+
+    result = TP.ac();
+
+    //  ---
+
+    rawData = sourceType.getInterface(
+                    TP.SLOT_FILTERS.known_local_methods).sort();
+
+    result.push(rawData);
+
+    result = result.flatten();
+
+    result = result.collect(
+                function(entry) {
+                    return TP.ac(
+                            entry,
+                            this.getEntryLabel(entry));
+                }.bind(this));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.LocalMethodsInspectorSource.Inst.defineMethod(
+    'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var sourceType,
+
+        aspect,
+
+        methodName,
+        method;
+
+    sourceType = this.getEntryAt('primary');
+
+    aspect = anAspect;
+    if (TP.isRegExp(aspect)) {
+        aspect = TP.regExpUnescape(aspect.source);
+    }
+
+    methodName = /(\S+)\s*\(?/.exec(aspect)[1];
+    method = sourceType[methodName];
+
+    return method;
+});
+
+//  ------------------------------------------------------------------------
+//  Toolbar API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.LocalMethodsInspectorSource.Inst.defineMethod(
+    'getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     toolbar.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     toolbar.
+     */
+
+    return TP.elem('<sherpa:methodsToolbarContent' +
+                    ' tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
+});
+
+//  ------------------------------------------------------------------------
+//  Actions API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.LocalMethodsInspectorSource.Inst.defineHandler(
+    'SherpaInspectorAddMethod',
+function(aSignal) {
+
+    var typeName;
+
+    typeName = this.getEntryAt('primary').getName();
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':method --assist' +
+                                ' --name=\'newmethod\'' +
+                                ' --track=\'typelocal\'' +
                                 ' --owner=\'' + typeName + '\''
                 ));
 
