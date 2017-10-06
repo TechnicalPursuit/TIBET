@@ -352,7 +352,7 @@
 
             allNodeIPs,
             v4NodeIPs,
-            nodeIP,
+            host,
 
             builddir,
             artifacts;
@@ -361,16 +361,18 @@
         project += ' ' + TDS.colorize(
                             TDS.cfg('npm.version') || '0.0.1', 'version');
 
-        //  Find the first Node IP address that is IPv4 compliant. If one is
-        //  found, use it. Otherwise default to '127.0.0.1'.
-        allNodeIPs = TDS.getNodeIPs();
-        v4NodeIPs = allNodeIPs.filter(
-                        function(anAddr) {
-                            return ip.isV4Format(anAddr);
-                        });
-        nodeIP = v4NodeIPs[0];
-        if (!nodeIP) {
-            nodeIP = '127.0.0.1';
+        //  Determine the IP address (or hostname) to output for the server.
+        host = TDS.cfg('tds.host');
+        if (!host) {
+            allNodeIPs = TDS.getNodeIPs();
+            v4NodeIPs = allNodeIPs.filter(
+                            function(anAddr) {
+                                return ip.isV4Format(anAddr);
+                            });
+            host = v4NodeIPs[0];
+        }
+        if (!host) {
+            host = '127.0.0.1';
         }
 
         if (TDS.getNodeEnv() !== 'development') {
@@ -383,7 +385,7 @@
                 if (artifacts.length) {
                     logger.system(project +
                         TDS.colorize(' @ ', 'dim') +
-                        TDS.colorize(protocol + '://' + nodeIP +
+                        TDS.colorize(protocol + '://' + host +
                             (port === 80 ? '' : ':' + port), 'host') +
                         TDS.colorize(' (production build)', 'dim'),
                         {comp: 'TDS', type: 'tds', name: 'build'});
@@ -393,7 +395,7 @@
             //  And a sherpa-enabled link for those who want to run the sherpa.
             logger.system(project +
                 TDS.colorize(' @ ', 'dim') +
-                TDS.colorize(protocol + '://' + nodeIP +
+                TDS.colorize(protocol + '://' + host +
                     (port === 80 ? '' : ':' + port +
                      '#?boot.profile=development@developer'),
                     'host'),
@@ -403,7 +405,7 @@
             //  quickstart/essentials guide approach to development.
             logger.system(project +
                 TDS.colorize(' @ ', 'dim') +
-                TDS.colorize(protocol + '://' + nodeIP +
+                TDS.colorize(protocol + '://' + host +
                     (port === 80 ? '' : ':' + port +
                      '#?boot.profile=development'), 'host'),
                 {comp: 'TDS', type: 'tds', name: 'dev'});

@@ -52,6 +52,8 @@
         //  true will cause the server to start with HTTPS server/port info.
         setcfg('tds.https', false);
 
+        setcfg('tds.host', '127.0.0.1');
+
         //  true will cause redirection in some environments when HTTPS is off.
         setcfg('tds.secure_requests', false);
 
