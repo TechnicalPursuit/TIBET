@@ -36,6 +36,9 @@
             TDS,                // The TIBET Data Server instance.
             fileTransport,      // Logger-to-file transport.
             consoleTransport,   // Logger-to-console transport.
+            tmparr,             // Temporary array for JSON parse.
+            transports,         // List of transports to configure.
+            transportNames,     // Config data for transport names.
             watchurl,           // Ignore logging calls to watch url.
             winston,            // Appender-supported logging.
             expressWinston;     // Request logging support.
@@ -118,28 +121,57 @@
         //  Initialization
         //  ---
 
-        fileTransport = new winston.transports.File({
-            level: winston.level,
-            filename: logfile,
-            maxsize: logsize,
-            maxFiles: logcount,
-            meta: true,
-            json: true,         //  json is easier to parse with tools
-            colorize: false     //  always false in the log file.
-        });
+        transports = [];
+        transportNames = TDS.cfg('tds.log.transports', ['file', 'console']);
+        if (!Array.isArray(transportNames)) {
+            try {
+                tmparr = JSON.parse(transportNames);
+                transportNames = tmparr;
+                if (!Array.isArray(transportNames)) {
+                    throw new Error();
+                }
+            } catch (e) {
+                TDS.prelog('error',
+                    'unable to parse tds.log.transports setting.', meta);
+                TDS.prelog('warn',
+                    'Defaulting tds.log.transports to file+console.', meta);
+                transportNames = ['file', 'console'];
+            }
+        }
 
-        //  NOTE we use a TDS-specific transport for the console output
-        //  to help avoid issues with poor handling of newlines etc.
-        consoleTransport = new TDS.log_transport({
-            level: winston.level,
-            stderrLevels: ['error'],
-            debugStdout: false,
-            meta: true,
-            colorize: logcolor, //  Don't use built-in...we format this.
-            json: false,    //  json is harder to read in terminal view.
-            eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
-            formatter: TDS.log_formatter
-        });
+        if (transportNames.indexOf('console') !== -1 &&
+                options.argv.console !== false) {
+            //  NOTE we use a TDS-specific transport for the console output
+            //  to help avoid issues with poor handling of newlines etc.
+            consoleTransport = new TDS.log_transport({
+                level: winston.level,
+                stderrLevels: ['error'],
+                debugStdout: false,
+                meta: true,
+                colorize: logcolor, //  Don't use built-in...we format this.
+                json: false,    //  json is harder to read in terminal view.
+                eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
+                formatter: TDS.log_formatter
+            });
+
+            transports.push(consoleTransport);
+        }
+
+        //  If file is listed, or there are no transports defined, then log to
+        //  the standard file transport.
+        if (transportNames.indexOf('file') !== -1 || transports.length === 0) {
+            fileTransport = new winston.transports.File({
+                level: winston.level,
+                filename: logfile,
+                maxsize: logsize,
+                maxFiles: logcount,
+                meta: true,
+                json: true,         //  json is easier to parse with tools
+                colorize: false     //  always false in the log file.
+            });
+
+            transports.push(fileTransport);
+        }
 
         logger = new winston.Logger({
             //  NOTE winston's level #'s are inverted from TIBET's.
@@ -161,7 +193,7 @@
                 fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
                 system: TDS.getcfg('theme.' + logtheme + '.system')
             },
-            transports: [fileTransport, consoleTransport],
+            transports: transports,
             exitOnError: false
         });
 
@@ -171,10 +203,23 @@
 
         //  ---
 
-        //  NOTE we assign a flush option to the logger to give us a way to
-        //  force flushing the console as needed.
-        logger.flush = consoleTransport.flush.bind(consoleTransport);
-
+        if (consoleTransport) {
+            //  NOTE we assign a flush option to the logger to give us a way to
+            //  force flushing the console as needed.
+            logger.flush = consoleTransport.flush.bind(consoleTransport);
+        } else {
+            process.stdout.write(
+                TDS.colorize(Date.now(), 'stamp') +
+                TDS.colorize(' [' +
+                    TDS.levels.system +
+                    '] ', 'system') +
+                TDS.colorize('TDS ', 'tds') +
+                TDS.colorize('logging to ' +
+                   TDS.getVirtualPath(logfile)) + ' ' +
+                TDS.colorize('(', 'dim') +
+                TDS.colorize(TDS.getNodeEnv(), 'env') +
+                TDS.colorize(')', 'dim'));
+        }
 
         /**
          * Constructs an object with proper handlers for the various logging

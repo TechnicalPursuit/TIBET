@@ -61,6 +61,7 @@
         //  can choose to map https TDS operations to a non-priviledged port
         setcfg('tds.https_port', null);
 
+        setcfg('tds.log.transports', ['file', 'console']);
         setcfg('tds.log.color', true);
         setcfg('tds.log.count', 5);
         setcfg('tds.log.file', '~app_log/tds-{{env}}.log');
