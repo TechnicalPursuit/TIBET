@@ -58,7 +58,8 @@
             //  Validate
             //  ---
 
-            logger.debug('body is: ' + TDS.beautify(req.body));
+            TDS.ifDebug() ?
+                logger.debug('body is: ' + TDS.beautify(req.body)) : 0;
 
             if (!req.body) {
                 res.status(400);    // Bad Request
@@ -97,7 +98,8 @@
                 params: params
             };
 
-            logger.debug('submitting job data: ' + TDS.beautify(job));
+            TDS.ifDebug() ?
+                logger.debug('submitting job data: ' + TDS.beautify(job)) : 0;
 
             db.insertAsync(job).then(
             function(result) {

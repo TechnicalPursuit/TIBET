@@ -3,7 +3,7 @@
 \fBtibet-type\fR \- creates a new TIBET type
 .SH SYNOPSIS
 .P
-tibet type [\-\-name] [[<root>\|\.]<namespace>:]<typename> [\-\-dir <dirname>] [\-\-dna <template>] [\-\-package <pkgname>] [\-\-config <cfgname>]
+tibet type [\-\-name] [[<root>\|\.]<namespace>:]<typename> [\-\-supertype <typename] [\-\-dir <dirname>] [\-\-dna <template>] [\-\-package <pkgname>] [\-\-config <cfgname>]
 .SH DESCRIPTION
 .P
 Creates a new TIBET type using the supplied type name and parameters\.
@@ -23,8 +23,15 @@ project, the type namespace is defaulted to the application project name and
 the root namespace is defaulted as it is when two parts are supplied\. It is not
 a valid operation to execute this command with one part when executed inside of
 the TIBET library\.
+.P
+Depending on the DNA chosen the result will be creation of the type and
+optionally a template, style sheet, and test file\.
 .SH OPTIONS
 .RS 0
+.IP \(bu 2
+\fB\-\-supertype\fP :
+The name of the supertype to use for the target type\. This should be
+specified as a fully\-qualified {root}\.{namespace}\.{typename} triplet\.
 .IP \(bu 2
 \fB\-\-dna\fP :
 The name of the dna (essentially a directory reference) to clone and process

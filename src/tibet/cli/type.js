@@ -81,8 +81,8 @@ Cmd.prototype.TEMPLATE_KEY = 'typename';
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet type [--name] [[<root>.]<namespace>:]<typename> [--dir <dirname>]' +
-    ' [--dna <template>] [--package <pkgname>] [--config <cfgname>]';
+    'tibet type [--name] [[<root>.]<namespace>:]<typename> [--supertype <typename>]' +
+    ' [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]';
 
 //  ---
 //  Instance Methods

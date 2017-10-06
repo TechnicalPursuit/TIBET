@@ -48,7 +48,7 @@
 
             logger.info(job, JSON.stringify(step));
 
-            logger.debug(job, JSON.stringify(step));
+            TDS.ifDebug() ? logger.debug(job, JSON.stringify(step)) : 0;
 
             //  Basic SMTP option sanity check. These params should include the
             //  service and auth (user/pass) data for the SMTP config.

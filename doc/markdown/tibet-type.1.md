@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet type [--name] [[<root>.]<namespace>:]<typename> [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]
+tibet type [--name] [[<root>.]<namespace>:]<typename> [--supertype <typename] [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]
 
 ## DESCRIPTION
 
@@ -25,7 +25,14 @@ the root namespace is defaulted as it is when two parts are supplied. It is not
 a valid operation to execute this command with one part when executed inside of
 the TIBET library.
 
+Depending on the DNA chosen the result will be creation of the type and
+optionally a template, style sheet, and test file.
+
 ## OPTIONS
+
+  * `--supertype` :
+    The name of the supertype to use for the target type. This should be
+specified as a fully-qualified {root}.{namespace}.{typename} triplet.
 
   * `--dna` :
     The name of the dna (essentially a directory reference) to clone and process

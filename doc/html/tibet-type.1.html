@@ -21,7 +21,7 @@
 
 <h1 id="tibet-type-1-creates-a-new-tibet-type">tibet-type(1) -- creates a new TIBET type</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet type [--name] [[&lt;root&gt;.]&lt;namespace&gt;:]&lt;typename&gt; [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--package &lt;pkgname&gt;] [--config &lt;cfgname&gt;]</p>
+<p>tibet type [--name] [[&lt;root&gt;.]&lt;namespace&gt;:]&lt;typename&gt; [--supertype &lt;typename] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--package &lt;pkgname&gt;] [--config &lt;cfgname&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Creates a new TIBET type using the supplied type name and parameters.</p>
 <p>Type names can supply one, two or three parts, separated by <code>.</code> or <code>:</code>.</p>
@@ -36,8 +36,14 @@ project, the type namespace is defaulted to the application project name and
 the root namespace is defaulted as it is when two parts are supplied. It is not
 a valid operation to execute this command with one part when executed inside of
 the TIBET library.</p>
+<p>Depending on the DNA chosen the result will be creation of the type and
+optionally a template, style sheet, and test file.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
+<li><p><code>--supertype</code> :
+The name of the supertype to use for the target type. This should be
+specified as a fully-qualified {root}.{namespace}.{typename} triplet.</p>
+</li>
 <li><p><code>--dna</code> :
 The name of the dna (essentially a directory reference) to clone and process
 to produce the new type. The default is <code>default</code>. Other options are <code>content</code>

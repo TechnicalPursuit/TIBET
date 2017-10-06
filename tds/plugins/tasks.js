@@ -765,8 +765,8 @@
          * @param {Object} change The follow library change descriptor.
          */
         processDocumentChange = function(change) {
-            logger.debug('CouchDB change:\n' +
-                TDS.beautify(JSON.stringify(change)));
+            TDS.ifDebug() ? logger.debug('CouchDB change:\n' +
+                TDS.beautify(JSON.stringify(change))) : 0;
 
             process.nextTick(function() {
                 //  Save the change.seq number so we watch based on that
@@ -854,15 +854,15 @@
                             logger.error(job,
                                 'db update failed: ' +
                                 err.message, stepMeta);
-                            logger.debug(job,
-                                'step complete', stepMeta);
+                            TDS.ifDebug() ? logger.debug(job,
+                                'step complete', stepMeta) : 0;
                             return;
                         }
 
-                        logger.debug(job,
-                            'db update succeeded', stepMeta);
-                        logger.debug(job,
-                            'step complete', stepMeta);
+                        TDS.ifDebug() ? logger.debug(job,
+                            'db update succeeded', stepMeta) : 0;
+                        TDS.ifDebug() ? logger.debug(job,
+                            'step complete', stepMeta) : 0;
                     });
 
                 }).catch(Promise.TimeoutError, function(err) {
@@ -1250,7 +1250,7 @@
                 } catch (e) {
                     logger.error('Error loading task: ' + name);
                     logger.error(e.message);
-                    logger.debug(e.stack);
+                    TDS.ifDebug() ? logger.debug(e.stack) : 0;
                     return;
                 }
             });
@@ -1308,8 +1308,8 @@
                 if (regex) {
                     result = regex.test(doc._id);
                     if (!result) {
-                        logger.debug('Filtering change: ' +
-                            TDS.beautify(JSON.stringify(doc)));
+                        TDS.ifDebug() ? logger.debug('Filtering change: ' +
+                            TDS.beautify(JSON.stringify(doc))) : 0;
                     }
                     return result;
                 }

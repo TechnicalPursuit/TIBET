@@ -147,7 +147,7 @@
                         logger.error('Error loading ' + style + ': ' + name,
                             meta);
                         logger.error(e.message, meta);
-                        logger.debug(e.stack, meta);
+                        TDS.ifDebug() ? logger.debug(e.stack, meta) : 0;
                         return;
                     }
 
@@ -161,7 +161,7 @@
                             middleware = route(options);
                         } catch (e) {
                             logger.error(e.message, meta);
-                            logger.debug(e.stack, meta);
+                            TDS.ifDebug() ? logger.debug(e.stack, meta) : 0;
                             logger.warn('Disabling invalid route handler in: ' +
                                 base, meta);
                         }

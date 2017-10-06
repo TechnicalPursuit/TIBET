@@ -209,8 +209,8 @@
             //  TODO:   see if we're in a git project, make that a requirement
             //  since that implies changes aren't inherently irreversible.
 
-            // logger.debug('CouchDB changes:\n' +
-            //  TDS.beautify(JSON.stringify(list)));
+            // TDS.ifDebug() ? logger.debug('CouchDB changes:\n' +
+            //     TDS.beautify(JSON.stringify(list))) : 0;
 
             list.forEach(function(item) {
                 // var fullpath;
@@ -262,8 +262,8 @@
                 //  can only be determined properly by comparing to past.
                 baseline = change;
             } else {
-                logger.debug('CouchDB change:\n' +
-                    TDS.beautify(JSON.stringify(change)));
+                TDS.ifDebug() ? logger.debug('CouchDB change:\n' +
+                    TDS.beautify(JSON.stringify(change))) : 0;
 
                 baserev = baseline.doc._rev;
                 basepos = baserev.slice(0, baserev.indexOf('-'));
@@ -314,7 +314,9 @@
                     //  Output that we saw the change, but we know about it,
                     //  probably because it's coming back in response to a file
                     //  system change we pushed to CouchDB a moment ago.
-                    logger.debug('CouchDB change: cyclic update notification.');
+                    TDS.ifDebug() ?
+                        logger.debug(
+                            'CouchDB change: cyclic update notification.') : 0;
                 }
             }
         };
@@ -326,8 +328,8 @@
          * @param {Object} change The follow library change descriptor.
          */
         processDocumentChange = options.tds_couch.change || function(change) {
-            logger.debug('CouchDB change:\n' +
-                TDS.beautify(JSON.stringify(change)));
+            TDS.ifDebug() ? logger.debug('CouchDB change:\n' +
+                TDS.beautify(JSON.stringify(change))) : 0;
 
             //  Delegate task processing to the TIBET Workflow Subsystem (TWS)
             //  if it's been loaded.
@@ -359,8 +361,8 @@
                 if (regex) {
                     result = regex.test(doc._id);
                     if (!result) {
-                        logger.debug('Filtering change: ' +
-                            TDS.beautify(JSON.stringify(doc)));
+                        TDS.ifDebug() ? logger.debug('Filtering change: ' +
+                            TDS.beautify(JSON.stringify(doc))) : 0;
                     }
                     return result;
                 }
@@ -556,7 +558,9 @@
                         att,
                         fullpath;
 
-                    // logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // TDS.ifDebug() ?
+                    //     logger.debug(
+                    //         TDS.beautify(JSON.stringify(response))) : 0;
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -600,7 +604,7 @@
                         var type,
                             content;
 
-                        // logger.debug('read:\n' + data);
+                        // TDS.ifDebug() ? logger.debug('read:\n' + data) : 0;
 
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
@@ -672,7 +676,9 @@
                         att,
                         fullpath;
 
-                    // logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // TDS.ifDebug() ?
+                    //     logger.debug(
+                    //         TDS.beautify(JSON.stringify(response))) : 0;
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -726,7 +732,7 @@
                             level,
                             content;
 
-                        // logger.debug('read:\n' + data);
+                        // TDS.ifDebug() ? logger.debug('read:\n' + data) : 0;
 
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
@@ -817,7 +823,9 @@
                     var doc,
                         rev;
 
-                    // logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // TDS.ifDebug() ?
+                    //     logger.debug(
+                    //         TDS.beautify(JSON.stringify(response))) : 0;
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -921,11 +929,13 @@
             watcher = options.watcher;
             watcher.consumers += 1;
 
-            logger.debug('TDS CouchDB interface sharing file watcher.');
+            TDS.ifDebug() ?
+                logger.debug('TDS CouchDB interface sharing file watcher.') : 0;
 
         } else {
 
-            logger.debug('TDS CouchDB interface creating file watcher.');
+            TDS.ifDebug() ?
+                logger.debug('TDS CouchDB interface creating file watcher.') : 0;
 
             /**
              * Helper function for escaping regex metacharacters for patterns.
@@ -959,7 +969,8 @@
                 pattern = /\.git|\.svn/;
             }
 
-            logger.debug('TDS CouchDB interface observing: ' + appRoot);
+            TDS.ifDebug() ?
+                logger.debug('TDS CouchDB interface observing: ' + appRoot) : 0;
 
             //  Configure a watcher for our root, including any ignore
             //  patterns etc.

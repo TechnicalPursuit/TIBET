@@ -337,7 +337,8 @@
                         var query,
                             parts;
 
-                        logger.debug('received ' + event.data, meta);
+                        TDS.ifDebug() ?
+                            logger.debug('received ' + event.data, meta) : 0;
 
                         //  Convert URL formatted query string to query object
                         //  so we match the req.query format of a URL request.

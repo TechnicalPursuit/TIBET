@@ -59,8 +59,16 @@
         return isValid(aDocument.getElementsByTagName('parsererror')[0]);
     };
 
+    isDefined = function(aReference) {
+        return aReference !== undefined;
+    };
+
     isValid = function(aReference) {
         return aReference !== null && aReference !== undefined;
+    };
+
+    notDefined = function(aReference) {
+        return aReference === undefined;
     };
 
     notEmpty = function(aReference) {
@@ -196,8 +204,8 @@
         this.setcfg = TP.sys.setcfg;
 
         // For get requests we rely on the instance copy.
-        TP.sys.getcfg = function(property) {
-            return pkg.getcfg(property);
+        TP.sys.getcfg = function(property, aDefault) {
+            return pkg.getcfg(property, aDefault);
         };
         TP.sys.cfg = TP.sys.getcfg;
 
@@ -1430,14 +1438,17 @@
      * @param {string} property The name of the property to look up.
      * @returns {Object} The property value.
      */
-    Package.prototype.getcfg = function(property) {
+    Package.prototype.getcfg = function(property, aDefault) {
         var name,
             keys,
             key,
             cfg,
             pkg;
 
-        if (!property) {
+        if (notValid(property)) {
+            if (isDefined(aDefault)) {
+                return aDefault;
+            }
             return this.cfg;
         }
 
@@ -1476,7 +1487,7 @@
         switch (keys.length) {
             case 0:
                 //  No matches.
-                return;
+                return aDefault;
             case 1:
                 //  Exact match or potential prefix match.
                 key = keys[0];

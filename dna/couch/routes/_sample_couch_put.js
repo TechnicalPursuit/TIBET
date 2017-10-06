@@ -83,7 +83,8 @@
             //  Store
             //  ---
 
-            logger.debug('storing data: ' + TDS.beautify(req.body));
+            TDS.ifDebug() ?
+                logger.debug('storing data: ' + TDS.beautify(req.body)) : 0;
 
             db.insertAsync(req.body).then(function() {
                 res.status(200).send({ok: true});

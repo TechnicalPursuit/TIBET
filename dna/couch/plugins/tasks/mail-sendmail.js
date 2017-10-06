@@ -47,7 +47,7 @@
                 template,
                 send;
 
-            logger.debug(JSON.stringify(step));
+            TDS.ifDebug() ? logger.debug(JSON.stringify(step)) : 0;
 
             //  Basic sendmail option sanity check
             if (!params.sendmail) {

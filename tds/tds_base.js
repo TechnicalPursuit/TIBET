@@ -630,12 +630,14 @@
     /**
      * Returns the value for a specific configuration property.
      * @param {String} property A configuration property name.
+     * @param {Object} [aDefault] An optional default value to return
+     *     if the original key isn't found.
      * @returns {Object} The property value, if found.
      */
-    TDS.getcfg = function(property) {
+    TDS.getcfg = function(property, aDefault) {
         this.initPackage();
 
-        return TDS._package.getcfg(property);
+        return TDS._package.getcfg(property, aDefault);
     };
 
     //  Alias for same syntax found in TIBET client.
@@ -808,7 +810,7 @@
             } catch (e) {
                 if (TDS.logger) {
                     TDS.logger.error(e.message, meta);
-                    TDS.logger.debug(e.stack, meta);
+                    TDS.ifDebug() ? TDS.logger.debug(e.stack, meta) : 0;
                 } else {
                     console.error(e.message);
                     console.error(e.stack);

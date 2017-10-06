@@ -44,7 +44,7 @@
                 template,
                 body;
 
-            logger.debug(job, JSON.stringify(step));
+            TDS.ifDebug() ? logger.debug(job, JSON.stringify(step)) : 0;
 
             //  Basic option sanity check
             if (!params.auth) {

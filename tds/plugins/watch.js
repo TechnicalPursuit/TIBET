@@ -153,7 +153,9 @@
 
             watchRoot = watcher.options.cwd;
 
-            logger.debug('TDS FileWatch interface rooted at: ' + watchRoot);
+            TDS.ifDebug() ?
+                logger.debug('TDS FileWatch interface rooted at: ' +
+                    watchRoot) : 0;
 
         } else {
 
@@ -164,7 +166,8 @@
             watchRoot = path.resolve(TDS.expandPath(
                 TDS.getcfg('tds.watch.root') || '~app'));
 
-            logger.debug('TDS FileWatch interface rooted at: ' + watchRoot);
+            TDS.ifDebug() ? logger.debug('TDS FileWatch interface rooted at: ' +
+                watchRoot) : 0;
 
             //  Helper function for escaping regex metacharacters. NOTE
             //  that we need to take "ignore format" things like path/*
@@ -271,7 +274,8 @@
             fullpath = path.join(watchRoot, file);
             tibetpath = TDS.getVirtualPath(fullpath);
 
-            logger.debug('Processing file change to ' + tibetpath);
+            TDS.ifDebug() ? logger.debug('Processing file change to ' +
+                tibetpath) : 0;
 
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {

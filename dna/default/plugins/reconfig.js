@@ -75,7 +75,8 @@
 
                 str = JSON.stringify(obj);
 
-                logger.debug('reconfigured to: ' + TDS.beautify(str));
+                TDS.ifDebug() ?
+                    logger.debug('reconfigured to: ' + TDS.beautify(str)) : 0;
 
                 res.json(obj);
             });

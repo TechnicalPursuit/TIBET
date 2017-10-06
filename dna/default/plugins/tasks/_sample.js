@@ -39,7 +39,7 @@
          */
         return function(job, step, params) {
 
-            logger.debug(TDS.beautify(step));
+            TDS.ifDebug() ? logger.debug(TDS.beautify(step)) : 0;
 
             //  ---
             //  Check task parameters
