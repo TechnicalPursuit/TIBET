@@ -185,6 +185,38 @@
     });
 
     //  ---
+    //  State checks
+    //  ---
+
+    TDS.ifDebug = function() {
+        var level;
+
+        //  If we can't tell we can't filter since we may be turning off logs.
+        if (!TDS.logger) {
+            return true;
+        }
+
+        level = TDS.cfg('tds.log.level').toLowerCase();
+
+        return TDS.levels[level] <= TDS.levels.debug;
+    };
+
+    //  ---
+
+    TDS.ifTrace = function() {
+        var level;
+
+        //  If we can't tell we can't filter since we may be turning off logs.
+        if (!TDS.logger) {
+            return true;
+        }
+
+        level = TDS.cfg('tds.log.level').toLowerCase();
+
+        return TDS.levels[level] <= TDS.levels.trace;
+    };
+
+    //  ---
     //  Value checks
     //  ---
 
