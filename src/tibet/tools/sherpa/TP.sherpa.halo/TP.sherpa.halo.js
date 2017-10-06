@@ -460,8 +460,7 @@ function(aSignal) {
         //  See if we can focus the new target element - if not, we'll search up
         //  the parent chain for the nearest focusable element
         if (!newTargetTPElem.haloCanFocus(this)) {
-            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
-                                                            this, aSignal);
+            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(this);
         }
 
         //  Couldn't find a focusable target... exit.

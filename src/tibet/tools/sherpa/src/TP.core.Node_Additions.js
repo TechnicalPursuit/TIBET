@@ -638,7 +638,7 @@ function(aHalo) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('getNearestHaloFocusable',
-function(aHalo, aSignal) {
+function(aHalo) {
 
     /**
      * @method getNearestHaloFocusable
@@ -648,8 +648,6 @@ function(aHalo, aSignal) {
      *     are.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
      *     halo-focusable ancestor.
-     * @param {TP.sig.Signal} aSignal The signal that initiated the focusing
-     *     activity.
      * @returns {TP.core.ElementNode} The next halo-focusable ancestor of the
      *     receiver.
      */
@@ -663,7 +661,7 @@ function(aHalo, aSignal) {
 
     while (TP.isValid(focusableTPElem = focusableTPElem.getHaloParent(aHalo))) {
 
-        canFocus = focusableTPElem.haloCanFocus(aHalo, aSignal);
+        canFocus = focusableTPElem.haloCanFocus(aHalo);
 
         if (canFocus) {
             return focusableTPElem;
