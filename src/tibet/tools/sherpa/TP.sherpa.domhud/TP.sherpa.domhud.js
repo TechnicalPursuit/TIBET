@@ -582,14 +582,22 @@ function(aSignal) {
     currentTargetTPElem = halo.get('currentTargetTPElem');
     if (newTargetTPElem !== currentTargetTPElem) {
 
-        if (currentTargetTPElem.haloCanBlur(halo)) {
+        //  Remove any highlighting that we were doing *on the new target*
+        //  because we're going to focus the halo.
+        newTargetTPElem.removeClass('sherpa-hud-highlight');
+        this.$set('highlighted', null, false);
+
+        if (TP.isValid(currentTargetTPElem) &&
+            currentTargetTPElem.haloCanBlur(halo)) {
+
             halo.blur();
 
-            //  Remove any highlighting that we were doing *on the new target*
-            //  because we're going to focus the halo.
-            newTargetTPElem.removeClass('sherpa-hud-highlight');
-            this.$set('highlighted', null, false);
-
+            if (newTargetTPElem.haloCanFocus(halo)) {
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                halo.focusOn(newTargetTPElem, true);
+            }
+        } else {
             if (newTargetTPElem.haloCanFocus(halo)) {
                 //  Focus the halo on our new element, passing true to actually
                 //  show the halo if it's hidden.
@@ -642,12 +650,16 @@ function(aSignal) {
 
     currentTargetTPElem = halo.get('currentTargetTPElem');
     if (newTargetTPElem !== currentTargetTPElem) {
-        //  Blur and refocus the halo on the newTargetTPElem.
 
-        if (currentTargetTPElem.haloCanBlur(halo)) {
+        if (TP.isValid(currentTargetTPElem) &&
+            currentTargetTPElem.haloCanBlur(halo)) {
 
             halo.blur();
 
+            if (newTargetTPElem.haloCanFocus(halo)) {
+                halo.focusOn(newTargetTPElem);
+            }
+        } else {
             if (newTargetTPElem.haloCanFocus(halo)) {
                 halo.focusOn(newTargetTPElem);
             }
