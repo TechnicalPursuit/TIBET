@@ -31,6 +31,10 @@
         isEmpty,
         isParserError,
         isValid,
+        /* eslint-disable no-unused-vars */
+        isDefined,
+        notDefined,
+        /* eslint-enable no-unused-vars */
         notEmpty,
         notValid;
 
@@ -59,17 +63,19 @@
         return isValid(aDocument.getElementsByTagName('parsererror')[0]);
     };
 
-    isDefined = function(aReference) {
-        return aReference !== undefined;
-    };
-
     isValid = function(aReference) {
         return aReference !== null && aReference !== undefined;
+    };
+
+    /* eslint-disable no-unused-vars */
+    isDefined = function(aReference) {
+        return aReference !== undefined;
     };
 
     notDefined = function(aReference) {
         return aReference === undefined;
     };
+    /* eslint-enable no-unused-vars */
 
     notEmpty = function(aReference) {
         return aReference !== null && aReference !== undefined &&
