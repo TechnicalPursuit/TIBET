@@ -9,6 +9,9 @@
 
     /* For highlighting below */
     margin: 1px;
+
+    /* allow overflow so we can work with tools open around app tag */
+    overflow: auto;
 }
 
 .sherpa-hud .sherpa-hud-highlight:not(.sherpa-outliner-haloed),
