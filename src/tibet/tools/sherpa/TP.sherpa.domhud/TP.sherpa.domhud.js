@@ -587,17 +587,17 @@ function(aSignal) {
             halo.blur();
         }
 
-        //  Remove any highlighting that we were doing *on the new target*
-        //  because we're going to focus the halo.
-        newTargetTPElem.removeClass('sherpa-hud-highlight');
-        this.$set('highlighted', null, false);
+            //  Remove any highlighting that we were doing *on the new target*
+            //  because we're going to focus the halo.
+            newTargetTPElem.removeClass('sherpa-hud-highlight');
+            this.$set('highlighted', null, false);
 
-        if (newTargetTPElem.haloCanFocus(halo)) {
-            //  Focus the halo on our new element, passing true to actually
-            //  show the halo if it's hidden.
-            halo.focusOn(newTargetTPElem, true);
+            if (newTargetTPElem.haloCanFocus(halo)) {
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                halo.focusOn(newTargetTPElem, true);
+            }
         }
-    }
 
     return this;
 });
