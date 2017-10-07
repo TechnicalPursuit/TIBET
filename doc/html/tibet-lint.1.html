@@ -21,7 +21,7 @@
 
 <h1 id="tibet-lint-1-runs-various-lint-tools-on-package-files">tibet-lint(1) -- runs various lint tools on package files</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet lint [[--filter] &lt;filter&gt;] [--scan] [--stop] [package-opts] [eslint-opts]</p>
+<p>tibet lint [[--filter] &lt;filter&gt;] [--force] [--scan] [--stop] [package-opts] [eslint-opts]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs a variety of lint tools on files specified in a TIBET package.</p>
 <p>The optional <code>filter</code> argument provides a string or regular expression
@@ -33,6 +33,8 @@ include --package, --config, --phase, --assets, etc. The package@config defaults
 to <code>~app_cfg/main.xml</code> and its default config (usually @base) so your typical
 configuration is linted. See help on the <code>tibet package</code> command for more
 information.</p>
+<p>--force overrides any information found in .tibelint.json which would otherwise
+keep lint from looking at files it thinks haven&#39;t changed since the last run.</p>
 <p>--scan overrides any package options and causes the lint command to scan the
 filesystem rather than using package configuration entries to determine the file
 set to process.</p>

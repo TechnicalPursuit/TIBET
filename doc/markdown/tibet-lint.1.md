@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts]
+tibet lint [[--filter] <filter>] [--force] [--scan] [--stop] [package-opts] [eslint-opts]
 
 ## DESCRIPTION
 
@@ -19,6 +19,9 @@ include --package, --config, --phase, --assets, etc. The package@config defaults
 to `~app_cfg/main.xml` and its default config (usually @base) so your typical
 configuration is linted. See help on the `tibet package` command for more
 information.
+
+--force overrides any information found in .tibelint.json which would otherwise
+keep lint from looking at files it thinks haven't changed since the last run.
 
 --scan overrides any package options and causes the lint command to scan the
 filesystem rather than using package configuration entries to determine the file
