@@ -318,7 +318,7 @@ function(options) {
 
         return TP.xhtmlnode(
                     '<div>' +
-                        'This content is open in the tabbed content below.' +
+                        '...currently displayed in a TDC tab...' +
                     '</div>');
     }
 
