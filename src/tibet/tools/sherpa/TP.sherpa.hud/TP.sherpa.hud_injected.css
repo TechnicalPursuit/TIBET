@@ -5,7 +5,9 @@
 .sherpa-hud {
 }
 
+/* stylelint-disable selector-type-no-unknown */
 .sherpa-hud *|app {
+    /* stylelint-enable selector-type-no-unknown */
 
     /* For highlighting below */
     margin: 1px;
