@@ -36,7 +36,7 @@ code {
 
     margin: 0;
 
-    font-family: monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-style: normal;
     font-weight: normal;
 
@@ -94,5 +94,5 @@ code {
 
 .startup code {
 
-    font-size: 100%;
+    font-size: 93%;
 }
