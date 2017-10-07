@@ -1151,7 +1151,10 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
             res.errors = res.errors + summary.errors;
             res.warnings = res.warnings + summary.warnings;
             res.linty = res.linty + summary.linty;
-            res.recheck = res.recheck.concat(summary.recheck);
+
+            if (summary.errors || summary.warnings) {
+                res.recheck.push(file);
+            }
 
             if (res.errors > 0 && cmd.options.stop) {
                 deferred.resolve(res);
