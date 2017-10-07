@@ -238,18 +238,13 @@ function(aSignal) {
      */
 
     var inspector,
-
         detachedValueAndName,
-
         newPanel,
-
         editorLID,
-
         panelContentElem,
-
         toolbar,
         toolbarContent,
-
+        tdcDrawer,
         elem;
 
     inspector = TP.byId('SherpaInspector', this.getNativeWindow());
@@ -315,6 +310,12 @@ function(aSignal) {
     //  display to the user that the content can now be found in the tabbed
     //  view.
     inspector.repopulateBay();
+
+    //  Signal TDC drawer to open
+    tdcDrawer = TP.byCSSPath('#south', TP.sys.getUIRoot(), true);
+    if (TP.isValid(tdcDrawer)) {
+        TP.signal(tdcDrawer, 'Open', null, TP.RESPONDER_FIRING);
+    }
 
     return this;
 });
