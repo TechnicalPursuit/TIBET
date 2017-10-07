@@ -109,7 +109,7 @@ sherpa|workbench > .footer {
 }
 
 .bookmarks > button#showbookmarks {
-    right: 0px;
+    right: 0;
     background-image: url("../media/ic_playlist_play_black_24px.svg");
 }
 

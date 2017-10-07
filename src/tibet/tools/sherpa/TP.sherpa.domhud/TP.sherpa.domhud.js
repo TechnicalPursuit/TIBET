@@ -510,12 +510,10 @@ function(aSignal) {
             //  Couldn't find one after us - try the spacer DND target element
             //  before us.
             if (TP.isEmpty(peerID) &&
-                TP.isElement(dndTargetElem.previousSibling)) {
+                    TP.isElement(dndTargetElem.previousSibling)) {
                 //  We go to the item before us to determine the peerID
-                peerID = TP.elementGetAttribute(
-                            dndTargetElem.previousSibling,
-                            'peerID',
-                            true);
+                peerID = TP.elementGetAttribute(dndTargetElem.previousSibling,
+                    'peerID', true);
                 insertionPosition = TP.AFTER_END;
             }
 
@@ -532,7 +530,7 @@ function(aSignal) {
                     //  and use it's parent node as the receiver of the message
                     //  that the Sherpa dropped tofu.
                     TP.wrap(peerElem.parentNode).sherpaDidInsertTofu(
-                                            peerElem, insertionPosition);
+                        peerElem, insertionPosition);
                 }
             }
         }
@@ -587,17 +585,17 @@ function(aSignal) {
             halo.blur();
         }
 
-            //  Remove any highlighting that we were doing *on the new target*
-            //  because we're going to focus the halo.
-            newTargetTPElem.removeClass('sherpa-hud-highlight');
-            this.$set('highlighted', null, false);
+        //  Remove any highlighting that we were doing *on the new target*
+        //  because we're going to focus the halo.
+        newTargetTPElem.removeClass('sherpa-hud-highlight');
+        this.$set('highlighted', null, false);
 
-            if (newTargetTPElem.haloCanFocus(halo)) {
-                //  Focus the halo on our new element, passing true to actually
-                //  show the halo if it's hidden.
-                halo.focusOn(newTargetTPElem, true);
-            }
+        if (newTargetTPElem.haloCanFocus(halo)) {
+            //  Focus the halo on our new element, passing true to actually
+            //  show the halo if it's hidden.
+            halo.focusOn(newTargetTPElem, true);
         }
+    }
 
     return this;
 });
