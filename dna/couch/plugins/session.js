@@ -23,13 +23,16 @@
         var app,
             cookieKey,          // Key for cookie configuration.
             cookieParser,       // Express cookie parser.
+            logger,
             name,
+            meta,
             secretKey,          // Secrete key value.
             session,            // Express session management.
             store,              // Session store.
             TDS;
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
         //  ---
@@ -50,6 +53,12 @@
         //  Require in the session store, allowing it to be separately
         //  configured for MemoryStore, Redis, Couch, etc.
         name = TDS.cfg('tds.session.store');
+        meta = {
+            type: 'TDS',
+            name: 'session'
+        };
+        logger.system('loading ' + name + '-store', meta);
+
         store = require('./' + name + '-store')(options);
 
         secretKey = TDS.cfg('tds.secret.key') || 'ThisIsNotSecureChangeIt';

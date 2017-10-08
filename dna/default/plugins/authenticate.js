@@ -27,6 +27,7 @@
             logger,
             name,
             ip,
+            meta,
             parsers,
             passport,
             strategy,
@@ -82,6 +83,13 @@
         appname = TDS.cfg('project.name') || TDS.cfg('npm.name');
 
         name = TDS.cfg('tds.auth.strategy') || 'tds';
+
+        meta = {
+            type: 'TDS',
+            name: 'authenticate'
+        };
+        logger.system('loading auth-' + name, meta);
+
         strategy = require('./auth-' + name)(options);
 
         //  Reconfigure name after loading so things like 'tds' strategies can

@@ -19,9 +19,12 @@
     module.exports = function(options) {
         var app,
             name,
+            logger,
+            meta,
             TDS;
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
         //  ---
@@ -30,6 +33,12 @@
 
         name = TDS.cfg('tds.vcard.strategy');
         if (TDS.notEmpty(name)) {
+            meta = {
+                type: 'TDS',
+                name: 'user'
+            };
+            logger.system('loading ' + name + '-vcards', meta);
+
             require('./' + name + '-vcards')(options);
         } else {
             //  If no other provider is in place we provide a default route to
