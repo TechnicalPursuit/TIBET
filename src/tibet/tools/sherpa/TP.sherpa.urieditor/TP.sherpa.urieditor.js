@@ -314,7 +314,7 @@ function(aSignal) {
     //  Signal TDC drawer to open
     tdcDrawer = TP.byCSSPath('#south', TP.sys.getUIRoot(), true);
     if (TP.isValid(tdcDrawer)) {
-        TP.signal(tdcDrawer, 'Open', null, TP.RESPONDER_FIRING);
+        TP.signal(tdcDrawer, 'UIOpen');
     }
 
     return this;
