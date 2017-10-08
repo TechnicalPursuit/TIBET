@@ -1,22 +1,19 @@
 {
-  "name": "{{appname}}",
-  "version": "0.1.0",
-  "dependencies": {
-    "marked-man": "^0.2.1",
-    "minimist": "*",
-    "shelljs": "TechnicalPursuit/shelljs",
-    "stylelint": "^7.10.1",
-    "stylelint-config-standard": "^15.0.1"
-  },
-  "devDependencies": {
-  },
-  "engines": {
-    "node": ">=6",
-    "npm": ">=3"
-  },
-  "scripts": {
-  },
-  "preferGlobal": "false",
-  "private": true
+    "name": "{{appname}}",
+    "version": "0.1.0",
+    "dependencies": {
+        "marked-man": "^0.2.1",
+        "minimist": "*",
+        "shelljs": "TechnicalPursuit/shelljs",
+        "stylelint": "^7.10.1",
+        "stylelint-config-standard": "^15.0.1"
+    },
+    "devDependencies": {},
+    "engines": {
+        "node": ">=6",
+        "npm": ">=3"
+    },
+    "scripts": {},
+    "preferGlobal": "false",
+    "private": true
 }
-

@@ -35,6 +35,10 @@
             logger,
             meta,
             TDS,
+            commands,
+            clean,
+            ip,
+            validator,
             WebSocket,
             evaluate;
 
@@ -49,13 +53,26 @@
 
         //  WebSocket and SSE foundation. This one doesn't crash the server when
         //  it encounters errors...it actually logs them :)
+        validator = require('validator');
         WebSocket = require('faye-websocket');
+        ip = require('ip');
 
         meta = {
             comp: 'TDS',
             type: 'plugin',
             name: 'cli'
         };
+
+        //  Even when loaded we need explicit configuration to activate the TWS.
+        if (!TDS.cfg('tds.use_cli')) {
+            logger.warn('tds cli plugin disabled', meta);
+            return;
+        }
+
+        commands = TDS.cfg('tds.cli.commands');
+        if (!Array.isArray(commands)) {
+            //  TODO:   convert string to array?
+        }
 
         logger = logger.getContextualLogger(meta);
 
@@ -64,11 +81,25 @@
         //  ---
 
         /**
+         * Simple input cleansing function. Should help ensure nothing truly
+         * strange/dangerous makes it into the command line. Note however that
+         * there are 3 layers of guard around the entire route: the plugin has
+         * to be loaded, the plugin has to be enabled, and localDev must be
+         * true (so only the local machine IP can access the route).
+         */
+        clean = function(input) {
+            return validator.blacklist(
+                validator.trim(
+                    validator.stripLow(input)
+                ), /\.\./);
+        };
+
+
+        /**
          * Helper function to perform the actual processing. This routine is
-         * built to work effectively with either a URL or socket-based call.
-         * IOTW the 'tibet-cli' protocol expects a URL-encoded string just as
-         * you'd send via a typical route invocation.
-         * @param {String} cmd A URL query string.
+         * built to work effectively with either an HTTP or socket-based call.
+         * @param {String} query A JSON-parsed object structure containing the
+         *     parameters to be used to build a TIBET CLI command line.
          * @param {Response|WebSocket} channel The socket or response object to
          *     'send' response data to. When query.nosocket is true this should
          *     be a valid Express Response object, otherwise a WebSocket.
@@ -79,22 +110,51 @@
                 params,     // Command line parameter array.
                 errors,     // Flag tracking whether there were errors in execution.
                 results,    // Array of results when in non-socket mode.
+                cmd,        // Filtered input string for safer processing.
+                message,    // Output result message structure.
+                reason,     // Message text for assembled response.
                 child;      // child process module.
-
-            //  TODO: sanity check for non-alphanumeric 'command line'. no
-            //  escape codes, no '..' in paths, etc.
 
             errors = 0;
             results = [];
 
             params = [];
-            params.push(query.cmd);
+
+            cmd = clean(query.cmd);
+
+            if (commands.indexOf(cmd) === -1) {
+                reason = 'unauthorized cli command `' + cmd + '`';
+                logger.error(reason, meta);
+                message = {
+                    ok: false,
+                    error: 'error',
+                    level: 'error',
+                    reason: reason,
+                    status: 1
+                };
+
+                //  When not a socket we are dealing with an Express response
+                //  and need to close properly.
+                if (query.nosocket) {
+                    results.push(message);
+                    channel.status(500).json(results).end();
+                } else {    //  socket
+                    channel.send(JSON.stringify(message));
+                    channel.close();
+                }
+                return;
+            }
+
+            params.push(cmd);
 
             Object.keys(query).forEach(
-                    function(key) {
-                        var value;
+                    function(k) {
+                        var key,
+                            value;
 
-                        value = query[key];
+                        //  Cleanse the input query string key/value.
+                        key = clean(k);
+                        value = clean(query[key]);
 
                         //  Skip cmd value, we push it first outside the loop.
                         if (key === 'cmd') {
@@ -257,11 +317,9 @@
                     msg = {ok: true, status: 0};
                 }
 
-
                 //  When not a socket we are dealing with an Express response
                 //  and need to close properly.
-                if (query.nosocket) {
-
+                if (query.nosocket !== undefined) {
                     results.push(msg);
 
                     if (msg.ok) {
@@ -296,7 +354,7 @@
 
             if (req.query.nosocket !== undefined) {
                 //  NOTE this is protected by the localDev filter for the route.
-                evaluate(req.query, res);
+                evaluate(clean(req.query), res);
                 return;
             }
 
@@ -315,14 +373,36 @@
             //  don't even configure the server to accept a socket request
             //  without having first authenticated as a local developer.
             TDS.httpServer.on('upgrade', function(request, socket, body) {
-                var cliSocket;
+                var cliSocket,
+                    nodeIPs,
+                    len,
+                    found,
+                    reqIP,
+                    i;
 
                 if (WebSocket.isWebSocket(request)) {
 
-                    //  TODO:   verify security context here. Even though it
-                    //  takes a local developer to activate this hook once it's
-                    //  active we want to ensure no other connections can be
-                    //  made by external hosts.
+                    //  verify security context here. Even though it takes a
+                    //  local developer to activate this hook once it's active
+                    //  we want to ensure no other connections can be made by
+                    //  external hosts.
+                    nodeIPs = TDS.getNodeIPs();
+                    len = nodeIPs.length;
+                    reqIP = req.ip;
+
+                    for (i = 0; i < len; i++) {
+                        if (ip.isEqual(nodeIPs[i], reqIP)) {
+                            found = true;
+                        }
+                    }
+
+                    if (found !== true) {
+                        logger.error('unauthorized socket request from ' +
+                            req.ip, meta);
+                        //  TODO:   send something? or stay quiet to avoid
+                        //  providing more data to the incoming connection?
+                        return;
+                    }
 
                     cliSocket = new WebSocket(request, socket, body,
                         ['tibet-cli']);
@@ -335,15 +415,18 @@
 
                     cliSocket.on('message', function(event) {
                         var query,
+                            safer,
                             parts;
 
+                        safer = validator.stripLow(event.data).trim();
+
                         TDS.ifDebug() ?
-                            logger.debug('received ' + event.data, meta) : 0;
+                            logger.debug('received ' + safer, meta) : 0;
 
                         //  Convert URL formatted query string to query object
                         //  so we match the req.query format of a URL request.
                         query = {};
-                        parts = event.data.split('&');
+                        parts = safer.split('&');
                         parts.forEach(function(part) {
                             var chunks;
 
@@ -359,7 +442,7 @@
                     });
 
                     cliSocket.on('error', function(err) {
-                        logger.info(cliSocket.protocol + ' socket error:', err,
+                        logger.error(cliSocket.protocol + ' socket error:', err,
                             meta);
                         cliSocket.send(JSON.stringify({
                             ok: false,

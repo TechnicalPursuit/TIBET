@@ -2,7 +2,17 @@
     "name": "tibet",
     "version": "v5.0.0-pre.14",
     "description": "The TIBET Platform.",
-    "keywords": ["CLI", "CouchDB", "Framework", "IDE", "Microservice", "MVC", "MVVC", "TIBET", "Workflow"],
+    "keywords": [
+        "CLI",
+        "CouchDB",
+        "Framework",
+        "IDE",
+        "Microservice",
+        "MVC",
+        "MVVC",
+        "TIBET",
+        "Workflow"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
@@ -10,12 +20,14 @@
         "url": "http://www.technicalpursuit.com"
     },
     "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
+            "name": "Scott Shattuck",
+            "email": "ss@technicalpursuit.com"
+        },
+        {
+            "name": "William J. Edney",
+            "email": "bedney@technicalpursuit.com"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"
@@ -86,6 +98,7 @@
         "stylelint-config-standard": "^15.0.1",
         "supports-color": "^3.1.2",
         "syn": "https://github.com/TechnicalPursuit/syn/tarball/master",
+        "validator": "^9.0.0",
         "websocket-extensions": "^0.1.1",
         "winston": "^2.2.0",
         "xml2js": "^0.4.15",

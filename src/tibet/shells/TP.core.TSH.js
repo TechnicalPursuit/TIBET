@@ -2687,38 +2687,56 @@ function(aRequest) {
 
     //  Helper function to process a single result object (print/resolve).
     process = function(result, request) {
+        var lvl,
+            data,
+            reason;
 
+        //  Ignore empty results. Should be JSON structure with 'ok' key.
         if (TP.isEmpty(result)) {
             return;
         }
 
-        //  TODO:   currently this isn't translating to console style.
+        //  If there's a level try to set the request to output at the
+        //  corresponding level.
         if (TP.notEmpty(result.level)) {
-            request.atPut('messageLevel',
-                TP.log.Level.getLevel(result.level));
+            //  TODO:   currently this isn't translating to console style.
+            //  TODO:   maybe verify we never "downgrade" message level so
+            //          we keep the "worst" level (error) once it's hit.
+            lvl = result.level;
+            request.atPut('messageLevel', TP.log.Level.getLevel(lvl));
         }
 
         if (TP.notEmpty(result.ok)) {
+
+            if (result.ok === true) {
+                data = result.data;
+                TP.notEmpty(data) ? request.stdout(data) : 0;
+            } else {
+                reason = result.reason;
+                TP.notEmpty(reason) ? request.stderr(reason) : 0;
+            }
+
             if (result.status === 0) {
                 request.complete();
                 return;
-            }
-
-            if (TP.notEmpty(result.data)) {
-                request.stdout(result.data);
-            }
-
-            if (TP.notEmpty(result.error)) {
-                request.stderr(result.reason);
-                request.fail();
-            }
-        } else {
-            if (result.status !== undefined) {
+            } else if (result.status !== undefined) {
                 request.fail();
                 return;
             }
 
-            request.stderr(result.reason);
+        } else {
+
+            if (result.status === 0) {
+                data = result.data;
+                TP.notEmpty(data) ? request.stderr(data) : 0;
+                request.complete();
+                return;
+            } else if (result.status !== undefined) {
+                reason = result.reason;
+                TP.notEmpty(reason) ? request.stderr(reason) : 0;
+                request.fail();
+                return;
+            }
         }
     };
 
@@ -2732,7 +2750,6 @@ function(aRequest) {
         //  When a connection is opened
         socket.defineMethod('onopen',
             function(evt) {
-
                 request.stdout('CLI socket connection opened.');
                 socket.send(str);
             });
@@ -2740,7 +2757,6 @@ function(aRequest) {
         //  When data is received
         socket.defineMethod('onmessage',
             function(evt) {
-
                 var result;
 
                 try {
@@ -2756,19 +2772,19 @@ function(aRequest) {
         //  When a connection could not be made
         socket.defineMethod('onerror',
             function(evt) {
+                var result;
 
                 shell.set('cliSocket', null);
 
-                request.stderr(evt);
+                result = evt;
+                request.stderr(result);
                 request.fail(evt);
             });
 
         //  When a connection is closed
         socket.defineMethod('onclose',
             function(evt) {
-
                 shell.set('cliSocket', null);
-
                 request.complete();
             });
     };

@@ -108,6 +108,8 @@
 
         setcfg('tds.auth.strategy', 'tds');
 
+        setcfg('tds.cli.commands', ['test', 'build', 'deploy']);
+
         setcfg('tds.couch.db_app', 'tibet');
         setcfg('tds.couch.db_name', null);
         setcfg('tds.couch.host', '127.0.0.1');
@@ -150,6 +152,7 @@
         //  NOTE these are off here. We want to force them to be turned on via
         //  the tds.json file which will enforce an environment-based setting.
         setcfg('tds.use_admin', false);
+        setcfg('tds.use_cli', false);
         setcfg('tds.use_couch', false);
         setcfg('tds.use_mocks', false);
         setcfg('tds.use_proxy', false);
