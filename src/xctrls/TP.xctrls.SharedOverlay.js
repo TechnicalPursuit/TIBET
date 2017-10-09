@@ -334,7 +334,7 @@ function(aSignal) {
 
     /**
      * @method handleCloseOverlay
-     * @summary Handles when overlay is to be closed.
+     * @summary Handles when the overlay is to be closed.
      * @param {TP.sig.CloseOverlay} aSignal The signal that caused this handler
      *     to trip.
      */
