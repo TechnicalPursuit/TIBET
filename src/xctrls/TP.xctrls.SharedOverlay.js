@@ -286,6 +286,23 @@ TP.xctrls.SharedOverlay.Inst.defineAttribute('overlayContent',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.SharedOverlay.Inst.defineHandler('CloseOverlay',
+function(aSignal) {
+
+    /**
+     * @method handleCloseOverlay
+     * @summary Handles when overlay is to be closed.
+     * @param {TP.sig.CloseOverlay} aSignal The signal that caused this handler
+     *     to trip.
+     */
+
+    this.setAttribute('hidden', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.SharedOverlay.Inst.defineMethod('getPositioningPoint',
 function(anOverlayPoint) {
 
