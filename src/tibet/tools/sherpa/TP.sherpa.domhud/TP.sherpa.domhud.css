@@ -99,6 +99,21 @@ sherpa|domhud > ul.content > li.spacer.sherpa_droptarget {
     background-color: red;
 }
 
+sherpa|domhud > ul.content > li.domnode.sherpa_droptarget {
+
+    font-weight: bold;
+}
+
+sherpa|domhud > ul.content > li.domnode.sherpa_droptarget[pclass|selected] {
+
+    font-weight: bold;
+}
+
+sherpa|domhud > ul.content > li.domnode.sherpa_droptarget[pclass|selected]:hover {
+
+    font-weight: bold;
+}
+
 #DOMAttributes_Tile {
 
     min-width: 325px;
