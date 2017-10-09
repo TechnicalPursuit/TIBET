@@ -50,7 +50,8 @@
 
         dat = JSON.stringify({
             username: form[0].value.trim(),
-            password: form[1].value.trim()
+            password: form[1].value.trim(),
+            fragment: window.location.hash.toString()
         });
 
         xhr.open('POST', loc, true);
