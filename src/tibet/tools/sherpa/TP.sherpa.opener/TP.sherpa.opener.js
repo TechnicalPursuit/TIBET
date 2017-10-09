@@ -17,5 +17,26 @@
 TP.sherpa.TemplatedTag.defineSubtype('opener');
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.opener.Inst.defineHandler('UIToggle',
+function(aSignal) {
+
+    /**
+     * @method handleUIToggle
+     * @summary Causes the receiver to toggle the name of the state supplied in
+     *     the signal payload. This state name is defaulted to 'closed'.
+     * @description At this level, this method overrides the standard
+     *     implementation to just allow the signal to pass (and propagate
+     *     upwards). This is because we're never actually 'toggling the toggle'.
+     * @param {TP.sig.UIToggle} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

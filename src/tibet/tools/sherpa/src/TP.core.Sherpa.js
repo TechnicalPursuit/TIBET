@@ -2361,8 +2361,8 @@ function() {
     TP.byId('SherpaConsole', viewWin).render();
 
     //  Toggle the east and west drawers to their 'maximum open' state.
-    TP.byCSSPath('#west sherpa|opener', viewWin).at(0).signal('Toggle');
-    TP.byCSSPath('#east sherpa|opener', viewWin).at(0).signal('Toggle');
+    TP.byCSSPath('#west sherpa|opener', viewWin).at(0).signal('UIToggle');
+    TP.byCSSPath('#east sherpa|opener', viewWin).at(0).signal('UIToggle');
 
     return this;
 });

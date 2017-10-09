@@ -5940,16 +5940,27 @@ function(stateName) {
     /**
      * @method toggle
      * @summary Toggles the value for a particular piece of the receiver's
-           state.
+     *     state. Note that if the attribute representing the state is not set
+     *     on the receiver, that this will default to setting the attribute to
+     *     true.
      * @param {String} stateName The name of the piece of state to toggle.
      * @returns {Boolean} The value of the piece of state after toggling it.
      */
 
-    if (TP.isTrue(TP.bc(this.getAttribute(stateName)))) {
-        this.setAttribute(stateName, false);
+    var attrName,
+        stateValue;
+
+    //  The attribute will have a 'pclass:' namespace prefix.
+    attrName = 'pclass:' + stateName;
+
+    if (this.hasAttribute(attrName)) {
+        stateValue = TP.bc(this.getAttribute(stateName));
+        stateValue = !stateValue;
     } else {
-        this.setAttribute(stateName, true);
+        stateValue = true;
     }
+
+    this.setAttribute(stateName, stateValue);
 
     return TP.bc(this.getAttribute(stateName));
 });
@@ -7566,6 +7577,45 @@ function(aSignal) {
     //  'on:UIShow'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIShow', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineHandler('UIToggle',
+function(aSignal) {
+
+    /**
+     * @method handleUIToggle
+     * @summary Causes the receiver to toggle the name of the state supplied in
+     *     the signal payload. This state name is defaulted to 'closed'.
+     * @param {TP.sig.UIToggle} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var stateName,
+        attrName;
+
+    stateName = aSignal.atIfInvalid('stateName', 'closed');
+
+    //  The attribute will have a 'pclass:' namespace prefix.
+    attrName = 'pclass:' + stateName;
+
+    //  We only toggle the attribute, etc. if we actually *have* the attribute.
+    //  Otherwise we let the signal propagate upwards.
+    if (this.hasAttribute(attrName)) {
+        if (this.shouldPerformUIHandler(aSignal)) {
+            this.toggle(stateName);
+        }
+
+        //  If the receiver has an 'on:' attribute matching this signal name
+        //  (i.e. 'on:UIToggle'), then dispatch whatever signal is configured to
+        //  fire when this signal is processed.
+        this.dispatchResponderSignalFromAttr('UIToggle', aSignal.at('trigger'));
+
+        aSignal.stopPropagation();
+    }
 
     return;
 });

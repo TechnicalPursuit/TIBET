@@ -72,6 +72,72 @@ TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineMethod('computePeerElement',
+function(sidebarElement) {
+
+    /**
+     * @method computePeerElement
+     * @summary Computes the peer element to the supplied sidebar element in the
+     *     current UI canvas DOM.
+     * @param {Element} sidebarElement The element to compute the peer element
+     *     from.
+     * @returns {Element|null} The element in the current UI canvas DOM that is
+     *     being represented by the supplied sidebar Element.
+     */
+
+    var peerID,
+
+        doc,
+        peerElem;
+
+    if (TP.elementHasClass(sidebarElement, 'spacer')) {
+
+        //  If the spacer DND target element has a next sibling, then
+        //  try to get it's peerID and set the insertion position to
+        //  TP.BEFORE_BEGIN.
+        if (TP.isElement(sidebarElement.nextSibling)) {
+            //  We go to the item after us to determine the peerID
+            peerID = TP.elementGetAttribute(
+                        sidebarElement.nextSibling,
+                        'peerID',
+                        true);
+        }
+
+        //  Couldn't find one after the spacer - try the spacer DND
+        //  target element before it.
+        if (TP.isEmpty(peerID) &&
+                TP.isElement(sidebarElement.previousSibling)) {
+            //  We go to the item before us to determine the peerID
+            peerID = TP.elementGetAttribute(
+                            sidebarElement.previousSibling,
+                            'peerID',
+                            true);
+        }
+    } else {
+        //  We go to ourself to determine the peerID
+        peerID = TP.elementGetAttribute(
+                            sidebarElement,
+                            'peerID',
+                            true);
+    }
+
+    //  If we succesfully got a peerID, then get the Element it matches
+    //  in the UI canvas DOM.
+    if (TP.notEmpty(peerID)) {
+
+        doc = TP.sys.uidoc(true);
+
+        peerElem = TP.byId(peerID, doc, false);
+        if (TP.isElement(peerElem)) {
+            return peerElem;
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineMethod('focusOnTarget',
 function(aTPElement) {
 
@@ -249,11 +315,7 @@ function(enterSelection) {
                 return val;
             }).each(
             function(d, i) {
-                if (d[1] === 'spacer') {
-                    TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
-                } else {
-                    TP.elementRemoveAttribute(this, 'dnd:accept', true);
-                }
+                TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
             });
 
     return domContent;
@@ -360,11 +422,7 @@ function(updateSelection) {
                 return val;
             }).each(
             function(d, i) {
-                if (d[1] === 'spacer') {
-                    TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
-                } else {
-                    TP.elementRemoveAttribute(this, 'dnd:accept', true);
-                }
+                TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
             });
 
     return updateSelection;
@@ -416,16 +474,21 @@ function(aSignal) {
      */
 
     var dndTargetTPElem,
-        dndTargetElem;
+        dndTargetElem,
+
+        peerElem;
 
     dndTargetTPElem = aSignal.getDOMTarget();
     dndTargetElem = TP.unwrap(dndTargetTPElem);
 
-    this.set('$currentDNDTarget', dndTargetElem);
+    TP.elementAddClass(dndTargetElem, 'sherpa-domhud-droptarget');
 
-    //  Put a CSS class on the current drop target element for visual
-    //  highlighting purposes
-    TP.elementAddClass(dndTargetElem, 'sherpa_droptarget');
+    if (!TP.elementHasClass(dndTargetElem, 'spacer')) {
+        peerElem = this.computePeerElement(dndTargetElem);
+        TP.elementAddClass(peerElem, 'sherpa-outliner-droptarget');
+    }
+
+    this.set('$currentDNDTarget', dndTargetElem);
 
     return this;
 });
@@ -445,14 +508,22 @@ function(aSignal) {
      */
 
     var dndTargetTPElem,
-        dndTargetElem;
+        dndTargetElem,
+
+        peerElem;
 
     dndTargetTPElem = aSignal.getDOMTarget();
     dndTargetElem = TP.unwrap(dndTargetTPElem);
 
     //  Remove the CSS class placed on the drop target and set the attribute we
     //  use to track the current DND target to null.
-    TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+    TP.elementRemoveClass(dndTargetElem, 'sherpa-domhud-droptarget');
+
+    if (!TP.elementHasClass(dndTargetElem, 'spacer')) {
+        peerElem = this.computePeerElement(dndTargetElem);
+        TP.elementRemoveClass(peerElem, 'sherpa-outliner-droptarget');
+    }
+
     this.set('$currentDNDTarget', null);
 
     return this;
@@ -488,33 +559,45 @@ function(aSignal) {
 
         //  Remove the class placed on the drop target and set the attribute we
         //  use to track the current DND target to null.
-        TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+        TP.elementRemoveClass(dndTargetElem, 'sherpa-domhud-droptarget');
         this.set('$currentDNDTarget', null);
 
-        //  If the canvas document contains the target element, then we want to
-        //  be the controller that does the possible insertion.
+        //  If the sidebar contains the target element, then we want to do the
+        //  insertion.
         if (this.contains(dndTargetElem, TP.IDENTITY)) {
 
-            //  If the spacer DND target element has a next sibling, then try to
-            //  get it's peerID and set the insertion position to
-            //  TP.BEFORE_BEGIN.
-            if (TP.isElement(dndTargetElem.nextSibling)) {
-                //  We go to the item after us to determine the peerID
-                peerID = TP.elementGetAttribute(
-                            dndTargetElem.nextSibling,
-                            'peerID',
-                            true);
-                insertionPosition = TP.BEFORE_BEGIN;
-            }
+            if (TP.elementHasClass(dndTargetElem, 'spacer')) {
 
-            //  Couldn't find one after us - try the spacer DND target element
-            //  before us.
-            if (TP.isEmpty(peerID) &&
-                    TP.isElement(dndTargetElem.previousSibling)) {
-                //  We go to the item before us to determine the peerID
-                peerID = TP.elementGetAttribute(dndTargetElem.previousSibling,
-                    'peerID', true);
-                insertionPosition = TP.AFTER_END;
+                //  If the spacer DND target element has a next sibling, then
+                //  try to get it's peerID and set the insertion position to
+                //  TP.BEFORE_BEGIN.
+                if (TP.isElement(dndTargetElem.nextSibling)) {
+                    //  We go to the item after us to determine the peerID
+                    peerID = TP.elementGetAttribute(
+                                dndTargetElem.nextSibling,
+                                'peerID',
+                                true);
+                    insertionPosition = TP.BEFORE_BEGIN;
+                }
+
+                //  Couldn't find one after the spacer - try the spacer DND
+                //  target element before it.
+                if (TP.isEmpty(peerID) &&
+                        TP.isElement(dndTargetElem.previousSibling)) {
+                    //  We go to the item before us to determine the peerID
+                    peerID = TP.elementGetAttribute(
+                                    dndTargetElem.previousSibling,
+                                    'peerID',
+                                    true);
+                    insertionPosition = TP.AFTER_END;
+                }
+            } else {
+                //  We go to ourself to determine the peerID
+                peerID = TP.elementGetAttribute(
+                                    dndTargetElem,
+                                    'peerID',
+                                    true);
+                insertionPosition = TP.BEFORE_END;
             }
 
             //  If we succesfully got a peerID, then get the Element it matches
@@ -525,6 +608,9 @@ function(aSignal) {
 
                 peerElem = TP.byId(peerID, doc, false);
                 if (TP.isElement(peerElem)) {
+
+                    TP.elementRemoveClass(
+                            peerElem, 'sherpa-outliner-droptarget');
 
                     //  We found a peer ELement. Use it as the insertion point
                     //  and use it's parent node as the receiver of the message

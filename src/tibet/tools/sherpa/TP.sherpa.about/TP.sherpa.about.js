@@ -23,7 +23,7 @@ function(aSignal) {
 
     window.open(
         'mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
-    this.signal('Toggle');
+    this.signal('UIToggle');
 
     return this;
 });
@@ -33,7 +33,7 @@ function(aSignal) {
 
     window.open('https://www.technicalpursuit.com/support.xhtml', '_blank');
 
-    this.signal('Toggle');
+    this.signal('UIToggle');
 
     return this;
 });
@@ -43,7 +43,7 @@ function(aSignal) {
 
     window.open('https://github.com/TechnicalPursuit/TIBET/issues', '_blank');
 
-    this.signal('Toggle');
+    this.signal('UIToggle');
 
     return this;
 });
