@@ -7582,6 +7582,45 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineHandler('UIToggle',
+function(aSignal) {
+
+    /**
+     * @method handleUIToggle
+     * @summary Causes the receiver to toggle the name of the state supplied in
+     *     the signal payload. This state name is defaulted to 'closed'.
+     * @param {TP.sig.UIToggle} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var stateName,
+        attrName;
+
+    stateName = aSignal.atIfInvalid('stateName', 'closed');
+
+    //  The attribute will have a 'pclass:' namespace prefix.
+    attrName = 'pclass:' + stateName;
+
+    //  We only toggle the attribute, etc. if we actually *have* the attribute.
+    //  Otherwise we let the signal propagate upwards.
+    if (this.hasAttribute(attrName)) {
+        if (this.shouldPerformUIHandler(aSignal)) {
+            this.toggle(stateName);
+        }
+
+        //  If the receiver has an 'on:' attribute matching this signal name
+        //  (i.e. 'on:UIToggle'), then dispatch whatever signal is configured to
+        //  fire when this signal is processed.
+        this.dispatchResponderSignalFromAttr('UIToggle', aSignal.at('trigger'));
+
+        aSignal.stopPropagation();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineHandler('UIValid',
 function(aSignal) {
 
