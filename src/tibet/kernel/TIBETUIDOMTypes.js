@@ -5947,7 +5947,8 @@ function(stateName) {
      * @returns {Boolean} The value of the piece of state after toggling it.
      */
 
-    var attrName;
+    var attrName,
+        stateValue;
 
     //  The attribute will have a 'pclass:' namespace prefix.
     attrName = 'pclass:' + stateName;
