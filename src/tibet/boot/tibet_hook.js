@@ -94,8 +94,7 @@ if (!top.$$TIBET) {
         //  that works TIBET will set the home page when it sees session value.
         if (top.sessionStorage) {
             top.sessionStorage.setItem('TIBET.project.home_page',
-                top.location.protocol + '//' + top.location.host +
-                    top.location.pathname);
+                top.location.toString());
         }
 
         //  Rebuild the URL, minus any server path portion.
