@@ -48,7 +48,7 @@ function() {
      */
 
     //  Set up an observation for TP.sig.OpenPopup
-    this.observe(TP.ANY, TP.sig.OpenPopup);
+    this.observe(TP.ANY, TP.ac(TP.sig.OpenPopup, TP.sig.TogglePopup));
 
     return this;
 });
@@ -60,11 +60,38 @@ function(aSignal) {
 
     /**
      * @method handleOpenPopup
+     * @summary Handles when the popup is to be opened.
      * @param {TP.sig.OpenPopup} aSignal The TIBET signal which triggered
      *     this method.
      */
 
     return this.openOverlay(aSignal);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.popup.Type.defineHandler('TogglePopup',
+function(aSignal) {
+
+    /**
+     * @method handleTogglePopup
+     * @summary Handles when the popup is to be toggled.
+     * @param {TP.sig.TogglePopup} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.xctrls.popup} The receiver.
+     */
+
+    var popupTPElem;
+
+    popupTPElem = this.getOverlayElement(aSignal);
+
+    if (popupTPElem.isVisible()) {
+        popupTPElem.setAttribute('hidden', true);
+    } else {
+        this.openOverlay(aSignal);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -313,6 +340,7 @@ function(openSignal, popupContent) {
 //  Popup signals
 TP.sig.OpenOverlay.defineSubtype('OpenPopup');
 TP.sig.CloseOverlay.defineSubtype('ClosePopup');
+TP.sig.Signal.defineSubtype('TogglePopup');
 
 //  ------------------------------------------------------------------------
 //  end
