@@ -11134,27 +11134,8 @@ function(aURIOrPushState, aDirection) {
 
         if (configInfo.at(routeKey + '.deeproot') !== true) {
 
-            //  If session storage has a TIBET session history, possibly move
-            //  back using 'go' call with a numeric index.
-            if (TP.isValid(TP.global.sessionStorage.getItem(
-                                            'tibet_sessionHistory'))) {
-
-                //  The number we want to move back (to get to 0) is the 'last
-                //  deep root' history index that will have been restored from
-                //  session storage.
-                histIndex = TP.core.History.getLastDeepRootIndex();
-
-                //  Make sure this is greater than 0. Otherwise, the go() call
-                //  has issues.
-                if (histIndex > 0) {
-                    TP.global.history.go(-histIndex);
-
-                    //  Make sure to 0 out the index to start fresh.
-                    TP.core.History.set('index', 0);
-                }
-            } else {
-                TP.go2('/');
-            }
+            //  Not a deep link? Route to the application home.
+            TP.go2('/');
 
             //  Make sure that, either way we navigate, that the history's last
             //  valid index also gets set to 0. This way, any movement forward
@@ -11168,7 +11149,6 @@ function(aURIOrPushState, aDirection) {
             //  last valid index is the same as its index.
             TP.core.History.set('lastValidIndex', TP.core.History.get('index'));
         }
-
     }
 
     //  If the route changed be sure to refresh the controller list.
