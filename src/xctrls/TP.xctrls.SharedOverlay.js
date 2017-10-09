@@ -161,24 +161,36 @@ function(aSignal) {
 
     /**
      * @method openOverlay
+     * @summary Opens an overlay element and displays the content inside.
      * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
-    var triggerSignal,
-        triggerDoc,
-
-        overlayID,
-
-        overlayTPElem,
+    var overlayTPElem,
 
         overlayCSSClass,
 
+        triggerSignal,
+        triggerDoc,
         triggerID,
         triggerTPElem,
 
         hideOn;
+
+    overlayTPElem = this.getOverlayElement(aSignal);
+
+    //  If the overlay is already visible, then exit - we don't need to open it.
+    if (overlayTPElem.isVisible()) {
+        return this;
+    }
+
+    //  See if the OpenOverlay signal contains a class that we should put on
+    //  the overlay element itself.
+    overlayCSSClass = aSignal.at('overlayCSSClass');
+    if (TP.notEmpty(overlayCSSClass)) {
+        overlayTPElem.addClass(overlayCSSClass);
+    }
 
     //  Grab the trigger signal from the OpenOverlay signal. This will be the
     //  GUI signal that triggered the OpenOverlay.
@@ -196,27 +208,6 @@ function(aSignal) {
     if (TP.notValid(triggerDoc)) {
         //  TODO: Raise an exception
         return this;
-    }
-
-    //  Grab the overlay with the overlayID. This will default to the value of
-    //  the type-level 'sharedOverlayID' variable.
-    overlayID = aSignal.at('overlayID');
-    if (TP.notEmpty(overlayID)) {
-        overlayID = overlayID.unquoted();
-    }
-
-    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
-
-    //  If the overlay is already visible, then exit - we don't need to open it.
-    if (overlayTPElem.isVisible()) {
-        return this;
-    }
-
-    //  See if the OpenOverlay signal contains a class that we should put on
-    //  the overlay element itself.
-    overlayCSSClass = aSignal.at('overlayCSSClass');
-    if (TP.notEmpty(overlayCSSClass)) {
-        overlayTPElem.addClass(overlayCSSClass);
     }
 
     triggerTPElem = this.getTriggerElement(aSignal, triggerDoc);
@@ -263,6 +254,58 @@ function(aSignal) {
     return this;
 }, {
     patchCallee: false
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Type.defineMethod('getOverlayElement',
+function(aSignal) {
+
+    /**
+     * @method getOverlayElement
+     * @summary Computes and returns the wrapped Element that will be used to
+     *     display the overlay content.
+     * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.ElementNode} The wrapped Element that will be used to
+     *     display the overlay content.
+     */
+
+    var triggerSignal,
+        triggerDoc,
+
+        overlayID,
+
+        overlayTPElem;
+
+    //  Grab the trigger signal from the OpenOverlay signal. This will be the
+    //  GUI signal that triggered the OpenOverlay.
+    triggerSignal = aSignal.at('trigger');
+
+    triggerDoc = aSignal.at('triggerTPDocument');
+    if (TP.notValid(triggerDoc)) {
+        if (TP.isValid(triggerSignal)) {
+            triggerDoc = triggerSignal.getDocument();
+        } else {
+            triggerDoc = TP.sys.getUICanvas().getDocument();
+        }
+    }
+
+    if (TP.notValid(triggerDoc)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  Grab the overlay with the overlayID. This will default to the value of
+    //  the type-level 'sharedOverlayID' variable.
+    overlayID = aSignal.at('overlayID');
+    if (TP.notEmpty(overlayID)) {
+        overlayID = overlayID.unquoted();
+    }
+
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
+
+    return overlayTPElem;
 });
 
 //  ------------------------------------------------------------------------
