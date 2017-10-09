@@ -5940,16 +5940,26 @@ function(stateName) {
     /**
      * @method toggle
      * @summary Toggles the value for a particular piece of the receiver's
-           state.
+     *     state. Note that if the attribute representing the state is not set
+     *     on the receiver, that this will default to setting the attribute to
+     *     true.
      * @param {String} stateName The name of the piece of state to toggle.
      * @returns {Boolean} The value of the piece of state after toggling it.
      */
 
-    if (TP.isTrue(TP.bc(this.getAttribute(stateName)))) {
-        this.setAttribute(stateName, false);
+    var attrName;
+
+    //  The attribute will have a 'pclass:' namespace prefix.
+    attrName = 'pclass:' + stateName;
+
+    if (this.hasAttribute(attrName)) {
+        stateValue = TP.bc(this.getAttribute(stateName));
+        stateValue = !stateValue;
     } else {
-        this.setAttribute(stateName, true);
+        stateValue = true;
     }
+
+    this.setAttribute(stateName, stateValue);
 
     return TP.bc(this.getAttribute(stateName));
 });
