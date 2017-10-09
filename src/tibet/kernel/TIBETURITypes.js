@@ -10833,8 +10833,7 @@ function(aURIOrPushState, aDirection) {
         lastParams,
         paramDiff,
         bootParams,
-        route,
-        histIndex;
+        route;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
