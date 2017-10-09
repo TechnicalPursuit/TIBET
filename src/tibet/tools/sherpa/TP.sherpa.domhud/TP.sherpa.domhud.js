@@ -481,7 +481,7 @@ function(aSignal) {
     dndTargetTPElem = aSignal.getDOMTarget();
     dndTargetElem = TP.unwrap(dndTargetTPElem);
 
-    TP.elementAddClass(dndTargetElem, 'sherpa_droptarget');
+    TP.elementAddClass(dndTargetElem, 'sherpa-domhud-droptarget');
 
     if (!TP.elementHasClass(dndTargetElem, 'spacer')) {
         peerElem = this.computePeerElement(dndTargetElem);
@@ -517,7 +517,7 @@ function(aSignal) {
 
     //  Remove the CSS class placed on the drop target and set the attribute we
     //  use to track the current DND target to null.
-    TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+    TP.elementRemoveClass(dndTargetElem, 'sherpa-domhud-droptarget');
 
     if (!TP.elementHasClass(dndTargetElem, 'spacer')) {
         peerElem = this.computePeerElement(dndTargetElem);
@@ -559,7 +559,7 @@ function(aSignal) {
 
         //  Remove the class placed on the drop target and set the attribute we
         //  use to track the current DND target to null.
-        TP.elementRemoveClass(dndTargetElem, 'sherpa_droptarget');
+        TP.elementRemoveClass(dndTargetElem, 'sherpa-domhud-droptarget');
         this.set('$currentDNDTarget', null);
 
         //  If the sidebar contains the target element, then we want to do the

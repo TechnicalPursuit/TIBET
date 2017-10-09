@@ -94,22 +94,22 @@ sherpa|domhud > ul.content > li.spacer {
     cursor: default;
 }
 
-sherpa|domhud > ul.content > li.spacer.sherpa_droptarget {
+sherpa|domhud > ul.content > li.spacer.sherpa-domhud-droptarget {
 
     background-color: red;
 }
 
-sherpa|domhud > ul.content > li.domnode.sherpa_droptarget {
+sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget {
 
     font-weight: bold;
 }
 
-sherpa|domhud > ul.content > li.domnode.sherpa_droptarget[pclass|selected] {
+sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected] {
 
     font-weight: bold;
 }
 
-sherpa|domhud > ul.content > li.domnode.sherpa_droptarget[pclass|selected]:hover {
+sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected]:hover {
 
     font-weight: bold;
 }
