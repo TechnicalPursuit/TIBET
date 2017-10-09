@@ -110,7 +110,7 @@
             'private-static',
             'routes',
             'tds',
-            'tds-vcards',
+            'user',
             'proxy',
             'fallback',
             'errors'];
