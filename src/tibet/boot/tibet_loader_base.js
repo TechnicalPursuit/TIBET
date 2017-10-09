@@ -1498,13 +1498,6 @@ This set of functions provides access to the host, port, protocol, and pathname
 which were used to load TIBET, as well as the 'launch path'.
 */
 
-//  Store the full launch url so we know the starting point prior to pushState
-//  invocations which might alter it.
-TP.sys.$launchURL = window.location.toString();
-if (TP.sys.$launchURL.charAt(TP.sys.$launchURL.length - 1) === '/') {
-    TP.sys.$launchURL = TP.sys.$launchURL.slice(0, -1);
-}
-
 //  first define whether we were loaded from file url or a web server
 TP.sys.$httpBased = window.location.protocol.indexOf('file') !== 0;
 
@@ -1693,6 +1686,13 @@ TP.sys.getLaunchURL = function() {
      * Returns the full URL string the application initially used to launch.
      * @returns {String} The original launch URL.
      */
+
+    if (!TP.sys.$launchURL) {
+        TP.sys.$launchURL = window.location.toString();
+        if (TP.sys.$launchURL.charAt(TP.sys.$launchURL.length - 1) === '/') {
+            TP.sys.$launchURL = TP.sys.$launchURL.slice(0, -1);
+        }
+    }
 
     return TP.sys.$launchURL;
 };
