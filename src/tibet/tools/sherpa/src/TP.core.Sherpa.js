@@ -2509,15 +2509,14 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('updateUICanvasSource',
-function(anElement, updatingAncestor, operation, attributeName, attributeValue,
+function(aNode, updatingAncestor, operation, attributeName, attributeValue,
          oldAttributeValue) {
 
     /**
      * @method updateUICanvasSource
      * @summary Updates the source of the document currently being displayed as
      *     the UI canvas.
-     * @param {Element} anElement The target Element that the mutation occurred
-     *     against.
+     * @param {Node} aNode The target Node that the mutation occurred against.
      * @param {Element} updatingAncestor The ancestor of the mutating Element.
      *     This is particularly useful when deleting nodes because the mutating
      *     Element will already be detached from the DOM.
@@ -2570,15 +2569,17 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
 
         newNode;
 
-    /*
-    console.log('localName: ' + anElement.localName + '\n' +
+    console.log('nodeName: ' + aNode.nodeName + '\n' +
                 'operation: ' + operation + '\n' +
                 'attrName: ' + attributeName + '\n' +
                 'oldAttrValue: ' + oldAttributeValue + '\n' +
                 'attrValue: ' + attributeValue);
-    */
 
-    if (!TP.isElement(anElement)) {
+    this.signal('CanvasChanged');
+
+    return this;
+
+    if (!TP.isNode(aNode)) {
         //  TODO: Raise an exception here
         return this;
     }
@@ -2592,15 +2593,16 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
     //  false.
     wasSrcRoot = false;
 
-    //  If the target Element is detached, that means it must be being deleted
-    //  from the visible DOM. By the time this method is called, because of the
-    //  way MutationObservers work, its parentNode will be set to null and we
-    //  have to use a more complex mechanism to get it's position in the DOM.
-    if (TP.nodeIsDetached(anElement)) {
+    //  If the target Node is detached (or its not an Element), that means it
+    //  must be being deleted from the visible DOM. By the time this method is
+    //  called, because of the way MutationObservers work, its parentNode will
+    //  be set to null and we have to use a more complex mechanism to get it's
+    //  position in the DOM.
+    if (TP.nodeIsDetached(aNode) || !TP.isElement(aNode)) {
         searchElem = updatingAncestor;
         startAtSearchElem = true;
     } else {
-        searchElem = anElement;
+        searchElem = aNode;
         startAtSearchElem = false;
     }
 
@@ -2674,9 +2676,9 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
 
     if (!wasSrcRoot) {
 
-        if (TP.nodeIsDetached(anElement)) {
+        if (TP.nodeIsDetached(aNode)) {
 
-            //  If anElement was detached and the operation is *not* TP.DELETE,
+            //  If aNode was detached and the operation is *not* TP.DELETE,
             //  then we have a problem. Raise an exception and exit.
             if (operation !== TP.DELETE) {
                 //  TODO: Raise an exception here
@@ -2688,8 +2690,8 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
             //  before the node is deleted and provides the document position
             //  that the node had before it was removed. We need this, because
             //  the node is detached and we no longer have access to its
-            //  (former) parentNode
-            originatingAddress = anElement[TP.PREVIOUS_POSITION];
+            //  (former) parentNode.
+            originatingAddress = aNode[TP.PREVIOUS_POSITION];
             if (TP.isEmpty(originatingAddress)) {
                 //  TODO: Raise an exception here
                 return this;
@@ -2742,7 +2744,7 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
             //  Now we get the address from the target element that the user is
             //  actually manipulating up through the tag source element. We will
             //  use this address information to traverse the source DOM.
-            originatingAddress = TP.nodeGetDocumentPosition(anElement,
+            originatingAddress = TP.nodeGetDocumentPosition(aNode,
                                                             null,
                                                             tagSrcElem);
             addresses = originatingAddress.split('.');
@@ -2820,7 +2822,7 @@ function(anElement, updatingAncestor, operation, attributeName, attributeValue,
 
             if (TP.isElement(insertionParent)) {
 
-                newNode = TP.nodeCloneNode(anElement, true, false);
+                newNode = TP.nodeCloneNode(aNode, true, false);
                 TP.elementClean(newNode);
 
                 TP.nodeInsertBefore(insertionParent,
@@ -2913,6 +2915,9 @@ TP.sig.ResponderSignal.defineSubtype('SherpaOutlinerToggle');
 
 //  Notifier Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaNotify');
+
+//  Sherpa canvas signals
+TP.sig.SherpaSignal.defineSubtype('CanvasChanged');
 
 //  ----------------------------------------------------------------------------
 //  end
