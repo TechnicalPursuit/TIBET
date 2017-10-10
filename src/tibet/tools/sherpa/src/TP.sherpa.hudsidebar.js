@@ -125,6 +125,35 @@ function(aTPElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hudsidebar.Inst.defineHandler('CanvasChanged',
+function(aSignal) {
+
+    /**
+     * @method handleCanvasChanged
+     * @summary Handles notifications of the canvas changing from the Sherpa
+     *     object.
+     * @param {TP.sig.CanvasChanged} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var halo,
+        haloTarget;
+
+    if (this.get('$isRecasting')) {
+        return this;
+    }
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTarget = halo.get('currentTargetTPElem');
+
+    this.focusOnTarget(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hudsidebar.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
@@ -154,15 +183,16 @@ function(aSignal) {
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
-    var haloTarget;
+    var haloTarget,
+
+        sherpaInst;
 
     haloTarget = aSignal.at('haloTarget');
 
     this.focusOnTarget(haloTarget);
 
-    this.observe(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
+    sherpaInst = TP.bySystemId('Sherpa');
+    this.observe(sherpaInst, 'CanvasChanged');
 
     return this;
 });
@@ -180,69 +210,12 @@ function(aSignal) {
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
+    var sherpaInst;
+
     this.setValue(null);
 
-    this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hudsidebar.Inst.defineHandler('MutationAttach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationAttach
-     * @summary Handles notifications of node attachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationAttach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.hudsidebar} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    if (this.get('$isRecasting')) {
-        return this;
-    }
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hudsidebar.Inst.defineHandler('MutationDetach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationDetach
-     * @summary Handles notifications of node detachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.hudsidebar} The receiver.
-     */
-
-    var halo,
-        haloTarget;
-
-    if (this.get('$isRecasting')) {
-        return this;
-    }
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTarget = halo.get('currentTargetTPElem');
-
-    this.focusOnTarget(haloTarget);
+    sherpaInst = TP.bySystemId('Sherpa');
+    this.ignore(sherpaInst, 'CanvasChanged');
 
     return this;
 });
