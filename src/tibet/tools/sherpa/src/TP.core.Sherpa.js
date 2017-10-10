@@ -1241,7 +1241,9 @@ function(mutationRecords) {
         j,
 
         attrName,
+        attrPrefix,
         attrValue,
+        attrOldValue,
 
         attrIsEmpty,
         attrWasEmpty,
@@ -1258,10 +1260,23 @@ function(mutationRecords) {
 
                 attrName = record.attributeName;
 
+                if (TP.notEmpty(record.attributeNamespace)) {
+                    if (!TP.regex.HAS_COLON.test(attrName)) {
+                        attrPrefix = TP.w3.Xmlns.getURIPrefix(
+                                        record.attributeNamespace,
+                                        record.target);
+                        attrName = attrPrefix + ':' + attrName;
+                    } else {
+                        attrPrefix = attrName.slice(
+                                        0, attrName.indexOf(':'));
+                    }
+                }
+
                 attrValue = TP.elementGetAttribute(
                                 record.target,
                                 attrName,
                                 true);
+                attrOldValue = record.oldValue;
 
                 //  Ensure that the target Element is indeed an Element and that
                 //  it's not detached. We're not interested in attributes on
@@ -1275,7 +1290,7 @@ function(mutationRecords) {
                     //  value.
 
                     attrIsEmpty = TP.isEmpty(attrValue);
-                    attrWasEmpty = TP.isEmpty(record.oldValue);
+                    attrWasEmpty = TP.isEmpty(attrOldValue);
 
                     if (!attrIsEmpty && attrWasEmpty) {
                         this.updateUICanvasSource(record.target,
@@ -1290,14 +1305,14 @@ function(mutationRecords) {
                                                     TP.UPDATE,
                                                     attrName,
                                                     attrValue,
-                                                    record.oldValue);
+                                                    attrOldValue);
                     } else if (attrIsEmpty && !attrWasEmpty) {
                         this.updateUICanvasSource(record.target,
                                                     null,
                                                     TP.DELETE,
                                                     attrName,
                                                     null,
-                                                    record.oldValue);
+                                                    attrOldValue);
                     }
                 }
 
@@ -1705,9 +1720,9 @@ function() {
         function(aMutationRecord) {
 
             var attrName,
+                attrPrefix,
                 attrValue,
                 attrOldValue,
-                attrPrefix,
 
                 realElemPrefix,
                 realElemLocalName,
@@ -1723,12 +1738,6 @@ function() {
 
                 attrName = aMutationRecord.attributeName;
 
-                attrValue = TP.elementGetAttribute(
-                                aMutationRecord.target,
-                                attrName,
-                                true);
-                attrOldValue = aMutationRecord.oldValue;
-
                 if (TP.notEmpty(aMutationRecord.attributeNamespace)) {
                     if (!TP.regex.HAS_COLON.test(attrName)) {
                         attrPrefix = TP.w3.Xmlns.getURIPrefix(
@@ -1740,6 +1749,12 @@ function() {
                                         0, attrName.indexOf(':'));
                     }
                 }
+
+                attrValue = TP.elementGetAttribute(
+                                aMutationRecord.target,
+                                attrName,
+                                true);
+                attrOldValue = aMutationRecord.oldValue;
 
                 switch (attrPrefix) {
 
