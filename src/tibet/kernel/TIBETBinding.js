@@ -2532,6 +2532,13 @@ function(indexes) {
 
         //  Bubble any xmlns attributes upward to avoid markup clutter.
         TP.elementBubbleXMLNSAttributes(newElement);
+
+        //  Focus the first autofocus or focusable descendant of the new row.
+        //  TODO: Should this be configurable (i.e. via another 'bind:'
+        //  attribute - 'bind:focusfirst' or something).
+        (function() {
+            TP.wrap(newElement).focusAutofocusedOrFirstFocusableDescendant();
+        }).queueForNextRepaint(TP.nodeGetWindow(newElement));
     }
 
     return newElement;
