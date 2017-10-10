@@ -22,6 +22,7 @@
     "development": {
         "plugins": {
             "tds": ["cli", "patch", "tasks", "watch"]
-        }
+        },
+        "use_cli": true
     }
 }
