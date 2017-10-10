@@ -785,6 +785,10 @@ function(aSignal) {
         return this;
     }
 
+    if (TP.sys.isTesting()) {
+        return this;
+    }
+
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
     currentScreenTPWin = world.get('selectedScreen').getContentWindow();
 
@@ -807,6 +811,10 @@ function(aSignal) {
      *     this method.
      * @returns {TP.core.sherpa} The receiver.
      */
+
+    if (TP.sys.isTesting()) {
+        return this;
+    }
 
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
@@ -1659,6 +1667,10 @@ function() {
 
         world,
         currentScreenTPWin;
+
+    if (TP.sys.isTesting()) {
+        return this;
+    }
 
     //  Add a managed Mutation Observer filter Function that will filter all
     //  mutation records for when we're testing:
