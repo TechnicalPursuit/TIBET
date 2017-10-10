@@ -1886,6 +1886,10 @@ function() {
 
                     if (TP.isElement(node)) {
                         elem = node;
+                        if (TP.elementHasAttribute(
+                            elem, 'tibet:recasting', true)) {
+                            return false;
+                        }
                         attrValue = TP.elementGetAttribute(elem, 'id', true);
                         if (attrValue.endsWith('_generated')) {
                             return false;
@@ -1942,6 +1946,10 @@ function() {
 
                     if (TP.isElement(node)) {
                         elem = node;
+                        if (TP.elementHasAttribute(
+                            elem, 'tibet:recasting', true)) {
+                            return false;
+                        }
                         attrValue = TP.elementGetAttribute(elem, 'id', true);
                         if (attrValue.endsWith('_generated')) {
                             return false;
