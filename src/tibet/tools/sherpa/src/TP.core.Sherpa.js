@@ -2569,6 +2569,7 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
 
         newNode;
 
+    /* eslint-disable */
     console.log('nodeName: ' + aNode.nodeName + '\n' +
                 'operation: ' + operation + '\n' +
                 'attrName: ' + attributeName + '\n' +
@@ -2853,6 +2854,8 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
 
     //  Set the resource of the sourceURI back to the updated source node.
     sourceURI.setResource(sourceNode, TP.request('signalChange', false));
+
+    /* eslint-enable */
 
     return this;
 });
