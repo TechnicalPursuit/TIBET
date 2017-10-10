@@ -2412,7 +2412,9 @@ function(indexes) {
         len2,
         j,
         scopedSibling,
-        scopeVal;
+        scopeVal,
+
+        firstRow;
 
     elem = this.getNativeNode();
 
@@ -2533,12 +2535,18 @@ function(indexes) {
         //  Bubble any xmlns attributes upward to avoid markup clutter.
         TP.elementBubbleXMLNSAttributes(newElement);
 
+        if (i === 0) {
+            firstRow = newElement;
+        }
+    }
+
+    if (TP.isElement(firstRow)) {
         //  Focus the first autofocus or focusable descendant of the new row.
         //  TODO: Should this be configurable (i.e. via another 'bind:'
         //  attribute - 'bind:focusfirst' or something).
         (function() {
-            TP.wrap(newElement).focusAutofocusedOrFirstFocusableDescendant();
-        }).queueForNextRepaint(TP.nodeGetWindow(newElement));
+            TP.wrap(firstRow).focusAutofocusedOrFirstFocusableDescendant();
+        }).queueForNextRepaint(TP.nodeGetWindow(firstRow));
     }
 
     return newElement;
