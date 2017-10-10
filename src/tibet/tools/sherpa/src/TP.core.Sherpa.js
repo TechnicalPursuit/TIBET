@@ -1959,7 +1959,7 @@ function() {
                         if (attrValue.endsWith('_generated')) {
                             return false;
                         }
-                    } else if (TP.isTextNode(node)
+                    } else if (TP.isTextNode(node) ||
                                 TP.isCDATASectionNode(node) ||
                                 TP.isCommentNode(node)) {
 
