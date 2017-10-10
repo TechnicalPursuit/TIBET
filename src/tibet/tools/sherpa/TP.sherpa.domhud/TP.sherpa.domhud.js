@@ -875,7 +875,8 @@ function(aSignal) {
 
         modelURI,
 
-        showHandler;
+        existedHandler,
+        newHandler;
 
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'domnode')) {
@@ -947,18 +948,27 @@ function(aSignal) {
     //  If we've already constructed the tile content, just set the resource on
     //  the model URI. This will cause the bindings to update.
     if (this.get('$tileContentConstructed')) {
-        modelURI.setResource(modelObj, TP.hc('signalChange', true));
+        existedHandler =
+            function(aTileTPElem) {
+                modelURI.setResource(modelObj, TP.hc('signalChange', true));
 
-        //  Position the tile
-        tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
-        tileTPElem.setPagePosition(
-            TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+                //  Position the tile
+                tileTPElem = TP.byId('DOMAttributes_Tile',
+                                        this.getNativeDocument());
+                tileTPElem.setPagePosition(
+                    TP.pc(centerElemPageRect.getX(),
+                            targetElemPageRect.getY()));
+                (function() {
+                    tileTPElem.get('body').
+                        focusAutofocusedOrFirstFocusableDescendant();
+                }).queueForNextRepaint(aTileTPElem.getNativeWindow());
+            }.bind(this);
     } else {
 
         //  Observe the URI for when the whole value changes.
         this.observe(modelURI, 'ValueChange');
 
-        showHandler =
+        newHandler =
             function(aTileTPElem) {
 
                 var contentElem,
@@ -966,16 +976,17 @@ function(aSignal) {
 
                 contentElem =
                     TP.xhtmlnode(
-                        '<span class="dom_attributes" bind:scope="urn:tibet:dom_attr_source#jpath($.info)">' +
-
-                            '<div id="domhud_attributes" bind:repeat="tagAttrs">' +
-                                    '<input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>' +
-                                    '<input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>' +
-                                    '<span class="deleter" on:click="{signal: DeleteItem, origin: \'domhud_attributes\', payload: {index:TP.TARGET}}"/>' +
-                                '<br/>' +
-                            '</div>' +
-                            '<div class="inserter" on:click="{signal: InsertItem, origin: \'domhud_attributes\', payload: {source: \'urn:tibet:attr_data_blank\', copy: true}}"></div>' +
-                        '</span>');
+                        '<tibet:group wrapWhen="true" autofocus="autofocus">' +
+                            '<span class="dom_attributes" bind:scope="urn:tibet:dom_attr_source#jpath($.info)">' +
+                                '<div id="domhud_attributes" bind:repeat="tagAttrs">' +
+                                        '<input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>' +
+                                        '<input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>' +
+                                        '<span class="deleter" on:click="{signal: DeleteItem, origin: \'domhud_attributes\', payload: {index:TP.TARGET}}"/>' +
+                                    '<br/>' +
+                                '</div>' +
+                                '<div class="inserter" on:click="{signal: InsertItem, origin: \'domhud_attributes\', payload: {source: \'urn:tibet:attr_data_blank\', copy: true}}"></div>' +
+                            '</span>' +
+                        '</tibet:group>');
 
                 newContentTPElem = aTileTPElem.setContent(contentElem);
                 newContentTPElem.awaken();
@@ -994,6 +1005,11 @@ function(aSignal) {
                     TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
 
                 this.set('$tileContentConstructed', true);
+
+                (function() {
+                    newContentTPElem.
+                        focusAutofocusedOrFirstFocusableDescendant();
+                }).queueForNextRepaint(aTileTPElem.getNativeWindow());
             }.bind(this);
     }
 
@@ -1002,8 +1018,8 @@ function(aSignal) {
     TP.bySystemId('Sherpa').showTileAt(
         'DOMAttributes_Tile',
         target.getFullName() + ' Attributes',
-        showHandler,
-        showHandler);
+        existedHandler,
+        newHandler);
 
     return this;
 });
