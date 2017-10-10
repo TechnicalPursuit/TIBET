@@ -17,6 +17,15 @@
 TP.sherpa.TemplatedTag.defineSubtype('drawer');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  The states that are toggleable on this type and subtypes via the
+//  TP.sig.UIToggle signal. By default, for TP.sherpa.drawer, the 'closed' state
+//  is toggleable.
+TP.sherpa.drawer.Type.defineAttribute('toggleableStateNames', TP.ac('closed'));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

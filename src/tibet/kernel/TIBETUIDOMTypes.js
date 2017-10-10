@@ -45,6 +45,10 @@ TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 TP.core.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
         TP.ac('TP.sig.UIDisabled', 'TP.sig.UIEnabled'));
 
+//  The attributes that are toggleable on this type and subtypes. By default,
+//  no states are toggleable.
+TP.core.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
+
 //  Note how these properties are TYPE_LOCAL, by design.
 
 //  The TP.core.UIElementNode that focus is moving to, based on TIBET
@@ -7595,25 +7599,29 @@ function(aSignal) {
      */
 
     var stateName,
-        attrName;
+
+        toggled,
+        toggleableStates;
 
     stateName = aSignal.atIfInvalid('stateName', 'closed');
 
-    //  The attribute will have a 'pclass:' namespace prefix.
-    attrName = 'pclass:' + stateName;
+    toggled = false;
 
-    //  We only toggle the attribute, etc. if we actually *have* the attribute.
-    //  Otherwise we let the signal propagate upwards.
-    if (this.hasAttribute(attrName)) {
-        if (this.shouldPerformUIHandler(aSignal)) {
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        toggleableStates = this.getType().get('toggleableStateNames');
+        if (toggleableStates.contains(stateName)) {
             this.toggle(stateName);
+            toggled = true;
         }
+    }
 
-        //  If the receiver has an 'on:' attribute matching this signal name
-        //  (i.e. 'on:UIToggle'), then dispatch whatever signal is configured to
-        //  fire when this signal is processed.
-        this.dispatchResponderSignalFromAttr('UIToggle', aSignal.at('trigger'));
+    //  If the receiver has an 'on:' attribute matching this signal name
+    //  (i.e. 'on:UIToggle'), then dispatch whatever signal is configured to
+    //  fire when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIToggle', aSignal.at('trigger'));
 
+    if (toggled) {
         aSignal.stopPropagation();
     }
 
