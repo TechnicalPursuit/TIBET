@@ -1913,6 +1913,20 @@ function() {
                 }
             }
 
+            return true;
+        },
+        'BUILDER_OBSERVER');
+
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+
+            var len,
+                i,
+
+                node,
+                elem,
+                attrValue;
+
             if (TP.notEmpty(aMutationRecord.removedNodes)) {
 
                 len = aMutationRecord.removedNodes.length;
