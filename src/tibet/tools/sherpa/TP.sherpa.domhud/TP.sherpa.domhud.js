@@ -764,11 +764,12 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
+    var sherpaInst;
+
     this.focusOnUICanvasRoot();
 
-    this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.MutationAttach',
-                            'TP.sig.MutationDetach'));
+    sherpaInst = TP.bySystemId('Sherpa');
+    this.ignore(sherpaInst, 'CanvasChanged');
 
     //  NB: We don't callNextMethod() here because our supertype will clear our
     //  data and we don't want that (otherwise, focusing on the canvas root
