@@ -2576,7 +2576,11 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
                 'oldAttrValue: ' + oldAttributeValue + '\n' +
                 'attrValue: ' + attributeValue);
 
-    this.signal('CanvasChanged');
+    this.signal('CanvasChanged', TP.hc('target', aNode,
+                                        'operation', operation,
+                                        'attrName', attributeName,
+                                        'newValue', attributeValue,
+                                        'prevValue', oldAttributeValue));
 
     return this;
 
