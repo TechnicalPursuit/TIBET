@@ -1778,6 +1778,41 @@ function(anElement, aProperty, oldValue, newValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementResetAppliedNativeStyleRules',
+function(anElement) {
+
+    /**
+     * @method elementResetAppliedNativeStyleRules
+     * @summary Resets the element *and all of its descendants* Arrays of
+     *     CSSRule objects that apply to them to null.
+     * @param {Element} anElement The element to begin resetting the CSS style
+     *     rules for.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var descendants,
+
+        len,
+        i;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    anElement[TP.APPLIED_RULES] = null;
+
+    descendants = TP.nodeGetDescendantElements(anElement);
+
+    len = descendants.getSize();
+    for (i = 0; i < len; i++) {
+        descendants.at(i)[TP.APPLIED_RULES] = null;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementRestoreStyle',
 function(anElement) {
 
