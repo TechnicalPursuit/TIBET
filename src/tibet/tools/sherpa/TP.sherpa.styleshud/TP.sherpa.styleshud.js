@@ -48,7 +48,10 @@ function(aTPElement) {
     info = TP.ac();
 
     if (TP.isElement(node)) {
-        rules = TP.elementGetAppliedNativeStyleRules(node);
+
+        //  Note here how we pass true in the 2nd parameter so that the target
+        //  node's ruleset caches get flushed and computed anew.
+        rules = TP.elementGetAppliedNativeStyleRules(node, true);
 
         rules.perform(
             function(aRule) {
