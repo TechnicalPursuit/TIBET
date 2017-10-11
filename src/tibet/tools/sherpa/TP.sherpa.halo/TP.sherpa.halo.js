@@ -385,6 +385,40 @@ function(newTargetTPElem, shouldUnhide) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler('CanvasChanged',
+function(aSignal) {
+
+    /**
+     * @method handleCanvasChanged
+     * @summary Handles notifications of the canvas changing from the Sherpa
+     *     object.
+     * @param {TP.sig.CanvasChanged} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem;
+
+    //  If the signal has an attribute name, then go ahead and process it.
+    //  Otherwise, its a change to a whole Node and our
+    //  MutationAttach/MutationDetach handlers will process it. No sense in
+    //  doing double notification.
+
+    if (TP.notEmpty(aSignal.at('attrName'))) {
+        //  If we're not hidden, then we move and resize to our target. It's
+        //  size and position might very well have changed due to style changes
+        //  in the document.
+        if (TP.isFalse(this.getAttribute('hidden'))) {
+            currentTargetTPElem = this.get('currentTargetTPElem');
+            this.moveAndSizeToTarget(currentTargetTPElem);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineHandler('DocumentLoaded',
 function(aSignal) {
 
@@ -1462,6 +1496,8 @@ function(beHidden) {
         this.ignore(TP.sys.getUICanvas().getDocument(),
                     TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
+        this.ignore(TP.bySystemId('Sherpa'), 'CanvasChanged');
+
         this.set('haloRect', null);
     } else {
 
@@ -1487,6 +1523,8 @@ function(beHidden) {
                         TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
         this.observe(TP.sys.getUICanvas().getDocument(),
                         TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
+        this.observe(TP.bySystemId('Sherpa'), 'CanvasChanged');
 
         this.moveAndSizeToTarget(this.get('currentTargetTPElem'));
     }
