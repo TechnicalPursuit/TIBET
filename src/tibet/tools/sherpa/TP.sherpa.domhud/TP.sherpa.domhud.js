@@ -1068,6 +1068,9 @@ function(aSignal) {
         return this;
     }
 
+    //  Grab an ordered list of all of the attribute names.
+    allAttrNames = this.get('$attributeNames');
+
     //  If the action is TP.UPDATE, then the user added an attribute or changed
     //  one of the existing attributes. Note that we don't concern ourselves
     //  with an action of TP.INSERT/TP.CREATE, because that means that the user
@@ -1095,9 +1098,6 @@ function(aSignal) {
         if (aspectPath.endsWith('tagAttrName') && TP.isEmpty(value)) {
             return this;
         }
-
-        //  Grab an ordered list of all of the attribute names.
-        allAttrNames = this.get('$attributeNames');
 
         //  If we're changing the attribute name at this point (with an
         //  attribute that has a real value)
