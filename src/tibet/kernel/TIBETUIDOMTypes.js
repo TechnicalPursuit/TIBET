@@ -808,8 +808,17 @@ function(styleTPElem) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var gids,
+    var body,
+
+        gids,
         existingInstances;
+
+    //  Grab the body and, if its a real Element, then reset the CSS rule caches
+    //  of all of the elements in it.
+    body = TP.documentGetBody(styleTPElem.getNativeDocument());
+    if (TP.isElement(body)) {
+        TP.elementResetAppliedNativeStyleRules(body);
+    }
 
     //  Add the Document global ID of the stylesheet Element to our list of
     //  where the stylesheet has been successfully installed.
