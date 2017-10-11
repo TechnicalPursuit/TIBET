@@ -1158,7 +1158,7 @@ function(anElement, aProperty, aValue) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementGetAppliedNativeStyleRules',
-function(anElement) {
+function(anElement, flushCaches) {
 
     /**
      * @method elementGetAppliedNativeStyleRules
@@ -1166,6 +1166,8 @@ function(anElement) {
      *     supplied element.
      * @param {Element} anElement The element to retrieve the CSS style
      *     rules for.
+     * @param {Boolean} [flushCaches=false] Whether or not to flush the
+     *     element's cached ruleset.
      * @exception TP.sig.InvalidElement
      * @returns {Array} An Array of CSSRule objects.
      */
@@ -1177,6 +1179,10 @@ function(anElement) {
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isTrue(flushCaches)) {
+        anElement[TP.APPLIED_RULES] = null;
     }
 
     ruleArray = TP.ac();
