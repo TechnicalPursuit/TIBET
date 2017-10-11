@@ -3523,6 +3523,15 @@ function(aDocument) {
                 setTimeout(
                     function() {
 
+                        var autodefineMissingTags;
+
+                        //  The new content may have a tag that we don't know
+                        //  about. Therefore we force the system to autodefine
+                        //  missing tags here.
+                        autodefineMissingTags =
+                            TP.sys.cfg('sherpa.autodefine_missing_tags');
+                        TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+
                         //  Compile the content, supplying the authored node as
                         //  the 'alternate element' to compile. This is the core
                         //  of 'recasting'. Note that awaken will happen via the
@@ -3531,6 +3540,10 @@ function(aDocument) {
                         //  signal that we install a handler for below.
                         aTPElem.setAttribute('tibet:recasting', true);
                         aTPElem.compile(null, true, authoredElem);
+
+                        //  Put the autodefine setting back to what it was.
+                        TP.sys.setcfg('sherpa.autodefine_missing_tags',
+                                        autodefineMissingTags);
 
                         //  The native node might have changed under the covers
                         //  during compilation, so we need to set the attribute
