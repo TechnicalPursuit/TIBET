@@ -3575,6 +3575,9 @@ function(aCollection, elems) {
     //  body' (i.e. the element containing the repeating content).
     TP.elementSetAttribute(elem, 'tibet:nomutationtracking', true, true);
 
+    //  Make sure to empty the repeat element of any existing content
+    TP.nodeEmptyContent(elem);
+
     //  Finally, append the whole fragment under the receiver element
     TP.nodeAppendChild(elem, bodyFragment, false);
 
