@@ -146,7 +146,9 @@ function(anElement, hintElement, tooltipParams) {
 
     var hintID,
 
-        params;
+        params,
+
+        handler;
 
     if (!TP.isElement(anElement)) {
         //  TODO: Raise an exception
@@ -168,19 +170,34 @@ function(anElement, hintElement, tooltipParams) {
     hintID = TP.lid(hintElement, true);
     params.atPut('contentID', hintID);
 
-    //  Also, set 'on:mouseover' and 'on:mouseout' attributes that will send
-    //  OpenTooltip/CloseTooltip signals respectively.
-    TP.elementSetAttribute(
-        anElement,
-        'on:mouseover',
-        '{"signal": "OpenTooltip", "payload": ' + params.asJSONSource() + '}',
-        true);
+    //  Install low-level event listeners that will handle signaling
+    //  OpenTooltip/CloseTooltip on mouseover/mouseout.
+    anElement.addEventListener(
+                'mouseover',
+                handler = function(evt) {
 
-    TP.elementSetAttribute(
-        anElement,
-        'on:mouseout',
-        '{"signal": "CloseTooltip"}',
-        true);
+                    var overParams;
+
+                    //  Note here how we copy the params that we captured when
+                    //  the overall method was defined and add the signal
+                    //  wrapping the low-level event. TP.sig.OpenTooltip expects
+                    //  a trigger signal so that it can compute position, etc.
+                    overParams = TP.copy(this.$tooltipOverHandler.params);
+                    overParams.atPut('trigger', TP.wrap(evt));
+
+                    TP.wrap(this).signal('TP.sig.OpenTooltip', overParams);
+                },
+                false);
+    anElement.$tooltipOverHandler = handler;
+    handler.params = params;
+
+    anElement.addEventListener(
+                'mouseout',
+                handler = function(evt) {
+                    TP.wrap(this).signal('TP.sig.CloseTooltip');
+                },
+                false);
+    anElement.$tooltipOutHandler = handler;
 
     return this;
 });
@@ -209,11 +226,16 @@ function(anElement, hintElement) {
                                     TP.xctrls.hint.$dispatchHintSignal,
                                     false);
 
-    //  Also, remove the 'on:mouseover' and 'on:mouseout' attributes that we
-    //  set in the attach method.
-    TP.elementRemoveAttribute(anElement, 'on:mouseover', true);
+    //  Also, remove the listeners that we installed to show/hide tooltips.
+    anElement.removeEventListener(
+                'mouseover',
+                anElement.$tooltipOverHandler,
+                false);
 
-    TP.elementRemoveAttribute(anElement, 'on:mouseout', true);
+    anElement.addEventListener(
+                'mouseout',
+                anElement.$tooltipOutHandler,
+                false);
 
     return this;
 });
