@@ -469,7 +469,7 @@ function() {
 
     //  ---
 
-    //  Grab the lcient data by getting TP.core.URI's 'local change list'. These
+    //  Grab the client data by getting TP.core.URI's 'local change list'. These
     //  will be hash of the URI locations as keys and the URIs as values.
     clientData = TP.core.URI.getLocalChangeList();
 
