@@ -81,9 +81,9 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             uri.isLoaded(false);
-            //  Note passing the second 'true' here to signal change of the
-            //  'dirty' flag.
-            uri.isDirty(true, true);
+            //  Note here that we don't alter the status of the dirty flag. If
+            //  the resource is dirty, it stays dirty. If not, we don't alter
+            //  that.
         }
     }
 
@@ -137,9 +137,9 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             uri.isLoaded(false);
-            //  Note passing the second 'true' here to signal change of the
-            //  'dirty' flag.
-            uri.isDirty(true, true);
+            //  Note here that we don't alter the status of the dirty flag. If
+            //  the resource is dirty, it stays dirty. If not, we don't alter
+            //  that.
         }
     }
 
