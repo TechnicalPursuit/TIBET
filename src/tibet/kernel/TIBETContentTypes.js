@@ -2558,7 +2558,7 @@ function(data, uri) {
      *     from the parameters provided.
      */
 
-    return TP.isNode(data) || TP.isXMLString(data);
+    return TP.isNode(data) || TP.isXMLString(TP.str(data));
 });
 
 //  ------------------------------------------------------------------------
