@@ -31,7 +31,6 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
      *     before it is supplied to the observer of the binding. It takes one
      *     parameter, the new value from the model and returns the
      *     transformation parameter. This parameter is optional.
-     * @param {Function} transformationFunc
      * @returns {Object} The target object.
      */
 

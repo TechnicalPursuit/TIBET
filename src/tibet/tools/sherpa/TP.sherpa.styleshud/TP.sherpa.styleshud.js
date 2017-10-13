@@ -291,8 +291,6 @@ function(aSignal) {
                 TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
         };
 
-    //  Show the rule text in the tile. Note how we wrap the content with a span
-    //  with a CodeMirror CSS class to make the styling work.
     TP.bySystemId('Sherpa').showTileAt(
         'StyleSummary_Tile', 'Rule Text', showHandler, showHandler);
 
