@@ -1,6 +1,7 @@
 {
     "default": {
-        "supertype": "TP.core.ActionTag"
+        "supertype": "TP.core.ActionTag",
+        "bundled": true
     },
     "APP": {
         "dir": "~app_src/tags/{{nsroot}}.{{nsname}}.{{name}}",

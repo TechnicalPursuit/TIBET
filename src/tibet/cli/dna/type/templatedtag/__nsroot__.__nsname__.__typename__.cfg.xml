@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    basedir="~app_src/tags/{{nsroot}}.{{nsname}}.{{typename}}"
+    name="{{nsname}}.{{typename}}" >
+
+<config id="scripts">
+    <!-- tag-related source script references here -->
+    <script src="{{nsroot}}.{{nsname}}.{{typename}}.js"/>
+</config>
+
+<config id="tests">
+    <!-- tag-related test scripts here -->
+    <script src="{{nsroot}}.{{nsname}}.{{typename}}_test.js"/>
+</config>
+
+<config id="resources">
+    <!-- tag-related resource entries here -->
+    <script src="{{nsroot}}.{{nsname}}.{{typename}}.xhtml"/>
+    <script src="{{nsroot}}.{{nsname}}.{{typename}}.css"/>
+</config>
+
+<config id="inlined" if="boot.phase_two boot.inlined">
+    <!-- don't edit this one; maintained by tibet resources command -->
+    <script src="~app_build/app_src.tags.{{nsroot}}.{{nsname}}.{{typename}}.xhtml.js"/>
+    <script src="~app_build/app_src.tags.{{nsroot}}.{{nsname}}.{{typename}}.css.js"/>
+</config>
+
+</package>

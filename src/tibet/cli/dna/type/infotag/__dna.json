@@ -1,6 +1,7 @@
 {
     "default": {
-        "supertype": "TP.core.InfoTag"
+        "supertype": "TP.core.InfoTag",
+        "bundled": true
     },
     "APP": {
         "dir": "~app_src/tags/{{nsroot}}.{{nsname}}.{{name}}",
