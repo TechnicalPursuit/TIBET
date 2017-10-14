@@ -51,7 +51,9 @@ function(packageName, configName, shouldSignal) {
         TP.sys.setcfg('boot.phase_two', true);
         newScripts = TP.boot.$listPackageAssets(uri, configName);
     } catch (e) {
-        void 0;
+        //  Could be an unloaded/unexpanded manifest...meaning we can't really
+        //  tell what the script list is. Trigger a failure.
+        return TP.extern.Promise.reject();
     } finally {
         TP.sys.setcfg('boot.phase_one', phaseOne);
         TP.sys.setcfg('boot.phase_two', phaseTwo);
@@ -60,7 +62,14 @@ function(packageName, configName, shouldSignal) {
     //  Normalize the list of scripts.
     newScripts = newScripts.map(
                     function(node) {
-                        return TP.uriExpandPath(node.getAttribute('src'));
+                        var src;
+
+                        src = node.getAttribute('src');
+                        if (src) {
+                            return TP.boot.$getFullPath(node, src);
+                        }
+
+                        return '';
                     });
     TP.compact(newScripts, TP.isEmpty);
 

@@ -6714,10 +6714,6 @@ function() {
         //  need to process it as a package, not a random file or script.
         if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
 
-            //  Force refresh of any package data, particularly related to the
-            //  URI we're referencing.
-            TP.boot.$refreshPackages(changedLoc);
-
             //  Import any new scripts that would have booted with the system.
             //  NOTE we pass 'true' to the shouldSignal flag here to tell this
             //  particular import we want scripts to signal Change on load.
@@ -6737,10 +6733,20 @@ function() {
         url.signal('RemoteResourceChanged', TP.hc('isDirty', false));
     };
 
-    //  If the receiver refers to a file that was loaded (meaning it's mentioned
-    //  in a TIBET package config) we source it back in rather than just
-    //  loading via simple XHR.
-    if (TP.boot.$isLoadableScript(changedLoc)) {
+    //  Is the changed location one of our loaded package files? If so we
+    //  need to process it as a package, not a random file or script.
+    if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
+
+        //  Force refresh of any package data, particularly related to the
+        //  URI we're referencing.
+        TP.boot.$refreshPackages(changedLoc);
+
+        callback();
+
+    } else if (TP.boot.$isLoadableScript(changedLoc)) {
+        //  If the receiver refers to a file that was loaded (meaning it's
+        //  mentioned in a TIBET package config) we source it back in rather
+        //  than just loading via simple XHR.
         TP.debug('Sourcing in updates to ' + changedLoc);
 
         return TP.sys.importSource(changedLoc).then(callback, callback);
