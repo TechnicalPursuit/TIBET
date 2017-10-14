@@ -10355,7 +10355,10 @@ TP.boot.$isLoadableScript = function(aURI) {
         loadables = TP.boot.$listPackageAssets(
             TP.boot.$$bootfile, TP.boot.$$bootconfig);
     } catch (e) {
-        void 0;
+        //  Could be an unloaded/unexpanded manifest...meaning we can't really
+        //  tell about the nature of the script. Set up empty array which will
+        //  force a false return value below.
+        loadables = [];
     } finally {
         TP.sys.setcfg('boot.phase_one', phaseOne);
         TP.sys.setcfg('boot.phase_two', phaseTwo);
@@ -10560,7 +10563,13 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
     try {
         doc = TP.boot.$$packages[path];
         if (TP.boot.$notValid(doc)) {
-            throw new Error('Can not list unexpanded package: ' + aPath);
+            //  Try to load it now...
+            TP.boot.$$packages[path] =
+                TP.boot.$uriLoad(path, TP.DOM, 'manifest');
+            doc = TP.boot.$$packages[path];
+            if (TP.boot.$notValid(doc)) {
+                throw new Error('Can not list unexpanded package: ' + aPath);
+            }
         }
 
         //  Determine the configuration we'll be listing.
