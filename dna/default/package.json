@@ -28,7 +28,6 @@
         "shelljs": "TechnicalPursuit/shelljs",
         "stylelint": "^7.10.1",
         "stylelint-config-standard": "^15.0.1",
-        "validator": "^9.0.0",
         "winston": "TechnicalPursuit/winston"
     },
     "devDependencies": {},

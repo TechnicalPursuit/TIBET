@@ -38,7 +38,6 @@
             commands,
             clean,
             ip,
-            validator,
             WebSocket,
             evaluate;
 
@@ -53,7 +52,6 @@
 
         //  WebSocket and SSE foundation. This one doesn't crash the server when
         //  it encounters errors...it actually logs them :)
-        validator = require('validator');
         WebSocket = require('faye-websocket');
         ip = require('ip');
 
@@ -88,10 +86,62 @@
          * true (so only the local machine IP can access the route).
          */
         clean = function(input) {
-            return validator.blacklist(
-                validator.trim(
-                    validator.stripLow(input)
-                ), /\.\./);
+            var str,
+                output,
+                regex,
+                invalid;
+
+            if (input === undefined || input === null || input === '') {
+                logger.warn('Invalid input for clean processing.', meta);
+                return;
+            }
+
+            str = '' + input;
+
+            //  No relative path syntax allowed on the command line.
+            if (/\.\//.test(str)) {
+                logger.warn('Invalid input for CLI. No relative paths.', meta);
+                return;
+            }
+
+            //  check for control characters etc.
+            output = str.split('');
+            regex = /[^-_:.,/~?%&="'a-zA-Z0-9]/;
+
+            invalid = output.some(function(c) {
+
+                //  a bit nasty, but seems to work even with &nbsp;
+                if (c <= ' ' || c.charCodeAt(0) === 160) {
+                    //  control characters are largely stripped when found but
+                    //  we do handle certain forms of whitespace to preserve
+                    //  semantics.
+
+                    if (c === ' ' || c.charCodeAt(0) === 160) {
+                        //  space
+                        return false;
+                    } else if (c === '\t') {
+                        //  tab
+                        return false;
+                    } else if (c === '\n') {
+                        //  newline
+                        return false;
+                    } else if (c === '\r') {
+                        //  the _other_ newline
+                        return false;
+                    }
+
+                    //  control character...not valid.
+                    return true;
+                }
+
+                return regex.test(c);
+            });
+
+            if (invalid) {
+                return;
+            }
+
+            return input;
         };
 
 
@@ -123,7 +173,8 @@
             cmd = clean(query.cmd);
 
             if (commands.indexOf(cmd) === -1) {
-                reason = 'unauthorized cli command `' + cmd + '`';
+                //  NOTE we output uncleansed value here to show original.
+                reason = 'unauthorized cli command `' + query.cmd + '`';
                 logger.error(reason, meta);
                 message = {
                     ok: false,
@@ -418,10 +469,13 @@
                             safer,
                             parts;
 
-                        safer = validator.stripLow(event.data).trim();
+                        TDS.ifDebug() ?
+                            logger.debug('received ' + event.data, meta) : 0;
+
+                        safer = clean(event.data);
 
                         TDS.ifDebug() ?
-                            logger.debug('received ' + safer, meta) : 0;
+                            logger.debug('cleansed to ' + safer, meta) : 0;
 
                         //  Convert URL formatted query string to query object
                         //  so we match the req.query format of a URL request.

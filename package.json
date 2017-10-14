@@ -98,7 +98,6 @@
         "stylelint-config-standard": "^15.0.1",
         "supports-color": "^3.1.2",
         "syn": "https://github.com/TechnicalPursuit/syn/tarball/master",
-        "validator": "^9.0.0",
         "websocket-extensions": "^0.1.1",
         "winston": "^2.2.0",
         "xml2js": "^0.4.15",
