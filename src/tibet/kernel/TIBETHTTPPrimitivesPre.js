@@ -838,7 +838,9 @@ function() {
     //  needed by each request. Also note that this is done lazily so that
     //  we're sure we're getting a full hash object, not a TP.boot.PHash.
     return TP.hc('Pragma', 'no-cache',
-                    'Cache-Control', TP.ac('no-cache', 'no-store'),
+                    'Cache-Control', TP.ac('private',
+                        'no-cache', 'no-store', 'must-revalidate'),
+                    'Expires', '-1',
                     'Accept', TP.ac(TP.JS_TEXT_ENCODED,
                                     TP.JSON_ENCODED,
                                     TP.JSON_TEXT_ENCODED,
