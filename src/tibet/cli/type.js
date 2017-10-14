@@ -415,12 +415,139 @@ Cmd.prototype.executeClone = function() {
     return 0;
 };
 
+
 /**
- * Performs any updates to the application package that are needed. The default
- * implementation simply returns.
+ * Performs any updates to the application package that are needed. There are
+ * differences in how we treat a "simple type" and a "tag". For tags we rely on
+ * the tag having a separate package/config setup of its own so that is patched
+ * in. For types we inject the individual assets into the application package.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executePackage = function() {
+    if (this.options.bundled) {
+        return this.executePackageBundled();
+    } else {
+        return this.executePackageCommon();
+    }
+};
+
+
+/**
+ * Processes package updates for a bundled component (typically a tag which has
+ * its own package@config configuration.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executePackageBundled = function() {
+    var options,
+        code,
+        cmd,
+        dirty,
+        written,
+        pak,
+        assets,
+        pkgName,
+        pkgNode,
+        pkgDoc,
+        configs;
+
+    options = this.options;
+    cmd = this;
+    code = 0;
+
+    this.log('adjusting package entries...');
+
+// ---
+
+    pkgName = options.pkgname;
+    pkgNode = cmd.readPackageNode(pkgName);
+    pkgDoc = pkgNode.ownerDocument;
+
+    configs = ['scripts', 'tests', 'inlined'];
+
+    configs.forEach(function(cfgName) {
+        var pkgOpts,
+            cfgNode,
+            file,
+            tag,
+            value,
+            str;
+
+        //  Query against package doc so any nodes we create are coming from the
+        //  same document instance. (If we use the helpers here we get a new one
+        //  for each parse call).
+        if (!(cfgNode = pkgDoc.getElementById(cfgName))) {
+            cmd.error('Unable to find ' + pkgName + '@' + cfgName);
+            return 1;
+        }
+
+        //  Get package information in expanded form so we can check against any
+        //  potentially nested config structures. Being able to nest makes it easy
+        //  to iterate while still being able to organize into different config
+        //  bundles for different things (like sherpa vs. test vs. xctrls).
+        pkgOpts = {
+            package: pkgName,
+            config: cfgName,
+            all: false,
+            scripts: true,        //  The magic one...without this...no output.
+            resources: true,
+            nodes: false,
+            phase: 'all',
+            boot: {
+                phase_one: true,
+                phase_two: true
+            }
+        };
+
+        pak = new Package(pkgOpts);
+        pak.expandPackage();
+        assets = pak.listPackageAssets();
+        assets = assets.map(function(asset) {
+            return CLI.getVirtualPath(asset);
+        });
+
+        file = path.join(options.dir,
+            options.nsroot + '.' + options.nsname + '.' + options.name +
+            '.cfg.xml');
+
+        value = CLI.getVirtualPath(file);
+        tag = 'package';
+        str = '<' + tag + ' src="' + value + '"' +
+            ' config="' + cfgName + '"' + '/>';
+
+        if (assets.indexOf(value) === -1) {
+            dirty = true;
+            cmd.addXMLLiteral(cfgNode, '\n');
+            cmd.addXMLEntry(cfgNode, '    ', str, '');
+            cmd.log(str + ' (added)');
+        } else {
+            cmd.log(str + ' (exists)');
+        }
+    });
+
+    //  ---
+
+    if (dirty) {
+        cmd.writePackageNode(pkgName, pkgNode);
+        written = true;
+    }
+
+    if (written) {
+        this.warn('New configuration entries created. Review/Rebuild as needed.');
+    }
+
+    this.executeCleanup(code);
+    this.summarize();
+
+    return code;
+};
+
+
+/**
+ * Processes package changes for unbundled types, non-tag types such as
+ * controllers, content types, etc. which don't have their own package file.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executePackageCommon = function() {
     var options,
         code,
         cmd,
@@ -535,12 +662,6 @@ Cmd.prototype.executePackage = function() {
         }
     });
 
-    if (dirty) {
-        this.addXMLLiteral(cfgNode, '\n');
-        this.writeConfigNode(pkgName, cfgNode);
-        written = true;
-    }
-
     //  ---
     //  tests
     //  ---
@@ -586,8 +707,8 @@ Cmd.prototype.executePackage = function() {
     });
 
     if (dirty) {
-        this.addXMLLiteral(cfgNode, '\n');
         this.writeConfigNode(pkgName, cfgNode);
+        written = true;
     }
 
     if (written) {
@@ -595,7 +716,6 @@ Cmd.prototype.executePackage = function() {
     }
 
     this.executeCleanup(code);
-
     this.summarize();
 
     return code;
