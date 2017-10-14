@@ -1827,7 +1827,7 @@ function() {
      * @returns {String} The content MIME type.
      */
 
-    return TP.ietf.Mime.CSS;
+    return TP.CSS_TEXT_ENCODED;
 });
 
 //  ========================================================================
@@ -1959,7 +1959,7 @@ function() {
      * @returns {String} The content MIME type.
      */
 
-    return TP.ietf.Mime.JSON;
+    return TP.JSON_ENCODED;
 });
 
 //  ------------------------------------------------------------------------
@@ -2509,7 +2509,7 @@ function() {
      * @returns {String} The content MIME type.
      */
 
-    return TP.ietf.Mime.PLAIN;
+    return TP.PLAIN_TEXT_ENCODED;
 });
 
 //  ========================================================================
@@ -2955,7 +2955,7 @@ function() {
      * @returns {String} The content MIME type.
      */
 
-    return TP.ietf.Mime.XML;
+    return TP.XML_ENCODED;
 });
 
 //  ------------------------------------------------------------------------
