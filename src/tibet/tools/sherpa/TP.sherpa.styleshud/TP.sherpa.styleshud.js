@@ -232,8 +232,8 @@ function(aSignal) {
 
         propertyDeclsStr,
 
-        centerElem,
-        centerElemPageRect,
+        centerTPElem,
+        centerTPElemPageRect,
 
         targetElemPageRect,
 
@@ -271,8 +271,8 @@ function(aSignal) {
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
-    centerElem = TP.byId('center', this.getNativeWindow());
-    centerElemPageRect = centerElem.getPageRect();
+    centerTPElem = TP.byId('center', this.getNativeWindow());
+    centerTPElemPageRect = centerTPElem.getPageRect();
 
     //  Use the 'Y' coordinate where the target element is located in the page.
     targetElemPageRect = TP.wrap(targetElem).getPageRect();
@@ -280,19 +280,18 @@ function(aSignal) {
     showHandler =
         function(aTileTPElem) {
 
-            //  The tile already existed
-
+            //  Show the rule text in the tile. Note how we wrap the content
+            //  with a span with a CodeMirror CSS class to make the styling
+            //  work.
             aTileTPElem.setContent(
                 TP.xhtmlnode('<span class="cm-s-elegant">' +
                                 propertyDeclsStr +
                                 '</span>'));
 
             aTileTPElem.setPagePosition(
-                TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+                TP.pc(centerTPElemPageRect.getX(), targetElemPageRect.getY()));
         };
 
-    //  Show the rule text in the tile. Note how we wrap the content with a span
-    //  with a CodeMirror CSS class to make the styling work.
     TP.bySystemId('Sherpa').showTileAt(
         'StyleSummary_Tile', 'Rule Text', showHandler, showHandler);
 

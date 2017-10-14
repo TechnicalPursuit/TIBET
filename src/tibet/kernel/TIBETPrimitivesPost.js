@@ -2927,7 +2927,9 @@ function(aType, aString, aLocale) {
      * @returns {Object} An instance of aType if the parse is successful.
      */
 
-    var type;
+    var type,
+
+        result;
 
     if (!TP.isType(type = TP.sys.getTypeByName(aType))) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -2944,10 +2946,15 @@ function(aType, aString, aLocale) {
     //  Date.parse is already defined in ECMAScript to return a Number...
     //  sigh. Make sure to turn it into a Date instance.
     if (type === Date) {
-        return new Date(type.parse(aString, aLocale));
+        result = new Date(type.parse(aString, aLocale));
+        if (!TP.isDate(result)) {
+            result = null;
+        }
     } else {
-        return type.parse(aString, aLocale);
+        result = type.parse(aString, aLocale);
     }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------

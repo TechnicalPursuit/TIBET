@@ -1078,6 +1078,12 @@ function(newMethodText, loadedFromSourceFile) {
     //  NOTE we use the original srcPath string here to retain relative address.
     patch = TP.extern.JsDiff.createPatch(path, currentContent, newContent);
 
+    //  If the path is a URI and the patch contains '@@', then there were diffs
+    //  and the URI should be dirtied.
+    if (TP.isURIString(TP.uriExpandPath(path)) && patch.contains('@@')) {
+        TP.uc(path).isDirty(true);
+    }
+
     return TP.ac(patch, newContent);
 });
 
