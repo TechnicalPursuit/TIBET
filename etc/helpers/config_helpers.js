@@ -18,15 +18,15 @@
         extend: function(Cmd, CLI) {
 
             Cmd.prototype.addXMLEntry = function(
-                                        node, prefix, content, suffix) {
+                    node, prefix, content, suffix) {
                 var doc,
                     parser,
                     newElem;
 
                 doc = node.ownerDocument;
-                parser = this.getXMLParser();
-
                 node.appendChild(doc.createTextNode(prefix));
+
+                parser = this.getXMLParser();
 
                 doc = parser.parseFromString(content, 'text/xml');
                 if (!doc ||
@@ -119,7 +119,7 @@
             //  ---
 
             Cmd.prototype.readConfigNode = function(
-                                            pkgfile, cfgname, buildIfAbsent) {
+                    pkgfile, cfgname, buildIfAbsent) {
                 var pkgtext,
                     parser,
                     doc,
@@ -196,6 +196,38 @@
 
             //  ---
 
+            Cmd.prototype.readPackageNode = function(pkgfile) {
+                var pkgtext,
+                    parser,
+                    doc,
+                    packageNode;
+
+                pkgtext = this.readConfigData(pkgfile);
+                if (!pkgtext) {
+                    return null;
+                }
+
+                parser = this.getXMLParser();
+
+                doc = parser.parseFromString(pkgtext);
+                if (!doc ||
+                    CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+                    this.error('Error parsing package. Not well-formed?');
+                    throw new Error();
+                }
+
+                if (!(packageNode = doc.getElementsByTagName('package')[0])) {
+                    this.error('Malformed package file.' +
+                        ' Cannot find top-level <package> in: ' +
+                        pkgfile);
+                    return null;
+                }
+
+                return packageNode;
+            };
+
+            //  ---
+
             Cmd.prototype.serializeNode = function(node) {
                 var dom,
                     str;
@@ -229,6 +261,16 @@
                 var str;
 
                 str = this.serializeNode(config.ownerDocument);
+
+                this.writeConfigData(pkgfile, str);
+            };
+
+            //  ---
+
+            Cmd.prototype.writePackageNode = function(pkgfile, package) {
+                var str;
+
+                str = this.serializeNode(package);
 
                 this.writeConfigData(pkgfile, str);
             };
