@@ -345,53 +345,6 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getFinalTargetForInspector',
-function(anAspect, options) {
-
-    /**
-     * @method getFinalTargetForInspector
-     * @summary Returns the final target that will be used as the source for an
-     *     inspector bay. In most cases, this object will be the receiver, but
-     *     it can be another object that the receiver delegates to.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     finalize the target. This will have the following keys, amongst
-     *     others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     *          'bindLoc':          The URI location where the data for the
-     *                              content can be found.
-     * @returns {Object} The final target object to use as the source.
-     */
-
-    var result;
-
-    result = this.getResource().get('result');
-
-    if (TP.isType(result)) {
-        return result;
-    }
-
-    if (TP.isKindOf(result, TP.core.Content)) {
-        result = result.get('data');
-    }
-
-    if (TP.isString(result) ||
-        TP.isNode(result) ||
-        TP.isKindOf(result, TP.core.Node)) {
-
-        return this;
-    }
-
-    return result;
-});
-
-//  ------------------------------------------------------------------------
 //  Toolbar API
 //  ------------------------------------------------------------------------
 
