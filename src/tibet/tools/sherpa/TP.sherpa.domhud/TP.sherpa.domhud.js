@@ -1084,7 +1084,8 @@ function(aSignal) {
     if (aSignal.at('action') === TP.UPDATE) {
 
         //  Grab the model object where our data is located.
-        modelObj = TP.uc('urn:tibet:dom_attr_source').getResource().get('result');
+        modelObj =
+            TP.uc('urn:tibet:dom_attr_source').getResource().get('result');
 
         //  Compute a name aspect path by replacing 'tagAttrValue' with
         //  'tagAttrName' in the value aspect path.
@@ -1147,11 +1148,13 @@ function(aSignal) {
         if (TP.isValid(removedData)) {
             name = removedData.at('tagAttrs').at('tagAttrName');
 
-            //  Remove the name from our list of attribute names.
-            allAttrNames.remove(name);
+            if (TP.notEmpty(name)) {
+                //  Remove the name from our list of attribute names.
+                allAttrNames.remove(name);
 
-            //  Remove the attribute itself.
-            currentTarget.removeAttribute(name);
+                //  Remove the attribute itself.
+                currentTarget.removeAttribute(name);
+            }
         }
     }
 
