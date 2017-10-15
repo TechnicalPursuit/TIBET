@@ -97,12 +97,7 @@ function(options) {
      */
 
     var loc,
-        tabHasURI,
-
-        resp,
-        result,
-
-        str;
+        tabHasURI;
 
     this.callNextMethod();
 
@@ -149,12 +144,7 @@ function(options) {
      *     bay.
      */
 
-    var resp,
-        result,
-
-        str,
-
-        loc,
+    var loc,
         tabHasURI,
 
         dataURI,
@@ -182,12 +172,6 @@ function(options) {
                         '...currently displayed in a TDC tab...' +
                     '</div>');
     }
-
-    //  Force refresh to false, we only want cached data access here. If in
-    //  doubt (i.e. the data isn't available), we'll go ahead and generate the
-    //  editor. NOTE that this avoids any async issues as well.
-    resp = this.getResource(TP.hc('refresh', false, 'async', false));
-    result = resp.get('result');
 
     dataURI = TP.uc(options.at('bindLoc'));
 
