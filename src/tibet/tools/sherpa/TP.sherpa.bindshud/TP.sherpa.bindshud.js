@@ -260,6 +260,7 @@ function(aSignal) {
         expandedBindingExpr,
 
         sourceURI,
+        sourceResource,
 
         centerTPElem,
         centerTPElemPageRect,
