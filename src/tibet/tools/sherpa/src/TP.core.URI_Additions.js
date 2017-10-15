@@ -118,25 +118,7 @@ function(options) {
     //  If not, then possibly reset the content type to be that for a Sherpa
     //  urieditor.
     if (!tabHasURI) {
-
-        //  Force refresh to false, we only want cached data access here. If in
-        //  doubt (i.e. the data isn't available), we'll go ahead and generate the
-        //  editor. NOTE that this avoids any async issues as well.
-        resp = this.getResource(TP.hc('refresh', false, 'async', false));
-        result = resp.get('result');
-
-        if (TP.isValid(result)) {
-
-            //  Check the String size of the result. If it's not greater than a
-            //  maximum size determined by the inspector, then reset the content
-            //  type to be 'sherpa:urieditor'.
-            str = TP.str(result);
-            if (str.getSize() <=
-                TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
-                options.atPut(
-                    TP.ATTR + '_contenttype', 'sherpa:urieditor');
-            }
-        }
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
     }
 
     return options;
@@ -207,36 +189,18 @@ function(options) {
     resp = this.getResource(TP.hc('refresh', false, 'async', false));
     result = resp.get('result');
 
-    str = TP.str(result);
+    dataURI = TP.uc(options.at('bindLoc'));
 
-    if (TP.notEmpty(str) &&
-        str.getSize() > TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
+    uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
 
-        result = str.asEscapedXML();
+    uriEditorTPElem = uriEditorTPElem.clone();
 
-        if (TP.notEmpty(result)) {
-            inspectorElem = TP.xhtmlnode(
-                '<div class="cm-s-elegant scrollable wrapped' +
-                    ' noselect readonly">' +
-                        result +
-                '</div>');
-        }
+    uriEditorTPElem.setAttribute('id', 'inspectorEditor');
+    uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
-    } else {
-
-        dataURI = TP.uc(options.at('bindLoc'));
-
-        uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
-                                'template',
-                                TP.ietf.Mime.XHTML);
-
-        uriEditorTPElem = uriEditorTPElem.clone();
-
-        uriEditorTPElem.setAttribute('id', 'inspectorEditor');
-        uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
-
-        inspectorElem = TP.unwrap(uriEditorTPElem);
-    }
+    inspectorElem = TP.unwrap(uriEditorTPElem);
 
     return inspectorElem;
 });
