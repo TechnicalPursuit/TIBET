@@ -155,7 +155,7 @@ function(editorIsDirty, uriIsDirty) {
     }
 
     isDirty = editorTPElem.isSourceDirty();
-    if (isDirty) {
+    if (isDirty && TP.isKindOf(this.get('$editorURI'), TP.core.URL)) {
         this.get('pushButton').removeAttribute('disabled');
         this.get('refreshButton').removeAttribute('disabled');
     } else {
