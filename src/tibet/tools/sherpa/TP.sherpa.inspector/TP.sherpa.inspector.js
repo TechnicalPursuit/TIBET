@@ -3295,16 +3295,18 @@ function() {
      */
 
     var totalSlotCount,
+        visibleSlotCount,
+
         firstVisibleSlotPosition;
 
     totalSlotCount = this.get('totalSlotCount');
+    visibleSlotCount = this.get('visibleSlotCount');
 
     //  Compute the slot position of what will be the last bay.
-    if (totalSlotCount <= this.get('visibleSlotCount')) {
+    if (totalSlotCount <= visibleSlotCount) {
         firstVisibleSlotPosition = 0;
     } else {
-        firstVisibleSlotPosition = totalSlotCount -
-                                    this.get('visibleSlotCount');
+        firstVisibleSlotPosition = totalSlotCount - visibleSlotCount;
     }
 
     //  Scroll the computed bay into the first visible position after converting
