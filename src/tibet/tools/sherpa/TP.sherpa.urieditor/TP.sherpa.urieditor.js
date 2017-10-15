@@ -649,15 +649,24 @@ function() {
             //  xctrls:codeeditor. This is an instance of CodeMirror.
             editorObj = this.get('editor').$get('$editorObj');
 
-            //  Try to get a MIME type from the URI - if we can't, then we just
-            //  treat the content as plain text.
-            if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
-                mimeType = TP.PLAIN_TEXT_ENCODED;
-            }
+            if (TP.isKindOf(sourceURI, TP.core.URL)) {
 
-            //  CodeMirror won't understand XHTML as distinct from XML.
-            if (mimeType === TP.XHTML_ENCODED) {
-                mimeType = TP.XML_ENCODED;
+                //  Try to get a MIME type from the URL - if we can't, then we
+                //  just treat the content as plain text.
+                if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
+                    mimeType = TP.PLAIN_TEXT_ENCODED;
+                }
+
+                //  CodeMirror won't understand XHTML as distinct from XML.
+                if (mimeType === TP.XHTML_ENCODED) {
+                    mimeType = TP.XML_ENCODED;
+                }
+            } else {
+                if (TP.isKindOf(sourceResult, TP.core.Content)) {
+                    mimeType = sourceResult.getContentMIMEType();
+                } else {
+                    mimeType = TP.PLAIN_TEXT_ENCODED;
+                }
             }
 
             //  Set the editor's 'mode' to the computed MIME type.
