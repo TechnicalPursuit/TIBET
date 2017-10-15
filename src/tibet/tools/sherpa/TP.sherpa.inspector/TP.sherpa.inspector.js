@@ -3312,8 +3312,7 @@ function() {
     //  Scroll the computed bay into the first visible position after converting
     //  that slot position to a bay.
     this.scrollBayToFirstVisiblePosition(
-            this.getBayFromSlotPosition(firstVisibleSlotPosition),
-            TP.LEFT);
+            this.getBayFromSlotPosition(firstVisibleSlotPosition));
 
     this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
 
@@ -3323,7 +3322,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('scrollBayToFirstVisiblePosition',
-function(aBay, aDirection) {
+function(aBay) {
 
     /**
      * @method scrollBayToFirstVisiblePosition
@@ -3333,10 +3332,6 @@ function(aBay, aDirection) {
      *     over.
      * @param {TP.sherpa.inspectorItem} aBay The bay element to scroll to the
      *     first position.
-     * @param {String} direction A named direction to scroll the element. Any
-     *     one of:
-     *          TP.RIGHT
-     *          TP.LEFT
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
