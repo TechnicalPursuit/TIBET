@@ -57,12 +57,12 @@ function(aTPElement) {
         //  also has a controller we want to push both into list.
         attr = node.getAttribute('tibet:ctrl');
         if (TP.notEmpty(attr)) {
-            info.push(TP.ac(attr, attr));
+            info.push(TP.ac(TP.lid(node, true), attr));
         }
 
         attr = node.getAttribute('tibet:tag');
         if (TP.notEmpty(attr)) {
-            info.push(TP.ac(attr, attr));
+            info.push(TP.ac(TP.lid(node, true), attr));
         } else {
             info.push(TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node))));
         }
