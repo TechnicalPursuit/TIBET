@@ -316,22 +316,27 @@ function(aSignal) {
                 var mimeType,
                     formattedResult;
 
-                if (TP.isKindOf(sourceResult, TP.core.Content)) {
-                    mimeType = sourceResult.getContentMIMEType();
-                } else if (TP.isKindOf(sourceResult, TP.core.Node)) {
-                    mimeType = TP.XML_ENCODED;
-                } else {
-                    mimeType = TP.JSON_ENCODED;
-                }
+                if (TP.notEmpty(sourceResult)) {
+                    if (TP.isKindOf(sourceResult, TP.core.Content)) {
+                        mimeType = sourceResult.getContentMIMEType();
+                    } else if (TP.isKindOf(sourceResult, TP.core.Node)) {
+                        mimeType = TP.XML_ENCODED;
+                    } else {
+                        mimeType = TP.JSON_ENCODED;
+                    }
 
-                if (mimeType === TP.XML_ENCODED) {
-                    formattedResult = TP.sherpa.pp.runXMLModeOn(
-                                        sourceResult.asString());
-                } else if (mimeType === TP.JSON_ENCODED) {
-                    formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
-                                        sourceResult.asJSONSource());
+                    if (mimeType === TP.XML_ENCODED) {
+                        formattedResult = TP.sherpa.pp.runXMLModeOn(
+                                            sourceResult.asString());
+                    } else if (mimeType === TP.JSON_ENCODED) {
+                        formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
+                                            sourceResult.asJSONSource());
+                    } else {
+                        formattedResult = TP.str(sourceResult);
+                    }
                 } else {
-                    formattedResult = TP.str(sourceResult);
+                    formattedResult = 'No result for:<br/>' +
+                                        sourceURI.getLocation();
                 }
 
                 tileTPElem.setContent(
