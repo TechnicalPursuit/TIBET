@@ -3311,6 +3311,11 @@ function() {
 
     this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
 
+    this.scrollTo(TP.RIGHT);
+
+    //  Make sure to update the scroll buttons :-).
+    this.updateScrollButtons();
+
     return this;
 });
 
