@@ -64,3 +64,30 @@ sherpa|bindshud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }
 
+/* We omitted 'sherpa|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
+
+#BindSummary_Tile {
+
+    min-width: 300px;
+    min-height: 200px;
+}
+
+#BindSummary_Tile > .body {
+
+    bottom: 0;
+
+    font-family: monospace;
+    font-size: 11px;
+}
+
+#BindSummary_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+#BindSummary_Tile > .footer {
+
+    display: none;
+}
