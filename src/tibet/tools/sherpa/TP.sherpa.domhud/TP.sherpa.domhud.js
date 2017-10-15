@@ -215,6 +215,9 @@ function(aTPElement) {
     //  List expects an array of arrays containing IDs and full names.
     this.setValue(info);
 
+    //  Scroll our list content to its bottom.
+    this.get('listcontent').scrollTo(TP.BOTTOM);
+
     return this;
 });
 
