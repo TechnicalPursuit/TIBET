@@ -32,28 +32,42 @@ function(aTPElement) {
      */
 
     var node,
-        ancestors,
-        info,
+        bindAncestors,
+
+        bindingAttrNodes,
+
         select,
+
+        info,
+
         last;
 
     node = aTPElement.getNativeNode();
 
+    //  This will find ancestors whose elements are in the BIND namespace or
+    //  which have attributes in the BIND namespace
+    bindAncestors = TP.nodeGetAncestorsWithNS(node, TP.w3.Xmlns.BIND);
+
+    bindingAttrNodes = TP.elementGetAttributeNodesInNS(
+                                    node, null, TP.w3.Xmlns.BIND);
+
+    select = false;
+    if (node.namespaceURI === TP.w3.Xmlns.BIND ||
+        TP.notEmpty(bindingAttrNodes)) {
+        select = true;
+        bindAncestors.unshift(node);
+    }
+    bindAncestors.reverse();
+
     info = TP.ac();
 
-    ancestors = TP.nodeGetAncestorsWithNS(node, TP.w3.Xmlns.BIND);
-    if (node.namespaceURI === TP.w3.Xmlns.BIND || TP.notEmpty(
-            TP.elementGetAttributeNodesInNS(node, null, TP.w3.Xmlns.BIND))) {
-        select = true;
-        ancestors.unshift(node);
-    }
-    ancestors.reverse();
-
-    ancestors.forEach(function(item) {
-        info.push(TP.ac(
-            TP.bySystemId(TP.lid(item, true)).getType().getName(),
-            TP.elementGetFullName(item)));
-    });
+    bindAncestors.forEach(
+        function(ansElem) {
+            info.push(
+                TP.ac(
+                    TP.lid(ansElem, true),
+                    TP.elementGetFullName(ansElem)));
+        });
 
     this.setValue(info);
 
