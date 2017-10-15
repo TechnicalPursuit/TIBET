@@ -1054,8 +1054,12 @@ function(aSignal) {
 
         allAttrNames,
 
+        action,
+
         attrIndex,
         oldAttrName,
+
+        hadAttribute,
 
         removedData;
 
@@ -1075,13 +1079,15 @@ function(aSignal) {
     //  Grab an ordered list of all of the attribute names.
     allAttrNames = this.get('$attributeNames');
 
+    action = aSignal.at('action');
+
     //  If the action is TP.UPDATE, then the user added an attribute or changed
     //  one of the existing attributes. Note that we don't concern ourselves
     //  with an action of TP.INSERT/TP.CREATE, because that means that the user
     //  has clicked the '+' button to insert a new attribute row, but hasn't
     //  filled out the name and value and we don't want to process blank
     //  attributes..
-    if (aSignal.at('action') === TP.UPDATE) {
+    if (action === TP.UPDATE) {
 
         //  Grab the model object where our data is located.
         modelObj =
@@ -1108,6 +1114,10 @@ function(aSignal) {
         //  attribute that has a real value)
         if (aspectPath.endsWith('tagAttrName')) {
 
+            //  We always set hadAttribute to true for this case, because we're
+            //  actually 'removing' an attribute that did exist.
+            hadAttribute = true;
+
             //  Slice out the index, convert it to a number and get the
             //  attribute name at that index in our list of all attribute names.
             //  This will tell us the old attribute name.
@@ -1131,15 +1141,23 @@ function(aSignal) {
 
         } else {
 
+            hadAttribute = currentTarget.hasAttribute(name);
+
             //  Set the attribute named by the name to the value
-            if (!currentTarget.hasAttribute(name)) {
+            if (!hadAttribute) {
                 allAttrNames.push(name);
             }
 
             //  Set the value using the computed name and value.
             currentTarget.setAttribute(name, value);
         }
-    } else if (aSignal.at('action') === TP.DELETE) {
+
+        if (hadAttribute) {
+            TP.nodeDeadenContent(currentTarget.getNativeNode());
+        }
+
+        TP.nodeAwakenContent(currentTarget.getNativeNode());
+    } else if (action === TP.DELETE) {
 
         //  If we're deleting an attribute (because the user clicked an 'X'),
         //  then grab the removed data's 'name' value and remove the
@@ -1155,6 +1173,10 @@ function(aSignal) {
                 //  Remove the attribute itself.
                 currentTarget.removeAttribute(name);
             }
+        }
+
+        if (TP.notEmpty(name)) {
+            TP.nodeDeadenContent(currentTarget.getNativeNode());
         }
     }
 
