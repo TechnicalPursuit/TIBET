@@ -11340,6 +11340,12 @@ function(aNode) {
     //  handlers etc. to avoid duplicate effort.
     aNode[TP.AWAKENED] = true;
 
+    //  If the node is an element, then remove any 'tibet:recasting' flag that
+    //  might have been put on the element by our redraw machinery.
+    if (TP.isElement(aNode)) {
+        TP.elementRemoveAttribute(aNode, 'tibet:recasting', true);
+    }
+
     return;
 });
 
