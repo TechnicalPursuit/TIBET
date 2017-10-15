@@ -22,8 +22,6 @@ sherpa|styleshud > ul {
     margin: 0;
     padding: 0;
 
-    line-height: 18px;
-
     color: #666;
 
     font-size: 60%;
@@ -35,7 +33,8 @@ sherpa|styleshud > ul {
 
 sherpa|styleshud > ul.content > li {
 
-    height: 18px;
+    height: 1.75em;
+    line-height: 1.75em;
 
     padding-left: 0.25em;
 
@@ -73,16 +72,20 @@ sherpa|styleshud > ul.content > li[pclass|selected]:hover {
 
 #StyleSummary_Tile {
 
-    min-width: 200px;
+    min-width: 300px;
     min-height: 200px;
 }
 
 #StyleSummary_Tile > .body {
 
     bottom: 0;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-size: 1em;
 
-    font-family: monospace;
-    font-size: 11px;
+    background: #eee;
+    padding: 8px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 #StyleSummary_Tile > .header > .minimize_mark {

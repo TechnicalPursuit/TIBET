@@ -349,14 +349,17 @@ function(aSignal) {
         showHandler =
             function(aTileTPElem) {
                 var tileWidth,
-                    xCoord;
+                    xCoord,
+                    offset;
 
                 //  TODO: This is cheesy
                 tileWidth = 300;
+                offset = -2;
 
                 xCoord = centerTPElemPageRect.getX() +
                             centerTPElemPageRect.getWidth() -
-                            tileWidth;
+                            tileWidth +
+                            offset;
                 aTileTPElem.setContent(
                     TP.xhtmlnode('<span class="cm-s-elegant">' +
                                     'Fetching data...' +
