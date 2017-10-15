@@ -97,14 +97,20 @@ function(aSignal) {
      * @returns {TP.sherpa.bindshud} The receiver.
      */
 
-    var data,
+    var targetElem,
 
-        targetElem,
+        data,
 
         indexInData,
         itemData,
 
-        target;
+        peerID,
+        targetTPElem,
+
+        bindingExprs,
+        expandedBindingExpr,
+
+        sourceURI;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -127,14 +133,24 @@ function(aSignal) {
     indexInData = indexInData.asNumber();
     itemData = data.at(indexInData);
 
-    target = TP.bySystemId(itemData.at(0));
+    peerID = itemData.at(0);
+    targetTPElem = TP.byId(peerID);
 
-    //  Signal to inspect the object with the rule matcher as 'extra targeting
-    //  information' under the 'findContent' key.
-    this.signal('InspectObject',
-                TP.hc('targetObject', target,
-                        'targetAspect', TP.id(target),
-                        'showBusy', true));
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
+
+    if (TP.isURIString(expandedBindingExpr)) {
+        sourceURI = TP.uc(expandedBindingExpr);
+        sourceURI = sourceURI.getPrimaryURI();
+
+        this.signal('InspectObject',
+                    TP.hc('targetObject', sourceURI,
+                            'targetAspect', TP.id(sourceURI),
+                            'showBusy', true));
+    }
+
+    return this;
+});
 
     return this;
 });
