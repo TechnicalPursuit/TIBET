@@ -1990,18 +1990,18 @@ function(scopeVals, bindingInfoValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getFullBindingExpressionFor',
-function(anAspect) {
+TP.core.ElementNode.Inst.defineMethod('getFullyExpandedBindingExpressions',
+function() {
 
     /**
-     * @method getFullBindingExpression
-     * @summary Returns the 'fully expanded' binding expression in which all
-     *     of the scoping values plus the local expression are expanded into the
-     *     fully expanded binding expression.
-     * @param {String} anAspect The name of the aspect to get the full binding
-     *     expression for.
-     * @returns {String} The fully-formed binding expression on the receiver for
-     *     the supplied aspect name.
+     * @method getFullyExpandedBindingExpressions
+     * @summary Returns all of the 'fully expanded' binding expressions for the
+     *     receiver.
+     * @description These are computed by taking all of the scoping values plus
+     *     the local expression and then expanding them into the fully expanded
+     *     binding expression.
+     * @returns {TP.core.Hash} A hash of the aspect names and the fully-formed
+     *     binding expressions on the receiver for each name.
      */
 
     var elem,
@@ -2009,13 +2009,12 @@ function(anAspect) {
         attrName,
 
         scopeVals,
+
+        results,
+
         attrVal,
 
-        info,
-        dataExpr,
-
-        allVals,
-        fullExpr;
+        info;
 
     elem = this.getNativeNode();
 
@@ -2027,30 +2026,55 @@ function(anAspect) {
         attrName = 'bind:io';
     } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
         attrName = 'bind:out';
+    } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
+        attrName = 'bind:scope';
+    } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+        attrName = 'bind:repeat';
     }
 
     if (TP.isEmpty(attrName)) {
-        return this;
+        return null;
     }
 
     //  Get all of the scoping values and the local attribute value for the
     //  attribute name computed above.
     scopeVals = this.getBindingScopeValues();
-    attrVal = this.getAttribute(attrName);
 
-    //  Grab the binding info for that local attribute value.
-    info = this.getBindingInfoFrom(attrVal);
+    results = TP.hc();
 
-    //  Get the data expression for the named aspect.
-    //  TODO: Support more than 1 data expression.
-    dataExpr = info.at(anAspect).at('dataExprs').first();
+    //  If the attribute is a 'bind:scope' or 'bind:repeat', then all we really
+    //  need are the scoping values themselves.
+    if (attrName === 'bind:scope' || attrName === 'bind:repeat') {
+        results.atPut('scope', TP.uriJoinFragments.apply(TP, scopeVals));
+    } else {
+        attrVal = this.getAttribute(attrName);
 
-    //  Join together the data expression along with the scoping values to
-    //  calculate the 'fully formed' binding expression.
-    allVals = scopeVals.concat(dataExpr);
-    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+        //  Grab the binding info for that local attribute value.
+        info = this.getBindingInfoFrom(attrVal);
 
-    return fullExpr;
+        info.perform(
+            function(kvPair) {
+
+                var dataExpr,
+
+                    allVals,
+                    fullExpr;
+
+                //  Get the data expression for the named aspect.
+                //  TODO: Support more than 1 data expression.
+                dataExpr = kvPair.last().at('dataExprs').first();
+
+                //  Join together the data expression along with the scoping
+                //  values to calculate the 'fully formed' binding expression.
+                allVals = scopeVals.concat(dataExpr);
+
+                fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                results.atPut(kvPair.first(), fullExpr);
+            });
+    }
+
+    return results;
 });
 
 //  ------------------------------------------------------------------------
