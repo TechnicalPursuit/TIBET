@@ -103,6 +103,87 @@ function(aTPElement) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineHandler('FocusHalo',
+function(aSignal) {
+
+    /**
+     * @method handleFocusHalo
+     * @summary Handles notifications of when the receiver wants to focus the
+     *     halo.
+     * @param {TP.sig.FocusHalo} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var targetElem,
+
+        data,
+        indexInData,
+
+        itemData,
+
+        peerID,
+
+        newTargetTPElem,
+
+        halo,
+        currentTargetTPElem;
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    peerID = itemData.at(0);
+
+    newTargetTPElem = TP.bySystemId(peerID);
+
+    //  If its a Node, then it was valid and it was found. Focus the halo.
+    if (TP.isKindOf(newTargetTPElem, TP.core.Node) &&
+        !TP.isType(newTargetTPElem)) {
+        halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+        currentTargetTPElem = halo.get('currentTargetTPElem');
+        if (newTargetTPElem !== currentTargetTPElem) {
+
+            if (TP.isValid(currentTargetTPElem) &&
+                    currentTargetTPElem.haloCanBlur(halo)) {
+                halo.blur();
+            }
+
+            //  Remove any highlighting that we were doing *on the new target*
+            //  because we're going to focus the halo.
+            newTargetTPElem.removeClass('sherpa-hud-highlight');
+
+            if (newTargetTPElem.haloCanFocus(halo)) {
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                halo.focusOn(newTargetTPElem, true);
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
