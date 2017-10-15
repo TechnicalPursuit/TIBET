@@ -3309,11 +3309,6 @@ function() {
         firstVisibleSlotPosition = totalSlotCount - visibleSlotCount;
     }
 
-    //  Scroll the computed bay into the first visible position after converting
-    //  that slot position to a bay.
-    this.scrollBayToFirstVisiblePosition(
-            this.getBayFromSlotPosition(firstVisibleSlotPosition));
-
     this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
 
     return this;
