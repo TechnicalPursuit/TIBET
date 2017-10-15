@@ -11279,7 +11279,7 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  Awakening Methods
+//  Awakening/Deadening Methods
 //  ------------------------------------------------------------------------
 
 /*
@@ -11339,6 +11339,63 @@ function(aNode) {
     //  Flag the node as having been awakened. This state is checked by mutation
     //  handlers etc. to avoid duplicate effort.
     aNode[TP.AWAKENED] = true;
+
+    //  If the node is an element, then remove any 'tibet:recasting' flag that
+    //  might have been put on the element by our redraw machinery.
+    if (TP.isElement(aNode)) {
+        TP.elementRemoveAttribute(aNode, 'tibet:recasting', true);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeDeadenContent',
+function(aNode) {
+
+    /**
+     * @method nodeDeadenContent
+     * @summary This method is the primary entry point for deadening existing
+     *     content that is being removed from a visible DOM.
+     * @description You don't normally call this - in fact, it's rarely invoked.
+     * @param {Node} aNode The node to deaden.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var processor;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  NB: We don't bother to check the TP.AWAKENED and TP.GENERATED flags here
+    //  since we're 'forcing' a deaden.
+
+    //  If the node is an Element and it has an attribute of 'tibet:noawaken',
+    //  then skip processing it.
+    if (TP.isElement(aNode) &&
+        TP.elementHasAttribute(aNode, 'tibet:noawaken', true)) {
+        return;
+    }
+
+    //  If the node has an ancestor Element that has an attribute of
+    //  'tibet:noawaken', then skip processing it.
+    if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
+                                    aNode, 'tibet:noawaken', null, true))) {
+        return;
+    }
+
+    //  Allocate a tag processor and initialize it with the ATTACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.DETACH_PHASES);
+
+    //  Process the tree of markup
+    processor.processTree(aNode);
+
+    //  Flag the node as having not been awakened. This state is checked by
+    //  mutation handlers etc. to avoid duplicate effort.
+    aNode[TP.AWAKENED] = false;
 
     //  If the node is an element, then remove any 'tibet:recasting' flag that
     //  might have been put on the element by our redraw machinery.
