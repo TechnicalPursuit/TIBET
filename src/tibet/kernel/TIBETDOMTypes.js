@@ -11196,7 +11196,7 @@ function(anElement, nodesRemoved) {
 
         if (shouldProcess) {
             //  Note here how we pass true to allow the processing pipeline to
-            //  process the root, even though it was detaached.
+            //  process the root, even though it was detached.
             processor.processTree(root, null, true);
         }
 
@@ -11311,6 +11311,9 @@ function(aNode) {
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
+
+    //  NB: We don't bother to check the TP.AWAKENED and TP.GENERATED flags here
+    //  since we're 'forcing' an awaken.
 
     //  If the node is an Element and it has an attribute of 'tibet:noawaken',
     //  then skip processing it.
