@@ -77,6 +77,9 @@ function(aTPElement) {
         last.setAttribute('pclass:selected', 'true');
     }
 
+    //  Scroll our list content to its bottom.
+    this.get('listcontent').scrollTo(TP.BOTTOM);
+
     return this;
 });
 
