@@ -11,18 +11,29 @@
 (function(root) {
 
     root.login = function() {
-        var form,
+        var usernameField,
+            passwordField,
+
             loc,
             hash,
+
             xhr,
+
             dat;
 
         if (!top.sessionStorage) {
             return;
         }
 
-        form = document.getElementById('login');
-        if (!form) {
+        usernameField = document.getElementById('username');
+        if (!usernameField) {
+            console.log('Cannot find username field');
+            return;
+        }
+
+        passwordField = document.getElementById('password');
+        if (!passwordField) {
+            console.log('Cannot find password field');
             return;
         }
 
@@ -49,8 +60,8 @@
         };
 
         dat = JSON.stringify({
-            username: form[0].value.trim(),
-            password: form[1].value.trim(),
+            username: usernameField.value.trim(),
+            password: passwordField.value.trim(),
             fragment: window.location.hash.toString()
         });
 
