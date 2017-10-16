@@ -27,13 +27,17 @@
 
         usernameField = document.getElementById('username');
         if (!usernameField) {
+            /* eslint-disable no-console */
             console.log('Cannot find username field');
+            /* eslint-enable no-console */
             return;
         }
 
         passwordField = document.getElementById('password');
         if (!passwordField) {
+            /* eslint-disable no-console */
             console.log('Cannot find password field');
+            /* eslint-enable no-console */
             return;
         }
 
