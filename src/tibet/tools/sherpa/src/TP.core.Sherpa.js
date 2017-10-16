@@ -2576,20 +2576,22 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
                 'oldAttrValue: ' + oldAttributeValue + '\n' +
                 'attrValue: ' + attributeValue);
 
-    this.signal('CanvasChanged', TP.hc('target', aNode,
-                                        'operation', operation,
-                                        'attrName', attributeName,
-                                        'newValue', attributeValue,
-                                        'prevValue', oldAttributeValue));
-
-    return this;
-
     if (!TP.isNode(aNode)) {
         //  TODO: Raise an exception here
         return this;
     }
 
     isAttrChange = TP.notEmpty(attributeName);
+
+    if (!isAttrChange && TP.isElement(aNode)) {
+        this.signal('CanvasChanged', TP.hc('target', aNode,
+                                            'operation', operation,
+                                            'attrName', attributeName,
+                                            'newValue', attributeValue,
+                                            'prevValue', oldAttributeValue));
+    }
+
+    return this;
 
     xhtmlURIs = TP.w3.Xmlns.getXHTMLURIs();
 
