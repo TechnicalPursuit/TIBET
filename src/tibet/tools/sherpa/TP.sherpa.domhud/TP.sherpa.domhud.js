@@ -1153,10 +1153,10 @@ function(aSignal) {
         }
 
         if (hadAttribute) {
-            TP.nodeDeadenContent(currentTarget.getNativeNode());
+            currentTarget.deaden();
         }
 
-        TP.nodeAwakenContent(currentTarget.getNativeNode());
+        currentTarget.awaken();
     } else if (action === TP.DELETE) {
 
         //  If we're deleting an attribute (because the user clicked an 'X'),
@@ -1176,7 +1176,7 @@ function(aSignal) {
         }
 
         if (TP.notEmpty(name)) {
-            TP.nodeDeadenContent(currentTarget.getNativeNode());
+            currentTarget.deaden();
         }
     }
 
