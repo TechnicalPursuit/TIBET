@@ -90,6 +90,7 @@ function(aSignal) {
      */
 
     this.setAttribute('hidden', true);
+    this.setAttribute('active', false);
 
     return;
 });
