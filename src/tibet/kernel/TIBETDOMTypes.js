@@ -8930,6 +8930,42 @@ function(aRequest, replaceNode, alternateNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('deaden',
+function() {
+
+    /**
+     * @method deaden
+     * @summary This method invokes the 'deaden' functionality of the tag
+     *     processing system, to provide 'post-render' deadening of various
+     *     features such as events and CSS styles.
+     * @description You don't normally call this - in fact, it's rarely invoked.
+     * @returns {TP.core.Node} The receiver.
+     */
+
+    var node,
+        shouldProcess;
+
+    node = this.getNativeNode();
+
+    //  Initially we're set to process this markup.
+    shouldProcess = true;
+
+    //  But if the node is an Element and it has an attribute of
+    //  'tibet:noawaken', then skip processing it.
+    if (TP.isElement(node) &&
+        TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+        shouldProcess = false;
+    }
+
+    if (shouldProcess) {
+        TP.nodeDeadenContent(this.getNativeNode());
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('processTP_sig_Request',
 function(aRequest) {
 
