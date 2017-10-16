@@ -269,8 +269,6 @@ function(aSignal) {
         centerTPElemPageRect,
         targetElemPageRect,
 
-        showHandler,
-
         tileTPElem;
 
     //  Grab the target and make sure it's an 'item' tile.
@@ -354,33 +352,58 @@ function(aSignal) {
         //  page.
         targetElemPageRect = TP.wrap(targetElem).getPageRect();
 
-        showHandler =
+        TP.bySystemId('Sherpa').showTileAt(
+            'BindSummary_Tile',
+            'Bind Source Text',
             function(aTileTPElem) {
                 var tileWidth,
-                    xCoord,
-                    offset;
+                    xCoord;
 
-                //  TODO: This is cheesy
-                tileWidth = 300;
-                offset = -2;
+                //  The tile already existed
+
+                tileWidth = aTileTPElem.getWidth();
 
                 xCoord = centerTPElemPageRect.getX() +
                             centerTPElemPageRect.getWidth() -
-                            tileWidth +
-                            offset;
+                            tileWidth;
+                aTileTPElem.setPagePosition(
+                            TP.pc(xCoord, targetElemPageRect.getY()));
+
                 aTileTPElem.setContent(
                     TP.xhtmlnode('<span class="cm-s-elegant">' +
                                     'Fetching data...' +
                                     '</span>'));
 
+                tileTPElem = aTileTPElem;
+            },
+            function(aTileTPElem) {
+                var sheet,
+                    mainRule,
+
+                    tileWidth,
+                    xCoord;
+
+                //  The tile is new
+
+                sheet = this.getStylesheetForStyleResource();
+                mainRule = TP.styleSheetGetStyleRulesMatching(
+                                    sheet,
+                                    '#BindSummary_Tile').first();
+                tileWidth = mainRule.style.minWidth.asNumber();
+
+                xCoord = centerTPElemPageRect.getX() +
+                            centerTPElemPageRect.getWidth() -
+                            tileWidth;
                 aTileTPElem.setPagePosition(
                     TP.pc(xCoord, targetElemPageRect.getY()));
 
-                tileTPElem = aTileTPElem;
-            };
+                aTileTPElem.setContent(
+                    TP.xhtmlnode('<span class="cm-s-elegant">' +
+                                    'Fetching data...' +
+                                    '</span>'));
 
-        TP.bySystemId('Sherpa').showTileAt(
-            'BindSummary_Tile', 'Bind Source Text', showHandler, showHandler);
+                tileTPElem = aTileTPElem;
+            }.bind(this));
     }
 
     return this;

@@ -447,18 +447,15 @@ function(aSignal) {
         function(aTileTPElem) {
             var tileWidth,
                 xCoord,
-                offset,
                 contentTPElem;
 
             //  The tile already existed
 
             tileWidth = aTileTPElem.getWidth();
-            offset = -2;
 
             xCoord = centerTPElemPageRect.getX() +
                         centerTPElemPageRect.getWidth() -
-                        tileWidth +
-                        offset;
+                        tileWidth;
             aTileTPElem.setPagePosition(
                         TP.pc(xCoord, targetElemPageRect.getY()));
 
@@ -466,21 +463,24 @@ function(aSignal) {
             contentTPElem.refresh();
         },
         function(aTileTPElem) {
-            var tileWidth,
+            var sheet,
+                mainRule,
+
+                tileWidth,
                 xCoord,
-                offset,
                 contentTPElem;
 
             //  The tile is new
 
-            //  TODO: This is cheesy
-            tileWidth = 300;
-            offset = -2;
+            sheet = this.getStylesheetForStyleResource();
+            mainRule = TP.styleSheetGetStyleRulesMatching(
+                                sheet,
+                                '#ResponderSummary_Tile').first();
+            tileWidth = mainRule.style.minWidth.asNumber();
 
             xCoord = centerTPElemPageRect.getX() +
                         centerTPElemPageRect.getWidth() -
-                        tileWidth +
-                        offset;
+                        tileWidth;
             aTileTPElem.setPagePosition(
                         TP.pc(xCoord, targetElemPageRect.getY()));
 
@@ -493,7 +493,7 @@ function(aSignal) {
 
             contentTPElem.awaken();
             contentTPElem.refresh();
-        });
+        }.bind(this));
 
     return this;
 });
