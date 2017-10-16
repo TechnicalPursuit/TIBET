@@ -180,11 +180,6 @@ function(aSignal) {
 
     overlayTPElem = this.getOverlayElement(aSignal);
 
-    //  If the overlay is already visible, then exit - we don't need to open it.
-    if (overlayTPElem.isVisible()) {
-        return this;
-    }
-
     //  See if the OpenOverlay signal contains a class that we should put on
     //  the overlay element itself.
     overlayCSSClass = aSignal.at('overlayCSSClass');
