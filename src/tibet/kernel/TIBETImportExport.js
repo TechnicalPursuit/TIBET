@@ -8,31 +8,25 @@
  */
 //  ========================================================================
 
-TP.sys.defineMethod('importPackage',
-function(packageName, configName, shouldSignal) {
+TP.sys.defineMethod('getAllScriptPaths',
+function(packageName, configName) {
 
     /**
-     * @method importPackage
-     * @summary Imports a specific package/config file's script resources. Note
-     *     that when dealing with rollups this also includes the package's
-     *     rolled up resources in the form of TP.uc() content.
-     * @param {String} packageName The package name to locate and import.
+     * @method getAllScriptPaths
+     * @summary Returns all script paths found in the supplied package and
+     *     config.
+     * @param {String} packageName The package name to locate and list script
+     *     paths from.
      * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
-     * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
-     *     they've completed their import process?
-     * @returns {Promise} A promise which resolved based on success.
+     * @returns {String[]} An Array of script paths in the supplied package and
+     *     config.
      */
 
     var uri,
 
         packageAssets,
-
         packageScriptPaths,
-        loadedScripts,
-        missingScripts,
-
-        promises,
 
         phaseOne,
         phaseTwo;
@@ -57,8 +51,8 @@ function(packageName, configName, shouldSignal) {
         packageAssets = TP.boot.$listPackageAssets(uri, configName);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
-        //  tell what the script list is. Trigger a failure.
-        return TP.extern.Promise.reject();
+        //  tell what the script list is.
+        return null;
     } finally {
         TP.sys.setcfg('boot.phase_one', phaseOne);
         TP.sys.setcfg('boot.phase_two', phaseTwo);
@@ -77,7 +71,46 @@ function(packageName, configName, shouldSignal) {
 
                                 return '';
                             });
+
+    //  Remove any empty paths
     TP.compact(packageScriptPaths, TP.isEmpty);
+
+    return packageScriptPaths;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('importPackage',
+function(packageName, configName, shouldSignal) {
+
+    /**
+     * @method importPackage
+     * @summary Imports a specific package/config file's script resources. Note
+     *     that when dealing with rollups this also includes the package's
+     *     rolled up resources in the form of TP.uc() content.
+     * @param {String} packageName The package name to locate and import.
+     * @param {String} configName The config to load. Default is whatever is
+     *     listed as the default for that package (usually base).
+     * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
+     *     they've completed their import process?
+     * @returns {Promise} A promise which resolved based on success.
+     */
+
+    var packageScriptPaths,
+        loadedScripts,
+        missingScripts,
+
+        promises,
+
+        phaseOne,
+        phaseTwo;
+
+    packageScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
+    if (TP.isNull(packageScriptPaths)) {
+        //  Could be an unloaded/unexpanded manifest...meaning we can't really
+        //  tell what the script list is. Trigger a failure.
+        return TP.extern.Promise.reject();
+    }
 
     //  Determine which scripts haven't already been loaded.
     loadedScripts = TP.boot.$$loadpaths;
