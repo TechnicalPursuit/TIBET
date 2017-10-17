@@ -1903,17 +1903,28 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
 //  ------------------------------------------------------------------------
 
-TP.objectGetMetadataName = function(anObject, kind) {
+TP.objectGetMetadataName = function(anObject, itemClass) {
+
+    /**
+     * @method objectGetMetadataName
+     * @summary Returns the 'name' used by the metadata system for the supplied
+     *     object.
+     * @param {Object} anObject The object to return the name of
+     * @param {String} itemClass The nature of the item being added. Valid
+     *     values include TP.SUBTYPE, TP.METHOD, TP.ATTRIBUTE, TP.NAMESPACE.
+     * @returns {String} The name used by the metadata system for the supplied
+     *     object.
+     */
 
     if (anObject === null || anObject === undefined) {
         return;
     }
 
-    switch (kind) {
+    switch (itemClass) {
         case TP.METHOD:
             return anObject[TP.OWNER].getName() + '_' +
-                anObject[TP.TRACK] + '_' +
-                anObject.getName();
+                    anObject[TP.TRACK] + '_' +
+                    anObject.getName();
         case TP.TYPE:
             return anObject.getName();
         default:
@@ -1923,8 +1934,8 @@ TP.objectGetMetadataName = function(anObject, kind) {
     //  Check method first...there are a lot more of them passing through here.
     if (TP.isMethod(anObject)) {
         return anObject[TP.OWNER].getName() + '_' +
-            anObject[TP.TRACK] + '_' +
-            anObject.getName();
+                anObject[TP.TRACK] + '_' +
+                anObject.getName();
     }
 
     if (TP.isType(anObject)) {
