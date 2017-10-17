@@ -25,10 +25,15 @@ function(packageName, configName, shouldSignal) {
      */
 
     var uri,
-        newScripts,
+
+        packageAssets,
+
+        packageScriptPaths,
         loadedScripts,
         missingScripts,
+
         promises,
+
         phaseOne,
         phaseTwo;
 
@@ -49,7 +54,7 @@ function(packageName, configName, shouldSignal) {
         phaseTwo = TP.sys.cfg('boot.phase_two');
         TP.sys.setcfg('boot.phase_one', true);
         TP.sys.setcfg('boot.phase_two', true);
-        newScripts = TP.boot.$listPackageAssets(uri, configName);
+        packageAssets = TP.boot.$listPackageAssets(uri, configName);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is. Trigger a failure.
@@ -59,39 +64,42 @@ function(packageName, configName, shouldSignal) {
         TP.sys.setcfg('boot.phase_two', phaseTwo);
     }
 
-    //  Normalize the list of scripts.
-    newScripts = newScripts.map(
-                    function(node) {
-                        var src;
+    //  Normalize the list of scripts (and filter out any asset that doesn't
+    //  have a 'src' - which means it's not a script).
+    packageScriptPaths = packageAssets.map(
+                            function(node) {
+                                var src;
 
-                        src = node.getAttribute('src');
-                        if (src) {
-                            return TP.boot.$getFullPath(node, src);
-                        }
+                                src = node.getAttribute('src');
+                                if (src) {
+                                    return TP.boot.$getFullPath(node, src);
+                                }
 
-                        return '';
-                    });
-    TP.compact(newScripts, TP.isEmpty);
+                                return '';
+                            });
+    TP.compact(packageScriptPaths, TP.isEmpty);
 
     //  Determine which scripts haven't already been loaded.
     loadedScripts = TP.boot.$$loadpaths;
-    missingScripts = newScripts.difference(loadedScripts);
+    missingScripts = packageScriptPaths.difference(loadedScripts);
 
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
-    promises = missingScripts.map(function(path) {
-        return TP.sys.importScript(path,
-            TP.request('callback', function() {
-                var url;
+    promises = missingScripts.map(
+                function(path) {
+                    return TP.sys.importScript(
+                            path,
+                            TP.request('callback', function() {
+                                var url;
 
-                loadedScripts.push(path);
+                                loadedScripts.push(path);
 
-                if (shouldSignal) {
-                    url = TP.uc(path);
-                    url.$changed();
-                }
-            }));
-    });
+                                if (shouldSignal) {
+                                    url = TP.uc(path);
+                                    url.$changed();
+                                }
+                            }));
+                });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
     //  of them failed.
