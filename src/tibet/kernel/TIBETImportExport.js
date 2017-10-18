@@ -100,10 +100,7 @@ function(packageName, configName, shouldSignal) {
         loadedScripts,
         missingScripts,
 
-        promises,
-
-        phaseOne,
-        phaseTwo;
+        promises;
 
     packageScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
     if (TP.isNull(packageScriptPaths)) {
