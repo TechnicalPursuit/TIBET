@@ -2386,6 +2386,9 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     var own,
         trk,
+
+        realMethod,
+
         desc,
 
         installCalleePatch,
@@ -2396,19 +2399,22 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     own = owner || target;
     trk = track || TP.LOCAL_TRACK;
 
-    if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
+    realMethod = value;
 
-        //  If the value is TP.REQUIRED, then it isn't a method as such, but a
-        //  placeholder to note that this method is required. This is normally
-        //  used during traits multiple-inheritance composition.
-        if (value === TP.REQUIRED) {
+    if (!TP.isCallable(realMethod) ||
+        !TP.isCallable(realMethod.asMethod)) {
+
+        //  If the initalMethod is TP.REQUIRED, then it isn't a method as such,
+        //  but a placeholder to note that this method is required. This is
+        //  normally used during traits multiple-inheritance composition.
+        if (realMethod === TP.REQUIRED) {
 
             desc = descriptor ? descriptor : TP.DEFAULT_DESCRIPTOR;
 
-            TP.defineSlot(target, name, value, TP.METHOD, trk, desc);
+            TP.defineSlot(target, name, realMethod, TP.METHOD, trk, desc);
 
-            //  capture the descriptor on the value (method body)
-            value[TP.DESCRIPTOR] = desc;
+            //  capture the descriptor on the realMethod (method body)
+            realMethod[TP.DESCRIPTOR] = desc;
 
         } else {
             TP.ifError() ?
@@ -2420,13 +2426,13 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     }
 
     //  Ensure metadata is attached along with owner/track etc.
-    value.asMethod(own, name, trk, display);
+    realMethod.asMethod(own, name, trk, display);
 
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
     if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
         TP.deprecated('Use defineHandler for handler: ' +
-            TP.objectGetMetadataName(value, TP.METHOD));
+            TP.objectGetMetadataName(realMethod, TP.METHOD));
     }
 
     //  If the body of the function has a reference to methods that need
@@ -2437,13 +2443,13 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  to true which means that the system will definitely not install a patch,
     //  even if the RegExp passes or 'patchCallee' to true which forces the
     //  system to install a patch, even if the RegExp fails.
-    if (value.toString().match(TP.regex.NEEDS_CALLEE)) {
+    if (realMethod.toString().match(TP.regex.NEEDS_CALLEE)) {
         if (descriptor && descriptor.patchCallee === true) {
             installCalleePatch = true;
         } else if (descriptor && descriptor.patchCallee === false) {
             installCalleePatch = false;
         } else {
-            installCalleePatch = TP.functionNeedsCallee(value, name);
+            installCalleePatch = TP.functionNeedsCallee(realMethod, name);
         }
     }
 
@@ -2460,13 +2466,13 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
             oldArgs = TP.$$currentArgs$$;
 
             //  Set the value of the current callee.
-            TP.$$currentCallee$$ = value;
+            TP.$$currentCallee$$ = realMethod;
 
             //  Set the value of the current args.
             TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
 
             //  Now, call the method
-            retVal = value.apply(this, TP.$$currentArgs$$);
+            retVal = realMethod.apply(this, TP.$$currentArgs$$);
 
             //  Restore the old values for callee and args
             TP.$$currentCallee$$ = oldCallee;
@@ -2476,11 +2482,11 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         };
 
         //  Let's make sure we can get back to the original function here.
-        method.$realFunc = value;
+        method.$realFunc = realMethod;
 
         //  And let's make sure we can get back to the wrapper from the original
         //  function as well.
-        value.$wrapperFunc = method;
+        realMethod.$wrapperFunc = method;
 
         //  So this is a little tricky. We've defined a patch function to
         //  'stand in' for (and wrap a call to) our method. We do want to
@@ -2512,7 +2518,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     } else {
         //  The logic above determined that we don't want/need a callee
         //  patch.
-        method = value;
+        method = realMethod;
     }
 
     /* eslint-disable no-extra-parens */
