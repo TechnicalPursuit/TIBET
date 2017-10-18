@@ -2526,8 +2526,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     TP.defineSlot(target, name, method, TP.METHOD, trk, desc);
 
-    //  capture the descriptor on the value (method body)
-    value[TP.DESCRIPTOR] = desc;
+    //  capture the descriptor on the method (method body)
+    method[TP.DESCRIPTOR] = desc;
 
     /* eslint-enable no-extra-parens */
 
