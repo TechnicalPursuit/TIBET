@@ -12715,6 +12715,163 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getUsedMethods',
+function() {
+
+    /**
+     * @method getUsedMethods
+     * @summary Returns a hash of the currently used methods in the system.
+     * @description This method requires the 'oo.$$track_coverage' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @returns {TP.core.Hash} A hash of method names as they appear in the
+     *     TIBET metadata as the keys and the method body Functions themselves
+     *     as the values.
+     */
+
+    var usedMethods;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_coverage'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used methods when coverage' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    usedMethods = TP.hc();
+
+    //  Iterate over all of the methods tracked in the metadata. If there are
+    //  methods whose invocation count is greater than 0, then add it to the
+    //  used methods hash.
+    TP.sys.$$meta_methods.perform(
+            function(kvPair) {
+
+                var methodKey,
+                    methodBody;
+
+                methodKey = kvPair.first();
+                methodBody = kvPair.last();
+
+                if (methodBody.invocationCount > 0) {
+                    usedMethods.atPut(methodKey, methodBody);
+                }
+            });
+
+    return usedMethods;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getUsedTypes',
+function() {
+
+    /**
+     * @method getUsedTypes
+     * @summary Returns a hash of the currently used types in the system and any
+     *     supertypes or trait types that they reference.
+     * @description This method requires the 'oo.$$track_coverage' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @returns {TP.core.Hash} A hash of types names as they appear in the
+     *     TIBET metadata as the keys and the type objects themselves as the
+     *     values.
+     */
+
+    var directlyUsedTypes,
+
+        usedMethods,
+
+        allUsedTypes;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_coverage'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used types when coverage' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    directlyUsedTypes = TP.ac();
+
+    //  Grab all of the used methods. Iterate over them and, if they have a type
+    //  as an owner and that type is not a native type, then add it to the
+    //  'directly referenced' types list.
+    usedMethods = TP.sys.getUsedMethods();
+    usedMethods.perform(
+        function(kvPair) {
+
+            var methodOwner;
+
+            methodOwner = kvPair.last()[TP.OWNER];
+            if (TP.isType(methodOwner) && !TP.isNativeType(methodOwner)) {
+                directlyUsedTypes.push(methodOwner);
+            }
+        });
+
+    //  Unique this list to substantially reduce the list to unique type values.
+    directlyUsedTypes.unique();
+
+    allUsedTypes = TP.hc();
+
+    //  Now, add the type, any supertypes it references and any trait types that
+    //  it references. Note that at each step we check to make sure that the
+    //  type isn't a native type, in which case we don't add it.
+    directlyUsedTypes.forEach(
+        function(aType) {
+
+            var superTypes,
+                traitTypes;
+
+            //  First, add the direct type
+            if (!TP.isNativeType(aType)) {
+                allUsedTypes.atPut(aType[TP.NAME], aType);
+            }
+
+            //  Second, add the direct supertypes
+            superTypes = aType.getSupertypes();
+            if (TP.notEmpty(superTypes)) {
+                superTypes.forEach(
+                    function(aSupertype) {
+                        if (!TP.isNativeType(aSupertype)) {
+                            allUsedTypes.atPut(
+                                aSupertype[TP.NAME], aSupertype);
+                        }
+                    });
+            }
+
+            //  Third, add the trait types (and their supertypes)
+            traitTypes = aType[TP.TRAITS];
+            if (TP.notEmpty(traitTypes)) {
+                traitTypes.forEach(
+                    function(aTraitType) {
+
+                        var traitSupertypes;
+
+                        if (!TP.isNativeType(aTraitType)) {
+                            allUsedTypes.atPut(
+                                    aTraitType[TP.NAME], aTraitType);
+                        }
+
+                        traitSupertypes = aTraitType.getSupertypes();
+                        traitSupertypes.forEach(
+                            function(aTraitSupertype) {
+                                if (!TP.isNativeType(aTraitSupertype)) {
+                                    allUsedTypes.atPut(
+                                            aTraitSupertype[TP.NAME],
+                                            aTraitSupertype);
+                                }
+                            });
+                    });
+            }
+        });
+
+    //  Unique this list to substantially reduce the list to unique type values.
+    allUsedTypes.unique();
+
+    return allUsedTypes;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('isExiting',
 function(aFlag) {
 
