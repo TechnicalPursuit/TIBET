@@ -1789,6 +1789,10 @@
     //  development (with a number of caveats).
     TP.sys.setcfg('oo.unique_types', true);
 
+    //  should coverage tracking be enabled. we don't do this by default.
+    //  NOTE!!: Turning this on will cause the entire system to run slowly.
+    TP.sys.setcfg('oo.$$track_coverage', true);
+
 
     //  ---
     //  tibet:root rendering control

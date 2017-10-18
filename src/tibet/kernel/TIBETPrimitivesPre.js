@@ -2362,6 +2362,11 @@ TP.registerLoadInfo(TP.functionNeedsCallee);
 
 //  ------------------------------------------------------------------------
 
+//  When tracking coverage, we go ahead and cache this flag on the 'TP' object
+//  for much better performance when loading the system. This is a system-wide
+//  flag anyway, so using this mechanism is not a problem.
+TP.__trackCoverage__ = TP.sys.cfg('oo.$$track_coverage');
+
 TP.defineMethodSlot =
 function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
@@ -2392,6 +2397,10 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         desc,
 
         installCalleePatch,
+
+        installedCoverageTracker,
+
+        wrappedMethod,
 
         method,
         disp;
@@ -2425,9 +2434,6 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         return;
     }
 
-    //  Ensure metadata is attached along with owner/track etc.
-    realMethod.asMethod(own, name, trk, display);
-
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
     if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
@@ -2451,6 +2457,106 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         } else {
             installCalleePatch = TP.functionNeedsCallee(realMethod, name);
         }
+    }
+
+    installedCoverageTracker = false;
+
+    //  If we're tracking coverage and the method isn't a native method and it's
+    //  not the 'callNextMethod' method, then go ahead and install a 'wrapper
+    //  method' that will wrap the original real method with one that will give
+    //  coverage data.
+    if (TP.__trackCoverage__ &&
+        !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
+        name !== 'callNextMethod') {
+
+        installedCoverageTracker = true;
+
+        //  Capture the real method here so that, even if we change it below,
+        //  the closure will have the proper reference.
+        wrappedMethod = realMethod;
+
+        //  Define a wrapper method that will stand in for the real method and,
+        //  upon invocation, will track invocation and other coverage data and
+        //  then invoke the wrapped method.
+        method = function() {
+            var args,
+                retVal;
+
+            method.invocationCount++;
+
+            args = Array.prototype.slice.call(arguments, 0);
+            retVal = wrappedMethod.apply(this, args);
+
+            return retVal;
+        };
+
+        //  Set the initial invocation count to 0 and put it on the wrapper
+        //  method itself.
+        method.invocationCount = 0;
+
+        //  Supply a local version of 'getArity' that returns the wrapped
+        //  method's arity.
+        method.getArity =
+            function() {
+                return wrappedMethod.getArity();
+            };
+
+        //  callNextMethod will try to populate and use the '$$nextfunc'. In
+        //  order for CNM to function properly, this slot must be a 'pass
+        //  through' to the original wrapped function. Use an ECMA5
+        //  getter/setter combination to achieve this.
+        Object.defineProperty(
+            method,
+            '$$nextfunc',
+            {
+                get: function() {
+                    return wrappedMethod.$$nextfunc;
+                },
+
+                set: function(aFunc) {
+                    wrappedMethod.$$nextfunc = aFunc;
+                }
+            });
+
+        //  Let's make sure we can get back to the original function here.
+        method.$realFunc = realMethod;
+
+        //  And let's make sure we can get back to the wrapper from the original
+        //  function as well.
+        realMethod.$wrapperFunc = method;
+
+        //  Register the 'invocation' patch under the *original* owner, name,
+        //  track and display for the real method.
+        method.asMethod(own, name, trk, display);
+
+        //  So this is a little tricky. We've defined a patch function to
+        //  'stand in' for (and wrap a call to) our method. We do want to
+        //  distinguish the real method from the ersatz for reflection
+        //  purposes, so we tell the real method function to instrument itself
+        //  with the name of the method it's being stood in for but with a
+        //  '$$originalMethod' suffix.
+        realMethod.asMethod(own, name + '$$originalMethod', trk, display);
+
+        //  If the original 'display' argument was provided, that means that
+        //  'asMethod()' won't have set the display name using the supplied
+        //  'name'.
+
+        //  NB: We use an old fashioned check here for 'isEmpty()' for display,
+        //  since this could be called *very* early in the boot process.
+        if (display !== null && display !== undefined && display !== '') {
+            disp = realMethod[TP.DISPLAY];
+            realMethod[TP.DISPLAY] = disp + '$$originalMethod';
+        }
+
+        TP.defineSlot(target, name + '$$originalMethod', realMethod, TP.METHOD,
+                        trk, TP.HIDDEN_DESCRIPTOR);
+
+        //  Lastly, make the 'real method' now be the wrapper method, so that
+        //  any further wrapping, etc. will be happening to the wrapper.
+        realMethod = method;
+    } else {
+        //  Ensure metadata is attached along with owner/track etc.
+        realMethod.asMethod(own, name, trk, display);
     }
 
     if (installCalleePatch) {
@@ -2542,7 +2648,16 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
-        TP.sys.addMetadata(own, value, TP.METHOD, trk);
+
+        if (installedCoverageTracker) {
+            TP.sys.addMetadata(own, realMethod, TP.METHOD, trk);
+        } else {
+            //  NOTE: If we're not installing the coverage tracker here, then
+            //  we register the *originally supplied* method body value here in
+            //  the metadata. Otherwise, we have problems using reflection to do
+            //  things like signal handler name computation.
+            TP.sys.addMetadata(own, value, TP.METHOD, trk);
+        }
     } else if (name.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
         TP.sys.$$meta_handlers.push(name);
