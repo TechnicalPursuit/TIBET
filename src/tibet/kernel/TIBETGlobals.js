@@ -868,10 +868,10 @@ TP.STDERR = 'tsh_stderr';
 TP.STDIO = 'tsh_stdio';
 
 //  ----
-//  coverage map constants
+//  invocation-derived path filter constants
 //  ----
 
-TP.EXCLUDE_COVERAGE_PATHS = [
+TP.EXCLUDE_INVOCATION_TRACKED_PATHS = [
     /tibet\/tools/,
     /tibet\/testing/,
     /tibet\/automation/,

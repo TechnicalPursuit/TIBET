@@ -87,8 +87,8 @@ function(packageName, configName) {
      * @method getMissingScriptPaths
      * @summary Returns a list of source file paths that are missing from the
      *     supplied package and config, given what the system has been able to
-     *     determine using coverage data.
-     * @description This method requires the 'oo.$$track_coverage' flag to be
+     *     determine using invocation data.
+     * @description This method requires the 'oo.$$track_invocation' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it return an empty hash.
      * @param {String} packageName The package name to locate and use script
@@ -116,9 +116,9 @@ function(packageName, configName) {
         filters,
         filteredPaths;
 
-    if (TP.isFalse(TP.sys.cfg('oo.$$track_coverage'))) {
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
         TP.ifError() ?
-            TP.error('Attempt to retrieve used types when coverage' +
+            TP.error('Attempt to retrieve used types when invocation' +
                         ' data isn\'t available.') : 0;
         return null;
     }
@@ -176,7 +176,7 @@ function(packageName, configName) {
 
     //  Filter out paths for developer tools, boot system, etc. using a
     //  predetermined list of RegExps.
-    filters = TP.EXCLUDE_COVERAGE_PATHS;
+    filters = TP.EXCLUDE_INVOCATION_TRACKED_PATHS;
 
     filteredPaths = missingScriptPaths.filter(
                         function(aPath) {

@@ -2362,10 +2362,10 @@ TP.registerLoadInfo(TP.functionNeedsCallee);
 
 //  ------------------------------------------------------------------------
 
-//  When tracking coverage, we go ahead and cache this flag on the 'TP' object
-//  for much better performance when loading the system. This is a system-wide
-//  flag anyway, so using this mechanism is not a problem.
-TP.__trackCoverage__ = TP.sys.cfg('oo.$$track_coverage');
+//  When tracking invocations, we go ahead and cache this flag on the 'TP'
+//  object for much better performance when loading the system. This is a
+//  system-wide flag anyway, so using this mechanism is not a problem.
+TP.__trackInvocations__ = TP.sys.cfg('oo.$$track_invocations');
 
 TP.defineMethodSlot =
 function(target, name, value, track, descriptor, display, owner, $isHandler) {
@@ -2398,7 +2398,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
         installCalleePatch,
 
-        installedCoverageTracker,
+        installedInvocationsTracker,
 
         wrappedMethod,
 
@@ -2459,25 +2459,25 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         }
     }
 
-    installedCoverageTracker = false;
+    installedInvocationsTracker = false;
 
-    //  If we're tracking coverage and the method isn't a native method and it's
-    //  not the 'callNextMethod' method, then go ahead and install a 'wrapper
-    //  method' that will wrap the original real method with one that will give
-    //  coverage data.
-    if (TP.__trackCoverage__ &&
+    //  If we're tracking invocations and the method isn't a native method and
+    //  it's not the 'callNextMethod' method, then go ahead and install a
+    //  'wrapper method' that will wrap the original real method with one that
+    //  will give invocations data.
+    if (TP.__trackInvocations__ &&
         !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
         name !== 'callNextMethod') {
 
-        installedCoverageTracker = true;
+        installedInvocationsTracker = true;
 
         //  Capture the real method here so that, even if we change it below,
         //  the closure will have the proper reference.
         wrappedMethod = realMethod;
 
         //  Define a wrapper method that will stand in for the real method and,
-        //  upon invocation, will track invocation and other coverage data and
-        //  then invoke the wrapped method.
+        //  upon invocation, will track invocation and other invocations data
+        //  and then invoke the wrapped method.
         method = function() {
             var args,
                 retVal;
@@ -2649,10 +2649,10 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
 
-        if (installedCoverageTracker) {
+        if (installedInvocationsTracker) {
             TP.sys.addMetadata(own, realMethod, TP.METHOD, trk);
         } else {
-            //  NOTE: If we're not installing the coverage tracker here, then
+            //  NOTE: If we're not installing the invocations tracker here, then
             //  we register the *originally supplied* method body value here in
             //  the metadata. Otherwise, we have problems using reflection to do
             //  things like signal handler name computation.
@@ -12721,7 +12721,7 @@ function() {
     /**
      * @method getUsedMethods
      * @summary Returns a hash of the currently used methods in the system.
-     * @description This method requires the 'oo.$$track_coverage' flag to be
+     * @description This method requires the 'oo.$$track_invocations' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it return an empty hash.
      * @returns {TP.core.Hash} A hash of method names as they appear in the
@@ -12731,9 +12731,9 @@ function() {
 
     var usedMethods;
 
-    if (TP.isFalse(TP.sys.cfg('oo.$$track_coverage'))) {
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
         TP.ifError() ?
-            TP.error('Attempt to retrieve used methods when coverage' +
+            TP.error('Attempt to retrieve used methods when invocations' +
                         ' data isn\'t available.') : 0;
         return null;
     }
@@ -12769,7 +12769,7 @@ function() {
      * @method getUsedTypes
      * @summary Returns a hash of the currently used types in the system and any
      *     supertypes or trait types that they reference.
-     * @description This method requires the 'oo.$$track_coverage' flag to be
+     * @description This method requires the 'oo.$$track_invocations' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it return an empty hash.
      * @returns {TP.core.Hash} A hash of types names as they appear in the
@@ -12783,9 +12783,9 @@ function() {
 
         allUsedTypes;
 
-    if (TP.isFalse(TP.sys.cfg('oo.$$track_coverage'))) {
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
         TP.ifError() ?
-            TP.error('Attempt to retrieve used types when coverage' +
+            TP.error('Attempt to retrieve used types when invocations' +
                         ' data isn\'t available.') : 0;
         return null;
     }
