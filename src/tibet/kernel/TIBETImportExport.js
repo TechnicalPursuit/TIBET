@@ -80,6 +80,130 @@ function(packageName, configName) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getMissingScriptPaths',
+function(packageName, configName) {
+
+    /**
+     * @method getMissingScriptPaths
+     * @summary Returns a list of source file paths that are missing from the
+     *     supplied package and config, given what the system has been able to
+     *     determine using coverage data.
+     * @description This method requires the 'oo.$$track_coverage' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @param {String} packageName The package name to locate and use script
+     *     paths from for comparison against what the runtime knows it needs.
+     * @param {String} configName The config to load. Default is whatever is
+     *     listed as the default for that package (usually base).
+     * @returns {String[]} An Array of script paths that are missing in the
+     *     supplied package and config, given what the runtime system knows it
+     *     needs.
+     */
+
+    var usedTypes,
+        usedTypePaths,
+
+        usedMethods,
+        usedMethodPaths,
+
+        allPaths,
+        expandedPaths,
+
+        configScriptPaths,
+
+        missingScriptPaths,
+
+        filters,
+        filteredPaths;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_coverage'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used types when coverage' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    //  First, we collect the paths of the currently used types.
+
+    //  All of the types that were actually used by the running application will
+    //  be the values in the returned hash here.
+    usedTypes = TP.sys.getUsedTypes().getValues();
+
+    //  Sort them by supertypes.
+    usedTypes.sort(TP.sort.SUBTYPE);
+
+    //  Collect up all of their source paths.
+    usedTypePaths = usedTypes.collect(
+                        function(aType) {
+                            return aType[TP.SOURCE_PATH];
+                        });
+
+    //  Now collect all of the paths of the used methods.
+    usedMethods = TP.sys.getUsedMethods();
+
+    //  Collect up all of their source paths.
+    usedMethodPaths = usedMethods.collect(
+                        function(kvPair) {
+
+                            var methodPath;
+
+                            methodPath = kvPair.last()[TP.SOURCE_PATH];
+                            return methodPath;
+                        });
+
+    //  Concatenate the used type paths with the used method paths into one big
+    //  list. This will be used as the master list for all of the paths.
+    allPaths = usedTypePaths.concat(usedMethodPaths);
+
+    allPaths.unique();
+    TP.compact(allPaths, TP.isEmpty);
+
+    //  Expand all of the paths in the master list.
+    expandedPaths = allPaths.collect(
+                                function(aPath) {
+                                    return TP.uriExpandPath(aPath);
+                                });
+
+    //  Grab all of the script paths in the named packages and configs. This
+    //  will be all of the paths that are contained in that package and config.
+    configScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
+
+    //  Difference that config script paths against our master list of expanded
+    //  paths. This will produce a list of paths that the system knows about
+    //  given the runtime information of used types and methods but isn't
+    //  represented in the supplied package and config.
+    missingScriptPaths = expandedPaths.difference(configScriptPaths);
+
+    //  Filter out paths for developer tools, boot system, etc. using a
+    //  predetermined list of RegExps.
+    filters = TP.EXCLUDE_COVERAGE_PATHS;
+
+    filteredPaths = missingScriptPaths.filter(
+                        function(aPath) {
+
+                            var filterPath,
+
+                                len,
+                                i;
+
+                            filterPath = false;
+
+                            len = filters.getSize();
+                            for (i = 0; i < len; i++) {
+                                if (filters.at(i).test(aPath)) {
+                                    filterPath = true;
+                                    break;
+                                }
+                            }
+
+                            return !filterPath;
+                        });
+
+    return filteredPaths;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('importPackage',
 function(packageName, configName, shouldSignal) {
 

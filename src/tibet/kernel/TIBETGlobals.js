@@ -868,6 +868,17 @@ TP.STDERR = 'tsh_stderr';
 TP.STDIO = 'tsh_stdio';
 
 //  ----
+//  coverage map constants
+//  ----
+
+TP.EXCLUDE_COVERAGE_PATHS = [
+    /tibet\/tools/,
+    /tibet\/testing/,
+    /tibet\/automation/,
+    /tibet\/boot/
+];
+
+//  ----
 //  coding constants
 //  ----
 
