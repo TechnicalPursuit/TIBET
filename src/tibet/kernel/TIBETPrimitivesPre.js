@@ -2476,7 +2476,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     if (TP.__trackInvocations__ &&
         shouldTrackInvocations &&
         !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
-        name !== 'callNextMethod') {
+        TP.EXCLUDE_INVOCATION_METHOD_NAMES.indexOf(name) === TP.NOT_FOUND) {
 
         installedInvocationsTracker = true;
 

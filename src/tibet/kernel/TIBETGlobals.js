@@ -878,6 +878,11 @@ TP.EXCLUDE_INVOCATION_TRACKED_PATHS = [
     /tibet\/boot/
 ];
 
+TP.EXCLUDE_INVOCATION_METHOD_NAMES = [
+    'callNextMethod',
+    'initialize'
+];
+
 //  ----
 //  coding constants
 //  ----
