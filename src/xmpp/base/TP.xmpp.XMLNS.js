@@ -345,6 +345,8 @@ function(tagType, aType) {
     this.get('$stanzatypes').atPut(tagType, aType);
 
     return;
+}, {
+    trackInvocations: false
 });
 
 //  ------------------------------------------------------------------------
@@ -388,6 +390,8 @@ function(aTagName, aType, aNamespace) {
     nsHash.atPut(name, aType);
 
     return;
+}, {
+    trackInvocations: false
 });
 
 //  ------------------------------------------------------------------------

@@ -126,6 +126,8 @@ function(aNamespace, xPathExpr, aType) {
     TP.xmpp.XMLNS.defineNodeType('pubsub', TP.xmpp.Pubsub, aNamespace);
 
     return this;
+}, {
+    trackInvocations: false
 });
 
 //  ------------------------------------------------------------------------
