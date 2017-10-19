@@ -8,27 +8,26 @@
  */
 //  ========================================================================
 
-TP.sys.defineMethod('importPackage',
-function(packageName, configName, shouldSignal) {
+TP.sys.defineMethod('getAllScriptPaths',
+function(packageName, configName) {
 
     /**
-     * @method importPackage
-     * @summary Imports a specific package/config file's script resources. Note
-     *     that when dealing with rollups this also includes the package's
-     *     rolled up resources in the form of TP.uc() content.
-     * @param {String} packageName The package name to locate and import.
+     * @method getAllScriptPaths
+     * @summary Returns all script paths found in the supplied package and
+     *     config.
+     * @param {String} packageName The package name to locate and list script
+     *     paths from.
      * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
-     * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
-     *     they've completed their import process?
-     * @returns {Promise} A promise which resolved based on success.
+     * @returns {String[]} An Array of script paths in the supplied package and
+     *     config.
      */
 
     var uri,
-        newScripts,
-        loadedScripts,
-        missingScripts,
-        promises,
+
+        packageAssets,
+        packageScriptPaths,
+
         phaseOne,
         phaseTwo;
 
@@ -49,49 +48,212 @@ function(packageName, configName, shouldSignal) {
         phaseTwo = TP.sys.cfg('boot.phase_two');
         TP.sys.setcfg('boot.phase_one', true);
         TP.sys.setcfg('boot.phase_two', true);
-        newScripts = TP.boot.$listPackageAssets(uri, configName);
+        packageAssets = TP.boot.$listPackageAssets(uri, configName);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
-        //  tell what the script list is. Trigger a failure.
-        return TP.extern.Promise.reject();
+        //  tell what the script list is.
+        return null;
     } finally {
         TP.sys.setcfg('boot.phase_one', phaseOne);
         TP.sys.setcfg('boot.phase_two', phaseTwo);
     }
 
-    //  Normalize the list of scripts.
-    newScripts = newScripts.map(
-                    function(node) {
-                        var src;
+    //  Normalize the list of scripts (and filter out any asset that doesn't
+    //  have a 'src' - which means it's not a script).
+    packageScriptPaths = packageAssets.map(
+                            function(node) {
+                                var src;
 
-                        src = node.getAttribute('src');
-                        if (src) {
-                            return TP.boot.$getFullPath(node, src);
-                        }
+                                src = node.getAttribute('src');
+                                if (src) {
+                                    return TP.boot.$getFullPath(node, src);
+                                }
 
-                        return '';
-                    });
-    TP.compact(newScripts, TP.isEmpty);
+                                return '';
+                            });
+
+    //  Remove any empty paths
+    TP.compact(packageScriptPaths, TP.isEmpty);
+
+    return packageScriptPaths;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getMissingScriptPaths',
+function(packageName, configName) {
+
+    /**
+     * @method getMissingScriptPaths
+     * @summary Returns a list of source file paths that are missing from the
+     *     supplied package and config, given what the system has been able to
+     *     determine using invocation data.
+     * @description This method requires the 'oo.$$track_invocation' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @param {String} packageName The package name to locate and use script
+     *     paths from for comparison against what the runtime knows it needs.
+     * @param {String} configName The config to load. Default is whatever is
+     *     listed as the default for that package (usually base).
+     * @returns {String[]} An Array of script paths that are missing in the
+     *     supplied package and config, given what the runtime system knows it
+     *     needs.
+     */
+
+    var usedTypes,
+        usedTypePaths,
+
+        usedMethods,
+        usedMethodPaths,
+
+        allPaths,
+        expandedPaths,
+
+        configScriptPaths,
+
+        missingScriptPaths,
+
+        filters,
+        filteredPaths;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used types when invocation' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    //  First, we collect the paths of the currently used types.
+
+    //  All of the types that were actually used by the running application will
+    //  be the values in the returned hash here.
+    usedTypes = TP.sys.getUsedTypes().getValues();
+
+    //  Sort them by supertypes.
+    usedTypes.sort(TP.sort.SUBTYPE);
+
+    //  Collect up all of their source paths.
+    usedTypePaths = usedTypes.collect(
+                        function(aType) {
+                            return aType[TP.SOURCE_PATH];
+                        });
+
+    //  Now collect all of the paths of the used methods.
+    usedMethods = TP.sys.getUsedMethods();
+
+    //  Collect up all of their source paths.
+    usedMethodPaths = usedMethods.collect(
+                        function(kvPair) {
+
+                            var methodPath;
+
+                            methodPath = kvPair.last()[TP.SOURCE_PATH];
+                            return methodPath;
+                        });
+
+    //  Concatenate the used type paths with the used method paths into one big
+    //  list. This will be used as the master list for all of the paths.
+    allPaths = usedTypePaths.concat(usedMethodPaths);
+
+    allPaths.unique();
+    TP.compact(allPaths, TP.isEmpty);
+
+    //  Expand all of the paths in the master list.
+    expandedPaths = allPaths.collect(
+                                function(aPath) {
+                                    return TP.uriExpandPath(aPath);
+                                });
+
+    //  Grab all of the script paths in the named packages and configs. This
+    //  will be all of the paths that are contained in that package and config.
+    configScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
+
+    //  Difference that config script paths against our master list of expanded
+    //  paths. This will produce a list of paths that the system knows about
+    //  given the runtime information of used types and methods but isn't
+    //  represented in the supplied package and config.
+    missingScriptPaths = expandedPaths.difference(configScriptPaths);
+
+    //  Filter out paths for developer tools, boot system, etc. using a
+    //  predetermined list of RegExps.
+    filters = TP.EXCLUDE_INVOCATION_TRACKED_PATHS;
+
+    filteredPaths = missingScriptPaths.filter(
+                        function(aPath) {
+
+                            var filterPath,
+
+                                len,
+                                i;
+
+                            filterPath = false;
+
+                            len = filters.getSize();
+                            for (i = 0; i < len; i++) {
+                                if (filters.at(i).test(aPath)) {
+                                    filterPath = true;
+                                    break;
+                                }
+                            }
+
+                            return !filterPath;
+                        });
+
+    return filteredPaths;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('importPackage',
+function(packageName, configName, shouldSignal) {
+
+    /**
+     * @method importPackage
+     * @summary Imports a specific package/config file's script resources. Note
+     *     that when dealing with rollups this also includes the package's
+     *     rolled up resources in the form of TP.uc() content.
+     * @param {String} packageName The package name to locate and import.
+     * @param {String} configName The config to load. Default is whatever is
+     *     listed as the default for that package (usually base).
+     * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
+     *     they've completed their import process?
+     * @returns {Promise} A promise which resolved based on success.
+     */
+
+    var packageScriptPaths,
+        loadedScripts,
+        missingScripts,
+
+        promises;
+
+    packageScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
+    if (TP.isNull(packageScriptPaths)) {
+        //  Could be an unloaded/unexpanded manifest...meaning we can't really
+        //  tell what the script list is. Trigger a failure.
+        return TP.extern.Promise.reject();
+    }
 
     //  Determine which scripts haven't already been loaded.
     loadedScripts = TP.boot.$$loadpaths;
-    missingScripts = newScripts.difference(loadedScripts);
+    missingScripts = packageScriptPaths.difference(loadedScripts);
 
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
-    promises = missingScripts.map(function(path) {
-        return TP.sys.importScript(path,
-            TP.request('callback', function() {
-                var url;
+    promises = missingScripts.map(
+                function(path) {
+                    return TP.sys.importScript(
+                            path,
+                            TP.request('callback', function() {
+                                var url;
 
-                loadedScripts.push(path);
+                                loadedScripts.push(path);
 
-                if (shouldSignal) {
-                    url = TP.uc(path);
-                    url.$changed();
-                }
-            }));
-    });
+                                if (shouldSignal) {
+                                    url = TP.uc(path);
+                                    url.$changed();
+                                }
+                            }));
+                });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
     //  of them failed.

@@ -868,6 +868,22 @@ TP.STDERR = 'tsh_stderr';
 TP.STDIO = 'tsh_stdio';
 
 //  ----
+//  invocation-derived path filter constants
+//  ----
+
+TP.EXCLUDE_INVOCATION_TRACKED_PATHS = [
+    /tibet\/tools/,
+    /tibet\/testing/,
+    /tibet\/automation/,
+    /tibet\/boot/
+];
+
+TP.EXCLUDE_INVOCATION_METHOD_NAMES = [
+    'callNextMethod',
+    'initialize'
+];
+
+//  ----
 //  coding constants
 //  ----
 

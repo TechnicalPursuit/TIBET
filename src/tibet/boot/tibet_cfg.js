@@ -1791,6 +1791,10 @@
     //  development (with a number of caveats).
     TP.sys.setcfg('oo.unique_types', true);
 
+    //  should invocation tracking be enabled. we don't do this by default.
+    //  NOTE!!: Turning this on will cause the entire system to run slowly.
+    TP.sys.setcfg('oo.$$track_invocations', false);
+
 
     //  ---
     //  tibet:root rendering control

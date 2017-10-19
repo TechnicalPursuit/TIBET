@@ -1903,17 +1903,28 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
 //  ------------------------------------------------------------------------
 
-TP.objectGetMetadataName = function(anObject, kind) {
+TP.objectGetMetadataName = function(anObject, itemClass) {
+
+    /**
+     * @method objectGetMetadataName
+     * @summary Returns the 'name' used by the metadata system for the supplied
+     *     object.
+     * @param {Object} anObject The object to return the name of
+     * @param {String} itemClass The nature of the item being added. Valid
+     *     values include TP.SUBTYPE, TP.METHOD, TP.ATTRIBUTE, TP.NAMESPACE.
+     * @returns {String} The name used by the metadata system for the supplied
+     *     object.
+     */
 
     if (anObject === null || anObject === undefined) {
         return;
     }
 
-    switch (kind) {
+    switch (itemClass) {
         case TP.METHOD:
             return anObject[TP.OWNER].getName() + '_' +
-                anObject[TP.TRACK] + '_' +
-                anObject.getName();
+                    anObject[TP.TRACK] + '_' +
+                    anObject.getName();
         case TP.TYPE:
             return anObject.getName();
         default:
@@ -1923,8 +1934,8 @@ TP.objectGetMetadataName = function(anObject, kind) {
     //  Check method first...there are a lot more of them passing through here.
     if (TP.isMethod(anObject)) {
         return anObject[TP.OWNER].getName() + '_' +
-            anObject[TP.TRACK] + '_' +
-            anObject.getName();
+                anObject[TP.TRACK] + '_' +
+                anObject.getName();
     }
 
     if (TP.isType(anObject)) {
@@ -2351,6 +2362,11 @@ TP.registerLoadInfo(TP.functionNeedsCallee);
 
 //  ------------------------------------------------------------------------
 
+//  When tracking invocations, we go ahead and cache this flag on the 'TP'
+//  object for much better performance when loading the system. This is a
+//  system-wide flag anyway, so using this mechanism is not a problem.
+TP.__trackInvocations__ = TP.sys.cfg('oo.$$track_invocations');
+
 TP.defineMethodSlot =
 function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
@@ -2375,9 +2391,18 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     var own,
         trk,
+
+        realMethod,
+
         desc,
 
         installCalleePatch,
+
+        installedInvocationsTracker,
+
+        methodWantsInvocationTracking,
+
+        wrappedMethod,
 
         method,
         disp;
@@ -2385,19 +2410,22 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     own = owner || target;
     trk = track || TP.LOCAL_TRACK;
 
-    if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
+    realMethod = value;
 
-        //  If the value is TP.REQUIRED, then it isn't a method as such, but a
-        //  placeholder to note that this method is required. This is normally
-        //  used during traits multiple-inheritance composition.
-        if (value === TP.REQUIRED) {
+    if (!TP.isCallable(realMethod) ||
+        !TP.isCallable(realMethod.asMethod)) {
+
+        //  If the initalMethod is TP.REQUIRED, then it isn't a method as such,
+        //  but a placeholder to note that this method is required. This is
+        //  normally used during traits multiple-inheritance composition.
+        if (realMethod === TP.REQUIRED) {
 
             desc = descriptor ? descriptor : TP.DEFAULT_DESCRIPTOR;
 
-            TP.defineSlot(target, name, value, TP.METHOD, trk, desc);
+            TP.defineSlot(target, name, realMethod, TP.METHOD, trk, desc);
 
-            //  capture the descriptor on the value (method body)
-            value[TP.DESCRIPTOR] = desc;
+            //  capture the descriptor on the realMethod (method body)
+            realMethod[TP.DESCRIPTOR] = desc;
 
         } else {
             TP.ifError() ?
@@ -2408,14 +2436,11 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         return;
     }
 
-    //  Ensure metadata is attached along with owner/track etc.
-    value.asMethod(own, name, trk, display);
-
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
     if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
         TP.deprecated('Use defineHandler for handler: ' +
-            TP.objectGetMetadataName(value, TP.METHOD));
+            TP.objectGetMetadataName(realMethod, TP.METHOD));
     }
 
     //  If the body of the function has a reference to methods that need
@@ -2426,14 +2451,121 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  to true which means that the system will definitely not install a patch,
     //  even if the RegExp passes or 'patchCallee' to true which forces the
     //  system to install a patch, even if the RegExp fails.
-    if (value.toString().match(TP.regex.NEEDS_CALLEE)) {
+    if (realMethod.toString().match(TP.regex.NEEDS_CALLEE)) {
         if (descriptor && descriptor.patchCallee === true) {
             installCalleePatch = true;
         } else if (descriptor && descriptor.patchCallee === false) {
             installCalleePatch = false;
         } else {
-            installCalleePatch = TP.functionNeedsCallee(value, name);
+            installCalleePatch = TP.functionNeedsCallee(realMethod, name);
         }
+    }
+
+    installedInvocationsTracker = false;
+
+    if (descriptor) {
+        methodWantsInvocationTracking = descriptor.trackInvocations;
+    } else {
+        methodWantsInvocationTracking = true;
+    }
+
+    //  If we're tracking invocations and the method isn't a native method and
+    //  it's not the 'callNextMethod' method, then go ahead and install a
+    //  'wrapper method' that will wrap the original real method with one that
+    //  will give invocations data.
+    if (TP.__trackInvocations__ &&
+        methodWantsInvocationTracking &&
+        !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
+        TP.EXCLUDE_INVOCATION_METHOD_NAMES.indexOf(name) === TP.NOT_FOUND) {
+
+        installedInvocationsTracker = true;
+
+        //  Capture the real method here so that, even if we change it below,
+        //  the closure will have the proper reference.
+        wrappedMethod = realMethod;
+
+        //  Define a wrapper method that will stand in for the real method and,
+        //  upon invocation, will track invocation and other invocations data
+        //  and then invoke the wrapped method.
+        method = function() {
+            var args,
+                retVal;
+
+            method.invocationCount++;
+
+            args = Array.prototype.slice.call(arguments, 0);
+            retVal = wrappedMethod.apply(this, args);
+
+            return retVal;
+        };
+
+        //  Set the initial invocation count to 0 and put it on the wrapper
+        //  method itself.
+        method.invocationCount = 0;
+
+        //  Supply a local version of 'getArity' that returns the wrapped
+        //  method's arity.
+        method.getArity =
+            function() {
+                return wrappedMethod.getArity();
+            };
+
+        //  callNextMethod will try to populate and use the '$$nextfunc'. In
+        //  order for CNM to function properly, this slot must be a 'pass
+        //  through' to the original wrapped function. Use an ECMA5
+        //  getter/setter combination to achieve this.
+        Object.defineProperty(
+            method,
+            '$$nextfunc',
+            {
+                get: function() {
+                    return wrappedMethod.$$nextfunc;
+                },
+
+                set: function(aFunc) {
+                    wrappedMethod.$$nextfunc = aFunc;
+                }
+            });
+
+        //  Let's make sure we can get back to the original function here.
+        method.$realFunc = realMethod;
+
+        //  And let's make sure we can get back to the wrapper from the original
+        //  function as well.
+        realMethod.$wrapperFunc = method;
+
+        //  Register the 'invocation' patch under the *original* owner, name,
+        //  track and display for the real method.
+        method.asMethod(own, name, trk, display);
+
+        //  So this is a little tricky. We've defined a patch function to
+        //  'stand in' for (and wrap a call to) our method. We do want to
+        //  distinguish the real method from the ersatz for reflection
+        //  purposes, so we tell the real method function to instrument itself
+        //  with the name of the method it's being stood in for but with a
+        //  '$$originalMethod' suffix.
+        realMethod.asMethod(own, name + '$$originalMethod', trk, display);
+
+        //  If the original 'display' argument was provided, that means that
+        //  'asMethod()' won't have set the display name using the supplied
+        //  'name'.
+
+        //  NB: We use an old fashioned check here for 'isEmpty()' for display,
+        //  since this could be called *very* early in the boot process.
+        if (display !== null && display !== undefined && display !== '') {
+            disp = realMethod[TP.DISPLAY];
+            realMethod[TP.DISPLAY] = disp + '$$originalMethod';
+        }
+
+        TP.defineSlot(target, name + '$$originalMethod', realMethod, TP.METHOD,
+                        trk, TP.HIDDEN_DESCRIPTOR);
+
+        //  Lastly, make the 'real method' now be the wrapper method, so that
+        //  any further wrapping, etc. will be happening to the wrapper.
+        realMethod = method;
+    } else {
+        //  Ensure metadata is attached along with owner/track etc.
+        realMethod.asMethod(own, name, trk, display);
     }
 
     if (installCalleePatch) {
@@ -2449,13 +2581,13 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
             oldArgs = TP.$$currentArgs$$;
 
             //  Set the value of the current callee.
-            TP.$$currentCallee$$ = value;
+            TP.$$currentCallee$$ = realMethod;
 
             //  Set the value of the current args.
             TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
 
             //  Now, call the method
-            retVal = value.apply(this, TP.$$currentArgs$$);
+            retVal = realMethod.apply(this, TP.$$currentArgs$$);
 
             //  Restore the old values for callee and args
             TP.$$currentCallee$$ = oldCallee;
@@ -2465,11 +2597,11 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         };
 
         //  Let's make sure we can get back to the original function here.
-        method.$realFunc = value;
+        method.$realFunc = realMethod;
 
         //  And let's make sure we can get back to the wrapper from the original
         //  function as well.
-        value.$wrapperFunc = method;
+        realMethod.$wrapperFunc = method;
 
         //  So this is a little tricky. We've defined a patch function to
         //  'stand in' for (and wrap a call to) our method. We do want to
@@ -2501,7 +2633,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     } else {
         //  The logic above determined that we don't want/need a callee
         //  patch.
-        method = value;
+        method = realMethod;
     }
 
     /* eslint-disable no-extra-parens */
@@ -2509,8 +2641,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     TP.defineSlot(target, name, method, TP.METHOD, trk, desc);
 
-    //  capture the descriptor on the value (method body)
-    value[TP.DESCRIPTOR] = desc;
+    //  capture the descriptor on the method (method body)
+    method[TP.DESCRIPTOR] = desc;
 
     /* eslint-enable no-extra-parens */
 
@@ -2525,7 +2657,16 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
-        TP.sys.addMetadata(own, value, TP.METHOD, trk);
+
+        if (installedInvocationsTracker) {
+            TP.sys.addMetadata(own, realMethod, TP.METHOD, trk);
+        } else {
+            //  NOTE: If we're not installing the invocations tracker here, then
+            //  we register the *originally supplied* method body value here in
+            //  the metadata. Otherwise, we have problems using reflection to do
+            //  things like signal handler name computation.
+            TP.sys.addMetadata(own, value, TP.METHOD, trk);
+        }
     } else if (name.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
         TP.sys.$$meta_handlers.push(name);
@@ -12579,6 +12720,163 @@ function() {
      */
 
     return TP.sys.cfg('boot.profile');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getUsedMethods',
+function() {
+
+    /**
+     * @method getUsedMethods
+     * @summary Returns a hash of the currently used methods in the system.
+     * @description This method requires the 'oo.$$track_invocations' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @returns {TP.core.Hash} A hash of method names as they appear in the
+     *     TIBET metadata as the keys and the method body Functions themselves
+     *     as the values.
+     */
+
+    var usedMethods;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used methods when invocations' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    usedMethods = TP.hc();
+
+    //  Iterate over all of the methods tracked in the metadata. If there are
+    //  methods whose invocation count is greater than 0, then add it to the
+    //  used methods hash.
+    TP.sys.$$meta_methods.perform(
+            function(kvPair) {
+
+                var methodKey,
+                    methodBody;
+
+                methodKey = kvPair.first();
+                methodBody = kvPair.last();
+
+                if (methodBody.invocationCount > 0) {
+                    usedMethods.atPut(methodKey, methodBody);
+                }
+            });
+
+    return usedMethods;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getUsedTypes',
+function() {
+
+    /**
+     * @method getUsedTypes
+     * @summary Returns a hash of the currently used types in the system and any
+     *     supertypes or trait types that they reference.
+     * @description This method requires the 'oo.$$track_invocations' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @returns {TP.core.Hash} A hash of types names as they appear in the
+     *     TIBET metadata as the keys and the type objects themselves as the
+     *     values.
+     */
+
+    var directlyUsedTypes,
+
+        usedMethods,
+
+        allUsedTypes;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used types when invocations' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    directlyUsedTypes = TP.ac();
+
+    //  Grab all of the used methods. Iterate over them and, if they have a type
+    //  as an owner and that type is not a native type, then add it to the
+    //  'directly referenced' types list.
+    usedMethods = TP.sys.getUsedMethods();
+    usedMethods.perform(
+        function(kvPair) {
+
+            var methodOwner;
+
+            methodOwner = kvPair.last()[TP.OWNER];
+            if (TP.isType(methodOwner) && !TP.isNativeType(methodOwner)) {
+                directlyUsedTypes.push(methodOwner);
+            }
+        });
+
+    //  Unique this list to substantially reduce the list to unique type values.
+    directlyUsedTypes.unique();
+
+    allUsedTypes = TP.hc();
+
+    //  Now, add the type, any supertypes it references and any trait types that
+    //  it references. Note that at each step we check to make sure that the
+    //  type isn't a native type, in which case we don't add it.
+    directlyUsedTypes.forEach(
+        function(aType) {
+
+            var superTypes,
+                traitTypes;
+
+            //  First, add the direct type
+            if (!TP.isNativeType(aType)) {
+                allUsedTypes.atPut(aType[TP.NAME], aType);
+            }
+
+            //  Second, add the direct supertypes
+            superTypes = aType.getSupertypes();
+            if (TP.notEmpty(superTypes)) {
+                superTypes.forEach(
+                    function(aSupertype) {
+                        if (!TP.isNativeType(aSupertype)) {
+                            allUsedTypes.atPut(
+                                aSupertype[TP.NAME], aSupertype);
+                        }
+                    });
+            }
+
+            //  Third, add the trait types (and their supertypes)
+            traitTypes = aType[TP.TRAITS];
+            if (TP.notEmpty(traitTypes)) {
+                traitTypes.forEach(
+                    function(aTraitType) {
+
+                        var traitSupertypes;
+
+                        if (!TP.isNativeType(aTraitType)) {
+                            allUsedTypes.atPut(
+                                    aTraitType[TP.NAME], aTraitType);
+                        }
+
+                        traitSupertypes = aTraitType.getSupertypes();
+                        traitSupertypes.forEach(
+                            function(aTraitSupertype) {
+                                if (!TP.isNativeType(aTraitSupertype)) {
+                                    allUsedTypes.atPut(
+                                            aTraitSupertype[TP.NAME],
+                                            aTraitSupertype);
+                                }
+                            });
+                    });
+            }
+        });
+
+    //  Unique this list to substantially reduce the list to unique type values.
+    allUsedTypes.unique();
+
+    return allUsedTypes;
 });
 
 //  ------------------------------------------------------------------------
