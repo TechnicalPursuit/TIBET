@@ -2400,6 +2400,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
         installedInvocationsTracker,
 
+        shouldTrackInvocations,
+
         wrappedMethod,
 
         method,
@@ -2461,11 +2463,18 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     installedInvocationsTracker = false;
 
+    if (descriptor) {
+        shouldTrackInvocations = descriptor.trackInvocations;
+    } else {
+        shouldTrackInvocations = true;
+    }
+
     //  If we're tracking invocations and the method isn't a native method and
     //  it's not the 'callNextMethod' method, then go ahead and install a
     //  'wrapper method' that will wrap the original real method with one that
     //  will give invocations data.
     if (TP.__trackInvocations__ &&
+        shouldTrackInvocations &&
         !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
         name !== 'callNextMethod') {
 
