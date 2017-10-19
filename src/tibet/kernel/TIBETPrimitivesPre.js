@@ -2400,7 +2400,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
         installedInvocationsTracker,
 
-        shouldTrackInvocations,
+        methodWantsInvocationTracking,
 
         wrappedMethod,
 
@@ -2464,9 +2464,9 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     installedInvocationsTracker = false;
 
     if (descriptor) {
-        shouldTrackInvocations = descriptor.trackInvocations;
+        methodWantsInvocationTracking = descriptor.trackInvocations;
     } else {
-        shouldTrackInvocations = true;
+        methodWantsInvocationTracking = true;
     }
 
     //  If we're tracking invocations and the method isn't a native method and
@@ -2474,7 +2474,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  'wrapper method' that will wrap the original real method with one that
     //  will give invocations data.
     if (TP.__trackInvocations__ &&
-        shouldTrackInvocations &&
+        methodWantsInvocationTracking &&
         !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
         TP.EXCLUDE_INVOCATION_METHOD_NAMES.indexOf(name) === TP.NOT_FOUND) {
 
