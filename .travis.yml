@@ -34,6 +34,7 @@ before_script:
     - tibet clone travis
     - cd travis
     - tibet init --link
+    - tibet lint
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
