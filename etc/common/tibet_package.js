@@ -2174,6 +2174,7 @@
                 key,
                 config,
                 nodes,
+                text,
                 msg;
 
             nodes = pkg.getcfg('nodes');

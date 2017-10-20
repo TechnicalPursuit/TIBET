@@ -351,8 +351,7 @@
              * @returns {Boolean} True for success, false for failure.
              */
             Cmd.prototype.writePackageData = function(pkgfile, pkgdata) {
-                var file,
-                    text;
+                var file;
 
                 this.trace('writing package file:' + pkgfile);
 

@@ -10436,6 +10436,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
 
                 var ref,
                     src,
+                    text,
                     config;
 
                 if (child.nodeType === Node.ELEMENT_NODE) {
