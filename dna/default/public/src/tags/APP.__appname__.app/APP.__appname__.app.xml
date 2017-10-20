@@ -16,8 +16,8 @@
 
 <config id="resources">
     <!-- tag-related resource entries here -->
-    <script src="APP.{{appname}}.app.xhtml"/>
-    <script src="APP.{{appname}}.app.css"/>
+    <resource src="APP.{{appname}}.app.xhtml"/>
+    <resource src="APP.{{appname}}.app.css"/>
 </config>
 
 <config id="inlined" if="boot.phase_two boot.inlined">

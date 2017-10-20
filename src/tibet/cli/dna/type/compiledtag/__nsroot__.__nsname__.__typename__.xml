@@ -16,8 +16,8 @@
 
 <config id="resources">
     <!-- tag-related resource entries here -->
-    <script src="{{nsroot}}.{{nsname}}.{{typename}}.xhtml"/>
-    <script src="{{nsroot}}.{{nsname}}.{{typename}}.css"/>
+    <resource src="{{nsroot}}.{{nsname}}.{{typename}}.xhtml"/>
+    <resource src="{{nsroot}}.{{nsname}}.{{typename}}.css"/>
 </config>
 
 <config id="inlined" if="boot.phase_two boot.inlined">
