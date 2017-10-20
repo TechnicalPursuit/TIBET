@@ -11,6 +11,8 @@
 /**
  */
 
+/* eslint-disable no-useless-escape */
+
 //  A RegExp that 'captures' the content of 'style' elements.
 TP.regex.STYLE_CAPTURE =
         /<style.*?>(?:<!\[CDATA\[)*([\s\S]*?)(?:\]\]>)*<\/style>/g; // needs reset
@@ -35,7 +37,6 @@ TP.regex.CSS_HEX =
 TP.regex.CSS_RGB =
         /rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
 
-/* eslint-disable no-useless-escape */
 //  A RegExp that matches CSS RGBA color values.
 TP.regex.CSS_RGBA =
         /rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\,\s*([\d.]+)\s*\)/;
