@@ -476,8 +476,9 @@ function(aDocument) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  Grab all of the style sheets in the document, whether they
-    //  were linked in or defined in the head of the document.
+    //  Grab all of the style sheets in the document, whether they were linked
+    //  in or defined in the head of the document. Note that this is given in
+    //  'tree order', according to the CSS OM specification.
     allSheets = aDocument.styleSheets;
 
     allRules = TP.ac();
@@ -1793,6 +1794,125 @@ function(anElement, styleText) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('styleRuleGetRuleInfo',
+function(aStyleRule, allDocumentStyleSheets) {
+
+    /**
+     * @method styleRuleGetRuleInfo
+     * @summary Returns an Array of TP.core.Hashes that contain style
+     *     information for the supplied rule.
+     * @description The reason that an Array is returned here is that the rule
+     *     may have simple selectors separated by a ','. Each simple selector is
+     *     returned in its own entry along with the rest of the rule
+     *     information.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the rule
+     *     information for.
+     * @param {CSSStyleSheet[]} allDocumentStyleSheets All of the style sheets
+     *     that are present in the same document as the style rule is in.
+     * @returns {TP.core.Hash[]} An Array of TP.core.Hash objects with style
+     *     rule information for each style rule that matches the supplied
+     *     element.
+     *          originalSelector:   The original 'whole' selector
+     *          selector:           The simple selector split out from the whole
+     *                              selector.
+     *          specificityInfo:    Specificity information about the selector.
+     *                              See the calculateSingleCSSSelectorSpecificity()
+     *                              method for more information on the values
+     *                              here.
+     *          sheetLocation:      The URL location of the stylesheet.
+     *          sheetPosition:      The position of the stylesheet in the list of
+     *                              stylesheets in a document.
+     *          rulePosition:       The position of the rule in the list of
+     *                              rules in its stylesheet.
+     *          rule:               The original CSSStyleRule object.
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var rulePos,
+        ruleStyleSheet,
+
+        sheetLoc,
+
+        sheetPos,
+        possiblePos,
+        sheetMatchingHref,
+
+        selectorText,
+        simpleSelectors,
+
+        entries,
+
+        selectorsLen,
+        i,
+
+        ruleEntry;
+
+    if (TP.notValid(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Grab the rule's stylesheet
+    ruleStyleSheet = aStyleRule.parentStyleSheet;
+
+    //  Compute the rule's 'position' within its stylesheet. This is used in
+    //  some scenarios of selector sorting.
+    rulePos = TP.ac(ruleStyleSheet.cssRules).indexOf(aStyleRule);
+
+    //  Grab the rule's location using the TIBET mechanism to do so. This will
+    //  use other metadata if the original href that loaded the sheet is not
+    //  present.
+    sheetLoc = TP.styleSheetGetLocation(ruleStyleSheet);
+
+    //  Now try to compute the sheet's 'position' within its overall document.
+    //  Because sometimes the sheet cannot be found in the document's set of
+    //  stylesheets, an alternate method is also used that compares the sheet's
+    //  'hrefs' and will return that.
+    sheetPos = allDocumentStyleSheets.indexOf(ruleStyleSheet);
+    if (sheetPos === TP.NOT_FOUND) {
+        possiblePos = -1;
+        sheetMatchingHref = allDocumentStyleSheets.detect(
+                               function(aSheet, index) {
+                                   possiblePos = index;
+                                   return aSheet.href === ruleStyleSheet.href;
+                               });
+        if (TP.isValid(sheetMatchingHref)) {
+            sheetPos = possiblePos;
+        }
+    }
+
+    selectorText = aStyleRule.selectorText.trim();
+
+    entries = TP.ac();
+
+    simpleSelectors = selectorText.split(',');
+
+    //  Iterate over all of the simple selectors, making an entry for each one.
+    selectorsLen = simpleSelectors.getSize();
+    for (i = 0; i < selectorsLen; i++) {
+        ruleEntry = TP.hc(
+            'originalSelector',
+            selectorText,
+            'selector',
+            simpleSelectors.at(i).trim(),
+            'specificityInfo',
+            TP.calculateSingleCSSSelectorSpecificity(simpleSelectors.at(i)),
+            'sheetLocation',
+            sheetLoc,
+            'sheetPosition',
+            sheetPos,
+            'rulePosition',
+            rulePos,
+            'rule',
+            aStyleRule);
+
+        entries.push(ruleEntry);
+    }
+
+    return entries;
 });
 
 //  ------------------------------------------------------------------------

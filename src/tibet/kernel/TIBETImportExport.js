@@ -210,6 +210,41 @@ function(packageName, configName) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getMethodUsage',
+function() {
+
+    var results;
+
+    results = [];
+
+    TP.sys.$$meta_methods.perform(
+            function(kvPair) {
+
+                var methodKey,
+                    methodBody,
+
+                    methodEntry;
+
+                methodKey = kvPair.first();
+                methodBody = kvPair.last();
+
+                methodEntry = {
+                    name: methodKey,
+                    invocationCount: methodBody.invocationCount,
+                    loadPath: methodBody[TP.LOAD_PATH],
+                    sourcePath: methodBody[TP.SOURCE_PATH],
+                    loadPackage: methodBody[TP.LOAD_PACKAGE],
+                    loadConfig: methodBody[TP.LOAD_CONFIG]
+                };
+
+                results.push(methodEntry);
+            });
+
+    return results;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('importPackage',
 function(packageName, configName, shouldSignal) {
 

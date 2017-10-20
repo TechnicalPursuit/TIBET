@@ -1222,6 +1222,100 @@ function(anElement, flushCaches) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetAppliedStyleInfo',
+function(anElement, flushCaches) {
+
+    /**
+     * @method elementGetAppliedStyleInfo
+     * @summary Returns an Array of TP.core.Hashes that contain information
+     *     about the style rules that apply to the supplied Element
+     * @param {Element} anElement The element to retrieve the CSS style
+     *     info for.
+     * @param {Boolean} [flushCaches=false] Whether or not to flush the
+     *     element's cached ruleset.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.Hash[]} An Array of TP.core.Hash objects with style
+     *     rule information for each style rule that matches the supplied
+     *     element.
+     *          originalSelector:   The original 'whole' selector
+     *          selector:           The simple selector split out from the whole
+     *                              selector.
+     *          specificityInfo:    Specificity information about the selector.
+     *                              See the calculateSingleCSSSelectorSpecificity()
+     *                              method for more information on the values
+     *                              here.
+     *          sheetLocation:      The URL location of the stylesheet.
+     *          sheetPosition:      The position of the stylesheet in the list of
+     *                              stylesheets in a document.
+     *          rulePosition:       The position of the rule in the list of
+     *                              rules in its stylesheet.
+     *          rule:               The original CSSStyleRule object.
+     */
+
+    var doc,
+        allStyleSheets,
+
+        rules,
+
+        ruleInfo,
+
+        rulesLen,
+        i,
+
+        newEntries;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+    allStyleSheets = TP.ac(doc.styleSheets);
+
+    //  Note here how we pass true in the 2nd parameter so that the target
+    //  element's ruleset caches get flushed and computed anew.
+    rules = TP.elementGetAppliedNativeStyleRules(anElement, true);
+
+    ruleInfo = TP.ac();
+
+    //  Iterate over all of the rules and obtain rule information for them. Note
+    //  that this may expand the number of rules that we process, since an
+    //  individual entry will be made for each simple selector (i.e. if a
+    //  selector has a set of simple selectors separated by commas, this method
+    //  makes an individual entry for each one).
+    rulesLen = rules.getSize();
+    for (i = 0; i < rulesLen; i++) {
+
+        //  Note that getting the rule info here may expand the number of
+        //  entries that we're processing beyond the original rule set, since an
+        //  individual entry will be made for each simple selector. In other
+        //  word, if a selector has a set of simple selectors separated by
+        //  commas, this method makes an individual entry for each one.
+        newEntries = TP.styleRuleGetRuleInfo(rules.at(i), allStyleSheets);
+
+        ruleInfo.push(newEntries);
+    }
+
+    //  We have an Array of nested Arrays - flatten them.
+    ruleInfo = ruleInfo.flatten();
+
+    //  Now, because when computing the rule info, we might have had multiple
+    //  selectors joined by ',', there will be individual rules that the element
+    //  might not actually match (because it was joined with a ',' to a selector
+    //  that it *did* match). So we do a further filtering here.
+    ruleInfo = ruleInfo.filter(
+                function(aRuleEntry) {
+                    return TP.elementMatchesCSS(
+                            anElement, aRuleEntry.at('selector'));
+                });
+
+    //  Sort the remaining rules by CSS specificity and order.
+    ruleInfo.sort(TP.sort.CSS_RULE_SORT);
+
+    return ruleInfo;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetComputedStyleString',
 function(anElement, aProperty) {
 
