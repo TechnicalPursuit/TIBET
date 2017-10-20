@@ -31,9 +31,11 @@ function(aTPElement) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    var info,
-        node,
-        rules;
+    var node,
+
+        info,
+
+        ruleInfo;
 
     //  If the element is tofu, then we don't show any responders for it.
     if (aTPElement.getCanonicalName() === 'tibet:tofu') {
@@ -49,18 +51,16 @@ function(aTPElement) {
 
     if (TP.isElement(node)) {
 
-        //  Note here how we pass true in the 2nd parameter so that the target
-        //  node's ruleset caches get flushed and computed anew.
-        rules = TP.elementGetAppliedNativeStyleRules(node, true);
+        ruleInfo = TP.elementGetAppliedStyleInfo(node);
 
-        rules.perform(
-            function(aRule) {
+        //  Finally, we populate the info that will go into the sidebar
+        ruleInfo.perform(
+            function(aRuleInfo) {
                 info.push(
                     TP.ac(
-                        TP.uriInTIBETFormat(
-                            TP.styleSheetGetLocation(aRule.parentStyleSheet)),
-                        aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
-                        aRule.cssText));
+                        TP.uriInTIBETFormat(aRuleInfo.at('sheetLocation')),
+                        aRuleInfo.at('originalSelector'),
+                        aRuleInfo.at('rule').cssText));
             });
     }
 
