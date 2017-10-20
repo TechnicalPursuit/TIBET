@@ -12,11 +12,31 @@
 //  ========================================================================
 
 (function() {
+    'use strict';
+
+    var $$packages;
+
+    //  Cache of package nodes read keyed by their package file names.
+    $$packages = {};
 
     module.exports = {
 
         extend: function(Cmd, CLI) {
+            var sh;
 
+            sh = require('shelljs');
+
+            /**
+             * Appends optional prefix, content, and suffix items to a node.
+             * @param {Element} node The node to add child content to.
+             * @param {String|Node} [prefix] Optional prefix text or node. If
+             *     provided in string form creates a text node.
+             * @param {String|Node} [content] Content markup or Node. If
+             *     provided as a string the string is parsed for DOM conversion.
+             * @param {String|Node} [suffix] Optional suffix text or node. If
+             *     provided in string form creates a text node.
+             * @returns {Node} The newly created content node, if any.
+             */
             Cmd.prototype.addXMLEntry = function(
                     node, prefix, content, suffix) {
                 var doc,
@@ -24,36 +44,76 @@
                     newElem;
 
                 doc = node.ownerDocument;
-                node.appendChild(doc.createTextNode(prefix));
 
-                parser = this.getXMLParser();
+                //  prefix
 
-                doc = parser.parseFromString(content, 'text/xml');
-                if (!doc ||
-                    CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-                    this.error(
-                        'Error parsing ' + content + '. Not well-formed?');
+                if (typeof prefix === 'string') {
+                    node.appendChild(doc.createTextNode(prefix));
+                } else if (prefix && prefix.nodeType !== undefined) {
+                    node.appendChild(prefix);
+                } else if (prefix !== undefined) {
+                    this.error('Invalid prefix. Must be string or Node.');
                     throw new Error();
                 }
 
-                newElem = doc.documentElement;
-                node.appendChild(newElem);
-                newElem.ownerDocument = node.ownerDocument;
+                //  content
 
-                return node.appendChild(doc.createTextNode(suffix));
+                if (typeof content === 'string') {
+                    parser = this.getXMLParser();
+
+                    doc = parser.parseFromString(content, 'text/xml');
+                    if (!doc ||
+                        CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+                        this.error(
+                            'Error parsing ' + content + '. Not well-formed?');
+                        throw new Error();
+                    }
+                    newElem = doc.documentElement;
+
+                    newElem = node.appendChild(newElem);
+                    newElem.ownerDocument = node.ownerDocument;
+                } else if (content && content.nodeType !== undefined) {
+                    newElem = node.appendChild(content);
+                } else if (content !== undefined) {
+                    this.error('Invalid prefix. Must be string or Node.');
+                    throw new Error();
+                }
+
+                //  suffix
+
+                if (typeof suffix === 'string') {
+                    node.appendChild(doc.createTextNode(suffix));
+                } else if (suffix && suffix.nodeType !== undefined) {
+                    node.appendChild(suffix);
+                } else if (suffix !== undefined) {
+                    this.error('Invalid suffix. Must be string or Node.');
+                    throw new Error();
+                }
+
+                return newElem;
             };
 
-            //  ---
 
+            /**
+             * Appends literal text (as a text node) to a node.
+             * @param {Element} node The node to add child content to.
+             * @param {String|Node} text Content text to add.
+             * @returns {Node} The newly created node.
+             */
             Cmd.prototype.addXMLLiteral = function(node, text) {
                 var doc;
 
                 doc = node.ownerDocument;
+
                 return node.appendChild(doc.createTextNode(text));
             };
 
-            //  ---
 
+            /**
+             * Creates and returns an instance of DOMParser for use in parsing
+             * node content strings.
+             * @returns {DOMParser} The new DOM parser.
+             */
             Cmd.prototype.getXMLParser = function() {
                 var dom;
 
@@ -78,13 +138,24 @@
                 return this.parser;
             };
 
-            //  ---
 
+            /**
+             * Checks whether a particular configuration entry is found within
+             * the child nodes of the original node provided.
+             * @param {Node} node The node whose content is to be checked.
+             * @param {String} tagName The tag name: 'script', 'resource', etc
+             *     which identifies the entry type being checked.
+             * @param {String} attrName The attribute name to check for.
+             * @param {String} attrValue The attribute value to check for.
+             * @returns {Boolean} True if the tag/attribute configuration is
+             *     found.
+             */
             Cmd.prototype.hasXMLEntry = function(
-                                        node, tagName, attrName, attrValue) {
+                    node, tagName, attrName, attrValue) {
                 var children;
 
                 children = Array.prototype.slice.call(node.childNodes, 0);
+
                 return children.some(function(child) {
                     if (child.tagName === tagName) {
                         return child.getAttribute(attrName) === attrValue;
@@ -93,53 +164,39 @@
                 });
             };
 
-            //  ---
 
-            Cmd.prototype.readConfigData = function(pkgfile) {
-                var file,
-                    sh,
-                    text,
-                    err;
-
-                this.trace('reading package file:' + pkgfile);
-
-                file = CLI.expandPath(pkgfile);
-
-                sh = require('shelljs');
-                text = sh.cat(file);
-                err = sh.error();
-                if (err) {
-                    this.error('Error reading package file: ' + pkgfile);
-                    return null;
-                }
-
-                return text;
-            };
-
-            //  ---
-
+            /**
+             * Reads a specific configuration node from the package provided.
+             * The package can be passed as either a filename or package node.
+             * @param {Node|String} pkg The package (or package node) to query.
+             * @param {String} cfgname The name of the config node to read.
+             * @param {Boolean} buildIfAbsent True to force construction of the
+             *     config node if it isn't found.
+             * @returns {Node} The config node that was read or built.
+             */
             Cmd.prototype.readConfigNode = function(
-                    pkgfile, cfgname, buildIfAbsent) {
-                var pkgtext,
-                    parser,
+                    pkg, cfgname, buildIfAbsent) {
+                var pkgfile,
                     doc,
                     config,
                     packageNode,
                     defaultCfgName;
 
-                pkgtext = this.readConfigData(pkgfile);
-                if (!pkgtext) {
-                    return null;
+                if (typeof pkg === 'string') {
+                    packageNode = this.readPackageNode(pkg);
+                    pkgfile = pkg;
+                } else if (pkg && pkg.nodeType !== undefined) {
+                    packageNode = pkg;
+                    pkgfile = 'unspecified.file';
+                } else {
+                    throw new Error('Invalid package parameter: ' + pkg);
                 }
 
-                parser = this.getXMLParser();
-
-                doc = parser.parseFromString(pkgtext);
-                if (!doc ||
-                    CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-                    this.error('Error parsing package. Not well-formed?');
-                    throw new Error();
+                if (!packageNode) {
+                    throw new Error('Invalid package: ' + pkg);
                 }
+
+                doc = packageNode.ownerDocument;
 
                 if (!(config = doc.getElementById(cfgname))) {
                     this.warn('Could not find <config> id: ' + cfgname +
@@ -182,6 +239,7 @@
                         '<config id="' + cfgname + '"/>',
                         '\n\n');
 
+                    //  TODO:   don't save...just return node
                     this.writeConfigNode(pkgfile, packageNode);
 
                     if (!(config = doc.getElementById(cfgname))) {
@@ -194,15 +252,55 @@
                 return config;
             };
 
-            //  ---
 
+            /*
+             * @private
+             * Reads the text content of a package file and returns it.
+             * @param {String} pkgfile The path to the package file to be read.
+             * @returns {String} The text content of the target package.
+             */
+            Cmd.prototype.$readPackageFile = function(pkgfile) {
+                var file,
+                    text,
+                    err;
+
+                this.trace('reading package file:' + pkgfile);
+
+                file = CLI.expandPath(pkgfile);
+
+                text = sh.cat(file);
+
+                err = sh.error();
+                if (err) {
+                    this.error('Error reading package file: ' + pkgfile);
+                    return null;
+                }
+
+                return text;
+            };
+
+
+            /**
+             * Reads a package file and returns the root package node found.
+             * @param {String} pkgfile The package file reference to be read.
+             * @returns {Node} The root package node for the package file.
+             */
             Cmd.prototype.readPackageNode = function(pkgfile) {
-                var pkgtext,
+                var packageNode,
+                    filename,
+                    pkgtext,
                     parser,
-                    doc,
-                    packageNode;
+                    doc;
 
-                pkgtext = this.readConfigData(pkgfile);
+                filename = CLI.getVirtualPath(pkgfile);
+
+                //  Check the cache for the normalized file name.
+                packageNode = $$packages[filename];
+                if (packageNode) {
+                    return packageNode;
+                }
+
+                pkgtext = this.$readPackageFile(pkgfile);
                 if (!pkgtext) {
                     return null;
                 }
@@ -223,11 +321,18 @@
                     return null;
                 }
 
+                //  Cache node so we share across calls as much as possible.
+                $$packages[filename] = packageNode;
+
                 return packageNode;
             };
 
-            //  ---
 
+            /**
+             * Produces a serialized text version of a node.
+             * @param {Node} node The node to serialize.
+             * @returns {String} The serialized node text.
+             */
             Cmd.prototype.serializeNode = function(node) {
                 var dom,
                     str;
@@ -238,9 +343,14 @@
                 return str;
             };
 
-            //  ---
 
-            Cmd.prototype.writeConfigData = function(pkgfile, cfgdata) {
+            /**
+             * Writes a string to a package file as the content of that package.
+             * @param {String} pkgfile The package file to save content to.
+             * @param {String} pkgdata The string content to be written.
+             * @returns {Boolean} True for success, false for failure.
+             */
+            Cmd.prototype.writePackageData = function(pkgfile, pkgdata) {
                 var file,
                     text;
 
@@ -248,31 +358,35 @@
 
                 file = CLI.expandPath(pkgfile);
 
-                //  'to' is a shelljs extension to String - we're assuming that
-                //  shelljs is loaded here.
-                cfgdata.to(file);
+                try {
+                    //  'to' is a shelljs extension to String - we're assuming
+                    //  that shelljs is loaded here.
+                    pkgdata.to(file);
+                } catch (e) {
+                    this.error('Unable to save package data: ' + e.message);
+                    return false;
+                }
 
-                return text;
+                //  Clear any cached version of the package's node data.
+                delete $$packages[file];
+
+                return true;
             };
 
-            //  ---
 
-            Cmd.prototype.writeConfigNode = function(pkgfile, config) {
+            /**
+             * Writes a package node to a package file as the new content node
+             * for that package.
+             * @param {String} pkgfile The package file to save content to.
+             * @param {Node} pkgnode The node content to be written.
+             * @returns {Boolean} True for success, false for failure.
+             */
+            Cmd.prototype.writePackageNode = function(pkgfile, pkgnode) {
                 var str;
 
-                str = this.serializeNode(config.ownerDocument);
+                str = this.serializeNode(pkgnode);
 
-                this.writeConfigData(pkgfile, str);
-            };
-
-            //  ---
-
-            Cmd.prototype.writePackageNode = function(pkgfile, package) {
-                var str;
-
-                str = this.serializeNode(package);
-
-                this.writeConfigData(pkgfile, str);
+                return this.writePackageData(pkgfile, str);
             };
         }
     };

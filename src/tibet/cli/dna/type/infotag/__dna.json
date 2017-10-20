@@ -4,7 +4,7 @@
         "bundled": true
     },
     "APP": {
-        "dir": "~app_src/tags/{{nsroot}}.{{nsname}}.{{name}}",
+        "dir": "~app_tags/{{nsroot}}.{{nsname}}.{{name}}",
         "nsroot": "APP",
         "nsname": "{{appname}}",
         "package": "~app_cfg/{{appname}}.xml",

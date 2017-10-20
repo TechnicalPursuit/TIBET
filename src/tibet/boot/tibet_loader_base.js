@@ -9876,6 +9876,18 @@ TP.boot.$expandConfig = function(anElement) {
                         case 'package':
 
                             src = child.getAttribute('src');
+
+                            //  For packages we allow a kind of shorthand where
+                            //  you can specify a directory (with a trailing /)
+                            //  and have that imply a file in that directory
+                            //  with a '.xml' extension and name matching the
+                            //  directory name. This is largely for bundles.
+                            if (src.charAt(src.length - 1) === '/') {
+                                src = src.slice(0, -1);
+                                text = src.slice(src.lastIndexOf('/'));
+                                src = src + text + '.xml';
+                            }
+
                             src = TP.boot.$getFullPath(child, src);
                             child.setAttribute('src', src);
 
@@ -10461,6 +10473,18 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                         case 'package':
 
                             src = child.getAttribute('src');
+
+                            //  For packages we allow a kind of shorthand where
+                            //  you can specify a directory (with a trailing /)
+                            //  and have that imply a file in that directory
+                            //  with a '.xml' extension and name matching the
+                            //  directory name. This is largely for bundles.
+                            if (src.charAt(src.length - 1) === '/') {
+                                src = src.slice(0, -1);
+                                text = src.slice(src.lastIndexOf('/'));
+                                src = src + text + '.xml';
+                            }
+
                             config = child.getAttribute('config');
 
                             if (TP.boot.$isEmpty(src)) {

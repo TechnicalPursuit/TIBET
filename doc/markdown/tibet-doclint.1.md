@@ -86,7 +86,7 @@ If we then comment our new method we'll see output to that effect:
     # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:48:56 MDT
     # TIBET loaded in 3622 ms. Starting execution.
     ok - ~app_src/APP.test1.Application.js
-    ok - ~app_src/tags/APP.test1.app.js
+    ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.
     # Finished in 10097 ms w/TSH exec time of 6299 ms.
 
@@ -96,7 +96,7 @@ If we then comment our new method we'll see output to that effect:
 
     # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:57:26 MDT
     # TIBET loaded in 3712 ms. Starting execution.
-    ok - ~app_src/tags/APP.test1.app.js
+    ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 1 files.
     # Finished in 10435 ms w/TSH exec time of 6723 ms.
 
@@ -107,7 +107,7 @@ Note that you can also do case-insensitive filtering (with `i`) as follows:
     # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:57:26 MDT
     # TIBET loaded in 4212 ms. Starting execution.
     ok - ~app_src/APP.test1.Application.js
-    ok - ~app_src/tags/APP.test1.app.js
+    ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.
     # Finished in 10556 ms w/TSH exec time of 6344 ms.
 
