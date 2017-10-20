@@ -131,18 +131,6 @@ href="https://www.technicalpursuit.com/docs/tsh.html">TIBET Shell</a>. The `apro
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
 
-#### Your Docs
-
-**`tibet reflect` and `tibet apropos` work on your code as well.**
-
-TIBET's tools use runtime metadata and their knowledge of your code to produce
-documentation for both the library and your application code. All you need to do
-is use jsdoc3 comment syntax and <a
-href="https://www.technicalpursuit.com/docs/coding-standards.html#commentinside">place
-your comments inside the method body</a>.
-
-See TIBET source code for examples on how to author for live runtime docs.
-
 ---
 
 <img alt="Prerequisites" src="./lib/media/primitives.png" width="128px" height="128px"/>
@@ -285,19 +273,6 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 
 ---
 
-<img alt="Feedback" src="./lib/media/solutions.png" width="128px" height="128px"/>
-
-# Feedback
-
-The best way to communicate an issue, feature request, or code-related
-concern is to use the GitHub-based <a
-href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open">issues list</a> for TIBET.
-
-Additional contact info is provided on the <a href="http://www.technicalpursuit.com/contact.xhtml">contact page</a> at <a
-href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
-
----
-
 <img alt="Open Source License" src="./lib/media/osi_logo.png" width="96px" height="96px"/>
 
 # License
@@ -313,6 +288,19 @@ If you are unable to open source your TIBET-related code you can purchase a
 privacy waiver which allows you to keep your source code private while helping
 fund further TIBET development. Read more about privacy waivers at <a
 href="http://www.technicalpursuit.com/license.xhtml">https://www.technicalpursuit.com/license.xhtml</a>.
+
+---
+
+<img alt="Feedback" src="./lib/media/solutions.png" width="128px" height="128px"/>
+
+# Feedback
+
+The best way to communicate an issue, feature request, or code-related
+concern is to use the GitHub-based <a
+href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open">issues list</a> for TIBET.
+
+Additional contact info is provided on the <a href="http://www.technicalpursuit.com/contact.xhtml">contact page</a> at <a
+href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
 
 ---
 
