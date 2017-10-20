@@ -214,6 +214,24 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineHandler('SelectRule',
+function(aSignal) {
+
+    /**
+     * @method handleSelectRule
+     * @summary Handles notifications of when
+     * @param {TP.sig.SelectRule} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    TP.info('Select Rule');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineHandler('ShowRuleText',
 function(aSignal) {
 
