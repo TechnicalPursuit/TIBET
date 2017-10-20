@@ -20,4 +20,5 @@
  * <{{nsname}}:{{typename}}/> form) use rules of this form:
  */
 {{nsname}}|{{typename}} {
+    /* style here for pure XML tags */
 }
