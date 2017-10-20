@@ -2552,6 +2552,54 @@ TP.sort.ELEMENT = function(a, b) {
     return 0;
 };
 
+//  a sort that works just like the built-in alphabetic sort, but ignores
+//  case-sensitivity
+TP.sort.CSS_RULE_SORT = function(a, b) {
+
+    var aSpecificity,
+        bSpecificity,
+
+        aSheetPosition,
+        bSheetPosition,
+
+        aRulePosition,
+        bRulePosition;
+
+    aSpecificity = a.at('specificityInfo').specificityScore;
+    bSpecificity = b.at('specificityInfo').specificityScore;
+
+    if (aSpecificity < bSpecificity) {
+        return -1;
+    } else if (aSpecificity > bSpecificity) {
+        return 1;
+    }
+
+    //  Specificity is the same - let's try sheet position.
+
+    aSheetPosition = a.at('sheetPosition');
+    aSheetPosition = b.at('sheetPosition');
+
+    if (aSheetPosition < bSheetPosition) {
+        return -1;
+    } else if (aSheetPosition > bSheetPosition) {
+        return 1;
+    }
+
+    //  Sheet position is the same. They must come from the same stylesheet.
+    //  Let's try rule position within the sheet.
+
+    aRulePosition = a.at('rulePosition');
+    bRulePosition = b.at('rulePosition');
+
+    if (aRulePosition < bRulePosition) {
+        return -1;
+    } else if (aRulePosition > bRulePosition) {
+        return 1;
+    }
+
+    return 0;
+};
+
 //  Sorts keymap XML elements by whether they have no qualifier, just
 //  'platform', just 'browser' or 'platform' AND 'browser'. This is considered
 //  'least to most specific' for keymaps.
