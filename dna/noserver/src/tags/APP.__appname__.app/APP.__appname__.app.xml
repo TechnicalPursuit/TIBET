@@ -22,8 +22,6 @@
 
 <config id="inlined" if="boot.phase_two boot.inlined">
     <!-- don't edit this one; maintained by tibet resources command -->
-    <script src="~app_build/app_tags.APP.{{appname}}.app.APP.{{appname}}.app.xhtml.js"/>
-    <script src="~app_build/app_tags.APP.{{appname}}.app.APP.{{appname}}.app.css.js"/>
 </config>
 
 </package>
