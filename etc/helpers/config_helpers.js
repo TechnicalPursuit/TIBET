@@ -45,6 +45,12 @@
 
                 doc = node.ownerDocument;
 
+                //  We want new entries to be on a line by themselves...
+                if (!node.lastChild || node.lastChild.nodeType !== 3 ||
+                    node.lastChild.data !== '\n') {
+                    node.appendChild(doc.createTextNode('\n'));
+                }
+
                 //  prefix
 
                 if (typeof prefix === 'string') {
@@ -88,6 +94,12 @@
                 } else if (suffix !== undefined) {
                     this.error('Invalid suffix. Must be string or Node.');
                     throw new Error();
+                }
+
+                //  We want new entries to be on a line by themselves...
+                if (!node.lastChild || node.lastChild.nodeType !== 3 ||
+                    node.lastChild.data !== '\n') {
+                    node.appendChild(doc.createTextNode('\n'));
                 }
 
                 return newElem;

@@ -520,7 +520,6 @@ Cmd.prototype.executePackageBundled = function() {
 
         if (assets.indexOf(vpath) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
@@ -660,7 +659,6 @@ Cmd.prototype.executePackageCommon = function() {
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
@@ -704,7 +702,6 @@ Cmd.prototype.executePackageCommon = function() {
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
