@@ -465,6 +465,8 @@ Cmd.prototype.filterAssetList = function(list) {
         lastrun,
         cmd;
 
+    this.verbose('filtering asset list...');
+
     if (!Array.isArray(list) || list.length < 1) {
         return [];
     }
@@ -523,6 +525,12 @@ Cmd.prototype.filterAssetList = function(list) {
             src = item.getAttribute('src') || item.getAttribute('href');
         } else {
             src = item;
+        }
+
+        //  NEVER lint the build directory content. It's almost guaranteed to
+        //  have lint due to compression tools etc.
+        if (CLI.getVirtualPath(src).indexOf('app_build') !== -1) {
+            return false;
         }
 
         src = CLI.expandPath(src);
