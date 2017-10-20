@@ -3847,6 +3847,13 @@ function(aTargetElem, anEvent) {
                     startPoint = initialSignal.getPagePoint();
                     dndResponder.set('startPoint', startPoint);
 
+                    //  Note that if we can calculate a start point because we
+                    //  got a DOMDragDown signal, then we also use that as our
+                    //  item page point since (for D&D scenarios) we actually
+                    //  want the item to move to wherever the mouse is starting
+                    //  the D&D operation.
+                    dndResponder.set('itemPagePoint', startPoint);
+
                     //  Compute the offset point (after we set the corner)
                     dndResponder.computeOffsetPoint();
 
