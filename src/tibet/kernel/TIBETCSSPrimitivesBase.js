@@ -476,8 +476,9 @@ function(aDocument) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  Grab all of the style sheets in the document, whether they
-    //  were linked in or defined in the head of the document.
+    //  Grab all of the style sheets in the document, whether they were linked
+    //  in or defined in the head of the document. Note that this is given in
+    //  'tree order', according to the CSS OM specification.
     allSheets = aDocument.styleSheets;
 
     allRules = TP.ac();
