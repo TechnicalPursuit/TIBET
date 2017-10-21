@@ -17,6 +17,12 @@
 TP.sherpa.TemplatedTag.defineSubtype('workbench');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineAttribute('allStatusInfo');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -131,7 +137,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineMethod('updateStatusbar',
-function() {
+function(statusInfo) {
 
     /**
      * @method updateStatusbar
@@ -139,13 +145,40 @@ function() {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    var sherpaOutliner,
-        sherpaStatusbar;
+    var sherpaStatusbar,
 
-    sherpaOutliner = TP.bySystemId('SherpaOutliner');
+        allStatusInfo,
+
+        str;
+
     sherpaStatusbar = TP.byId('SherpaStatusbar', this.getNativeWindow());
 
-    str = 'Insertion position: ' + sherpaOutliner.get('insertionPosition');
+    allStatusInfo = this.get('allStatusInfo');
+    if (TP.notValid(allStatusInfo)) {
+        allStatusInfo = TP.hc();
+        this.get('allStatusInfo', allStatusInfo);
+    }
+
+    str = '';
+
+    if (statusInfo.hasKey('insertionPosition')) {
+        allStatusInfo.atPut('insertionPosition',
+                            statusInfo.at('insertionPosition'));
+    } else {
+        allStatusInfo.atPut('insertionPosition', '');
+    }
+
+    if (statusInfo.hasKey('mousePoint')) {
+        allStatusInfo.atPut('mousePoint',
+                            statusInfo.at('mousePoint'));
+    } else {
+        allStatusInfo.atPut('mousePoint', TP.pc(0, 0));
+    }
+
+    str = 'Insertion position: ' +
+            allStatusInfo.at('insertionPosition') +
+            '    Mouse position: ' +
+            allStatusInfo.at('mousePoint').asString();
 
     sherpaStatusbar.setContent(str);
 
@@ -348,6 +381,9 @@ function(aSignal) {
     TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
                                                         'hidden', false);
 
+
+    this.observe(TP.core.Mouse, 'TP.sig.DOMDragMove');
+
     return this;
 }, {
     origin: 'SherpaOutliner'
@@ -374,9 +410,37 @@ function(aSignal) {
     TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
                                                         'hidden', true);
 
+    this.ignore(TP.core.Mouse, 'TP.sig.DOMDragMove');
+
     return this;
 }, {
     origin: 'SherpaOutliner'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('DOMDragMove',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseMove
+     * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which
+     *     triggered this handler.
+     */
+
+    var mousePoint,
+        canvasOffsets;
+
+    mousePoint = aSignal.getGlobalPoint();
+    canvasOffsets = TP.windowComputeWindowOffsets(
+                                TP.win('UIROOT'), TP.win('UICANVAS'));
+
+    mousePoint.setX(mousePoint.getX() - canvasOffsets.at('0'));
+    mousePoint.setY(mousePoint.getY() - canvasOffsets.at('1'));
+
+    this.updateStatusbar(TP.hc('mousePoint', mousePoint));
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
