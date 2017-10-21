@@ -605,8 +605,9 @@ function(aSignal) {
 
                 case 'breadcrumb':
 
-                    //  Message the drop target that we dropped a breadcrum into
-                    //  it at the insertion position determined by the user.
+                    //  Message the drop target that we dropped a breadcrumb
+                    //  into it at the insertion position determined by the
+                    //  user.
                     TP.wrap(dndTargetElem).sherpaDidInsertBreadcrumb(
                                             dndTargetElem,
                                             this.get('insertionPosition'));
