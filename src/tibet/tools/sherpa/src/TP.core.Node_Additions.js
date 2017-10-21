@@ -35,6 +35,25 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('haloCanDelete',
+function(aHalo) {
+
+    /**
+     * @method haloCanDelete
+     * @summary Returns whether or not the halo can delete the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can delete the receiver.
+     * @returns {Boolean} Whether or not the halo can delete the receiver.
+     */
+
+    //  We return false here because, at this level, the halo should not be
+    //  deleting.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('haloCanFocus',
 function(aHalo) {
 
