@@ -79,6 +79,9 @@ function() {
     this.observe(sherpaOutliner,
                     TP.ac('TP.sig.BeginOutlineMode', 'TP.sig.EndOutlineMode'));
 
+    this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                'TP.sig.DOMDNDCompleted'));
+
     return this;
 });
 
@@ -273,6 +276,51 @@ function(aSignal) {
     return this;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('DOMDNDInitiate',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDNDInitiate
+     * @summary Handles when the drag and drop system initiates a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDInitiate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
+                                                        'hidden', false);
+
+
+    this.observe(TP.core.Mouse, 'TP.sig.DOMDragMove');
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('DOMDNDCompleted',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDNDCompleted
+     * @summary Handles when the drag and drop system completes a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDCompleted} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
+                                                        'hidden', true);
+
+    this.ignore(TP.core.Mouse, 'TP.sig.DOMDragMove');
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('InspectorDidFocus',
@@ -378,12 +426,6 @@ function(aSignal) {
     //  buttons.
     this.updateToolbarButtons();
 
-    TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
-                                                        'hidden', false);
-
-
-    this.observe(TP.core.Mouse, 'TP.sig.DOMDragMove');
-
     return this;
 }, {
     origin: 'SherpaOutliner'
@@ -406,11 +448,6 @@ function(aSignal) {
     //  The outliner turned off outline mode - we need to update our toolbar
     //  buttons.
     this.updateToolbarButtons();
-
-    TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
-                                                        'hidden', true);
-
-    this.ignore(TP.core.Mouse, 'TP.sig.DOMDragMove');
 
     return this;
 }, {
