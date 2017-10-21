@@ -1572,6 +1572,40 @@ function() {
     //  initially.
     this.set('$wasShowing', false);
 
+    //  Set up the halo corners.
+    this.setupHaloCorners();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('setupHaloCorners',
+function() {
+
+    /**
+     * @method setupHaloCorners
+     * @summary Performs the setup for all of the halo 'corners'.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var haloNECorner;
+
+    haloNECorner = TP.byId('haloCorner-Northeast', this.getNativeWindow());
+    haloNECorner.defineMethod(
+                    'getDNDSource',
+                    function() {
+                        return this;
+                    });
+
+    haloNECorner.defineMethod(
+                    'getDragItem',
+                    function() {
+                        return TP.byId('SherpaDispenserItem', TP.win('UIROOT'));
+                    });
+
+    haloNECorner.setAttribute('dnd:vend', 'dom_node');
+
     return this;
 });
 

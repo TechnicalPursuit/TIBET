@@ -318,7 +318,8 @@ function(enterSelection) {
                 return val;
             }).each(
             function(d, i) {
-                TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
+                TP.elementSetAttribute(
+                        this, 'dnd:accept', 'tofu dom_node', true);
             });
 
     return domContent;
@@ -425,7 +426,8 @@ function(updateSelection) {
                 return val;
             }).each(
             function(d, i) {
-                TP.elementSetAttribute(this, 'dnd:accept', 'tofu', true);
+                TP.elementSetAttribute(
+                    this, 'dnd:accept', 'tofu dom_node', true);
             });
 
     return updateSelection;
@@ -555,7 +557,10 @@ function(aSignal) {
 
         peerElem,
 
-        doc;
+        doc,
+
+        dndSourceTPElem,
+        vendType;
 
     dndTargetElem = this.get('$currentDNDTarget');
 
@@ -617,11 +622,49 @@ function(aSignal) {
                     TP.elementRemoveClass(
                             peerElem, 'sherpa-outliner-droptarget');
 
-                    //  We found a peer ELement. Use it as the insertion point
+                    //  We found a peer Element. Use it as the insertion point
                     //  and use it's parent node as the receiver of the message
                     //  that the Sherpa dropped tofu.
-                    TP.wrap(peerElem.parentNode).sherpaDidInsertTofu(
-                        peerElem, insertionPosition);
+
+                    //  If we have a drag and drop source, then try to process
+                    //  it.
+                    dndSourceTPElem = aSignal.at('dndSource');
+                    if (TP.isValid(dndSourceTPElem)) {
+
+                        //  The value of the 'dnd:vend' attribute on the source
+                        //  will detail what the kind of source just got dropped
+                        //  into the outliner.
+                        vendType = dndSourceTPElem.getAttribute('dnd:vend');
+
+                        switch (vendType) {
+
+                            case 'tofu':
+
+                                //  Message the drop target that we dropped tofu
+                                //  into it at the insertion position determined
+                                //  by the user.
+                                TP.wrap(dndTargetElem).sherpaDidInsertTofu(
+                                                        peerElem,
+                                                        insertionPosition);
+
+                                break;
+
+                            case 'dom_node':
+
+                                //  Message the drop target that we dropped an
+                                //  existing DOM node into it at the insertion
+                                //  position determined by the user and that
+                                //  node should be reparented.
+                                TP.wrap(dndTargetElem).sherpaDidReparentNode(
+                                                        peerElem,
+                                                        insertionPosition);
+
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
                 }
             }
         }

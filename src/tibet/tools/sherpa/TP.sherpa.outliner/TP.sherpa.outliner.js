@@ -624,6 +624,17 @@ function(aSignal) {
 
                     break;
 
+                case 'dom_node':
+
+                    //  Message the drop target that we dropped an existing DOM
+                    //  node into it at the insertion position determined by the
+                    //  user and that node should be reparented.
+                    TP.wrap(dndTargetElem).sherpaDidReparentNode(
+                                            dndTargetElem,
+                                            this.get('insertionPosition'));
+
+                    break;
+
                 default:
                     break;
             }
@@ -1256,7 +1267,10 @@ function() {
     TP.elementAddClass(targetElement, 'sherpa-outliner');
 
     //  Enable DND by setting this attribute.
-    TP.elementSetAttribute(targetElement, 'dnd:accept', 'tofu breadcrumb', true);
+    TP.elementSetAttribute(targetElement,
+                            'dnd:accept',
+                            'tofu dom_node breadcrumb',
+                            true);
 
     //  Define a Function that will compute the tag label either by using the
     //  name in the 'tibet:tag' attribute (preferred since it was set by the
