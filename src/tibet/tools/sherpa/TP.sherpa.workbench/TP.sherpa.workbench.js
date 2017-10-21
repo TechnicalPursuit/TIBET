@@ -156,7 +156,7 @@ function(statusInfo) {
     allStatusInfo = this.get('allStatusInfo');
     if (TP.notValid(allStatusInfo)) {
         allStatusInfo = TP.hc();
-        this.get('allStatusInfo', allStatusInfo);
+        this.set('allStatusInfo', allStatusInfo);
     }
 
     str = '';
