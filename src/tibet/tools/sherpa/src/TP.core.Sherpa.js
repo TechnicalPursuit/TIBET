@@ -2581,9 +2581,7 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
         return this;
     }
 
-    isAttrChange = TP.notEmpty(attributeName);
-
-    if (!isAttrChange && TP.isElement(aNode)) {
+    if (TP.isElement(aNode)) {
         this.signal('CanvasChanged', TP.hc('target', aNode,
                                             'operation', operation,
                                             'attrName', attributeName,
@@ -2592,6 +2590,8 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
     }
 
     return this;
+
+    isAttrChange = TP.notEmpty(attributeName);
 
     xhtmlURIs = TP.w3.Xmlns.getXHTMLURIs();
 
