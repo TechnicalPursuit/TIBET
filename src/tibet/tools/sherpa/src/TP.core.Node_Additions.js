@@ -811,7 +811,7 @@ function(aHalo) {
      * @summary Returns whether or not the halo can delete the receiver from its
      *     DOM tree.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
-     *     it can focus the receiver.
+     *     it can delete the receiver.
      * @returns {Boolean} Whether or not the halo can delete the receiver.
      */
 
