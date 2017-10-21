@@ -167,8 +167,6 @@ function(statusInfo) {
     if (statusInfo.hasKey('insertionPosition')) {
         allStatusInfo.atPut('insertionPosition',
                             statusInfo.at('insertionPosition'));
-    } else {
-        allStatusInfo.atPut('insertionPosition', '');
     }
 
     if (statusInfo.hasKey('mousePoint')) {
