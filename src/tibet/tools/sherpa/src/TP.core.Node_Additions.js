@@ -1087,7 +1087,20 @@ function(insertionPointElement, insertionPosition) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    console.log('reparented node');
+    var haloTPElem,
+        haloTargetTPElem;
+
+    //  The target element that we're moving is the halo's current target.
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+
+    //  Move the target element. The deadening/awakening will be handled by the
+    //  Mutation Observer machinery.
+    TP.nodeInsertContent(insertionPointElement,
+                            TP.unwrap(haloTargetTPElem),
+                            insertionPosition);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
