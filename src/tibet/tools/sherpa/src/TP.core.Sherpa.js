@@ -2226,11 +2226,10 @@ function() {
      * @returns {TP.core.sherpa} The receiver.
      */
 
-    var newOutliner;
-
     //  The outliner doesn't have a visual 'tag' representation, so we manually
-    //  construct it, set its ID and register it so that it can be found.
-    newOutliner = TP.sherpa.outliner.construct();
+    //  construct it. This will set its ID and register it so that it can be
+    //  found.
+    TP.sherpa.outliner.construct();
 
     return this;
 });

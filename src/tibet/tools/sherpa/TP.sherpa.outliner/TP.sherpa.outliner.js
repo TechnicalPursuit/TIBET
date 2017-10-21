@@ -1070,6 +1070,9 @@ function() {
         case TP.AFTER_END:
             newPosition = TP.BEFORE_BEGIN;
             break;
+
+        default:
+            break;
     }
 
     this.set('insertionPosition', newPosition);
