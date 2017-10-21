@@ -856,6 +856,7 @@ Cmd.prototype.updatePackage = function() {
         pkgOpts,
         cfgName,
         pkgName,
+        pkgNode,
         cfgNode,
         condAttr,
         cond;
@@ -881,10 +882,12 @@ Cmd.prototype.updatePackage = function() {
         pkgName = pkgName + '.xml';
     }
 
+    pkgNode = cmd.readPackageNode(pkgName);
+
     this.log('Writing package resource entries...');
 
     //  This may build the node if not currently found.
-    cfgNode = this.readConfigNode(pkgName, cfgName, true);
+    cfgNode = this.readConfigNode(pkgNode, cfgName, true);
     if (!cfgNode) {
         throw new Error('Unable to find ' + pkgName + '@' + cfgName);
     }
@@ -960,7 +963,6 @@ Cmd.prototype.updatePackage = function() {
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
@@ -970,8 +972,7 @@ Cmd.prototype.updatePackage = function() {
     });
 
     if (dirty) {
-        this.addXMLLiteral(cfgNode, '\n');
-        this.writeConfigNode(pkgName, cfgNode);
+        cmd.writePackageNode(pkgName, pkgNode);
 
         this.warn('New configuration entries created. Review/Rebuild as needed.');
     }
