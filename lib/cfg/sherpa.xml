@@ -86,6 +86,7 @@
     <script src="./TP.sherpa.count/TP.sherpa.count.js"/>
     <script src="./TP.sherpa.sync/TP.sherpa.sync.js"/>
     <script src="./TP.sherpa.settings/TP.sherpa.settings.js"/>
+    <script src="./TP.sherpa.statusbar/TP.sherpa.statusbar.js"/>
     <script src="./TP.sherpa.bookmarkMenuContent/TP.sherpa.bookmarkMenuContent.js"/>
     <script src="./TP.sherpa.snippetMenuContent/TP.sherpa.snippetMenuContent.js"/>
     <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>
