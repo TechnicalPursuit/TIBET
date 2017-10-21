@@ -1035,6 +1035,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.outliner.Inst.defineMethod('rotateInsertionPosition',
+function() {
+
+    /**
+     * @method rotateInsertionPosition
+     * @summary Rotates the insertion position amongst the 4 values following
+     *     the pattern of: TP.BEFORE_BEGIN -> TP.AFTER_BEGIN -> TP.BEFORE_END ->
+     *     TP.AFTER_END. This method then sets the insertion position to the
+     *     next value.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var currentPosition,
+        newPosition;
+
+    currentPosition = this.get('insertionPosition');
+
+    switch (currentPosition) {
+
+        case TP.BEFORE_BEGIN:
+            newPosition = TP.AFTER_BEGIN;
+            break;
+
+        case TP.AFTER_BEGIN:
+            newPosition = TP.BEFORE_END;
+            break;
+
+        case TP.BEFORE_END:
+            newPosition = TP.AFTER_END;
+            break;
+
+        case TP.AFTER_END:
+            newPosition = TP.BEFORE_BEGIN;
+            break;
+    }
+
+    this.set('insertionPosition', newPosition);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.outliner.Inst.defineMethod('rotateDown',
 function() {
 
@@ -1502,74 +1545,9 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Right_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Shift_Down',
 function(aSignal) {
-
-    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.AFTER_END);
-
-    aSignal.preventDefault();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Right_Up',
-function(aSignal) {
-
-    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_END);
-
-    aSignal.preventDefault();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Left_Down',
-function(aSignal) {
-
-    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_BEGIN);
-
-    aSignal.preventDefault();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Left_Up',
-function(aSignal) {
-
-    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_END);
-
-    aSignal.preventDefault();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Up_Down',
-function(aSignal) {
-
-    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.AFTER_BEGIN);
-
-    aSignal.preventDefault();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Up_Up',
-function(aSignal) {
-
-    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_END);
-
-    aSignal.preventDefault();
-
-    return this;
+    TP.bySystemId('SherpaOutliner').rotateInsertionPosition();
 });
 
 //  ----------------------------------------------------------------------------
