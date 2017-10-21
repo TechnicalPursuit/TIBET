@@ -2232,9 +2232,6 @@ function() {
     //  construct it, set its ID and register it so that it can be found.
     newOutliner = TP.sherpa.outliner.construct();
 
-    newOutliner.setID('SherpaOutliner');
-    TP.sys.registerObject(newOutliner);
-
     return this;
 });
 

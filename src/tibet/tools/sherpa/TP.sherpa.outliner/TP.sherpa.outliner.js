@@ -68,6 +68,11 @@ function() {
 
     this.callNextMethod();
 
+    //  Important to set this before proceeding. Some of the initialization
+    //  machinery wants to refer back to this object.
+    this.setID('SherpaOutliner');
+    TP.sys.registerObject(this);
+
     this.set('isActive', false);
 
     this.resetVisualizationParameters();
