@@ -295,6 +295,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.flex.TP.sherpa.flex.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.count.TP.sherpa.count.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.sync.TP.sherpa.sync.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.statusbar.TP.sherpa.statusbar.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.statusbar.TP.sherpa.statusbar.css.js"/>
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">

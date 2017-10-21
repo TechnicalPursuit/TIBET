@@ -251,9 +251,6 @@
                         '<config id="' + cfgname + '"/>',
                         '\n\n');
 
-                    //  TODO:   don't save...just return node
-                    this.writeConfigNode(pkgfile, packageNode);
-
                     if (!(config = doc.getElementById(cfgname))) {
                         this.error('Cannot find <config> id: ' +
                             defaultCfgName + ' after creation attempt.');
