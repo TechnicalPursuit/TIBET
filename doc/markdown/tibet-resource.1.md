@@ -50,9 +50,9 @@ entries it would build:
     Found 3 concrete resources...
     Configuration Entries (not saved):
     <config id="resources" if="boot.phase_two">
-        <script src="~app_build/tags.APP.hello.app.xhtml.js"/>
-        <script src="~app_build/tags.APP.hello.app.css.js"/>
-        <script src="~app_build/tags.test.less.js"/>
+        <script src="~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js"/>
+        <script src="~app_build/app_tags.APP.hello.app.APP.hello.app.css.js"/>
+        <script src="~app_build/app_tags.test.less.js"/>
     </config>
 
 ### Building application resources
@@ -64,13 +64,13 @@ To build resources add the `--build` flag:
     TIBET loaded in 3680 ms. Starting execution.
     Filtering 927 potential resources...
     Building 3 concrete resources...
-    ~app_src/tags/APP.hello.app.xhtml
-    ~app_src/tags/APP.hello.app.css
-    ~app_src/tags/test.less
+    ~app_tags/APP.hello.app/APP.hello.app.xhtml
+    ~app_tags/APP.hello.app/APP.hello.app.css
+    ~app_tags/test.less
     Writing package resource entries...
-    <script src="~app_build/tags.APP.hello.app.xhtml.js"/> (added)
-    <script src="~app_build/tags.APP.hello.app.css.js"/> (added)
-    <script src="~app_build/tags.test.css.js"/> (added)
+    <script src="~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js"/> (added)
+    <script src="~app_build/app_tags.APP.hello.app.APP.hello.app.css.js"/> (added)
+    <script src="~app_build/app_tags.test.css.js"/> (added)
 
 Note that if you build multiple times the `(added)` qualifier will show
 `(exists)` for any resources the package already contains.
@@ -88,13 +88,13 @@ resources, then partition them into separate `<config/>` elements:
     </config>
 
     <config id="startup-resources">
-        <script src="~app_build/tags.APP.hello.app.xhtml.js"/>
-        <script src="~app_build/tags.APP.hello.app.css.js"/>
+        <script src="~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js"/>
+        <script src="~app_build/app_tags.APP.hello.app.APP.hello.app.css.js"/>
     </config>
 
     <config id="extra-resources">
-        <script src="~app_build/tags.APP.hello.specialsauce.xhtml.js"/>
-        <script src="~app_build/tags.APP.hello.specialsauce.css.js"/>
+        <script src="~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.xhtml.js"/>
+        <script src="~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.css.js"/>
     </config>
 
 When you use a configuration like the one above TIBET will automatically

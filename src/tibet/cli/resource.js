@@ -306,7 +306,8 @@ Cmd.prototype.generateResourceList = function() {
             }
         }
 
-        src = cmd.package.expandPath(item.getAttribute('href'));
+        src = cmd.package.expandPath(
+            item.getAttribute('src') || item.getAttribute('href'));
         if (!sh.test('-d', src)) {
             resources.push(cmd.package.getVirtualPath(src));
             return;

@@ -445,9 +445,11 @@ Cmd.prototype.executePackageBundled = function() {
         written,
         pak,
         assets,
+        dir,
+        file,
+        vpath,
         pkgName,
         pkgNode,
-        pkgDoc,
         configs;
 
     options = this.options;
@@ -456,26 +458,33 @@ Cmd.prototype.executePackageBundled = function() {
 
     this.log('adjusting package entries...');
 
-// ---
-
     pkgName = options.pkgname;
     pkgNode = cmd.readPackageNode(pkgName);
-    pkgDoc = pkgNode.ownerDocument;
 
-    configs = ['scripts', 'tests', 'inlined'];
+    //  Bundled packages use their own config file. But we can simplify if
+    //  the dir and type name are a match.
+    dir = options.dir.slice(options.dir.lastIndexOf('/') + 1);
+    if (dir === options.nsroot + '.' + options.nsname + '.' + options.name) {
+        file = path.join(options.dir, path.sep);
+    } else {
+        file = path.join(options.dir,
+            options.nsroot + '.' + options.nsname + '.' + options.name +
+            '.xml');
+    }
+    vpath = CLI.getVirtualPath(file);
+
+    configs = ['scripts', 'resources', 'tests', 'inlined'];
 
     configs.forEach(function(cfgName) {
         var pkgOpts,
             cfgNode,
-            file,
             tag,
-            value,
             str;
 
         //  Query against package doc so any nodes we create are coming from the
         //  same document instance. (If we use the helpers here we get a new one
         //  for each parse call).
-        if (!(cfgNode = pkgDoc.getElementById(cfgName))) {
+        if (!(cfgNode = cmd.readConfigNode(pkgNode, cfgName))) {
             cmd.error('Unable to find ' + pkgName + '@' + cfgName);
             return 1;
         }
@@ -505,23 +514,18 @@ Cmd.prototype.executePackageBundled = function() {
             return CLI.getVirtualPath(asset);
         });
 
-        file = path.join(options.dir,
-            options.nsroot + '.' + options.nsname + '.' + options.name +
-            '.cfg.xml');
-
-        value = CLI.getVirtualPath(file);
         tag = 'package';
-        str = '<' + tag + ' src="' + value + '"' +
+        str = '<' + tag + ' src="' + vpath + '"' +
             ' config="' + cfgName + '"' + '/>';
 
-        if (assets.indexOf(value) === -1) {
+        if (assets.indexOf(vpath) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
             cmd.log(str + ' (exists)');
         }
+
     });
 
     //  ---
@@ -557,6 +561,7 @@ Cmd.prototype.executePackageCommon = function() {
         assets,
         products,
         tests,
+        pkgNode,
         pkgOpts,
         cfgName,
         pkgName,
@@ -568,14 +573,14 @@ Cmd.prototype.executePackageCommon = function() {
 
     this.log('adjusting package entries...');
 
-// ---
-
     pkgName = options.pkgname;
+    pkgNode = cmd.readPackageNode(pkgName);
+
     cfgName = options.cfgname;
 
-    //  This may build the node if not currently found.
-    cfgNode = this.readConfigNode(pkgName, cfgName, true);
-    if (!cfgNode) {
+    //  Rely on the package doc for node access. If we're missing the node in
+    //  question we'll build it if possible.
+    if (!(cfgNode = cmd.readConfigNode(pkgNode, cfgName))) {
         this.error('Unable to find ' + pkgName + '@' + cfgName);
         return 1;
     }
@@ -654,7 +659,6 @@ Cmd.prototype.executePackageCommon = function() {
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
@@ -669,7 +673,7 @@ Cmd.prototype.executePackageCommon = function() {
     cfgName = 'tests';
 
     //  This may build the node if not currently found.
-    cfgNode = this.readConfigNode(pkgName, cfgName, true);
+    cfgNode = cmd.readConfigNode(pkgNode, cfgName, true);
     if (!cfgNode) {
         this.error('Unable to find ' + pkgName + '@' + cfgName);
         return 1;
@@ -698,7 +702,6 @@ Cmd.prototype.executePackageCommon = function() {
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
@@ -707,7 +710,7 @@ Cmd.prototype.executePackageCommon = function() {
     });
 
     if (dirty) {
-        this.writeConfigNode(pkgName, cfgNode);
+        this.writePackageNode(pkgName, pkgNode);
         written = true;
     }
 

@@ -52,15 +52,15 @@ command is to run it with various options, of which there are many:</p>
 
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
-~app_src/tags/APP.sample.app.js
+~app_tags/APP.sample.app/APP.sample.app.js
 </code></pre><h3 id="list-resources-from-a-specific-package-config-pair">List resources from a specific package@config pair</h3>
 <pre><code>$ tibet package --profile development@developer
 
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
-~app_src/tags/APP.sample.app.js
+~app_tags/APP.sample.app/APP.sample.app.js
 ~app_test/APP_test.js
-~app_src/tags/APP.sample.app_test.js
+~app_tags/APP.sample.app/APP.sample.app_test.js
 </code></pre><p>Here we see that the test files for our application are now listed.</p>
 <h3 id="list-resources-from-a-specific-package-config-pair-for-app-and-lib">List resources from a specific package@config pair for APP and LIB</h3>
 <pre><code>$ tibet package --profile development@developer --context all
@@ -68,9 +68,9 @@ command is to run it with various options, of which there are many:</p>
 ~lib_build/tibet_developer.min.js
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
-~app_src/tags/APP.sample.app.js
+~app_tags/APP.sample.app/APP.sample.app.js
 ~app_test/APP_test.js
-~app_src/tags/APP.sample.app_test.js
+~app_tags/APP.sample.app/APP.sample.app_test.js
 </code></pre><p>Note that with <code>--context all</code> we now see library resources (in this case
 <code>tibet_developer.min.js</code>) as well as our application&#39;s resources.</p>
 <h2 id="see-also">SEE ALSO</h2>

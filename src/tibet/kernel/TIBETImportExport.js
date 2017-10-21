@@ -62,7 +62,13 @@ function(packageName, configName) {
     //  have a 'src' - which means it's not a script).
     packageScriptPaths = packageAssets.map(
                             function(node) {
-                                var src;
+                                var tn,
+                                    src;
+
+                                tn = node.tagName.toLowerCase();
+                                if (tn !== 'script') {
+                                    return '';
+                                }
 
                                 src = node.getAttribute('src');
                                 if (src) {

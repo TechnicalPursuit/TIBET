@@ -964,6 +964,8 @@
     TP.sys.setcfg('path.lib_styles', '~lib_lib/styles');
     TP.sys.setcfg('path.boot_styles', '~app_boot/styles');
 
+    TP.sys.setcfg('path.app_tags', '~app_src/tags');
+
     TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
     TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
 

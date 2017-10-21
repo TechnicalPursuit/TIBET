@@ -45,7 +45,7 @@ command is to run it with various options, of which there are many:
 
     ~app_src/APP.sample.js
     ~app_src/APP.sample.Application.js
-    ~app_src/tags/APP.sample.app.js
+    ~app_tags/APP.sample.app/APP.sample.app.js
 
 ### List resources from a specific package@config pair
 
@@ -53,9 +53,9 @@ command is to run it with various options, of which there are many:
 
     ~app_src/APP.sample.js
     ~app_src/APP.sample.Application.js
-    ~app_src/tags/APP.sample.app.js
+    ~app_tags/APP.sample.app/APP.sample.app.js
     ~app_test/APP_test.js
-    ~app_src/tags/APP.sample.app_test.js
+    ~app_tags/APP.sample.app/APP.sample.app_test.js
 
 Here we see that the test files for our application are now listed.
 
@@ -66,9 +66,9 @@ Here we see that the test files for our application are now listed.
     ~lib_build/tibet_developer.min.js
     ~app_src/APP.sample.js
     ~app_src/APP.sample.Application.js
-    ~app_src/tags/APP.sample.app.js
+    ~app_tags/APP.sample.app/APP.sample.app.js
     ~app_test/APP_test.js
-    ~app_src/tags/APP.sample.app_test.js
+    ~app_tags/APP.sample.app/APP.sample.app_test.js
 
 Note that with `--context all` we now see library resources (in this case
 `tibet_developer.min.js`) as well as our application's resources.

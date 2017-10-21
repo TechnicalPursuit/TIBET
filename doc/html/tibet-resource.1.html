@@ -61,9 +61,9 @@ Filtering 927 potential resources...
 Found 3 concrete resources...
 Configuration Entries (not saved):
 &lt;config id=&quot;resources&quot; if=&quot;boot.phase_two&quot;&gt;
-    &lt;script src=&quot;~app_build/tags.APP.hello.app.xhtml.js&quot;/&gt;
-    &lt;script src=&quot;~app_build/tags.APP.hello.app.css.js&quot;/&gt;
-    &lt;script src=&quot;~app_build/tags.test.less.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.test.less.js&quot;/&gt;
 &lt;/config&gt;
 </code></pre><h3 id="building-application-resources">Building application resources</h3>
 <p>To build resources add the <code>--build</code> flag:</p>
@@ -72,13 +72,13 @@ Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 09:43:01 MDT
 TIBET loaded in 3680 ms. Starting execution.
 Filtering 927 potential resources...
 Building 3 concrete resources...
-~app_src/tags/APP.hello.app.xhtml
-~app_src/tags/APP.hello.app.css
-~app_src/tags/test.less
+~app_tags/APP.hello.app/APP.hello.app.xhtml
+~app_tags/APP.hello.app/APP.hello.app.css
+~app_tags/test.less
 Writing package resource entries...
-&lt;script src=&quot;~app_build/tags.APP.hello.app.xhtml.js&quot;/&gt; (added)
-&lt;script src=&quot;~app_build/tags.APP.hello.app.css.js&quot;/&gt; (added)
-&lt;script src=&quot;~app_build/tags.test.css.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_build/app_tags.test.css.js&quot;/&gt; (added)
 </code></pre><p>Note that if you build multiple times the <code>(added)</code> qualifier will show
 <code>(exists)</code> for any resources the package already contains.</p>
 <h3 id="modularizing-application-resources">Modularizing application resources</h3>
@@ -92,13 +92,13 @@ resources, then partition them into separate <code>&lt;config/&gt;</code> elemen
 &lt;/config&gt;
 
 &lt;config id=&quot;startup-resources&quot;&gt;
-    &lt;script src=&quot;~app_build/tags.APP.hello.app.xhtml.js&quot;/&gt;
-    &lt;script src=&quot;~app_build/tags.APP.hello.app.css.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt;
 &lt;/config&gt;
 
 &lt;config id=&quot;extra-resources&quot;&gt;
-    &lt;script src=&quot;~app_build/tags.APP.hello.specialsauce.xhtml.js&quot;/&gt;
-    &lt;script src=&quot;~app_build/tags.APP.hello.specialsauce.css.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.xhtml.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.css.js&quot;/&gt;
 &lt;/config&gt;
 </code></pre><p>When you use a configuration like the one above TIBET will automatically
 recognize that nested entries do not need to be added.</p>

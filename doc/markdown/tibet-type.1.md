@@ -58,7 +58,7 @@ a type created in the TIBET library it's `lib_cfg/lib_namespaces.xml`.
   * `--dir` :
     Used as the destination directory for the newly created source code files
 representing the type. If this parameter is not supplied, the default for a type
-being created in a project is `~app_src/tags` and for a type being created in
+being created in a project is `~app_tags` and for a type being created in
 the TIBET library is `~lib_src/{{type_nsname}}`.
 
 ## EXAMPLES

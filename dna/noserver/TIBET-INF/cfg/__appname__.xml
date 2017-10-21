@@ -24,25 +24,30 @@
 
 <config id="scripts">
     <!-- put your source script references here -->
-    <script src="~app_src/APP.{{appname}}.js" />
-    <script src="~app_src/APP.{{appname}}.Object.js" />
-    <script src="~app_src/APP.{{appname}}.Application.js" />
-    <script src="~app_src/tags/APP.{{appname}}.app.js" />
+    <script src="APP.{{appname}}.js" />
+    <script src="APP.{{appname}}.Object.js" />
+    <script src="APP.{{appname}}.Application.js" />
+
+    <package src="~app_tags/APP.{{appname}}.app/" config="scripts" />
 </config>
 
 <config id="tests">
     <!-- put your test scripts here -->
     <script src="~app_test/APP_test.js" />
-    <script src="~app_src/tags/APP.{{appname}}.app_test.js" />
+
+    <package src="~app_tags/APP.{{appname}}.app/" config="tests" />
 </config>
 
 <config id="resources">
     <!-- put your explicit resource entries here -->
     <resource href="~app/styles"/>
+
+    <package src="~app_tags/APP.{{appname}}.app/" config="resources" />
 </config>
 
 <config id="inlined" if="boot.phase_two boot.inlined">
     <!-- maintained by tibet resources command -->
+    <package src="~app_tags/APP.{{appname}}.app/" config="inlined" />
 </config>
 
 </package>
