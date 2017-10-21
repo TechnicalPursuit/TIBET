@@ -1170,6 +1170,8 @@ function(aPosition) {
             targetElement, 'sherpa-outliner-position', aPosition, true);
     }
 
+    TP.byId('SherpaWorkbench', TP.win('UIROOT')).updateStatusbar();
+
     return this;
 });
 

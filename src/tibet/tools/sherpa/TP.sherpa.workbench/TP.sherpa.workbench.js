@@ -130,6 +130,30 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.workbench.Inst.defineMethod('updateStatusbar',
+function() {
+
+    /**
+     * @method updateStatusbar
+     * @summary Updates the workbench's status bar.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var sherpaOutliner,
+        sherpaStatusbar;
+
+    sherpaOutliner = TP.bySystemId('SherpaOutliner');
+    sherpaStatusbar = TP.byId('SherpaStatusbar', this.getNativeWindow());
+
+    str = 'Insertion position: ' + sherpaOutliner.get('insertionPosition');
+
+    sherpaStatusbar.setContent(str);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.workbench.Inst.defineMethod('updateToolbarButtons',
 function() {
 
@@ -321,6 +345,9 @@ function(aSignal) {
     //  buttons.
     this.updateToolbarButtons();
 
+    TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
+                                                        'hidden', false);
+
     return this;
 }, {
     origin: 'SherpaOutliner'
@@ -343,6 +370,9 @@ function(aSignal) {
     //  The outliner turned off outline mode - we need to update our toolbar
     //  buttons.
     this.updateToolbarButtons();
+
+    TP.byId('SherpaStatusbar', this.getNativeWindow()).setAttribute(
+                                                        'hidden', true);
 
     return this;
 }, {
