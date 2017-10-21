@@ -1159,16 +1159,7 @@ function(aPosition) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var targetElement;
-
     this.$set('insertionPosition', aPosition);
-
-    targetElement = TP.unwrap(this.get('targetTPElement'));
-
-    if (TP.isElement(targetElement)) {
-        TP.elementSetAttribute(
-            targetElement, 'sherpa-outliner-position', aPosition, true);
-    }
 
     TP.byId('SherpaWorkbench', TP.win('UIROOT')).updateStatusbar(
             TP.hc('insertionPosition', aPosition));
@@ -1262,14 +1253,6 @@ function() {
 
     //  Enable DND by setting this attribute.
     TP.elementSetAttribute(targetElement, 'dnd:accept', 'tofu breadcrumb', true);
-
-    //  Set the 'sherpa-outliner-position' attribute to the insertion position
-    //  that the user has specified. This could be TP.BEFORE_BEGIN,
-    //  TP.AFTER_BEGIN, TP.BEFORE_END or TP.AFTER_END.
-    TP.elementSetAttribute(targetElement,
-                            'sherpa-outliner-position',
-                            this.get('insertionPosition'),
-                            true);
 
     //  Define a Function that will compute the tag label either by using the
     //  name in the 'tibet:tag' attribute (preferred since it was set by the
@@ -1434,9 +1417,6 @@ function() {
 
     //  No longer need this attribute - no more DND here.
     TP.elementRemoveAttribute(targetElement, 'dnd:accept');
-
-    //  No longer going to display the insertion position.
-    TP.elementRemoveAttribute(targetElement, 'sherpa-outliner-position', true);
 
     //  Remove the 'sherpa-outliner-tagname' attribute on the target and all of
     //  its descendants. This is used by a CSS rule to display the tagname
