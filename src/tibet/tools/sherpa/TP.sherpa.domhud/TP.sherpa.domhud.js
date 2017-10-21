@@ -551,6 +551,7 @@ function(aSignal) {
         peerID,
 
         insertionPosition,
+        sherpaOutliner,
 
         peerElem,
 
@@ -600,7 +601,8 @@ function(aSignal) {
                                     dndTargetElem,
                                     'peerID',
                                     true);
-                insertionPosition = TP.BEFORE_END;
+                sherpaOutliner = TP.bySystemId('SherpaOutliner');
+                insertionPosition = sherpaOutliner.get('insertionPosition');
             }
 
             //  If we succesfully got a peerID, then get the Element it matches
