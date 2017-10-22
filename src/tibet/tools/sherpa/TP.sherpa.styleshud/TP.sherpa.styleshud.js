@@ -237,6 +237,10 @@ function(aSignal) {
         ruleInfo;
 
     haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
+    if (TP.notValid(haloTPElem)) {
+        return this;
+    }
+
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
 
     if (TP.notValid(haloTargetTPElem)) {
