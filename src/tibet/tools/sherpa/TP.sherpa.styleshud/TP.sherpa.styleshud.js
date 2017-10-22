@@ -51,7 +51,9 @@ function(aTPElement) {
 
     if (TP.isElement(node)) {
 
-        ruleInfo = TP.elementGetAppliedStyleInfo(node);
+        //  Note here that we pass true to flush the element's cached ruleset.
+        //  This ensures the most accurate results when focusing.
+        ruleInfo = TP.elementGetAppliedStyleInfo(node, true);
 
         //  Finally, we populate the info that will go into the sidebar
         ruleInfo.perform(
