@@ -37,9 +37,9 @@ function(aTPElement) {
 
         ruleInfo;
 
-    //  If the element is tofu, then we don't show any responders for it.
+    //  If the element is tofu, then we don't show any style for it.
     if (aTPElement.getCanonicalName() === 'tibet:tofu') {
-        this.setValue(info);
+        this.setValue(TP.ac());
         return this;
     }
 
