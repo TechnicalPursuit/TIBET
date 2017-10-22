@@ -70,6 +70,27 @@ function(aHalo) {
     return false;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('hudCanDrop',
+function(aHUD, droppingTPElem) {
+
+    /**
+     * @method hudCanDrop
+     * @summary Returns whether or not the hud should allow the supplied element
+     *     to be dropped into the receiver.
+     * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
+     *     it can drop the supplied element into the receiver.
+     * @param {TP.sherpa.hud} droppingTPElem The element that is being dropped.
+     * @returns {Boolean} Whether or not the hud can drop the supplied target
+     *     into the receiver.
+     */
+
+    //  We return false here because, at this level, the hud should not be
+    //  allowing dropping into anything.
+    return false;
+});
+
 //  ========================================================================
 //  TP.core.ElementNode Additions
 //  ========================================================================
@@ -892,6 +913,25 @@ function(aHalo) {
             return false;
         }
     }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('hudCanDrop',
+function(aHUD, targetTPElem) {
+
+    /**
+     * @method hudCanDrop
+     * @summary Returns whether or not the hud should allow the supplied element
+     *     to be dropped into the receiver.
+     * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
+     *     it can drop the supplied element into the receiver.
+     * @param {TP.sherpa.hud} droppingTPElem The element that is being dropped.
+     * @returns {Boolean} Whether or not the hud can drop the supplied target
+     *     into the receiver.
+     */
 
     return true;
 });
