@@ -467,16 +467,47 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var dndTargetTPElem,
-        dndTargetElem,
+    var dndTargetElem,
+        dndTargetTPElem,
+
+        sourceTPElem,
+        vendType,
+
+        hudTPElem,
 
         containingBlockElem;
 
-    //  Grab the current signal's "DOM target" and set it as our current drop
-    //  target.
-    dndTargetTPElem = aSignal.getDOMTarget();
-    dndTargetElem = TP.unwrap(dndTargetTPElem);
+    //  Grab the current signal's "DOM target"
+    dndTargetElem = aSignal.getDOMTarget();
+    dndTargetTPElem = TP.wrap(dndTargetElem);
 
+    sourceTPElem = TP.core.UIElementNode.get('currentDNDSource');
+    vendType = sourceTPElem.getAttribute('dnd:vend');
+
+    switch (vendType) {
+        case 'breadcrumb':
+        case 'tofu':
+
+            break;
+
+        case 'dom_node':
+
+            sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
+                                                get('currentTargetTPElem');
+            break;
+
+        default:
+            break;
+    }
+
+    hudTPElem = TP.byId('SherpaHUD', TP.win('UIROOT'));
+    if (!dndTargetTPElem.hudCanDrop(hudTPElem, sourceTPElem)) {
+        this.set('$currentDNDTarget', null);
+        return this;
+    }
+
+    //  Set the native node of our current signal's "DOM target" as our current
+    //  drop target.
     this.set('$currentDNDTarget', dndTargetElem);
 
     //  Put a CSS class on the current drop target element for visual

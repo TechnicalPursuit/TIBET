@@ -101,6 +101,7 @@ sherpa|domhud > ul.content > li.spacer.sherpa-domhud-droptarget {
 sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget {
 
     font-weight: bold;
+    border: 1px solid red;
 }
 
 sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected] {

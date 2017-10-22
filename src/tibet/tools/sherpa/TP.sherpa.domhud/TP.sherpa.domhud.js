@@ -478,20 +478,51 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var dndTargetTPElem,
-        dndTargetElem,
+    var dndTargetElem,
 
-        peerElem;
+        sourceTPElem,
+        vendType,
 
-    dndTargetTPElem = aSignal.getDOMTarget();
-    dndTargetElem = TP.unwrap(dndTargetTPElem);
+        peerElem,
+        peerTPElem,
 
-    TP.elementAddClass(dndTargetElem, 'sherpa-domhud-droptarget');
+        hudTPElem;
+
+    dndTargetElem = aSignal.getDOMTarget();
+
+    sourceTPElem = TP.core.UIElementNode.get('currentDNDSource');
+    vendType = sourceTPElem.getAttribute('dnd:vend');
+
+    switch (vendType) {
+        case 'breadcrumb':
+        case 'tofu':
+
+            break;
+
+        case 'dom_node':
+
+            sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
+                                                get('currentTargetTPElem');
+            break;
+
+        default:
+            break;
+    }
 
     if (!TP.elementHasClass(dndTargetElem, 'spacer')) {
         peerElem = this.computePeerElement(dndTargetElem);
+        peerTPElem = TP.wrap(peerElem);
+
+        hudTPElem = TP.byId('SherpaHUD', TP.win('UIROOT'));
+        if (!peerTPElem.hudCanDrop(hudTPElem, sourceTPElem)) {
+            this.set('$currentDNDTarget', null);
+            return this;
+        }
+
         TP.elementAddClass(peerElem, 'sherpa-outliner-droptarget');
     }
+
+    TP.elementAddClass(dndTargetElem, 'sherpa-domhud-droptarget');
 
     this.set('$currentDNDTarget', dndTargetElem);
 
