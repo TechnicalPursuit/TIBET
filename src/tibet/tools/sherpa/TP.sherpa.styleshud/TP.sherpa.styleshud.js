@@ -216,6 +216,70 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineHandler('MutationStyleChange',
+function(aSignal) {
+
+    /**
+     * @method handleMutationStyleChange
+     * @summary Handles notifications of node style changes from the overall
+     *     canvas that the halo is working with.
+     * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var haloTPElem,
+        haloTargetTPElem,
+
+        node,
+        info,
+
+        ruleInfo;
+
+    haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
+    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+
+    if (TP.notValid(haloTargetTPElem)) {
+        return this;
+    }
+
+    //  If the element is tofu, then we don't show any responders for it.
+    if (haloTargetTPElem.getCanonicalName() === 'tibet:tofu') {
+        this.setValue(TP.ac());
+        return this;
+    }
+
+    node = TP.unwrap(haloTargetTPElem);
+
+    info = TP.ac();
+
+    if (TP.isElement(node)) {
+
+        ruleInfo = TP.elementGetAppliedStyleInfo(node);
+
+        //  Finally, we populate the info that will go into the sidebar
+        ruleInfo.perform(
+            function(aRuleInfo) {
+                info.push(
+                    TP.ac(
+                        TP.uriInTIBETFormat(aRuleInfo.at('sheetLocation')),
+                        aRuleInfo.at('originalSelector'),
+                        aRuleInfo.at('rule').cssText));
+            });
+    }
+
+    info.reverse();
+
+    this.setValue(info);
+
+    //  Scroll our list content to its bottom.
+    this.get('listcontent').scrollTo(TP.BOTTOM);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineHandler('SelectRule',
 function(aSignal) {
 
@@ -317,6 +381,25 @@ function(aSignal) {
 
     TP.bySystemId('Sherpa').showTileAt(
         'StyleSummary_Tile', 'Rule Text', showHandler, showHandler);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.observe(TP.sys.getUICanvas().getDocument(),
+                    'TP.sig.MutationStyleChange');
 
     return this;
 });
