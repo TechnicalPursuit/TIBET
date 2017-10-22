@@ -1271,9 +1271,7 @@ function(anElement, flushCaches) {
     doc = TP.nodeGetDocument(anElement);
     allStyleSheets = TP.ac(doc.styleSheets);
 
-    //  Note here how we pass true in the 2nd parameter so that the target
-    //  element's ruleset caches get flushed and computed anew.
-    rules = TP.elementGetAppliedNativeStyleRules(anElement, true);
+    rules = TP.elementGetAppliedNativeStyleRules(anElement, flushCaches);
 
     ruleInfo = TP.ac();
 
