@@ -47,6 +47,8 @@ sherpa|styleshud > ul.content > li {
     text-overflow: ellipsis;
 
     cursor: pointer;
+
+    white-space: nowrap;
 }
 
 sherpa|styleshud > ul.content > li:hover {
