@@ -63,9 +63,37 @@ function(anElement) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.html.Inst.defineMethod('haloCanDelete',
+function(aHalo) {
+
+    /**
+     * @method haloCanDelete
+     * @summary Returns whether or not the halo can delete the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can delete the receiver.
+     * @returns {Boolean} Whether or not the halo can delete the receiver.
+     */
+
+    //  The <html> Element cannot be deleted.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.body.Inst.defineMethod('haloCanDelete',
 function(aHalo) {
 
+    /**
+     * @method haloCanDelete
+     * @summary Returns whether or not the halo can delete the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can delete the receiver.
+     * @returns {Boolean} Whether or not the halo can delete the receiver.
+     */
+
+    //  The <body> Element cannot be deleted.
     return false;
 });
 
@@ -74,14 +102,16 @@ function(aHalo) {
 TP.html.head.Inst.defineMethod('haloCanDelete',
 function(aHalo) {
 
-    return false;
-});
+    /**
+     * @method haloCanDelete
+     * @summary Returns whether or not the halo can delete the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can delete the receiver.
+     * @returns {Boolean} Whether or not the halo can delete the receiver.
+     */
 
-//  ------------------------------------------------------------------------
-
-TP.html.html.Inst.defineMethod('haloCanDelete',
-function(aHalo) {
-
+    //  The <head> Element cannot be deleted.
     return false;
 });
 
