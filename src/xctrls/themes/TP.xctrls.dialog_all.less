@@ -13,11 +13,7 @@
 
     xctrls|dialog {
 
-        width: 80%;
-        height: 20%;
-
-        margin-top: 10%;
-        margin-left: 10%;
+        margin: auto;   /* rely on outer flex container */
 
         text-align: center;
 
@@ -25,9 +21,10 @@
 
         & > *[tibet|pelem="header"] {
 
+            margin: 2px;
+            border: 1px solid #666;
             left: 0;
             right: 0;
-
             height: 24px;
         }
 
@@ -35,9 +32,11 @@
 
         & > *[tibet|pelem="body"] {
 
-            top: 24px;
+            margin: 2px;
+            border: 1px solid #666;
+            top: 27px;
             right: 0;
-            bottom: 12px;
+            bottom: 9px;
             left: 0;
         }
 
@@ -45,11 +44,14 @@
 
         & > *[tibet|pelem="footer"] {
 
+            margin: 2px;
+            border: 1px solid #666;
+
             right: 0;
             bottom: 0;
             left: 0;
 
-            height: 12px;
+            height: 8px;
         }
     }
 

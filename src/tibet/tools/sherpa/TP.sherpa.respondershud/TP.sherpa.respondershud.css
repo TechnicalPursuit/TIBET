@@ -42,7 +42,7 @@ sherpa|respondershud > ul.content > li {
     margin: 5px;
 
     border: 1px solid #666;
-    border-radius: 9px;
+    border-radius: 5px;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -51,19 +51,17 @@ sherpa|respondershud > ul.content > li {
 }
 
 sherpa|respondershud > ul.content > li:hover {
-
-    background-color: rgba(255, 215, 0, 0.5);
-
+    background-color: cornsilk;
     color: #666;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected] {
-
     background-color: gold;
+    border: 1px solid black;
+    color: black;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected]:hover {
-
     background-color: gold;
 }
 
@@ -79,14 +77,11 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 
 #ResponderSummary_Tile > .body {
 
-    bottom: 0;
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 1em;
 
     background: #eee;
-    padding: 8px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    padding: 0;
 }
 
 #ResponderSummary_Tile > .header > .minimize_mark {
@@ -95,12 +90,16 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 }
 
 #ResponderSummary_Tile > .footer {
-
-    display: none;
 }
 
 #ResponderSummary_Tile > .body > #ResponderMethodList {
 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border: 0;
     width: 100%;
     height: 100%;
 
@@ -116,6 +115,23 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 }
 
 #ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem {
-
-    border: none;
+    position: relative;
+    height: 1.75em;
+    line-height: 1.75em;
+    transform: none;
 }
+
+#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem[grouping] {
+}
+
+#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem xctrls|label {
+    display: block;
+    height: 1.75em;
+    line-height: 1.75em;
+    padding-left: 12px;
+}
+
+#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem[grouping] xctrls|label {
+    padding-left: 6px;
+}
+

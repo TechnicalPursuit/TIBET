@@ -27,7 +27,7 @@
 @xctrls_button-font-color-disabled: #aaa;
 
 @xctrls_button-background-color-normal: white;
-@xctrls_button-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_button-background-color-hover: cornsilk;
 @xctrls_button-background-color-focus: gold;
 @xctrls_button-background-color-active: gold;
 @xctrls_button-background-color-disabled: #eee;
@@ -47,7 +47,7 @@
 @xctrls_buttonitem-font-color-disabled: #aaa;
 
 @xctrls_buttonitem-background-color-normal: white;
-@xctrls_buttonitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_buttonitem-background-color-hover: cornsilk;
 @xctrls_buttonitem-background-color-focus: gold;
 @xctrls_buttonitem-background-color-active: gold;
 @xctrls_buttonitem-background-color-disabled: #eee;
@@ -76,7 +76,7 @@
 @xctrls_checkitem-check-border-color-disabled: #eee;
 
 @xctrls_checkitem-check-color-normal: black;
-@xctrls_checkitem-check-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_checkitem-check-color-hover: cornsilk;
 @xctrls_checkitem-check-color-focus: gold;
 @xctrls_checkitem-check-color-active: gold;
 @xctrls_checkitem-check-color-disabled: #eee;
@@ -97,7 +97,7 @@
 @xctrls_radioitem-background-color-disabled: white;
 
 @xctrls_radioitem-check-color-normal: black;
-@xctrls_radioitem-check-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_radioitem-check-color-hover: cornsilk;
 @xctrls_radioitem-check-color-focus: gold;
 @xctrls_radioitem-check-color-active: gold;
 @xctrls_radioitem-check-color-disabled: #eee;
@@ -112,7 +112,7 @@
 @xctrls_textitem-font-color-disabled: #aaa;
 
 @xctrls_textitem-background-color-normal: transparent;
-@xctrls_textitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_textitem-background-color-hover: cornsilk;
 @xctrls_textitem-background-color-focus: gold;
 @xctrls_textitem-background-color-active: gold;
 @xctrls_textitem-background-color-disabled: #eee;
@@ -120,23 +120,29 @@
 @xctrls_textitem-background-color-selected: gray;
 
 //  xctrls|dialog variables
+@xctrls_dialog-max-width: 600px;
+@xctrls_dialog-max-height: 370px;
+@xctrls_dialog-min-width: 300px;
+@xctrls_dialog-min-height: 185px;
 
 @xctrls_dialog-border-width: 1px;
 @xctrls_dialog-border-style: solid;
-@xctrls_dialog-border-radius: 4px;
+@xctrls_dialog-border-radius: 5px;
 
-@xctrls_dialog-border-color-normal: #666;
+@xctrls_dialog-border-color-normal: #333;
 @xctrls_dialog-border-color-hover: initial;
 @xctrls_dialog-border-color-focus: initial;
 @xctrls_dialog-border-color-active: initial;
 @xctrls_dialog-border-color-disabled: initial;
 
-@xctrls_dialog-background-color: white;
+@xctrls_dialog-background-color: gold;
 
-@xctrls_dialog-header-background-color: #eee;
+@xctrls_dialog-header-background-color: #ddd;
 @xctrls_dialog-header-color: black;
-@xctrls_dialog-header-font-size: 120%;
+@xctrls_dialog-header-font-size: 116%;
 @xctrls_dialog-header-line-height: 1.5;
+
+@xctrls_dialog-body-background-color: white;
 
 @xctrls_dialog-footer-background-color: #eee;
 
@@ -164,14 +170,15 @@
 @xctrls_listitem-border-width: 1px;
 @xctrls_listitem-border-style: solid;
 
-@xctrls_listitem-border-color-normal: #eee;
+@xctrls_listitem-border-color-light: white;
+@xctrls_listitem-border-color-normal: #999;
 @xctrls_listitem-border-color-hover: initial;
 @xctrls_listitem-border-color-focus: black;
 @xctrls_listitem-border-color-active: initial;
 @xctrls_listitem-border-color-disabled: initial;
 
 @xctrls_listitem-background-color-normal: white;
-@xctrls_listitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_listitem-background-color-hover: cornsilk;
 //  NB: We don't set a background-color for focused items - it hides whether
 //  they're selected or not.
 @xctrls_listitem-background-color-active: gold;
@@ -184,8 +191,8 @@
 @xctrls_listitem-grouping-font-color-normal: black;
 @xctrls_listitem-grouping-font-color-disabled: #aaa;
 
-@xctrls_listitem-grouping-background-color-normal: #eee;
-@xctrls_listitem-grouping-background-color-hover: #eee;
+@xctrls_listitem-grouping-background-color-normal: cornsilk;
+@xctrls_listitem-grouping-background-color-hover: cornsilk;
 
 //  xctrls|notifier variables
 
@@ -198,7 +205,7 @@
 @xctrls_notifier-border-color-active: initial;
 
 @xctrls_notifier-background-color: white;
-@xctrls_notifier-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_notifier-background-color-hover: cornsilk;
 @xctrls_notifier-background-color-active: gold;
 
 //  xctrls|table variables
@@ -232,7 +239,7 @@
 @xctrls_tableitem-border-color-disabled: initial;
 
 @xctrls_tableitem-background-color-normal: white;
-@xctrls_tableitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_tableitem-background-color-hover: cornsilk;
 //  NB: We don't set a background-color for focused items - it hides whether
 //  they're selected or not.
 @xctrls_tableitem-background-color-active: gold;
@@ -262,7 +269,7 @@
 @xctrls_tabitem-font-color-disabled: #aaa;
 
 @xctrls_tabitem-background-color-normal: white;
-@xctrls_tabitem-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_tabitem-background-color-hover: cornsilk;
 @xctrls_tabitem-background-color-focus: gold;
 @xctrls_tabitem-background-color-active: gold;
 @xctrls_tabitem-background-color-disabled: #eee;
@@ -283,7 +290,7 @@
 @xctrls_tooltip-border-color-active: initial;
 
 @xctrls_tooltip-background-color: white;
-@xctrls_tooltip-background-color-hover: rgba(255, 215, 0, 0.5);
+@xctrls_tooltip-background-color-hover: cornsilk;
 @xctrls_tooltip-background-color-active: gold;
 
 //  xctrls|propertysheet variables

@@ -13,7 +13,8 @@
 xctrls|dialog {
 
     position: absolute;
-
+    max-width: 600px;
+    max-height: 370px;
     user-select: none;
 
     /* Hovering over the dialog */
@@ -72,9 +73,14 @@ xctrls|dialog {
     & .dialogControls {
 
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-self: flex-end;
 
+        margin-bottom: 12px;
         width: 100%;
+
+        & > button {
+            min-width: 5em;
+        }
     }
 }

@@ -18,6 +18,11 @@
 
         background-color: @xctrls_dialog-background-color;
 
+        max-width: @xctrls_dialog-max-width;
+        max-height: @xctrls_dialog-max-height;
+        min-width: @xctrls_dialog-min-width;
+        min-height: @xctrls_dialog-min-height;
+
         border-width: @xctrls_dialog-border-width;
         border-style: @xctrls_dialog-border-style;
         border-radius: @xctrls_dialog-border-radius;
@@ -63,30 +68,29 @@
         /* The dialog header */
 
         & > *[tibet|pelem="header"] {
-
             background-color: @xctrls_dialog-header-background-color;
             color: @xctrls_dialog-header-color;
 
             font-size: @xctrls_dialog-header-font-size;
             line-height: @xctrls_dialog-header-line-height;
 
-            border-top-left-radius: @xctrls_dialog-border-radius;
-            border-top-right-radius: @xctrls_dialog-border-radius;
+            border-top-left-radius: @xctrls_dialog-border-radius - 2;
+            border-top-right-radius: @xctrls_dialog-border-radius - 2;
         }
 
         /* The dialog body */
 
         & > *[tibet|pelem="body"] {
+            background-color: @xctrls_dialog-body-background-color;
         }
 
         /* The dialog footer */
 
         & > *[tibet|pelem="footer"] {
-
             background-color: @xctrls_dialog-footer-background-color;
 
-            border-bottom-left-radius: @xctrls_dialog-border-radius;
-            border-bottom-right-radius: @xctrls_dialog-border-radius;
+            border-bottom-left-radius: @xctrls_dialog-border-radius - 2;
+            border-bottom-right-radius: @xctrls_dialog-border-radius - 2;
         }
     }
 }

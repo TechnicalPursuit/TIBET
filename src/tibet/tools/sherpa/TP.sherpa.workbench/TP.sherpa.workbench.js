@@ -646,8 +646,7 @@ function(aSignal) {
     profileName = TP.sys.getcfg('boot.profile');
     profileName = profileName.slice(0, profileName.indexOf('@'));
 
-    TP.prompt('If you\'re using ShipIt to deploy, enter environment name.' +
-                    ' Otherwise, this should be blank.',
+    TP.prompt('Enter environment name:',
                 profileName).then(
         function(userValue) {
             var cmdVal;

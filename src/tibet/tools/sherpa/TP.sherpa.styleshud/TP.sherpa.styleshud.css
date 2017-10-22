@@ -41,7 +41,7 @@ sherpa|styleshud > ul.content > li {
     margin: 5px;
 
     border: 1px solid #666;
-    border-radius: 9px;
+    border-radius: 5px;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -52,19 +52,17 @@ sherpa|styleshud > ul.content > li {
 }
 
 sherpa|styleshud > ul.content > li:hover {
-
-    background-color: rgba(255, 215, 0, 0.5);
-
+    background-color: cornsilk;
     color: #666;
 }
 
 sherpa|styleshud > ul.content > li[pclass|selected] {
-
     background-color: gold;
+    border: 1px solid black;
+    color: black;
 }
 
 sherpa|styleshud > ul.content > li[pclass|selected]:hover {
-
     background-color: gold;
 }
 
@@ -80,14 +78,11 @@ sherpa|styleshud > ul.content > li[pclass|selected]:hover {
 
 #StyleSummary_Tile > .body {
 
-    bottom: 0;
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
-    font-size: 1em;
+    font-size: 93%;
 
     background: #eee;
     padding: 8px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
 }
 
 #StyleSummary_Tile > .header > .minimize_mark {
@@ -96,6 +91,4 @@ sherpa|styleshud > ul.content > li[pclass|selected]:hover {
 }
 
 #StyleSummary_Tile > .footer {
-
-    display: none;
 }

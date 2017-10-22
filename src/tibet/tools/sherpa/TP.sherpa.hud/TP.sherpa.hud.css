@@ -2,8 +2,11 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|hud {
-
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
 }
 
 .drawerButton {

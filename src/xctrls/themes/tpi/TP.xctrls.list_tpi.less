@@ -64,6 +64,8 @@
 
                 display: block;
 
+                border-top: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-light;
+                border-left: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-light;
                 border-right: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-normal;
                 border-bottom: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-normal;
 
@@ -91,8 +93,7 @@
 
                 &[pclass|selected] {
 
-                    border-right: none;
-                    border-bottom: none;
+                    background-color: @xctrls_listitem-background-color-selected-normal;
 
                     & > xctrls|label {
 
