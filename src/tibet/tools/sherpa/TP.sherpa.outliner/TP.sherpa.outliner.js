@@ -75,6 +75,7 @@ function() {
 
     this.set('isActive', false);
 
+    //  Reset our visualization parameters all back to their starting values.
     this.resetVisualizationParameters();
 
     consoleService = TP.bySystemId('SherpaConsoleService');
@@ -1373,7 +1374,7 @@ function() {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
-    //  Reset our visualization parameters all back to 0
+    //  Reset our visualization parameters all back to their starting values.
     this.resetVisualizationParameters();
 
     //  For now, we use the canvas document's body element as the target
