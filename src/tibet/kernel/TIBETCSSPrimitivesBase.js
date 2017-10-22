@@ -2456,7 +2456,9 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
     var theRuleText,
 
-        newRuleIndex;
+        newRuleIndex,
+
+        ownerTPElem;
 
     if (TP.notValid(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -2473,6 +2475,16 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
     aStylesheet.insertRule(TP.join(selectorText, '{', theRuleText, '}'),
                             newRuleIndex);
+
+    if (TP.isElement(aStylesheet.ownerNode)) {
+
+        ownerTPElem = TP.wrap(aStylesheet.ownerNode);
+
+        //  Signal from our (wrapped) owner element that we a style rule.
+        TP.signal(TP.tpdoc(aStylesheet.ownerNode),
+                    'TP.sig.MutationStyleChange',
+                    TP.hc('mutationTarget', ownerTPElem));
+    }
 
     return newRuleIndex;
 });
@@ -2597,12 +2609,24 @@ function(aStylesheet, ruleIndex) {
      * @exception TP.sig.InvalidParameter
      */
 
+    var ownerTPElem;
+
     if (TP.notValid(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  The W3C standard is 'deleteRule'.
     aStylesheet.deleteRule(ruleIndex);
+
+    if (TP.isElement(aStylesheet.ownerNode)) {
+
+        ownerTPElem = TP.wrap(aStylesheet.ownerNode);
+
+        //  Signal from our (wrapped) owner element that we a style rule.
+        TP.signal(TP.tpdoc(aStylesheet.ownerNode),
+                    'TP.sig.MutationStyleChange',
+                    TP.hc('mutationTarget', ownerTPElem));
+    }
 
     return;
 });
