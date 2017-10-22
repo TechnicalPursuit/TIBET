@@ -1578,7 +1578,19 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Shift_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Meta_Up',
+function(aSignal) {
+    var outliner;
+    outliner = TP.bySystemId('SherpaOutliner');
+
+    outliner.resetVisualizationParameters();
+    outliner.updateTargetElementStyle();
+    outliner.updateOutlinedDescendantStyle();
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Shift_Up',
 function(aSignal) {
     TP.bySystemId('SherpaOutliner').rotateInsertionPosition();
 });
