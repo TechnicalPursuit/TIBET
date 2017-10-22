@@ -1580,7 +1580,9 @@ function(aSignal) {
 
 TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Meta_Up',
 function(aSignal) {
+
     var outliner;
+
     outliner = TP.bySystemId('SherpaOutliner');
 
     outliner.resetVisualizationParameters();
