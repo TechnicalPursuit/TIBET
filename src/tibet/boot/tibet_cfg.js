@@ -1926,6 +1926,12 @@
     ]);
 
     //  ---
+    //  xctrls
+    //  ---
+
+    TP.sys.setcfg('xctrls.tooltip_delay', 1000);
+
+    //  ---
     //  xpath/xslt
     //  ---
 

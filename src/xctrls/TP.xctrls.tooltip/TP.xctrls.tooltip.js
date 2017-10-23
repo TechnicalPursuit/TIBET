@@ -26,6 +26,9 @@ TP.xctrls.SharedOverlay.defineSubtype('xctrls:tooltip');
 TP.xctrls.SharedOverlay.Type.defineAttribute('sharedOverlayID',
                                                 'systemTooltip');
 
+//  A timeout timer used by tooltips to slightly delay their appearance.
+TP.xctrls.SharedOverlay.Type.defineAttribute('$displayDelayTimer');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -56,7 +59,27 @@ function(aSignal) {
      *     this method.
      */
 
-    return this.openOverlay(aSignal);
+    var delayVal,
+        timer;
+
+    //  Make sure to clear any existing timeout that we have running.
+    clearTimeout(this.get('$displayDelayTimer'));
+
+    //  If the signal has a delay property, use that. Otherwise use the cfg
+    //  value or 1000 as the default.
+    delayVal = aSignal.atIfInvalid(
+                    'delay',
+                    TP.sys.cfg('xctrls.tooltip_delay', 1000));
+
+    //  Make a new timer by setting a timeout around opening the overlay that
+    //  the tooltip shares and cache it on ourself.
+    timer = setTimeout(
+            function() {
+                return this.openOverlay(aSignal);
+            }.bind(this),
+            delayVal);
+
+    this.set('$displayDelayTimer', timer);
 });
 
 //  ------------------------------------------------------------------------
@@ -88,6 +111,11 @@ function(aSignal) {
      * @param {TP.sig.CloseTooltip} aSignal The signal that caused this handler
      *     to trip.
      */
+
+    //  Make sure to clear any existing timeout that we have running and set the
+    //  attribute to null.
+    clearTimeout(this.getType().get('$displayDelayTimer'));
+    this.getType().set('$displayDelayTimer', null);
 
     this.setAttribute('hidden', true);
     this.setAttribute('active', false);
