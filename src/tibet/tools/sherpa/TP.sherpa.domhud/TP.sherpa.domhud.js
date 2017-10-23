@@ -311,7 +311,7 @@ function(aTPElement) {
         //  the same as it was for the old lozenge.
         currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
                                             this.getNativeNode(),
-                                            true)
+                                            true);
 
         //  Grab it's page rect.
         targetElemPageRect = currentItemTPElem.getPageRect();
