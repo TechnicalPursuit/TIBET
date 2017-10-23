@@ -4280,7 +4280,7 @@ function(aPointOrObject) {
      *     provided *relative to the top-level window containing the receiver*
      *     and that the receiver is positioned in some fashion.
      * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
-     *     to use or an object that has 'x' and 'y', slots or an Array that has
+     *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4429,7 +4429,7 @@ function(aPointOrObject) {
      *     provided *relative to the offset parent of the receiver* and that the
      *     receiver is positioned in some fashion.
      * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
-     *     to use or an object that has 'x' and 'y', slots or an Array that has
+     *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4515,7 +4515,7 @@ function(aPointOrObject) {
      *     provided *relative to the whole page of the receiver* and that the
      *     receiver is positioned in some fashion.
      * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
-     *     to use or an object that has 'x' and 'y', slots or an Array that has
+     *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
      */
