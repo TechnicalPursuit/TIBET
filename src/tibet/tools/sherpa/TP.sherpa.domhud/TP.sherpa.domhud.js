@@ -35,7 +35,10 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem;
+        tpElem,
+
+        westDrawer,
+        moveTileFunc;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -52,6 +55,31 @@ function(aRequest) {
                             'TP.sig.DOMDNDTargetOut'));
 
     tpElem.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
+
+    //  Grab the west drawer and define a function that, when the drawer
+    //  animates back and forth into and out of its collapsed position that, if
+    //  a tile is showing, will move the tile to the edge of the drawer.
+    westDrawer = TP.byId('west', TP.win('UIROOT'));
+
+    moveTileFunc = function(transitionSignal) {
+
+        var tileTPElem,
+
+            centerElem,
+            centerElemPageRect;
+
+        tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+        if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+            //  Grab the center element and it's page rectangle.
+            centerElem = TP.byId('center', this.getNativeWindow());
+            centerElemPageRect = centerElem.getPageRect();
+
+            tileTPElem.setPageX(centerElemPageRect.getX());
+        }
+
+    }.bind(tpElem);
+
+    moveTileFunc.observe(westDrawer, 'TP.sig.DOMTransitionEnd');
 
     return;
 });
