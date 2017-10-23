@@ -64,7 +64,7 @@ sherpa|console > xctrls|codeeditor[pclass|focus]:hover > .CodeMirror {
 
 sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor .CodeMirror-scroll {

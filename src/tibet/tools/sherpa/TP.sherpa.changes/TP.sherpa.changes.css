@@ -170,7 +170,7 @@ sherpa|changes > .header > .trigger.button {
 
 sherpa|changes > .header > .trigger.button:hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 
     color: #333;
 }

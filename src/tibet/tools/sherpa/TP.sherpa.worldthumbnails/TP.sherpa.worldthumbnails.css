@@ -123,7 +123,7 @@ sherpa|worldthumbnails > .content > ul > li > div::before {
 
 sherpa|worldthumbnails > .content > ul > li:not([pclass|selected]):hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 sherpa|worldthumbnails > sherpa|scrollbutton {

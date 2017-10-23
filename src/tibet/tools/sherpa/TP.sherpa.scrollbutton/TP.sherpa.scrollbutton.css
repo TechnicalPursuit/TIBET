@@ -48,7 +48,7 @@ sherpa|scrollbutton[class~="more"] {
 
 sherpa|scrollbutton[class~="more"]:hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 
     border: 1px solid #666;
 }
