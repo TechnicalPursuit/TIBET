@@ -295,8 +295,6 @@ function(aSignal) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    TP.info('Select Rule');
-
     return this;
 });
 
