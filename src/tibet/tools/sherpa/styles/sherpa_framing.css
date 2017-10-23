@@ -316,20 +316,18 @@ hr.clear {
     right: 0;
     left: 0;
 
-    position: absolute;
-
     width: 100%;
     height: 100%;
 
     /* Turn off pointer events for the common tile layer itself - we don't want
-     * to trap mouse events on it */
+    to trap mouse events on it */
     pointer-events: none;
 }
 
 #commonTileLayer > * {
 
     /* Turn pointer events back on for children (and therefore descendants,
-     * since its an inherited property) of the common tile layer.*/
+    since its an inherited property) of the common tile layer. */
     pointer-events: all;
 }
 
