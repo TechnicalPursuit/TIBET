@@ -307,19 +307,21 @@ function(aTPElement) {
         clickTargetElem = TP.eventGetTarget(TP.core.Mouse.get('lastClick'));
         itemID = TP.elementGetAttribute(clickTargetElem, 'peerID', true);
 
-        //  Get the currently displayed lozenge given that the peerID should be
-        //  the same as it was for the old lozenge.
-        currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
-                                            this.getNativeNode(),
-                                            true);
+        if (TP.notEmpty(itemID)) {
+            //  Get the currently displayed lozenge given that the peerID should
+            //  be the same as it was for the old lozenge.
+            currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
+                                                this.getNativeNode(),
+                                                true);
 
-        //  Grab it's page rect.
-        targetElemPageRect = currentItemTPElem.getPageRect();
+            //  Grab it's page rect.
+            targetElemPageRect = currentItemTPElem.getPageRect();
 
-        //  Set the page position of the tile based on the two rectangles X and
-        //  Y, respectively.
-        tileTPElem.setPagePosition(
+            //  Set the page position of the tile based on the two rectangles X
+            //  and Y, respectively.
+            tileTPElem.setPagePosition(
                 TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+        }
     }
 
     return this;
