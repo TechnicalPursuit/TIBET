@@ -64,7 +64,7 @@ TP.sherpa.domhud.Inst.defineAttribute('$currentDNDTarget');
 TP.sherpa.domhud.Inst.defineAttribute('$tileContentConstructed');
 TP.sherpa.domhud.Inst.defineAttribute('$attributeNames');
 
-TP.sherpa.domhud.Inst.defineAttribute('currentTarget');
+TP.sherpa.domhud.Inst.defineAttribute('attributesTarget');
 
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
@@ -208,13 +208,14 @@ function(aTPElement) {
 
         tileTPElem,
 
+        attributesTarget,
+
         modelURI,
         modelObj,
 
         centerElem,
         centerElemPageRect,
 
-        clickTargetElem,
         itemID,
         currentItemTPElem,
 
@@ -287,41 +288,38 @@ function(aTPElement) {
     tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
     if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
 
+        attributesTarget = this.get('attributesTarget');
+
         //  Compute a new model from the new target element
-        modelObj = this.buildAttributesModel(aTPElement);
+        modelObj = this.buildAttributesModel(attributesTarget);
 
         //  Set it as the resource of the URI.
         modelURI = TP.uc('urn:tibet:dom_attr_source');
         modelURI.setResource(modelObj, TP.hc('signalChange', true));
 
         //  Update the tile's header text.
-        tileTPElem.setHeaderText(aTPElement.getFullName() + ' Attributes');
+        tileTPElem.setHeaderText(
+                    attributesTarget.getFullName() + ' Attributes');
 
         //  Grab the center element and it's page rectangle.
         centerElem = TP.byId('center', this.getNativeWindow());
         centerElemPageRect = centerElem.getPageRect();
 
-        //  The original item lozenge that got clicked is gone because we redrew
-        //  the sidebar before we got here. We can still get the peerID from it,
-        //  though, since it's the target of the last mouse click.
-        clickTargetElem = TP.eventGetTarget(TP.core.Mouse.get('lastClick'));
-        itemID = TP.elementGetAttribute(clickTargetElem, 'peerID', true);
+        itemID = attributesTarget.getLocalID();
 
-        if (TP.notEmpty(itemID)) {
-            //  Get the currently displayed lozenge given that the peerID should
-            //  be the same as it was for the old lozenge.
-            currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
-                                                this.getNativeNode(),
-                                                true);
+        //  Get the currently displayed lozenge given that the peerID should
+        //  be the same as it was for the old lozenge.
+        currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
+                                            this.getNativeNode(),
+                                            true);
 
-            //  Grab it's page rect.
-            targetElemPageRect = currentItemTPElem.getPageRect();
+        //  Grab it's page rect.
+        targetElemPageRect = currentItemTPElem.getPageRect();
 
-            //  Set the page position of the tile based on the two rectangles X
-            //  and Y, respectively.
-            tileTPElem.setPagePosition(
-                TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
-        }
+        //  Set the page position of the tile based on the two rectangles X
+        //  and Y, respectively.
+        tileTPElem.setPagePosition(
+            TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
     }
 
     return this;
@@ -983,6 +981,29 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var haloTarget;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    //  Update the attributes target before we refresh.
+    this.set('attributesTarget', haloTarget);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineHandler('ToggleHighlight',
 function(aSignal) {
 
@@ -1099,7 +1120,7 @@ function(aSignal) {
     //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
     aSignal.at('trigger').preventDefault();
 
-    this.set('currentTarget', target);
+    this.set('attributesTarget', target);
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
@@ -1210,7 +1231,7 @@ function(aSignal) {
 
     var aspectPath,
 
-        currentTarget,
+        attributesTarget,
 
         modelObj,
 
@@ -1239,8 +1260,8 @@ function(aSignal) {
     }
 
     //  Make sure we have a valid current target.
-    currentTarget = this.get('currentTarget');
-    if (TP.notValid(currentTarget)) {
+    attributesTarget = this.get('attributesTarget');
+    if (TP.notValid(attributesTarget)) {
         return this;
     }
 
@@ -1297,7 +1318,7 @@ function(aSignal) {
 
             //  If we got one, remove the attribute at that position.
             if (TP.notEmpty(oldAttrName)) {
-                currentTarget.removeAttribute(oldAttrName);
+                attributesTarget.removeAttribute(oldAttrName);
             }
 
             //  Replace the old name with the new name in our list of
@@ -1305,11 +1326,11 @@ function(aSignal) {
             allAttrNames.replace(oldAttrName, name);
 
             //  Set the value using the new name.
-            currentTarget.setAttribute(name, value);
+            attributesTarget.setAttribute(name, value);
 
         } else {
 
-            hadAttribute = currentTarget.hasAttribute(name);
+            hadAttribute = attributesTarget.hasAttribute(name);
 
             //  Set the attribute named by the name to the value
             if (!hadAttribute) {
@@ -1317,14 +1338,14 @@ function(aSignal) {
             }
 
             //  Set the value using the computed name and value.
-            currentTarget.setAttribute(name, value);
+            attributesTarget.setAttribute(name, value);
         }
 
         if (hadAttribute) {
-            currentTarget.deaden();
+            attributesTarget.deaden();
         }
 
-        currentTarget.awaken();
+        attributesTarget.awaken();
     } else if (action === TP.DELETE) {
 
         //  If we're deleting an attribute (because the user clicked an 'X'),
@@ -1339,12 +1360,12 @@ function(aSignal) {
                 allAttrNames.remove(name);
 
                 //  Remove the attribute itself.
-                currentTarget.removeAttribute(name);
+                attributesTarget.removeAttribute(name);
             }
         }
 
         if (TP.notEmpty(name)) {
-            currentTarget.deaden();
+            attributesTarget.deaden();
         }
     }
 
