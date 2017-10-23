@@ -541,6 +541,24 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineHandler('CanvasChanged',
+function(aSignal) {
+
+    /**
+     * @method handleCanvasChanged
+     * @summary Handles notifications of the canvas changing from the Sherpa
+     *     object.
+     * @param {TP.sig.CanvasChanged} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    //  Unlike the other sidebars, we do *not* want to do any updating here.
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
