@@ -69,6 +69,58 @@ TP.sherpa.domhud.Inst.defineAttribute('currentTarget');
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('buildAttributesModel',
+function(targetTPElem) {
+
+    /**
+     * @method buildAttributesModel
+     * @summary Builds the model object used for binding the attributes tile
+     *     panel GUI controls.
+     * @param {TP.core.Element} targetTPElem The element to obtain the set of
+     *     attributes from.
+     * @returns {TP.core.JSONContent} The JSON content object that will be used
+     *     as the model.
+     */
+
+    var modelObj,
+        newInsertionInfo,
+        names,
+        tagAttrs;
+
+    //  Build the model object.
+    modelObj = TP.hc();
+
+    //  Register a hash to be placed at the top-level 'info' slot in the model.
+    newInsertionInfo = TP.hc();
+    modelObj.atPut('info', newInsertionInfo);
+
+    names = TP.ac();
+
+    //  Iterate over the target's attributes and populate the data model with
+    //  the name and value.
+    tagAttrs = TP.ac();
+    targetTPElem.getAttributes().perform(
+        function(kvPair) {
+            tagAttrs.push(
+                TP.hc('tagAttrName', kvPair.first(),
+                        'tagAttrValue', kvPair.last())
+            );
+
+            names.push(kvPair.first());
+        });
+    this.set('$attributeNames', names);
+
+    newInsertionInfo.atPut('tagAttrs', tagAttrs);
+
+    //  Construct a JSONContent object around the model object so that we can
+    //  bind to it using the more powerful JSONPath constructs
+    modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
+
+    return modelObj;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -152,7 +204,21 @@ function(aTPElement) {
     var info,
         nodes,
 
-        children;
+        children,
+
+        tileTPElem,
+
+        modelURI,
+        modelObj,
+
+        centerElem,
+        centerElemPageRect,
+
+        clickTargetElem,
+        itemID,
+        currentItemTPElem,
+
+        targetElemPageRect;
 
     info = TP.ac();
 
@@ -217,6 +283,44 @@ function(aTPElement) {
 
     //  Scroll our list content to its bottom.
     this.get('listcontent').scrollTo(TP.BOTTOM);
+
+    tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+
+        //  Compute a new model from the new target element
+        modelObj = this.buildAttributesModel(aTPElement);
+
+        //  Set it as the resource of the URI.
+        modelURI = TP.uc('urn:tibet:dom_attr_source');
+        modelURI.setResource(modelObj, TP.hc('signalChange', true));
+
+        //  Update the tile's header text.
+        tileTPElem.setHeaderText(aTPElement.getFullName() + ' Attributes');
+
+        //  Grab the center element and it's page rectangle.
+        centerElem = TP.byId('center', this.getNativeWindow());
+        centerElemPageRect = centerElem.getPageRect();
+
+        //  The original item lozenge that got clicked is gone because we redrew
+        //  the sidebar before we got here. We can still get the peerID from it,
+        //  though, since it's the target of the last mouse click.
+        clickTargetElem = TP.eventGetTarget(TP.core.Mouse.get('lastClick'));
+        itemID = TP.elementGetAttribute(clickTargetElem, 'peerID', true);
+
+        //  Get the currently displayed lozenge given that the peerID should be
+        //  the same as it was for the old lozenge.
+        currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
+                                            this.getNativeNode(),
+                                            true)
+
+        //  Grab it's page rect.
+        targetElemPageRect = currentItemTPElem.getPageRect();
+
+        //  Set the page position of the tile based on the two rectangles X and
+        //  Y, respectively.
+        tileTPElem.setPagePosition(
+                TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+    }
 
     return this;
 });
@@ -945,13 +1049,8 @@ function(aSignal) {
         targetElemPageRect,
 
         modelObj,
-        newInsertionInfo,
 
         tileTPElem,
-
-        names,
-
-        tagAttrs,
 
         modelURI,
 
@@ -992,38 +1091,11 @@ function(aSignal) {
 
     //  ---
 
-    //  Build the model object.
-    modelObj = TP.hc();
-
-    //  Register a hash to be placed at the top-level 'info' slot in the model.
-    newInsertionInfo = TP.hc();
-    modelObj.atPut('info', newInsertionInfo);
-
-    names = TP.ac();
-
-    //  Iterate over the target's attributes and populate the data model with
-    //  the name and value.
-    tagAttrs = TP.ac();
-    target.getAttributes().perform(
-        function(kvPair) {
-            tagAttrs.push(
-                TP.hc('tagAttrName', kvPair.first(),
-                        'tagAttrValue', kvPair.last())
-            );
-
-            names.push(kvPair.first());
-        });
-    this.set('$attributeNames', names);
-
-    newInsertionInfo.atPut('tagAttrs', tagAttrs);
-
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:dom_attr_source');
 
-    //  Construct a JSONContent object around the model object so that we can
-    //  bind to it using the more powerful JSONPath constructs
-    modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
+    modelObj = this.buildAttributesModel(target);
 
     //  If we've already constructed the tile content, just set the resource on
     //  the model URI. This will cause the bindings to update.
