@@ -4619,6 +4619,102 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('setPageX',
+function(aPointOrObject) {
+
+    /**
+     * @method setPageX
+     * @summary Sets the X position of the receiver by manipulating its left
+     *     style property. This method expects that this value is provided
+     *     *relative to the whole page of the receiver* and that the receiver is
+     *     positioned in some fashion.
+     * @param {TP.core.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.core.Point to use or an object that has an 'x' slot or an Array
+     *     that has x in the first position or a Number.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var xVal,
+
+        elem,
+        offsets,
+        styleObj;
+
+    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+        xVal = aPointOrObject.getX();
+    } else if (TP.isHash(aPointOrObject)) {
+        xVal = aPointOrObject.at('x');
+    } else if (TP.isArray(aPointOrObject)) {
+        xVal = aPointOrObject.at(0);
+    } else if (TP.isPlainObject(aPointOrObject)) {
+        xVal = aPointOrObject.x;
+    } else {
+        xVal = aPointOrObject;
+    }
+
+    elem = this.getNativeNode();
+
+    offsets = TP.elementGetOffsetFromContainer(TP.elementGetOffsetParent(elem));
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    /* eslint-disable no-extra-parens */
+    styleObj.left = (xVal - offsets.first()) + 'px';
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setPageY',
+function(aPointOrObject) {
+
+    /**
+     * @method setPageY
+     * @summary Sets the Y position of the receiver by manipulating its top
+     *     style property. This method expects that this value is provided
+     *     *relative to the whole page of the receiver* and that the receiver is
+     *     positioned in some fashion.
+     * @param {TP.core.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.core.Point to use or an object that has an 'y' slot or an Array
+     *     that has y in the first position or a Number.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var yVal,
+
+        elem,
+        offsets,
+        styleObj;
+
+    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+        yVal = aPointOrObject.getY();
+    } else if (TP.isHash(aPointOrObject)) {
+        yVal = aPointOrObject.at('y');
+    } else if (TP.isArray(aPointOrObject)) {
+        yVal = aPointOrObject.at(1);
+    } else if (TP.isPlainObject(aPointOrObject)) {
+        yVal = aPointOrObject.y;
+    } else {
+        yVal = aPointOrObject;
+    }
+
+    elem = this.getNativeNode();
+
+    offsets = TP.elementGetOffsetFromContainer(TP.elementGetOffsetParent(elem));
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    /* eslint-disable no-extra-parens */
+    styleObj.top = (yVal - offsets.last()) + 'px';
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('setStyleProperty',
 function(aProperty, aPropertyValue) {
 
