@@ -45,7 +45,7 @@ body {
     --sherpa-edge-west-open-margin: 152px;
 
     --sherpa-drawer-north-closed-height: 32px;
-    --sherpa-drawer-south-closed-height: 64px;
+    --sherpa-drawer-south-closed-height: 54px;
 
     --sherpa-drawer-north-open-height: 207px;
     --sherpa-drawer-south-open-height: 200px;
@@ -555,7 +555,7 @@ sherpa|hud:not([pclass|closed]) #center {
 
     position: absolute;
 
-    top: 8px;
+    top: 3px;
     right: 8px;
 
     width: 24px;
@@ -598,7 +598,7 @@ sherpa|hud:not([pclass|closed]) #center {
 
     position: absolute;
 
-    top: 10px;
+    top: 5px;
 
     width: 16px;
     height: 16px;

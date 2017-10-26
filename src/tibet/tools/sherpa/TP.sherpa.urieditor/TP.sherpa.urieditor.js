@@ -605,7 +605,6 @@ function() {
         function(sourceResult) {
 
             var sourceStr,
-                editorObj,
                 mimeType;
 
             //  Now that we're done reverting the content, we can unset the
@@ -645,10 +644,6 @@ function() {
                 return this;
             }
 
-            //  Grab the real underlying editor object beneath the
-            //  xctrls:codeeditor. This is an instance of CodeMirror.
-            editorObj = this.get('editor').$get('$editorObj');
-
             if (TP.isKindOf(sourceURI, TP.core.URL)) {
 
                 //  Try to get a MIME type from the URL - if we can't, then we
@@ -664,13 +659,12 @@ function() {
             } else {
                 if (TP.isKindOf(sourceResult, TP.core.Content)) {
                     mimeType = sourceResult.getContentMIMEType();
+                } else if (TP.regex.FUNCTION_LITERAL.test(sourceResult)) {
+                    mimeType = TP.JS_TEXT_ENCODED;
                 } else {
                     mimeType = TP.PLAIN_TEXT_ENCODED;
                 }
             }
-
-            //  Set the editor's 'mode' to the computed MIME type.
-            editorObj.setOption('mode', mimeType);
 
             //  If the content was JSON encoded, then try to format it using the
             //  'plain text encoding' (i.e. newlines and spaces). CodeMirror
@@ -681,8 +675,9 @@ function() {
                             TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
             }
 
-            //  Set the CodeMirror object's value to the source string.
-            editorObj.setValue(sourceStr);
+            editor.setEditorModeFromMIMEType(mimeType);
+
+            editor.setValue(sourceStr);
 
             //  Initialize our local copy of the content with the source String
             //  and set the dirty flag to false.
@@ -694,7 +689,7 @@ function() {
 
             /* eslint-disable no-extra-parens */
             (function() {
-                editor.refreshEditor();
+                editor.focus();
 
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');
@@ -780,8 +775,7 @@ function(shouldRefresh) {
     sourceResource.then(
         function(sourceResult) {
 
-            var sourceStr,
-                editorObj;
+            var sourceStr;
 
             //  Now that we're done reverting the content, we can unset the
             //  'changing content' flag.
@@ -831,21 +825,10 @@ function(shouldRefresh) {
             //  Update the editor's state, including its dirty state.
             this.updateEditorState();
 
-            //  Grab the real underlying editor object beneath the
-            //  xctrls:codeeditor. This is an instance of CodeMirror.
-            editorObj = this.get('editor').$get('$editorObj');
-
-            //  Set the CodeMirror object's value to the source string.
-            editorObj.setValue(sourceStr);
+            editor.setValue(sourceStr);
 
             /* eslint-disable no-extra-parens */
             (function() {
-
-                //  Refresh the editor and try to put the scroll position back
-                //  to what it was before we refreshed it. This is an attempt to
-                //  prevent 'scroll jumping'.
-
-                editor.refreshEditor();
 
                 editor.scrollUsingLastScrollInfo();
 
@@ -965,27 +948,33 @@ function() {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var editorObj,
+    var editor,
+        readyHandler,
 
         attrVal;
 
-    //  Grab the underlying editor's editor ;-), which is a CodeMirror object.
-    editorObj = this.get('editor').$get('$editorObj');
+    editor = this.get('editor');
 
-    //  Set the various CodeMirror options to the themes and modes that TIBET
-    //  uses.
-    editorObj.setOption('theme', 'elegant');
-    editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', true);
-    editorObj.setOption('lineWrapping', true);
+    if (!editor.isReadyToRender()) {
+        readyHandler = function() {
+            readyHandler.ignore(editor, 'TP.sig.DOMReady');
+
+            this.setup();
+        }.bind(this);
+
+        readyHandler.observe(editor, 'TP.sig.DOMReady');
+
+        return this;
+    }
+
+    editor.setWrap(true);
 
     //  Set a change handler that will be installed on our underlying editor
     //  object that will pdate the editor's state, including its dirty state,
     //  when the user changes the content of the editor.
     this.set('changeHandler', this.updateEditorState.bind(this));
 
-    //  Install that handler onto CodeMirror.
-    editorObj.on('change', this.get('changeHandler'));
+    editor.setEditorEventHandler('change', this.get('changeHandler'));
 
     //  If there are an 'extra load headers' defined on ourself as an attribute,
     //  grab and store them.
@@ -1047,12 +1036,15 @@ function(aValue, shouldSignal) {
     setTimeout(
         function() {
 
-            var inspector,
+            var editor,
+
+                inspector,
 
                 extraInfo,
                 findContent;
 
-            this.get('editor').focus();
+            editor = this.get('editor');
+            editor.focus();
 
             inspector = TP.byId('SherpaInspector', this.getNativeWindow());
 
@@ -1063,7 +1055,7 @@ function(aValue, shouldSignal) {
                 findContent = extraInfo.at('findContent');
 
                 if (TP.notEmpty(findContent)) {
-                    this.get('editor').findAndScrollTo(findContent);
+                    editor.findAndScrollTo(findContent);
                 }
             }
 
@@ -1084,14 +1076,11 @@ function() {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var editorObj,
-        currentEditorStr,
+    var currentEditorStr,
 
         localSourceStr;
 
-    editorObj = this.get('editor').$get('$editorObj');
-
-    currentEditorStr = editorObj.getValue();
+    currentEditorStr = this.get('editor').getValue();
 
     //  Make sure we have a local copy of the source content to compare against,
     //  (i.e. it's valid) or we'll always show as 'dirty' ;-).
@@ -1116,8 +1105,7 @@ function() {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var sourceURI,
-        editorObj;
+    var sourceURI;
 
     //  Grab the current source URI and ignore it for changes. This is important
     //  because we observe the source URI whenever it gets set on the receiver.
@@ -1125,11 +1113,8 @@ function() {
         this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
-    //  Grab the underlying editor's editor ;-), which is a CodeMirror object.
-    editorObj = this.get('editor').$get('$editorObj');
-
-    //  Uninstall the change handler we put onto it in the setup method.
-    editorObj.off('change', this.get('changeHandler'));
+    this.get('editor').unsetEditorEventHandler(
+                        'change', this.get('changeHandler'));
 
     this.$set('editor', null, false);
     this.$set('changeHandler', null, false);
