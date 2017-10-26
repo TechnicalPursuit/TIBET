@@ -98,7 +98,7 @@ sherpa|quality > .header > .circle {
 
 sherpa|quality > .header > .circle:hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 
     color: #333;
 }

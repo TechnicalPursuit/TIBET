@@ -83,7 +83,7 @@ div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="south"
 
 sherpa|opener:hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
     color: #333;
 
     border: 1px solid #666;

@@ -348,6 +348,9 @@ function(info) {
                 var hash;
 
                 hash = TP.hc(attrInfo);
+                if (TP.isEmpty(hash.at('tagAttrName'))) {
+                    return;
+                }
 
                 str +=
                     ' ' + hash.at('tagAttrName') +

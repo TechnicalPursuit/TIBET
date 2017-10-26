@@ -73,7 +73,7 @@ sherpa|searcher > .scroller > ul > li[pclass|selected]:hover {
 
 sherpa|searcher > .scroller > ul > li:hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 sherpa|searcher > .scroller > ul > li:first-child {
@@ -88,7 +88,7 @@ sherpa|searcher > .scroller > ul > li:last-child {
 
 sherpa|searcher .category {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
     text-align: center;
 }
 

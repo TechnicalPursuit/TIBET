@@ -102,7 +102,7 @@ sherpa|urieditor > .foot > .detach_mark {
 
 sherpa|urieditor > .foot > .detach_mark:hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 sherpa|urieditor xctrls|codeeditor > .CodeMirror {

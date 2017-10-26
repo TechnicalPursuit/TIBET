@@ -56,6 +56,10 @@ body {
     --sherpa-drawer-south-open-min-height: 200px;
 
     /* stylelint-enable custom-property-empty-line-before */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-mark {
@@ -224,13 +228,13 @@ input[type="text"]:not([disabled]):hover,
 input[type="button"]:not([disabled]):hover,
 button:not([disabled]):hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 input[type="checkbox"]:not([disabled]):hover,
 input[type="radio"]:not([disabled]):hover {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 input[type="text"]:not([disabled]):focus,
@@ -391,7 +395,7 @@ sherpa|readout > .content.mouse {
 
 sherpa|readout:hover > .content {
 
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: cornsilk;
 }
 
 sherpa|readout:hover > .content.mouse {
@@ -640,8 +644,8 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #TofuAssistantDialog {
-
-    height: 450px;
+    width: 600px;
+    height: 370px;
 }
 
 /* -----------------------------*
@@ -675,8 +679,8 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #CmdAssistantDialog {
-
-    height: 450px;
+    width: 600px;
+    height: 370px;
 }
 
 /* -----------------------------*

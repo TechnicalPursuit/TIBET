@@ -6,7 +6,7 @@
         <form bind:scope="urn:tibet:method_cmd_source#jpath($.info)">
             <ul class="flex_outer">
                 <li>
-                    <label>Method Kind:</label>
+                    <label>Method | Handler:</label>
                     <ul class="flex_inner">
                         <li>
                             <label for="methodKindRadio1">Method</label>
@@ -20,7 +20,7 @@
                 </li>
 
                 <li>
-                    <label for="methodOwnerTypeNameField">Method Owner Type Name:</label>
+                    <label for="methodOwnerTypeNameField">Method Owner:</label>
                     <input type="text" id="methodOwnerTypeNameField" bind:io="{value: methodOwnerTypeName}" autofocus="autofocus"/>
                 </li>
 
@@ -28,12 +28,12 @@
                     <label>Method Track:</label>
                     <ul class="flex_inner">
                         <li>
-                            <label for="methodTrackRadio1">Type</label>
-                            <input type="radio" name="methodtrack_radio" value="type" id="methodTrackRadio1" bind:io="{checked: methodTrack}"/>
+                            <label for="methodTrackRadio2">Instance</label>
+                            <input type="radio" name="methodtrack_radio" value="instance" id="methodTrackRadio1" bind:io="{checked: methodTrack}"/>
                         </li>
                         <li>
-                            <label for="methodTrackRadio2">Instance</label>
-                            <input type="radio" name="methodtrack_radio" value="instance" id="methodTrackRadio2"/>
+                            <label for="methodTrackRadio1">Type</label>
+                            <input type="radio" name="methodtrack_radio" value="type" id="methodTrackRadio2"/>
                         </li>
                         <li>
                             <label for="methodTrackRadio3">Type Local</label>
@@ -43,8 +43,8 @@
                 </li>
 
                 <li>
-                    <label for="methodNameField">Method/Signal name:</label>
-                    <input type="text" id="methodNameField" bind:io="{value: methodName}"/>
+                    <label for="methodNameField">Name | Signal:</label>
+                    <input placeholder="method name or signal name" type="text" id="methodNameField" bind:io="{value: methodName}"/>
                 </li>
             </ul>
         </form>
@@ -54,6 +54,6 @@
         <br/>
         <br/>
         <button on:click="DialogCancel">Cancel</button>
-        <button on:click="DialogOk">Create Method</button>
+        <button on:click="DialogOk">Create</button>
     </div>
 </tsh:method_assistant>
