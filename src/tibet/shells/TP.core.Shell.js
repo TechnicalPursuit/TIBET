@@ -3018,7 +3018,12 @@ function(aRequest, forms) {
         args,
         index,
         dict,
-        format;
+        format,
+
+        argKeys,
+        len,
+        i,
+        argKey;
 
     format = TP.ifInvalid(forms, TP.EXPANDED);
 
@@ -3085,8 +3090,8 @@ function(aRequest, forms) {
                 argvParts,
                 parts,
                 val,
-                i,
-                len,
+                j,
+                lenj,
                 argvPart,
                 chunk,
                 stop,
@@ -3106,9 +3111,9 @@ function(aRequest, forms) {
 
                 argvParts = TP.$tokenizedSplit(value);
 
-                len = argvParts.getSize();
-                for (i = 0; i < len; i++) {
-                    argvPart = argvParts.at(i);
+                lenj = argvParts.getSize();
+                for (j = 0; j < lenj; j++) {
+                    argvPart = argvParts.at(j);
 
                     //  Make sure to null out val and expandedVal
                     val = null;
@@ -3207,8 +3212,8 @@ function(aRequest, forms) {
                             chunk = '';
                             while (argvPart && argvPart.last() !== stop) {
                                 chunk += argvPart;
-                                i++;
-                                argvPart = argvParts[i];
+                                j++;
+                                argvPart = argvParts[j];
                             }
 
                             if (argvPart && argvPart.last() === stop) {
@@ -3221,10 +3226,10 @@ function(aRequest, forms) {
                         expandedVal = part.value;
                     }
 
-                    //  If we don't have an 'expanded value', then call
-                    //  upon the TP.tsh.eval type to expand / resolve the
-                    //  value. Which one depends on quoting and whether the
-                    //  value is an atomic variable reference or not.
+                    //  If we don't have an 'expanded value', then call upon the
+                    //  TP.tsh.eval type to expand / resolve the value. Which
+                    //  one depends on quoting and whether the value is an
+                    //  atomic variable reference or not.
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
@@ -3332,15 +3337,15 @@ function(aRequest, forms) {
                     }
                 }
 
-                //  The value we use for the 'original' value depends on
-                //  whether the initial value was quoted. When we get
-                //  unquoted arguments (42, true, etc) we consider the
-                //  original to be that value, not the string version.
+                //  The value we use for the 'original' value depends on whether
+                //  the initial value was quoted. When we get unquoted arguments
+                //  (42, true, etc) we consider the original to be that value,
+                //  not the string version.
                 if (TP.regex.TSH_QUOTECHAR.test(value.charAt(0))) {
                     dict.atPut(name, TP.ac(value, expandedVal));
                 } else if (format !== TP.EXPANDED) {
-                    //  requestor asked for original values as part of
-                    //  return value so we explicitly don't convert here.
+                    //  requestor asked for original values as part of return
+                    //  value so we explicitly don't convert here.
                     dict.atPut(name, TP.ac(value, expandedVal));
                 } else {
                     dict.atPut(name, TP.ac(expandedVal, expandedVal));
@@ -3355,6 +3360,18 @@ function(aRequest, forms) {
     dict.atPutIfAbsent('ARGV', TP.ac());
 
     aRequest.set('ARGUMENTS', dict);
+
+    //  Iterate over all of the arguments and, if they don't have a 'tsh:'
+    //  prefix and they're not the ARGV argument, make a 'tsh:' prefixed version
+    //  of the argument with the same value.
+    argKeys = TP.keys(dict);
+    len = argKeys.getSize();
+    for (i = 0; i < len; i++) {
+        argKey = argKeys.at(i);
+        if (!/^(tsh:|ARGV)/.test(argKey)) {
+            dict.atPut('tsh:' + argKey, dict.at(argKey));
+        }
+    }
 
     if (this.getVariable('LOGARGS')) {
         TP.info('TSH args: ' + TP.dump(dict));
