@@ -255,7 +255,11 @@ function(aRequest) {
      */
 
     var elem,
-        forElem;
+        forElem,
+
+        params,
+
+        delay;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -279,8 +283,17 @@ function(aRequest) {
         forElem = elem.parentNode;
     }
 
+    params = TP.hc();
+
+    //  If the hint element has a 'delay' attribute, then pass that along to the
+    //  setup method.
+    delay = TP.elementGetAttribute(elem, 'delay', true);
+    if (TP.notEmpty(delay)) {
+        params.atPut('delay', delay.asNumber());
+    }
+
     //  Setup the hint machinery
-    this.setupHintOn(forElem, elem);
+    this.setupHintOn(forElem, elem, params);
 
     return;
 });

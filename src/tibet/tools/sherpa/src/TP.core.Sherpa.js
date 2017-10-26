@@ -2406,7 +2406,10 @@ function() {
      * @returns {TP.core.sherpa} The receiver.
      */
 
-    var viewWin;
+    var viewWin,
+
+        consoleInput,
+        readyHandler;
 
     //  Grab the root window.
     viewWin = this.get('vWin');
@@ -2419,6 +2422,20 @@ function() {
     //  Toggle the east and west drawers to their 'maximum open' state.
     TP.byCSSPath('#west sherpa|opener', viewWin).at(0).signal('UIToggle');
     TP.byCSSPath('#east sherpa|opener', viewWin).at(0).signal('UIToggle');
+
+    consoleInput = TP.byId('SherpaConsole', TP.win('UIROOT')).
+                                                    get('consoleInput');
+
+    if (!consoleInput.isReadyToRender()) {
+        readyHandler = function() {
+            readyHandler.ignore(consoleInput, 'TP.sig.DOMReady');
+            consoleInput.focus();
+        };
+
+        readyHandler.observe(consoleInput, 'TP.sig.DOMReady');
+    } else {
+        consoleInput.focus();
+    }
 
     return this;
 });

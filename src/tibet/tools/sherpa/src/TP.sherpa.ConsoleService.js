@@ -1165,9 +1165,6 @@ function(aSignal) {
 
     this.submitRawInput(input);
 
-    //  Make sure that the console GUI clears its eval mark
-    consoleGUI.teardownEvalMark();
-
     return;
 });
 

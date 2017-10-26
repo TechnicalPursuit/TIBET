@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.defineSubtype('codeeditor');
+TP.xctrls.TemplatedTag.defineSubtype('codeeditor');
 
 //  Events:
 //      xctrls-codeeditor-selected
@@ -24,10 +24,6 @@ TP.xctrls.Element.defineSubtype('codeeditor');
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
-
-TP.xctrls.codeeditor.Type.defineConstant('XML_MODE', 'xml');
-TP.xctrls.codeeditor.Type.defineConstant('CSS_MODE', 'css');
-TP.xctrls.codeeditor.Type.defineConstant('JS_MODE', 'javascript');
 
 TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
@@ -115,6 +111,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineAttribute('$editorHeightDiff');
+
 TP.xctrls.codeeditor.Inst.defineAttribute('$oldSelectionLength');
 TP.xctrls.codeeditor.Inst.defineAttribute('$currentKeyHandler');
 
@@ -128,6 +126,96 @@ TP.xctrls.codeeditor.Inst.defineAttribute('$editorObj');
 
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        scriptElem,
+
+        loadHandler;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  If the ACE editor isn't loaded, then we must load it *into the target
+    //  document of the element that we're processing*.
+    if (TP.notValid(TP.extern.ace)) {
+
+        //  Clone the script element template from the boot system and set the
+        //  path to where the ACE editor is located.
+        scriptElem = TP.boot.$$scriptTemplate.cloneNode(true);
+        scriptElem.setAttribute(
+            'src', TP.uc('~lib_deps/ace/ace-tpi.js').getLocation());
+
+        //  Define a handler that will define the global TIBET 'extern' slot
+        //  that will point to the ACE editor and then call setup on the element
+        //  that we're processing.
+        loadHandler = function() {
+            scriptElem.removeEventListener('load', loadHandler, false);
+
+            TP.extern.ace = TP.nodeGetWindow(this).ace;
+            tpElem.setup();
+        };
+
+        scriptElem.addEventListener('load', loadHandler, false);
+
+        //  Appending it into the head will cause it to load.
+        TP.documentEnsureHeadElement(TP.doc(elem)).appendChild(scriptElem);
+    } else {
+        tpElem.setup();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    TP.wrap(elem).teardown();
+
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.codeeditor.Type.defineMethod('tagResolve',
@@ -161,48 +249,6 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.codeeditor.Inst.defineMethod('init',
-function(aNode, aURI) {
-
-    /**
-     * @method init
-     * @summary Returns a newly initialized instance.
-     * @param {Node} aNode A native node.
-     * @param {TP.core.URI|String} aURI An optional URI from which the Node
-     *     received its content.
-     * @returns {TP.xctrls.FramedElement} A new instance.
-     */
-
-    var editorObj,
-        nativeTA;
-
-    this.callNextMethod();
-
-    /* eslint-disable new-cap */
-    editorObj = TP.extern.CodeMirror(this.getNativeNode());
-    /* eslint-enable new-cap */
-
-    this.$set('$editorObj', editorObj);
-
-    //  Make sure and flag the native node to not track mutations. This is a
-    //  huge performance win when dealing with CodeMirror.
-    TP.elementSetAttribute(
-        this.getNativeNode(), 'tibet:nomutationtracking', true, true);
-
-    //  Grab the underlying textarea that CodeMirror creates privately and
-    //  configure it to manage Tabs manually. This is checked in our keydown
-    //  handling in the TIBET kernel to see whether to allow this component to
-    //  handle its own Tabbing. If we don't do this, CodeMirror will never
-    //  process Tabs because the kernel code will preventDefault() on Tab key
-    //  downs.
-    nativeTA = TP.byCSSPath('textarea', this.getNativeNode(), true, false);
-    TP.elementSetAttribute(nativeTA, 'tibet:manualTabs', true, true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.codeeditor.Inst.defineMethod('appendToLine',
 function(aText, line) {
 
@@ -213,6 +259,7 @@ function(aText, line) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
         theLine,
         lineInfo;
@@ -232,27 +279,9 @@ function(aText, line) {
 
     this.changed('selection', TP.INSERT,
                         TP.hc(TP.OLDVAL, '', TP.NEWVAL, aText));
+    */
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.codeeditor.Inst.defineMethod('createPos',
-function(line, ch) {
-
-    /**
-     * @method createPos
-     * @summary Creates a CodeMirror 'position' object from the supplied line
-     *     and character position. See the CodeMirror manual for more details.
-     * @param {Number} line The line number to create the position at.
-     * @param {Number} ch The character number to create the position at.
-     * @returns {TP.extern.CodeMirror.Pos} A CodeMirror 'position' object.
-     */
-
-    /* eslint-disable new-cap */
-    return TP.extern.CodeMirror.Pos(line, ch);
-    /* eslint-enable new-cap */
+    return TP.todo('appendToLine');
 });
 
 //  ------------------------------------------------------------------------
@@ -267,6 +296,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
         currentScrollInfo;
 
@@ -274,32 +304,9 @@ function() {
 
     currentScrollInfo = editor.getScrollInfo();
     this.set('$currentScrollInfo', currentScrollInfo);
+    */
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.codeeditor.Inst.defineMethod('executeMode',
-function(aText, aMode, tokenizeCallback) {
-
-    /**
-     * @method executeMode
-     * @summary Executes a CodeMirror 'mode' 'outside' of the editor. This
-     *     method is useful for tokenizing a particular string.
-     * @param {String} aText The string to execute the mode on.
-     * @param {String} aMode The name of the CodeMirror 'mode' to execute on the
-     *     supplied String.
-     * @param {Function} tokenizeCallback The function to execute each time a
-     *     token is encountered. This function accepts two parameters, the token
-     *     value and the token 'type' (which is a name that CodeMirror uses to
-     *     style it - e.g. 'number').
-     * @returns {TP.xctrls.codeeditor} The receiver.
-     */
-
-    TP.extern.CodeMirror.runMode(aText, aMode, tokenizeCallback);
-
-    return this;
+    return TP.todo('captureCurrentScrollInfo');
 });
 
 //  ------------------------------------------------------------------------
@@ -317,6 +324,7 @@ function(aStringOrRegExp) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
 
         cursor,
@@ -352,8 +360,9 @@ function(aStringOrRegExp) {
 
         editor.scrollIntoView(foundPosition, editorHeight / 2);
     }
+    */
 
-    return this;
+    return TP.todo('findAndScrollTo');
 });
 
 //  ------------------------------------------------------------------------
@@ -379,6 +388,10 @@ function(moveAction) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    //  Go ahead and 'focus' the editor.
+    this.$get('$editorObj').focus();
+
+    /*
     var currentlyFocusedElem,
         nativeTA;
 
@@ -402,6 +415,7 @@ function(moveAction) {
 
     //  Put the original native textarea back.
     this.$get('$editorObj').display.input.textarea = nativeTA;
+    */
 
     return this;
 });
@@ -420,7 +434,11 @@ function(start) {
      * @returns {TP.extern.CodeMirror.Pos} A CodeMirror 'position' object.
      */
 
+    /*
     return this.$get('$editorObj').getCursor(start);
+    */
+
+    return TP.todo('getCursor');
 });
 
 //  ------------------------------------------------------------------------
@@ -436,7 +454,14 @@ function() {
      * @returns {Object} The visual value of the receiver's UI node.
      */
 
-    return this.$get('$editorObj').getValue();
+    var editor;
+
+    editor = this.$get('$editorObj');
+    if (TP.isValid(editor)) {
+        return editor.getValue();
+    }
+
+    return '';
 });
 
 //  ------------------------------------------------------------------------
@@ -450,7 +475,54 @@ function() {
      * @returns {Number} The height of the editor in pixels.
      */
 
-    return TP.elementGetHeight(this.$get('$editorObj').display.sizer);
+    var vertScrollerInner,
+        diff;
+
+    //  Dig around in the internals of ACE to find the element that resizes as
+    //  the content grows or shrinks vertically - ugh. This is the 'inner part'
+    //  of the vertical scrollbar.
+    vertScrollerInner = TP.byCSSPath('.ace_scrollbar-v > .ace_scrollbar-inner',
+                                        this.getNativeNode(),
+                                        true,
+                                        false);
+
+    //  If the element isn't valid, then ACE probably hasn't loaded yet - just
+    //  return our height.
+    if (!TP.isElement(vertScrollerInner)) {
+        return this.getHeight();
+    } else {
+
+        //  If we didn't already cache the difference between the inner part and
+        //  its parent (the overall scrollbar itself), then compute and cache
+        //  it.
+        diff = this.$get('$editorHeightDiff');
+        if (TP.notValid(diff)) {
+            diff = TP.elementGetHeight(vertScrollerInner.parentNode) -
+                    TP.elementGetHeight(vertScrollerInner);
+            this.$set('$editorHeightDiff', diff);
+        }
+
+        //  Return the height of the inner part of the scrollbar plus the height
+        //  difference.
+        return TP.elementGetHeight(vertScrollerInner) + diff;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    /**
+     * @method handleDOMResize
+     * @summary Handles when the user has clicked the 'detach' arrow button to
+     *     detach ourself into a Sherpa console tab.
+     * @param {TP.sig.ResourceApply} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    return this.$get('$editorObj').resize();
 });
 
 //  ------------------------------------------------------------------------
@@ -466,6 +538,7 @@ function(aText) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor;
 
     editor = this.$get('$editorObj');
@@ -475,8 +548,26 @@ function(aText) {
 
     this.changed('selection', TP.INSERT,
                         TP.hc(TP.OLDVAL, '', TP.NEWVAL, aText));
+    */
 
-    return this;
+    return TP.todo('insertAtCursor');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('isReadyToRender',
+function() {
+
+    /**
+     * @method isReadyToRender
+     * @summary Whether or not the receiver is 'ready to render'. Normally, this
+     *     means that all of the resources that the receiver relies on to render
+     *     have been loaded.
+     * @returns {Boolean} Whether or not the receiver is ready to render.
+     */
+
+    //  If we have a valid ACE instance, then we're ready to go.
+    return TP.isValid(this.$get('$editorObj'));
 });
 
 //  ------------------------------------------------------------------------
@@ -499,22 +590,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.codeeditor.Inst.defineMethod('refreshEditor',
-function() {
-
-    /**
-     * @method refreshEditor
-     * @summary Redraws the editor, flushing any DOM changes.
-     * @returns {TP.xctrls.codeeditor} The receiver.
-     */
-
-    this.$get('$editorObj').refresh();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.codeeditor.Inst.defineMethod('select',
 function() {
 
@@ -525,6 +600,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
         lastLineInfo;
 
@@ -543,8 +619,9 @@ function() {
         });
 
     this.focus();
+    */
 
-    return this;
+    return TP.todo('select');
 });
 
 //  ------------------------------------------------------------------------
@@ -559,6 +636,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
         currentScrollInfo;
 
@@ -570,8 +648,9 @@ function() {
     }
 
     editor.scrollTo(currentScrollInfo.left, currentScrollInfo.top);
+    */
 
-    return this;
+    return TP.todo('scrollUsingLastScrollInfo');
 });
 
 //  ------------------------------------------------------------------------
@@ -592,22 +671,10 @@ function(aValue) {
 
     var editorObj;
 
-    //  TODO: Detect CSS and set the proper parser
-
-    if (TP.regex.CONTAINS_ELEM_MARKUP.test(aValue)) {
-        this.setEditorMode(this.getType().XML_MODE);
-    } else {
-        this.setEditorMode(this.getType().JS_MODE);
-    }
-
     editorObj = this.$get('$editorObj');
     editorObj.setValue(aValue);
 
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editorObj.refresh();
-    }).queueForNextRepaint(this.getNativeWindow());
-    /* eslint-enable no-extra-parens */
+    editorObj.gotoLine(0, 0, false);
 
     return this;
 });
@@ -637,17 +704,54 @@ function(eventName, aHandlerFunc) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.codeeditor.Inst.defineMethod('setEditorMode',
-function(modeConst) {
+function(modeName) {
 
     /**
      * @method setEditorMode
-     * @summary Sets the editor 'mode' (i.e. the CodeMirror mode that is used
-     *     for tokenization).
-     * @param {String} modeConst The CodeMirror mode name.
+     * @summary Sets the editor 'mode' (i.e. the ACE mode that is used for
+     *     tokenization).
+     * @param {String} modeName The ACE mode name.
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').setOption('mode', modeConst);
+    this.$get('$editorObj').getSession().setMode(modeName);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('setEditorModeFromMIMEType',
+function(mimeType) {
+
+    /**
+     * @method setEditorModeFromMIMEType
+     * @summary Sets the editor 'mode' (i.e. the ACE mode that is used for
+     *     tokenization) by using the supplied MIME type and matching that to an
+     *     ACE mode..
+     * @param {String} mimeType The MIME type to match to an ACE mode.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    switch (mimeType) {
+        case TP.XML_ENCODED:
+        case TP.XHTML_ENCODED:
+            this.setEditorMode('ace/mode/xml');
+            break;
+        case TP.JS_TEXT_ENCODED:
+            this.setEditorMode('ace/mode/javascript');
+            break;
+        case TP.JSON_ENCODED:
+            this.setEditorMode('ace/mode/json');
+            break;
+        case TP.CSS_TEXT_ENCODED:
+            this.setEditorMode('ace/mode/css');
+            break;
+        case TP.PLAIN_TEXT_ENCODED:
+        default:
+            this.setEditorMode('ace/mode/text');
+            break;
+    }
 
     return this;
 });
@@ -659,47 +763,12 @@ function(themeName) {
 
     /**
      * @method setEditorTheme
-     * @summary Sets the editor 'theme' (i.e. the CodeMirror theme currently in
-     *     force.
-     * @param {String} themeName The CodeMirror theme name.
+     * @summary Sets the editor 'theme' (i.e. the ACE theme currently in force).
+     * @param {String} themeName The ACE theme name.
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').setOption('theme', themeName);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.codeeditor.Inst.defineMethod('setKeyHandler',
-function(aHandlerFunc) {
-
-    /**
-     * @method setKeyHandler
-     * @summary Sets the CodeMirror key handling function to the supplied
-     *     function.
-     * @param {Function} aHandlerFunc The function to supply to CodeMirror as
-     *     the key handling function. This Function takes 2 parameters: The
-     *     editor instance and the raw key event. It should return false if it
-     *     does *not* want CodeMirror to handle the event.
-     * @returns {TP.xctrls.codeeditor} The receiver.
-     */
-
-    var cmHandlerFunc,
-        editor;
-
-    cmHandlerFunc =
-        function(cmObj, evt) {
-            aHandlerFunc(evt);
-        };
-
-    editor = this.$get('$editorObj');
-    editor.on('keydown', cmHandlerFunc);
-    editor.on('keyup', cmHandlerFunc);
-    editor.on('keypress', cmHandlerFunc);
-
-    this.set('$currentKeyHandler', cmHandlerFunc);
+    this.$get('$editorObj').setTheme(themeName);
 
     return this;
 });
@@ -716,7 +785,88 @@ function(shouldShow) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').setOption('lineNumbers', shouldShow);
+    this.$get('$editorObj').renderer.setShowGutter(shouldShow);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editorObj,
+
+        vertScroller,
+        vertScrollerInner;
+
+    /* eslint-disable new-cap */
+    editorObj = TP.extern.ace.edit(this.getNativeNode().firstElementChild);
+    editorObj.$blockScrolling = Infinity;
+    /* eslint-enable new-cap */
+
+    this.$set('$editorObj', editorObj);
+
+    //  Make sure and flag the native node to not track mutations. This is a
+    //  huge performance win when dealing with CodeMirror.
+    TP.elementSetAttribute(
+        this.getNativeNode(), 'tibet:nomutationtracking', true, true);
+
+    //  Observe ourself for when we change size - so that we can call 'resize()'
+    //  on the underlying ACE editor.
+    this.observe(this, 'TP.sig.DOMResize');
+
+    //  Grab the underlying textarea that CodeMirror creates privately and
+    //  configure it to manage Tabs manually. This is checked in our keydown
+    //  handling in the TIBET kernel to see whether to allow this component to
+    //  handle its own Tabbing. If we don't do this, CodeMirror will never
+    //  process Tabs because the kernel code will preventDefault() on Tab key
+    //  downs.
+    /*
+    nativeTA = TP.byCSSPath('textarea', this.getNativeNode(), true, false);
+    TP.elementSetAttribute(nativeTA, 'tibet:manualTabs', true, true);
+    */
+
+    //  Dig around in the internals of ACE to find the element that acts as the
+    //  vertical scrollbar - ugh. We need to set 'display' on this to block in
+    //  order for our resize listener that we'll install below to actually work.
+    vertScroller = TP.byCSSPath('.ace_scrollbar-v',
+                                this.getNativeNode(),
+                                true,
+                                false);
+    TP.elementGetStyleObj(vertScroller).display = 'block';
+
+    //  Grab the 'inner part' of the vertical scrollbar. This is the element
+    //  that we'll monitor
+    vertScrollerInner = TP.byCSSPath('.ace_scrollbar-v > .ace_scrollbar-inner',
+                                        this.getNativeNode(),
+                                        true,
+                                        false);
+
+    //  Add a resize listener to the inner part of the vertical scrollbar. The
+    //  attached function will signal an 'EditorResize' and then, about 25ms
+    //  after returning, will set the outer vertical scroller element to display
+    //  'block' (because the ACE code keeps hiding it, which prevents our resize
+    //  listener from working properly - there is no visible artifact to the end
+    //  user).
+    TP.elementAddResizeListener(
+        vertScrollerInner,
+        function() {
+            this.dispatch('TP.sig.EditorResize');
+            setTimeout(
+                function() {
+                    TP.elementGetStyleObj(vertScroller).display = 'block';
+                }, 25);
+        }.bind(this));
+
+    //  We're all set up and ready - signal that.
+    this.dispatch('TP.sig.DOMReady');
 
     return this;
 });
@@ -733,35 +883,58 @@ function(shouldWrap) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').lineWrapping = shouldWrap;
+    this.$get('$editorObj').getSession().setUseWrapMode(shouldWrap);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.codeeditor.Inst.defineMethod('unsetCurrentKeyHandler',
+TP.xctrls.codeeditor.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @description Typically, the supplied stylesheet Element is the one that
+     *     the receiver is waiting for so that it can finalized style
+     *     computations. This could be either the receiver's 'core' stylesheet
+     *     or it's current 'theme' stylesheet, if the receiver is executing in a
+     *     themed environment.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.xctrls.Element} The receiver.
+     */
+
+    //  NB: We override this to do nothing because the version that we inherit
+    //  sends the TP.sig.DOMReady signal when the stylesheet loads and we want
+    //  to wait until the ACE editor has loaded and is ready. See the setup()
+    //  method.
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('teardown',
 function() {
 
     /**
-     * @method unsetCurrentKeyHandler
-     * @summary Removes the currently set CodeMirror key handling function.
+     * @method teardown
+     * @summary Tears down the receiver.
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    var cmHandlerFunc,
-        editor;
+    var editorObj;
 
-    if (!TP.isCallable(cmHandlerFunc = this.get('$currentKeyHandler'))) {
-        return this;
-    }
+    this.ignore(this, 'TP.sig.DOMResize');
 
-    editor = this.$get('$editorObj');
-    editor.off('keydown', cmHandlerFunc);
-    editor.off('keyup', cmHandlerFunc);
-    editor.off('keypress', cmHandlerFunc);
+    editorObj = this.$get('$editorObj');
 
-    this.set('$currentKeyHandler', null);
+    editorObj.destroy();
+    editorObj.container.remove();
 
     return this;
 });
@@ -824,6 +997,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var oldVal;
 
     oldVal = this.getSelection();
@@ -832,8 +1006,9 @@ function() {
 
     this.changed('selection', TP.DELETE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, ''));
+    */
 
-    return this;
+    return TP.todo('clearSelection');
 });
 
 //  ------------------------------------------------------------------------
@@ -850,6 +1025,7 @@ function(toStart) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
 
         selections,
@@ -893,8 +1069,9 @@ function(toStart) {
     } else {
         editor.setSelection(last, first);
     }
+    */
 
-    return this;
+    return TP.todo('collapseSelection');
 });
 
 //  ------------------------------------------------------------------------
@@ -910,7 +1087,11 @@ function() {
      * @returns {String} The currently selected text.
      */
 
+    /*
     return this.$get('$editorObj').getSelection(TP.JOIN);
+    */
+
+    return TP.todo('getSelection');
 });
 
 //  ------------------------------------------------------------------------
@@ -924,7 +1105,11 @@ function() {
      * @returns {Number} The ending index of the current selection.
      */
 
+    /*
     return this.$get('$editorObj').getCursor('to').ch;
+    */
+
+    return TP.todo('getSelectionEnd');
 });
 
 //  ------------------------------------------------------------------------
@@ -938,7 +1123,11 @@ function() {
      * @returns {Number} The starting index of the current selection.
      */
 
+    /*
     return this.$get('$editorObj').getCursor('from').ch;
+    */
+
+    return TP.todo('getSelectionStart');
 });
 
 //  ------------------------------------------------------------------------
@@ -953,6 +1142,7 @@ function(aText) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var oldVal,
         newVal;
 
@@ -964,8 +1154,9 @@ function(aText) {
 
     this.changed('selection', TP.INSERT,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, newVal));
+    */
 
-    return this;
+    return TP.todo('insertAfterSelection');
 });
 
 //  ------------------------------------------------------------------------
@@ -980,6 +1171,7 @@ function(aText) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var oldVal,
         newVal;
 
@@ -991,8 +1183,9 @@ function(aText) {
 
     this.changed('selection', TP.INSERT,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, newVal));
+    */
 
-    return this;
+    return TP.todo('insertBeforeSelection');
 });
 
 //  ------------------------------------------------------------------------
@@ -1007,6 +1200,7 @@ function(aText) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var oldVal,
         newVal;
 
@@ -1018,8 +1212,9 @@ function(aText) {
 
     this.changed('selection', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, newVal));
+    */
 
-    return this;
+    return TP.todo('replaceSelection');
 });
 
 //  ------------------------------------------------------------------------
@@ -1036,6 +1231,7 @@ function(aStartIndex, anEndIndex) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
 
         startCoords,
@@ -1047,8 +1243,9 @@ function(aStartIndex, anEndIndex) {
     endCoords = editor.posFromIndex(anEndIndex);
 
     editor.setSelection(startCoords, endCoords);
+    */
 
-    return this;
+    return TP.todo('selectFromTo');
 });
 
 //  ------------------------------------------------------------------------
@@ -1063,6 +1260,7 @@ function(aPosition) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /*
     var editor,
         coords;
 
@@ -1071,8 +1269,9 @@ function(aPosition) {
     coords = editor.posFromIndex(aPosition);
 
     editor.setCursor(coords);
+    */
 
-    return this;
+    return TP.todo('setCursorPosition');
 });
 
 //  ------------------------------------------------------------------------
@@ -1086,18 +1285,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    var editor,
-        lastLineInfo;
-
-    editor = this.$get('$editorObj');
-    if (TP.notValid(lastLineInfo = editor.lineInfo(editor.lastLine()))) {
-        return this;
-    }
-
-    editor.setCursor({
-        line: lastLineInfo.line,
-        ch: lastLineInfo.text.length
-    });
+    this.$get('$editorObj').getSelection().moveCursorFileEnd();
 
     return this;
 });
@@ -1113,10 +1301,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').setCursor(
-        {
-            line: 0, ch: 0
-        });
+    this.$get('$editorObj').getSelection().moveCursorFileStart();
 
     return this;
 });

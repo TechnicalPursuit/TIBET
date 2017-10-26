@@ -307,13 +307,10 @@ function() {
      */
 
     var editor,
-        editorObj,
 
         sourceURI,
         sourceObj,
-        sourceText,
-
-        mimeType;
+        sourceText;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
@@ -337,24 +334,6 @@ function() {
         return this;
     }
 
-    //  Grab the real underlying editor object beneath the xctrls:codeeditor.
-    //  This is an instance of CodeMirror.
-    editorObj = this.get('editor').$get('$editorObj');
-
-    //  Try to get a MIME type from the URI - if we can't, then we just treat
-    //  the content as plain text.
-    if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
-        mimeType = TP.PLAIN_TEXT_ENCODED;
-    }
-
-    //  CodeMirror won't understand XHTML as distinct from XML.
-    if (mimeType === TP.XHTML_ENCODED) {
-        mimeType = TP.XML_ENCODED;
-    }
-
-    //  Set the editor's 'mode' to the computed MIME type.
-    editorObj.setOption('mode', mimeType);
-
     //  Grab our source text that we want by converting the source object to
     //  text.
     sourceText = TP.src(sourceObj);
@@ -364,18 +343,8 @@ function() {
     this.set('localSourceContent', sourceText);
     this.isDirty(false);
 
-    //  Set the CodeMirror object's value to the source string.
-    editorObj.setValue(sourceText);
-
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editor.refreshEditor();
-
-        //  Signal to observers that this control has rendered.
-        this.signal('TP.sig.DidRender');
-
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
-    /* eslint-enable no-extra-parens */
+    editor.setEditorModeFromMIMEType(TP.JS_TEXT_ENCODED);
+    editor.setValue(sourceText);
 
     return this;
 });
@@ -401,9 +370,7 @@ function(shouldRefresh) {
 
         refresh,
 
-        sourceText,
-
-        editorObj;
+        sourceText;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
@@ -446,12 +413,7 @@ function(shouldRefresh) {
     this.set('localSourceContent', sourceText);
     this.isDirty(false);
 
-    //  Grab the real underlying editor object beneath the xctrls:codeeditor.
-    //  This is an instance of CodeMirror.
-    editorObj = this.get('editor').$get('$editorObj');
-
-    //  Set the CodeMirror object's value to the source string.
-    editorObj.setValue(sourceText);
+    editor.setValue(sourceText);
 
     //  Revert our current source object with the source object as the server
     //  sees it.
@@ -470,12 +432,6 @@ function(shouldRefresh) {
 
     /* eslint-disable no-extra-parens */
     (function() {
-
-        //  Refresh the editor and try to put the scroll position back to what
-        //  it was before we refreshed it. This is an attempt to prevent 'scroll
-        //  jumping'.
-
-        editor.refreshEditor();
 
         editor.scrollUsingLastScrollInfo();
 

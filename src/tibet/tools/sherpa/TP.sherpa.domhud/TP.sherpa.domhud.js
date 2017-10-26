@@ -35,7 +35,10 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem;
+        tpElem,
+
+        westDrawer,
+        moveTileFunc;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -53,6 +56,31 @@ function(aRequest) {
 
     tpElem.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
 
+    //  Grab the west drawer and define a function that, when the drawer
+    //  animates back and forth into and out of its collapsed position that, if
+    //  a tile is showing, will move the tile to the edge of the drawer.
+    westDrawer = TP.byId('west', TP.win('UIROOT'));
+
+    moveTileFunc = function(transitionSignal) {
+
+        var tileTPElem,
+
+            centerElem,
+            centerElemPageRect;
+
+        tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+        if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+            //  Grab the center element and it's page rectangle.
+            centerElem = TP.byId('center', this.getNativeWindow());
+            centerElemPageRect = centerElem.getPageRect();
+
+            tileTPElem.setPageX(centerElemPageRect.getX());
+        }
+
+    }.bind(tpElem);
+
+    moveTileFunc.observe(westDrawer, 'TP.sig.DOMTransitionEnd');
+
     return;
 });
 
@@ -64,9 +92,61 @@ TP.sherpa.domhud.Inst.defineAttribute('$currentDNDTarget');
 TP.sherpa.domhud.Inst.defineAttribute('$tileContentConstructed');
 TP.sherpa.domhud.Inst.defineAttribute('$attributeNames');
 
-TP.sherpa.domhud.Inst.defineAttribute('currentTarget');
+TP.sherpa.domhud.Inst.defineAttribute('attributesTarget');
 
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('buildAttributesModel',
+function(targetTPElem) {
+
+    /**
+     * @method buildAttributesModel
+     * @summary Builds the model object used for binding the attributes tile
+     *     panel GUI controls.
+     * @param {TP.core.Element} targetTPElem The element to obtain the set of
+     *     attributes from.
+     * @returns {TP.core.JSONContent} The JSON content object that will be used
+     *     as the model.
+     */
+
+    var modelObj,
+        newInsertionInfo,
+        names,
+        tagAttrs;
+
+    //  Build the model object.
+    modelObj = TP.hc();
+
+    //  Register a hash to be placed at the top-level 'info' slot in the model.
+    newInsertionInfo = TP.hc();
+    modelObj.atPut('info', newInsertionInfo);
+
+    names = TP.ac();
+
+    //  Iterate over the target's attributes and populate the data model with
+    //  the name and value.
+    tagAttrs = TP.ac();
+    targetTPElem.getAttributes().perform(
+        function(kvPair) {
+            tagAttrs.push(
+                TP.hc('tagAttrName', kvPair.first(),
+                        'tagAttrValue', kvPair.last())
+            );
+
+            names.push(kvPair.first());
+        });
+    this.set('$attributeNames', names);
+
+    newInsertionInfo.atPut('tagAttrs', tagAttrs);
+
+    //  Construct a JSONContent object around the model object so that we can
+    //  bind to it using the more powerful JSONPath constructs
+    modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
+
+    return modelObj;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -152,7 +232,22 @@ function(aTPElement) {
     var info,
         nodes,
 
-        children;
+        children,
+
+        tileTPElem,
+
+        attributesTarget,
+
+        modelURI,
+        modelObj,
+
+        centerElem,
+        centerElemPageRect,
+
+        itemID,
+        currentItemTPElem,
+
+        targetElemPageRect;
 
     info = TP.ac();
 
@@ -217,6 +312,43 @@ function(aTPElement) {
 
     //  Scroll our list content to its bottom.
     this.get('listcontent').scrollTo(TP.BOTTOM);
+
+    tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+
+        attributesTarget = this.get('attributesTarget');
+
+        //  Compute a new model from the new target element
+        modelObj = this.buildAttributesModel(attributesTarget);
+
+        //  Set it as the resource of the URI.
+        modelURI = TP.uc('urn:tibet:dom_attr_source');
+        modelURI.setResource(modelObj, TP.hc('signalChange', true));
+
+        //  Update the tile's header text.
+        tileTPElem.setHeaderText(
+                    attributesTarget.getFullName() + ' Attributes');
+
+        //  Grab the center element and it's page rectangle.
+        centerElem = TP.byId('center', this.getNativeWindow());
+        centerElemPageRect = centerElem.getPageRect();
+
+        itemID = attributesTarget.getLocalID();
+
+        //  Get the currently displayed lozenge given that the peerID should
+        //  be the same as it was for the old lozenge.
+        currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
+                                            this.getNativeNode(),
+                                            true);
+
+        //  Grab it's page rect.
+        targetElemPageRect = currentItemTPElem.getPageRect();
+
+        //  Set the page position of the tile based on the two rectangles X
+        //  and Y, respectively.
+        tileTPElem.setPagePosition(
+            TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+    }
 
     return this;
 });
@@ -859,6 +991,29 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var haloTarget;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    //  Update the attributes target before we refresh.
+    this.set('attributesTarget', haloTarget);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineHandler('ToggleHighlight',
 function(aSignal) {
 
@@ -945,13 +1100,8 @@ function(aSignal) {
         targetElemPageRect,
 
         modelObj,
-        newInsertionInfo,
 
         tileTPElem,
-
-        names,
-
-        tagAttrs,
 
         modelURI,
 
@@ -980,7 +1130,7 @@ function(aSignal) {
     //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
     aSignal.at('trigger').preventDefault();
 
-    this.set('currentTarget', target);
+    this.set('attributesTarget', target);
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
@@ -992,38 +1142,11 @@ function(aSignal) {
 
     //  ---
 
-    //  Build the model object.
-    modelObj = TP.hc();
-
-    //  Register a hash to be placed at the top-level 'info' slot in the model.
-    newInsertionInfo = TP.hc();
-    modelObj.atPut('info', newInsertionInfo);
-
-    names = TP.ac();
-
-    //  Iterate over the target's attributes and populate the data model with
-    //  the name and value.
-    tagAttrs = TP.ac();
-    target.getAttributes().perform(
-        function(kvPair) {
-            tagAttrs.push(
-                TP.hc('tagAttrName', kvPair.first(),
-                        'tagAttrValue', kvPair.last())
-            );
-
-            names.push(kvPair.first());
-        });
-    this.set('$attributeNames', names);
-
-    newInsertionInfo.atPut('tagAttrs', tagAttrs);
-
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:dom_attr_source');
 
-    //  Construct a JSONContent object around the model object so that we can
-    //  bind to it using the more powerful JSONPath constructs
-    modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
+    modelObj = this.buildAttributesModel(target);
 
     //  If we've already constructed the tile content, just set the resource on
     //  the model URI. This will cause the bindings to update.
@@ -1118,7 +1241,7 @@ function(aSignal) {
 
     var aspectPath,
 
-        currentTarget,
+        attributesTarget,
 
         modelObj,
 
@@ -1147,8 +1270,8 @@ function(aSignal) {
     }
 
     //  Make sure we have a valid current target.
-    currentTarget = this.get('currentTarget');
-    if (TP.notValid(currentTarget)) {
+    attributesTarget = this.get('attributesTarget');
+    if (TP.notValid(attributesTarget)) {
         return this;
     }
 
@@ -1205,7 +1328,7 @@ function(aSignal) {
 
             //  If we got one, remove the attribute at that position.
             if (TP.notEmpty(oldAttrName)) {
-                currentTarget.removeAttribute(oldAttrName);
+                attributesTarget.removeAttribute(oldAttrName);
             }
 
             //  Replace the old name with the new name in our list of
@@ -1213,11 +1336,11 @@ function(aSignal) {
             allAttrNames.replace(oldAttrName, name);
 
             //  Set the value using the new name.
-            currentTarget.setAttribute(name, value);
+            attributesTarget.setAttribute(name, value);
 
         } else {
 
-            hadAttribute = currentTarget.hasAttribute(name);
+            hadAttribute = attributesTarget.hasAttribute(name);
 
             //  Set the attribute named by the name to the value
             if (!hadAttribute) {
@@ -1225,14 +1348,14 @@ function(aSignal) {
             }
 
             //  Set the value using the computed name and value.
-            currentTarget.setAttribute(name, value);
+            attributesTarget.setAttribute(name, value);
         }
 
         if (hadAttribute) {
-            currentTarget.deaden();
+            attributesTarget.deaden();
         }
 
-        currentTarget.awaken();
+        attributesTarget.awaken();
     } else if (action === TP.DELETE) {
 
         //  If we're deleting an attribute (because the user clicked an 'X'),
@@ -1247,12 +1370,12 @@ function(aSignal) {
                 allAttrNames.remove(name);
 
                 //  Remove the attribute itself.
-                currentTarget.removeAttribute(name);
+                attributesTarget.removeAttribute(name);
             }
         }
 
         if (TP.notEmpty(name)) {
-            currentTarget.deaden();
+            attributesTarget.deaden();
         }
     }
 

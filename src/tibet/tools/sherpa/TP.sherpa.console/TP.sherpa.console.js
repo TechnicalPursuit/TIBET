@@ -45,13 +45,6 @@ TP.sherpa.console.Inst.defineAttribute('consoleInput',
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
-TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
-TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
-
-TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
-
-TP.sherpa.console.Inst.defineAttribute('currentCompletionMarker');
-
 //  The number of 'new' items since we evaluated last
 TP.sherpa.console.Inst.defineAttribute('newOutputCount');
 
@@ -74,7 +67,10 @@ function() {
 
     var consoleInputTPElem,
 
-        editorObj,
+        spaceHandler,
+        shiftSpaceHandler,
+
+        loadHandler,
 
         contentTPElem,
 
@@ -93,201 +89,238 @@ function() {
     //  Make sure to observe setup on the console input here, because it won't
     //  be fully formed when this line is executed.
 
-    editorObj = consoleInputTPElem.$get('$editorObj');
+    spaceHandler =
+        function() {
 
-    editorObj.setOption('theme', 'elegant');
-    editorObj.setOption('mode', 'javascript');
-    editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', true);
-    editorObj.setOption('viewportMargin', Infinity);
-    editorObj.setOption('electricChars', false);
-    editorObj.setOption('smartIndent', false);
-    editorObj.setOption('autofocus', true);
-    editorObj.setOption('matchBrackets', true);
+            var currentEditorVal,
 
-    //  Note that we define the same key multiple times for expository purposes.
-    //  CodeMirror doesn't seem to care.
+                consoleOutput,
+                mode;
 
-    /* eslint-disable no-dupe-keys,quote-props,key-spacing */
-    editorObj.setOption(
-        'extraKeys',
-        {
-            //  NB: These should match keys that are used by the console in
-            //  TP.sherpa.ConsoleService
+            //  This should only work if the input is empty.
+            currentEditorVal = consoleInputTPElem.getValue();
+            if (TP.notEmpty(currentEditorVal)) {
+                return false;
+            }
 
-            //  Normal mode
-            'Shift-Enter'       : TP.RETURN_TRUE,   //  Accept raw input
+            consoleOutput = this.get('consoleOutput');
 
-            'Shift-Up'          : TP.RETURN_TRUE,   //  Previous history
-            'Shift-Down'        : TP.RETURN_TRUE,   //  Next history
+            mode = consoleOutput.getAttribute('mode');
 
-            'Ctrl-U'            : TP.RETURN_TRUE,   //  Clear input
-            'Ctrl-K'            : TP.RETURN_TRUE,   //  Clear output
+            //  If we're not showing cells at all, then set the mode to
+            //  growl and force toggle the display to expose the last
+            //  cell.
+            if (mode === 'none') {
+                consoleOutput.setAttribute('mode', 'growl');
+                consoleOutput.growlModeForceDisplayToggle();
 
-            'Shift-Esc'         : TP.RETURN_TRUE,   //  Cancel process
+                //  Return true so that ACE will *not* process this as a
+                //  regular keystroke.
+                return true;
+            }
 
-            'PageDown'          : TP.RETURN_TRUE,   //  Scroll page down
-            'PageUp'            : TP.RETURN_TRUE,   //  Scroll page up
+            //  Otherwise, if we're in growl mode, then there are 2
+            //  possibilities.
+            if (mode === 'growl') {
 
-            'Ctrl-Up'           : TP.RETURN_TRUE,   //  Change output mode
-            'Ctrl-Down'         : TP.RETURN_TRUE,   //  Change output mode
+                //  If we were already toggling from before (as shown by
+                //  having either 'exposed' or 'concealed' attributes),
+                //  and we were exposed, then we set the mode back to
+                //  'none' and remove the 'exposed' attribute so that
+                //  subsequent outputting will still work.
+                if (consoleOutput.hasAttribute('exposed')) {
+                    consoleOutput.setAttribute('mode', 'none');
+                    consoleOutput.removeAttribute('exposed');
+                } else {
 
-            //  Eval mark mode
-            'Shift-Up'          : TP.RETURN_TRUE,   //  Move Anchor Up
-            'Shift-Right'       : TP.RETURN_TRUE,   //  Move Anchor Right
-            'Shift-Down'        : TP.RETURN_TRUE,   //  Move Anchor Down
-            'Shift-Left'        : TP.RETURN_TRUE,   //  Move Anchor Left
-
-            'Shift-Alt-Up'      : TP.RETURN_TRUE,   //  Move Head Up
-            'Shift-Alt-Right'   : TP.RETURN_TRUE,   //  Move Head Right
-            'Shift-Alt-Down'    : TP.RETURN_TRUE,   //  Move Head Down
-            'Shift-Alt-Left'    : TP.RETURN_TRUE,   //  Move Head Left
-
-            //  Help mode
-            'Esc'               : TP.RETURN_TRUE,   //  Exit mode
-
-            //  History mode
-            'Esc'               : TP.RETURN_TRUE,   //  Exit mode
-
-            //  Autocomplete mode
-            'Ctrl-A'            : TP.RETURN_TRUE,   //  Enter mode
-            'Esc'               : TP.RETURN_TRUE,   //  Exit mode
-
-            //  'growl mode expose/conceal' key handlers
-            'Space'             :
-                function() {
-
-                    var currentEditorVal,
-
-                        consoleOutput,
-                        mode;
-
-                    //  This should only work if the input is empty.
-                    currentEditorVal = consoleInputTPElem.getValue();
-                    if (TP.notEmpty(currentEditorVal)) {
-                        return TP.extern.CodeMirror.Pass;
-                    }
-
-                    consoleOutput = this.get('consoleOutput');
-
-                    mode = consoleOutput.getAttribute('mode');
-
-                    //  If we're not showing cells at all, then set the mode to
-                    //  growl and force toggle the display to expose the last
-                    //  cell.
-                    if (mode === 'none') {
-                        consoleOutput.setAttribute('mode', 'growl');
-                        consoleOutput.growlModeForceDisplayToggle();
-
-                        //  Return false so that CodeMirror will *not* process
-                        //  this as a regular keystroke.
-                        return false;
-                    }
-
-                    //  Otherwise, if we're in growl mode, then there are 2
-                    //  possibilities.
-                    if (mode === 'growl') {
-
-                        //  If we were already toggling from before (as shown by
-                        //  having either 'exposed' or 'concealed' attributes),
-                        //  and we were exposed, then we set the mode back to
-                        //  'none' and remove the 'exposed' attribute so that
-                        //  subsequent outputting will still work.
-                        if (consoleOutput.hasAttribute('exposed')) {
-                            consoleOutput.setAttribute('mode', 'none');
-                            consoleOutput.removeAttribute('exposed');
-                        } else {
-
-                            //  Otherwise, we're in growl mode because the
-                            //  *user* (not the toggling code above) put us
-                            //  there and so we just force toggle the display to
-                            //  expose the last cell.
-                            consoleOutput.growlModeForceDisplayToggle();
-                        }
-
-                        //  Return false so that CodeMirror will *not* process
-                        //  this as a regular keystroke.
-                        return false;
-                    }
-
-                    return TP.extern.CodeMirror.Pass;
-                }.bind(this),
-
-            'Shift-Space'       :
-                function() {
-
-                    var consoleOutput,
-                        mode;
-
-                    //  Shift-Space does the exact same thing as Space does
-                    //  above, but will work whether the input cell is empty or
-                    //  not.
-
-                    consoleOutput = this.get('consoleOutput');
-
-                    mode = consoleOutput.getAttribute('mode');
-
-                    //  If we're not showing cells at all, then set the mode to
-                    //  growl and force toggle the display to expose the last
-                    //  cell.
-                    if (mode === 'none') {
-                        consoleOutput.setAttribute('mode', 'growl');
-                        consoleOutput.growlModeForceDisplayToggle();
-
-                        //  Return false so that CodeMirror will *not* process
-                        //  this as a regular keystroke.
-                        return false;
-                    }
-
-                    //  Otherwise, if we're in growl mode, then there are 2
-                    //  possibilities.
-                    if (mode === 'growl') {
-
-                        //  If we were already toggling from before (as shown by
-                        //  having either 'exposed' or 'concealed' attributes),
-                        //  and we were exposed, then we set the mode back to
-                        //  'none' and remove the 'exposed' attribute so that
-                        //  subsequent outputting will still work.
-                        if (consoleOutput.hasAttribute('exposed')) {
-                            consoleOutput.setAttribute('mode', 'none');
-                            consoleOutput.removeAttribute('exposed');
-                        } else {
-
-                            //  Otherwise, we're in growl mode because the
-                            //  *user* (not the toggling code above) put us
-                            //  there and so we just force toggle the display to
-                            //  expose the last cell.
-                            consoleOutput.growlModeForceDisplayToggle();
-                        }
-
-                        //  Return false so that CodeMirror will *not* process
-                        //  this as a regular keystroke.
-                        return false;
-                    }
-                    return TP.extern.CodeMirror.Pass;
-                }.bind(this),
-
-            //  Scroll long output items
-            'Down'              :
-                function() {
-                    return TP.extern.CodeMirror.Pass;
-                },
-
-            'Up'                :
-                function() {
-                    return TP.extern.CodeMirror.Pass;
+                    //  Otherwise, we're in growl mode because the
+                    //  *user* (not the toggling code above) put us
+                    //  there and so we just force toggle the display to
+                    //  expose the last cell.
+                    consoleOutput.growlModeForceDisplayToggle();
                 }
-        });
 
-    /* eslint-enable no-dupe-keys,quote-props,key-spacing */
+                //  Return true so that ACE will *not* process this as a
+                //  regular keystroke.
+                return true;
+            }
 
-    //  A CodeMirror-specific event handler that triggers when its viewport
-    //  changes. In that case, we adjust our input size.
-    consoleInputTPElem.setEditorEventHandler('viewportChange',
-            function() {
-                //  Adjust the input size *without* animating the drawer.
-                this.adjustInputSize(false);
-            }.bind(this));
+            //  Return false so that ACE *will* process this as a
+            //  regular keystroke.
+            return false;
+        }.bind(this);
+
+    shiftSpaceHandler =
+        function() {
+
+            var consoleOutput,
+                mode;
+
+            //  Shift-Space does the exact same thing as Space does
+            //  above, but will work whether the input cell is empty or
+            //  not.
+
+            consoleOutput = this.get('consoleOutput');
+
+            mode = consoleOutput.getAttribute('mode');
+
+            //  If we're not showing cells at all, then set the mode to
+            //  growl and force toggle the display to expose the last
+            //  cell.
+            if (mode === 'none') {
+                consoleOutput.setAttribute('mode', 'growl');
+                consoleOutput.growlModeForceDisplayToggle();
+
+                //  Return true so that ACE will *not* process this as a
+                //  regular keystroke.
+                return true;
+            }
+
+            //  Otherwise, if we're in growl mode, then there are 2
+            //  possibilities.
+            if (mode === 'growl') {
+
+                //  If we were already toggling from before (as shown by
+                //  having either 'exposed' or 'concealed' attributes),
+                //  and we were exposed, then we set the mode back to
+                //  'none' and remove the 'exposed' attribute so that
+                //  subsequent outputting will still work.
+                if (consoleOutput.hasAttribute('exposed')) {
+                    consoleOutput.setAttribute('mode', 'none');
+                    consoleOutput.removeAttribute('exposed');
+                } else {
+
+                    //  Otherwise, we're in growl mode because the
+                    //  *user* (not the toggling code above) put us
+                    //  there and so we just force toggle the display to
+                    //  expose the last cell.
+                    consoleOutput.growlModeForceDisplayToggle();
+                }
+
+                //  Return true so that ACE will *not* process this as a
+                //  regular keystroke.
+                return true;
+            }
+
+            //  Return false so that ACE *will* process this as a
+            //  regular keystroke.
+            return false;
+        }.bind(this);
+
+    loadHandler =
+        function() {
+            var editorObj;
+
+            loadHandler.ignore(consoleInputTPElem, 'TP.sig.DOMReady');
+
+            consoleInputTPElem.setEditorMode('ace/mode/javascript');
+            consoleInputTPElem.setEditorTheme('ace/theme/chrome');
+
+            editorObj = consoleInputTPElem.$get('$editorObj');
+
+            editorObj.commands.addCommand({
+                name: 'RawInput',
+                bindKey: {win: 'Shift-Return', mac: 'Shift-Return'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'PreviousHistory',
+                bindKey: {win: 'Shift-Up', mac: 'Shift-Up'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'NextHistory',
+                bindKey: {win: 'Shift-Down', mac: 'Shift-Down'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'ClearInput',
+                bindKey: {win: 'Ctrl-U', mac: 'Ctrl-U'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'ClearOutput',
+                bindKey: {win: 'Ctrl-K', mac: 'Ctrl-K'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'CancelProcess',
+                bindKey: {win: 'Shift-Esc', mac: 'Shift-Esc'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'RotateOutputModeUp',
+                bindKey: {win: 'Ctrl-Up', mac: 'Ctrl-Up'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'RotateOutputModeDown',
+                bindKey: {win: 'Ctrl-Down', mac: 'Ctrl-Down'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'HelpMode_Or_EndAutocomplete',
+                bindKey: {win: 'Esc', mac: 'Esc'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'StartAutocomplete',
+                bindKey: {win: 'Ctrl-A', mac: 'Ctrl-A'},
+                exec: TP.RETURN_TRUE,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'ShowLastGrowlOutput',
+                bindKey: {win: 'Space', mac: 'Space'},
+                exec: spaceHandler,
+                passEvent: false,
+                readOnly: false
+            });
+
+            editorObj.commands.addCommand({
+                name: 'ShowLastGrowlOutputAlways',
+                bindKey: {win: 'Shift-Space', mac: 'Shift-Space'},
+                exec: shiftSpaceHandler,
+                passEvent: false,
+                readOnly: false
+            });
+        };
+
+    loadHandler.observe(consoleInputTPElem, 'TP.sig.DOMReady');
+
+    (function() {
+        //  Adjust the input size *without* animating the drawer.
+        this.adjustInputSize(false);
+    }.bind(this)).observe(consoleInputTPElem, 'TP.sig.EditorResize');
 
     //  Grab the consoleOutput TP.core.Element and set it up. Note that we need
     //  to do this *after* we set up the console input above.
@@ -328,68 +361,6 @@ function() {
     this.observe(tabSelectionURI, 'ValueChange');
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Marker retrieval methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('getCurrentEvalMarker',
-function() {
-
-    /**
-     * @method getCurrentEvalMarker
-     * @summary Returns the input cell's current 'eval marker'.
-     * @returns {Object} An Object specific to CodeMirror that represents a
-     *     'mark'.
-     */
-
-    var marker;
-
-    if (TP.notValid(marker = this.$get('currentEvalMarker'))) {
-        return null;
-    }
-
-    //  If the marker cannot be 'resolved', then clear it and clear it's caching
-    //  variable.
-    if (TP.notValid(marker.find())) {
-        marker.clear();
-        this.set('currentEvalMarker', null);
-
-        return null;
-    }
-
-    return marker;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('getCurrentInputMarker',
-function() {
-
-    /**
-     * @method getCurrentInputMarker
-     * @summary Returns the input cell's current 'input marker'.
-     * @returns {Object} An Object specific to CodeMirror that represents a
-     *     'mark'.
-     */
-
-    var marker;
-
-    if (TP.notValid(marker = this.$get('currentInputMarker'))) {
-        return null;
-    }
-
-    //  If the marker cannot be 'resolved', then clear it and clear it's caching
-    //  variable.
-    if (TP.notValid(marker.find())) {
-        marker.clear();
-        this.set('currentInputMarker', null);
-
-        return null;
-    }
-
-    return marker;
 });
 
 //  ------------------------------------------------------------------------
@@ -450,7 +421,6 @@ function(aSignal) {
         drawerIsOpenFunc.ignore(southDrawer, 'TP.sig.DOMTransitionEnd');
 
         if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-            consoleInput.refreshEditor();
             consoleInput.focus();
         }
 
@@ -556,7 +526,6 @@ function(aSignal) {
         if (TP.isValid(consoleInput = this.get('consoleInput'))) {
             setTimeout(
                 function() {
-                    consoleInput.refreshEditor();
                     consoleInput.focus();
                 }, 100);
         }
@@ -607,12 +576,6 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var consoleInput;
-
-    if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-        consoleInput.refreshEditor();
-    }
-
     //  Adjust the input size *without* animating the drawer.
     this.adjustInputSize(false);
 
@@ -640,8 +603,6 @@ function(beHidden) {
      */
 
     var wasHidden,
-
-        consoleInput,
         retVal;
 
     wasHidden = TP.bc(this.getAttribute('hidden'));
@@ -655,9 +616,6 @@ function(beHidden) {
     if (TP.isTrue(beHidden)) {
         //  Clear the value
         this.clearInput();
-
-        //  deactivate the input cell
-        this.deactivateInputEditor();
 
         //  blur whatever was the active element. This makes sure that the input
         //  cell no longer has focus.
@@ -676,12 +634,6 @@ function(beHidden) {
         retVal = this.callNextMethod();
 
         this.get('consoleOutput').setAttribute('hidden', false);
-
-        consoleInput = this.get('consoleInput');
-        consoleInput.focus();
-
-        //  activate the input cell
-        this.activateInputEditor();
     }
 
     return retVal;
@@ -749,83 +701,11 @@ function() {
     //  Clear the input and it's marks
     this.get('consoleInput').clearValue();
 
-    this.teardownInputMark();
-    this.teardownEvalMark();
-
     //  Clear any status information that we automatically update for the user.
     this.clearStatus();
 
     //  Clear the output
     this.get('consoleOutput').clear();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Completion Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('generateCompletionMarkAt',
-function(aRange, completionContent) {
-
-    /**
-     * @method generateCompletionMarkAt
-     * @summary Generates a CodeMirror 'mark' at the supplied range with the
-     *     supplied content for use by the 'autocomplete' functionality.
-     * @param {Object} aRange An object specific to CodeMirror that represents a
-     *     textual 'range'.
-     * @param {String} completionContent The XHTML content to place within the
-     *     'mark'.
-     * @returns {Object} An Object specific to CodeMirror that represents a
-     *     'mark'.
-     */
-
-    var doc,
-        elem,
-        marker;
-
-    doc = this.getNativeDocument();
-
-    elem = TP.documentConstructElement(doc, 'span', TP.w3.Xmlns.XHTML);
-    TP.elementSetClass(elem, 'completion-mark');
-    TP.xmlElementSetContent(elem, TP.xmlEntitiesToLiterals(completionContent));
-
-    marker = this.get('consoleInput').$get('$editorObj').markText(
-        aRange.anchor,
-        aRange.head,
-        {
-            atomic: true,
-            readOnly: true,
-            replacedWith: elem,
-            clearWhenEmpty: false,
-            inclusiveLeft: false,
-            inclusiveRight: true    //  don't allow the cursor to be placed
-                                    //  after the completion mark
-        }
-    );
-
-    return marker;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('teardownCompletionMark',
-function() {
-
-    /**
-     * @method teardownCompletionMark
-     * @summary Tears down the 'completion mark' by clearing it and resetting
-     *     it's caching instance variable.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var marker;
-
-    if (TP.isValid(marker = this.get('currentCompletionMarker'))) {
-        marker.clear();
-
-        this.set('currentCompletionMarker', null);
-    }
 
     return this;
 });
@@ -1143,36 +1023,6 @@ function(aSignal, statusOutID) {
 //  Input Management Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('activateInputEditor',
-function() {
-
-    /**
-     * @method activateInputEditor
-     * @summary Activates the input editor by setting up some of its necessary
-     *     low-level key handlers, etc.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var consoleInput;
-
-    consoleInput = this.get('consoleInput');
-
-    consoleInput.setKeyHandler(
-            function(evt) {
-
-                if (TP.notValid(this.get('currentInputMarker'))) {
-
-                    this.setupInputMarkForExistingContent();
-                }
-
-                return TP.core.Keyboard.$$handleKeyEvent(evt);
-            }.bind(this));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.console.Inst.defineMethod('adjustInputSize',
 function(shouldAnimate) {
 
@@ -1224,15 +1074,8 @@ function(shouldAnimate) {
         TP.elementSetStyleString(drawerElement, 'transition: none');
     }
 
-    styleVals = TP.elementGetComputedStyleValuesInPixels(
-                    this.getNativeNode(),
-                    TP.ac('paddingTop', 'paddingBottom'));
-
     //  We compute the drawer height from the editor height.
     drawerHeight = editorHeight;
-
-    //  Add in the padding offsets from ourself.
-    drawerHeight += styleVals.at('paddingTop') + styleVals.at('paddingBottom');
 
     //  Grab the xctrls:panelbox element that we're contained in
     panelboxElem = TP.byCSSPath('xctrls|panelbox', consoleDrawer, true, false);
@@ -1249,9 +1092,15 @@ function(shouldAnimate) {
                     styleVals.at('borderBottomWidth') +
                     styleVals.at('borderTopWidth');
 
-    //  Add a 1-pixel fudge factor here. This is probably compensating for the
-    //  fact that the xctrls:codeeditor has a 1 pixel margin on top and bottom
-    //  or that the CodeMirror code imposes some sort of overlap.
+    //  Add the pixel widths of the top and bottom border from the inner div
+    //  with class 'drawer' that holds all of the contents of the drawer.
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
+                    drawerElement.firstElementChild,
+                    TP.ac('borderTopWidth'));
+
+    drawerHeight += styleVals.at('borderTopWidth');
+
+    //  Add a 1-pixel fudge factor here.
     drawerHeight += 1;
 
     if (TP.notValid(this.get('$minDrawerHeight'))) {
@@ -1292,27 +1141,12 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var marker,
-        editor,
+    var editor;
 
-        range;
-
-    if (TP.notValid(marker = this.get('currentInputMarker'))) {
-        this.setupInputMarkForExistingContent();
-        marker = this.get('currentInputMarker');
+    editor = this.get('consoleInput');
+    if (TP.isValid(editor)) {
+        return editor.clearValue();
     }
-
-    if (TP.notValid(marker)) {
-        return this;
-    }
-
-    editor = this.get('consoleInput').$get('$editorObj');
-    range = marker.find();
-
-    editor.setSelection(range.from, range.to);
-    editor.replaceSelection('');
-
-    this.teardownInputMark();
 
     //  Hide any 'pinned' items that are in 'growl' mode, but exposed. We do
     //  this by setting the output display mode to 'none'.
@@ -1323,27 +1157,6 @@ function() {
 
     //  End the autocomplete mode, if we're in it
     TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('deactivateInputEditor',
-function() {
-
-    /**
-     * @method deactivateInputEditor
-     * @summary Deactivates the input editor by tearing down some of its
-     *     necessary low-level key handlers, etc.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var consoleInput;
-
-    consoleInput = this.get('consoleInput');
-
-    consoleInput.unsetCurrentKeyHandler();
 
     return this;
 });
@@ -1388,28 +1201,15 @@ function() {
      * @returns {String} The user's input.
      */
 
-    var inputText,
+    var editor,
+        inputText;
 
-        marker,
-
-        editor,
-        range;
-
-    inputText = null;
-
-    //  First, see if we have a valid eval mark.
-    if (TP.isValid(marker = this.get('currentEvalMarker'))) {
-        //  empty
-    } else if (TP.isValid(marker = this.get('currentInputMarker'))) {
-        //  empty
+    editor = this.get('consoleInput');
+    if (TP.isValid(editor)) {
+        inputText = editor.getValue();
     } else {
-        return '';
+        inputText = '';
     }
-
-    //  Find the marker in the input and grab its text.
-    range = marker.find();
-    editor = this.get('consoleInput').$get('$editorObj');
-    inputText = editor.getRange(range.from, range.to);
 
     return inputText;
 });
@@ -1446,16 +1246,7 @@ function(anObject, shouldAppend) {
      */
 
     var consoleInput,
-
-        val,
-
-        editor,
-        marker,
-
-        range,
-
-        start,
-        end;
+        val;
 
     if (TP.isEmpty(anObject)) {
         this.clearInput();
@@ -1470,37 +1261,7 @@ function(anObject, shouldAppend) {
     }
 
     consoleInput = this.get('consoleInput');
-    editor = consoleInput.$get('$editorObj');
-
-    if (TP.isValid(marker = this.get('currentInputMarker'))) {
-
-        range = marker.find();
-        start = range.from;
-
-        editor.setSelection(range.from, range.to);
-        editor.replaceSelection(val);
-
-        end = consoleInput.getCursor();
-
-        this.teardownInputMark();
-    }
-
-    if (TP.notValid(range)) {
-
-        start = consoleInput.getCursor();
-
-        consoleInput.insertAtCursor(val);
-
-        end = consoleInput.getCursor();
-    }
-
-    //  Reset the current input marker to encompass all of the new content.
-    this.set('currentInputMarker',
-                this.generateInputMarkAt(
-                    {
-                        anchor: start,
-                        head: end
-                    }));
+    consoleInput.setValue(val);
 
     //  Focus and set the cursor to the end on the next browser repaint.
     (function() {
@@ -1511,95 +1272,6 @@ function(anObject, shouldAppend) {
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setupInputMarkForExistingContent',
-function() {
-
-    /**
-     * @method setupInputMarkForExistingContent
-     * @summary Sets up a CodeMirror 'mark' that tracks the input cell's current
-     *     input.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var consoleInput,
-
-        end;
-
-    if (TP.isValid(this.get('currentInputMarker'))) {
-        this.teardownInputMark();
-    }
-
-    consoleInput = this.get('consoleInput');
-
-    end = consoleInput.getCursor();
-
-    this.set('currentInputMarker',
-                this.generateInputMarkAt(
-                    {
-                        anchor: {
-                            line: 0, ch: 0
-                        },
-                        head: end
-                    }));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('teardownInputMark',
-function() {
-
-    /**
-     * @method teardownInputMark
-     * @summary Tears down the 'input mark' by clearing it and resetting
-     *     it's caching instance variable.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    if (TP.isValid(this.get('currentInputMarker'))) {
-        this.get('currentInputMarker').clear();
-        this.set('currentInputMarker', null);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('generateInputMarkAt',
-function(aRange) {
-
-    /**
-     * @method generateInputMarkAt
-     * @summary Generates a CodeMirror 'mark' at the supplied range that tracks
-     *     the input cell's current input.
-     * @param {Object} aRange An object specific to CodeMirror that represents a
-     *     textual 'range'.
-     * @returns {Object} An Object specific to CodeMirror that represents a
-     *     'mark'.
-     */
-
-    var marker;
-
-    marker = this.get('consoleInput').$get('$editorObj').markText(
-        aRange.anchor,
-        aRange.head,
-        {
-            className: 'input-mark',
-            startStyle: 'input-mark-left',
-            endStyle: 'input-mark-right',
-            atomic: false,
-            inclusiveLeft: true,
-            inclusiveRight: true
-        }
-    );
-
-    return marker;
 });
 
 //  ------------------------------------------------------------------------
@@ -1867,8 +1539,6 @@ function(uniqueID, dataRecord) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    this.teardownInputMark();
-
     this.get('consoleOutput').updateOutputItem(uniqueID, dataRecord);
 
     return this;
@@ -1944,417 +1614,6 @@ function(outputCount) {
             break;
         default:
             break;
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Eval marking/value retrieval (EXPERIMENTAL)
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeAnchor',
-function() {
-
-    /**
-     * @method computeEvalMarkRangeAnchor
-     */
-
-    var editor,
-
-        head,
-
-        matcher,
-
-        searchCursor,
-        retVal;
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    //  Look for the following, in this order (at the beginning of a line)
-    //      - The current prompt (preceded by zero-or-more whitespace)
-    //      - A newline
-    //      - One of the TSH characters
-    head = editor.getCursor();
-
-    if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
-        matcher = TP.rc('^(\\s*' +
-                        '\\n' + '|' +
-                        TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
-                        ')');
-        this.set('evalMarkAnchorMatcher', matcher);
-    }
-
-    searchCursor = editor.getSearchCursor(matcher, head);
-
-    if (searchCursor.findPrevious()) {
-        //  We want the 'to', since that's the end of the '^\s*>' match
-        retVal = searchCursor.to();
-    } else {
-        //  Couldn't find a starting '>', so we just use the beginning of
-        //  the editor
-        retVal = {
-            line: 0,
-            ch: 0
-        };
-    }
-
-    /*
-    //  See if there are any output marks between the anchor and head
-    marks = this.findOutputMarks(retVal, head);
-    if (marks.length > 0) {
-        retVal = marks[marks.length - 1].find().to;
-    }
-
-    //  If the 'ch' is at the end of the line, increment the line and set
-    //  the 'ch' to 0
-    lineInfo = editor.lineInfo(retVal.line);
-
-    //  If we matched one of the TSH operator characters then it was a TSH
-    //  command and we want that character included.
-    if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
-        retVal.ch -= 1;
-    }
-
-    if (retVal.ch === lineInfo.text.length) {
-        retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
-                    ch: 0};
-    }
-    */
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeHead',
-function() {
-
-    /**
-     * @method computeEvalMarkRangeHead
-     */
-
-    var editor,
-
-        anchor,
-        searchCursor,
-        lineInfo,
-        retVal;
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    anchor = editor.getCursor();
-    searchCursor = editor.getSearchCursor(/^(\s*<|\n)/, anchor);
-
-    if (searchCursor.findNext()) {
-        //  We want the 'from', since that's the start of the '^\s*<' match
-        retVal = searchCursor.from();
-    } else {
-        //  Couldn't find an ending '<', so we just use the end of the editor
-        lineInfo = editor.lineInfo(editor.lastLine());
-        retVal = {
-            line: lineInfo.line,
-            ch: lineInfo.text.length
-        };
-    }
-
-    /*
-    //  See if there are any output marks between the anchor and head
-    marks = this.findOutputMarks(anchor, retVal);
-    if (marks.length > 0) {
-        retVal = marks[0].find().from;
-    }
-
-    //  If the 'ch' is at the beginning of the line, decrement the line and set
-    //  the 'ch' to end of the line
-    if (retVal.ch === 0) {
-        lineInfo = editor.lineInfo(retVal.line - 1);
-        retVal = {'line': Math.max(retVal.line - 1, 0),
-                    'ch': lineInfo.text.length};
-    }
-    */
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('computeEvalMarkRange',
-function() {
-
-    /**
-     * @method computeEvalMarkRange
-     */
-
-    var editor,
-
-        selection,
-        range;
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    //  If there are real selections, then just use the first one
-    selection = editor.getSelection();
-    if (selection.length > 0) {
-        return editor.listSelections()[0];
-    }
-
-    range = {
-        anchor: this.computeEvalMarkRangeAnchor(),
-        head: this.computeEvalMarkRangeHead()
-    };
-
-    return range;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('generateEvalMarkAt',
-function(range) {
-
-    /**
-     * @method generateEvalMarkAt
-     */
-
-    var marker;
-
-    marker = this.get('consoleInput').$get('$editorObj').markText(
-        range.anchor,
-        range.head,
-        {
-            className: 'eval-mark',
-            startStyle: 'eval-mark-left',
-            endStyle: 'eval-mark-right',
-            atomic: true,
-            inclusiveLeft: false,
-            inclusiveRight: false
-        }
-    );
-
-    return marker;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('transitionToSeparateEvalMarker',
-function() {
-
-    /**
-     * @method transitionToSeparateEvalMarker
-     * @summary Transitions from using just the input marker to having a
-     *     separate eval marker. This is used when the user wants to evaluate
-     *     only a portion of what is in the input cell.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var currentInputRange,
-        newEvalRange;
-
-    //  If the text input is empty, there is no reason to setup anything... exit
-    //  here.
-    if (TP.isEmpty(this.get('consoleInput').getValue())) {
-        return this;
-    }
-
-    //  If we have a valid input marker, then we use it to set up the eval
-    //  marker.
-    if (TP.isValid(this.get('currentInputMarker'))) {
-        if (TP.isValid(
-                currentInputRange = this.get('currentInputMarker').find())) {
-
-            newEvalRange = {
-                anchor: currentInputRange.from,
-                head: currentInputRange.to
-            };
-
-            this.set('currentEvalMarker',
-                        this.generateEvalMarkAt(newEvalRange));
-        }
-    }
-
-    //  If we still don't have an eval marker, that means that we didn't have a
-    //  valid input marker - set them both up here using the same range.
-    if (TP.notValid(this.get('currentEvalMarker'))) {
-
-        newEvalRange = this.computeEvalMarkRange();
-
-        this.set('currentInputMarker',
-                    this.generateInputMarkAt(
-                        {
-                            anchor: newEvalRange.anchor,
-                            head: newEvalRange.head
-                        }));
-        this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('showingEvalMark',
-function() {
-
-    /**
-     * @method showingEvalMark
-     */
-
-    return TP.isValid(this.get('currentEvalMarker'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('shiftEvalMark',
-function(direction, endPoint) {
-
-    /**
-     * @method shiftEvalMark
-     */
-
-    var currentEvalMarker,
-
-        cimRange,
-
-        editor,
-        currentLineInfo,
-        lastLineInfo;
-
-    if (TP.notValid(currentEvalMarker = this.get('currentEvalMarker'))) {
-        return this;
-    }
-
-    cimRange = currentEvalMarker.find();
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    lastLineInfo = editor.lineInfo(editor.lastLine());
-
-    cimRange.anchor = cimRange.from;
-    cimRange.head = cimRange.to;
-
-    if (direction === TP.LEFT) {
-
-        if (endPoint === TP.HEAD) {
-            if (cimRange.anchor.line === cimRange.head.line &&
-                cimRange.head.ch === cimRange.anchor.ch + 1) {
-                return this;
-            }
-        } else {
-
-            if (cimRange.anchor.line === 0 &&
-                cimRange.anchor.ch === 0) {
-                return this;
-            }
-
-            if (cimRange.anchor.line === cimRange.head.line &&
-                cimRange.anchor.ch === cimRange.head.ch + 1) {
-                return this;
-            }
-        }
-
-        if (cimRange[endPoint].ch === 0) {
-
-            //  If the line isn't 0, jump to the previous line
-            if (cimRange[endPoint].line !== 0) {
-                cimRange[endPoint].line = Math.max(
-                                        cimRange[endPoint].line - 1,
-                                        0);
-                currentLineInfo = editor.lineInfo(
-                                        cimRange[endPoint].line);
-                cimRange[endPoint].ch = currentLineInfo.text.length - 1;
-            }
-        } else {
-            cimRange[endPoint].ch -= 1;
-        }
-    }
-
-    if (direction === TP.RIGHT) {
-
-        if (endPoint === TP.HEAD) {
-            if (cimRange.head.line === lastLineInfo.line &&
-                cimRange.head.ch === lastLineInfo.ch) {
-                return this;
-            }
-
-            if (cimRange.anchor.line === cimRange.head.line &&
-                cimRange.head.ch === cimRange.anchor.ch - 1) {
-                return this;
-            }
-        } else {
-            if (cimRange.anchor.line === cimRange.head.line &&
-                cimRange.anchor.ch === cimRange.head.ch - 1) {
-                return this;
-            }
-        }
-
-        currentLineInfo = editor.lineInfo(
-                                cimRange[endPoint].line);
-
-        if (cimRange[endPoint].ch === currentLineInfo.text.length - 1) {
-            //  If the line isn't the last, jump to the next line
-            if (cimRange[endPoint].line !== lastLineInfo.line) {
-                cimRange[endPoint].line = Math.min(
-                                        cimRange[endPoint].line + 1,
-                                        lastLineInfo.line);
-                cimRange[endPoint].ch = 0;
-            } else {
-                //  Otherwise, let the very last character be selected
-                cimRange[endPoint].ch += 1;
-            }
-        } else {
-            cimRange[endPoint].ch += 1;
-        }
-    }
-
-    if (direction === TP.UP) {
-
-        if (endPoint === TP.HEAD) {
-            if (cimRange.head.line === cimRange.anchor.line) {
-                return this;
-            }
-        }
-
-        if (cimRange[endPoint].line === 0) {
-            return this;
-        }
-
-        cimRange[endPoint].line -= 1;
-    }
-
-    if (direction === TP.DOWN) {
-
-        if (endPoint !== TP.HEAD) {
-            if (cimRange.anchor.line === cimRange.head.line) {
-                return this;
-            }
-        }
-
-        if (cimRange[endPoint].line === lastLineInfo.line) {
-            return this;
-        }
-
-        cimRange[endPoint].line += 1;
-    }
-
-    currentEvalMarker.clear();
-
-    this.set('currentEvalMarker', this.generateEvalMarkAt(cimRange));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('teardownEvalMark',
-function() {
-
-    /**
-     * @method teardownEvalMark
-     */
-
-    if (TP.isValid(this.get('currentEvalMarker'))) {
-        this.get('currentEvalMarker').clear();
-        this.set('currentEvalMarker', null);
     }
 
     return this;

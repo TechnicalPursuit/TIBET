@@ -25,10 +25,6 @@ sherpa|console {
 
     border-radius: 3px;
 
-    padding: 2px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-
     text-align: left;
     line-height: 1;
 }
@@ -40,9 +36,14 @@ sherpa|console[pclass|hidden] {
 
 sherpa|console > xctrls|codeeditor {
 
-    margin: 1px;
+    overflow: hidden;
+}
 
-    /* border-radius: 3px; */
+sherpa|console > xctrls|codeeditor > div {
+
+    top: 3px;
+
+    background-color: transparent !important;
 }
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
