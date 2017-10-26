@@ -159,6 +159,7 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tooltip.TP.xctrls.tooltip.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tooltip.TP.xctrls.tooltip.css.js"/>
 
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls_variables.css.js"/>
