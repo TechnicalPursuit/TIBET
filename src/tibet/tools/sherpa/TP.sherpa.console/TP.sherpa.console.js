@@ -214,7 +214,7 @@ function() {
             loadHandler.ignore(consoleInputTPElem, 'TP.sig.DOMReady');
 
             consoleInputTPElem.setEditorMode('ace/mode/javascript');
-            consoleInputTPElem.setEditorTheme('ace/theme/chrome');
+            consoleInputTPElem.setEditorTheme('ace/theme/dawn');
 
             editorObj = consoleInputTPElem.$get('$editorObj');
 
