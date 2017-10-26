@@ -48,6 +48,7 @@
         "man": "./doc/man"
     },
     "dependencies": {
+        "ace-builds": "https://github.com/TechnicalPursuit/ace-builds/tarball/master",
         "ansi-256-colors": "^1.1.0",
         "ansi-styles": "^2.2.1",
         "bluebird": "https://github.com/TechnicalPursuit/bluebird/tarball/master",
