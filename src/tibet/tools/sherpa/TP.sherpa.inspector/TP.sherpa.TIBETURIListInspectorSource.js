@@ -120,24 +120,35 @@ function(options) {
      */
 
     var uriKeys,
+        uris,
 
-        sourceEntries,
+        sourceLocs,
         data;
 
-    uriKeys = TP.keys(TP.core.URI.get('instances')).sort();
+    //  Grab all of the URIs and their keys
+    uris = TP.core.URI.get('instances');
+    uriKeys = TP.keys(uris);
 
-    //  Some URIs will resolve to the same 'TIBET format' strings as
-    //  others - we need to unique them
-    uriKeys.unique();
+    //  Iterate over all the URIs, expanding whatever path they hand back as
+    //  their location.
+    sourceLocs = TP.ac();
+    uriKeys.forEach(
+        function(aKey) {
+            sourceLocs.push(TP.uriExpandPath(uris.at(aKey).getLocation()));
+        });
 
-    sourceEntries = uriKeys;
+    //  Now that they're all in their 'fully expanded' form, we need to unique
+    //  them. This will give us the most unique list.
+    sourceLocs.unique();
 
-    if (TP.isValid(sourceEntries)) {
-        data = sourceEntries.collect(
+    //  Iterate and put their unique key in the first (value) slot and their
+    //  'virtualized' form in the second (label) slot.
+    if (TP.isValid(sourceLocs)) {
+        data = sourceLocs.collect(
                     function(entry) {
                         return TP.ac(
-                                TP.uriExpandPath(entry),
-                                entry);
+                                entry,
+                                TP.uriInTIBETFormat(entry));
                     });
         data.sort(TP.sort.FIRST_ITEM);
     } else {
