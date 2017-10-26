@@ -140,8 +140,6 @@ sherpa|thumbnail > .content {
 }
 
 sherpa|thumbnail > .content > div {
-    font-size: 500%;
-    opacity: 0.1;
 }
 
 /* Rules that trigger when the corner is closed */
