@@ -700,6 +700,17 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
             TP.METHOD,
             TP.INST_TRACK);
 
+    //  Now we track those slot names because they're not obtainable by
+    //  reflection
+    TP.OBJECT_PROTO_SLOTS = [
+        'hasOwnProperty',
+        'isPrototypeOf',
+        'propertyIsEnumerable',
+        'toLocaleString',
+        'toString',
+        'valueOf'
+    ];
+
     RegExp.Inst.defineMethod('exec', TP.RegExpProto.exec);
     RegExp.Inst.defineMethod('test', TP.RegExpProto.test);
     RegExp.Inst.defineMethod('toString', TP.RegExpProto.toString);

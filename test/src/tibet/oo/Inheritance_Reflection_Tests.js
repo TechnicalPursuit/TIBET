@@ -3427,7 +3427,7 @@ function() {
         nodeProtoProperties = Object.keys(tpNodeProto);
         tpObjProtoProperties = Object.keys(tpObjProto);
         rootObjProtoProperties = Object.keys(TP.lang.RootObject.getPrototype());
-        objProtoProperties = Object.keys(TP.ObjectProto);
+        objProtoProperties = TP.OBJECT_PROTO_SLOTS;
 
         protoProperties = nodeProtoProperties.concat(
                                             tpObjProtoProperties).concat(
@@ -3611,7 +3611,7 @@ function() {
         tpObjInstProtoProperties = Object.keys(tpObjInstProto);
         rootObjInstProtoProperties = Object.keys(
                                         TP.lang.RootObject.getInstPrototype());
-        objProtoProperties = Object.keys(TP.ObjectProto);
+        objProtoProperties = TP.OBJECT_PROTO_SLOTS;
 
         protoProperties = pointInstProtoProperties.concat(
                                             tpObjInstProtoProperties).concat(
@@ -3794,7 +3794,7 @@ function() {
         //      Type or instance methods on function(i.e. added via
         //      'Type.defineMethod') where TP.OWNER is Function
 
-        objProtoProperties = Object.keys(TP.ObjectProto);
+        objProtoProperties = TP.OBJECT_PROTO_SLOTS;
         funcProtoProperties = Object.keys(TP.FunctionProto);
         protoProperties = objProtoProperties.concat(funcProtoProperties);
 
@@ -3954,7 +3954,7 @@ function() {
         //      Instance methods from their type (i.e. added via
         //      'Inst.defineMethod') where TP.OWNER is their type
 
-        objProtoProperties = Object.keys(TP.ObjectProto);
+        objProtoProperties = TP.OBJECT_PROTO_SLOTS;
         arrProtoProperties = Object.keys(TP.ArrayProto);
         protoProperties = objProtoProperties.concat(arrProtoProperties);
 
