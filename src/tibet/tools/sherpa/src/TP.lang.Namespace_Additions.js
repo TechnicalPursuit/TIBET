@@ -18,6 +18,20 @@ TP.lang.Namespace.addTraits(TP.sherpa.ToolAPI);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.lang.Namespace.Inst.defineHandler(
+'SherpaInspectorAddType',
+function(aSignal) {
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':type --assist' +
+                                ' --name=\'newType\'' +
+                                ' --dna=\'default\''
+                ));
+});
+
 //  ------------------------------------------------------------------------
 //  Inspector API
 //  ------------------------------------------------------------------------
@@ -242,6 +256,34 @@ function(anAspect, options) {
      */
 
     return this.getEntryAt(anAspect);
+});
+
+//  ------------------------------------------------------------------------
+//  Toolbar API
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     toolbar.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     toolbar.
+     */
+
+    return TP.elem('<sherpa:typesToolbarContent tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
 });
 
 //  ------------------------------------------------------------------------
