@@ -16,6 +16,7 @@ xctrls|dialog {
     max-width: 600px;
     max-height: 370px;
     user-select: none;
+    overflow: hidden;
 
     /* Hovering over the dialog */
 
@@ -33,21 +34,19 @@ xctrls|dialog {
     /* The dialog header */
 
     & > *[tibet|pelem="header"] {
-
         position: absolute;
     }
 
     /* The dialog body */
 
     & > *[tibet|pelem="body"] {
-
         position: absolute;
+        overflow: hidden;
     }
 
     /* The dialog footer */
 
     & > *[tibet|pelem="footer"] {
-
         position: absolute;
     }
 

@@ -33,6 +33,12 @@ TP.tsh.type_assistant.Type.defineConstant('BUILT_IN_DNA_TAG_TYPES',
         'TP.core.TemplatedTag'));
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.tsh.type_assistant.Inst.defineAttribute('dna');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -123,6 +129,12 @@ function(aSignal) {
 
     currentDNA = result.get('$.info.dna');
 
+    if (currentDNA === this.$get('dna')) {
+        return this.callNextMethod();
+    } else {
+        this.$set('dna', currentDNA);
+    }
+
     switch (currentDNA) {
 
         case 'default':
@@ -167,6 +179,7 @@ function(aSignal) {
             break;
 
         default:
+            supertypeForDNA = 'TP.lang.Object';
             break;
     }
 

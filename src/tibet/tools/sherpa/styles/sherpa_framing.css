@@ -56,6 +56,10 @@ body {
     --sherpa-drawer-south-open-min-height: 200px;
 
     /* stylelint-enable custom-property-empty-line-before */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-mark {
@@ -642,8 +646,8 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #TofuAssistantDialog {
-
-    height: 450px;
+    width: 600px;
+    height: 370px;
 }
 
 /* -----------------------------*
@@ -677,8 +681,8 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #CmdAssistantDialog {
-
-    height: 450px;
+    width: 600px;
+    height: 370px;
 }
 
 /* -----------------------------*
