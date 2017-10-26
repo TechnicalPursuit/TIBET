@@ -144,7 +144,7 @@ sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser {
 }
 
 sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser input {
-    margin: 0 0 12px 0;
+    margin: 0 0 12px;
 }
 
 xctrls|list#tofuInsertionAssistant_TagTypes {
@@ -216,11 +216,10 @@ sherpa|tofuInsertionAssistant > .foot #generatedTag {
     border: dotted 1px black;
 
     display: inline-block;
-    margin-top: 1em;
     height: 1.5em;
     line-height: 1.5em;
     padding: 0 12px;
-    margin: 0 20px 12px 20px;
+    margin: 0 20px 12px;
     text-align: left;
 }
 
