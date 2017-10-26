@@ -605,7 +605,9 @@ function() {
         function(sourceResult) {
 
             var sourceStr,
-                mimeType;
+                mimeType,
+
+                themeName;
 
             //  Now that we're done reverting the content, we can unset the
             //  'changing content' flag.
@@ -676,6 +678,9 @@ function() {
             }
 
             editor.setEditorModeFromMIMEType(mimeType);
+
+            themeName = TP.sys.cfg('sherpa.rich_input_theme', 'dawn');
+            editor.setEditorTheme('ace/theme/' + themeName);
 
             editor.setValue(sourceStr);
 

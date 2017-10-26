@@ -310,7 +310,9 @@ function() {
 
         sourceURI,
         sourceObj,
-        sourceText;
+        sourceText,
+
+        themeName;
 
     //  Grab our underlying editor object (an xctrls:codeeditor)
     editor = this.get('editor');
@@ -344,6 +346,10 @@ function() {
     this.isDirty(false);
 
     editor.setEditorModeFromMIMEType(TP.JS_TEXT_ENCODED);
+
+    themeName = TP.sys.cfg('sherpa.rich_input_theme', 'dawn');
+    editor.setEditorTheme('ace/theme/' + themeName);
+
     editor.setValue(sourceText);
 
     return this;

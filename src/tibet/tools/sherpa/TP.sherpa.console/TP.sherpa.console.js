@@ -209,12 +209,15 @@ function() {
 
     loadHandler =
         function() {
-            var editorObj;
+            var editorObj,
+                themeName;
 
             loadHandler.ignore(consoleInputTPElem, 'TP.sig.DOMReady');
 
             consoleInputTPElem.setEditorMode('ace/mode/javascript');
-            consoleInputTPElem.setEditorTheme('ace/theme/dawn');
+
+            themeName = TP.sys.cfg('sherpa.rich_input_theme', 'dawn');
+            consoleInputTPElem.setEditorTheme('ace/theme/' + themeName);
 
             editorObj = consoleInputTPElem.$get('$editorObj');
 
@@ -981,8 +984,7 @@ function(aSignal, statusOutID) {
 
                 }.bind(this).fork(      //  TODO: fork is obsolete. redo.
                     TP.ifInvalid(
-                        TP.sys.cfg('sherpa.readout_mouse_reset_time'),
-                        1000));
+                        TP.sys.cfg('sherpa.readout_mouse_reset_time'), 1000));
                 this.$set('statusReadoutTimer', timer, false);
             }
         } else {

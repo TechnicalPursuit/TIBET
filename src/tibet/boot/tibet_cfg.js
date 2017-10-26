@@ -1562,6 +1562,10 @@
     //  across the inspector
     TP.sys.setcfg('sherpa.inspector.min_item_count', 3);
 
+    //  the ACE theme that the Sherpa will use for its tools (the console and
+    //  editors).
+    TP.sys.setcfg('sherpa.rich_input_theme', 'dawn');
+
     //  the root entries and their types in the inspector
     TP.sys.setcfg('sherpa.inspector_root_sources',
         [
