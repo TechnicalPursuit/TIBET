@@ -73,8 +73,6 @@ sherpa|settings > .content {
 }
 
 sherpa|settings > .content > div {
-    font-size: 500%;
-    opacity: 0.1;
 }
 
 /* Rules that trigger when the corner is closed */
