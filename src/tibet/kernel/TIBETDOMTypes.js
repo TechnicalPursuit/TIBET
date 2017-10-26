@@ -118,7 +118,9 @@ function(nodeSpec, varargs) {
         retType,
 
         inst,
-        args;
+        args,
+
+        concreteInst;
 
     //  ---
     //  Node Construction
@@ -286,24 +288,34 @@ function(nodeSpec, varargs) {
     //  will perform the processing necessary to construct viable node
     //  content and register their instances correctly, but abstract types
     //  don't need to do that, they need to move as quickly as possible to
-    //  the constructViaSubtype pathway
+    //  the constructViaSubtype pathway.
     if (this.isAbstract()) {
-        return this.constructViaSubtype.apply(this, arguments);
+        concreteInst = this.constructViaSubtype.apply(this, arguments);
     }
 
     //  ---
     //  Instance Construction
     //  ---
 
-    //  See if the native node already has a pointer to a wrapper that was
-    //  created for it.
-    if (TP.isValid(inst = node[TP.WRAPPER])) {
+    //  If we're not an abstract type and therefore couldn't have executed
+    //  constructViaSubtype above, see if the native node already has a pointer
+    //  to a wrapper that was created for it.
+    inst = node[TP.WRAPPER];
+    if (TP.notValid(concreteInst) && TP.isValid(inst)) {
         return inst;
     }
 
     args = TP.args(arguments);
     args.atPut(0, node);
-    inst = this.callNextMethod.apply(this, args);
+
+    //  If we are an abstract type and therefore executed constructViaSubtype
+    //  above and actually got a real concrete instance, then use that as our
+    //  instance.
+    if (TP.isValid(concreteInst)) {
+        inst = concreteInst;
+    } else {
+        inst = this.callNextMethod.apply(this, args);
+    }
 
     //  If varargs is a TP.core.Hash and inst is an instance of some subtype
     //  of TP.core.ElementNode, then try to execute '.setAttribute()'
