@@ -627,25 +627,78 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
     Object.Type.defineMethod('seal', Object.seal);
     //  Object.Type.defineMethod('setPrototypeOf', Object.setPrototypeOf); // E6
 
-    //  We don't expose an 'Object.Inst', but we need to register these methods...
-    TP.defineMethodSlot(TP.ObjectProto, 'hasOwnProperty',
-                        TP.ObjectProto.hasOwnProperty, TP.INST_TRACK,
-                        null, 'Object.Inst.hasOwnProperty', Object);
-    TP.defineMethodSlot(TP.ObjectProto, 'isPrototypeOf',
-                        TP.ObjectProto.isPrototypeOf, TP.INST_TRACK,
-                        null, 'Object.Inst.isPrototypeOf', Object);
-    TP.defineMethodSlot(TP.ObjectProto, 'propertyIsEnumerable',
-                        TP.ObjectProto.propertyIsEnumerable, TP.INST_TRACK,
-                        null, 'Object.Inst.propertIsEnumerable', Object);
-    TP.defineMethodSlot(TP.ObjectProto, 'toLocaleString',
-                        TP.ObjectProto.toLocaleString, TP.INST_TRACK,
-                        null, 'Object.Inst.toLocaleString', Object);
-    TP.defineMethodSlot(TP.ObjectProto, 'toString',
-                        TP.ObjectProto.toString, TP.INST_TRACK,
-                        null, 'Object.Inst.toString', Object);
-    TP.defineMethodSlot(TP.ObjectProto, 'valueOf',
-                        TP.ObjectProto.valueOf, TP.INST_TRACK,
-                        null, 'Object.Inst.valueOf', Object);
+    //  We don't expose an 'Object.Inst', but we need to register these methods.
+    //  We have to be very careful here, though, so that we avoid creating slots
+    //  on Object.prototype, which would cause problems when iterating through
+    //  native objects being used as Hashes. So we register them with the
+    //  metadata system using a 'light touch' (i.e. without calling
+    //  TP.defineMethodSlot()).
+
+    TP.ObjectProto.hasOwnProperty.asMethod(
+            TP.ObjectProto,
+            'hasOwnProperty',
+            TP.INST_TRACK,
+            'Object.Inst.hasOwnProperty');
+    TP.sys.addMetadata(
+            Object,
+            TP.ObjectProto.hasOwnProperty,
+            TP.METHOD,
+            TP.INST_TRACK);
+
+    TP.ObjectProto.isPrototypeOf.asMethod(
+            TP.ObjectProto,
+            'isPrototypeOf',
+            TP.INST_TRACK,
+            'Object.Inst.isPrototypeOf');
+    TP.sys.addMetadata(
+            Object,
+            TP.ObjectProto.isPrototypeOf,
+            TP.METHOD,
+            TP.INST_TRACK);
+
+    TP.ObjectProto.propertyIsEnumerable.asMethod(
+            TP.ObjectProto,
+            'propertyIsEnumerable',
+            TP.INST_TRACK,
+            'Object.Inst.propertyIsEnumerable');
+    TP.sys.addMetadata(
+            Object,
+            TP.ObjectProto.propertyIsEnumerable,
+            TP.METHOD,
+            TP.INST_TRACK);
+
+    TP.ObjectProto.toLocaleString.asMethod(
+            TP.ObjectProto,
+            'toLocaleString',
+            TP.INST_TRACK,
+            'Object.Inst.toLocaleString');
+    TP.sys.addMetadata(
+            Object,
+            TP.ObjectProto.toLocaleString,
+            TP.METHOD,
+            TP.INST_TRACK);
+
+    TP.ObjectProto.toString.asMethod(
+            TP.ObjectProto,
+            'toString',
+            TP.INST_TRACK,
+            'Object.Inst.toString');
+    TP.sys.addMetadata(
+            Object,
+            TP.ObjectProto.toString,
+            TP.METHOD,
+            TP.INST_TRACK);
+
+    TP.ObjectProto.valueOf.asMethod(
+            TP.ObjectProto,
+            'valueOf',
+            TP.INST_TRACK,
+            'Object.Inst.valueOf');
+    TP.sys.addMetadata(
+            Object,
+            TP.ObjectProto.valueOf,
+            TP.METHOD,
+            TP.INST_TRACK);
 
     RegExp.Inst.defineMethod('exec', TP.RegExpProto.exec);
     RegExp.Inst.defineMethod('test', TP.RegExpProto.test);
