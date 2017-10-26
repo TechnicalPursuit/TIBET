@@ -1347,7 +1347,7 @@ function(aTargetElem, anEvent) {
         incrementalVal = evtTargetTPElem.getAttribute('ui:incremental');
 
         //  There are 3 possible values for 'ui:incremental' - 'control',
-        //  'model' and 'both. We handle 'model' and 'both' here.
+        //  'model' and 'both'. We handle 'model' and 'both' here.
         if (incrementalVal === 'model' || incrementalVal === 'both') {
             evtTargetTPElem.setBoundValue(evtTargetTPElem.getDisplayValue());
         }
