@@ -1206,9 +1206,6 @@ function(anID, headerText, tileParent, shouldDock) {
     wantsToDock = TP.notDefined(shouldDock, true);
     tileTPElem.set('shouldDock', wantsToDock);
 
-    //  Awaken the tile.
-    tileTPElem.awaken();
-
     //  Center this based on where the 'center' div is located.
     centerTPElem = TP.byId('center', this.get('vWin'));
     centerTPElemPageRect = centerTPElem.getOffsetRect();
