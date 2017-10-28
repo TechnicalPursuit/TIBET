@@ -27,3 +27,6 @@ xctrls|codeeditor > div {
     height: 100%;
 }
 
+xctrls|codeeditor .ace_editor {
+    font-size: 77%;
+}
