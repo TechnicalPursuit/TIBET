@@ -85,7 +85,9 @@ function(options) {
 
     return TP.xhtmlnode(
             '<div class="wrapped noselect usermessage">' +
-                '<div>Coming Soon</div>' +
+                '<a target="_blank" ' +
+                'href="http://www.technicalpursuit.com/docs/roadmap.html#' +
+                'sherpa_tsh">Coming Soon</a>' +
             '</div>');
 });
 

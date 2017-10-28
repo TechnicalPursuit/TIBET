@@ -11,6 +11,11 @@ sherpa|settings {
     height: 100%;
 }
 
+sherpa|settings a {
+    font-size: 131%;
+    color: #999;
+}
+
 sherpa|settings > .footer {
 
     position: absolute;

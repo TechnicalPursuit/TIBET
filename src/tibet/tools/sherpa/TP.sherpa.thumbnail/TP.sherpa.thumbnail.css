@@ -11,6 +11,11 @@ sherpa|thumbnail {
     width: 100%;
 }
 
+sherpa|thumbnail a {
+    font-size: 131%;
+    color: #999;
+}
+
 sherpa|thumbnail > .header {
 
     position: absolute;

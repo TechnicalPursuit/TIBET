@@ -57,13 +57,16 @@ sherpa|inspectoritem > div.usermessage {
 
     border: none;
 
-    font-size: 300%;
+    font-size: 131%;
     font-family: "arial", "helvetica", "clean", sans-serif;
-
-    opacity: 0.1;
+    color: #999;
 
     align-items: center;
     justify-content: center;
+}
+
+sherpa|inspectoritem > div.usermessage a {
+    color: #999;
 }
 
 sherpa|inspectoritem > div > textarea {
