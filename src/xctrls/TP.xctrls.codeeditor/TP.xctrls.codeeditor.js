@@ -804,7 +804,9 @@ function() {
     var editorObj,
 
         vertScroller,
-        vertScrollerInner;
+        vertScrollerInner,
+
+        diff;
 
     /* eslint-disable new-cap */
     editorObj = TP.extern.ace.edit(this.getNativeNode().firstElementChild);
@@ -849,21 +851,34 @@ function() {
                                         true,
                                         false);
 
+    diff = TP.elementGetHeight(vertScroller) -
+            TP.elementGetHeight(vertScrollerInner);
+    this.$set('$editorHeightDiff',
+                diff - editorObj.renderer.$fontMetrics.$characterSize.height);
+
     //  Add a resize listener to the inner part of the vertical scrollbar. The
     //  attached function will signal an 'EditorResize' and then, about 25ms
     //  after returning, will set the outer vertical scroller element to display
     //  'block' (because the ACE code keeps hiding it, which prevents our resize
     //  listener from working properly - there is no visible artifact to the end
     //  user).
-    TP.elementAddResizeListener(
-        vertScrollerInner,
+
+    //  Note how we set this up 250ms after the editor has been attached to the
+    //  DOM. This avoids issues around querying and processing by the XPath part
+    //  of the tag processor.
+    setTimeout(
         function() {
-            this.dispatch('TP.sig.EditorResize');
-            setTimeout(
+            TP.elementAddResizeListener(
+                vertScrollerInner,
                 function() {
-                    TP.elementGetStyleObj(vertScroller).display = 'block';
-                }, 25);
-        }.bind(this));
+                    this.dispatch('TP.sig.EditorResize');
+                    setTimeout(
+                        function() {
+                            TP.elementGetStyleObj(vertScroller).display =
+                                'block';
+                        }, 25);
+                }.bind(this));
+        }.bind(this), 250);
 
     //  We're all set up and ready - signal that.
     this.dispatch('TP.sig.DOMReady');
