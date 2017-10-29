@@ -124,6 +124,10 @@ sherpa|workbench > .footer {
     background-image: url("../media/ic_list_black_24px.svg");
 }
 
+#snippetMenuTrigger:active {
+    background-color: gold;
+}
+
 #snippetMenuTrigger:hover {
 
     cursor: pointer;

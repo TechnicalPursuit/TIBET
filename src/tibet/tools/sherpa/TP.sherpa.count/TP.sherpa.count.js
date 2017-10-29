@@ -62,8 +62,21 @@ function(newContent, aRequest, stdinContent) {
      *     receiver.
      */
 
-    return this.get('countNumber').setContent(
-                                    newContent, aRequest, stdinContent);
+    var elem,
+        int;
+
+    elem = this.get('countNumber');
+
+    int = parseInt(newContent, 10);
+    if (TP.isNumber(int)) {
+        if (int > 0) {
+            this.setAttribute('nonzero', true);
+        } else {
+            this.removeAttribute('nonzero');
+        }
+    }
+
+    return elem.setContent(newContent, aRequest, stdinContent);
 });
 
 //  ------------------------------------------------------------------------

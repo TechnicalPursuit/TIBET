@@ -83,6 +83,12 @@
             background-color: @xctrls_buttonitem-background-color-hover;
         }
 
+        &[pclass|selected]:hover > xctrls|label {
+            color: @xctrls_buttonitem-font-color-normal;
+
+            background-color: @xctrls_buttonitem-background-color-selected;
+        }
+
         /* Focusing on the buttonitem, label must highlight */
 
         /* doesn't work in any browser
