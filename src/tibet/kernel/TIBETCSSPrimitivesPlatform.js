@@ -56,12 +56,10 @@ TP.hc(
          * @exception TP.sig.InvalidElement
          */
 
-        var styleObj,
-            oldTransformVal;
+        var styleObj;
 
         styleObj = TP.elementGetStyleObj(anElement);
 
-        oldTransformVal = styleObj.transform;
         styleObj.transform = 'rotateZ(0deg)';
         styleObj.transform = 'none';
 
