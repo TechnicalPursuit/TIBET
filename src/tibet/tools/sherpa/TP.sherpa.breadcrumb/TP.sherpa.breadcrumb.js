@@ -21,6 +21,8 @@ TP.sherpa.breadcrumb.addTraits(TP.core.D3Tag);
 TP.sherpa.breadcrumb.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
+TP.sherpa.breadcrumb.Inst.defineAttribute('dataset');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -79,7 +81,12 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var newContent;
+    var newContent,
+        thisref;
+
+    this.updateDataset(enterSelection);
+
+    thisref = this;
 
     newContent = enterSelection.append('div').classed('item', true).
         attr(
@@ -107,8 +114,11 @@ function(enterSelection) {
         text(
         function(d, i) {
             var uri,
-                result;
+                result,
+                ds,
+                last;
 
+            //  Shorten any URI portions as much as possible.
             if (TP.isURIString(d)) {
                 uri = TP.uc(d);
 
@@ -119,6 +129,19 @@ function(enterSelection) {
                 }
             } else {
                 result = d;
+            }
+
+            //  Leverage captured/processed title data to produce the best title
+            //  for this index position.
+            ds = thisref.$get('dataset');
+            if (TP.isValid(ds)) {
+                result = TP.ifInvalid(ds.at(i), d);
+                if (i > 0) {
+                    last = ds.at(i - 1);
+                    if (result.startsWith(last)) {
+                        result = result.replace(last, '');
+                    }
+                }
             }
 
             return result;
@@ -305,6 +328,55 @@ function() {
     this.signal('TP.sig.DidRender');
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineMethod('updateDataset',
+function(enterSelection) {
+
+    /**
+     * @method updateDataset
+     * @summary Refresh internal dataset tracking the title data for our
+     *     breadcrumbs. This has to be done since new content can come
+     *     incrementally and D3 doesn't store it internally.
+     * @param {Object} enterSelection A D3 enter selection object.
+     * @returns {Array} The dataset.
+     */
+
+    var dataset,
+        selection;
+
+    //  Lazily create the dataset array we'll track historical data in.
+    dataset = this.$get('dataset');
+    if (TP.notValid(dataset)) {
+        dataset = TP.ac();
+        this.$set('dataset', dataset);
+    }
+
+    //  If no selection clear the dataset.
+    if (TP.notValid(enterSelection)) {
+        dataset.truncate();
+        return dataset;
+    }
+
+    //  D3 typically uses an array whose first element is itself an array
+    //  containing the data we're interested in. If that's empty clear the list.
+    selection = enterSelection[0];
+    if (TP.notValid(selection) || selection.getSize() === 0) {
+        dataset.truncate();
+        return dataset;
+    }
+
+    //  Update each index provided, then truncate to remove any entries which
+    //  remain in the dataset beyond the last "new data" provided. This happens
+    //  if you "back up" and provide new data but the dataset was longer before.
+    selection.forEach(function(item, index) {
+        dataset.atPut(index, item.__data__);
+    });
+    dataset.truncate(selection.length);
+
+    return dataset;
 });
 
 //  ------------------------------------------------------------------------

@@ -10,6 +10,8 @@ sherpa|count {
     height: 20px;
     width: 32px;
 
+    background-color: #fff;
+
     border: 1px solid #666;
     border-radius: 10px;
 
@@ -19,17 +21,26 @@ sherpa|count {
 }
 
 sherpa|count:hover {
-
     background-color: cornsilk;
 }
 
 sherpa|count[pclass|selected] {
-
-    background-color: gold;
+    background-color: cornsilk;
 }
 
 sherpa|count[pclass|selected]:hover {
+    background-color: cornsilk;
+}
 
+sherpa|count[nonzero="true"]:hover {
+    background-color: gold;
+}
+
+sherpa|count[nonzero="true"][pclass|selected] {
+    background-color: gold;
+}
+
+sherpa|count[nonzero="true"][pclass|selected]:hover {
     background-color: gold;
 }
 
