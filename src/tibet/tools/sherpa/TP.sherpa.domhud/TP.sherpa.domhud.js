@@ -633,11 +633,9 @@ function(aSignal) {
     switch (vendType) {
         case 'breadcrumb':
         case 'tofu':
-
             break;
 
         case 'dom_node':
-
             sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
                                                 get('currentTargetTPElem');
             break;
