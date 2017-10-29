@@ -1571,11 +1571,11 @@
         [
             ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
             ['APP', 'TP.sherpa.AppRootInspectorSource'],
-            ['TSH', 'TP.sherpa.TSHRootInspectorSource'],
             ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
+            ['TSH', 'TP.sherpa.TSHRootInspectorSource'],
             ['TWS', 'TP.sherpa.TWSRootInspectorSource'],
-            ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource'],
-            ['REST', 'TP.sherpa.RESTRootInspectorSource']
+            ['REST', 'TP.sherpa.RESTRootInspectorSource'],
+            ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource']
         ]);
 
     //  the initial location to load into screen_0 in the Sherpa. Note this
