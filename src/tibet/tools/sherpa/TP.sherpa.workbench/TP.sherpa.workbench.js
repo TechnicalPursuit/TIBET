@@ -618,9 +618,17 @@ function(aSignal) {
 
     var cmdVal;
 
-    //  Build the command and execute it.
-    cmdVal = ':build';
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+    TP.confirm('Build Application Packages?').then(
+        function(build) {
+            if (TP.notTrue(build)) {
+                TP.info('Build cancelled.');
+                return;
+            }
+
+            //  Build the command and execute it.
+            cmdVal = ':build';
+            TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+        });
 
     return this;
 });
@@ -677,24 +685,32 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    var cmdVal,
+    TP.confirm('Run Application Test Suites?').then(
+        function(build) {
+            var cmdVal,
+                shell,
+                haloType;
 
-        shell,
-        haloType;
+            if (TP.notTrue(build)) {
+                TP.info('Test run cancelled.');
+                return;
+            }
 
-    //  Build the command and execute it.
-    cmdVal = ':test';
+            //  Build the command and execute it.
+            cmdVal = ':test';
 
-    shell = TP.bySystemId('TSH');
-    if (TP.isValid(shell)) {
+            shell = TP.bySystemId('TSH');
+            if (TP.isValid(shell)) {
 
-        haloType = shell.getVariable('HALO_TYPE');
-        if (TP.isType(haloType)) {
-            cmdVal += ' $HALO_TYPE';
-        }
-    }
+                haloType = shell.getVariable('HALO_TYPE');
+                if (TP.isType(haloType)) {
+                    cmdVal += ' $HALO_TYPE';
+                }
+            }
 
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+            TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+        });
 
     return this;
 });
