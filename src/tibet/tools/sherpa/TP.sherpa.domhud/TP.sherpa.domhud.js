@@ -1192,7 +1192,7 @@ function(aSignal) {
                                         '<span class="deleter" on:click="{signal: DeleteItem, origin: \'domhud_attributes\', payload: {index:TP.TARGET}}"/>' +
                                     '<br/>' +
                                 '</div>' +
-                                '<div class="inserter" on:click="{signal: InsertItem, origin: \'domhud_attributes\', payload: {source: \'urn:tibet:attr_data_blank\', copy: true}}"></div>' +
+                                '<div class="inserter" on:click="{signal: InsertItem, origin: \'domhud_attributes\', payload: {source: \'urn:tibet:dom_attr_data_blank\', copy: true}}"></div>' +
                             '</span>' +
                         '</tibet:group>');
 
