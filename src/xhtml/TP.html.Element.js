@@ -82,7 +82,7 @@ function(aCSSClass, atEnd) {
      * @returns {TP.html.Element} The receiver.
      */
 
-    TP.elementAddCSSClass(this.getNativeNode(), aCSSClass, atEnd);
+    TP.elementAddClass(this.getNativeNode(), aCSSClass, atEnd);
 
     return this;
 });
@@ -147,7 +147,7 @@ function(aCSSClass) {
      * @returns {TP.html.Element} The receiver.
      */
 
-    TP.elementRemoveCSSClass(this.getNativeNode(), aCSSClass);
+    TP.elementRemoveClass(this.getNativeNode(), aCSSClass);
 
     return this;
 });
@@ -166,9 +166,7 @@ function(oldCSSClass, newCSSClass) {
      * @returns {TP.html.Element} The receiver.
      */
 
-    TP.elementReplaceCSSClass(this.getNativeNode(),
-                                oldCSSClass,
-                                newCSSClass);
+    TP.elementReplaceClass(this.getNativeNode(), oldCSSClass, newCSSClass);
 
     return this;
 });
