@@ -56,7 +56,15 @@ TP.hc(
          * @exception TP.sig.InvalidElement
          */
 
-        //  For browser UIs other than 'trident', this is unnecessary.
+        var styleObj,
+            oldTransformVal;
+
+        styleObj = TP.elementGetStyleObj(anElement);
+
+        oldTransformVal = styleObj.transform;
+        styleObj.transform = 'rotateZ(0deg)';
+        styleObj.transform = 'none';
+
         return;
     }
 ));
