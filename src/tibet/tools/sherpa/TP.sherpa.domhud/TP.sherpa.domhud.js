@@ -422,10 +422,12 @@ function(enterSelection) {
             }).attr(
             'indexInData',
             function(d, i) {
-                return i;
+                if (d[1] !== 'spacer') {
+                    return (i / 2).floor();
+                }
             }).attr(
             'peerID',
-            function(d, i) {
+            function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
                 }
@@ -449,7 +451,7 @@ function(enterSelection) {
 
                 return val;
             }).each(
-            function(d, i) {
+            function() {
                 TP.elementSetAttribute(
                         this, 'dnd:accept', 'tofu dom_node', true);
             });
@@ -522,7 +524,8 @@ function(updateSelection) {
                 if (d[2] === 'target') {
                     return true;
                 }
-            }).attr('child',
+            }).attr(
+            'child',
             function(d) {
                 if (d[2] === 'child') {
                     return true;
@@ -530,10 +533,12 @@ function(updateSelection) {
             }).attr(
             'indexInData',
             function(d, i) {
-                return i;
+                if (d[1] !== 'spacer') {
+                    return (i / 2).floor();
+                }
             }).attr(
             'peerID',
-            function(d, i) {
+            function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
                 }
@@ -557,7 +562,7 @@ function(updateSelection) {
 
                 return val;
             }).each(
-            function(d, i) {
+            function() {
                 TP.elementSetAttribute(
                     this, 'dnd:accept', 'tofu dom_node', true);
             });
