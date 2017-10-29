@@ -1634,6 +1634,8 @@ function(indexes) {
         }
     }
 
+    TP.$elementCSSFlush(elem);
+
     return this;
 });
 
@@ -2571,6 +2573,8 @@ function(indexes) {
             TP.wrap(firstRow).focusAutofocusedOrFirstFocusableDescendant();
         }).queueForNextRepaint(TP.nodeGetWindow(firstRow));
     }
+
+    TP.$elementCSSFlush(elem);
 
     return newElement;
 });
