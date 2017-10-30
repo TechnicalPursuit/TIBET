@@ -621,6 +621,11 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
+    //  the profile used for application packaging purposes. this profile will
+    //  be used to compare with project metadata to identify potentially missing
+    //  dependencies.
+    TP.sys.setcfg('project.packaging.profile', 'main@base');
+
     //  ---
     //  TDS shared values. This subset is required by the client and server.
     //  ---

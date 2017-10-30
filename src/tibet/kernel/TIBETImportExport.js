@@ -23,7 +23,13 @@ function(packageName, configName) {
      *     config.
      */
 
-    var uri,
+    var packageProfile,
+        packageProfileParts,
+
+        pkgName,
+        cfgName,
+
+        uri,
 
         packageAssets,
         packageScriptPaths,
@@ -31,8 +37,17 @@ function(packageName, configName) {
         phaseOne,
         phaseTwo;
 
+    //  Default the packageName and configName to what can be extracted from the
+    //  packaging profile.
+
+    packageProfile = TP.sys.cfg('project.packaging.profile', 'main@base');
+    packageProfileParts = packageProfile.split('@');
+
+    pkgName = TP.ifEmpty(packageName, packageProfileParts.first());
+    cfgName = TP.ifEmpty(configName, packageProfileParts.last());
+
     //  Normalize the incoming package name to produce a viable config file.
-    uri = TP.uriExpandPath(packageName);
+    uri = TP.uriExpandPath(pkgName);
     if (!TP.isURIString(uri)) {
         uri = TP.uriJoinPaths('~app_cfg', uri);
     }
@@ -48,7 +63,7 @@ function(packageName, configName) {
         phaseTwo = TP.sys.cfg('boot.phase_two');
         TP.sys.setcfg('boot.phase_one', true);
         TP.sys.setcfg('boot.phase_two', true);
-        packageAssets = TP.boot.$listPackageAssets(uri, configName);
+        packageAssets = TP.boot.$listPackageAssets(uri, cfgName);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is.
