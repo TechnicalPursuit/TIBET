@@ -27,6 +27,8 @@
     outline: dashed 1px red;
 
     background-color: white;
+
+    overflow: visible !important;
 }
 
 .sherpa-outliner b,
