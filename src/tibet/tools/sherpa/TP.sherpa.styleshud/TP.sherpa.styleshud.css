@@ -31,14 +31,21 @@ sherpa|styleshud > ul {
     overflow: auto;
 }
 
-sherpa|styleshud > ul.content > li {
+/* All items */
+
+sherpa|styleshud > ul.content > li.item {
+
+    margin: 1px 5px;
+}
+
+/* Selector items */
+
+sherpa|styleshud > ul.content > li.selector {
 
     height: 1.75em;
     line-height: 1.75em;
 
     padding-left: 0.25em;
-
-    margin: 5px;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -51,19 +58,56 @@ sherpa|styleshud > ul.content > li {
     white-space: nowrap;
 }
 
-sherpa|styleshud > ul.content > li:hover {
+sherpa|styleshud > ul.content > li.selector:hover {
     background-color: cornsilk;
     color: #666;
 }
 
-sherpa|styleshud > ul.content > li[pclass|selected] {
-    background-color: gold;
+sherpa|styleshud > ul.content > li.selector[pclass|selected] {
+    background-color: #acd;
     border: 1px solid black;
     color: black;
 }
 
-sherpa|styleshud > ul.content > li[pclass|selected]:hover {
+sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
     background-color: gold;
+}
+
+/* spacer items */
+
+sherpa|styleshud > ul.content > li.spacer {
+
+    background-color: transparent;
+
+    height: 3px;
+
+    border: none;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: default;
+}
+
+sherpa|styleshud > ul.content > li.spacer.sherpa-styleshud-droptarget {
+
+    background-color: red;
+}
+
+sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget {
+
+    font-weight: bold;
+    border: 1px solid red;
+}
+
+sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|selected] {
+
+    font-weight: bold;
+}
+
+sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|selected]:hover {
+
+    font-weight: bold;
 }
 
 /* We omitted 'sherpa|tile' here because of this bug in stylelint:
@@ -92,3 +136,59 @@ sherpa|styleshud > ul.content > li[pclass|selected]:hover {
 
 #StyleSummary_Tile > .footer {
 }
+
+#styleshud_properties {
+    position: absolute;
+    top: 0;
+    bottom: 26px;
+    right: 0;
+    left: 0;
+    margin: 2px 0 0 4px;
+    overflow: auto;
+}
+
+.styles_properties input {
+
+    height: 1em;
+    width: 42%;
+
+    margin-left: 0;
+    margin-bottom: 2px;
+}
+
+.styles_properties .inserter {
+
+    position: absolute;
+    z-index: 1;
+    right: 4px;
+    bottom: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 75%;
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+.styles_properties .deleter {
+
+    position: absolute;
+    right: 7px;
+
+    width: 24px;
+    height: 24px;
+
+    margin-top: 0;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-position: 100% 50%;
+    background-repeat: no-repeat;
+    background-image: url("../media/ic_close_black_24px.svg");
+}
+

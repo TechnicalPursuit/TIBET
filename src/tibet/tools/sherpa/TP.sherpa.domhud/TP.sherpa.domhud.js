@@ -678,13 +678,11 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var dndTargetTPElem,
-        dndTargetElem,
+    var dndTargetElem,
 
         peerElem;
 
-    dndTargetTPElem = aSignal.getDOMTarget();
-    dndTargetElem = TP.unwrap(dndTargetTPElem);
+    dndTargetElem = aSignal.getDOMTarget();
 
     //  Remove the CSS class placed on the drop target and set the attribute we
     //  use to track the current DND target to null.
