@@ -41,7 +41,8 @@
         //  ---
 
         name = TDS.cfg('tds.pouch.name') || 'tds';
-        prefix = TDS.cfg('tds.pouch.prefix') || './prefix/';
+        prefix = TDS.cfg('tds.pouch.prefix') || 'pouch';
+        prefix = './' + prefix + '/';
         route = TDS.cfg('tds.pouch.route') || '/db';
 
         //  ---

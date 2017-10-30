@@ -338,6 +338,35 @@
 
 
             /**
+             * Removes any child nodes matching the criteria given.
+             * @param {Node} node The node whose content is to be adjusted.
+             * @param {String} tagName The tag name: 'script', 'resource', etc
+             *     which identifies the entry type being checked.
+             * @param {String} attrName The attribute name to check for.
+             * @param {String} attrValue The attribute value to check for.
+             * @returns {Number} The number of nodes removed, if any.
+             */
+            Cmd.prototype.removeXMLEntry = function(
+                    node, tagName, attrName, attrValue) {
+                var children,
+                    count;
+
+                count = 0;
+                children = Array.prototype.slice.call(node.childNodes, 0);
+
+                children.forEach(function(child) {
+                    if (child.tagName === tagName &&
+                            child.getAttribute(attrName) === attrValue) {
+                        node.removeChild(child);
+                        count += 1;
+                    }
+                });
+
+                return count;
+            };
+
+
+            /**
              * Produces a serialized text version of a node.
              * @param {Node} node The node to serialize.
              * @returns {String} The serialized node text.
