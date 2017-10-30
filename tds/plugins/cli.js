@@ -405,7 +405,7 @@
 
             if (req.query.nosocket !== undefined) {
                 //  NOTE this is protected by the localDev filter for the route.
-                evaluate(clean(req.query), res);
+                evaluate(req.query, res);
                 return;
             }
 
@@ -473,9 +473,21 @@
                             logger.debug('received ' + event.data, meta) : 0;
 
                         safer = clean(event.data);
-
                         TDS.ifDebug() ?
-                            logger.debug('cleansed to ' + safer, meta) : 0;
+                            logger.debug('cleansed to `' + safer + '`',
+                                meta) : 0;
+
+                        if (!safer) {
+                            TDS.ifDebug() ?
+                                logger.debug('ignoring empty event.data',
+                                meta) : 0;
+                            cliSocket.send(JSON.stringify({
+                                ok: false,
+                                error: 'empty_command',
+                                reason: 'unsafe event data',
+                                level: 'error'}));
+                            return;
+                        }
 
                         //  Convert URL formatted query string to query object
                         //  so we match the req.query format of a URL request.
@@ -486,9 +498,12 @@
 
                             chunks = part.split('=');
                             if (chunks.length === 1) {
-                                query[chunks[0]] = true;
+                                query[decodeURIComponent(chunks[0])] = true;
                             } else {
-                                query[chunks[0]] = TDS.unquote(chunks[1]);
+                                query[
+                                    decodeURIComponent(chunks[0])] =
+                                        TDS.unquote(
+                                        decodeURIComponent(chunks[1]));
                             }
                         });
 
