@@ -352,7 +352,7 @@ Cmd.prototype.executeForEach = function(list) {
         excludeDirs.push(/~app_cmd/);
         excludeDirs.push(/~app_log/);
 
-        pouch = CLI.cfg('tds.pouch') || 'pouch';
+        pouch = CLI.cfg('tds.pouch.prefix') || 'pouch';
         excludeDirs.push(new RegExp(pouch));
 
     } else {

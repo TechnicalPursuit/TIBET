@@ -132,7 +132,7 @@
         setcfg('tds.patch.root', '~');
 
         setcfg('tds.pouch.name', 'tds');
-        setcfg('tds.pouch.prefix', './pouch/');
+        setcfg('tds.pouch.prefix', 'pouch'); // this is a directory name
         setcfg('tds.pouch.route', '/db');
 
         setcfg('tds.proxy.map', null);
