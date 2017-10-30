@@ -180,6 +180,7 @@
 
     <script src="tsh/TP.tsh.open.js"/>
 
+    <script src="tsh/TP.tsh.package.js"/>
     <script src="tsh/TP.tsh.pull.js"/>
     <script src="tsh/TP.tsh.push.js"/>
 
