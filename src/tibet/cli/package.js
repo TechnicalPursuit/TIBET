@@ -96,14 +96,18 @@ Cmd.NAME = 'package';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing',
-            'inlined', 'unlisted'],
-        'string': ['package', 'config', 'include', 'exclude', 'phase', 'profile'],
+        'boolean': ['all', 'scripts', 'resources', 'images', 'nodes',
+            'unresolved', 'inlined', 'unlisted'],
+        'string': ['package', 'config', 'include', 'exclude', 'phase',
+            'profile', 'add', 'remove'],
         default: {
             scripts: true,
             resources: true,
             images: true,
-            missing: false,
+            add: false,
+            remove: false,
+            fix: false,
+            unresolved: false,
             unlisted: false
         }
     },
@@ -116,10 +120,25 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet package [--package <package>] [--config <cfg>] [--all] [--missing]\n' +
-    '\t[--unlisted] [--include <asset names>] [--exclude <asset names>]\n' +
-    '\t[--scripts] [--resources] --[images] [--phase <app|lib|all>] [--nodes]';
+    'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
+    '\t[--phase <app|lib|all>] [--unresolved] [--unlisted] [--fix]\n' +
+    '\t[--add <file_list>] [--remove <file_list>]\n' +
+    '\t[--include <asset names>] [--exclude <asset names>]\n' +
+    '\t[--scripts] [--resources] [--images] [--nodes]';
 
+/**
+ * List of any assets that need to be removed from the package during
+ * remove/fix processing.
+ * @type {Array}
+ */
+Cmd.prototype.deletes = null;
+
+/**
+ * List of any assets that need to be added to the package during add/fix
+ * processing.
+ * @type {Array}
+ */
+Cmd.prototype.inserts = null;
 
 /**
  * The package instance which this instance is using to process package data.
@@ -149,11 +168,12 @@ Cmd.prototype.configurePackageOptions = function(options) {
 
     this.pkgOpts = options || this.options;
 
-    // If we're doing an unlisted or missing file scan we need to
+    // If we're doing add, remove, unlisted or unresolved operations we need to
     // override/assign values to the other parameters to ensure we get a full
     // list of known assets from the package being scanned.
-    if (this.options.missing || this.options.unlisted) {
-        this.info('scanning for missing/unlisted files...');
+    if (this.options.add || this.options.remove ||
+            this.options.unresolved || this.options.unlisted) {
+        this.info('scanning for unresolved/unlisted files...');
         this.options.images = true;
         this.options.scripts = true;
         this.options.resources = true;
@@ -163,7 +183,7 @@ Cmd.prototype.configurePackageOptions = function(options) {
 
         //  When working with a specific config focus on that config, otherwise
         //  when only looking at a package we try to find everything in the
-        //  package that might be missing.
+        //  package that might be unresolved.
         if (CLI.isEmpty(this.options.config)) {
             this.options.all = true;
         } else {
@@ -261,7 +281,7 @@ Cmd.prototype.executeForEach = function(list) {
         pouch,
         attrs,
         files,
-        missing,
+        unresolved,
         unlisted;
 
     cmd = this;
@@ -270,7 +290,10 @@ Cmd.prototype.executeForEach = function(list) {
     //  standard listing
     //  ---
 
-    if (!this.options.unlisted && !this.options.missing) {
+    //  No flags that would cause potential alteration of the package means we
+    //  can simply list the data and return.
+    if (!this.options.add && !this.options.remove && !this.options.fix &&
+            !this.options.unlisted && !this.options.unresolved) {
         list.forEach(function(item) {
             if (cmd.pkgOpts.nodes) {
                 attrs = Array.prototype.slice.call(item.attributes);
@@ -287,33 +310,40 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     //  ---
-    //  missing file check
+    //  unresolved file check
     //  ---
 
-    if (this.options.missing) {
+    if (this.options.unresolved) {
 
-        //  Simple...just verify every path is real...
-        missing = list.filter(function(item) {
+        //  Simple...just verify every path mentioned in package is real...
+        unresolved = list.filter(function(item) {
             return !CLI.sh.test('-e', item);
         });
 
-        if (missing.length > 0) {
-            missing.forEach(function(item) {
+        if (unresolved.length > 0) {
+            unresolved.forEach(function(item) {
                 cmd.warn('Package entry not found: ' + item);
             });
 
-            this.error('' + missing.length +
-                ' package referenced files missing.');
+            this.error('' + unresolved.length +
+                ' package referenced files unresolved.');
         } else {
             this.info(
                 'All package-referenced files found in project.');
         }
+
+        //  If we're being asked to fix things then unresolved files should be
+        //  removed...add them to the deletes list.
+        if (this.options.fix) {
+            this.deletes = unresolved;
+        }
     }
 
-    //  Are we done? No need to scan file system if we're just running a missing
-    //  check.
-    if (!this.options.unlisted) {
-        if (missing.length > 0) {
+    //  Are we done? No need to scan file system if we're just running a
+    //  unresolved check without add/remove/fix.
+    if (!this.options.add && !this.options.remove && !this.options.fix &&
+            !this.options.unlisted) {
+        if (unresolved.length > 0) {
             throw new Error();
         } else {
             return 0;
@@ -331,148 +361,157 @@ Cmd.prototype.executeForEach = function(list) {
      * of actual entries in the package.
      */
 
-    excludeDirs = [];
-    excludeDirs.push(/\/\..*/);
-    excludeDirs.push(/node_modules/);
+    if (this.options.unlisted) {
 
-    excludeFiles = [];
-    excludeFiles.push(/\/\..*/);
-    excludeFiles.push(/\.css$/);
-    excludeFiles.push(/\.less$/);
-    excludeFiles.push(/\.sass$/);
-    excludeFiles.push(/\.xhtml$/);
+        excludeDirs = [];
+        excludeDirs.push(/\/\..*/);
+        excludeDirs.push(/node_modules/);
 
-    if (CLI.inProject()) {
-        root = CLI.expandPath('~app');
+        excludeFiles = [];
+        excludeFiles.push(/\/\..*/);
+        excludeFiles.push(/\.css$/);
+        excludeFiles.push(/\.less$/);
+        excludeFiles.push(/\.sass$/);
+        excludeFiles.push(/\.xhtml$/);
 
-        excludeDirs.push(/~app_build/);
-        excludeDirs.push(/~lib/);
-        excludeDirs.push(/~app_boot/);
-        excludeDirs.push(/~app_cfg/);
-        excludeDirs.push(/~app_cmd/);
-        excludeDirs.push(/~app_log/);
+        if (CLI.inProject()) {
+            root = CLI.expandPath('~app');
 
-        pouch = CLI.cfg('tds.pouch.prefix') || 'pouch';
-        excludeDirs.push(new RegExp(pouch));
+            excludeDirs.push(/~app_build/);
+            excludeDirs.push(/~lib/);
+            excludeDirs.push(/~app_boot/);
+            excludeDirs.push(/~app_cfg/);
+            excludeDirs.push(/~app_cmd/);
+            excludeDirs.push(/~app_log/);
 
-    } else {
-        root = CLI.expandPath('~lib');
+            pouch = CLI.cfg('tds.pouch.prefix') || 'pouch';
+            excludeDirs.push(new RegExp(pouch));
 
-        excludeDirs.push(/~lib_boot/);
-        excludeDirs.push(/~lib_cli/);
-        excludeDirs.push(/~lib_cmd/);
-        excludeDirs.push(/~lib_dna/);
-        excludeDirs.push(/~lib_cfg/);
-        excludeDirs.push(/~lib_etc/);
-        excludeDirs.push(/~lib_deps/);
-    }
+        } else {
+            root = CLI.expandPath('~lib');
 
-    code = 0;
-    files = [];
-
-    finder = find(root);
-
-    finder.on('error', function(e) {
-        cmd.error('Error processing project files: ' + e);
-        code = 1;
-    });
-
-    // Ignore links. (There shouldn't be any...but just in case.).
-    finder.on('link', function(link) {
-        cmd.warn('Ignoring link: ' + link);
-    });
-
-    // Ignore hidden directories and the node_modules directory.
-    finder.on('directory', function(dir, stat, stop) {
-        var base,
-            virtual;
-
-        base = path.basename(dir);
-        if (base.charAt(0) === '.' || base === 'node_modules') {
-            stop();
-            return;
+            excludeDirs.push(/~lib_boot/);
+            excludeDirs.push(/~lib_cli/);
+            excludeDirs.push(/~lib_cmd/);
+            excludeDirs.push(/~lib_dna/);
+            excludeDirs.push(/~lib_cfg/);
+            excludeDirs.push(/~lib_etc/);
+            excludeDirs.push(/~lib_deps/);
         }
 
-        if (CLI.notEmpty(excludeDirs)) {
-            virtual = CLI.getVirtualPath(dir);
-            excludeDirs.forEach(function(exclusion) {
-                if (exclusion.test(dir) || exclusion.test(virtual)) {
-                    stop();
-                }
-            });
-        }
-    });
+        code = 0;
+        files = [];
 
-    finder.on('file', function(file) {
-        var virtual,
-            stop;
+        finder = find(root);
 
-        if (!file.match(/\.(js|jscript)$/)) {
-            return;
-        }
-
-        stop = false;
-
-        if (CLI.notEmpty(excludeFiles)) {
-            virtual = CLI.getVirtualPath(file);
-            excludeFiles.forEach(function(exclusion) {
-                if (exclusion.test(file) || exclusion.test(virtual)) {
-                    stop = true;
-                }
-            });
-        }
-
-        if (stop) {
-            return;
-        }
-
-        files.push(file);
-    });
-
-    finder.on('end', function() {
-        var packaged;
-
-        if (code !== 0) {
-            throw new Error();
-        }
-
-        //  File lists and package entries come in fully-expanded form but that
-        //  makes comparisons harder from a filtering perspective (easier to
-        //  filter out ~lib_build than some hard-coded root path).
-        files = files.map(function(file) {
-            return CLI.getVirtualPath(file);
+        finder.on('error', function(e) {
+            cmd.error('Error processing project files: ' + e);
+            code = 1;
         });
 
-        packaged = list.map(function(file) {
-            return CLI.getVirtualPath(file);
+        // Ignore links. (There shouldn't be any...but just in case.).
+        finder.on('link', function(link) {
+            cmd.warn('Ignoring link: ' + link);
         });
 
-        unlisted = files.filter(function(item) {
-            return packaged.indexOf(item) === -1;
+        // Ignore hidden directories and the node_modules directory.
+        finder.on('directory', function(dir, stat, stop) {
+            var fulldir,
+                base,
+                virtual;
+
+            fulldir = CLI.expandPath(dir);
+            base = path.basename(fulldir);
+            if (base.charAt(0) === '.' || base === 'node_modules') {
+                stop();
+                return;
+            }
+
+            if (CLI.notEmpty(excludeDirs)) {
+                virtual = CLI.getVirtualPath(fulldir);
+                excludeDirs.forEach(function(exclusion) {
+                    if (exclusion.test(base) || exclusion.test(virtual)) {
+                        stop();
+                    }
+                });
+            }
         });
 
-        if (unlisted.length > 0) {
+        finder.on('file', function(file) {
+            var virtual,
+                stop;
 
-            if (cmd.options.verbose) {
-                unlisted.forEach(function(item) {
-                    cmd.log('Unlisted file found: ' + item);
+            if (!file.match(/\.(js|jscript)$/)) {
+                return;
+            }
+
+            stop = false;
+
+            if (CLI.notEmpty(excludeFiles)) {
+                virtual = CLI.getVirtualPath(file);
+                excludeFiles.forEach(function(exclusion) {
+                    if (exclusion.test(file) || exclusion.test(virtual)) {
+                        stop = true;
+                    }
                 });
             }
 
-            cmd.info('' + unlisted.length + ' files not referenced in package.');
-        } else {
-            cmd.info(
-                'All files referenced at least once in package.');
-        }
+            if (stop) {
+                return;
+            }
 
-        //  In case we had missing check as well we won't have exited with error
-        //  state since we held off to do the unlisted check. Deal with that.
-        if (missing && missing.length > 0) {
-            throw new Error();
-        } else {
-            return 0;
-        }
-    });
+            files.push(file);
+        });
+
+        finder.on('end', function() {
+            var packaged;
+
+            if (code !== 0) {
+                throw new Error();
+            }
+
+            //  File lists and package entries come in fully-expanded form but
+            //  that makes comparisons harder from a filtering perspective
+            //  (easier to filter out ~lib_build than some hard-coded root
+            //  path).
+            files = files.map(function(file) {
+                return CLI.getVirtualPath(file);
+            });
+
+            packaged = list.map(function(file) {
+                return CLI.getVirtualPath(file);
+            });
+
+            unlisted = files.filter(function(item) {
+                return packaged.indexOf(item) === -1;
+            });
+
+            if (unlisted.length > 0) {
+
+                if (cmd.options.verbose) {
+                    unlisted.forEach(function(item) {
+                        cmd.log('Unlisted file found: ' + item);
+                    });
+                }
+
+                cmd.info('' + unlisted.length +
+                    ' files not referenced in package.');
+            } else {
+                cmd.info(
+                    'All files referenced at least once in package.');
+            }
+
+            if (cmd.options.fix) {
+                cmd.inserts = unlisted;
+            }
+
+            cmd.processDeltas();
+        });
+
+    } else {
+        //  Not doing unlisted scan, but may have add/remove information.
+        this.processDeltas();
+    }
 };
 
 
@@ -523,6 +562,56 @@ Cmd.prototype.getPackageAssetList = function() {
     }
 
     return list;
+};
+
+
+/**
+ */
+Cmd.prototype.processDeltas = function() {
+    var inserts,
+        deletes,
+        cmd;
+
+    if (!this.options.add && !this.options.remove && !this.options.fix) {
+        return 0;
+    }
+
+    cmd = this;
+
+    //  Unlisted and unresolved (if enabled) will have pre-populated the lists
+    //  of assets to add/remove.
+    deletes = this.deletes || [];
+    inserts = this.inserts || [];
+
+    if (this.options.add) {
+        inserts = inserts.concat(this.options.add.split(' '));
+        inserts = inserts.map(function(item) {
+            return CLI.getVirtualPath(item);
+        });
+    }
+
+    if (this.options.remove) {
+        deletes = deletes.concat(this.options.remove.split(' '));
+        deletes = deletes.map(function(item) {
+            return CLI.getVirtualPath(item);
+        });
+    }
+
+    inserts.forEach(function(item) {
+        cmd.log('+ ' + item);
+    });
+
+    deletes.forEach(function(item) {
+        cmd.log('- ' + item);
+    });
+
+    /*
+    cfgNode = this.readConfigNode(this.package, this.options.config, true);
+    if (!cfgNode) {
+        throw new Error('Unable to find ' + pkgName + '@' + cfgName);
+    }
+    */
+
 };
 
 
