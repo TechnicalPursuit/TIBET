@@ -101,6 +101,60 @@ function(packageName, configName) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getUsedScriptPaths',
+function() {
+
+    /**
+     * @method getUsedScriptPaths
+     * @summary Returns a list of source file paths that are currently being
+     *     used by the system. This is determined by looking at all of the
+     *     methods that were invoked and their source paths.
+     * @description This method requires the 'oo.$$track_invocation' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it return an empty hash.
+     * @returns {String[]} An Array of script paths that are used in the
+     *     currently running system.
+     */
+
+    var usedMethods,
+        usedMethodPaths,
+
+        expandedPaths;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used types when invocation' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    //  Collect all of the paths of the used methods.
+    usedMethods = TP.sys.getUsedMethods();
+
+    //  Collect up all of their source paths.
+    usedMethodPaths = usedMethods.collect(
+                        function(kvPair) {
+
+                            var methodPath;
+
+                            methodPath = kvPair.last()[TP.SOURCE_PATH];
+                            return methodPath;
+                        });
+
+    usedMethodPaths.unique();
+    TP.compact(usedMethodPaths, TP.isEmpty);
+
+    //  Expand all of the paths for consistency.
+    expandedPaths = usedMethodPaths.collect(
+                                function(aPath) {
+                                    return TP.uriExpandPath(aPath);
+                                });
+
+    return expandedPaths;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('getMissingScriptPaths',
 function(packageName, configName) {
 
@@ -121,14 +175,7 @@ function(packageName, configName) {
      *     needs.
      */
 
-    var usedTypes,
-        usedTypePaths,
-
-        usedMethods,
-        usedMethodPaths,
-
-        allPaths,
-        expandedPaths,
+    var usedMethodPaths,
 
         configScriptPaths,
 
@@ -144,46 +191,10 @@ function(packageName, configName) {
         return null;
     }
 
-    //  First, we collect the paths of the currently used types.
-
-    //  All of the types that were actually used by the running application will
-    //  be the values in the returned hash here.
-    usedTypes = TP.sys.getUsedTypes().getValues();
-
-    //  Sort them by supertypes.
-    usedTypes.sort(TP.sort.SUBTYPE);
-
-    //  Collect up all of their source paths.
-    usedTypePaths = usedTypes.collect(
-                        function(aType) {
-                            return aType[TP.SOURCE_PATH];
-                        });
-
-    //  Now collect all of the paths of the used methods.
-    usedMethods = TP.sys.getUsedMethods();
-
-    //  Collect up all of their source paths.
-    usedMethodPaths = usedMethods.collect(
-                        function(kvPair) {
-
-                            var methodPath;
-
-                            methodPath = kvPair.last()[TP.SOURCE_PATH];
-                            return methodPath;
-                        });
-
-    //  Concatenate the used type paths with the used method paths into one big
-    //  list. This will be used as the master list for all of the paths.
-    allPaths = usedTypePaths.concat(usedMethodPaths);
-
-    allPaths.unique();
-    TP.compact(allPaths, TP.isEmpty);
-
-    //  Expand all of the paths in the master list.
-    expandedPaths = allPaths.collect(
-                                function(aPath) {
-                                    return TP.uriExpandPath(aPath);
-                                });
+    //  Grab all of the scripts paths that are currently used by the system.
+    //  This uses invocation data to determine which methods got invoked and
+    //  then messages them for their source paths.
+    usedMethodPaths = TP.sys.getUsedScriptPaths();
 
     //  Grab all of the script paths in the named packages and configs. This
     //  will be all of the paths that are contained in that package and config.
@@ -193,7 +204,7 @@ function(packageName, configName) {
     //  paths. This will produce a list of paths that the system knows about
     //  given the runtime information of used types and methods but isn't
     //  represented in the supplied package and config.
-    missingScriptPaths = expandedPaths.difference(configScriptPaths);
+    missingScriptPaths = usedMethodPaths.difference(configScriptPaths);
 
     //  Filter out paths for developer tools, boot system, etc. using a
     //  predetermined list of RegExps.
