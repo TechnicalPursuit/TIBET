@@ -467,7 +467,7 @@ Cmd.prototype.executeForEach = function(list) {
 
         //  In case we had missing check as well we won't have exited with error
         //  state since we held off to do the unlisted check. Deal with that.
-        if (missing.length > 0) {
+        if (missing && missing.length > 0) {
             throw new Error();
         } else {
             return 0;
