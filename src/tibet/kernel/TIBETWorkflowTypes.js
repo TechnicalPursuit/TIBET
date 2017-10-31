@@ -3257,7 +3257,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         joins = this.getJoins(TP.AND);
         joins.forEach(function(item) {
             item.first()[methodName](
-                request.get('faultString'),
+                request.get('faultText'),
                 request.get('faultCode'),
                 request.get('faultInfo'));
         });
@@ -3309,7 +3309,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         joins = this.getParentJoins(TP.AND);
         joins.forEach(function(item) {
             item.first()[methodName](
-                request.get('faultString'),
+                request.get('faultText'),
                 request.get('faultCode'),
                 request.get('faultInfo'));
         });
