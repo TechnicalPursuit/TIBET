@@ -28,5 +28,16 @@ xctrls|codeeditor > div {
 }
 
 xctrls|codeeditor .ace_editor {
+
     font-size: 77%;
+}
+
+/* Add a rule that overrides the 'display' value of the internal vertical
+ * scrollbar component for ACE. This is very important to get the auto-resizing
+ * code to work properly, since the ACE code will keep trying to set 'display'
+ * to 'none' on the element itself, which causes our sizing code to not be able
+ * to compute properly */
+xctrls|codeeditor .ace_scrollbar-v {
+
+    display: block !important;
 }

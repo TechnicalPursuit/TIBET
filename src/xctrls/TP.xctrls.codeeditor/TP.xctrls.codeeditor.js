@@ -836,16 +836,14 @@ function() {
     */
 
     //  Dig around in the internals of ACE to find the element that acts as the
-    //  vertical scrollbar - ugh. We need to set 'display' on this to block in
-    //  order for our resize listener that we'll install below to actually work.
+    //  vertical scrollbar - ugh.
     vertScroller = TP.byCSSPath('.ace_scrollbar-v',
                                 this.getNativeNode(),
                                 true,
                                 false);
-    TP.elementGetStyleObj(vertScroller).display = 'block';
 
     //  Grab the 'inner part' of the vertical scrollbar. This is the element
-    //  that we'll monitor
+    //  that we'll monitor.
     vertScrollerInner = TP.byCSSPath('.ace_scrollbar-v > .ace_scrollbar-inner',
                                         this.getNativeNode(),
                                         true,
@@ -857,11 +855,7 @@ function() {
                 diff - editorObj.renderer.$fontMetrics.$characterSize.height);
 
     //  Add a resize listener to the inner part of the vertical scrollbar. The
-    //  attached function will signal an 'EditorResize' and then, about 25ms
-    //  after returning, will set the outer vertical scroller element to display
-    //  'block' (because the ACE code keeps hiding it, which prevents our resize
-    //  listener from working properly - there is no visible artifact to the end
-    //  user).
+    //  attached function will signal an 'EditorResize'.
 
     //  Note how we set this up 250ms after the editor has been attached to the
     //  DOM. This avoids issues around querying and processing by the XPath part
@@ -872,11 +866,6 @@ function() {
                 vertScrollerInner,
                 function() {
                     this.dispatch('TP.sig.EditorResize');
-                    setTimeout(
-                        function() {
-                            TP.elementGetStyleObj(vertScroller).display =
-                                'block';
-                        }, 25);
                 }.bind(this));
         }.bind(this), 250);
 
