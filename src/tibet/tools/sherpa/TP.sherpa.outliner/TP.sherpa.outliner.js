@@ -583,6 +583,7 @@ function(aSignal) {
 
     var targetTPElement,
 
+        isActive,
         wasActive,
 
         dndTargetElem,
@@ -596,11 +597,17 @@ function(aSignal) {
     //  method.
     targetTPElement = this.get('targetTPElement');
 
+    //  If we're not active right now, then the outliner was already
+    //  deactivated. This probably happened because the D&D session got canceled
+    //  via the Esc key or some other mechanism.
+    isActive = this.get('isActive');
+
     //  Were we active *before* the DND session.
     wasActive = this.get('$wasActive');
 
-    //  If not, then set us back to inactive.
-    if (!wasActive) {
+    //  If we're currently active, but weren't before the DND session, then set
+    //  us back to inactive.
+    if (isActive && !wasActive) {
         this.set('isActive', false);
 
         this.signal('TP.sig.EndOutlineMode');
@@ -618,9 +625,11 @@ function(aSignal) {
         this.set('$currentDNDTarget', null);
     }
 
-    //  If the canvas document contains the target element, then we want to be
-    //  the controller that does the possible insertion.
-    if (TP.isElement(dndTargetElem) &&
+    //  If we're currently active and the canvas document contains the target
+    //  element, then we want to be the controller that does the possible
+    //  insertion.
+    if (isActive &&
+        TP.isElement(dndTargetElem) &&
         targetTPElement.contains(dndTargetElem, TP.IDENTITY)) {
 
         //  Grab the 'drag and drop' source element.
