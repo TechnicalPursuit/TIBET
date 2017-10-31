@@ -342,7 +342,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Inst.defineMethod('getPositioningPoint',
-function(anOverlayPoint) {
+function(anOverlayPoint, anAvoidPoint) {
 
     /**
      * @method getPositioningPoint
@@ -351,6 +351,9 @@ function(anOverlayPoint) {
      * @param {TP.core.Point} anOverlayPoint The initial point to use to
      *     position the overlay. NOTE: This point should be in *global*
      *     coordinates.
+     * @param {TP.core.Point} [anAvoidPoint] A point to 'avoid' when computing
+     *     the positioning point. The system will shift the overlay around,
+     *     trying to avoid this point.
      * @returns {TP.core.Point} The point (in global coordinates) to position
      *     the overlay at.
      */
@@ -363,7 +366,10 @@ function(anOverlayPoint) {
         bodyTPElem,
         bodyRect,
 
-        bodyScrollOffsets;
+        bodyScrollOffsets,
+
+        diffX,
+        diffY;
 
     offset = this.getOverlayOffset();
 
@@ -387,13 +393,57 @@ function(anOverlayPoint) {
 
     bodyRect = bodyTPElem.getGlobalRect();
 
+    //  Constrain the overlay rectangle to inside of the body element rectangle.
+    //  This will make sure that the overlay's content isn't clipped against the
+    //  body of its document.
     bodyRect.constrainRect(overlayRect);
 
+    //  Make sure to add in the scrolling offsets.
     bodyScrollOffsets = bodyTPElem.getScrollOffsetPoint();
     overlayRect.addToX(bodyScrollOffsets.getX());
     overlayRect.addToY(bodyScrollOffsets.getY());
 
-    //  Now, get the 'top left' corner point of the rectangle.
+    //  If the computed overlay rectangle includes the 'avoid point' (in many
+    //  cases, this is the current mouse location), then try to adjust its X and
+    //  Y to avoid that point
+    if (TP.isValid(anAvoidPoint) && overlayRect.containsPoint(anAvoidPoint)) {
+
+        if (overlayRect.containsPointX(anAvoidPoint)) {
+
+            diffX = (overlayRect.getX() + overlayRect.getWidth()) -
+                    anAvoidPoint.getX();
+
+            //  If by subtracting the difference, we're still greater than 0,
+            //  then do that (shifting the overlay towards the left).
+            if (overlayRect.getX() - diffX > 0) {
+                overlayRect.subtractFromX(diffX);
+            } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
+                //  Otherwise, if by adding the difference, we're still less
+                //  than the body's rectangle, then do that (shifting the
+                //  overlay towards the right)
+                overlayRect.addToX(diffX);
+            }
+        }
+
+        if (overlayRect.containsPointY(anAvoidPoint)) {
+
+            diffY = (overlayRect.getY() + overlayRect.getHeight()) -
+                    anAvoidPoint.getY();
+
+            //  If by subtracting the difference, we're still greater than 0,
+            //  then do that (shifting the overlay towards the top).
+            if (overlayRect.getY() - diffY > 0) {
+                overlayRect.subtractFromY(diffY);
+            } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
+                //  Otherwise, if by adding the difference, we're still less
+                //  than the body's rectangle, then do that (shifting the
+                //  overlay towards the bottom)
+                overlayRect.addToY(diffY);
+            }
+        }
+    }
+
+    //  Now, get the 'top left' corner point of the computed overlay rectangle.
     overlayPoint = overlayRect.getXYPoint();
 
     return overlayPoint;
@@ -435,19 +485,22 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Inst.defineMethod('positionUsing',
-function(anOverlayPoint) {
+function(anOverlayPoint, anAvoidPoint) {
 
     /**
      * @method positionUsing
      * @summary Positions the overlay using the supplied point.
      * @param {TP.core.Point} anOverlayPoint The point to use to position the
      *     overlay. NOTE: This point should be in *global* coordinates.
+     * @param {TP.core.Point} [anAvoidPoint] A point to 'avoid' when computing
+     *     the positioning point. The system will shift the overlay around,
+     *     trying to avoid this point.
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
     var overlayPoint;
 
-    overlayPoint = this.getPositioningPoint(anOverlayPoint);
+    overlayPoint = this.getPositioningPoint(anOverlayPoint, anAvoidPoint);
 
     //  Set our global position to be that point
     this.setGlobalPosition(overlayPoint);
