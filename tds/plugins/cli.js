@@ -286,17 +286,26 @@
                             } else if (text.charAt(text.length - 1) === '}') {
                                 return '{' + text;
                             } else {
-                                return text;
+                                return '{' + text + '}';
                             }
                         });
 
                         chunks.forEach(function(chunk) {
                             var objC;
 
-                            objC = {
-                                ok: true,
-                                data: chunk
-                            };
+                            //  Ignore empty chunks
+                            if (!chunk) {
+                                return;
+                            }
+
+                            try {
+                                objC = JSON.parse(chunk);
+                            } catch (e2) {
+                                objC = {
+                                    ok: true,
+                                    data: chunk
+                                };
+                            }
 
                             if (query.nosocket) {
                                 results.push(objC);
