@@ -225,6 +225,11 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     white-space: pre-wrap;
 }
 
+.flex-item > .header > .content > span {
+
+    user-select: text;
+}
+
 .flex-item > .header > .typeinfo {
 
     display: inline-block;
@@ -533,6 +538,8 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     margin: 0;
 
     line-height: 2em;
+
+    user-select: text;
 }
 
 .flex-item > .content ul > li:nth-of-type(even) {
@@ -560,3 +567,10 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
     margin: 0 3px;
 }
+
+/* The first 'span' skips over the tibet:template_expr span */
+.flex-item > .content > .result > span span {
+
+    user-select: text;
+}
+
