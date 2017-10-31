@@ -1491,6 +1491,76 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Rect.Inst.defineMethod('containsPointX',
+function(aPoint) {
+
+    /**
+     * @method containsPointX
+     * @summary Returns whether or not the receiver contains the supplied
+     *     point's X value.
+     * @param {TP.core.Point} aPoint The point to test.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Boolean} Whether or not the receiver contains the point's X
+     *     value.
+     */
+
+    var data,
+        pointData;
+
+    if (TP.notValid(aPoint)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+    pointData = aPoint.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    if (pointData.x >= data.x &&
+        pointData.x <= (data.x + data.width)) {
+        return true;
+    }
+    /* eslint-enable no-extra-parens */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Rect.Inst.defineMethod('containsPointY',
+function(aPoint) {
+
+    /**
+     * @method containsPointY
+     * @summary Returns whether or not the receiver contains the supplied
+     *     point's Y value.
+     * @param {TP.core.Point} aPoint The point to test.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Boolean} Whether or not the receiver contains the point's Y
+     *     value.
+     */
+
+    var data,
+        pointData;
+
+    if (TP.notValid(aPoint)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+    pointData = aPoint.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    if (pointData.y >= data.y &&
+        pointData.y <= (data.y + data.height)) {
+        return true;
+    }
+    /* eslint-enable no-extra-parens */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Rect.Inst.defineMethod('containsRect',
 function(aRect) {
 
