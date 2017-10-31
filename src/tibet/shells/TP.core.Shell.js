@@ -3020,6 +3020,9 @@ function(aRequest, forms) {
         dict,
         format,
 
+        prefix,
+        keyTester,
+
         argKeys,
         len,
         i,
@@ -3361,15 +3364,20 @@ function(aRequest, forms) {
 
     aRequest.set('ARGUMENTS', dict);
 
-    //  Iterate over all of the arguments and, if they don't have a 'tsh:'
-    //  prefix and they're not the ARGV argument, make a 'tsh:' prefixed version
-    //  of the argument with the same value.
+    //  Iterate over all of the arguments and, if they don't have a prefix that
+    //  matches the canonical prefix for the command node and they're not the
+    //  ARGV argument, make a prefixed version of the argument using that prefix
+    //  with the same value.
+    prefix = TP.w3.Xmlns.getCanonicalPrefix(
+                            aRequest.at('cmdNode').namespaceURI);
+    keyTester = TP.rc('^(' + prefix + ':|ARGV)');
+
     argKeys = TP.keys(dict);
     len = argKeys.getSize();
     for (i = 0; i < len; i++) {
         argKey = argKeys.at(i);
-        if (!/^(tsh:|ARGV)/.test(argKey)) {
-            dict.atPut('tsh:' + argKey, dict.at(argKey));
+        if (!keyTester.test(argKey)) {
+            dict.atPut(prefix + argKey, dict.at(argKey));
         }
     }
 
