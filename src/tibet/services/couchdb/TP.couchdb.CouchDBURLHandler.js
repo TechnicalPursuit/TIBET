@@ -215,7 +215,9 @@ function(aURI, aRequest) {
             username = retVal;
 
             //  Prompt the user for the CouchDB password
-            TP.prompt('Enter CouchDB password:').then(
+            TP.prompt('Enter CouchDB password:',
+                        null,
+                        TP.hc('secure', true)).then(
                 function(retVal2) {
 
                     var password,
