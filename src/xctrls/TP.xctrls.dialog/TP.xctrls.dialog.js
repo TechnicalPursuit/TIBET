@@ -537,6 +537,8 @@ function(aQuestion, aDefaultAnswer, info) {
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
      *                          'systemDialog'.
+     *          secure:         Whether or not the field should be secure (i.e.
+     *                          the content should not be visible to the user).
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.prompt('Favorite color', 'Black');
@@ -549,6 +551,8 @@ function(aQuestion, aDefaultAnswer, info) {
     var templateURI,
         dialogID,
 
+        isSecure,
+
         promise;
 
     //  Grab the template URI and dialog ID for the 'prompt' panel (and
@@ -558,9 +562,11 @@ function(aQuestion, aDefaultAnswer, info) {
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_prompt.xhtml'));
         dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        isSecure = info.atIfInvalid('secure', false);
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_prompt.xhtml');
         dialogID = 'systemDialog';
+        isSecure = false;
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -586,6 +592,10 @@ function(aQuestion, aDefaultAnswer, info) {
             inputField = TP.byCSSPath('.dialogContent input[type="text"]',
                                         dialogTPElem,
                                         true);
+
+            if (isSecure) {
+                inputField.setAttribute('type', 'password');
+            }
 
             if (TP.notEmpty(aDefaultAnswer)) {
                 inputField.set('value', aDefaultAnswer);
