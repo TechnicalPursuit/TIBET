@@ -602,6 +602,7 @@ function(openSignal, overlayContent) {
 
         triggerRect,
         overlayPoint,
+        mousePoint,
         triggerTPElem,
 
         tpContent,
@@ -776,6 +777,10 @@ function(openSignal, overlayContent) {
     //  First, see if the open signal provided a overlay point.
     overlayPoint = openSignal.at('triggerPoint');
 
+    lastMoveEvent = TP.core.Mouse.$get('lastMove');
+    lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
+    mousePoint = lastMoveSignal.getGlobalPoint();
+
     //  If no overlay point was given, compute one from the triggering element.
     if (TP.notValid(overlayPoint)) {
 
@@ -797,9 +802,7 @@ function(openSignal, overlayContent) {
         //  that compass edge of the trigger rectangle.
         overlayPoint = triggerRect.getEdgePoint(overlayCorner);
     } else if (overlayPoint === TP.MOUSE) {
-        lastMoveEvent = TP.core.Mouse.$get('lastMove');
-        lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-        overlayPoint = lastMoveSignal.getGlobalPoint();
+        overlayPoint = mousePoint;
     }
 
     //  Show the overlay content
@@ -811,7 +814,7 @@ function(openSignal, overlayContent) {
     //  If the signal doesn't have a flag to not position the overlay, then
     //  position the overlay relative to the overlay point and the corner.
     if (TP.notTrue(openSignal.at('noPosition'))) {
-        this.positionUsing(overlayPoint);
+        this.positionUsing(overlayPoint, mousePoint);
     }
 
     return this;
