@@ -1180,6 +1180,11 @@ function(targetUrl, aRequest, httpObj) {
         //  NB: This method will signal 'TP.sig.IOFailed' and
         //  'TP.sig.IOCompleted'
         TP.httpError(url, 'HTTPException', request, false);
+
+        //  Fail the request here with the failure message and whatever Error
+        //  object was produced by the TP.httpError method.
+        request.fail(request.at('message'), request.at('error'));
+
     } else {
         sig.setSignalName('TP.sig.IOSucceeded');
         sig.fire(id);
