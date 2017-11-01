@@ -766,7 +766,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
 
     //  make sure the IO log contains this data to show a complete record for
     //  access to the targetUrl
-    args.atPutIfAbsent('message', 'HTTP request exception.');
+    args.atPut('message', 'HTTP request exception.');
 
     //  if we didn't get an error we can relay a new one
     error = args.at('object');
