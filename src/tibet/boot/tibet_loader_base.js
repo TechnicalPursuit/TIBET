@@ -8136,6 +8136,7 @@ TP.boot.$configurePackage = function() {
 
     var profile,
         package,
+        pkgName,
         config,
         parts,
         file,
@@ -8158,6 +8159,13 @@ TP.boot.$configurePackage = function() {
             TP.boot.$stdout('Found boot.package. Using: ' + package,
                 TP.DEBUG);
         }
+
+        pkgName = package;
+        if (pkgName.indexOf('/') !== -1) {
+            pkgName = pkgName.slice(pkgName.lastIndexOf('/') + 1);
+        }
+        pkgName = pkgName.replace('.xml', '');
+
     } else {
         TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.DEBUG);
     }
@@ -8191,6 +8199,8 @@ TP.boot.$configurePackage = function() {
         } else {
             package = profile;
         }
+
+        pkgName = package;
     }
 
     //  Packages should always be .xml files. If we're defaulting from user
@@ -8211,8 +8221,10 @@ TP.boot.$configurePackage = function() {
         TP.boot.$notEmpty(TP.sys.cfg('boot.package'))) {
         TP.boot.$stdout(
             'Overriding boot.package (' + TP.sys.cfg('boot.package') +
-            ') with profile@config: ' + package, TP.WARN);
+            ') with: ' + package, TP.WARN);
     }
+
+    TP.sys.setcfg('boot.package', pkgName);
 
     file = TP.boot.$uriExpandPath(package);
     TP.boot.$stdout('Loading package: ' +
@@ -10560,7 +10572,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
+TP.boot.$listPackageAssets = function(aPackage, aConfig, aList) {
 
     /**
      * @method $listPackageAssets
@@ -10568,19 +10580,33 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
      *     concatenated into aList if the list is provided (aList is used
      *     during recursive calls from within this routine to build up the
      *     list).
-     * @param {string} aPath The path to the package manifest to list.
+     * @param {string} aPackage The package name or path to list.
      * @param {string} aConfig The ID of the config in the package to list.
      * @param {Array} aList The array of asset descriptions to expand upon.
      * @returns {Array} The asset array.
      */
 
-    var path,
+    var pkg,
+        path,
         config,
         doc,
         node,
         result;
 
-    path = TP.boot.$isEmpty(aPath) ? TP.sys.cfg('boot.package') : aPath;
+    pkg = TP.boot.$isEmpty(aPackage) ? TP.sys.cfg('boot.package') : aPackage;
+
+    //  Package can be a name or a path. If it's a name we need to adjust it
+    //  into something path-like we can then expand.
+    if (pkg.indexOf('/') === -1) {
+        path = TP.boot.$uriJoinPaths('~app_cfg', pkg);
+    } else {
+        path = pkg;
+    }
+
+    if (!/.xml$/.test(path)) {
+        path = path + '.xml';
+    }
+
     path = TP.boot.$expandPath(path);
 
     TP.boot.$pushPackage(path);
@@ -10593,7 +10619,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
                 TP.boot.$uriLoad(path, TP.DOM, 'manifest');
             doc = TP.boot.$$packages[path];
             if (TP.boot.$notValid(doc)) {
-                throw new Error('Can not list unexpanded package: ' + aPath);
+                throw new Error('Can not list unexpanded package: ' + pkg);
             }
         }
 
@@ -10617,7 +10643,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
         result = aList || [];
         TP.boot.$listConfigAssets(node, result);
     } finally {
-        TP.boot.$popPackage(aPath);
+        TP.boot.$popPackage(path);
     }
 
     return result;
