@@ -771,12 +771,12 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     }
     args.atPut('error', error);
 
-    //  make sure the IO log contains this data to show a complete record
-    //  for access to the targetUrl
+    //  make sure the IO log contains this data to show a complete record for
+    //  access to the targetUrl
     args.atPut('message', 'HTTP request exception.');
 
-    //  get a response object for the request that we can use to convey the
-    //  bad news in a consistent fashion with normal success processing.
+    //  get a response object for the request that we can use to convey the bad
+    //  news in a consistent fashion with normal success processing.
     if (TP.notValid(type = TP.sys.getTypeByName('TP.sig.HTTPResponse',
                                                     false))) {
         if (TP.notValid(type = TP.sys.getTypeByName('TP.sig.Response',
@@ -790,11 +790,11 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     sig = type.construct(args);
     id = args.getRequestID();
 
-    //  start with most specific, the fact we timed out
+    //  start with most specific
     sig.setSignalName(aSignal);
     sig.fire(id);
 
-    //  move on to general failure, timeout is considered a failure
+    //  move on to general failure
     sig.setSignalName('TP.sig.IOFailed');
     sig.fire(id);
 
@@ -1177,16 +1177,16 @@ function(targetUrl, aRequest, httpObj) {
 
     //  with/without redirect, did we succeed?
     if (!TP.httpDidSucceed(xhr)) {
+        //  NB: This method will signal 'TP.sig.IOFailed' and
+        //  'TP.sig.IOCompleted'
         TP.httpError(url, 'HTTPException', request, false);
-        sig.setSignalName('TP.sig.IOFailed');
-        sig.fire(id);
     } else {
         sig.setSignalName('TP.sig.IOSucceeded');
         sig.fire(id);
-    }
 
-    sig.setSignalName('TP.sig.IOCompleted');
-    sig.fire(id);
+        sig.setSignalName('TP.sig.IOCompleted');
+        sig.fire(id);
+    }
 
     //  Make sure to complete this request if it hasn't already been completed.
     //  Normally, if request is an instance of the proper HTTP request type,
