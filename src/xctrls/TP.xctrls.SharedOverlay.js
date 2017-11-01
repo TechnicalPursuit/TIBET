@@ -410,8 +410,8 @@ function(anOverlayPoint, anAvoidPoint) {
 
         if (overlayRect.containsPointX(anAvoidPoint)) {
 
-            diffX = (overlayRect.getX() + overlayRect.getWidth()) -
-                    anAvoidPoint.getX();
+            diffX = overlayRect.getX() + overlayRect.getWidth() -
+                anAvoidPoint.getX();
 
             //  If by subtracting the difference, we're still greater than 0,
             //  then do that (shifting the overlay towards the left).
@@ -427,8 +427,8 @@ function(anOverlayPoint, anAvoidPoint) {
 
         if (overlayRect.containsPointY(anAvoidPoint)) {
 
-            diffY = (overlayRect.getY() + overlayRect.getHeight()) -
-                    anAvoidPoint.getY();
+            diffY = overlayRect.getY() + overlayRect.getHeight() -
+                anAvoidPoint.getY();
 
             //  If by subtracting the difference, we're still greater than 0,
             //  then do that (shifting the overlay towards the top).

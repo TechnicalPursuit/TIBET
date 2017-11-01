@@ -791,7 +791,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     id = args.getRequestID();
 
     //  start with most specific
-    sig.setSignalName(aSignal);
+    sig.setSignalName(signal);
     sig.fire(id);
 
     //  move on to general failure
