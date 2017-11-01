@@ -2445,7 +2445,12 @@ function(aValue) {
      * @returns {TP.html.inputPassword} The receiver.
      */
 
-    //  You can't set the value of a <input type="password"/> field
+    //  You can't set the value of a <input type="password"/> field unless its
+    //  empty.
+
+    if (TP.isEmpty(aValue)) {
+        this.getNativeNode().value = '';
+    }
 
     return this;
 });
