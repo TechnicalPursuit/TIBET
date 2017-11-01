@@ -1092,8 +1092,8 @@
             // no longer get back a virtual path.
             if (nvpath.indexOf('~') === 0) {
 
-                // If the newly constructed path has the same virtual component then
-                // we're going to recurse.
+                // If the newly constructed path has the same virtual component
+                // then we're going to recurse.
                 if (virtual === nvpath.split('/')[0]) {
                     throw new Error('Recursive virtual path: ' + aPath);
                 }
@@ -1736,6 +1736,10 @@
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
         vpath = vpath.replace(this.expandPath('~app'), '~app');
         vpath = vpath.replace(this.expandPath('~'), '~');
+
+        if (vpath.indexOf('/') !== -1 && vpath !== aPath) {
+            return this.getVirtualPath(vpath);
+        }
 
         //  TODO:   cache results for better performance...
 
