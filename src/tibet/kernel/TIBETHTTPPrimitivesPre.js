@@ -764,16 +764,16 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     //  rarely null, but just in case
     signal = TP.ifInvalid(aSignal, 'HTTPException');
 
+    //  make sure the IO log contains this data to show a complete record for
+    //  access to the targetUrl
+    args.atPutIfAbsent('message', 'HTTP request exception.');
+
     //  if we didn't get an error we can relay a new one
     error = args.at('object');
     if (TP.notValid(error)) {
-        error = new Error(TP.ifEmpty(args.at('message'), signal));
+        error = new Error(args.at('message'));
     }
     args.atPut('error', error);
-
-    //  make sure the IO log contains this data to show a complete record for
-    //  access to the targetUrl
-    args.atPut('message', 'HTTP request exception.');
 
     //  get a response object for the request that we can use to convey the bad
     //  news in a consistent fashion with normal success processing.
