@@ -1865,9 +1865,6 @@ function() {
      * @returns {String} The signal name of the receiver.
      */
 
-    //  here we allow numbers to be provided as signal names in string form
-    //  which results in invocations of "handle404" etc. so you can create
-    //  handlers for error codes and signal error codes as needed
     return this.toString();
 });
 
