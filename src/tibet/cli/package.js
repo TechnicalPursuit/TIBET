@@ -678,7 +678,7 @@ Cmd.prototype.processDeltas = function() {
 
         result = cmd.removeXMLEntry(cfgNode, 'script', 'src', item);
         if (result === 0) {
-            cmd.log('- ' + item + ' (not found)');
+            cmd.warn('- ' + item + ' (not found)');
         } else {
             cmd.log('- ' + item + ' (removed)');
             dirty = true;
@@ -699,7 +699,7 @@ Cmd.prototype.processDeltas = function() {
 
         try {
             if (cmd.hasXMLEntry(cfgNode, 'script', 'src', item)) {
-                cmd.log('+ ' + item + ' (duplicate)');
+                cmd.warn('+ ' + item + ' (duplicate)');
             } else {
                 cmd.addXMLEntry(cfgNode, '    ', str, '');
                 cmd.log('+ ' + item + ' (inserted)');
