@@ -2082,25 +2082,28 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('getInspectorBayContentItem',
-function(bayNum) {
+function(aBayNum) {
 
     /**
      * @method getInspectorBayContentItem
      * @summary Retrieves the content item under the bay at the supplied bay
      *     number.
-     * @param {Number} bayNum The bay number to retrieve the content for.
+     * @param {Number} [aBayNum] The bay number to retrieve the content for. If
+     *     this is not supplied, the "last" bay's content is retrieved.
      * @returns {TP.core.ElementNode} The content element under the inspector
      *     item representing the bay at the supplied bay number.
      */
 
-    var inspectorBayContentItems;
-
-    if (!TP.isNumber(bayNum)) {
-        return null;
-    }
+    var inspectorBayContentItems,
+        bayNum;
 
     if (TP.notEmpty(inspectorBayContentItems =
                     TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+
+        bayNum = aBayNum;
+        if (!TP.isNumber(bayNum)) {
+            bayNum = inspectorBayContentItems.getSize() - 1;
+        }
 
         return inspectorBayContentItems.at(bayNum);
     }
