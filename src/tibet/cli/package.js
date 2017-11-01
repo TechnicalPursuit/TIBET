@@ -22,12 +22,12 @@
  *                  The default is ~app_cfg/main.xml for application content.
  *      config      The name of the top-level package config to process.
  *                  Defaults to the default config for the package.
- *      all         True to expand all configs recursively. Default is false.
+ *      all         True to expand all configs in the package. Default is false.
  *                  If this is true then config is ignored since all configs in
  *                  the package (and descendant packages) will be processed.
- *      silent      Silence normal logging. Defaults to the value set for 'all'.
- *                  If 'all' is true we default this to true to suppress
- *                  warnings about duplicate assets.
+ *      silent      Silence normal logging. Defaults to the value set for
+ *                  'all'. If 'all' is true we default this to true to
+ *                  suppress warnings about duplicate assets.
  *      phase       Package phase? Default depends on context (app vs. lib)
  *      context     alias for phase in this command (app, lib, all)
  *
@@ -46,6 +46,7 @@ var CLI,
     path,
     find,
     dom,
+    helpers,
     serializer,
     Cmd;
 
@@ -55,6 +56,7 @@ path = require('path');
 find = require('findit');
 dom = require('xmldom');
 serializer = new dom.XMLSerializer();
+helpers = require('../../../etc/helpers/config_helpers');
 
 
 //  ---
@@ -67,6 +69,8 @@ Cmd = function() {
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
+//  Augment our prototype with XML config methods.
+helpers.extend(Cmd, CLI);
 
 //  ---
 //  Type Attributes
@@ -120,7 +124,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
+    'tibet package [[--profile ] <profile> | [--package <package>] [--config <cfg>]]\n' +
     '\t[--phase <app|lib|all>] [--unresolved] [--unlisted] [--fix]\n' +
     '\t[--add <file_list>] [--remove <file_list>]\n' +
     '\t[--include <asset names>] [--exclude <asset names>]\n' +
@@ -159,14 +163,39 @@ Cmd.prototype.pkgOpts = null;
 //  ---
 
 /**
+ * Check arguments and configure default values prior to running prereqs.
+ * @returns {Object} An options object usable by the command.
+ */
+Cmd.prototype.configure = function() {
+    var arg0,
+        parts;
+
+    //  If we have an arg0 value (unqualified via flag) it should be the profile
+    //  value, which then overrides any package/config data.
+    arg0 = this.getArgument(0);
+    if (arg0) {
+        this.options.profile = arg0;
+    }
+
+    if (this.options.profile) {
+        parts = this.options.profile.split('@');
+        this.options.package = parts[0];
+        this.options.config = parts[1];
+    }
+
+    return this.options;
+};
+
+
+/**
  * Process inbound configuration flags and provide for adjustment via the
  * finalizePackageOptions call. On completion of this routine the receiver's
  * package options are fully configured.
  * @returns {Object} The package options after being fully configured.
  */
-Cmd.prototype.configurePackageOptions = function(options) {
+Cmd.prototype.configurePackageOptions = function() {
 
-    this.pkgOpts = options || this.options;
+    this.pkgOpts = this.options;
 
     // If we're doing add, remove, unlisted or unresolved operations we need to
     // override/assign values to the other parameters to ensure we get a full
@@ -570,10 +599,24 @@ Cmd.prototype.getPackageAssetList = function() {
 Cmd.prototype.processDeltas = function() {
     var inserts,
         deletes,
-        cmd;
+        cmd,
+        pkgName,
+        pkgNode,
+        cfgName,
+        cfgNode,
+        dirty,
+        code;
 
     if (!this.options.add && !this.options.remove && !this.options.fix) {
+        //  We weren't asked to patch changes so quietly exit.
         return 0;
+    }
+
+    //  Must have a package. We can allow 'default config' to be used for
+    //  config but not for package. That cannot be defaulted.
+    if (!this.options.package) {
+        this.error('No package definition available for updating.');
+        return 1;
     }
 
     cmd = this;
@@ -586,32 +629,99 @@ Cmd.prototype.processDeltas = function() {
     if (this.options.add) {
         inserts = inserts.concat(this.options.add.split(' '));
         inserts = inserts.map(function(item) {
-            return CLI.getVirtualPath(item);
+            return CLI.getVirtualPath(CLI.expandPath(item));
         });
     }
 
     if (this.options.remove) {
         deletes = deletes.concat(this.options.remove.split(' '));
         deletes = deletes.map(function(item) {
-            return CLI.getVirtualPath(item);
+            return CLI.getVirtualPath(CLI.expandPath(item));
         });
     }
 
-    inserts.forEach(function(item) {
-        cmd.log('+ ' + item);
-    });
+    if (CLI.isEmpty(inserts) && CLI.isEmpty(deletes)) {
+        return 0;
+    }
+
+
+    pkgName = this.options.package;
+    cfgName = this.options.config;
+
+    if (pkgName.charAt(0) !== '~') {
+        if (CLI.inProject()) {
+            pkgName = path.join('~app_cfg', pkgName);
+        } else {
+            pkgName = path.join('~lib_cfg', pkgName);
+        }
+    }
+
+    if (!/.xml$/.test(pkgName)) {
+        pkgName = pkgName + '.xml';
+    }
+
+    pkgNode = this.readPackageNode(pkgName);
+    if (!pkgNode) {
+        throw new Error('Unable to read ' + pkgName + '.');
+    }
+
+    cfgNode = this.readConfigNode(pkgNode, cfgName, false);
+    if (!cfgNode) {
+        throw new Error('Unable to find ' + pkgName + '@' + cfgName + '.');
+    }
+
+    //  Set a flag we can check to determine if we need to write package.
+    dirty = false;
 
     deletes.forEach(function(item) {
-        cmd.log('- ' + item);
+        var result;
+
+        result = cmd.removeXMLEntry(cfgNode, 'script', 'src', item);
+        if (result === 0) {
+            cmd.log('- ' + item + ' (not found)');
+        } else {
+            cmd.log('- ' + item + ' (removed)');
+            dirty = true;
+        }
     });
 
-    /*
-    cfgNode = this.readConfigNode(this.package, this.options.config, true);
-    if (!cfgNode) {
-        throw new Error('Unable to find ' + pkgName + '@' + cfgName);
-    }
-    */
 
+    //  Set 0 for return code. We'll increment with each error we encounter
+    //  during attempts to insert.
+    code = 0;
+
+    inserts.forEach(function(item) {
+        var tag,
+            str;
+
+        tag = 'script';
+        str = '<' + tag + ' src="' + item + '"/>';
+
+        try {
+            if (cmd.hasXMLEntry(cfgNode, 'script', 'src', item)) {
+                cmd.log('+ ' + item + ' (duplicate)');
+            } else {
+                cmd.addXMLEntry(cfgNode, '    ', str, '');
+                cmd.log('+ ' + item + ' (inserted)');
+                dirty = true;
+            }
+        } catch (e) {
+            cmd.error(e.message);
+            if (cmd.options.stack) {
+                cmd.error(e.stack);
+            }
+            code += 1;
+        }
+    });
+
+    //  Only write out configuration if there were no errors during processing.
+    if (code === 0 && dirty) {
+        cmd.writePackageNode(pkgName, pkgNode);
+
+        this.warn('New configuration entries created. Review/Rebuild as needed.');
+    }
+
+    return code;
 };
 
 
