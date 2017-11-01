@@ -3,31 +3,36 @@
 
 ## SYNOPSIS
 
-tibet package [--package <package>] [--config <cfg>] [--profile <profile>]
-    [--all] [--missing] [--include <asset names>] [--exclude <asset names>]
-    [--unlisted] [--scripts] [--styles] --[images] [--resources] [--templates]
-    [--inlined] [--phase <phase>] [--nodes]
+tibet package [[--profile] <pkg@cfg> | [--package <package>] [--config <cfg>]]
+    [--phase <phase>] [--all] [--scripts] [--styles] [--images] [--resources]
+    [--templates] [--inlined] [--nodes]
+    [--include <asset names>] [--exclude <asset names>]
+    [--add <list>] [--remove <list>] [--unresolved] [--unlisted] [--fix]
 
 ## DESCRIPTION
 
 Outputs a list of package assets either as asset nodes or asset paths.
 
-This command is a useful way to view the files which a `tibet rollup` or
-`tibet lint` command will process. The best way to get a sense of this
-command is to run it with various options, of which there are many:
+This command is a useful way to view the files TIBET will load or process
+via commands such as `tibet rollup` or `tibet lint`. The best way to get a sense
+of this command is to run it with various options, of which there are many:
 
+--profile    a profile in the form of package@config.
 --package    the file path to the package to process.
 --config     the name of an individual config to process.
---profile    a profile in the form of package@config.
---all        process all config tags in the package recursively.
---missing    output a list of missing assets of all types.
+--phase      boot phase subset to process <all | one | two | app | lib>.
+--all        process all the config tags in the package.
+
+--add        list of resources to add to the package.
+--remove     list of resources to remove from the package.
+--unresolved output a list of unresolved (not found) assets of all types.
 --unlisted   output a list of potentially overlooked source files.
+--fix        update the package with unresolved/unlisted data.
 
 --include    a space-separated list of asset tags to include.
 --exclude    a space-separated list of asset tags to include.
 
 --nodes      output asset nodes rather than asset paths.
---phase      boot phase subset to process <all | one | two | app | lib>.
 
 --images     include all image assets.
 --templates  include all template assets.

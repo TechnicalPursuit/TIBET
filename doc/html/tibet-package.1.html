@@ -21,25 +21,29 @@
 
 <h1 id="tibet-package-1-list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--profile &lt;profile&gt;]
-    [--all] [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
-    [--unlisted] [--scripts] [--styles] --[images] [--resources] [--templates]
-    [--inlined] [--phase &lt;phase&gt;] [--nodes]</p>
+<p>tibet package [[--profile] <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#x70;&#107;&#x67;&#64;&#x63;&#x66;&#x67;">&#x70;&#107;&#x67;&#64;&#x63;&#x66;&#x67;</a> | [--package &lt;package&gt;] [--config &lt;cfg&gt;]]
+    [--phase &lt;phase&gt;] [--all] [--scripts] [--styles] [--images] [--resources]
+    [--templates] [--inlined] [--nodes]
+    [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
+    [--add &lt;list&gt;] [--remove &lt;list&gt;] [--unresolved] [--unlisted] [--fix]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Outputs a list of package assets either as asset nodes or asset paths.</p>
-<p>This command is a useful way to view the files which a <code>tibet rollup</code> or
-<code>tibet lint</code> command will process. The best way to get a sense of this
-command is to run it with various options, of which there are many:</p>
-<p>--package    the file path to the package to process.
+<p>This command is a useful way to view the files TIBET will load or process
+via commands such as <code>tibet rollup</code> or <code>tibet lint</code>. The best way to get a sense
+of this command is to run it with various options, of which there are many:</p>
+<p>--profile    a profile in the form of package@config.
+--package    the file path to the package to process.
 --config     the name of an individual config to process.
---profile    a profile in the form of package@config.
---all        process all config tags in the package recursively.
---missing    output a list of missing assets of all types.
---unlisted   output a list of potentially overlooked source files.</p>
+--phase      boot phase subset to process &lt;all | one | two | app | lib&gt;.
+--all        process all the config tags in the package.</p>
+<p>--add        list of resources to add to the package.
+--remove     list of resources to remove from the package.
+--unresolved output a list of unresolved (not found) assets of all types.
+--unlisted   output a list of potentially overlooked source files.
+--fix        update the package with unresolved/unlisted data.</p>
 <p>--include    a space-separated list of asset tags to include.
 --exclude    a space-separated list of asset tags to include.</p>
-<p>--nodes      output asset nodes rather than asset paths.
---phase      boot phase subset to process &lt;all | one | two | app | lib&gt;.</p>
+<p>--nodes      output asset nodes rather than asset paths.</p>
 <p>--images     include all image assets.
 --templates  include all template assets.
 --resources  include all style, template, and resource assets.
