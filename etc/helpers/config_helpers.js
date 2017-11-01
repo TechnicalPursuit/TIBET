@@ -57,7 +57,7 @@
                     node.appendChild(doc.createTextNode(prefix));
                 } else if (prefix && prefix.nodeType !== undefined) {
                     node.appendChild(prefix);
-                } else if (prefix !== undefined) {
+                } else if (prefix !== null && prefix !== undefined) {
                     this.error('Invalid prefix. Must be string or Node.');
                     throw new Error();
                 }
@@ -300,6 +300,11 @@
                     pkgtext,
                     parser,
                     doc;
+
+                if (!pkgfile) {
+                    this.error('Invalid package file parameter.');
+                    throw new Error();
+                }
 
                 filename = CLI.getVirtualPath(pkgfile);
 
