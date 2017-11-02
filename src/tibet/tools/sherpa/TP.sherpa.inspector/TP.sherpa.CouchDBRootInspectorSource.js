@@ -38,7 +38,7 @@ function(anItem) {
         serverNumber,
         serverName;
 
-    serverConfig = TP.sys.getcfg('uri.couchdb_urls');
+    serverConfig = TP.sys.getcfg('couch.known_server_urls');
 
     //  The item will be something like 'CouchDB_Server_1'. We want the number,
     //  so we slice everything else off.
@@ -83,7 +83,7 @@ function(options) {
     var serverConfig,
         data;
 
-    serverConfig = TP.sys.getcfg('uri.couchdb_urls');
+    serverConfig = TP.sys.getcfg('couch.known_server_urls');
     if (TP.isEmpty(serverConfig)) {
         return TP.ac();
     }
@@ -130,7 +130,7 @@ function(anAspect, options) {
         return this.callNextMethod();
     }
 
-    serverConfig = TP.sys.getcfg('uri.couchdb_urls');
+    serverConfig = TP.sys.getcfg('couch.known_server_urls');
 
     //  The item will be something like 'CouchDB_Server_1'. We want the number,
     //  so we slice everything else off.

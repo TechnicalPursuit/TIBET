@@ -78,7 +78,7 @@ function() {
      */
 
     //  If we're not watching CouchDB changes, then exit here.
-    if (TP.notTrue(TP.sys.cfg('uri.watch_couchdb_changes'))) {
+    if (TP.notTrue(TP.sys.cfg('couch.watch.changes'))) {
         return;
     }
 
@@ -98,7 +98,7 @@ function(aRootLocation, authenticationData) {
      * @method addAuthenticatedRoot
      * @summary Adds the supplied root location to the list of authenticated
      *     roots. This method will also cause that authentication to time out
-     *     according to the setting of 'uri.couchdb_auth_timeout' (defaulted to
+     *     according to the setting of 'couch.auth_timeout' (defaulted to
      *     600000ms).
      * @param {String} aRootLocation The root location that has been
      *     authenticated and needs to be tracked.
@@ -120,7 +120,7 @@ function(aRootLocation, authenticationData) {
     setTimeout(
         function() {
             authenticatedRoots.removeKey(aRootLocation);
-        }, (TP.sys.cfg('uri.couchdb_auth_timeout', 600) * 1000));
+        }, (TP.sys.cfg('couch.auth_timeout', 600) * 1000));
     /* eslint-enable no-extra-parens */
 
     return this;
@@ -320,10 +320,10 @@ function() {
 
     //  Grab the CouchDB 'root' URLs (i.e. servers) that the system knows about
     //  via the config system.
-    rootURLs = TP.sys.getcfg('uri.couchdb_urls');
+    rootURLs = TP.sys.getcfg('couch.known_server_urls');
 
     //  Grab the non-server URI patterns that we should be watching.
-    targets = TP.sys.getcfg('uri.watch_couchdb_uris');
+    targets = TP.sys.getcfg('couch.watch.feeds');
 
     //  Iterate over the root server URLs and process them.
     rootURLs.forEach(

@@ -656,8 +656,9 @@
     //  signal picked up by the TDSURLHandler.
     TP.sys.setcfg('tds.watch.event', 'fileChange');
 
-    //  Includes/excludes for couchdb observations. NOTE that none of these are
-    //  leveraged if uri.watch_couchdb_changes is false.
+    //  Includes/excludes for couchdb observations. Note that these are used for
+    //  change notification when TIBET has been booted as a CouchApp (i.e.
+    //  directly from CouchDB).
     TP.sys.setcfg('tds.couch.watch.include',
         ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
     TP.sys.setcfg('tds.couch.watch.exclude', ['~app/TIBET-INF/tibet']);
@@ -1912,7 +1913,7 @@
     TP.sys.setcfg('uri.process_remote_changes', false);
 
     //  couchdb servers known to the system.
-    TP.sys.setcfg('uri.couchdb_urls',
+    TP.sys.setcfg('couch.known_server_urls',
         [
             ['Local CouchDB', 'http://127.0.0.1:5984']
             // ['Another CouchDB Server', 'http://foo.com:5984']
@@ -1922,14 +1923,14 @@
     //  The number of *seconds* that a connection will be authenticated in
     //  couchdb before it needs to be re-authenticated. This value should match
     //  the '[couch_httpd_auth]' value in the CouchDB configuration.
-    TP.sys.setcfg('uri.couchdb_auth_timeout', 600);
+    TP.sys.setcfg('couch.auth_timeout', 600);
 
     //  should we watch changes from couchdb?
-    TP.sys.setcfg('uri.watch_couchdb_changes', false);
+    TP.sys.setcfg('couch.watch.changes', false);
 
     //  which CouchDB change feed URLs do we want to observe?
-    TP.sys.setcfg('uri.watch_couchdb_uris', [
-        // '_db_updates?feed=eventsource'                        //  all server
+    TP.sys.setcfg('couch.watch.feeds', [
+        // '_db_updates?feed=eventsource'                         //  all server
         // '{dbname}/_changes?feed=eventsource',                  //  no docs
         // '{dbname}/_changes?feed=eventsource&include_docs=true' //  with docs
     ]);
