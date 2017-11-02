@@ -1183,8 +1183,10 @@ function(targetUrl, aRequest, httpObj) {
 
         //  Fail the request here with the failure message and whatever Error
         //  object was produced by the TP.httpError method.
-        request.fail(request.at('message'), request.at('error'));
-
+        request.fail(request.at('message'),
+                        request.getFaultCode(),
+                        TP.hc('error', request.at('error'),
+                                'message', request.at('message')));
     } else {
         sig.setSignalName('TP.sig.IOSucceeded');
         sig.fire(id);
