@@ -191,7 +191,9 @@ function() {
         isAuthenticated;
 
     serverURI = TP.uc(this.get('serverAddress'));
-    isAuthenticated = TP.couchdb.CouchDBURLHandler.isAuthenticatedURI(serverURI);
+
+    isAuthenticated =
+        TP.couchdb.CouchDBURLHandler.isAuthenticated(serverURI, '_admin');
 
     return isAuthenticated;
 });

@@ -61,7 +61,7 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.set('authenticatedRoots', TP.ac());
+    this.set('authenticatedRoots', TP.hc());
 
     return;
 });
@@ -92,7 +92,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('addAuthenticatedRoot',
-function(aRootLocation) {
+function(aRootLocation, authenticationData) {
 
     /**
      * @method addAuthenticatedRoot
@@ -102,6 +102,8 @@ function(aRootLocation) {
      *     600000ms).
      * @param {String} aRootLocation The root location that has been
      *     authenticated and needs to be tracked.
+     * @param {TP.core.Hash} [authenticationData] Data about the authenticated
+     *     user returned by the authentication call, such as their role.
      * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
      */
 
@@ -109,14 +111,15 @@ function(aRootLocation) {
 
     authenticatedRoots = this.get('authenticatedRoots');
 
-    authenticatedRoots.add(aRootLocation);
+    authenticatedRoots.atPut(aRootLocation,
+                                TP.ifInvalid(authenticationData, TP.hc()));
 
     //  Set a timeout that will remove the root from the list of authenticated
     //  roots.
     /* eslint-disable no-extra-parens */
     setTimeout(
         function() {
-            authenticatedRoots.remove(aRootLocation);
+            authenticatedRoots.removeKey(aRootLocation);
         }, (TP.sys.cfg('uri.couchdb_auth_timeout', 600) * 1000));
     /* eslint-enable no-extra-parens */
 
@@ -173,10 +176,21 @@ function(aURI, username, password) {
     authRequest.defineHandler('IOSucceeded',
         function(aResponse) {
 
+            var result;
+
+            //  Grab the response from the CouchDB cookie authentication call
+            //  and convert the JSON string into a TIBET JS object (which will
+            //  be a TP.core.Hash) and remove the 'ok' key. The remaining data
+            //  will include an Array of roles that this user is now
+            //  authenticated for.
+            result = aResponse.get('result');
+            result = TP.json2js(result);
+            result.removeKey('ok');
+
             //  Note that we add the authenticated root *first* before we 'call
             //  up'. That way, any handlers that rely on this setting are seeing
             //  an accurate authenicated root list.
-            thisref.addAuthenticatedRoot(rootLoc);
+            thisref.addAuthenticatedRoot(rootLoc, result);
 
             this.callNextMethod();
         });
@@ -420,7 +434,7 @@ function(aSignal) {
                 //  track all of the URIs that need to be watched once this root
                 //  is authenticated.
                 authenticatingRoots.at(rootLoc).push(aURI);
-            } else if (authenticatedRoots.contains(rootLoc)) {
+            } else if (authenticatedRoots.hasKey(rootLoc)) {
                 //  If its already authenticated, then just call the Function to
                 //  watch the source URI.
                 watchSource(aURI);
@@ -478,7 +492,9 @@ function(aSignal) {
                                 request.defineHandler('RequestSucceeded',
                                     function(aResponse) {
                                         var authenticatedRoot,
-                                            watchingURIs;
+                                            watchingURIs,
+
+                                            result;
 
                                         //  Grab the root of the response's URI.
                                         //  This will be the root that has been
@@ -486,11 +502,24 @@ function(aSignal) {
                                         authenticatedRoot =
                                             TP.uc(aResponse.at('uri')).getRoot();
 
+                                        //  Grab the response from the CouchDB
+                                        //  cookie authentication call and
+                                        //  convert the JSON string into a TIBET
+                                        //  JS object (which will be a
+                                        //  TP.core.Hash) and remove the 'ok'
+                                        //  key. The remaining data will include
+                                        //  an Array of roles that this user is
+                                        //  now authenticated for.
+                                        result = aResponse.get('result');
+                                        result = TP.json2js(result);
+                                        result.removeKey('ok');
+
                                         //  Add that to our list of
                                         //  authenticated roots.
                                         TP.couchdb.CouchDBURLHandler.
                                             addAuthenticatedRoot(
-                                                authenticatedRoot);
+                                                authenticatedRoot,
+                                                result);
 
                                         //  Grab the Array of URIs that want to
                                         //  be watched that are associated with
@@ -711,21 +740,37 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('isAuthenticatedURI',
-function(targetURI) {
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('isAuthenticated',
+function(targetURI, roleName) {
 
     /**
-     * @method isAuthenticatedURI
+     * @method isAuthenticated
      * @summary Returns whether or not the URI is authenticated.
      * @param {TP.core.URI} targetURI The URI to test.
+     * @param {String} [roleName] An optional role name to provide a further
+     *     check.
      * @returns {Boolean} true if the URI is authenticated.
      */
 
-    var rootURI;
+    var rootURI,
+        authenticationData,
+
+        roles;
 
     rootURI = targetURI.getRoot();
 
-    return this.get('authenticatedRoots').contains(rootURI);
+    authenticationData = this.get('authenticatedRoots').at(rootURI);
+
+    //  If a role name was supplied and we have valid authentication entry for
+    //  the URI, then check to see if the role name is in the list of roles.
+    if (TP.isValid(authenticationData) && TP.notEmpty(roleName)) {
+        roles = authenticationData.at('roles');
+        return roles.contains(roleName);
+    }
+
+    //  If the role name wasn't specified, then we just return whether we found
+    //  an authenticated entry for the supplied URI.
+    return TP.isValid(authenticationData);
 });
 
 //  ------------------------------------------------------------------------
@@ -769,7 +814,7 @@ function(targetURI, aRequest) {
     request = TP.request(aRequest);
 
     //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticatedURI(targetURI)) {
+    if (!this.isAuthenticated(targetURI)) {
 
         //  If its not, simulate a HTTP 401 error and report it / fail it like
         //  the TIBET low-level HTTP code will.
@@ -818,7 +863,7 @@ function(targetURI, aRequest) {
     request = TP.request(aRequest);
 
     //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticatedURI(targetURI)) {
+    if (!this.isAuthenticated(targetURI)) {
 
         //  If its not, simulate a HTTP 401 error and report it / fail it like
         //  the TIBET low-level HTTP code will.
@@ -877,7 +922,7 @@ function(targetURI, aRequest) {
     request = TP.request(aRequest);
 
     //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticatedURI(targetURI)) {
+    if (!this.isAuthenticated(targetURI)) {
 
         //  If its not, simulate a HTTP 401 error and report it / fail it like
         //  the TIBET low-level HTTP code will.
