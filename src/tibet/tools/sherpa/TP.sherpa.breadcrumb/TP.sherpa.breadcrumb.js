@@ -95,11 +95,6 @@ function(enterSelection) {
             return i;
         }).
         attr(
-        'title',
-        function(d, i) {
-            return d;
-        }).
-        attr(
         'dnd:vend',
         function(d, i) {
             return 'breadcrumb';
@@ -145,6 +140,27 @@ function(enterSelection) {
             }
 
             return result;
+        });
+
+    newContent.each(
+        function() {
+            var hintContent,
+
+                hintElement;
+
+            hintContent = TP.extern.d3.select(this).append('xctrls:hint');
+            hintContent.html(
+                function(d, i) {
+                    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                            d +
+                            '</span>';
+                }
+            );
+
+            hintElement = hintContent.node();
+
+            TP.xctrls.hint.setupHintOn(
+                this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
         });
 
     return newContent;
