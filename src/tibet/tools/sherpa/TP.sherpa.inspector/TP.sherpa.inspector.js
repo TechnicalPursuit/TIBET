@@ -2869,9 +2869,9 @@ function(info, createHistoryEntry) {
             'inspector',
             params);
 
-    //  If there wasn't a valid target or data, then clean up/out any unused
-    //  bays, let any observers know that we 'focused' (on null) and return.
-    if (TP.notValid(target) || TP.notValid(data)) {
+    //  If there wasn't a valid target , then clean up/out any unused bays, let
+    //  any observers know that we 'focused' (on null) and return.
+    if (TP.notValid(target)) {
 
         //  If there was already a bay to the right
         if (TP.isValid(targetBay)) {
