@@ -25,11 +25,11 @@ function(aURI) {
         fetchRequest,
         fetchResponse;
 
-    params = TP.request('refresh', true,
-                        'async', true,
-                        'resultType', TP.WRAP);
+    params = TP.hc('refresh', true,
+                    'async', true,
+                    'resultType', TP.WRAP);
 
-    fetchRequest = TP.request(params);
+    fetchRequest = TP.sig.HTTPRequest.construct(params);
 
     aURI.getResource(fetchRequest);
 
