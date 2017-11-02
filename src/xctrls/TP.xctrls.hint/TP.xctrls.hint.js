@@ -194,6 +194,10 @@ function(anElement, hintElement, tooltipParams) {
     anElement.addEventListener(
                 'mouseout',
                 handler = function(evt) {
+                    //  Cancel it if isn't showing yet.
+                    TP.wrap(this).signal('TP.sig.CancelTooltip');
+
+                    //  Hide it if it is showing.
                     TP.wrap(this).signal('TP.sig.CloseTooltip');
                 },
                 false);

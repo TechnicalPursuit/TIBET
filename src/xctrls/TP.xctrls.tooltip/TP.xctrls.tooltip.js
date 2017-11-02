@@ -42,8 +42,8 @@ function() {
      * @returns {TP.xctrls.tooltip} The receiver.
      */
 
-    //  Set up an observation for TP.sig.OpenTooltip
-    this.observe(TP.ANY, TP.sig.OpenTooltip);
+    //  Set up an observation for TP.sig.OpenTooltip and TP.sig.CancelTooltip
+    this.observe(TP.ANY, TP.ac(TP.sig.OpenTooltip, TP.sig.CancelTooltip));
 
     return this;
 });
@@ -57,6 +57,7 @@ function(aSignal) {
      * @method handleOpenTooltip
      * @param {TP.sig.OpenTooltip} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.tooltip} The receiver.
      */
 
     var delayVal,
@@ -80,6 +81,25 @@ function(aSignal) {
             delayVal);
 
     this.set('$displayDelayTimer', timer);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.tooltip.Type.defineHandler('CancelTooltip',
+function(aSignal) {
+
+    /**
+     * @method handleCancelTooltip
+     * @param {TP.sig.CancelTooltip} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.xctrls.tooltip} The receiver.
+     */
+
+    clearTimeout(this.get('$displayDelayTimer'));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -114,7 +134,6 @@ function(aSignal) {
 
     //  Make sure to clear any existing timeout that we have running and set the
     //  attribute to null.
-    clearTimeout(this.getType().get('$displayDelayTimer'));
     this.getType().set('$displayDelayTimer', null);
 
     this.setAttribute('hidden', true);
@@ -203,6 +222,7 @@ function(beHidden) {
 
 //  tooltip signals
 TP.sig.OpenOverlay.defineSubtype('OpenTooltip');
+TP.sig.CloseOverlay.defineSubtype('CancelTooltip');
 TP.sig.CloseOverlay.defineSubtype('CloseTooltip');
 
 //  ------------------------------------------------------------------------
