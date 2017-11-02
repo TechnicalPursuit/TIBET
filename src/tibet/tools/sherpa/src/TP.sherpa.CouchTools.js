@@ -183,6 +183,236 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('checkAuthentication',
+function() {
+
+    var serverURI,
+        isAuthenticated;
+
+    serverURI = TP.uc(this.get('serverAddress'));
+    isAuthenticated = TP.couchdb.CouchDBURLHandler.isAuthenticatedURI(serverURI);
+
+    return isAuthenticated;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
+     */
+
+    if (!this.checkAuthentication()) {
+        options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+        return options;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
+     */
+
+    if (!this.checkAuthentication()) {
+        return this.requestAuthentication();
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    if (!this.checkAuthentication()) {
+        return null;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     toolbar.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     toolbar.
+     */
+
+    if (!this.checkAuthentication()) {
+        return null;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('requestAuthentication',
+function() {
+
+    /**
+     * @method requestAuthentication
+     * @summary Initialize the instance.
+     * @returns {TP.sherpa.CouchTools} The receiver.
+     */
+
+    var elem;
+
+    elem = TP.xhtmlnode(
+        '<div tibet:ctrl="urn:tibet:sherpa_inspector_target" style="font-size: 77%">' +
+            '<label for="username_field">Username:</label>' +
+            '<input id="username_field" type="text"/>' +
+            '<br/>' +
+            '<label for="password_field">Password:</label>' +
+            '<input id="password_field" type="password"/>' +
+            '<br/>' +
+            '<button on:UIActivate="AuthenticateConnection">Log Me In</button>' +
+            '<br/>' +
+            '<span id="user_message" pclass:hidden="true"></span>' +
+        '</div>');
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineHandler('AuthenticateConnection',
+function() {
+
+    var inspector,
+        content,
+
+        username,
+        password,
+
+        message,
+
+        serverURI,
+
+        authRequest;
+
+    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+    content = inspector.getInspectorBayContentItem();
+
+    username = TP.byId('username_field', content);
+    password = TP.byId('password_field', content);
+
+    message = TP.byId('user_message', content);
+    message.setAttribute('hidden', true);
+
+    serverURI = TP.uc(this.get('serverAddress'));
+
+
+    authRequest = TP.couchdb.CouchDBURLHandler.authenticate(
+                            serverURI,
+                            username.getValue(),
+                            password.getValue());
+
+    authRequest.defineHandler('RequestSucceeded',
+        function(aResponse) {
+            inspector.repopulateBay();
+            inspector.sizeBays();
+            inspector.scrollBaysToEnd();
+        });
+
+    authRequest.defineHandler('401',
+        function(aResponse) {
+            message.setRawContent('Login failed');
+            message.setAttribute('hidden', false);
+
+            username.setValue('');
+            password.setValue('');
+
+            username.focus();
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Inspector Config Methods
 //  ------------------------------------------------------------------------
 
