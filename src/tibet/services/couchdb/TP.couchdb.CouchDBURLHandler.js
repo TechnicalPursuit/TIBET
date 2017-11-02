@@ -764,16 +764,30 @@ function(targetURI, aRequest) {
 
     request = TP.request(aRequest);
 
+    //  Make sure that the connection has been authenticated.
+    if (!this.isAuthenticatedURI(targetURI)) {
+
+        //  If its not, simulate a HTTP 401 error and report it / fail it like
+        //  the TIBET low-level HTTP code will.
+
+        request.set('faultCode', 401);
+        request.set('faultText', 'Unauthorized');
+
+        TP.httpError(targetURI.getLocation(), 'HTTPException', request, false);
+
+        request.fail(request.at('message'),
+                        request.getFaultCode(),
+                        TP.hc('error', request.at('error'),
+                                'message', request.at('message')));
+
+        return request.getResponse();
+    }
+
     //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
     //  requests, etc.) if possible. Configure that here so that TIBET's
     //  low-level HTTP machinery doesn't try to add headers, etc. that would
     //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
-
-    //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticatedURI(targetURI)) {
-        return this.authenticate(targetURI, request);
-    }
 
     return this.callNextMethod(targetURI, request);
 });
@@ -799,16 +813,30 @@ function(targetURI, aRequest) {
 
     request = TP.request(aRequest);
 
+    //  Make sure that the connection has been authenticated.
+    if (!this.isAuthenticatedURI(targetURI)) {
+
+        //  If its not, simulate a HTTP 401 error and report it / fail it like
+        //  the TIBET low-level HTTP code will.
+
+        request.set('faultCode', 401);
+        request.set('faultText', 'Unauthorized');
+
+        TP.httpError(targetURI.getLocation(), 'HTTPException', request, false);
+
+        request.fail(request.at('message'),
+                        request.getFaultCode(),
+                        TP.hc('error', request.at('error'),
+                                'message', request.at('message')));
+
+        return request.getResponse();
+    }
+
     //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
     //  requests, etc.) if possible. Configure that here so that TIBET's
     //  low-level HTTP machinery doesn't try to add headers, etc. that would
     //  automatically cause preflight requests for even simple CORS cases.
     request.atPut('simple_cors_only', true);
-
-    //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticatedURI(targetURI)) {
-        return this.authenticate(targetURI, request);
-    }
 
     return this.callNextMethod(targetURI, request);
 });
@@ -844,6 +872,25 @@ function(targetURI, aRequest) {
 
     request = TP.request(aRequest);
 
+    //  Make sure that the connection has been authenticated.
+    if (!this.isAuthenticatedURI(targetURI)) {
+
+        //  If its not, simulate a HTTP 401 error and report it / fail it like
+        //  the TIBET low-level HTTP code will.
+
+        request.set('faultCode', 401);
+        request.set('faultText', 'Unauthorized');
+
+        TP.httpError(targetURI.getLocation(), 'HTTPException', request, false);
+
+        request.fail(request.at('message'),
+                        request.getFaultCode(),
+                        TP.hc('error', request.at('error'),
+                                'message', request.at('message')));
+
+        return request.getResponse();
+    }
+
     saveURI = targetURI;
 
     //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
@@ -874,11 +921,6 @@ function(targetURI, aRequest) {
                     //  here.
                     origData.set('$._rev', newRev, false);
                 });
-
-    //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticatedURI(targetURI)) {
-        return this.authenticate(targetURI, request);
-    }
 
     return this.callNextMethod(targetURI, request);
 });
