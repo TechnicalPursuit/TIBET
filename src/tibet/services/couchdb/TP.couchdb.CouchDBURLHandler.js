@@ -434,7 +434,7 @@ function(aSignal) {
                 href = rootLoc + '/_session';
 
                 //  Prompt the user for the CouchDB username
-                TP.prompt('Enter CouchDB username:').then(
+                TP.prompt('Enter CouchDB username for: ' + href).then(
                     function(retVal) {
 
                         //  If the value came back empty, then just return.
@@ -445,7 +445,7 @@ function(aSignal) {
                         username = retVal;
 
                         //  Prompt the user for the CouchDB password
-                        TP.prompt('Enter CouchDB password:').then(
+                        TP.prompt('Enter CouchDB password for: ' + href).then(
                             function(retVal2) {
 
                                 //  If the value came back empty, then just
