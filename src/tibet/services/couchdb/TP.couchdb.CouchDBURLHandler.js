@@ -126,124 +126,128 @@ function(aRootLocation) {
 //  ------------------------------------------------------------------------
 
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('authenticate',
-function(aURI, aRequest) {
+function(aURI, username, password) {
 
     /**
      * @method authenticate
      * @summary Authenticate the supplied URI. This will actually authenticate
      *     the root of the supplied URI.
      * @param {TP.core.URI} aURI The URI to authenticate.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     * @param {String} [username] The username to use to authenticate. If this
+     *     is not supplied, the user will be prompted to supply it.
+     * @param {String} [password] The password to use to authenticate. If this
+     *     is not supplied, the user will be prompted to supply it.
+     * @returns {TP.sig.HTTPRequest} The authentication request.
      */
 
-    var reqParams,
-
-        newReqType,
-        newReq,
-
-        rootLoc,
+    var rootLoc,
         href,
-        authRequest;
+        authRequest,
 
-    //  Construct a new request to perform the original operation when the
-    //  authentication is complete (if it succeeds).
+        thisref,
 
-    reqParams = TP.copy(aRequest.getParameters());
-    reqParams.atPut('uri', aURI);
-
-    //  Depending on the original request's operation, compute the type of the
-    //  new operation.
-    switch (aRequest.at('operation')) {
-
-        case 'load':
-            newReqType = TP.sig.HTTPLoadRequest;
-            break;
-        case 'save':
-            newReqType = TP.sig.HTTPSaveRequest;
-            break;
-        case 'delete':
-            newReqType = TP.sig.HTTPDeleteRequest;
-            break;
-        default:
-            return aRequest.complete();
-    }
-
-    newReq = newReqType.construct(reqParams);
-
-    //  Join the new request as a child to the original request. This will cause
-    //  the original request to complete when the new one does.
-    aRequest.andJoinChild(newReq);
+        loginFunc;
 
     //  ---
 
-    //  Now, build an authentication request that we can post below.
+    //  Build an authentication request that we can post below.
 
     //  Construct the proper href to the authentication endpoint.
     rootLoc = aURI.getRoot();
     href = rootLoc + '/_session';
 
-    authRequest = TP.request(
-            'uri', href,
-            'headers',
-                TP.hc('Content-Type', TP.JSON_ENCODED),
-            'simple_cors_only', true);
+    //  Now, since we know we're talking to CouchDB over HTTP, we construct an
+    //  HTTPRequest. This will allow enhanced error handling of this request,
+    //  such as signaling signals like 401, for instance, if there is an invalid
+    //  login.
+    authRequest = TP.sig.HTTPRequest.construct(
+                    'uri', href,
+                    'headers',
+                        TP.hc('Content-Type', TP.JSON_ENCODED),
+                    'simple_cors_only', true);
 
-    //  If the request succeeds, then add the root location as an authenticated
-    //  root and tell the HTTPService to handle the new request directly.
-    authRequest.defineHandler('RequestSucceeded',
+    //  If the low-level IO request succeeds, then we add the root location as
+    //  an authenticated root and tell the HTTPService to handle the new request
+    //  directly.
+    thisref = this;
+    authRequest.defineHandler('IOSucceeded',
         function(aResponse) {
 
-            this.addAuthenticatedRoot(rootLoc);
+            //  Note that we add the authenticated root *first* before we 'call
+            //  up'. That way, any handlers that rely on this setting are seeing
+            //  an accurate authenicated root list.
+            thisref.addAuthenticatedRoot(rootLoc);
 
-            TP.core.HTTPService.handle(newReq);
-        }.bind(this));
-
-    //  Prompt the user for the CouchDB username
-    TP.prompt('Enter CouchDB username:').then(
-        function(retVal) {
-
-            var username;
-
-            //  If the value came back empty, then just return.
-            if (TP.isEmpty(retVal)) {
-                return;
-            }
-
-            username = retVal;
-
-            //  Prompt the user for the CouchDB password
-            TP.prompt('Enter CouchDB password:',
-                        null,
-                        TP.hc('secure', true)).then(
-                function(retVal2) {
-
-                    var password,
-                        body;
-
-                    //  If the value came back empty, then just return.
-                    if (TP.isEmpty(retVal2)) {
-                        return;
-                    }
-
-                    password = retVal2;
-
-                    //  Encode the body of the authentication request by
-                    //  formatting the username and password as JSON.
-                    body = TP.hc(
-                            'username', username,
-                            'password', password).asJSONSource();
-
-                    authRequest.atPut('body', body);
-
-                    //  Post the authentication request to the auth endpoint.
-                    TP.httpPost(href, authRequest);
-                });
+            this.callNextMethod();
         });
 
-    return null;
+    //  Define a common login function that can either be called directly, or
+    //  after the user has been prompted for a username and password. This
+    //  function takes a username and password to be populated into the
+    //  authentication request and posts it to CouchDB's '/_session' endpoint.
+    //  Successful authentication here will mean that we have authenticated with
+    //  CouchDB using cookie authentication.
+    loginFunc = function(loginUsername, loginPassword) {
+
+        var body;
+
+        //  Encode the body of the authentication request by formatting the
+        //  username and password as JSON.
+        body = TP.hc(
+                'username', loginUsername,
+                'password', loginPassword).asJSONSource();
+
+        authRequest.atPut('body', body);
+
+        //  Post the authentication request to the auth endpoint.
+        TP.httpPost(href, authRequest);
+    };
+
+    //  If the username and password (*both* of them) were supplied in this
+    //  call, then there is no need to prompt the user for them. Try to log in
+    //  using them.
+    if (TP.notEmpty(username) && TP.notEmpty(password)) {
+        loginFunc(username, password);
+    } else {
+        //  Otherwise, prompt the user for the CouchDB username
+        TP.prompt('Enter CouchDB username:',
+                    TP.notValid(username) ? '' : username).then(
+            function(retVal) {
+
+                var promptedUsername;
+
+                //  If the value came back empty, then just return.
+                if (TP.isEmpty(retVal)) {
+                    return;
+                }
+
+                promptedUsername = retVal;
+
+                //  Prompt the user for the CouchDB password
+                TP.prompt('Enter CouchDB password:',
+                            TP.notValid(password) ? '' : password,
+                            TP.hc('secure', true)).then(
+                    function(retVal2) {
+
+                        var promptedPassword;
+
+                        //  If the value came back empty, then just return.
+                        if (TP.isEmpty(retVal2)) {
+                            return;
+                        }
+
+                        promptedPassword = retVal2;
+
+                        //  Got both a username and password - call the login
+                        //  function.
+                        loginFunc(promptedUsername, promptedPassword);
+                    });
+            });
+    }
+
+    return authRequest;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
