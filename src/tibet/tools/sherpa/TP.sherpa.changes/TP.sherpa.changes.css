@@ -116,6 +116,17 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content #processRemoteChanges {
     height: 1.5em;
 }
 
+sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton {
+
+    position: absolute;
+
+    right: 20px;
+
+    height: 1.5em;
+
+    line-height: 1;
+}
+
 sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
 
     position: absolute;

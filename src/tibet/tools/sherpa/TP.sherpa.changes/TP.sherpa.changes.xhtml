@@ -43,6 +43,7 @@
                 <xctrls:value>client</xctrls:value>
                 <xctrls:content>
                     <span class="title">Changed client URIs</span>
+                    <span><button id="PushAllButton" on:click="PushAllLocalResources">Push All</button></span>
                     <br/>
                     <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}">
                         <xctrls:textitem>

@@ -213,6 +213,30 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.changes.Inst.defineHandler('PushAllLocalResources',
+function(aSignal) {
+
+    /**
+     * @method handleAllPushLocalResources
+     * @summary Handles when the user wants the system to push all of the
+     *     changed local resources to its remote server.
+     * @param {TP.sig.PushLocalResource} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    //  Fire a ConsoleCommand that will push the local resource to the server.
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText', ':push --all'
+                ));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.changes.Inst.defineHandler('PushLocalResource',
 function(aSignal) {
 
