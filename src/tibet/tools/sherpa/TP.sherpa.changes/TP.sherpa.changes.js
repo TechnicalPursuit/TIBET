@@ -365,7 +365,7 @@ function(aSignal) {
         watchIsSelected,
 
         shouldProcessSelectedURI,
-        processIsSelected,
+        processIsSelected;
 
     shouldWatchSelectedURI = TP.uc(
         'urn:tibet:watch_remote_changes#tibet(selected)');
@@ -444,7 +444,7 @@ function() {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
-    var watchProcessURI,
+    var shouldWatchURI,
         shouldProcessURI;
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
