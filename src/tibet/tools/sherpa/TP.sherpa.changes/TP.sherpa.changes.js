@@ -66,6 +66,9 @@ function(aRequest) {
 
     var dataURI,
 
+        shouldWatchURI,
+        shouldWatchValue,
+
         shouldProcessURI,
         shouldProcessValue;
 
@@ -82,8 +85,11 @@ function(aRequest) {
     dataURI = TP.uc('urn:tibet:changedClientURIs');
     dataURI.setResource(TP.ac());
 
-    shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
+    shouldWatchURI = TP.uc('urn:tibet:watch_remote_changes');
+    shouldWatchValue = TP.sys.cfg('uri.watch_remote_changes');
+    shouldWatchURI.setContent('{"selected":' + shouldWatchValue + '}');
 
+    shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
     shouldProcessValue = TP.sys.cfg('uri.process_remote_changes');
     shouldProcessURI.setContent('{"selected":' + shouldProcessValue + '}');
 
@@ -104,6 +110,14 @@ TP.sherpa.changes.Inst.defineAttribute('serverCount',
 
 TP.sherpa.changes.Inst.defineAttribute('clientCount',
     TP.cpc('> .header > sherpa|count[name="client"]',
+                            TP.hc('shouldCollapse', true)));
+
+TP.sherpa.changes.Inst.defineAttribute('watchRemoteChangesCheckbox',
+    TP.cpc('> .content #watchRemoteChanges > input',
+                            TP.hc('shouldCollapse', true)));
+
+TP.sherpa.changes.Inst.defineAttribute('processRemoteChangesCheckbox',
+    TP.cpc('> .content #processRemoteChanges > input',
                             TP.hc('shouldCollapse', true)));
 
 TP.sherpa.changes.Inst.defineAttribute('lists',
@@ -323,16 +337,33 @@ function(aSignal) {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
-    var shouldProcessSelectedURI,
-        isSelectedVal;
+    var shouldWatchSelectedURI,
+        watchIsSelected,
+
+        shouldProcessSelectedURI,
+        processIsSelected,
+
+    shouldWatchSelectedURI = TP.uc(
+        'urn:tibet:watch_remote_changes#tibet(selected)');
+    watchIsSelected =
+        TP.ifEmpty(shouldWatchSelectedURI.getResource().get('result'),
+                    TP.sys.cfg('uri.watch_remote_changes'));
+    TP.sys.setcfg('uri.watch_remote_changes', watchIsSelected);
 
     shouldProcessSelectedURI = TP.uc(
         'urn:tibet:process_remote_changes#tibet(selected)');
-    isSelectedVal = shouldProcessSelectedURI.getResource().get('result');
+    processIsSelected =
+        TP.ifEmpty(shouldProcessSelectedURI.getResource().get('result'),
+                    TP.sys.cfg('uri.process_remote_changes'));
+    TP.sys.setcfg('uri.process_remote_changes', processIsSelected);
 
-    this.get('lists').first().setAttrDisabled(isSelectedVal);
-
-    TP.sys.setcfg('uri.process_remote_changes', isSelectedVal);
+    if (!watchIsSelected) {
+        this.get('processRemoteChangesCheckbox').setAttrDisabled(true);
+        this.get('lists').first().setAttrDisabled(true);
+    } else {
+        this.get('processRemoteChangesCheckbox').setAttrDisabled(false);
+        this.get('lists').first().setAttrDisabled(processIsSelected);
+    }
 
     return this;
 });
@@ -389,9 +420,13 @@ function() {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
-    var shouldProcessURI;
+    var watchProcessURI,
+        shouldProcessURI;
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
+
+    shouldWatchURI = TP.uc('urn:tibet:watch_remote_changes');
+    this.observe(shouldWatchURI, 'ValueChange');
 
     shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
     this.observe(shouldProcessURI, 'ValueChange');

@@ -28,7 +28,8 @@
                 <xctrls:value>server</xctrls:value>
                 <xctrls:content>
                     <span class="title">Changed server URIs</span>
-                    <span id="processRemoteChanges"><input type="checkbox" bind:io="{checked: urn:tibet:process_remote_changes#tibet(selected)}"/><label>Process remote changes immediately</label></span>
+                    <span id="watchRemoteChanges"><input type="checkbox" bind:io="{checked: urn:tibet:watch_remote_changes#tibet(selected)}"/><label>Watch changes</label></span>
+                    <span id="processRemoteChanges"><input type="checkbox" bind:io="{checked: urn:tibet:process_remote_changes#tibet(selected)}"/><label>Process changes immediately</label></span>
                     <br/>
                     <xctrls:list bind:in="{data: urn:tibet:changedServerURIs}">
                         <xctrls:textitem>

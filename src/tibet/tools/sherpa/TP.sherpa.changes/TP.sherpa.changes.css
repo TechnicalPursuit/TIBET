@@ -98,6 +98,15 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content .title {
     height: 1.5em;
 }
 
+sherpa|changes #SherpaChangesPanelbox xctrls|content #watchRemoteChanges {
+
+    position: absolute;
+
+    right: 220px;
+
+    height: 1.5em;
+}
+
 sherpa|changes #SherpaChangesPanelbox xctrls|content #processRemoteChanges {
 
     position: absolute;
