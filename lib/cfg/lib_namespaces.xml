@@ -198,10 +198,6 @@
     <script src="tsh/TP.tsh.validate.js"/>
     <script src="tsh/TP.tsh.xpath.js"/>
     <script src="tsh/TP.tsh.xslt.js"/>
-
-    <script src="tsh/TP.tsh.listChangedRemotes.js"/>
-    <script src="tsh/TP.tsh.toggleRemoteWatch.js"/>
-    <script src="tsh/TP.tsh.toggleReportChangedRemotes.js"/>
 </config>
 
 <config id="xctrls">
