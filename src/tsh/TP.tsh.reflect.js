@@ -556,7 +556,9 @@ function(anObj, anInputStr) {
         track,
         slotName,
         slot,
-        slotExists;
+
+        nativeSlotExists,
+        trackNotSupplied;
 
     //  If we're running in a PhantomJS/CLI environment, then we always return
     //  null here since we can't go get Web-based docs.
@@ -593,35 +595,58 @@ function(anObj, anInputStr) {
             return null;
         }
 
-        track = pathParts.at(1);
-        slotName = pathParts.at(2);
+        if (pathParts.getSize() === 1) {
+            nativeSlotExists = true;
+        } else {
+            trackNotSupplied = false;
 
-        try {
-            if (track === TP.INST_TRACK) {
-                slot = owner.getInstPrototype()[slotName];
+            //  If they didn't supply a track, then we assume TP.INST_TRACK
+            //  first, but we'll also try the TP.TYPE_TRACK second.
+            if (pathParts.getSize() === 2) {
+                track = TP.INST_TRACK;
+                trackNotSupplied = true;
+                slotName = pathParts.at(1);
             } else {
-                slot = owner[slotName];
+                track = pathParts.at(1);
+                slotName = pathParts.at(2);
             }
 
-            slotExists = TP.isNativeFunction(slot);
-        } catch (e) {
-            slotExists = TP.isValid(Object.getOwnPropertyDescriptor(
+            try {
+                if (track === TP.INST_TRACK || track === 'prototype') {
+                    slot = owner.getInstPrototype()[slotName];
+                    if (TP.notValid(slot) && trackNotSupplied) {
+                        slot = owner[slotName];
+                    }
+                } else {
+                    slot = owner[slotName];
+                }
+
+                nativeSlotExists = TP.isNativeFunction(slot);
+            } catch (e) {
+                nativeSlotExists = TP.isValid(
+                                    Object.getOwnPropertyDescriptor(
                                         owner.getInstPrototype(), slotName));
+            }
         }
     } else {
-        slot = anObj;
-        owner = anObj[TP.OWNER];
-        slotName = TP.name(anObj);
+        slot = obj;
+        owner = obj[TP.OWNER];
+        if (slot !== owner) {
+            slotName = TP.name(obj);
+        }
+        nativeSlotExists = TP.isNativeFunction(slot);
     }
 
-    if (slotExists && TP.isNativeType(owner)) {
+    if (nativeSlotExists && TP.isNativeType(owner)) {
 
-        if (TP.META_TYPE_TARGETS.contains(owner)) {
-            httpStr += 'javascript/global_objects/' +
-                        TP.name(owner) + '/' + slotName;
+        if (Node.prototype.isPrototypeOf(owner.prototype) ||
+            owner.prototype === Node.prototype) {
+            httpStr += 'dom/' + TP.name(owner) + '/' + slotName;
         } else {
-            httpStr += 'dom/' +
-                        TP.name(owner) + '/' + slotName;
+            httpStr += 'javascript/global_objects/' + TP.name(owner);
+            if (TP.isValid(slotName)) {
+                httpStr += '/' + slotName;
+            }
         }
 
         httpStr = httpStr.toLowerCase();
