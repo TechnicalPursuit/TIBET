@@ -302,9 +302,6 @@
 
     <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="no-lint" />
     <script src="~lib_deps/codemirror/addon/runmode/runmode.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/addon/search/searchcursor.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/addon/hint/show-hint.js" no-lint="no-lint" />
-
 
     <script src="~lib_deps/codemirror/mode/xml/xml.js" no-lint="no-lint" />
     <script src="~lib_deps/codemirror/mode/javascript/javascript.js" no-lint="no-lint" />
