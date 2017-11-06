@@ -170,3 +170,38 @@ xctrls|popup#BookmarksPopup {
     z-index: 28750;
 }
 
+xctrls|list#TSHCompleterList {
+
+    position: absolute !important;
+
+    bottom: 75px;
+    left: 220px;
+
+    width: 30em;
+    height: 10em;
+
+    max-height: initial;
+
+    line-height: 1.5em;
+
+    border: none;
+
+    overflow-y: auto;
+
+    *[tibet|pelem="choices"] {
+
+        & > xctrls|textitem {
+
+            & > xctrls|label {
+
+                font-family: "Inconsolata";
+
+                & span.match_result {
+
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
+

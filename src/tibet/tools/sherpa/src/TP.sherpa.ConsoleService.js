@@ -2486,25 +2486,24 @@ TP.sherpa.NormalKeyResponder.defineSubtype('AutoCompletionKeyResponder');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$closeFunc');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('hintSelectedIndex');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('currentCompletions');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('completedText');
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$completer');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
-
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                '$finishedCompletion');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$popupContainer');
-
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$tshHistoryMatcher');
+                                                '$editorKeyCommandEntries');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                '$tshExecutionInstanceMatcher');
+                                                '$shouldUpdateHint');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                '$tshCommandsMatcher');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$keywordsMatcher');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$cfgMatcher');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$uriMatcher');
+                                                '$hintRestOfTextRange');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
+                                                '$hintRestOfTextMarker');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('init',
 function() {
@@ -2515,53 +2514,15 @@ function() {
      * @returns {TP.sherpa.AutoCompletionKeyResponder} A new instance.
      */
 
-    var backgroundElem;
+    var completer;
 
     this.callNextMethod();
 
-    this.set('$tshHistoryMatcher',
-                TP.core.TSHHistoryMatcher.construct(
-                    'TSH_HISTORY'));
-
-    this.set('$tshExecutionInstanceMatcher',
-                TP.core.KeyedSourceMatcher.construct(
-                    'TSH_CONTEXT',
-                    TP.core.TSH.getDefaultInstance().
-                                        getExecutionInstance()));
-
-    this.set('$tshCommandsMatcher',
-                TP.core.ListMatcher.construct(
-                    'TSH_COMMANDS',
-                    TP.ac(
-                        'about',
-                        'alias',
-                        'apropos',
-                        'clear',
-                        'flag',
-                        'reflect',
-                        'save',
-                        'set')));
-
-    this.set('$keywordsMatcher',
-                TP.core.ListMatcher.construct(
-                    'JS_COMMANDS',
-                    TP.boot.$keywords.concat(TP.boot.$futurereservedwords),
-                    'match_keyword'));
-
-    this.set('$cfgMatcher',
-                TP.core.ListMatcher.construct(
-                    'TIBET_CFG',
-                    TP.sys.cfg().getKeys()));
-
-    this.set('$uriMatcher',
-                TP.core.URIMatcher.construct(
-                    'TIBET_URIS'));
-
-
-    backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
-    this.set('$popupContainer', backgroundElem);
-
-    this.set('$finishedCompletion', false);
+    completer = TP.xctrls.Completer.construct();
+    completer.set('defaultMatcher',
+                    TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', TP.global));
+    this.set('$completer', completer);
 
     return this;
 });
@@ -2580,68 +2541,130 @@ function(aSignal) {
      */
 
     var consoleGUI,
+
+        handler,
+
+        commandEntries,
         editorObj,
 
-        backgroundElem,
-        hintFunc,
+        i,
 
-        handler;
+        currentLineNum,
+        lineContent;
 
     consoleGUI = this.get('$consoleGUI');
-    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
 
-    backgroundElem = this.get('$popupContainer');
-    hintFunc = this.showHint.bind(this);
+    //  Define a handler function that will fire with every change to the
+    //  editor.
+    handler = function(deltaInfo, targetEditorObj) {
 
-    //  We manually manage the showing of the autocomplete popup to get better
-    //  control.
-    editorObj.on(
-        'change',
-        handler = function(cm, evt) {
+        var changedRowIndex,
+            rowContent,
 
-            if (this.get('$finishedCompletion')) {
-                this.set('$finishedCompletion', false);
+            endColumnIndex;
 
-                return;
-            }
+        if (TP.isFalse(this.get('$shouldUpdateHint'))) {
+            return;
+        }
 
-            cm.showHint(
-                {
-                    hint: hintFunc,
-                    container: backgroundElem,  //  undocumented property
-                    completeSingle: false,
-                    closeOnUnfocus: false
-                });
+        changedRowIndex = deltaInfo.start.row;
 
-            //  This is pathetic - no way to programmatically shut down the hint
-            //  properly, so we have to fish around and get the special,
-            //  hardcoded handler for 'Esc' for the hint and invoke that
-            //  whenever we want to terminate the hinting programmatically.
-            if (TP.isValid(cm.state.keyMaps[0])) {
-                this.set('$closeFunc', cm.state.keyMaps[0].Esc);
-            } else {
-                this.set('$closeFunc', null);
-            }
+        rowContent = targetEditorObj.session.getLine(changedRowIndex);
 
-            this.set('$finishedCompletion', false);
+        endColumnIndex = deltaInfo.end.column;
+        if (deltaInfo.action === 'remove') {
+            endColumnIndex--;
+        }
 
-        }.bind(this));
+        rowContent = rowContent.slice(rowContent.lastIndexOf(' ') + 1,
+                                        endColumnIndex);
+
+        this.updateAutoCompletePanel(rowContent);
+        this.updateAutoCompleteEditorRange(deltaInfo);
+    }.bind(this);
+
+    consoleGUI.get('consoleInput').setEditorEventHandler('change', handler);
 
     this.set('$changeHandler', handler);
 
-    //  Show the hint (if there are any completions) because we might have
-    //  existing content that might match.
-    editorObj.showHint(
-        {
-            hint: hintFunc,
-            container: backgroundElem,  //  undocumented property
-            completeSingle: false,
-            closeOnUnfocus: false
-        });
-
+    //  Observe DOM_Esc_Up to end this mode.
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.toggleIndicatorVisibility('autocomplete', true);
+    //  Build up a series of command entries that will be registered with the
+    //  ACE editor of keys that we're going to handle ourself.
+    commandEntries = TP.ac();
+    commandEntries.push({
+        name: 'NextHintEntry',
+        bindKey: {win: 'Down', mac: 'Down'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'PreviousHintEntry',
+        bindKey: {win: 'Up', mac: 'Up'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'HintNoOpLeft',
+        bindKey: {win: 'Left', mac: 'Left'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'HintNoOpRight',
+        bindKey: {win: 'Right', mac: 'Right'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'AcceptHintEntryTab',
+        bindKey: {win: 'Tab', mac: 'Tab'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'AcceptHintEntryReturn',
+        bindKey: {win: 'Return', mac: 'Return'},
+        exec: TP.RETURN_TRUE,
+        passEvent: false,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'ReflectOnHintEntry',
+        bindKey: {win: 'Shift-Tab', mac: 'Shift-Tab'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    for (i = 0; i < commandEntries.getSize(); i++) {
+        editorObj.commands.addCommand(commandEntries.at(i));
+    }
+
+    this.set('$editorKeyCommandEntries', commandEntries);
+
+    //  Grab the current line content to use as the initial autocomplete
+    //  content.
+    currentLineNum = editorObj.getCursorPosition().row;
+
+    lineContent = editorObj.session.getLine(currentLineNum);
+    lineContent = lineContent.slice(lineContent.lastIndexOf(' ') + 1);
+    lineContent = TP.ifInvalid(lineContent, '');
+
+    this.updateAutoCompletePanel(lineContent);
+    this.updateAutoCompleteEditorRange();
+
+    this.set('$shouldUpdateHint', true);
+
+    // consoleGUI.toggleIndicatorVisibility('autocomplete', true);
 
     return this;
 });
@@ -2661,27 +2684,66 @@ function(aSignal) {
 
     var consoleGUI,
         editorObj,
-        closeFunc;
+
+        commandEntries,
+        i,
+
+        completerList;
 
     consoleGUI = this.get('$consoleGUI');
+
     editorObj = consoleGUI.get('consoleInput').get('$editorObj');
 
-    if (TP.isCallable(closeFunc = this.get('$closeFunc'))) {
-        closeFunc();
-        this.set('$closeFunc', null);
+    commandEntries = this.get('$editorKeyCommandEntries');
+    for (i = 0; i < commandEntries.getSize(); i++) {
+        editorObj.commands.removeCommand(commandEntries.at(i));
     }
-
-    //  Remove the change handler that manages the autocomplete popup. We
-    //  installed it when we entered this state.
-    editorObj.off(
-        'change',
-        this.get('$changeHandler'));
-
-    this.set('$changeHandler', null);
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.toggleIndicatorVisibility('autocomplete', false);
+    //  Remove the change handler that manages the autocomplete popup. We
+    //  installed it when we entered this state.
+    consoleGUI.get('consoleInput').unsetEditorEventHandler(
+                                    'change', this.get('$changeHandler'));
+    this.set('$changeHandler', null);
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completerList.setAttribute('hidden', true);
+
+    this.set('currentCompletions', TP.ac());
+
+    this.removeAutoCompleteEditorRange(aSignal.at('trigger').at('acceptHint'));
+
+    // consoleGUI.toggleIndicatorVisibility('autocomplete', false);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('setHintSelectedIndex',
+function(index) {
+
+    var completerList,
+        data,
+
+        newIndex;
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    data = completerList.get('data');
+
+    newIndex = index;
+    if (newIndex < 0) {
+        newIndex = data.getSize() - 1;
+    } else if (newIndex >= data.getSize()) {
+        newIndex = 0;
+    }
+
+    if (TP.notEmpty(data)) {
+        completerList.set('value', data.at(newIndex).at(0));
+    }
+
+    this.$set('hintSelectedIndex', index);
 
     return this;
 });
@@ -2691,6 +2753,16 @@ function(aSignal) {
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Down_Down',
 function(aSignal) {
 
+    var selectedIndex;
+
+    //  Grab the current selected index and increment it.
+    selectedIndex = this.get('hintSelectedIndex');
+    selectedIndex++;
+
+    this.set('hintSelectedIndex', selectedIndex);
+
+    this.updateAutoCompleteEditorRange();
+
     //  This key handler does nothing in autocompletion mode.
     return this;
 });
@@ -2699,6 +2771,16 @@ function(aSignal) {
 
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
+
+    var selectedIndex;
+
+    //  Grab the current selected index and decrement it.
+    selectedIndex = this.get('hintSelectedIndex');
+    selectedIndex--;
+
+    this.set('hintSelectedIndex', selectedIndex);
+
+    this.updateAutoCompleteEditorRange();
 
     //  This key handler does nothing in autocompletion mode.
     return this;
@@ -2727,6 +2809,313 @@ function(aSignal) {
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Esc_Up',
 function(aSignal) {
     TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode');
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Enter_Up',
+function(aSignal) {
+    TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode', TP.hc('acceptHint', true));
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Tab_Up',
+function(aSignal) {
+    TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode', TP.hc('acceptHint', true));
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Shift_Tab_Up',
+function(aSignal) {
+
+    var completerList,
+
+        isHidden,
+
+        currentCompletion,
+        text,
+        str,
+
+        isNativeObj;
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+
+    isHidden = TP.bc(completerList.getAttribute('hidden'));
+    if (isHidden) {
+        completerList.setAttribute('hidden', false);
+
+        return this;
+    }
+
+    completerList.setAttribute('hidden', true);
+
+    currentCompletion = this.get('currentCompletions').at(
+                                        this.get('hintSelectedIndex'));
+
+    str = '';
+
+    if (TP.notValid(currentCompletion)) {
+        text = this.get('completedText');
+        str = ':reflect --docsonly \'' + text + '\'';
+    } else {
+        text = currentCompletion.text;
+
+        if (TP.notEmpty(currentCompletion.text)) {
+
+            isNativeObj = currentCompletion.nativeObject;
+
+            if (TP.notEmpty(currentCompletion.prefix) &&
+                currentCompletion.needsPrefix !== false) {
+                str += currentCompletion.prefix;
+            }
+
+            str += currentCompletion.text;
+
+            if (TP.isTrue(isNativeObj)) {
+                str = ':reflect --docsonly \'' + str + '\'';
+            } else {
+                str = ':reflect ' + str;
+            }
+        } else {
+            return;
+        }
+    }
+
+    if (TP.notEmpty(str)) {
+        this.get('$consoleService').sendConsoleRequest(str);
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('updateAutoCompletePanel',
+function(sourceText) {
+
+    var completerList,
+        completer,
+
+        completions,
+
+        data,
+
+        selectedIndex,
+
+        completerValue;
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completer = this.get('$completer');
+
+    completions = completer.completeUsing(sourceText);
+    this.set('currentCompletions', completions);
+
+    if (TP.isEmpty(completions)) {
+        completerList.set('data', TP.ac());
+
+        completerList.render();
+
+        this.set('completedText', sourceText);
+
+        return this;
+    }
+
+    this.set('completedText', null);
+
+
+    data = TP.ac();
+    completions.forEach(
+        function(aCompletion) {
+            data.push(TP.ac(aCompletion.text, aCompletion.displayText));
+        });
+
+    completerList.set('data', data);
+
+    completerList.setAttribute('hidden', false);
+    completerList.render();
+
+    selectedIndex = 0;
+    this.set('hintSelectedIndex', selectedIndex);
+
+    completerValue = data.at(selectedIndex).at(0);
+    if (TP.notEmpty(data)) {
+        completerList.set('value', completerValue);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod(
+    'removeAutoCompleteEditorRange',
+function(shouldAcceptHintText) {
+
+    var consoleGUI,
+        editorObj,
+
+        restOfTextRange,
+        restOfTextMarker;
+
+    this.set('$shouldUpdateHint', false);
+
+    consoleGUI = this.get('$consoleGUI');
+
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    restOfTextRange = this.get('$hintRestOfTextRange');
+    restOfTextMarker = this.get('$hintRestOfTextMarker');
+
+    if (TP.isValid(restOfTextRange) && !shouldAcceptHintText) {
+        editorObj.session.doc.removeInLine(
+            restOfTextRange.start.row,
+            restOfTextRange.start.column,
+            restOfTextRange.end.column);
+    }
+
+    if (TP.isValid(restOfTextMarker)) {
+        editorObj.session.removeMarker(restOfTextMarker);
+    }
+
+    this.set('$hintRestOfTextRange', null);
+    this.set('$hintRestOfTextMarker', null);
+
+    this.set('$shouldUpdateHint', true);
+
+    if (shouldAcceptHintText) {
+        editorObj.moveCursorTo(restOfTextRange.end.row,
+                                restOfTextRange.end.column);
+    }
+
+    consoleGUI.focusInput();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod(
+    'updateAutoCompleteEditorRange',
+function(deltaInfo) {
+
+    var completions,
+
+        currentCompletion,
+
+        consoleGUI,
+        editorObj,
+        Range,
+
+        currentPos,
+
+        restOfTextRange,
+        restOfTextMarker,
+
+        completionInput,
+        completerValue,
+
+        completionInputMatcher,
+
+        colNum,
+
+        restOfText;
+
+    completions = this.get('currentCompletions');
+
+    currentCompletion = completions.at(this.get('hintSelectedIndex'));
+
+    this.set('$shouldUpdateHint', false);
+
+    consoleGUI = this.get('$consoleGUI');
+
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+    Range = TP.extern.ace.require('ace/range').Range;
+
+    currentPos = editorObj.getCursorPosition();
+
+    restOfTextRange = this.get('$hintRestOfTextRange');
+    restOfTextMarker = this.get('$hintRestOfTextMarker');
+
+    if (TP.isValid(restOfTextRange)) {
+        if (TP.isValid(deltaInfo)) {
+            if (deltaInfo.action === 'remove') {
+                editorObj.session.doc.removeInLine(
+                    restOfTextRange.start.row,
+                    restOfTextRange.start.column - 1,
+                    restOfTextRange.end.column - 1);
+            } else {
+                editorObj.session.doc.removeInLine(
+                    restOfTextRange.start.row,
+                    restOfTextRange.start.column + 1,
+                    restOfTextRange.end.column + 1);
+            }
+        } else {
+            editorObj.session.doc.removeInLine(
+                restOfTextRange.start.row,
+                restOfTextRange.start.column,
+                restOfTextRange.end.column);
+        }
+    }
+
+    if (TP.isValid(restOfTextMarker)) {
+        editorObj.session.removeMarker(restOfTextMarker);
+    }
+
+    if (TP.notValid(currentCompletion)) {
+        this.set('$hintRestOfTextRange', null);
+        this.set('$hintRestOfTextMarker', null);
+
+        this.set('$shouldUpdateHint', true);
+
+        return this;
+    }
+
+    completionInput = currentCompletion.input;
+    completerValue = currentCompletion.text;
+
+    if (TP.notEmpty(completionInput)) {
+        completionInputMatcher = TP.rc('^' + TP.regExpEscape(completionInput));
+    }
+
+    if (TP.isEmpty(completionInput) ||
+        !completionInputMatcher.test(completerValue)) {
+
+        this.set('$hintRestOfTextRange', null);
+        this.set('$hintRestOfTextMarker', null);
+
+        this.set('$shouldUpdateHint', true);
+
+        return this;
+    }
+
+    restOfText = completerValue.slice(completionInput.getSize());
+
+    colNum = currentPos.column;
+    if (TP.isValid(deltaInfo) && deltaInfo.action === 'insert') {
+        colNum++;
+    }
+
+    editorObj.session.insert({row: currentPos.row, column: colNum}, restOfText);
+
+    editorObj.selection.moveCursorTo(currentPos.row, currentPos.column);
+
+    restOfTextRange = new Range(
+                        0,          //  startRow
+                        colNum,     //  startPos
+                        0,          //  endRow
+                        colNum + restOfText.length      //  endPos
+                        );
+    this.set('$hintRestOfTextRange', restOfTextRange);
+
+    restOfTextMarker = editorObj.session.addMarker(
+                        restOfTextRange,
+                        'autocomplete-highlight-marker',
+                        'text');
+    this.set('$hintRestOfTextMarker', restOfTextMarker);
+
+    this.set('$shouldUpdateHint', true);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
