@@ -2651,6 +2651,9 @@ function(aSignal) {
 
     this.set('$editorKeyCommandEntries', commandEntries);
 
+    //  Don't allow mouse events to move the cursor.
+    consoleGUI.set('allowMouseCursorMovement', false);
+
     //  Grab the current line content to use as the initial autocomplete
     //  content.
     currentLineNum = editorObj.getCursorPosition().row;
@@ -2714,6 +2717,10 @@ function(aSignal) {
 
     this.removeAutoCompleteEditorRange(aSignal.at('trigger').at('acceptHint'));
 
+    //  Allow mouse events to move the cursor again.
+    consoleGUI.set('allowMouseCursorMovement', true);
+
+    //  Grab the current line content to use as the initial autocomplete
     // consoleGUI.toggleIndicatorVisibility('autocomplete', false);
 
     return this;
