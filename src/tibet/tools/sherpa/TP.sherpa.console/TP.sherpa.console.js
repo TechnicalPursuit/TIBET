@@ -42,7 +42,7 @@ TP.sherpa.console.Inst.defineAttribute('allowMouseCursorMovement');
 //  should IO be concealed? this is used to simulate "password" mode
 TP.sherpa.console.Inst.defineAttribute('conceal', false);
 
-//  Is the command line currently concealed from view?
+//  is the command line currently concealed from view?
 TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
 TP.sherpa.console.Inst.defineAttribute('consoleInput',
@@ -51,10 +51,10 @@ TP.sherpa.console.Inst.defineAttribute('consoleInput',
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
-//  The number of 'new' items since we evaluated last
+//  the number of 'new' items since we evaluated last
 TP.sherpa.console.Inst.defineAttribute('newOutputCount');
 
-//  A timer that will flip the status readout back to mouse coordinates after a
+//  a timer that will flip the status readout back to mouse coordinates after a
 //  period of time.
 TP.sherpa.console.Inst.defineAttribute('statusReadoutTimer');
 
