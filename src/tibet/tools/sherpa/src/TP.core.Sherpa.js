@@ -832,7 +832,7 @@ function(aTPElem) {
             resourceURI,
             serializationStorage,
 
-            viewDoc;
+            sherpaDoc;
 
         //  Make sure to unregister the handler - this is a one shot.
         handler.ignore(TP.ANY, 'TypeAdded');
@@ -872,7 +872,7 @@ function(aTPElem) {
             aTPElem.serializeForStorage(serializationStorage);
 
             //  The document that we were installed into.
-            viewDoc = this.get('vWin').document;
+            sherpaDoc = this.get('vWin').document;
 
             //  Save the template to the file system. If this succeeds, then
             //  replace the supplied TP.core.Element with the new custom tag.
@@ -905,7 +905,7 @@ function(aTPElem) {
                                         parentElem, newElem, oldElem);
                             newTPElem = TP.wrap(newElem);
 
-                            halo = TP.byId('SherpaHalo', viewDoc);
+                            halo = TP.byId('SherpaHalo', sherpaDoc);
 
                             //  This will move the halo off of the old element.
                             //  Note that we do *not* check here whether or not
