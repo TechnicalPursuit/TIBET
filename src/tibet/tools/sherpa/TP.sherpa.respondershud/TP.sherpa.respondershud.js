@@ -500,7 +500,6 @@ function(aSignal) {
 
     dataURI = TP.uc('urn:tibet:responder_methods');
     methods = this.getHandlerMethodsFor(target);
-    dataURI.setResource(methods);
 
     // dataURI.setResource(target.getSupertypeNames());
 
@@ -521,8 +520,11 @@ function(aSignal) {
         'Responder Methods',
         function(aTileTPElem) {
             var tileWidth,
-                xCoord,
-                contentTPElem;
+                xCoord;
+
+            //  Set the model's URI's resource and signal change. This will
+            //  cause the properties to update.
+            dataURI.setResource(methods, TP.hc('signalChange', true));
 
             //  The tile already existed
 
@@ -533,9 +535,6 @@ function(aSignal) {
                         tileWidth;
             aTileTPElem.setPagePosition(
                         TP.pc(xCoord, targetElemPageRect.getY()));
-
-            contentTPElem = aTileTPElem.get('xctrls|list');
-            contentTPElem.refresh();
         },
         function(aTileTPElem) {
             var sheet,
@@ -567,7 +566,11 @@ function(aSignal) {
                         '/>'));
 
             contentTPElem.awaken();
-            contentTPElem.refresh();
+
+            //  Set the model's URI's resource and signal change. This will
+            //  cause the properties to update.
+            dataURI.setResource(methods, TP.hc('signalChange', true));
+
         }.bind(this));
 
     return this;
