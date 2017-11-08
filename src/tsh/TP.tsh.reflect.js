@@ -641,7 +641,10 @@ function(anObj, anInputStr) {
 
         if (Node.prototype.isPrototypeOf(owner.prototype) ||
             owner.prototype === Node.prototype) {
-            httpStr += 'dom/' + TP.name(owner) + '/' + slotName;
+            httpStr += 'dom/' + TP.name(owner);
+            if (TP.isValid(slotName)) {
+                httpStr += '/' + slotName;
+            }
         } else {
             httpStr += 'javascript/global_objects/' + TP.name(owner);
             if (TP.isValid(slotName)) {
