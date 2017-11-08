@@ -341,9 +341,29 @@ function(enterSelection) {
 
                 return val;
             }).each(
-            function() {
+            function(d) {
+                var hintContent,
+                    hintElement;
+
                 TP.elementSetAttribute(
                         this, 'dnd:accept', 'tofu', true);
+
+                if (d[1] !== 'spacer') {
+                    hintContent = TP.extern.d3.select(this).append(
+                                                            'xctrls:hint');
+                    hintContent.html(
+                        function(d, i) {
+                            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                                    d[1] +
+                                    '</span>';
+                        }
+                    );
+
+                    hintElement = hintContent.node();
+
+                    TP.xctrls.hint.setupHintOn(
+                        this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
+                }
             });
 
     return domContent;
@@ -698,6 +718,9 @@ function(aSignal) {
     if (this.get('$tileContentConstructed')) {
         existedHandler =
             function(aTileTPElem) {
+
+                //  Set the model's URI's resource and signal change. This will
+                //  cause the properties to update.
                 modelURI.setResource(modelObj, TP.hc('signalChange', true));
 
                 //  Position the tile
