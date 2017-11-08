@@ -721,6 +721,41 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineHandler('RouteExit',
+function(aSignal) {
+
+    /**
+     * @method handleRouteExit
+     * @summary Handles when the route in the current UI canvas is changed and
+     *     the current document content unloads.
+     * @description Note that this handler fires because the Sherpa is in the
+     *     controller stack and this signal is sent through there as well as its
+     *     direct observers.
+     * @param {TP.sig.RouteExit} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var sherpaDoc,
+        halo;
+
+    //  The document that we were installed into.
+    sherpaDoc = this.get('vWin').document;
+
+    halo = TP.byId('SherpaHalo', sherpaDoc);
+
+    if (TP.isValid(halo)) {
+        //  Note that we do not worry here whether the current target can be
+        //  blurred or not. The screen content is changing and we can't stop it.
+        halo.blur();
+        halo.setAttribute('hidden', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineHandler('SherpaNotify',
 function(aSignal) {
 
