@@ -352,7 +352,7 @@ function(enterSelection) {
                     hintContent = TP.extern.d3.select(this).append(
                                                             'xctrls:hint');
                     hintContent.html(
-                        function(d, i) {
+                        function() {
                             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
                                     d[1] +
                                     '</span>';

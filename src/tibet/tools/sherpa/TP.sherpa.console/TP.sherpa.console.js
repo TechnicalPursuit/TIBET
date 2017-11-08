@@ -648,12 +648,12 @@ function(shouldAllow) {
     if (TP.isTrue(shouldAllow)) {
         evtNames.forEach(
             function(name) {
-                editorObj.off(name, stopper)
+                editorObj.off(name, stopper);
             });
     } else {
         evtNames.forEach(
             function(name) {
-                editorObj.on(name, stopper)
+                editorObj.on(name, stopper);
             });
     }
 
