@@ -551,6 +551,9 @@ function(aSignal) {
     /**
      * @method handleDocumentLoaded
      * @summary Handles when the document in the current UI canvas loads.
+     * @description Note that this handler fires because the Sherpa is in the
+     *     controller stack and this signal is sent through there as well as its
+     *     direct observers.
      * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.core.sherpa} The receiver.
