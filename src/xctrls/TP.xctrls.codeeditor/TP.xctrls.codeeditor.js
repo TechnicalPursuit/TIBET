@@ -869,6 +869,12 @@ function() {
                 }.bind(this));
         }.bind(this), 250);
 
+    //  If an attribute was defined that tells us what type of content we're
+    //  going to have, use it.
+    if (this.hasAttribute('contenttype')) {
+        this.setEditorModeFromMIMEType(this.getAttribute('contenttype'));
+    }
+
     //  We're all set up and ready - signal that.
     this.dispatch('TP.sig.DOMReady');
 
