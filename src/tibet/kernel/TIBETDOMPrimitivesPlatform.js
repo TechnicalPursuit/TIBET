@@ -188,7 +188,7 @@ TP.hc(
                         'io' :
                         'in';
 
-            //  Initally set the bindAttr to null
+            //  Initially set the bindAttr to null
             bindAttr = null;
 
             //  Loop over all of the attributes of the owner Element, looking to
