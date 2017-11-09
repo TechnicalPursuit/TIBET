@@ -68,7 +68,7 @@ function(aRequest) {
             centerElem,
             centerElemPageRect;
 
-        tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+        tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeDocument());
         if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
             //  Grab the center element and it's page rectangle.
             centerElem = TP.byId('center', this.getNativeWindow());
@@ -255,7 +255,7 @@ function(aTPElement) {
     //  Scroll our list content to its bottom.
     this.get('listcontent').scrollTo(TP.BOTTOM);
 
-    tileTPElem = TP.byId('DOMAttributes_Tile', this.getNativeDocument());
+    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeDocument());
     if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
 
         targetTPElem =
@@ -263,7 +263,7 @@ function(aTPElement) {
 
         //  Update the tile's header text.
         tileTPElem.setHeaderText(
-                    targetTPElem.getFullName() + ' Attributes');
+                    targetTPElem.getFullName() + ' Info');
 
         //  Grab the center element and it's page rectangle.
         centerElem = TP.byId('center', this.getNativeWindow());
@@ -1015,16 +1015,16 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('ShowAttributes',
+TP.sherpa.domhud.Inst.defineHandler('ShowInfo',
 function(aSignal) {
 
     /**
-     * @method ShowAttributes
+     * @method ShowInfo
      * @summary Responds to mouse contextmenu notifications by toggling a
      *     class on individual peer elements. The result is that as the user
-     *     right clicks over elements in the sidebar the attributes panel is
+     *     right clicks over elements in the sidebar the info panel is
      *     shown for the corresponding element.
-     * @param {TP.sig.ShowAttributes} aSignal The TIBET signal which triggered
+     * @param {TP.sig.ShowInfo} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.domhud} The receiver.
      */
@@ -1090,7 +1090,7 @@ function(aSignal) {
                 modelURI.setResource(sourceTPElem, TP.hc('signalChange', true));
 
                 //  Position the tile
-                tileTPElem = TP.byId('DOMAttributes_Tile',
+                tileTPElem = TP.byId('DOMInfo_Tile',
                                         this.getNativeDocument());
                 tileTPElem.setPagePosition(
                     TP.pc(centerElemPageRect.getX(),
@@ -1137,8 +1137,8 @@ function(aSignal) {
     //  Show the rule text in the tile. Note how we wrap the content with a span
     //  with a CodeMirror CSS class to make the styling work.
     TP.bySystemId('Sherpa').showTileAt(
-        'DOMAttributes_Tile',
-        sourceTPElem.getFullName() + ' Attributes',
+        'DOMInfo_Tile',
+        sourceTPElem.getFullName() + ' Info',
         existedHandler,
         newHandler);
 

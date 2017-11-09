@@ -113,20 +113,20 @@ sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected
     font-weight: bold;
 }
 
-#DOMAttributes_Tile {
+#DOMInfo_Tile {
 
     min-width: 300px;
     min-height: 200px;
 }
 
-#DOMAttributes_Tile > .body {
+#DOMInfo_Tile > .body {
 }
 
-#DOMAttributes_Tile > .header > .minimize_mark {
+#DOMInfo_Tile > .header > .minimize_mark {
 
     visibility: hidden;
 }
 
-#DOMAttributes_Tile > .footer {
+#DOMInfo_Tile > .footer {
 }
 
