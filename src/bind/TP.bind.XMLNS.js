@@ -57,7 +57,6 @@ function(anElement) {
 
         location;
 
-
     //  Query for any attributes named 'io', 'in', 'scope' or 'repeat', no
     //  matter what namespace they're in. Note that this is about as
     //  sophisticated as we can get with namespaces using the querySelectorAll()
