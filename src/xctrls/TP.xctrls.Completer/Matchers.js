@@ -109,18 +109,25 @@ function(rawData, searchTerm, extract) {
      */
 
     var matches,
-        options;
+        options,
+
+        fuse;
 
     /* eslint-disable no-undef */
 
     options = {
-        pre: '<span class="match_result">',
-        post: '</span>',
         caseSensitive: true,
-        extract: extract
+        includeMatches: true,
+        includeScore: true,
+        threshold: 0.6,
+        location: 0,
+        distance: 32,
+        maxPatternLength: 32,
+        minMatchCharLength: 1
     };
 
-    matches = TP.extern.fuzzyLib.filter(searchTerm, rawData, options);
+    fuse = new Fuse(rawData, options); // "list" is the item array
+    matches = fuse.search(searchTerm);
 
     /* eslint-enable no-undef */
 
@@ -134,6 +141,30 @@ function() {
 
     /**
      * @method prepareForMatch
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineMethod('prepareForResultProcessing',
+function() {
+
+    /**
+     * @method prepareForResultProcessing
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineMethod('postProcessCompletion',
+function() {
+
+    /**
+     * @method postProcessResult
      */
 
     return this;

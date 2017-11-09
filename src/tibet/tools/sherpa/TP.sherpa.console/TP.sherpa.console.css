@@ -68,6 +68,20 @@ sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
     background-color: cornsilk;
 }
 
+sherpa|console > xctrls|codeeditor .autocomplete-highlight-marker {
+
+    position: absolute; /* without this positions will be wrong */
+
+    background-color: white;
+    border: solid 1px blue;
+
+    height: 13px !important;
+
+    opacity: 0.4;
+
+    z-index: 1000;      /* in front of all other markers (but not the text :-( ) */
+}
+
 div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     overflow-x: auto !important;

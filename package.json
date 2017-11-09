@@ -67,6 +67,7 @@
         "faye-websocket": "^0.11.1",
         "findit": "*",
         "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
+        "fuse.js": "https://github.com/TechnicalPursuit/Fuse/tarball/master",
         "handlebars": "*",
         "has-ansi": "^2.0.0",
         "ip": "^1.1.5",

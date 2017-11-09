@@ -5,8 +5,6 @@
 
 <config id="base">
 
-    <script src="./src/Matchers.js"/>
-
     <script src="./src/TP.sherpa.Element.js"/>
 
     <script src="./src/TP.tibet.sherpa.js"/>
@@ -99,6 +97,9 @@
     <script src="./TP.sherpa.elementContextMenuContent/TP.sherpa.elementContextMenuContent.js"/>
 
     <script src="./TP.sherpa.tofuInsertionAssistant/TP.sherpa.tofuInsertionAssistant.js"/>
+
+    <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_genericContent/TP.sherpa.domhud_genericContent.js"/>
+
     <script src="./TP.sherpa.couchDocumentURIInsertionAssistant/TP.sherpa.couchDocumentURIInsertionAssistant.js"/>
     <script src="./TP.sherpa.couchViewURIInsertionAssistant/TP.sherpa.couchViewURIInsertionAssistant.js"/>
 

@@ -216,6 +216,9 @@
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
     <script src="xctrls/TP.xctrls.GenericElement.js"/>
 
+    <script src="xctrls/TP.xctrls.Completer/Matchers.js"/>
+    <script src="xctrls/TP.xctrls.Completer/TP.xctrls.Completer.js"/>
+
     <script src="xctrls/TP.xctrls.Lattice.js"/>
 
     <script src="xctrls/TP.xctrls.SharedOverlay.js"/>
@@ -302,9 +305,6 @@
 
     <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="no-lint" />
     <script src="~lib_deps/codemirror/addon/runmode/runmode.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/addon/search/searchcursor.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/addon/hint/show-hint.js" no-lint="no-lint" />
-
 
     <script src="~lib_deps/codemirror/mode/xml/xml.js" no-lint="no-lint" />
     <script src="~lib_deps/codemirror/mode/javascript/javascript.js" no-lint="no-lint" />

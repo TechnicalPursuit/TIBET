@@ -2486,25 +2486,24 @@ TP.sherpa.NormalKeyResponder.defineSubtype('AutoCompletionKeyResponder');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$closeFunc');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('hintSelectedIndex');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('currentCompletions');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('completedText');
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$completer');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
-
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                '$finishedCompletion');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$popupContainer');
-
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$tshHistoryMatcher');
+                                                '$editorKeyCommandEntries');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                '$tshExecutionInstanceMatcher');
+                                                '$shouldUpdateHint');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                '$tshCommandsMatcher');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$keywordsMatcher');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$cfgMatcher');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$uriMatcher');
+                                                '$hintRestOfTextRange');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
+                                                '$hintRestOfTextMarker');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('init',
 function() {
@@ -2515,53 +2514,15 @@ function() {
      * @returns {TP.sherpa.AutoCompletionKeyResponder} A new instance.
      */
 
-    var backgroundElem;
+    var completer;
 
     this.callNextMethod();
 
-    this.set('$tshHistoryMatcher',
-                TP.core.TSHHistoryMatcher.construct(
-                    'TSH_HISTORY'));
-
-    this.set('$tshExecutionInstanceMatcher',
-                TP.core.KeyedSourceMatcher.construct(
-                    'TSH_CONTEXT',
-                    TP.core.TSH.getDefaultInstance().
-                                        getExecutionInstance()));
-
-    this.set('$tshCommandsMatcher',
-                TP.core.ListMatcher.construct(
-                    'TSH_COMMANDS',
-                    TP.ac(
-                        'about',
-                        'alias',
-                        'apropos',
-                        'clear',
-                        'flag',
-                        'reflect',
-                        'save',
-                        'set')));
-
-    this.set('$keywordsMatcher',
-                TP.core.ListMatcher.construct(
-                    'JS_COMMANDS',
-                    TP.boot.$keywords.concat(TP.boot.$futurereservedwords),
-                    'match_keyword'));
-
-    this.set('$cfgMatcher',
-                TP.core.ListMatcher.construct(
-                    'TIBET_CFG',
-                    TP.sys.cfg().getKeys()));
-
-    this.set('$uriMatcher',
-                TP.core.URIMatcher.construct(
-                    'TIBET_URIS'));
-
-
-    backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
-    this.set('$popupContainer', backgroundElem);
-
-    this.set('$finishedCompletion', false);
+    completer = TP.xctrls.Completer.construct();
+    completer.set('defaultMatcher',
+                    TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', TP.global));
+    this.set('$completer', completer);
 
     return this;
 });
@@ -2580,68 +2541,133 @@ function(aSignal) {
      */
 
     var consoleGUI,
+
+        handler,
+
+        commandEntries,
         editorObj,
 
-        backgroundElem,
-        hintFunc,
+        i,
 
-        handler;
+        currentLineNum,
+        lineContent;
 
     consoleGUI = this.get('$consoleGUI');
-    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
 
-    backgroundElem = this.get('$popupContainer');
-    hintFunc = this.showHint.bind(this);
+    //  Define a handler function that will fire with every change to the
+    //  editor.
+    handler = function(deltaInfo, targetEditorObj) {
 
-    //  We manually manage the showing of the autocomplete popup to get better
-    //  control.
-    editorObj.on(
-        'change',
-        handler = function(cm, evt) {
+        var changedRowIndex,
+            rowContent,
 
-            if (this.get('$finishedCompletion')) {
-                this.set('$finishedCompletion', false);
+            endColumnIndex;
 
-                return;
-            }
+        if (TP.isFalse(this.get('$shouldUpdateHint'))) {
+            return;
+        }
 
-            cm.showHint(
-                {
-                    hint: hintFunc,
-                    container: backgroundElem,  //  undocumented property
-                    completeSingle: false,
-                    closeOnUnfocus: false
-                });
+        changedRowIndex = deltaInfo.start.row;
 
-            //  This is pathetic - no way to programmatically shut down the hint
-            //  properly, so we have to fish around and get the special,
-            //  hardcoded handler for 'Esc' for the hint and invoke that
-            //  whenever we want to terminate the hinting programmatically.
-            if (TP.isValid(cm.state.keyMaps[0])) {
-                this.set('$closeFunc', cm.state.keyMaps[0].Esc);
-            } else {
-                this.set('$closeFunc', null);
-            }
+        rowContent = targetEditorObj.session.getLine(changedRowIndex);
 
-            this.set('$finishedCompletion', false);
+        endColumnIndex = deltaInfo.end.column;
+        if (deltaInfo.action === 'remove') {
+            endColumnIndex--;
+        }
 
-        }.bind(this));
+        rowContent = rowContent.slice(rowContent.lastIndexOf(' ') + 1,
+                                        endColumnIndex);
+
+        this.updateAutoCompletePanel(rowContent);
+        this.updateAutoCompleteEditorRange(deltaInfo);
+    }.bind(this);
+
+    consoleGUI.get('consoleInput').setEditorEventHandler('change', handler);
 
     this.set('$changeHandler', handler);
 
-    //  Show the hint (if there are any completions) because we might have
-    //  existing content that might match.
-    editorObj.showHint(
-        {
-            hint: hintFunc,
-            container: backgroundElem,  //  undocumented property
-            completeSingle: false,
-            closeOnUnfocus: false
-        });
-
+    //  Observe DOM_Esc_Up to end this mode.
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.toggleIndicatorVisibility('autocomplete', true);
+    //  Build up a series of command entries that will be registered with the
+    //  ACE editor of keys that we're going to handle ourself.
+    commandEntries = TP.ac();
+    commandEntries.push({
+        name: 'NextHintEntry',
+        bindKey: {win: 'Down', mac: 'Down'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'PreviousHintEntry',
+        bindKey: {win: 'Up', mac: 'Up'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'HintNoOpLeft',
+        bindKey: {win: 'Left', mac: 'Left'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'HintNoOpRight',
+        bindKey: {win: 'Right', mac: 'Right'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'AcceptHintEntryTab',
+        bindKey: {win: 'Tab', mac: 'Tab'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'AcceptHintEntryReturn',
+        bindKey: {win: 'Return', mac: 'Return'},
+        exec: TP.RETURN_TRUE,
+        passEvent: false,
+        readOnly: false
+    });
+    commandEntries.push({
+        name: 'ReflectOnHintEntry',
+        bindKey: {win: 'Shift-Tab', mac: 'Shift-Tab'},
+        exec: TP.RETURN_TRUE,
+        passEvent: true,
+        readOnly: false
+    });
+
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    for (i = 0; i < commandEntries.getSize(); i++) {
+        editorObj.commands.addCommand(commandEntries.at(i));
+    }
+
+    this.set('$editorKeyCommandEntries', commandEntries);
+
+    //  Don't allow mouse events to move the cursor.
+    consoleGUI.set('allowMouseCursorMovement', false);
+
+    //  Grab the current line content to use as the initial autocomplete
+    //  content.
+    currentLineNum = editorObj.getCursorPosition().row;
+
+    lineContent = editorObj.session.getLine(currentLineNum);
+    lineContent = lineContent.slice(lineContent.lastIndexOf(' ') + 1);
+    lineContent = TP.ifInvalid(lineContent, '');
+
+    this.updateAutoCompletePanel(lineContent);
+    this.updateAutoCompleteEditorRange();
+
+    this.set('$shouldUpdateHint', true);
+
+    // consoleGUI.toggleIndicatorVisibility('autocomplete', true);
 
     return this;
 });
@@ -2661,27 +2687,70 @@ function(aSignal) {
 
     var consoleGUI,
         editorObj,
-        closeFunc;
+
+        commandEntries,
+        i,
+
+        completerList;
 
     consoleGUI = this.get('$consoleGUI');
+
     editorObj = consoleGUI.get('consoleInput').get('$editorObj');
 
-    if (TP.isCallable(closeFunc = this.get('$closeFunc'))) {
-        closeFunc();
-        this.set('$closeFunc', null);
+    commandEntries = this.get('$editorKeyCommandEntries');
+    for (i = 0; i < commandEntries.getSize(); i++) {
+        editorObj.commands.removeCommand(commandEntries.at(i));
     }
-
-    //  Remove the change handler that manages the autocomplete popup. We
-    //  installed it when we entered this state.
-    editorObj.off(
-        'change',
-        this.get('$changeHandler'));
-
-    this.set('$changeHandler', null);
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.toggleIndicatorVisibility('autocomplete', false);
+    //  Remove the change handler that manages the autocomplete popup. We
+    //  installed it when we entered this state.
+    consoleGUI.get('consoleInput').unsetEditorEventHandler(
+                                    'change', this.get('$changeHandler'));
+    this.set('$changeHandler', null);
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completerList.setAttribute('hidden', true);
+
+    this.set('currentCompletions', TP.ac());
+
+    this.removeAutoCompleteEditorRange(aSignal.at('trigger').at('acceptHint'));
+
+    //  Allow mouse events to move the cursor again.
+    consoleGUI.set('allowMouseCursorMovement', true);
+
+    //  Grab the current line content to use as the initial autocomplete
+    // consoleGUI.toggleIndicatorVisibility('autocomplete', false);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('setHintSelectedIndex',
+function(index) {
+
+    var completerList,
+        data,
+
+        newIndex;
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    data = completerList.get('data');
+
+    newIndex = index;
+    if (newIndex < 0) {
+        newIndex = data.getSize() - 1;
+    } else if (newIndex >= data.getSize()) {
+        newIndex = 0;
+    }
+
+    if (TP.notEmpty(data)) {
+        completerList.set('value', data.at(newIndex).at(0));
+    }
+
+    this.$set('hintSelectedIndex', index);
 
     return this;
 });
@@ -2691,6 +2760,16 @@ function(aSignal) {
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Down_Down',
 function(aSignal) {
 
+    var selectedIndex;
+
+    //  Grab the current selected index and increment it.
+    selectedIndex = this.get('hintSelectedIndex');
+    selectedIndex++;
+
+    this.set('hintSelectedIndex', selectedIndex);
+
+    this.updateAutoCompleteEditorRange();
+
     //  This key handler does nothing in autocompletion mode.
     return this;
 });
@@ -2699,6 +2778,16 @@ function(aSignal) {
 
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
+
+    var selectedIndex;
+
+    //  Grab the current selected index and decrement it.
+    selectedIndex = this.get('hintSelectedIndex');
+    selectedIndex--;
+
+    this.set('hintSelectedIndex', selectedIndex);
+
+    this.updateAutoCompleteEditorRange();
 
     //  This key handler does nothing in autocompletion mode.
     return this;
@@ -2731,412 +2820,309 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('showHint',
-function(cm, options) {
-
-    /**
-     * @method showHint
-     */
-
-    var completions,
-
-        consoleGUI,
-        consoleInput,
-        editorObj,
-
-        backgroundElem;
-
-    completions = this.supplyCompletions(cm, options);
-
-    consoleGUI = this.get('$consoleGUI');
-    consoleInput = consoleGUI.get('consoleInput');
-    editorObj = consoleInput.get('$editorObj');
-
-    backgroundElem = this.get('$popupContainer');
-
-    TP.extern.CodeMirror.on(
-        completions,
-        'select',
-        function(completion) {
-            var matcher,
-
-                theText,
-
-                cursor,
-                range,
-                marker,
-
-                selectedItem;
-
-            consoleGUI.teardownCompletionMark();
-
-            matcher = TP.rc('^' + completion.input);
-
-            if (matcher.test(completion.text)) {
-
-                theText = completion.text.slice(completion.input.length);
-
-                if (TP.notEmpty(theText)) {
-                    cursor = editorObj.getCursor();
-
-                    range = {
-                        anchor: {
-                            line: cursor.line,
-                            ch: cursor.ch
-                        },
-                        head: {
-                            line: cursor.line,
-                            ch: cursor.ch
-                        }
-                    };
-
-                    marker = consoleGUI.generateCompletionMarkAt(
-                                                        range, theText);
-                    consoleGUI.set('currentCompletionMarker', marker);
-                }
-            }
-
-            //  Scroll the selected item into view... because the regular hint
-            //  stuff doesn't... sigh.
-            selectedItem = TP.byCSSPath('.CodeMirror-hint-active',
-                                        backgroundElem,
-                                        true,
-                                        false);
-
-            if (TP.isElement(selectedItem)) {
-                TP.wrap(selectedItem).smartScrollIntoView(TP.VERTICAL);
-            }
-        });
-
-    TP.extern.CodeMirror.on(
-        completions,
-        'shown',
-        function(completion) {
-            var hintsElem;
-
-            //  Make sure to mark the hints element with a 'nomutationtracking'
-            //  flag to avoid a lot of extra mutation signaling.
-            hintsElem = TP.byCSSPath('.CodeMirror-hints',
-                                        backgroundElem,
-                                        true,
-                                        false);
-
-            if (TP.isElement(hintsElem)) {
-                TP.elementSetAttribute(
-                    hintsElem, 'tibet:nomutationtracking', true, true);
-            }
-
-            consoleInput.setAttribute('showingHint', true);
-        });
-
-    TP.extern.CodeMirror.on(
-        completions,
-        'pick',
-        function(completion) {
-            this.set('$finishedCompletion', true);
-
-            consoleGUI.teardownCompletionMark();
-        }.bind(this));
-
-    TP.extern.CodeMirror.on(
-        completions,
-        'close',
-        function() {
-            this.set('$finishedCompletion', true);
-
-            consoleGUI.teardownCompletionMark();
-
-            consoleInput.removeAttribute('showingHint');
-        }.bind(this));
-
-    return completions;
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Enter_Up',
+function(aSignal) {
+    TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode', TP.hc('acceptHint', true));
 });
 
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('supplyCompletions',
-function(editor, options) {
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Tab_Up',
+function(aSignal) {
+    TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode', TP.hc('acceptHint', true));
+});
 
-    /**
-     * @method supplyCompletions
-     */
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Shift_Tab_Up',
+function(aSignal) {
+
+    var completerList,
+
+        isHidden,
+
+        currentCompletion,
+        text,
+        str,
+
+        isNativeObj;
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+
+    isHidden = TP.bc(completerList.getAttribute('hidden'));
+    if (isHidden) {
+        completerList.setAttribute('hidden', false);
+
+        return this;
+    }
+
+    completerList.setAttribute('hidden', true);
+
+    currentCompletion = this.get('currentCompletions').at(
+                                        this.get('hintSelectedIndex'));
+
+    str = '';
+
+    if (TP.notValid(currentCompletion)) {
+        text = this.get('completedText');
+        str = ':reflect --docsonly \'' + text + '\'';
+    } else {
+        text = currentCompletion.text;
+
+        if (TP.notEmpty(currentCompletion.text)) {
+
+            isNativeObj = currentCompletion.nativeObject;
+
+            if (TP.notEmpty(currentCompletion.prefix) &&
+                currentCompletion.needsPrefix !== false) {
+                str += currentCompletion.prefix;
+            }
+
+            str += currentCompletion.text;
+
+            if (TP.isTrue(isNativeObj)) {
+                str = ':reflect --docsonly \'' + str + '\'';
+            } else {
+                str = ':reflect ' + str;
+            }
+        } else {
+            return;
+        }
+    }
+
+    if (TP.notEmpty(str)) {
+        this.get('$consoleService').sendConsoleRequest(str);
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('updateAutoCompletePanel',
+function(sourceText) {
+
+    var completerList,
+        completer,
+
+        completions,
+
+        data,
+
+        selectedIndex,
+
+        completerValue;
+
+    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completer = this.get('$completer');
+
+    completions = completer.completeUsing(sourceText);
+    this.set('currentCompletions', completions);
+
+    if (TP.isEmpty(completions)) {
+        completerList.set('data', TP.ac());
+
+        completerList.render();
+
+        this.set('completedText', sourceText);
+
+        return this;
+    }
+
+    this.set('completedText', null);
+
+
+    data = TP.ac();
+    completions.forEach(
+        function(aCompletion) {
+            data.push(TP.ac(aCompletion.text, aCompletion.displayText));
+        });
+
+    completerList.set('data', data);
+
+    completerList.setAttribute('hidden', false);
+    completerList.render();
+
+    selectedIndex = 0;
+    this.set('hintSelectedIndex', selectedIndex);
+
+    completerValue = data.at(selectedIndex).at(0);
+    if (TP.notEmpty(data)) {
+        completerList.set('value', completerValue);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod(
+    'removeAutoCompleteEditorRange',
+function(shouldAcceptHintText) {
+
+    var consoleGUI,
+        editorObj,
+
+        restOfTextRange,
+        restOfTextMarker;
+
+    this.set('$shouldUpdateHint', false);
+
+    consoleGUI = this.get('$consoleGUI');
+
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    restOfTextRange = this.get('$hintRestOfTextRange');
+    restOfTextMarker = this.get('$hintRestOfTextMarker');
+
+    if (TP.isValid(restOfTextRange) && !shouldAcceptHintText) {
+        editorObj.session.doc.removeInLine(
+            restOfTextRange.start.row,
+            restOfTextRange.start.column,
+            restOfTextRange.end.column);
+    }
+
+    if (TP.isValid(restOfTextMarker)) {
+        editorObj.session.removeMarker(restOfTextMarker);
+    }
+
+    this.set('$hintRestOfTextRange', null);
+    this.set('$hintRestOfTextMarker', null);
+
+    this.set('$shouldUpdateHint', true);
+
+    if (shouldAcceptHintText) {
+        editorObj.moveCursorTo(restOfTextRange.end.row,
+                                restOfTextRange.end.column);
+    }
+
+    consoleGUI.focusInput();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod(
+    'updateAutoCompleteEditorRange',
+function(deltaInfo) {
 
     var completions,
 
-        inputContent,
+        currentCompletion,
 
-        matchers,
+        consoleGUI,
+        editorObj,
+        Range,
 
-        info,
-        tokenizedFragment,
-        fromIndex,
+        currentPos,
 
-        resolvedObj,
-        resolutionChunks,
+        restOfTextRange,
+        restOfTextMarker,
 
-        closestMatchIndex,
-        closestMatchMatcher,
+        completionInput,
+        completerValue,
 
-        resolveTopLevelObjectReference,
+        completionInputMatcher,
 
-        cursor,
+        colNum,
 
-        fromPos,
-        toPos,
+        restOfText;
 
-        matches,
+    completions = this.get('currentCompletions');
 
-        topLevelObjects,
-        i;
+    currentCompletion = completions.at(this.get('hintSelectedIndex'));
 
-    inputContent = editor.getValue();
+    this.set('$shouldUpdateHint', false);
 
-    completions = TP.ac();
+    consoleGUI = this.get('$consoleGUI');
 
-    closestMatchIndex = TP.NOT_FOUND;
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+    Range = TP.extern.ace.require('ace/range').Range;
 
-    resolveTopLevelObjectReference = function(startObj, propertyPaths) {
+    currentPos = editorObj.getCursorPosition();
 
-        var pathObj,
-            paths,
+    restOfTextRange = this.get('$hintRestOfTextRange');
+    restOfTextMarker = this.get('$hintRestOfTextMarker');
 
-            path;
-
-        pathObj = startObj;
-        paths = propertyPaths.copy();
-
-        while (TP.isValid(pathObj) && TP.notEmpty(paths)) {
-            path = paths.shift();
-            pathObj = pathObj[path];
-        }
-
-        //  If we haven't exhausted the path, then it doesn't matter what we've
-        //  currently resolved - we must return null
-        if (TP.notEmpty(paths)) {
-            return null;
-        }
-
-        return pathObj;
-    };
-
-    matchers = TP.ac();
-
-    if (TP.isEmpty(inputContent)) {
-
-        matchers.push(
-            TP.core.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global).
-                                                set('input', inputContent),
-            this.get('$keywordsMatcher').set('input', inputContent));
-
-    } else {
-
-        info = TP.core.Sherpa.tokenizeForMatches(inputContent);
-        tokenizedFragment = info.at('fragment');
-        fromIndex = info.at('index');
-
-        switch (info.at('context')) {
-            case 'KEYWORD':
-            case 'JS':
-
-                topLevelObjects = TP.ac(
-                    TP.global,
-                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
-                );
-
-                resolutionChunks = info.at('resolutionChunks');
-
-                for (i = 0; i < topLevelObjects.getSize(); i++) {
-
-                    resolvedObj = resolveTopLevelObjectReference(
-                                                topLevelObjects.at(i),
-                                                resolutionChunks);
-                    if (TP.isValid(resolvedObj)) {
-                        break;
-                    }
-                }
-
-                //  If we couldn't get a resolved object and there were no
-                //  further resolution chunks found after the original tokenized
-                //  fragment, then we just set the resolved object to TP.global
-                //  and use a keyed source matcher on that object. Since we're
-                //  at the global context, we also add the keywords matcher.
-                if (TP.notValid(resolvedObj) &&
-                    TP.isEmpty(info.at('resolutionChunks'))) {
-
-                    resolvedObj = TP.global;
-
-                    matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
-                            set('input', tokenizedFragment),
-                        this.get('$keywordsMatcher').
-                            set('input', inputContent));
-                } else {
-                    matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
-                            set('input', tokenizedFragment));
-                }
-
-                /*
-                } else {
-
-                    matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
-                            set('input', inputContent),
-                        this.get('$keywordsMatcher').
-                            set('input', inputContent));
-                        this.get('$tshExecutionInstanceMatcher').
-                            set('input', inputContent));
-                        this.get('$tshHistoryMatcher').
-                            set('input', inputContent));
-                }
-                */
-
-                break;
-
-            case 'TSH':
-
-                matchers.push(this.get('$tshCommandsMatcher').
-                                set('input', inputContent));
-
-                break;
-
-            case 'CFG':
-
-                matchers.push(this.get('$cfgMatcher').
-                                set('input', inputContent));
-
-                break;
-
-            case 'URI':
-
-                matchers.push(this.get('$uriMatcher').
-                                set('input', inputContent));
-
-                break;
-
-            default:
-                break;
+    if (TP.isValid(restOfTextRange)) {
+        if (TP.isValid(deltaInfo)) {
+            if (deltaInfo.action === 'remove') {
+                editorObj.session.doc.removeInLine(
+                    restOfTextRange.start.row,
+                    restOfTextRange.start.column - 1,
+                    restOfTextRange.end.column - 1);
+            } else {
+                editorObj.session.doc.removeInLine(
+                    restOfTextRange.start.row,
+                    restOfTextRange.start.column + 1,
+                    restOfTextRange.end.column + 1);
+            }
+        } else {
+            editorObj.session.doc.removeInLine(
+                restOfTextRange.start.row,
+                restOfTextRange.start.column,
+                restOfTextRange.end.column);
         }
     }
 
-    if (TP.notEmpty(matchers)) {
-
-        matchers.forEach(
-            function(matcher) {
-
-                var matchInput;
-
-                matcher.prepareForMatch();
-
-                matchInput = matcher.get('input');
-                matches = matcher.match();
-
-                matches.forEach(
-                    function(anItem, anIndex) {
-                        var itemEntry;
-
-                        if (TP.isArray(itemEntry = anItem.original)) {
-                            itemEntry = itemEntry.at(2);
-                        }
-
-                        completions.push(
-                            {
-                                matcherName: anItem.matcherName,
-                                input: matchInput,
-                                text: itemEntry,
-                                score: anItem.score,
-                                className: anItem.cssClass,
-                                displayText: anItem.string,
-                                suffix: anItem.suffix,
-                                render: function(elem, self, data) {
-
-                                    //  'innerHTML' seems to throw
-                                    //  exceptions in XHTML documents on
-                                    //  Firefox
-                                    if (TP.notEmpty(data.suffix)) {
-                                        elem.innerHTML = data.displayText +
-                                                            data.suffix;
-                                    } else {
-                                        elem.innerHTML = data.displayText;
-                                    }
-
-                                    /*
-                                    var contentNode;
-                                    contentNode = TP.xhtmlnode(
-                                                        data.displayText);
-                                    TP.nodeAppendChild(
-                                            elem, contentNode, false);
-                                            */
-                                }
-                            });
-                    });
-            });
-
-        if (TP.notEmpty(completions)) {
-
-            //  Sort all of the completions together using a custom sorting
-            //  function to go after parts of the completion itself.
-            completions.sort(
-                function(completionA, completionB) {
-
-                    //  Sort by matcher name, score and then text, in that
-                    //  order.
-                    return TP.sort.COMPARE(
-                                completionB.matcherName,
-                                completionA.matcherName) ||
-                            TP.sort.COMPARE(
-                                completionB.score,
-                                completionA.score) ||
-                            TP.sort.COMPARE(
-                                completionA.text.length,
-                                completionB.text.length) ||
-                            TP.sort.COMPARE(
-                                completionA.text,
-                                completionB.text);
-                });
-
-            closestMatchIndex = TP.NOT_FOUND;
-            closestMatchMatcher = TP.rc('^' + TP.regExpEscape(inputContent));
-
-            //  Try to determine if we have a 'best match' here and set the
-            //  'exact match' index to it.
-            completions.forEach(
-                    function(aCompletion, anIndex) {
-
-                        //  Test each completion to see if it starts with
-                        //  text matching inputContent. Note here that we
-                        //  stop at the first one.
-                        if (closestMatchMatcher.test(aCompletion.text) &&
-                            closestMatchIndex === TP.NOT_FOUND) {
-                            closestMatchIndex = anIndex;
-                        }
-                    });
-        }
+    if (TP.isValid(restOfTextMarker)) {
+        editorObj.session.removeMarker(restOfTextMarker);
     }
 
-    cursor = editor.getCursor();
+    if (TP.notValid(currentCompletion)) {
+        this.set('$hintRestOfTextRange', null);
+        this.set('$hintRestOfTextMarker', null);
 
-    if (TP.isEmpty(completions)) {
-        fromIndex = cursor.ch;
+        this.set('$shouldUpdateHint', true);
+
+        return this;
     }
 
-    fromPos = TP.extern.CodeMirror.Pos(cursor.line, fromIndex);
-    toPos = TP.extern.CodeMirror.Pos(cursor.line, cursor.ch);
+    completionInput = currentCompletion.input;
+    completerValue = currentCompletion.text;
 
-    //  CodeMirror doesn't like values less than 0
-    if (closestMatchIndex === TP.NOT_FOUND) {
-        closestMatchIndex = 0;
+    if (TP.notEmpty(completionInput)) {
+        completionInputMatcher = TP.rc('^' + TP.regExpEscape(completionInput));
     }
 
-    return {
-        list: completions,
-        from: fromPos,
-        to: toPos,
-        selectedHint: closestMatchIndex
-    };
+    if (TP.isEmpty(completionInput) ||
+        !completionInputMatcher.test(completerValue)) {
+
+        this.set('$hintRestOfTextRange', null);
+        this.set('$hintRestOfTextMarker', null);
+
+        this.set('$shouldUpdateHint', true);
+
+        return this;
+    }
+
+    restOfText = completerValue.slice(completionInput.getSize());
+
+    colNum = currentPos.column;
+    if (TP.isValid(deltaInfo) && deltaInfo.action === 'insert') {
+        colNum++;
+    }
+
+    editorObj.session.insert({row: currentPos.row, column: colNum}, restOfText);
+
+    editorObj.selection.moveCursorTo(currentPos.row, currentPos.column);
+
+    restOfTextRange = new Range(
+                        0,          //  startRow
+                        colNum,     //  startPos
+                        0,          //  endRow
+                        colNum + restOfText.length      //  endPos
+                        );
+    this.set('$hintRestOfTextRange', restOfTextRange);
+
+    restOfTextMarker = editorObj.session.addMarker(
+                        restOfTextRange,
+                        'autocomplete-highlight-marker',
+                        'text');
+    this.set('$hintRestOfTextMarker', restOfTextMarker);
+
+    this.set('$shouldUpdateHint', true);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------

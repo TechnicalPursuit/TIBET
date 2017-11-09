@@ -143,224 +143,6 @@ function(anElement) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.core.Sherpa.Type.defineMethod('tokenizeForMatches',
-function(inputText) {
-
-    /**
-     * @method tokenizeForMatches
-     */
-
-    var tokens,
-
-        context,
-        fragment,
-        resolutionChunks,
-        index,
-
-        captureFragment,
-
-        len,
-        i,
-
-        token,
-        shouldExit,
-        noMatches,
-
-        isWhitespace;
-
-    //  Invoke the tokenizer
-    tokens = TP.$condenseJS(
-                    inputText, false, false,
-                    //  All of the JS operators *and* the TSH operators
-                    TP.tsh.script.$tshAndJSOperators,
-                    true, true, true);
-
-    //  Reverse the tokens to start from the back
-    tokens.reverse();
-
-    context = 'JS';
-    fragment = null;
-    resolutionChunks = TP.ac();
-    index = TP.NOT_FOUND;
-
-    captureFragment = true;
-    shouldExit = false;
-    noMatches = false;
-
-    isWhitespace = function(aToken) {
-        var tokenName;
-
-        tokenName = aToken.name;
-
-        /* eslint-disable no-extra-parens */
-        return (tokenName === 'space' ||
-                tokenName === 'tab' ||
-                tokenName === 'newline');
-        /* eslint-enable no-extra-parens */
-    };
-
-    len = tokens.getSize();
-    for (i = 0; i < len; i++) {
-        token = tokens.at(i);
-
-        switch (token.name) {
-
-            case 'comment':
-
-                noMatches = true;
-                shouldExit = true;
-
-                break;
-
-            case 'uri':
-
-                context = 'URI';
-
-                resolutionChunks = null;
-                fragment = token.value;
-                index = token.from;
-
-                shouldExit = true;
-
-                break;
-
-            case 'space':
-            case 'tab':
-            case 'newline':
-
-                if (i === 0) {
-                    noMatches = true;
-                }
-
-                shouldExit = true;
-
-                break;
-
-            case 'keyword':
-
-                context = 'KEYWORD';
-
-                if (tokens.at(i + 1) &&
-                    isWhitespace(tokens.at(i + 1))) {
-                    resolutionChunks = null;
-                    fragment = token.value;
-                    index = token.from;
-
-                    shouldExit = true;
-                } else {
-                    fragment = token.value;
-                    index = token.from;
-                }
-
-                break;
-
-            case 'operator':
-
-                switch (token.value) {
-
-                    case '[':
-
-                        if (tokens.at(i - 1).value === '\'') {
-                            if (captureFragment === true) {
-                                index = token.from + 2;
-                            }
-
-                            fragment = '';
-                            captureFragment = false;
-                        } else {
-                            noMatches = true;
-                            shouldExit = true;
-                        }
-
-                        break;
-
-                    case '.':
-                        if (captureFragment === true) {
-                            index = token.from + 1;
-                        }
-
-                        captureFragment = false;
-
-                        break;
-
-                    case ':':
-
-                        if (i === len - 1) {
-                            context = 'TSH';
-
-                            resolutionChunks = null;
-
-                            index = 1;
-                            shouldExit = true;
-                        }
-
-                        break;
-
-                    case '/':
-
-                        if (i === len - 1) {
-                            context = 'CFG';
-
-                            resolutionChunks = null;
-
-                            index = 1;
-                            shouldExit = true;
-                        }
-
-                        break;
-
-                    default:
-
-                        noMatches = true;
-                        shouldExit = true;
-
-                        break;
-                }
-
-                break;
-
-            default:
-                //  'substitution'
-                //  'reserved'
-                //  'identifier'
-                //  'number'
-                //  'string'
-                //  'regexp'
-                if (captureFragment) {
-                    fragment = token.value;
-                    index = token.from;
-                } else {
-                    resolutionChunks.unshift(token.value);
-                }
-                break;
-        }
-
-        if (noMatches) {
-            context = null;
-
-            resolutionChunks = null;
-            fragment = null;
-            index = TP.NOT_FOUND;
-        }
-
-        if (shouldExit) {
-            break;
-        }
-    }
-
-    if (TP.isEmpty(resolutionChunks) && TP.notEmpty(fragment)) {
-        resolutionChunks = TP.ac(fragment);
-    }
-
-    return TP.hc(
-            'context', context,
-            'fragment', fragment,
-            'resolutionChunks', resolutionChunks,
-            'index', index);
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -769,6 +551,9 @@ function(aSignal) {
     /**
      * @method handleDocumentLoaded
      * @summary Handles when the document in the current UI canvas loads.
+     * @description Note that this handler fires because the Sherpa is in the
+     *     controller stack and this signal is sent through there as well as its
+     *     direct observers.
      * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.core.sherpa} The receiver.
@@ -936,6 +721,41 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineHandler('RouteExit',
+function(aSignal) {
+
+    /**
+     * @method handleRouteExit
+     * @summary Handles when the route in the current UI canvas is changed and
+     *     the current document content unloads.
+     * @description Note that this handler fires because the Sherpa is in the
+     *     controller stack and this signal is sent through there as well as its
+     *     direct observers.
+     * @param {TP.sig.RouteExit} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var sherpaDoc,
+        halo;
+
+    //  The document that we were installed into.
+    sherpaDoc = this.get('vWin').document;
+
+    halo = TP.byId('SherpaHalo', sherpaDoc);
+
+    if (TP.isValid(halo)) {
+        //  Note that we do not worry here whether the current target can be
+        //  blurred or not. The screen content is changing and we can't stop it.
+        halo.blur();
+        halo.setAttribute('hidden', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineHandler('SherpaNotify',
 function(aSignal) {
 
@@ -1050,7 +870,7 @@ function(aTPElem) {
             resourceURI,
             serializationStorage,
 
-            viewDoc;
+            sherpaDoc;
 
         //  Make sure to unregister the handler - this is a one shot.
         handler.ignore(TP.ANY, 'TypeAdded');
@@ -1090,7 +910,7 @@ function(aTPElem) {
             aTPElem.serializeForStorage(serializationStorage);
 
             //  The document that we were installed into.
-            viewDoc = this.get('vWin').document;
+            sherpaDoc = this.get('vWin').document;
 
             //  Save the template to the file system. If this succeeds, then
             //  replace the supplied TP.core.Element with the new custom tag.
@@ -1123,7 +943,7 @@ function(aTPElem) {
                                         parentElem, newElem, oldElem);
                             newTPElem = TP.wrap(newElem);
 
-                            halo = TP.byId('SherpaHalo', viewDoc);
+                            halo = TP.byId('SherpaHalo', sherpaDoc);
 
                             //  This will move the halo off of the old element.
                             //  Note that we do *not* check here whether or not

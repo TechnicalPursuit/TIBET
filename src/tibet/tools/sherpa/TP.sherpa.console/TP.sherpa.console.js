@@ -33,10 +33,16 @@ TP.sherpa.console.Inst.defineAttribute('$minEditorHeight');
 //  the minimum height of the console drawer.
 TP.sherpa.console.Inst.defineAttribute('$minDrawerHeight');
 
+//  the Function that will stop ACE from processing events.
+TP.sherpa.console.Inst.defineAttribute('$aceEventStopper');
+
+//  should we move the cursor?
+TP.sherpa.console.Inst.defineAttribute('allowMouseCursorMovement');
+
 //  should IO be concealed? this is used to simulate "password" mode
 TP.sherpa.console.Inst.defineAttribute('conceal', false);
 
-//  Is the command line currently concealed from view?
+//  is the command line currently concealed from view?
 TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
 TP.sherpa.console.Inst.defineAttribute('consoleInput',
@@ -45,10 +51,10 @@ TP.sherpa.console.Inst.defineAttribute('consoleInput',
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
-//  The number of 'new' items since we evaluated last
+//  the number of 'new' items since we evaluated last
 TP.sherpa.console.Inst.defineAttribute('newOutputCount');
 
-//  A timer that will flip the status readout back to mouse coordinates after a
+//  a timer that will flip the status readout back to mouse coordinates after a
 //  period of time.
 TP.sherpa.console.Inst.defineAttribute('statusReadoutTimer');
 
@@ -325,6 +331,17 @@ function() {
         this.adjustInputSize(false);
     }.bind(this)).observe(consoleInputTPElem, 'TP.sig.EditorResize');
 
+    //  Set the receiver to allow the cursor to be moved. We can initially set
+    //  this using the $set() method so that the setter isn't called.
+    this.$set('allowMouseCursorMovement', true);
+
+    //  A function that will cause ACE to stop propagation of events into its
+    //  internals.
+    this.set('$aceEventStopper',
+                function(evt) {
+                    evt.stop();
+                });
+
     //  Grab the consoleOutput TP.core.Element and set it up. Note that we need
     //  to do this *after* we set up the console input above.
     consoleOutputTPElem = TP.byId('SherpaConsoleOutput', TP.win('UIROOT'));
@@ -587,6 +604,58 @@ function() {
 
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setAllowMouseCursorMovement',
+function(shouldAllow) {
+
+    /**
+     * @method setAllowMouseCursorMovement
+     * @summary Sets whether or not we're allowing our embedded editor to move
+     *     the cursor via mouse events. Note that this will not prevent the
+     *     editor from moving the cursor itself or the user from moving it with
+     *     the keyboard.
+     * @param {Boolean} shouldAllow Whether or not the editor should allow
+     *     cursor movement with the mouse.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var evtNames,
+
+        consoleInputTPElem,
+        editorObj,
+
+        stopper;
+
+    this.$set('allowMouseCursorMovement', shouldAllow);
+
+    evtNames = TP.ac('mousedown',
+                        'dblclick',
+                        'tripleclick',
+                        'quadclick',
+                        'click',
+                        'mousemove');
+
+    consoleInputTPElem = this.get('consoleInput');
+    editorObj = consoleInputTPElem.$get('$editorObj');
+
+    stopper = this.get('$aceEventStopper');
+
+    if (TP.isTrue(shouldAllow)) {
+        evtNames.forEach(
+            function(name) {
+                editorObj.off(name, stopper);
+            });
+    } else {
+        evtNames.forEach(
+            function(name) {
+                editorObj.on(name, stopper);
+            });
+    }
 
     return this;
 });
@@ -1226,6 +1295,10 @@ function() {
      * @summary Moves the cursor to the end.
      * @returns {TP.sherpa.console} The receiver.
      */
+
+    if (TP.isFalse(this.get('allowMouseCursorMovement'))) {
+        return this;
+    }
 
     this.get('consoleInput').setCursorToEnd();
 

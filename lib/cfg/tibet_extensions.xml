@@ -19,6 +19,7 @@
     <config ref="workflow"/>
     <config ref="shells"/>
     <config ref="crypto"/>
+    <config ref="text_processing"/>
 </config>
 
 <config id="content">
@@ -118,6 +119,22 @@
 
     <script src="./json/TP.json.JSONSchemaType.js"/>
     <script src="./json/TP.json.JSONSchemaContent.js"/>
+
+</config>
+
+<config id="text_processing">
+
+    <script src="~lib_deps/fuse-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+
+    <script src="~lib_deps/fuse-tpi.js"
+        unless="boot.minified" no-lint="no-lint" />
+
+    <script>
+        <![CDATA[
+        TP.extern.fuse = Fuse;
+        ]]>
+    </script>
 
 </config>
 

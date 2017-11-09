@@ -1,0 +1,103 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+sherpa|domhud_genericContent .dom_attributes {
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-size: 100%;
+    padding: 4px;
+}
+
+#DOMAttributes_Repeat {
+    position: absolute;
+    top: 0;
+    bottom: 26px;
+    right: 0;
+    left: 0;
+    margin: 2px 0 0 4px;
+    overflow: auto;
+}
+
+.dom_attributes input {
+    height: 1em;
+    width: 42%;
+
+    margin-left: 0;
+    margin-bottom: 2px;
+}
+
+.dom_attributes .inserter {
+    position: absolute;
+    z-index: 1;
+    right: 4px;
+    bottom: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 75%;
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+    background-image: url("../../../media/ic_add_circle_outline_black_24px.svg");
+}
+
+.dom_attributes .deleter {
+    position: absolute;
+    right: 7px;
+
+    width: 24px;
+    height: 24px;
+
+    margin-top: 0;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-position: 100% 50%;
+    background-repeat: no-repeat;
+    background-image: url("../../../media/ic_close_black_24px.svg");
+}
+
+xctrls|tabbar#DOMInfo_Tabbar {
+    position: absolute;
+
+    top: 4px;
+    right: 4px;
+    left: 4px;
+
+    height: 22px;
+
+    /* 250 more than our 'sherpa:drawer' parent */
+    z-index: 26500;
+}
+
+xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem {
+    font-size: 77%;
+    padding-bottom: 5px;
+    padding-right: 10px;
+}
+
+xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem > .close_mark {
+    display: none;
+}
+
+xctrls|panelbox#DOMInfo_Tabpanelbox {
+    position: absolute;
+
+    top: 24px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+
+    border: solid 1px #aaa;
+}
+
+xctrls|panelbox#DOMInfo_Tabpanelbox xctrls|panel {
+    width: 100%;
+    height: 100%;
+
+    text-align: left;
+}

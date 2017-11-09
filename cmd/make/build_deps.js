@@ -20,6 +20,7 @@
             '_rollup_d3',
             '_rollup_diff',
             '_rollup_forge',
+            '_rollup_fuse',
             '_rollup_jjv',
             '_rollup_jquery',
             '_rollup_less',
