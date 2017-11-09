@@ -321,6 +321,8 @@ TP.hc(
 
             isSingleValued,
 
+            desugaredAttrsAttr,
+
             outputStr;
 
         //  Use the 'old ActiveX way' to parse the document - this parser
@@ -343,7 +345,7 @@ TP.hc(
             //  Grab the Element node that owns this Attribute node.
             ownerElem = srcAttr.selectSingleNode('..');
 
-            //  Initally set the bindAttr to null
+            //  Initially set the bindAttr to null
             bindAttr = null;
 
             //  Loop over all of the attributes of the owner Element,
@@ -354,9 +356,10 @@ TP.hc(
             for (j = 0; j < ownerElem.attributes.length; j++) {
                 ownerElemAttr = ownerElem.attributes[j];
 
-                if (ownerElemAttr.localname === 'io' &&
+                if (ownerElemAttr.localName === 'io' &&
                      ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
                     bindAttr = ownerElemAttr;
+                    break;
                 }
             }
 
@@ -415,16 +418,28 @@ TP.hc(
 
                     bindAttr.nodeValue = srcAttr.name;
                 }
+
+                desugaredAttrsAttr = activeXDoc.createNode(
+                                        Node.ATTRIBUTE_NODE,
+                                        'tibet:desugaredAttrExprs',
+                                        TP.w3.Xmlns.TIBET);
+
+                ownerElem.setAttributeNode(desugaredAttrsAttr);
+
+                desugaredAttrsAttr.nodeValue = srcAttr.name;
             } else {
                 //  Already have a bind:io attribute - add to it.
                 bindAttr.nodeValue =
                     bindAttr.nodeValue.slice(
                         0, bindAttr.nodeValue.lastIndexOf('}')) +
-                    '; ' +
+                    ', ' +
                     srcAttr.name +
                     ': ' +
                     val +
                     '}';
+                desugaredAttrsAttr =
+                    ownerElem.attributes['tibet:desugaredAttrExprs'];
+                desugaredAttrsAttr.nodeValue += ' ' + srcAttr.name;
             }
 
             //  Remove the original Attribute node containing the '[[...]]'
