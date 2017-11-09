@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<sherpa:domhud_genericContent bind:in="urn:tibet:domhud_target_source">
+    <tibet:group wrapWhen="true" autofocus="autofocus" bind:scope="urn:tibet:domhud_attr_source">
+        <span class="dom_attributes" bind:scope="#jpath($.info)">
+            <div id="DOMAttributes_Repeat" bind:repeat="tagAttrs">
+                <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
+                <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
+                <span class="deleter" on:click="{signal: DeleteItem, origin: 'DOMAttributes_Repeat', payload: {index:TP.TARGET}}"/>
+                <br/>
+            </div>
+            <div class="inserter" on:click="{signal: InsertItem, origin: 'DOMAttributes_Repeat', payload: {source: 'urn:tibet:dom_attr_data_blank', copy: true}}"></div>
+        </span>
+    </tibet:group>
+</sherpa:domhud_genericContent>
+
