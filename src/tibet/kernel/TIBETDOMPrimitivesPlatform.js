@@ -199,7 +199,7 @@ TP.hc(
             for (j = 0; j < ownerElem.attributes.length; j++) {
                 ownerElemAttr = ownerElem.attributes[j];
 
-                if (ownerElemAttr.localname === bindAttrLocalName &&
+                if (ownerElemAttr.localName === bindAttrLocalName &&
                      ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
                     bindAttr = ownerElemAttr;
                 }
