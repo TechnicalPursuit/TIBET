@@ -202,6 +202,7 @@ TP.hc(
                 if (ownerElemAttr.localName === bindAttrLocalName &&
                      ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
                     bindAttr = ownerElemAttr;
+                    break;
                 }
             }
 
