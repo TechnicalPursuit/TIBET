@@ -295,6 +295,11 @@ function(anElement) {
                                         'value',
                                         true);
 
+                TP.elementSetAttribute(newSpan,
+                                        'tibet:desugaredTextBinding',
+                                        'true',
+                                        true);
+
                 //  Replace that text node with the span, leaving the text nodes
                 //  to the left (the original) and to the right (created by the
                 //  2nd 'splitText' above).
