@@ -258,7 +258,7 @@ TP.hc(
                 bindAttr.nodeValue =
                     bindAttr.nodeValue.slice(
                         0, bindAttr.nodeValue.lastIndexOf('}')) +
-                    '; ' +
+                    ', ' +
                     srcAttr.name +
                     ': ' +
                     val +
