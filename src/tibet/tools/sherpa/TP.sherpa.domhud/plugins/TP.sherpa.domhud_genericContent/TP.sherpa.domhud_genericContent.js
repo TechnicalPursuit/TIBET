@@ -324,9 +324,6 @@ function(aValue, shouldSignal) {
     modelURI = TP.uc('urn:tibet:domhud_attr_source');
     modelURI.setResource(attributesModel, TP.hc('signalChange', true));
 
-    //  Set the editor under us to expect XHTML.
-    this.get('xctrls|codeeditor').setEditorModeFromMIMEType(TP.XHTML_ENCODED);
-
     //  Compute the content model.
     contentModel = aValue.getContent();
 
