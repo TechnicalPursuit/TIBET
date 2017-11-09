@@ -313,7 +313,7 @@ function(aValue, shouldSignal) {
      */
 
     var attributesModel,
-        contentModel,
+        textContentModel,
 
         modelURI;
 
@@ -324,11 +324,11 @@ function(aValue, shouldSignal) {
     modelURI = TP.uc('urn:tibet:domhud_attr_source');
     modelURI.setResource(attributesModel, TP.hc('signalChange', true));
 
-    //  Compute the content model.
-    contentModel = aValue.getContent();
+    //  Compute the text content model.
+    textContentModel = aValue.getTextContent();
 
     modelURI = TP.uc('urn:tibet:domhud_content_source');
-    modelURI.setResource(contentModel, TP.hc('signalChange', true));
+    modelURI.setResource(textContentModel, TP.hc('signalChange', true));
 
     return this;
 });
