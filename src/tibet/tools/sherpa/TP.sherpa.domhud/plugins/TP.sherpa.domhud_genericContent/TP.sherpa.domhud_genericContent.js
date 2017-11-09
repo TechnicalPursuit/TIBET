@@ -313,14 +313,25 @@ function(aValue, shouldSignal) {
      */
 
     var attributesModel,
+        contentModel,
 
         modelURI;
 
+    //  Compute the attributes model.
     attributesModel = this.buildAttributesModel(aValue);
 
     //  Set it as the resource of the URI.
     modelURI = TP.uc('urn:tibet:domhud_attr_source');
     modelURI.setResource(attributesModel, TP.hc('signalChange', true));
+
+    //  Set the editor under us to expect XHTML.
+    this.get('xctrls|codeeditor').setEditorModeFromMIMEType(TP.XHTML_ENCODED);
+
+    //  Compute the content model.
+    contentModel = aValue.getContent();
+
+    modelURI = TP.uc('urn:tibet:domhud_content_source');
+    modelURI.setResource(contentModel, TP.hc('signalChange', true));
 
     return this;
 });
