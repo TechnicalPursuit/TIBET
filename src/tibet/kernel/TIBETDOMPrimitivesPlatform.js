@@ -145,6 +145,8 @@ TP.hc(
 
             isSingleValued,
 
+            desugaredAttrsAttr,
+
             outputStr;
 
         //  Use the 'old ActiveX way' to parse the document - this parser
@@ -253,6 +255,11 @@ TP.hc(
                             'tibet:single',
                             srcAttr.name);
                 }
+
+                ownerElem.setAttributeNS(
+                        TP.w3.Xmlns.TIBET,
+                        'tibet:desugaredAttrExprs',
+                        srcAttr.name);
             } else {
                 //  Already have a bind:in/bind:io attribute - add to it.
                 bindAttr.nodeValue =
@@ -263,6 +270,9 @@ TP.hc(
                     ': ' +
                     val +
                     '}';
+                desugaredAttrsAttr =
+                    ownerElem.attributes['tibet:desugaredAttrExprs'];
+                desugaredAttrsAttr.nodeValue += ' ' + srcAttr.name;
             }
 
             //  Remove the original Attribute node containing the '[[...]]'
