@@ -45,6 +45,7 @@ function(aRequest) {
     tpElem = TP.wrap(elem);
 
     tpElem.observe(TP.uc('urn:tibet:domhud_attr_source'), 'ValueChange');
+    tpElem.observe(TP.uc('urn:tibet:domhud_content_source'), 'ValueChange');
 
     return;
 });
@@ -73,6 +74,7 @@ function(aRequest) {
     tpElem = TP.wrap(elem);
 
     tpElem.ignore(TP.uc('urn:tibet:domhud_attr_source'), 'ValueChange');
+    tpElem.ignore(TP.uc('urn:tibet:domhud_content_source'), 'ValueChange');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -150,6 +152,71 @@ function(aSignal) {
      * @method handleValueChange
      * @summary Handles when the user changes the value of the underlying model.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    switch (aSignal.getOrigin()) {
+
+        case TP.uc('urn:tibet:domhud_attr_source'):
+            this.updateAttributes(aSignal);
+            break;
+        case TP.uc('urn:tibet:domhud_content_source'):
+            this.updateTextSource(aSignal);
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericContent.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of this content panel. For this type, this
+     *     updates the 'attributes model', which is what it's GUI is bound to.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     */
+
+    var attributesModel,
+        textContentModel,
+
+        modelURI;
+
+    //  Compute the attributes model.
+    attributesModel = this.buildAttributesModel(aValue);
+
+    //  Set it as the resource of the URI.
+    modelURI = TP.uc('urn:tibet:domhud_attr_source');
+    modelURI.setResource(attributesModel, TP.hc('signalChange', true));
+
+    //  Compute the text content model.
+    textContentModel = TP.hc('value', aValue.getTextContent());
+
+    modelURI = TP.uc('urn:tibet:domhud_content_source');
+    modelURI.setResource(textContentModel, TP.hc('signalChange', true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericContent.Inst.defineMethod('updateAttributes',
+function(aSignal) {
+
+    /**
+     * @method updateAttributes
+     * @summary Updates the attributes according to the data in their bound
+     *     source.
+     * @param {ValueChange} aSignal The signal that caused this update method to
+     *     be invoked.
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
@@ -299,36 +366,36 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineMethod('setValue',
-function(aValue, shouldSignal) {
+TP.sherpa.domhud_genericContent.Inst.defineMethod('updateTextSource',
+function(aSignal) {
 
     /**
-     * @method setValue
-     * @summary Sets the value of this content panel. For this type, this
-     *     updates the 'attributes model', which is what it's GUI is bound to.
-     * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false
-     *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     * @method updateTextSource
+     * @summary Updates the text source according to the data in its bound
+     *     source.
+     * @param {ValueChange} aSignal The signal that caused this update method to
+     *     be invoked.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var attributesModel,
-        textContentModel,
+    var aspectPath,
+        value;
 
-        modelURI;
+    aspectPath = aSignal.at('aspect');
 
-    //  Compute the attributes model.
-    attributesModel = this.buildAttributesModel(aValue);
+    //  Make sure we have a valid attributes target.
+    targetTPElem =
+        TP.uc('urn:tibet:domhud_target_source').getResource().get('result');
+    if (TP.notValid(targetTPElem)) {
+        return this;
+    }
 
-    //  Set it as the resource of the URI.
-    modelURI = TP.uc('urn:tibet:domhud_attr_source');
-    modelURI.setResource(attributesModel, TP.hc('signalChange', true));
+    //  Grab the value from the content source and set that as the text content
+    //  of the element.
+    value = TP.uc('urn:tibet:domhud_content_source').
+                getResource().get('result').get(aspectPath);
 
-    //  Compute the text content model.
-    textContentModel = aValue.getTextContent();
-
-    modelURI = TP.uc('urn:tibet:domhud_content_source');
-    modelURI.setResource(textContentModel, TP.hc('signalChange', true));
+    targetTPElem.setTextContent(value);
 
     return this;
 });
