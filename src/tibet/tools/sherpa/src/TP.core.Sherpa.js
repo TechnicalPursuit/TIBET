@@ -2601,16 +2601,6 @@ function(aNode, updatingAncestor, operation, attributeName, attributeValue,
 
             address = addresses.at(i);
 
-            if (TP.isTextNode(currentNode)) {
-                if (TP.regex.ACP_BEGIN_CONTROL_STATEMENT.test(
-                    TP.nodeGetTextContent(currentNode))) {
-                    while (!TP.regex.ACP_END_CONTROL.STATEMENT.test(
-                            TP.nodeGetTextContent(currentNode))) {
-                        currentNode = currentNode.nextSibling;
-                    }
-                }
-            }
-
             if (i === len - 1) {
 
                 insertionParent = currentNode;
