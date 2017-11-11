@@ -946,7 +946,7 @@ function(aSignal) {
     //  Update the target source element before we refresh.
     TP.uc('urn:tibet:domhud_target_source').setResource(
             haloTarget,
-            TP.hc('signalChange', true));
+            TP.hc('observeResource', false, 'signalChange', true));
 
     return this.callNextMethod();
 });
@@ -1087,7 +1087,9 @@ function(aSignal) {
         existedHandler =
             function(aTileTPElem) {
 
-                modelURI.setResource(sourceTPElem, TP.hc('signalChange', true));
+                modelURI.setResource(
+                    sourceTPElem,
+                    TP.hc('observeResource', false, 'signalChange', true));
 
                 //  Position the tile
                 tileTPElem = TP.byId('DOMInfo_Tile',
@@ -1119,7 +1121,7 @@ function(aSignal) {
                 //  kick things off.
                 modelURI.setResource(
                     sourceTPElem,
-                    TP.hc('observeResource', true, 'signalChange', true));
+                    TP.hc('observeResource', false, 'signalChange', true));
 
                 //  Position the tile
                 aTileTPElem.setPagePosition(
