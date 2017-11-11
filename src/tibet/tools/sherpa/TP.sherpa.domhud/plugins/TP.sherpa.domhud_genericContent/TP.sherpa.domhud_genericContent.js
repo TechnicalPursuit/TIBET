@@ -379,6 +379,7 @@ function(aSignal) {
      */
 
     var aspectPath,
+        targetTPElem,
         value;
 
     aspectPath = aSignal.at('aspect');
