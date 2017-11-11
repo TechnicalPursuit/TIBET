@@ -5932,7 +5932,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetDocumentPosition',
-function(aNode, joinChar, stopAncestor) {
+function(aNode, joinChar, stopAncestor, onlyElements) {
 
     /**
      * @method nodeGetDocumentPosition
@@ -5945,6 +5945,8 @@ function(aNode, joinChar, stopAncestor) {
      * @param {Element} [stopAncestor] An element between aNode and aNode's
      *     document node that the position computation will 'stop' at. This
      *     parameter is optional.
+     * @param {Boolean} [onlyElements=false] Whether or not to consider only
+     *     Element nodes when computing the index.
      * @example Compute a document-level index for an XML node:
      *     <code>
      *          xmlDoc = TP.documentFromString('<foo><bar>Some text<goo>More
@@ -5982,7 +5984,7 @@ function(aNode, joinChar, stopAncestor) {
 
     if (TP.isAttributeNode(aNode)) {
         node = TP.attributeGetOwnerElement(aNode);
-        index = TP.nodeGetIndexInParent(node);
+        index = TP.nodeGetIndexInParent(node, onlyElements);
         path.push(index + '@' + TP.attributeGetLocalName(aNode));
         node = node.parentNode;
     } else if (TP.isElement(aNode)) {
@@ -5997,7 +5999,8 @@ function(aNode, joinChar, stopAncestor) {
 
     while (TP.isElement(node) &&
             node !== stopAncestor &&
-            (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
+            (index = TP.nodeGetIndexInParent(node, onlyElements)) !==
+                                                        TP.NOT_FOUND) {
         path.push(index);
         node = node.parentNode;
     }
@@ -6162,8 +6165,8 @@ function(aNode, onlyElements) {
      *     this method or aNode couldn't be found in the parent, this method
      *     returns TP.NOT_FOUND.
      * @param {Node} aNode The DOM node to operate on.
-     * @param {Boolean} onlyElements Whether or not to consider only Element
-     *     nodes when computing the index. The default is false.
+     * @param {Boolean} [onlyElements=false] Whether or not to consider only
+     *     Element nodes when computing the index.
      * @example Get an XML node's index in its parent:
      *     <code>
      *          xmlDoc = TP.documentFromString(
