@@ -4320,9 +4320,9 @@ function(shouldRender) {
                 if (!TP.equal(result, oldVal)) {
 
                     if (aspectName === 'value') {
-                        this.setValue(result, true);
+                        this.setValue(result);
                     } else {
-                        this.setFacet(aspectName, 'value', result, true);
+                        this.setFacet(aspectName, 'value', result);
                     }
 
                     valChanged = true;
