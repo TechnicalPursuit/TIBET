@@ -3338,6 +3338,70 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetTextNodesMatching',
+function(anElement, aMatchFunction) {
+
+    /**
+     * @method elementGetTextNodesMatching
+     * @summary Returns any descendant Text nodes under the supplied element
+     *     that return true when the supplied matching Function executed against
+     *     their nodeValue.
+     * @param {Function} aMatchFunction The Function to execute against the
+     *     nodeValue of each descendant Text node. This should take one
+     *     argument, the text node to test, and return a Boolean as to whether
+     *     the text node matches.
+     * @returns {Text[]} An array of Text nodes that match the criteria in the
+     *     supplied matching Function.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is
+     *     provided to the method.
+     */
+
+    var iterator,
+        matchingTextNodes,
+        textNode;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (!TP.isCallable(aMatchFunction)) {
+        return TP.raise(this, 'TP.sig.InvalidFunction');
+    }
+
+    //  Create a NodeIterator that will walk the DOM tree.
+    iterator = TP.nodeGetDocument(anElement).createNodeIterator(
+                anElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false);
+
+    //  Keep a list of the Text nodes that pass the test.
+    matchingTextNodes = TP.ac();
+
+    //  Iterate to the first Text node.
+    textNode = iterator.nextNode();
+
+    //  NB: We can use the 'isNode()' test since the NodeIterator guarantees us
+    //  only Text nodes.
+    while (TP.isNode(textNode)) {
+
+        //  If executing the test Function returns true, then we add the Text
+        //  node to our result list.
+        if (aMatchFunction(textNode)) {
+            matchingTextNodes.push(textNode);
+        }
+
+        //  Move on to the next Text node.
+        textNode = iterator.nextNode();
+    }
+
+    return matchingTextNodes;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$elementGetPrefixedAttributeNode',
 function(anElement, attributeName, checkAttrNSURI) {
 
