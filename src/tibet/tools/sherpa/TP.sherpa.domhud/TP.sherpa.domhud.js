@@ -339,9 +339,12 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var domContent;
+    var domContent,
+        doc;
 
     domContent = enterSelection.append('li');
+
+    doc = TP.sys.uidoc(true);
 
     domContent.attr(
             'pclass:selected',
@@ -387,9 +390,18 @@ function(enterSelection) {
 
                 return val;
             }).each(
-            function() {
+            function(d) {
+                var peerTPElem;
+
                 TP.elementSetAttribute(
                         this, 'dnd:accept', 'tofu dom_node', true);
+
+                if (d[1] !== 'spacer') {
+                    peerTPElem = TP.byId(d[0], doc);
+                    if (!peerTPElem.haloCanFocus()) {
+                        TP.wrap(this).setAttribute('disabled', true);
+                    }
+                }
             });
 
     return domContent;
@@ -454,6 +466,10 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var doc;
+
+    doc = TP.sys.uidoc(true);
+
     updateSelection.attr(
             'pclass:selected',
             function(d) {
@@ -498,9 +514,18 @@ function(updateSelection) {
 
                 return val;
             }).each(
-            function() {
+            function(d) {
+                var peerTPElem;
+
                 TP.elementSetAttribute(
                     this, 'dnd:accept', 'tofu dom_node', true);
+
+                if (d[1] !== 'spacer') {
+                    peerTPElem = TP.byId(d[0], doc);
+                    if (!peerTPElem.haloCanFocus()) {
+                        TP.wrap(this).setAttribute('disabled', true);
+                    }
+                }
             });
 
     return updateSelection;

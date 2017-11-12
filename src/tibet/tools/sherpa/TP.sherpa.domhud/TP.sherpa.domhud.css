@@ -56,6 +56,14 @@ sherpa|domhud > ul.content > li.domnode {
     cursor: pointer;
 }
 
+sherpa|domhud > ul.content > li.domnode[pclass|disabled] {
+
+    pointer-events: none;
+    cursor: default;
+
+    opacity: 0.3;
+}
+
 sherpa|domhud > ul.content > li.domnode[child="true"] {
 
     margin-left: 2em;
