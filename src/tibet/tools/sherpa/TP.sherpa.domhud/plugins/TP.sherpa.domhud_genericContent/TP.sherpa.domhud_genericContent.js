@@ -186,9 +186,15 @@ function(aValue, shouldSignal) {
      */
 
     var attributesModel,
-        textContentModel,
 
-        modelURI;
+        modelURI,
+
+        str,
+
+        textContentModel;
+
+    //  NB: In this method, 'value' is the source element that we're currently
+    //  inspecting.
 
     //  Compute the attributes model.
     attributesModel = this.buildAttributesModel(aValue);
@@ -198,7 +204,9 @@ function(aValue, shouldSignal) {
     modelURI.setResource(attributesModel, TP.hc('signalChange', true));
 
     //  Compute the text content model.
-    textContentModel = TP.hc('value', aValue.getTextContent());
+    str = aValue.sherpaGetTextContent();
+
+    textContentModel = TP.hc('info', str);
 
     modelURI = TP.uc('urn:tibet:domhud_content_source');
     modelURI.setResource(textContentModel, TP.hc('signalChange', true));
@@ -384,9 +392,15 @@ function(aSignal) {
 
     var aspectPath,
         targetTPElem,
+
         value;
 
     aspectPath = aSignal.at('aspect');
+
+    //  If the whole value changed, we're not interested.
+    if (aspectPath === 'value') {
+        return this;
+    }
 
     //  Make sure we have a valid attributes target.
     targetTPElem =
@@ -400,11 +414,15 @@ function(aSignal) {
     value = TP.uc('urn:tibet:domhud_content_source').
                 getResource().get('result').get(aspectPath);
 
-    targetTPElem.setTextContent(value);
+    if (TP.isEmpty(TP.trim(value))) {
+        return this;
+    }
+
     //  Tell the main Sherpa object that it should go ahead and process DOM
     //  mutations to the source DOM.
     TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
+    targetTPElem.sherpaSetTextContent(value);
 
     return this;
 });
