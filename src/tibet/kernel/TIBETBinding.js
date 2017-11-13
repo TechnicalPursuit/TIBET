@@ -1641,6 +1641,42 @@ function(indexes) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('flushBindingInfoCacheFor',
+function(attributeValue) {
+
+    /**
+     * @method flushBindingInfoCacheFor
+     * @summary Flushes the binding information cache for the supplied attribute
+     *     value.
+     * @param {String} attributeValue The attribute value to obtain binding
+     *     information from.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+        doc,
+
+        registry,
+
+        bindEntries;
+
+    //  Grab the native Element and Document.
+    elem = this.getNativeNode();
+    doc = TP.nodeGetDocument(elem);
+
+    //  If there's no 'bind registry' installed on the Document, then just
+    //  return.
+    if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
+        return this;
+    }
+
+    registry.removeKey(attributeValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeValue, flushCache) {
 
