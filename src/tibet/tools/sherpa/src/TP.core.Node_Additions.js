@@ -1222,8 +1222,6 @@ function(aContent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var str;
-
     if (TP.notEmpty(this.getDescendantElements())) {
         return this;
     } else {
