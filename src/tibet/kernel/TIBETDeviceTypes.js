@@ -1692,7 +1692,7 @@ function(anEvent) {
 
         elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
 
-        if (!TP.isElement(elem)) {
+        if (TP.isEmpty(elems)) {
 
             path = TP.join(
                     '//*[@keycode="_', key, '"]',
