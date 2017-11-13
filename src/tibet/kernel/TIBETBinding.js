@@ -1806,8 +1806,10 @@ function() {
     //  significant' to be first.
     scopeVals.reverse();
 
-    //  Cache the values.
-    this.set('scopeValues', scopeVals);
+    //  Cache the values. Note here how we supply false to *not* broadcast a
+    //  change signal - otherwise, the binding machinery will get involved and
+    //  send extra notifications.
+    this.$set('scopeValues', scopeVals, false);
 
     return scopeVals;
 });
