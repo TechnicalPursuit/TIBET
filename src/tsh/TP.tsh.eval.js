@@ -1462,7 +1462,9 @@ function(REQUEST$$, CMDTYPE$$) {
 
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
-        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        if (TP.sys.hasFeature('sherpa')) {
+            TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        }
 
         FLAG$$ = TP.sys.shouldThrowExceptions();
         TP.sys.shouldThrowExceptions(true);
@@ -1510,7 +1512,10 @@ function(REQUEST$$, CMDTYPE$$) {
 
                 //  An exception was thrown - no sense in having the main Sherpa
                 //  object process DOM mutations to the source DOM.
-                TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', false);
+                if (TP.sys.hasFeature('sherpa')) {
+                    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations',
+                                                false);
+                }
 
                 if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
                     //  If we're ignoring eval errors, then we just complete the
