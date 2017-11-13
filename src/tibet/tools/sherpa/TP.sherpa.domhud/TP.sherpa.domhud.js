@@ -235,7 +235,7 @@ function(aTPElement) {
 
             arr = TP.ac(
                     TP.lid(node, true),
-                    TP.elementGetFullName(node));
+                    aNode.sherpaDomHudGetLabel());
 
             if (aNode === aTPElement) {
                 arr.push('target');
