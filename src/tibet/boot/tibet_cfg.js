@@ -1525,6 +1525,12 @@
     //  mutated nodes mutation flags
     TP.sys.setcfg('sherpa.mutation_flag_clear_timeout', 5000);
 
+    //  the amount of time that the Sherpa should wait before clearing the
+    //  'shouldProcessDOMMutations' flag. This flag is used to tell the Sherpa
+    //  to catch DOM mutations on the current UI canvas DOM and update the
+    //  corresponding source DOM
+    TP.sys.setcfg('sherpa.mutation_track_clear_timeout', 1000);
+
     //  how long should the HUD wait after the last key up before resetting the
     //  keyboard/mouse readout back to info from the last mouse move event (in
     //  ms) ?

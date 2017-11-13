@@ -152,6 +152,17 @@ TP.core.Sherpa.Inst.defineAttribute('vWin');
 //  whether or not our setup is complete
 TP.core.Sherpa.Inst.defineAttribute('setupComplete');
 
+//  whether or not the Sherpa should process mutations to the DOM of the
+//  current UI canvas and update the source DOM that is represented there.
+TP.core.Sherpa.Inst.defineAttribute('shouldProcessDOMMutations');
+
+//  a timeout that will cause the 'shouldProcessDOMMutations' flag to be reset
+//  to false. This is needed because the Mutation Observer machinery that we use
+//  to manage changes to the source DOM is an asynchronous mechanism and the
+//  shouldProcessDOMMutations flag is used by this machinery to determine
+//  whether or not to update the source DOM of the current UI canvas.
+TP.core.Sherpa.Inst.defineAttribute('$shouldProcessTimeout');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -180,6 +191,10 @@ function() {
     //  Set up our window. By default, the Sherpa exists in the UIROOT window.
     win = TP.win('UIROOT');
     this.set('vWin', win);
+
+    //  Set the flag that will determine whether or not we're processing DOM
+    //  mutations for the current UI DOM mutations.
+    this.set('shouldProcessDOMMutations', false);
 
     //  Set up the World
     this.setupWorld();
@@ -1485,6 +1500,57 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('setShouldProcessDOMMutations',
+function(shouldProcess) {
+
+    /**
+     * @method setShouldProcessDOMMutations
+     * @summary Sets the flag to tell this object whether or not to process
+     *     mutations to the source DOM it is managing.
+     * @description Note that if shouldProcess is true, this flag will be reset
+     *     to false after a certain amount of time. This is due to the fact that
+     *     mutations 'come in' asynchronously and so the flag never has a chance
+     *     to reset to false otherwise, as setting to false cannot be done at
+     *     the 'point of mutation' in the code..
+     * @param {Boolean} shouldProcess Whether or not the receiver should process
+     *     mutations to the source DOM of the currently displayed DOM in the UI
+     *     canvas fails.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
+    var shouldProcessTimeout;
+
+    //  It is currently true - clear any existing timeout and get ready to reset
+    //  it.
+    if (TP.isTrue(this.get('shouldProcessDOMMutations'))) {
+        clearTimeout(this.get('$shouldProcessTimeout'));
+        this.set('$shouldProcessTimeout', null);
+    }
+
+    //  If the flag was true, then set up a timeout that will reset the flag
+    //  back after a certain amount of time (default to 1000ms).
+    if (shouldProcess) {
+        shouldProcessTimeout = setTimeout(
+            function() {
+                this.$set('shouldProcessDOMMutations', false);
+            }.bind(this),
+            TP.sys.cfg('sherpa.mutation_track_clear_timeout', 1000));
+
+        this.set('$shouldProcessTimeout', shouldProcessTimeout);
+    } else {
+
+        //  It was false - clear any existing timeout.
+        clearTimeout(this.get('$shouldProcessTimeout'));
+        this.set('$shouldProcessTimeout', null);
+    }
+
+    this.$set('shouldProcessDOMMutations', shouldProcess);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('setupBuilderObserver',
 function() {
 
@@ -1503,6 +1569,16 @@ function() {
     if (TP.sys.isTesting()) {
         return this;
     }
+
+    //  Add a managed Mutation Observer filter Function that will filter all
+    //  mutation records for when we're currently not configured to process
+    //  current UI canvas DOM mutations.
+
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+            return this.get('shouldProcessDOMMutations');
+        }.bind(this),
+        'BUILDER_OBSERVER');
 
     //  Add a managed Mutation Observer filter Function that will filter all
     //  mutation records for when we're testing:

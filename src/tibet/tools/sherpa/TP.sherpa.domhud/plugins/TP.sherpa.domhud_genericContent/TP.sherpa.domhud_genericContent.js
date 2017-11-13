@@ -257,6 +257,10 @@ function(aSignal) {
         return this;
     }
 
+    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  mutations to the source DOM.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
     //  Grab an ordered list of all of the attribute names.
     allAttrNames = this.get('$attributeNames');
 
@@ -397,6 +401,10 @@ function(aSignal) {
                 getResource().get('result').get(aspectPath);
 
     targetTPElem.setTextContent(value);
+    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  mutations to the source DOM.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
 
     return this;
 });
