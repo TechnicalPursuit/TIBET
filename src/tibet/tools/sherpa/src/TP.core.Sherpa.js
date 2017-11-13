@@ -2500,12 +2500,13 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         results;
 
-    /* eslint-disable */
+    /*
     console.log('nodeName: ' + aNode.nodeName + '\n' +
                 'operation: ' + operation + '\n' +
                 'attrName: ' + attributeName + '\n' +
                 'oldAttrValue: ' + oldAttributeValue + '\n' +
                 'attrValue: ' + attributeValue);
+    */
 
     if (!TP.isNode(aNode)) {
         //  TODO: Raise an exception here
@@ -2882,8 +2883,6 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
     //  mark the sourceURI as dirty (and supply a second parameter to tell the
     //  URI to send the 'dirty changed' signal).
     sourceURI.isDirty(true, true);
-
-    /* eslint-enable */
 
     return this;
 });
