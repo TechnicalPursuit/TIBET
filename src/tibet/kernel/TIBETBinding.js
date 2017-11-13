@@ -1642,7 +1642,7 @@ function(indexes) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
-function(attributeValue) {
+function(attributeValue, flushCache) {
 
     /**
      * @method getBindingInfoFrom
@@ -1650,6 +1650,8 @@ function(attributeValue) {
      *     supplied attribute name on the receiver.
      * @param {String} attributeValue The attribute value to obtain binding
      *     information from.
+     * @param {Boolean} [flushCache=false] Whether or not to flush any currently
+     *     cached binding info for the supplied attribute value.
      * @returns {TP.core.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
@@ -1674,6 +1676,10 @@ function(attributeValue) {
     if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
         registry = TP.hc();
         doc[TP.BIND_INFO_REGISTRY] = registry;
+    }
+
+    if (TP.isTrue(flushCache)) {
+        registry.removeKey(attributeValue);
     }
 
     //  If the attribute value (acting as a key) is already in the registry,
