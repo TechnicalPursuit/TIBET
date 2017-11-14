@@ -117,10 +117,22 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('generateMatchSet',
-function(rawData, searchTerm) {
+function(rawData, searchTerm, keys) {
 
     /**
      * @method generateMatchSet
+     * @summary Generates a match set against the raw data using the supplied
+     *     search term.
+     * @param {Object[]} rawData The raw data to use to generate the match set.
+     *     This should be an Array of text-searchable objects, such as a String
+     *     or a JavaScript structure where the optional 3rd parameter is a list
+     *     of keys of that structure to be searched.
+     * @param {String} searchTerm The search term to be used to search the raw
+     *     data.
+     * @param {String[]} [keys] If the rawData is not an Array of Strings, but
+     *     an Array of JavaScript structures, these keys will be used to extract
+     *     the data from that structure to search.
+     * @returns {Object[]} An Array of match result POJOS.
      */
 
     var matches,
@@ -138,10 +150,11 @@ function(rawData, searchTerm) {
         location: 0,
         distance: 32,
         maxPatternLength: 32,
-        minMatchCharLength: 1
+        minMatchCharLength: 1,
+        keys: keys
     };
 
-    fuse = new TP.extern.Fuse(rawData, options); // "list" is the item array
+    fuse = new TP.extern.Fuse(rawData, options);
     matches = fuse.search(searchTerm);
 
     /* eslint-enable no-undef */
