@@ -34,7 +34,7 @@ function() {
 
     matcher.defineMethod(
         'prepareForResultProcessing',
-        function(matches) {
+        function(matchResults) {
 
             keySource = this.get('keySource');
 
@@ -54,7 +54,7 @@ function() {
 
     matcher.defineMethod(
         'postProcessResult',
-        function(anItem, aCompletionEntry) {
+        function(aCompletionEntry) {
 
             var itemText,
                 text;
@@ -64,11 +64,11 @@ function() {
             try {
                 if (keySourceIsNativeType) {
                     if (TP.isValid(Object.getOwnPropertyDescriptor(
-                                    keySource, anItem.original))) {
+                                    keySource, aCompletionEntry.string))) {
                         text = keySourceName + 'Type.' + itemText;
                     } else if (
                         TP.isValid(Object.getOwnPropertyDescriptor(
-                                    keySourceProto, anItem.original))) {
+                                    keySourceProto, aCompletionEntry.string))) {
                         text = keySourceName + 'Inst.' + itemText;
                     } else {
                         text = keySourceName + itemText;
@@ -264,6 +264,7 @@ function(aValue, matchers) {
                                 matcherName: anItem.matcherName,
                                 input: matchInput,
                                 text: anItem.string,
+                                string: anItem.string,
                                 score: 1,
                                 displayText: anItem.string
                             };
@@ -306,13 +307,14 @@ function(aValue, matchers) {
                                 matcherName: anItem.matcherName,
                                 input: matchInput,
                                 text: itemEntry.value,
+                                string: anItem.string,
                                 score: anItem.score,
                                 displayText: displayText,
                                 prefix: anItem.prefix
                             };
                         }
 
-                        matcher.postProcessResult(anItem, completionEntry);
+                        matcher.postProcessResult(completionEntry);
 
                         completions.push(completionEntry);
                     });
