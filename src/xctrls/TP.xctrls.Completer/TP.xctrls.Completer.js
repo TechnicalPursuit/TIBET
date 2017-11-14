@@ -168,7 +168,7 @@ function() {
                     'TIBET_URIS'));
 
     this.set('matchers', TP.ac());
-    this.set('dynamicMatchers', true);
+    this.set('dynamicMatchers', false);
 
     return this;
 });

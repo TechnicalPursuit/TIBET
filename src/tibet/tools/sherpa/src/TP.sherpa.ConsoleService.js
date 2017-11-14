@@ -2519,6 +2519,8 @@ function() {
     this.callNextMethod();
 
     completer = TP.xctrls.Completer.construct();
+
+    completer.set('dynamicMatchers', true);
     completer.set('defaultMatcher',
                     TP.core.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', TP.global));
