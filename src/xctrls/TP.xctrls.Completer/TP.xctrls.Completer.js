@@ -265,7 +265,6 @@ function(aValue, matchers) {
                                 input: matchInput,
                                 text: anItem.string,
                                 score: 1,
-                                className: anItem.cssClass,
                                 displayText: anItem.string
                             };
                         } else {
@@ -308,7 +307,6 @@ function(aValue, matchers) {
                                 input: matchInput,
                                 text: itemEntry.value,
                                 score: anItem.score,
-                                className: anItem.cssClass,
                                 displayText: displayText,
                                 prefix: anItem.prefix
                             };

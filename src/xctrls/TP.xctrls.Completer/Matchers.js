@@ -69,14 +69,13 @@ TP.core.Matcher.Inst.defineAttribute('$matcherName');
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('init',
-function(matcherName, dataSet, cssClass) {
+function(matcherName, dataSet) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} matcherName
      * @param {Object} dataSet
-     * @param {String} cssClass
      * @returns {TP.core.Matcher} The receiver.
      */
 
@@ -201,7 +200,6 @@ function() {
     matches.forEach(
             function(aMatch) {
                 aMatch.matcherName = matcherName;
-                aMatch.cssClass = 'match_css_prop';
             });
 
     return matches;
@@ -218,28 +216,25 @@ TP.core.Matcher.defineSubtype('ListMatcher');
 //  ------------------------------------------------------------------------
 
 TP.core.ListMatcher.Inst.defineAttribute('$dataSet');
-TP.core.ListMatcher.Inst.defineAttribute('$cssClass');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.ListMatcher.Inst.defineMethod('init',
-function(matcherName, dataSet, cssClass) {
+function(matcherName, dataSet) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} matcherName
      * @param {Object} dataSet
-     * @param {String} cssClass
      * @returns {TP.core.ListMatcher} The receiver.
      */
 
     this.callNextMethod();
 
     this.set('$dataSet', dataSet);
-    this.set('$cssClass', cssClass);
 
     return this;
 });
@@ -257,15 +252,11 @@ function() {
         matcherName,
         searchTerm,
 
-        cssClass,
-
         matches;
 
     dataSet = this.get('$dataSet');
     matcherName = this.get('$matcherName');
     searchTerm = TP.ifInvalid(this.get('input'), '');
-
-    cssClass = TP.ifInvalid(this.get('$cssClass'), 'match_list');
 
     if (TP.isEmpty(searchTerm)) {
         matches = TP.ac();
@@ -274,7 +265,6 @@ function() {
                     matches.push(
                         {
                             matcherName: matcherName,
-                            cssClass: cssClass,
                             string: anItem,
                             original: anItem
                         }
@@ -285,7 +275,6 @@ function() {
         matches.forEach(
                 function(aMatch) {
                     aMatch.matcherName = matcherName;
-                    aMatch.cssClass = cssClass;
                 });
     }
 
@@ -333,7 +322,6 @@ function() {
     matches.forEach(
             function(aMatch) {
                 aMatch.matcherName = matcherName;
-                aMatch.cssClass = 'match_custom_type';
             });
 
     return matches;
@@ -407,7 +395,6 @@ function() {
                     matches.push(
                         {
                             matcherName: matcherName,
-                            cssClass: 'match_key_source ' + keySourceName,
                             string: aKey,
                             prefix: keySourceName + '.',
                             original: aKey
@@ -419,7 +406,6 @@ function() {
         matches.forEach(
                 function(aMatch) {
                     aMatch.matcherName = matcherName;
-                    aMatch.cssClass = 'match_key_source ' + keySourceName;
                     aMatch.prefix = keySourceName + '.';
                 });
     }
@@ -516,7 +502,6 @@ function() {
     matches.forEach(
             function(aMatch) {
                 aMatch.matcherName = matcherName;
-                aMatch.cssClass = 'match_uri';
             });
 
     return matches;
@@ -565,7 +550,6 @@ function() {
     matches.forEach(
             function(aMatch) {
                 aMatch.matcherName = matcherName;
-                aMatch.cssClass = 'match_method_name';
                 aMatch.suffix = ' (' + aMatch.original.at(0) + ')';
             });
 
@@ -659,7 +643,6 @@ function() {
     matches.forEach(
             function(aMatch) {
                 aMatch.matcherName = matcherName;
-                aMatch.cssClass = 'match_history_entry';
             });
 
     return matches;
