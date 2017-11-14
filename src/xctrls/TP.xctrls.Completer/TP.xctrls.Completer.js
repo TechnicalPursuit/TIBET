@@ -200,6 +200,7 @@ function(aValue) {
     if (TP.isEmpty(matchers)) {
         defaultMatcher = this.get('defaultMatcher');
         if (TP.isValid(defaultMatcher)) {
+            defaultMatcher.set('input', aValue);
             matchers = TP.ac(defaultMatcher);
         }
     }
