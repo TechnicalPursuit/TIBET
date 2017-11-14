@@ -126,7 +126,7 @@ function(rawData, searchTerm, extract) {
         minMatchCharLength: 1
     };
 
-    fuse = new Fuse(rawData, options); // "list" is the item array
+    fuse = new TP.extern.Fuse(rawData, options); // "list" is the item array
     matches = fuse.search(searchTerm);
 
     /* eslint-enable no-undef */
