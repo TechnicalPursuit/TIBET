@@ -2715,9 +2715,12 @@ function(aSignal) {
     completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
     completerList.setAttribute('hidden', true);
 
-    this.set('currentCompletions', TP.ac());
-
     this.removeAutoCompleteEditorRange(aSignal.at('trigger').at('acceptHint'));
+
+    //  NB: We need to do this *after* we remove the auto complete range. That
+    //  way, if we're accepting the hint but don't have a range, we can pull the
+    //  selected completion's text value.
+    this.set('currentCompletions', TP.ac());
 
     //  Allow mouse events to move the cursor again.
     consoleGUI.set('allowMouseCursorMovement', true);
@@ -2964,7 +2967,13 @@ function(shouldAcceptHintText) {
         editorObj,
 
         restOfTextRange,
-        restOfTextMarker;
+        restOfTextMarker,
+
+        currentCompletion,
+
+        Range,
+        currentPos,
+        startColPos;
 
     this.set('$shouldUpdateHint', false);
 
@@ -2992,8 +3001,41 @@ function(shouldAcceptHintText) {
     this.set('$shouldUpdateHint', true);
 
     if (shouldAcceptHintText) {
-        editorObj.moveCursorTo(restOfTextRange.end.row,
-                                restOfTextRange.end.column);
+
+        //  If we have a completion range that is marked out by the editor, then
+        //  we can just collapse the range by moving the cursor to the end of
+        //  it.
+        if (TP.isValid(restOfTextRange)) {
+            editorObj.moveCursorTo(restOfTextRange.end.row,
+                                    restOfTextRange.end.column);
+        } else {
+            //  Otherwise, we don't have a completion range, which means that we
+            //  must not have an 'exact' match, but a fuzzy match. Therefore, we
+            //  just get the current completion data and replace the search text
+            //  with the completion text.
+
+            currentCompletion = this.get('currentCompletions').at(
+                                            this.get('hintSelectedIndex'));
+
+            //  Compute a Range to slice back to where the completion began.
+            Range = TP.extern.ace.require('ace/range').Range;
+            currentPos = editorObj.getCursorPosition();
+
+            startColPos = currentPos.column - currentCompletion.input.length;
+
+            restOfTextRange = new Range(
+                                    currentPos.row,         //  startRow
+                                    startColPos,            //  startPos
+                                    currentPos.row,         //  endRow
+                                    currentPos.column       //  endPos
+                                    );
+            editorObj.session.remove(restOfTextRange);
+
+            //  Now, insert the completion text at that position.
+            editorObj.session.insert(
+                {row: currentPos.row, column: startColPos},
+                currentCompletion.text);
+        }
     }
 
     consoleGUI.focusInput();
