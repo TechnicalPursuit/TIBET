@@ -269,7 +269,7 @@ function() {
                         {
                             input: searchTerm,
                             matcherName: matcherName,
-                            string: anItem,
+                            string: anItem
                         }
                     );
                 });
@@ -279,6 +279,7 @@ function() {
                 function(aMatch) {
                     aMatch.input = searchTerm;
                     aMatch.matcherName = matcherName;
+                    aMatch.string = aMatch.matches[0].value;
                 });
     }
 
@@ -400,8 +401,8 @@ function() {
                         {
                             input: searchTerm,
                             matcherName: matcherName,
-                            string: aKey,
-                            prefix: keySourceName + '.'
+                            prefix: keySourceName + '.',
+                            string: aKey
                         }
                     );
                 });
@@ -412,6 +413,7 @@ function() {
                     aMatch.input = searchTerm;
                     aMatch.matcherName = matcherName;
                     aMatch.prefix = keySourceName + '.';
+                    aMatch.string = aMatch.matches[0].value;
                 });
     }
 
