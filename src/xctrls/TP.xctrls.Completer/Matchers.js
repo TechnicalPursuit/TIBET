@@ -71,13 +71,13 @@ TP.core.Matcher.Inst.defineAttribute('$matcherName');
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('init',
-function(matcherName, dataSet) {
+function(matcherName) {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {String} matcherName
-     * @param {Object} dataSet
+     * @param {String} matcherName The name of this matcher that will be
+     *     associated with the search results produced by it
      * @returns {TP.core.Matcher} The receiver.
      */
 
@@ -86,6 +86,20 @@ function(matcherName, dataSet) {
     this.set('$matcherName', matcherName);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineMethod('getDataSet',
+function() {
+
+    /**
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
+     */
+
+    return TP.override();
 });
 
 //  ------------------------------------------------------------------------
