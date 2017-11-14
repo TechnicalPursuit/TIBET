@@ -230,16 +230,31 @@ function(matcherName, dataSet) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {String} matcherName
-     * @param {Object} dataSet
+     * @param {String} matcherName The name of this matcher that will be
+     *     associated with the search results produced by it
+     * @param {Object} dataSet The data set for this matcher to operate on.
      * @returns {TP.core.ListMatcher} The receiver.
      */
 
     this.callNextMethod();
 
-    this.set('$dataSet', dataSet);
+    this.set('dataSet', dataSet);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ListMatcher.Inst.defineMethod('getDataSet',
+function() {
+
+    /**
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
+     */
+
+    return this.get('$dataSet');
 });
 
 //  ------------------------------------------------------------------------
@@ -249,6 +264,16 @@ function() {
 
     /**
      * @method match
+     * @summary Performs the match against the data set using the receiver's
+     *     input against its data set.
+     * @returns {Object[]} An Array of match result POJOS. For this type, these
+     *     result records have the following fields:
+     *          input       {String}    The input string that was used to
+     *                                  search.
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this result.
+     *          string      {String}    The value of the original datum or the
+     *                                  result datum.
      */
 
     var dataSet,
@@ -257,7 +282,7 @@ function() {
 
         matches;
 
-    dataSet = this.get('$dataSet');
+    dataSet = this.get('dataSet');
     matcherName = this.get('$matcherName');
     searchTerm = TP.ifInvalid(this.get('input'), '');
 
@@ -291,45 +316,17 @@ function() {
 TP.core.ListMatcher.Inst.defineMethod('setDataSet',
 function(dataSet) {
 
+    /**
+     * @method setDataSet
+     * @summary Set the data set that this matcher is operating on to the
+     *     supplied parameter.
+     * @param {Object} dataSet The data set for this matcher to operate on.
+     * @returns {TP.core.ListMatcher} The receiver.
+     */
+
     this.set('$dataSet', dataSet);
 
     return this;
-});
-
-//  ========================================================================
-//  TP.core.CustomTypeMatcher
-//  ========================================================================
-
-TP.core.Matcher.defineSubtype('CustomTypeMatcher');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTypeMatcher.Inst.defineMethod('match',
-function() {
-
-    /**
-     * @method match
-     */
-
-    var dataSet,
-        matcherName,
-        searchTerm,
-
-        matches;
-
-    dataSet = TP.sys.getMetadata('types').getKeys();
-    matcherName = this.get('$matcherName');
-    searchTerm = TP.ifInvalid(this.get('input'), '');
-
-    matches = this.generateMatchSet(dataSet, searchTerm);
-    matches.forEach(
-            function(aMatch) {
-                aMatch.matcherName = matcherName;
-            });
-
-    return matches;
 });
 
 //  ========================================================================
@@ -357,8 +354,9 @@ function(matcherName, keySource) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {String} matcherName
-     * @param {Object} keySource
+     * @param {String} matcherName The name of this matcher that will be
+     *     associated with the search results produced by it
+     * @param {Object} keySource The source to derive keys from.
      * @returns {TP.core.KeyedSourceMatcher} The receiver.
      */
 
@@ -372,11 +370,35 @@ function(matcherName, keySource) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.KeyedSourceMatcher.Inst.defineMethod('getDataSet',
+function() {
+
+    /**
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
+     */
+
+    return this.get('$dataSet');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.KeyedSourceMatcher.Inst.defineMethod('match',
 function() {
 
     /**
      * @method match
+     * @summary Performs the match against the data set using the receiver's
+     *     input against its data set.
+     * @returns {Object[]} An Array of match result POJOS. For this type, these
+     *     result records have the following fields:
+     *          input       {String}    The input string that was used to
+     *                                  search.
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this result.
+     *          string      {String}    The value of the original datum or the
+     *                                  result datum.
      */
 
     var dataSet,
@@ -469,16 +491,68 @@ function() {
 TP.core.KeyedSourceMatcher.Inst.defineMethod('setDataSet',
 function(dataSet) {
 
+    /**
+     * @method setDataSet
+     * @summary Set the data set that this matcher is operating on to the
+     *     supplied parameter.
+     * @param {Object} dataSet The data set for this matcher to operate on.
+     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     */
+
     this.set('$dataSet', dataSet);
 
     return this;
 });
 
 //  ========================================================================
+//  TP.core.CSSPropertyMatcher
+//  ========================================================================
+
+TP.core.ListMatcher.defineSubtype('CSSPropertyMatcher');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CSSPropertyMatcher.Inst.defineMethod('getDataSet',
+function() {
+
+    /**
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
+     */
+
+    return TP.CSS_ALL_PROPERTIES;
+});
+
+//  ========================================================================
+//  TP.core.CustomTypeMatcher
+//  ========================================================================
+
+TP.core.ListMatcher.defineSubtype('CustomTypeMatcher');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTypeMatcher.Inst.defineMethod('getDataSet',
+function() {
+
+    /**
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
+     */
+
+    return TP.sys.getMetadata('types').getKeys();
+});
+
+//  ========================================================================
 //  TP.core.URIMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('URIMatcher');
+TP.core.ListMatcher.defineSubtype('URIMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -490,37 +564,23 @@ TP.core.URIMatcher.Inst.defineAttribute('keySource');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIMatcher.Inst.defineMethod('match',
+TP.core.URIMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
-     * @method match
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
      */
 
-    var dataSet,
-        matcherName,
-        searchTerm,
-
-        matches;
-
-    dataSet = TP.core.URI.Type.get('instances').getKeys();
-    matcherName = this.get('$matcherName');
-    searchTerm = TP.ifInvalid(this.get('input'), '');
-
-    matches = this.generateMatchSet(dataSet, searchTerm);
-    matches.forEach(
-            function(aMatch) {
-                aMatch.matcherName = matcherName;
-            });
-
-    return matches;
+    return TP.core.URI.Type.get('instances').getKeys();
 });
 
 //  ========================================================================
 //  TP.core.MethodMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('MethodMatcher');
+TP.core.ListMatcher.defineSubtype('MethodMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -537,23 +597,23 @@ function() {
 
     /**
      * @method match
+     * @summary Performs the match against the data set using the receiver's
+     *     input against its data set.
+     * @returns {Object[]} An Array of match result POJOS. For this type, these
+     *     result records have the following fields:
+     *          input       {String}    The input string that was used to
+     *                                  search.
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this result.
+     *          suffix      {String}
      */
 
-    var dataSet,
-        matcherName,
-        searchTerm,
+    var matches;
 
-        matches;
-
-    dataSet = this.get('$dataSet');
-    matcherName = this.get('$matcherName');
-    searchTerm = TP.ifInvalid(this.get('input'), '');
-
-    matches = this.generateMatchSet(dataSet, searchTerm);
+    matches = this.callNextMethod();
 
     matches.forEach(
             function(aMatch) {
-                aMatch.matcherName = matcherName;
                 aMatch.suffix = ' (' + aMatch.string.at(0) + ')';
             });
 
@@ -593,20 +653,22 @@ function() {
 //  TP.core.NamespaceMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('NamespaceMatcher');
+TP.core.ListMatcher.defineSubtype('NamespaceMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.NamespaceMatcher.Inst.defineMethod('match',
+TP.core.NamespaceMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
-     * @method match
+     * @method getDataSet
+     * @summary Returns the data set that this matcher is operating on.
+     * @returns {Object} The data set.
      */
 
-    return TP.ac();
+    return TP.sys.getNamespaceNames();
 });
 
 //  ========================================================================
