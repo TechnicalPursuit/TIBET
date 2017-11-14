@@ -159,7 +159,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('postProcessCompletion',
+TP.core.Matcher.Inst.defineMethod('postProcessResult',
 function() {
 
     /**

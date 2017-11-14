@@ -53,7 +53,7 @@ function() {
         });
 
     matcher.defineMethod(
-        'postProcessCompletion',
+        'postProcessResult',
         function(anItem, aCompletionEntry) {
 
             var itemText,
@@ -312,7 +312,7 @@ function(aValue, matchers) {
                             };
                         }
 
-                        matcher.postProcessCompletion(anItem, completionEntry);
+                        matcher.postProcessResult(anItem, completionEntry);
 
                         completions.push(completionEntry);
                     });
