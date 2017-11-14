@@ -2583,6 +2583,11 @@ function(aSignal) {
 
         this.updateAutoCompletePanel(rowContent);
         this.updateAutoCompleteEditorRange(deltaInfo);
+
+        (function() {
+            consoleGUI.focusInput();
+        }).queueForNextRepaint(consoleGUI.getNativeWindow());
+
     }.bind(this);
 
     consoleGUI.get('consoleInput').setEditorEventHandler('change', handler);
