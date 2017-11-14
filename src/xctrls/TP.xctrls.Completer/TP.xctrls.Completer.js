@@ -232,12 +232,10 @@ function(aValue, matchers) {
     matchers.forEach(
         function(matcher) {
 
-            var matchInput,
-                matches;
+            var matches;
 
             matcher.prepareForMatching();
 
-            matchInput = matcher.get('input');
             matches = matcher.match();
 
             if (TP.notEmpty(matches)) {
@@ -259,12 +257,16 @@ function(aValue, matchers) {
 
                             completionEntry;
 
+                        //  NB: 'anItem.string' is either the original datum
+                        //  value if there were no matches or the result datum
+                        //  value if there were.
+
                         if (TP.notValid(anItem.matches)) {
+
                             completionEntry = {
                                 matcherName: anItem.matcherName,
-                                input: matchInput,
+                                input: anItem.input,
                                 text: anItem.string,
-                                string: anItem.string,
                                 score: 1,
                                 displayText: anItem.string
                             };
@@ -305,9 +307,8 @@ function(aValue, matchers) {
 
                             completionEntry = {
                                 matcherName: anItem.matcherName,
-                                input: matchInput,
-                                text: itemEntry.value,
-                                string: anItem.string,
+                                input: anItem.input,
+                                text: anItem.string,
                                 score: anItem.score,
                                 displayText: displayText,
                                 prefix: anItem.prefix
