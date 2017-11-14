@@ -235,7 +235,7 @@ function(aValue, matchers) {
             var matchInput,
                 matches;
 
-            matcher.prepareForMatch();
+            matcher.prepareForMatching();
 
             matchInput = matcher.get('input');
             matches = matcher.match();

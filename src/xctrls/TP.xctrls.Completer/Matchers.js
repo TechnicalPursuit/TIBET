@@ -135,11 +135,11 @@ function(rawData, searchTerm) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('prepareForMatch',
+TP.core.Matcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
-     * @method prepareForMatch
+     * @method prepareForMatching
      */
 
     return this;
@@ -415,7 +415,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineMethod('prepareForMatch',
+TP.core.KeyedSourceMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
@@ -553,7 +553,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MethodMatcher.Inst.defineMethod('prepareForMatch',
+TP.core.MethodMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
@@ -645,7 +645,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSHHistoryMatcher.Inst.defineMethod('prepareForMatch',
+TP.core.TSHHistoryMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
