@@ -3084,20 +3084,21 @@ function(deltaInfo) {
 
     if (TP.notEmpty(completionInput)) {
         completionInputMatcher = TP.rc('^' + TP.regExpEscape(completionInput));
+
+        if (!completionInputMatcher.test(completerValue)) {
+
+            this.set('$hintRestOfTextRange', null);
+            this.set('$hintRestOfTextMarker', null);
+
+            this.set('$shouldUpdateHint', true);
+
+            return this;
+        }
+
+        restOfText = completerValue.slice(completionInput.getSize());
+    } else {
+        restOfText = completerValue;
     }
-
-    if (TP.isEmpty(completionInput) ||
-        !completionInputMatcher.test(completerValue)) {
-
-        this.set('$hintRestOfTextRange', null);
-        this.set('$hintRestOfTextMarker', null);
-
-        this.set('$shouldUpdateHint', true);
-
-        return this;
-    }
-
-    restOfText = completerValue.slice(completionInput.getSize());
 
     colNum = currentPos.column;
     if (TP.isValid(deltaInfo) && deltaInfo.action === 'insert') {
