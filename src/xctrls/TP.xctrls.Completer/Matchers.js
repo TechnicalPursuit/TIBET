@@ -611,7 +611,7 @@ function() {
 //  TP.core.TSHHistoryMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('TSHHistoryMatcher');
+TP.core.ListMatcher.defineSubtype('TSHHistoryMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -621,37 +621,6 @@ TP.core.TSHHistoryMatcher.Inst.defineAttribute('$dataSet');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.TSHHistoryMatcher.Inst.defineMethod('match',
-function() {
-
-    /**
-     * @method match
-     */
-
-    var dataSet,
-        matcherName,
-        searchTerm,
-
-        matches;
-
-    dataSet = this.get('$dataSet');
-    matcherName = this.get('$matcherName');
-    searchTerm = TP.ifInvalid(this.get('input'), '');
-
-    matches = this.generateMatchSet(
-                        dataSet,
-                        searchTerm);
-
-    matches.forEach(
-            function(aMatch) {
-                aMatch.matcherName = matcherName;
-            });
-
-    return matches;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.TSHHistoryMatcher.Inst.defineMethod('prepareForMatching',
