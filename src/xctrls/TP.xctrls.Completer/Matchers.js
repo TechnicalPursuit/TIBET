@@ -34,11 +34,11 @@ function(itemA, itemB) {
         //  Method matcher returns Arrays - pluck out the method
         //  name
 
-        if (TP.isArray(itemAEntry = itemA.original)) {
+        if (TP.isArray(itemAEntry = itemA.string)) {
             itemAEntry = itemAEntry.at(2);
         }
 
-        if (TP.isArray(itemBEntry = itemB.original)) {
+        if (TP.isArray(itemBEntry = itemB.string)) {
             itemBEntry = itemBEntry.at(2);
         }
 
@@ -266,7 +266,6 @@ function() {
                         {
                             matcherName: matcherName,
                             string: anItem,
-                            original: anItem
                         }
                     );
                 });
@@ -396,8 +395,7 @@ function() {
                         {
                             matcherName: matcherName,
                             string: aKey,
-                            prefix: keySourceName + '.',
-                            original: aKey
+                            prefix: keySourceName + '.'
                         }
                     );
                 });
@@ -545,7 +543,7 @@ function() {
     matches.forEach(
             function(aMatch) {
                 aMatch.matcherName = matcherName;
-                aMatch.suffix = ' (' + aMatch.original.at(0) + ')';
+                aMatch.suffix = ' (' + aMatch.string.at(0) + ')';
             });
 
     return matches;
