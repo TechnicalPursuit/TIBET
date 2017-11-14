@@ -109,6 +109,9 @@ function() {
 
     /**
      * @method match
+     * @summary Performs the match against the data set using the receiver's
+     *     input against its data set.
+     * @returns {Object[]} An Array of match result POJOS.
      */
 
     return TP.override();
@@ -169,6 +172,8 @@ function() {
 
     /**
      * @method prepareForMatching
+     * @summary Prepares the receiver to begin the matching process.
+     * @returns {TP.core.Matcher} The receiver.
      */
 
     return this;
@@ -177,10 +182,13 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('prepareForResultProcessing',
-function() {
+function(matchResults) {
 
     /**
      * @method prepareForResultProcessing
+     * @summary Prepares the receiver to begin processing results.
+     * @param {Object[]} matchResults The results of performing the match.
+     * @returns {TP.core.Matcher} The receiver.
      */
 
     return this;
@@ -193,6 +201,8 @@ function() {
 
     /**
      * @method postProcessResult
+     * @summary Post process an individual result.
+     * @param {Object} matchResult An individual result of performing the match.
      */
 
     return this;
@@ -410,7 +420,9 @@ TP.core.KeyedSourceMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
-     * @method prepareForMatch
+     * @method prepareForMatching
+     * @summary Prepares the receiver to begin the matching process.
+     * @returns {TP.core.KeyedSourceMatcher} The receiver.
      */
 
     var keySource,
@@ -548,7 +560,9 @@ TP.core.MethodMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
-     * @method prepareForMatch
+     * @method prepareForMatching
+     * @summary Prepares the receiver to begin the matching process.
+     * @returns {TP.core.MethodMatcher} The receiver.
      */
 
     var keys,
@@ -640,7 +654,9 @@ TP.core.TSHHistoryMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
-     * @method prepareForMatch
+     * @method prepareForMatching
+     * @summary Prepares the receiver to begin the matching process.
+     * @returns {TP.core.TSHHistoryMatcher} The receiver.
      */
 
     var dataSet;
