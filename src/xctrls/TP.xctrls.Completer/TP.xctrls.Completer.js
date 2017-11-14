@@ -175,6 +175,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Completer.Inst.defineMethod('addMatcher',
+function(aMatcher) {
+
+    this.get('matchers').push(aMatcher);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Completer.Inst.defineMethod('completeUsing',
 function(aValue) {
 
