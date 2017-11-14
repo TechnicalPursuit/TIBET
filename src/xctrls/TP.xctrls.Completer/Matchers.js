@@ -267,6 +267,7 @@ function() {
                 function(anItem) {
                     matches.push(
                         {
+                            input: searchTerm,
                             matcherName: matcherName,
                             string: anItem,
                         }
@@ -276,6 +277,7 @@ function() {
         matches = this.generateMatchSet(dataSet, searchTerm);
         matches.forEach(
                 function(aMatch) {
+                    aMatch.input = searchTerm;
                     aMatch.matcherName = matcherName;
                 });
     }
@@ -396,6 +398,7 @@ function() {
                 function(aKey) {
                     matches.push(
                         {
+                            input: searchTerm,
                             matcherName: matcherName,
                             string: aKey,
                             prefix: keySourceName + '.'
@@ -406,6 +409,7 @@ function() {
         matches = this.generateMatchSet(dataSet, searchTerm);
         matches.forEach(
                 function(aMatch) {
+                    aMatch.input = searchTerm;
                     aMatch.matcherName = matcherName;
                     aMatch.prefix = keySourceName + '.';
                 });
