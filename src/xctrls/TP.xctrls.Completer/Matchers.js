@@ -199,42 +199,6 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.CSSPropertyMatcher
-//  ========================================================================
-
-TP.core.Matcher.defineSubtype('CSSPropertyMatcher');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CSSPropertyMatcher.Inst.defineMethod('match',
-function() {
-
-    /**
-     * @method match
-     */
-
-    var dataSet,
-        matcherName,
-        searchTerm,
-
-        matches;
-
-    dataSet = TP.CSS_ALL_PROPERTIES;
-    matcherName = this.get('$matcherName');
-    searchTerm = TP.ifInvalid(this.get('input'), '');
-
-    matches = this.generateMatchSet(dataSet, searchTerm);
-    matches.forEach(
-            function(aMatch) {
-                aMatch.matcherName = matcherName;
-            });
-
-    return matches;
-});
-
-//  ========================================================================
 //  TP.core.ListMatcher
 //  ========================================================================
 
