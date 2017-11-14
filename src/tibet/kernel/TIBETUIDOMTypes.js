@@ -1318,8 +1318,8 @@ function(aTargetElem, anEvent) {
                 return this;
             }
 
-            //  If the signal name is a real TIBET type, then go ahead
-            //  and signal using the name, using the currently focused
+            //  If the signal name is a real TIBET type, then go ahead and
+            //  signal using the name, using the currently focused
             //  TP.core.Element as the 'target' of this signal.
             sigType = TP.sys.getTypeByName(sigName);
             if (TP.isType(sigType)) {
@@ -1332,9 +1332,8 @@ function(aTargetElem, anEvent) {
                     TP.eventPreventDefault(anEvent);
                 }
             } else {
-                //  Otherwise, it should just be sent as a keyboard
-                //  event. We found a map entry for it, but there was no
-                //  real type.
+                //  Otherwise, it should just be sent as a keyboard event. We
+                //  found a map entry for it, but there was no real type.
                 evtTargetTPElem.signal(sigName,
                                         TP.hc('trigger', TP.wrap(anEvent)),
                                         TP.DOM_FIRING,
