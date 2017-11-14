@@ -101,7 +101,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('generateMatchSet',
-function(rawData, searchTerm, extract) {
+function(rawData, searchTerm) {
 
     /**
      * @method generateMatchSet
@@ -540,12 +540,7 @@ function() {
     matcherName = this.get('$matcherName');
     searchTerm = TP.ifInvalid(this.get('input'), '');
 
-    matches = this.generateMatchSet(
-                        dataSet,
-                        searchTerm,
-                        function(original) {
-                            return original.at(2);
-                        });
+    matches = this.generateMatchSet(dataSet, searchTerm);
 
     matches.forEach(
             function(aMatch) {
