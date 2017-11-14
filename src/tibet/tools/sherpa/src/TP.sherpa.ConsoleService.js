@@ -2752,7 +2752,7 @@ function(index) {
         completerList.set('value', data.at(newIndex).at(0));
     }
 
-    this.$set('hintSelectedIndex', index);
+    this.$set('hintSelectedIndex', newIndex);
 
     return this;
 });
