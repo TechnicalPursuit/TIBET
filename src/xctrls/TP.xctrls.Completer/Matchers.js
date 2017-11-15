@@ -66,6 +66,13 @@ function(itemA, itemB) {
 TP.core.Matcher.Inst.defineAttribute('input');
 TP.core.Matcher.Inst.defineAttribute('$matcherName');
 
+TP.core.Matcher.Inst.defineAttribute('caseSensitive');
+TP.core.Matcher.Inst.defineAttribute('threshold');
+TP.core.Matcher.Inst.defineAttribute('location');
+TP.core.Matcher.Inst.defineAttribute('distance');
+TP.core.Matcher.Inst.defineAttribute('maxPatternLength');
+TP.core.Matcher.Inst.defineAttribute('minMatchCharLength');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -84,6 +91,13 @@ function(matcherName) {
     this.callNextMethod();
 
     this.set('$matcherName', matcherName);
+
+    this.set('caseSensitive', true);
+    this.set('threshold', 0.6);
+    this.set('location', 0);
+    this.set('distance', 32);
+    this.set('maxPatternLength', 32);
+    this.set('minMatchCharLength', 1);
 
     return this;
 });
@@ -146,14 +160,14 @@ function(rawData, searchTerm, keys) {
     /* eslint-disable no-undef */
 
     options = {
-        caseSensitive: true,
-        includeMatches: true,
-        includeScore: true,
-        threshold: 0.6,
-        location: 0,
-        distance: 32,
-        maxPatternLength: 32,
-        minMatchCharLength: 1,
+        caseSensitive: this.get('caseSensitive'),
+        includeMatches: true,   //  hardcoded to true - we use this data
+        includeScore: true,     //  hardcoded to true - we use this data
+        threshold: this.get('threshold'),
+        location: this.get('location'),
+        distance: this.get('distance'),
+        maxPatternLength: this.get('maxPatternLength'),
+        minMatchCharLength: this.get('minMatchCharLength'),
         keys: keys
     };
 
