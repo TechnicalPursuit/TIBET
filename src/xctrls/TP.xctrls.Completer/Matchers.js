@@ -300,6 +300,14 @@ function() {
                 });
     } else {
         matches = this.generateMatchSet(dataSet, searchTerm);
+
+        //  Due to a bug in Fuse.js, we will get results with no 'matches'
+        //  Arrays. Filter them out here.
+        matches = matches.select(
+                    function(aMatch) {
+                        return aMatch.matches.length > 0;
+                    });
+
         matches.forEach(
                 function(aMatch) {
                     aMatch.input = searchTerm;
@@ -430,6 +438,14 @@ function() {
                 });
     } else {
         matches = this.generateMatchSet(dataSet, searchTerm);
+
+        //  Due to a bug in Fuse.js, we will get results with no 'matches'
+        //  Arrays. Filter them out here.
+        matches = matches.select(
+                    function(aMatch) {
+                        return aMatch.matches.length > 0;
+                    });
+
         matches.forEach(
                 function(aMatch) {
                     aMatch.input = searchTerm;
