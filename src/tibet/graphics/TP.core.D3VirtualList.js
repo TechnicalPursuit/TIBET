@@ -76,6 +76,39 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Performs any 'detach' logic when the node is detached from its
+     *     owning document.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  Perform tear down for instances of this type.
+    tpElem.teardown();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -554,6 +587,21 @@ function() {
 
     //  Cache the virtual scroller object for use during render.
     this.set('$virtualScroller', virtualScroller);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     * @summary Tears down the receiver by performing housekeeping cleanup, like
+     *     ignoring signals it's observing, etc.
+     * @returns {TP.sherpa.D3VirtualList} The receiver.
+     */
 
     return this;
 });
