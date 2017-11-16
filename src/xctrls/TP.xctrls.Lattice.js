@@ -91,7 +91,7 @@ function(aRequest) {
     //  then just return. When our stylesheet loads, it will trigger the
     //  TP.sig.DOMReady signal.
     if (!tpElem.isReadyToRender()) {
-        return this;
+        return;
     }
 
     //  Signal that we are ready.
