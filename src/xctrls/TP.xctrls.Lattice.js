@@ -102,12 +102,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Lattice.Type.defineMethod('tagDetachDOM',
+TP.xctrls.Lattice.Type.defineMethod('tagDetachComplete',
 function(aRequest) {
 
     /**
-     * @method tagDetachDOM
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @method tagDetachComplete
+     * @summary Executes when the tag's detachment phases are fully complete.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
