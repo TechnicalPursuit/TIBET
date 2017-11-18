@@ -68,6 +68,12 @@ xctrls|content {
     z-index: 12500;
 }
 
+.HUD_TIER,
+*|*[class~="HUD_TIER"] {
+
+    z-index: 15000;
+}
+
 .HUD_POPUP_TIER,
 *|*[class~="HUD_POPUP_TIER"] {
 
