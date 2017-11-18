@@ -30,7 +30,13 @@ function() {
         keySourceProto,
         keySourceName;
 
+    //  Construct a keyed source matcher with TP.global as the source.
     matcher = TP.core.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global);
+
+    //  Locally program 2 methods onto that instance that will manage native
+    //  objects better than a regular keyed source matcher will. Note the use of
+    //  closured variables - this is ok, since only one of these special
+    //  matchers will be in use at a particular time.
 
     matcher.defineMethod(
         'prepareForResultProcessing',
@@ -120,8 +126,8 @@ function() {
 
     /**
      * @method init
-     * @summary
-     * @returns
+     * @summary Initialize the instance.
+     * @returns {TP.xctrls.Completer} The receiver.
      */
 
     var tshCommands;
@@ -178,6 +184,10 @@ function() {
 TP.xctrls.Completer.Inst.defineMethod('addMatcher',
 function(aMatcher) {
 
+    /**
+     * @method addMatcher
+     */
+
     this.get('matchers').push(aMatcher);
 
     return this;
@@ -188,15 +198,21 @@ function(aMatcher) {
 TP.xctrls.Completer.Inst.defineMethod('completeUsing',
 function(aValue) {
 
+    /**
+     * @method completeUsing
+     */
+
     var matchers,
         defaultMatcher,
 
         completions;
 
+    //  If we're using a dynamically computed matcher set, then we update that
+    //  every time we want to perform a search.
     if (this.get('dynamicMatchers')) {
         this.updateMatchersFrom(aValue);
     } else {
-        //  Iterate over the matcher list and set their value
+        //  Iterate over the matcher list and set their value.
         this.get('matchers').forEach(
             function(aMatcher) {
                 aMatcher.set('input', aValue);
@@ -207,6 +223,10 @@ function(aValue) {
     //  this list.
     matchers = this.get('matchers');
 
+    //  If there are no matchers, either computed dynamically because we're
+    //  using a dynamically computed matcher set or because the user didn't
+    //  configure a static matcher, then see if we have a default matcher
+    //  configured. If so, use it.
     if (TP.isEmpty(matchers)) {
         defaultMatcher = this.get('defaultMatcher');
         if (TP.isValid(defaultMatcher)) {
@@ -215,7 +235,10 @@ function(aValue) {
         }
     }
 
-    completions = this.computeCompletionsFrom(aValue, matchers);
+    //  If, after all of that, we've got matchers then use them.
+    if (TP.notEmpty(matchers)) {
+        completions = this.computeCompletionsFrom(aValue, matchers);
+    }
 
     return completions;
 });
@@ -224,6 +247,10 @@ function(aValue) {
 
 TP.xctrls.Completer.Inst.defineMethod('computeCompletionsFrom',
 function(aValue, matchers) {
+
+    /**
+     * @method computeCompletionsFrom
+     */
 
     var completions;
 
@@ -373,6 +400,10 @@ function(aValue, topLevelObjects) {
         return TP.ac();
     }
 
+    //  A Function that, starting at a particular object, will traverse the
+    //  supplied paths until it has exhausted them. If it doesn't exhaust the
+    //  entire set of paths, but cannot continue because of a non-valid value,
+    //  it will return null.
     resolveTopLevelObjectReference = function(startObj, propertyPaths) {
 
         var pathObj,
@@ -389,7 +420,7 @@ function(aValue, topLevelObjects) {
         }
 
         //  If we haven't exhausted the path, then it doesn't matter what we've
-        //  currently resolved - we must return null
+        //  currently resolved - we must return null.
         if (TP.notEmpty(paths)) {
             return null;
         }
@@ -399,16 +430,25 @@ function(aValue, topLevelObjects) {
 
     matchers = TP.ac();
 
+    //  Tokenize the value that we're using to try to get the best matcher to
+    //  use for this particular search.
     info = this.tokenizeForMatchers(aValue);
     tokenizedFragment = info.at('fragment');
 
     topLevelContexts = TP.ifInvalid(topLevelObjects, TP.ac(TP.global));
 
+    //  Switch based on the context that was computed in the tokenization
+    //  method.
     switch (info.at('context')) {
         case 'KEYWORD':
         case 'JS':
             resolutionChunks = info.at('resolutionChunks');
 
+            //  Iterate over each top level context that was supplied (defaulted
+            //  to a single object - TP.global - if none were supplied) and try
+            //  to resolve to an object based on the resolution chunks that were
+            //  computed. Stop at the first object that can be resolved
+            //  properly.
             for (i = 0; i < topLevelContexts.getSize(); i++) {
 
                 resolvedObj = resolveTopLevelObjectReference(
@@ -419,14 +459,15 @@ function(aValue, topLevelObjects) {
                 }
             }
 
-            //  If we couldn't get a resolved object and there were no
-            //  further resolution chunks found after the original tokenized
-            //  fragment, then we just set the resolved object to TP.global
-            //  and use a special keyed source matcher built to resolve objects
-            //  at the JS global scope. Additionally, since we're at the global
-            //  context, we also add the shared keywords matcher.
             tokenizedFragment = TP.ifInvalid(tokenizedFragment, '');
 
+            //  If we couldn't get a resolved object and there were no
+            //  further resolution chunks found after the original tokenized
+            //  fragment, then we just use a matcher that uses TP.global as the
+            //  resolved object and a special keyed source matcher built to
+            //  resolve objects at the JS global scope. Additionally, since
+            //  we're at the global context, we also add the shared JavaScript
+            //  keywords matcher if there's only one tokenized fragment.
             if (TP.notValid(resolvedObj)) {
                 newMatcher =
                     TP.xctrls.Completer.constructMatcherForGlobalJSContexts();
@@ -438,64 +479,30 @@ function(aValue, topLevelObjects) {
                                     set('input', aValue));
                 }
             } else {
+
+                //  Otherwise, just use a regular keyed source matcher against
+                //  the resolved object.
                 matchers.push(
                     TP.core.KeyedSourceMatcher.construct(
                                         'JS_CONTEXT', resolvedObj).
                         set('input', tokenizedFragment));
             }
-
-            /*
-            if (TP.notValid(resolvedObj) &&
-                TP.isEmpty(info.at('resolutionChunks'))) {
-
-                resolvedObj = TP.global;
-
-                matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
-                                        'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
-
-                matchers.push(this.get('$keywordsMatcher').
-                                set('input', aValue));
-            } else {
-                matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
-                                        'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
-            }
-            */
-
-            /*
-            } else {
-
-                matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
-                                        'JS_CONTEXT', resolvedObj).
-                        set('input', aValue),
-                    this.get('$keywordsMatcher').
-                        set('input', aValue));
-                    this.get('$tshExecutionInstanceMatcher').
-                        set('input', aValue));
-                    this.get('$tshHistoryMatcher').
-                        set('input', aValue));
-            }
-            */
 
             break;
 
         case 'TSH':
-            matchers.push(this.get('$tshCommandsMatcher').set('input', aValue));
 
+            matchers.push(this.get('$tshCommandsMatcher').set('input', aValue));
             break;
 
         case 'CFG':
-            matchers.push(this.get('$cfgMatcher').set('input', aValue));
 
+            matchers.push(this.get('$cfgMatcher').set('input', aValue));
             break;
 
         case 'URI':
-            matchers.push(this.get('$uriMatcher').set('input', aValue));
 
+            matchers.push(this.get('$uriMatcher').set('input', aValue));
             break;
 
         default:
@@ -532,7 +539,8 @@ function(inputText) {
 
         isWhitespace;
 
-    //  Invoke the tokenizer
+    //  Invoke the tokenizer to parse JS and TSH tokens (TSH ones mostly to get
+    //  the URI parsing).
     tokens = TP.$condenseJS(
                     inputText, false, false,
                     //  All of the JS operators *and* the TSH operators
@@ -563,6 +571,8 @@ function(inputText) {
         /* eslint-enable no-extra-parens */
     };
 
+    //  Iterate over all of the tokens, many of them JavaScript constructs, but
+    //  others that are TSH ones, like URIs.
     len = tokens.getSize();
     for (i = 0; i < len; i++) {
         token = tokens.at(i);
@@ -699,6 +709,8 @@ function(inputText) {
                 break;
         }
 
+        //  If there are no matches, then set all of these to null, loop and try
+        //  again.
         if (noMatches) {
             context = null;
 
@@ -712,6 +724,8 @@ function(inputText) {
         }
     }
 
+    //  If we weren't able to compute any real resolution chunks, then just set
+    //  the sole one to the fragment itself and use that.
     if (TP.isEmpty(resolutionChunks) && TP.notEmpty(fragment)) {
         resolutionChunks = TP.ac(fragment);
     }
@@ -728,17 +742,33 @@ function(inputText) {
 TP.xctrls.Completer.Inst.defineMethod('updateMatchersFrom',
 function(aValue) {
 
+    /**
+     * @method updateMatchersFrom
+     */
+
     var topLevelObjects,
         matchers;
 
+    //  The current set of global source objects that we'll use to update the
+    //  set of matchers that we're using to search.
+
+    //  TODO: We're currently skipping these objects... why?
+    //  TIBET_CFG
+    //  JS_COMMANDS
+    //  TSH_HISTORY
+    //  TSH_COMMANDS
+    //  TIBET_URIS
+
     topLevelObjects = TP.ac(
                         TP.global,
-                        TP.core.TSH.getDefaultInstance().getExecutionInstance(),
                         TP,
                         APP,
-                        CSS
+                        CSS,
+                        TP.core.TSH.getDefaultInstance().getExecutionInstance()
                     );
 
+    //  Compute the matchers to use using a variety of techniques, including
+    //  parsing the supplied value.
     matchers = this.computeMatchersFrom(aValue, topLevelObjects);
 
     this.set('matchers', matchers);
