@@ -22,6 +22,15 @@ TP.lang.Object.defineSubtype('xctrls.Searcher');
 TP.xctrls.Searcher.Type.defineMethod('constructMatcherForGlobalJSContexts',
 function() {
 
+    /**
+     * @method constructMatcherForGlobalJSContexts
+     * @summary Returns a special, locally-programmed,
+     *     TP.core.KeyedSourceMatcher, that can handle the JavaScript global
+     *     object better than a generic keyed source matcher.
+     * @returns {TP.core.KeyedSourceMatcher} A new matcher specially configured
+     *     to handle global JS contexts, including native JS constructors.
+     */
+
     var matcher,
 
         keySource,
@@ -185,6 +194,10 @@ function(aMatcher) {
 
     /**
      * @method addMatcher
+     * @summary Adds the supplied matcher to the receiver's matcher list.
+     * @param {TP.core.Matcher} aMatcher The matcher to add to the receiver's
+     *     matcher list.
+     * @returns {TP.xctrls.Searcher} The receiver.
      */
 
     this.get('matchers').push(aMatcher);
@@ -194,61 +207,33 @@ function(aMatcher) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Searcher.Inst.defineMethod('searchUsing',
-function(aValue) {
-
-    /**
-     * @method searchUsing
-     */
-
-    var matchers,
-        defaultMatcher,
-
-        results;
-
-    //  If we're using a dynamically computed matcher set, then we update that
-    //  every time we want to perform a search.
-    if (this.get('dynamicMatchers')) {
-        this.updateMatchersFrom(aValue);
-    } else {
-        //  Iterate over the matcher list and set their value.
-        this.get('matchers').forEach(
-            function(aMatcher) {
-                aMatcher.set('input', aValue);
-            });
-    }
-
-    //  NB: We do this here because the updateMatchersFrom call probably changed
-    //  this list.
-    matchers = this.get('matchers');
-
-    //  If there are no matchers, either computed dynamically because we're
-    //  using a dynamically computed matcher set or because the user didn't
-    //  configure a static matcher, then see if we have a default matcher
-    //  configured. If so, use it.
-    if (TP.isEmpty(matchers)) {
-        defaultMatcher = this.get('defaultMatcher');
-        if (TP.isValid(defaultMatcher)) {
-            defaultMatcher.set('input', aValue);
-            matchers = TP.ac(defaultMatcher);
-        }
-    }
-
-    //  If, after all of that, we've got matchers then use them.
-    if (TP.notEmpty(matchers)) {
-        results = this.computeResultsFrom(aValue, matchers);
-    }
-
-    return results;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.Searcher.Inst.defineMethod('computeResultsFrom',
 function(aValue, matchers) {
 
     /**
      * @method computeResultsFrom
+     * @summary Computes and massages the search results using the supplied
+     *     search term value and set of search matchers.
+     * @param {String} aValue The search term value to search for.
+     * @param {TP.core.Matcher[]} matchers The list of matchers to use to
+     *     compute the result set from.
+     * @returns {Object[]} An Array of search result POJOs that contain one or
+     *     more of the following slots:
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this match result.
+     *          input       {String}    The input that the matcher used to
+     *                                  produce the match result.
+     *          text        {String}    The raw text of the match result.
+     *          score       {Number}    The score, between 0 and 1.0, that was
+     *                                  assigned to the match result. Lower
+     *                                  scores indicate 'better' matches (i.e.
+     *                                  more exact to the search term).
+     *          displayText {String}    A 'marked up' version of the match
+     *                                  result, using XHTML markup
+     *                                  '<span class="match_result">' to
+     *                                  indicate the portions of match result
+     *                                  that matched portions of the search
+     *                                  term.
      */
 
     var results;
@@ -378,6 +363,16 @@ function(aValue, topLevelObjects) {
 
     /**
      * @method computeMatchersFrom
+     * @summary Computes the list of matchers that will be used, based on the
+     *     supplied search term value and set of top level object. This is
+     *     applicable when the receiver is configured to use a 'dynamic matcher
+     *     set'.
+     * @param {String} aValue The search term value to use to compute the list
+     *     of matchers.
+     * @param {Object[]} topLevelObjects The list of top level objects that will
+     *     be used to compute matchers from. This is defaulted to TP.global.
+     * @returns {TP.core.Matcher[]} The list of matchers to use to search
+     *     various search spaces for the specified search term.
      */
 
     var resolveTopLevelObjectReference,
@@ -431,7 +426,7 @@ function(aValue, topLevelObjects) {
 
     //  Tokenize the value that we're using to try to get the best matcher to
     //  use for this particular search.
-    info = this.tokenizeForMatchers(aValue);
+    info = this.tokenizeForMatcherComputation(aValue);
     tokenizedFragment = info.at('fragment');
 
     topLevelContexts = TP.ifInvalid(topLevelObjects, TP.ac(TP.global));
@@ -513,11 +508,89 @@ function(aValue, topLevelObjects) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Searcher.Inst.defineMethod('tokenizeForMatchers',
-function(inputText) {
+TP.xctrls.Searcher.Inst.defineMethod('searchUsing',
+function(aValue) {
 
     /**
-     * @method tokenizeForMatchers
+     * @method searchUsing
+     * @summary Searches the various search spaces of the receiver's configured
+     *     matchers for the supplied search term.
+     * @param {String} aValue The search term value to search for.
+     * @returns {Object[]} An Array of search result POJOs that contain one or
+     *     more of the following slots:
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this match result.
+     *          input       {String}    The input that the matcher used to
+     *                                  produce the match result.
+     *          text        {String}    The raw text of the match result.
+     *          score       {Number}    The score, between 0 and 1.0, that was
+     *                                  assigned to the match result. Lower
+     *                                  scores indicate 'better' matches (i.e.
+     *                                  more exact to the search term).
+     *          displayText {String}    A 'marked up' version of the match
+     *                                  result, using XHTML markup
+     *                                  '<span class="match_result">' to
+     *                                  indicate the portions of match result
+     *                                  that matched portions of the search
+     *                                  term.
+     */
+
+    var matchers,
+        defaultMatcher,
+
+        results;
+
+    //  If we're using a dynamically computed matcher set, then we update that
+    //  every time we want to perform a search.
+    if (this.get('dynamicMatchers')) {
+        this.updateMatcherListUsing(aValue);
+    } else {
+        //  Iterate over the matcher list and set their value.
+        this.get('matchers').forEach(
+            function(aMatcher) {
+                aMatcher.set('input', aValue);
+            });
+    }
+
+    //  NB: We do this here because the updateMatcherListUsing call probably
+    //  changed this list.
+    matchers = this.get('matchers');
+
+    //  If there are no matchers, either computed dynamically because we're
+    //  using a dynamically computed matcher set or because the user didn't
+    //  configure a static matcher, then see if we have a default matcher
+    //  configured. If so, use it.
+    if (TP.isEmpty(matchers)) {
+        defaultMatcher = this.get('defaultMatcher');
+        if (TP.isValid(defaultMatcher)) {
+            defaultMatcher.set('input', aValue);
+            matchers = TP.ac(defaultMatcher);
+        }
+    }
+
+    //  If, after all of that, we've got matchers then use them.
+    if (TP.notEmpty(matchers)) {
+        results = this.computeResultsFrom(aValue, matchers);
+    }
+
+    return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Searcher.Inst.defineMethod('tokenizeForMatcherComputation',
+function(aValue) {
+
+    /**
+     * @method tokenizeForMatcherComputation
+     * @summary Tokenizes the supplied value and returns a hash containing
+     *     information that can be used to compute the set of matchers
+     *     appropriate for searching objects that use that notation to be
+     *     accessed.
+     * @param {String} aValue The search term value to tokenize for use in
+     *     determining the appropriate set of matchers.
+     * @returns {TP.core.Hash} The hash of information about the supplied search
+     *     term after it has been tokenized and analyzed.
      */
 
     var tokens,
@@ -541,7 +614,7 @@ function(inputText) {
     //  Invoke the tokenizer to parse JS and TSH tokens (TSH ones mostly to get
     //  the URI parsing).
     tokens = TP.$condenseJS(
-                    inputText, false, false,
+                    aValue, false, false,
                     //  All of the JS operators *and* the TSH operators
                     TP.tsh.script.$tshAndJSOperators,
                     true, true, true);
@@ -738,11 +811,17 @@ function(inputText) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Searcher.Inst.defineMethod('updateMatchersFrom',
+TP.xctrls.Searcher.Inst.defineMethod('updateMatcherListUsing',
 function(aValue) {
 
     /**
-     * @method updateMatchersFrom
+     * @method updateMatcherListUsing
+     * @summary Updates the current matcher list using the supplied search term.
+     *     This is applicable when the receiver is configured to use a 'dynamic
+     *     matcher set'.
+     * @param {String} aValue The search term value to use to update the current
+     *     matcher list.
+     * @returns {TP.xctrls.Searcher} The receiver.
      */
 
     var topLevelObjects,
