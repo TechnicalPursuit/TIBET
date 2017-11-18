@@ -5,6 +5,8 @@
 
         "comment-empty-line-before": null,
 
+        "custom-property-empty-line-before": null,
+
         "block-no-empty": null,
 
         "block-opening-brace-newline-after": "always",

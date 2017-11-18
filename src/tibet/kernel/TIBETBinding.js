@@ -1656,9 +1656,7 @@ function(attributeValue) {
     var elem,
         doc,
 
-        registry,
-
-        bindEntries;
+        registry;
 
     //  Grab the native Element and Document.
     elem = this.getNativeNode();
