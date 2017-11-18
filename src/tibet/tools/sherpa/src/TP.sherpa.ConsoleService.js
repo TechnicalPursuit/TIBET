@@ -2490,7 +2490,7 @@ TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('hintSelectedIndex');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('currentCompletions');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('completedText');
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$completer');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$searcher');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
                                                 '$editorKeyCommandEntries');
@@ -2514,17 +2514,17 @@ function() {
      * @returns {TP.sherpa.AutoCompletionKeyResponder} A new instance.
      */
 
-    var completer;
+    var searcher;
 
     this.callNextMethod();
 
-    completer = TP.xctrls.Completer.construct();
+    searcher = TP.xctrls.Searcher.construct();
 
-    completer.set('dynamicMatchers', true);
-    completer.set('defaultMatcher',
+    searcher.set('dynamicMatchers', true);
+    searcher.set('defaultMatcher',
                     TP.core.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', TP.global));
-    this.set('$completer', completer);
+    this.set('$searcher', searcher);
 
     return this;
 });
@@ -2911,7 +2911,7 @@ TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('updateAutoCompletePanel'
 function(sourceText) {
 
     var completerList,
-        completer,
+        searcher,
 
         completions,
 
@@ -2922,9 +2922,9 @@ function(sourceText) {
         completerValue;
 
     completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
-    completer = this.get('$completer');
+    searcher = this.get('$searcher');
 
-    completions = completer.completeUsing(sourceText);
+    completions = searcher.searchUsing(sourceText);
     this.set('currentCompletions', completions);
 
     if (TP.isEmpty(completions)) {
@@ -2938,7 +2938,6 @@ function(sourceText) {
     }
 
     this.set('completedText', null);
-
 
     data = TP.ac();
     completions.forEach(

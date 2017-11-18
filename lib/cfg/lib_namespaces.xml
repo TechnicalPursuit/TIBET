@@ -216,8 +216,8 @@
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
     <script src="xctrls/TP.xctrls.GenericElement.js"/>
 
-    <script src="xctrls/TP.xctrls.Completer/Matchers.js"/>
-    <script src="xctrls/TP.xctrls.Completer/TP.xctrls.Completer.js"/>
+    <script src="xctrls/TP.xctrls.Searcher/Matchers.js"/>
+    <script src="xctrls/TP.xctrls.Searcher/TP.xctrls.Searcher.js"/>
 
     <script src="xctrls/TP.xctrls.Lattice.js"/>
 

@@ -9,18 +9,17 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.xctrls.Completer}
- * @summary Manages switchable XControls. This is a trait type that is meant to
- *     be 'traited' in to a concrete type.
+ * @type {TP.xctrls.Searcher}
+ * @summary
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('xctrls.Completer');
+TP.lang.Object.defineSubtype('xctrls.Searcher');
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Type.defineMethod('constructMatcherForGlobalJSContexts',
+TP.xctrls.Searcher.Type.defineMethod('constructMatcherForGlobalJSContexts',
 function() {
 
     var matcher,
@@ -105,29 +104,29 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineAttribute('$cssMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$cfgMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$keywordsMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$tshHistoryMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$tshExecutionInstanceMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$tshCommandsMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$uriMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$cssMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$cfgMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$keywordsMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$tshHistoryMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$tshExecutionInstanceMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$tshCommandsMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$uriMatcher');
 
-TP.xctrls.Completer.Inst.defineAttribute('dynamicMatchers');
-TP.xctrls.Completer.Inst.defineAttribute('matchers');
-TP.xctrls.Completer.Inst.defineAttribute('defaultMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('dynamicMatchers');
+TP.xctrls.Searcher.Inst.defineAttribute('matchers');
+TP.xctrls.Searcher.Inst.defineAttribute('defaultMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('init',
+TP.xctrls.Searcher.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.xctrls.Completer} The receiver.
+     * @returns {TP.xctrls.Searcher} The receiver.
      */
 
     var tshCommands;
@@ -181,7 +180,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('addMatcher',
+TP.xctrls.Searcher.Inst.defineMethod('addMatcher',
 function(aMatcher) {
 
     /**
@@ -195,17 +194,17 @@ function(aMatcher) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('completeUsing',
+TP.xctrls.Searcher.Inst.defineMethod('searchUsing',
 function(aValue) {
 
     /**
-     * @method completeUsing
+     * @method searchUsing
      */
 
     var matchers,
         defaultMatcher,
 
-        completions;
+        results;
 
     //  If we're using a dynamically computed matcher set, then we update that
     //  every time we want to perform a search.
@@ -237,24 +236,24 @@ function(aValue) {
 
     //  If, after all of that, we've got matchers then use them.
     if (TP.notEmpty(matchers)) {
-        completions = this.computeCompletionsFrom(aValue, matchers);
+        results = this.computeResultsFrom(aValue, matchers);
     }
 
-    return completions;
+    return results;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('computeCompletionsFrom',
+TP.xctrls.Searcher.Inst.defineMethod('computeResultsFrom',
 function(aValue, matchers) {
 
     /**
-     * @method computeCompletionsFrom
+     * @method computeResultsFrom
      */
 
-    var completions;
+    var results;
 
-    completions = TP.ac();
+    results = TP.ac();
 
     matchers.forEach(
         function(matcher) {
@@ -282,7 +281,7 @@ function(aValue, matchers) {
                             displayText,
                             highlightText,
 
-                            completionEntry;
+                            resultEntry;
 
                         //  NB: 'anItem.string' is either the original datum
                         //  value if there were no matches or the result datum
@@ -290,7 +289,7 @@ function(aValue, matchers) {
 
                         if (TP.notValid(anItem.matches)) {
 
-                            completionEntry = {
+                            resultEntry = {
                                 matcherName: anItem.matcherName,
                                 input: anItem.input,
                                 text: anItem.string,
@@ -332,7 +331,7 @@ function(aValue, matchers) {
                                 }
                             }
 
-                            completionEntry = {
+                            resultEntry = {
                                 matcherName: anItem.matcherName,
                                 input: anItem.input,
                                 text: anItem.string,
@@ -342,39 +341,39 @@ function(aValue, matchers) {
                             };
                         }
 
-                        matcher.postProcessResult(completionEntry);
+                        matcher.postProcessResult(resultEntry);
 
-                        completions.push(completionEntry);
+                        results.push(resultEntry);
                     });
             }
         });
 
-    if (TP.notEmpty(completions)) {
+    if (TP.notEmpty(results)) {
 
-        //  Sort all of the completions together using a custom sorting
-        //  function to go after parts of the completion itself.
-        completions.sort(
-            function(completionA, completionB) {
+        //  Sort all of the results together using a custom sorting function to
+        //  go after parts of the completion itself.
+        results.sort(
+            function(resultA, resultB) {
 
                 //  Sort by matcher name, score, and then text, in that order.
                 return TP.sort.COMPARE(
-                            completionB.matcherName,
-                            completionA.matcherName) ||
+                            resultB.matcherName,
+                            resultA.matcherName) ||
                         TP.sort.COMPARE(
-                            completionA.score,
-                            completionB.score) ||
+                            resultA.score,
+                            resultB.score) ||
                         TP.sort.COMPARE(
-                            completionA.text,
-                            completionB.text);
+                            resultA.text,
+                            resultB.text);
             });
     }
 
-    return completions;
+    return results;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('computeMatchersFrom',
+TP.xctrls.Searcher.Inst.defineMethod('computeMatchersFrom',
 function(aValue, topLevelObjects) {
 
     /**
@@ -470,7 +469,7 @@ function(aValue, topLevelObjects) {
             //  keywords matcher if there's only one tokenized fragment.
             if (TP.notValid(resolvedObj)) {
                 newMatcher =
-                    TP.xctrls.Completer.constructMatcherForGlobalJSContexts();
+                    TP.xctrls.Searcher.constructMatcherForGlobalJSContexts();
                 newMatcher.set('input', tokenizedFragment);
                 matchers.push(newMatcher);
 
@@ -514,7 +513,7 @@ function(aValue, topLevelObjects) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('tokenizeForMatchers',
+TP.xctrls.Searcher.Inst.defineMethod('tokenizeForMatchers',
 function(inputText) {
 
     /**
@@ -739,7 +738,7 @@ function(inputText) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('updateMatchersFrom',
+TP.xctrls.Searcher.Inst.defineMethod('updateMatchersFrom',
 function(aValue) {
 
     /**
