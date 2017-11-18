@@ -38,26 +38,26 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 :root {
 
-    --tibet-SLIDER-TIER: 500;
-    --tibet-MENU-TIER: 1000;
-    --tibet-POPUP-TIER: 5000;
-    --tibet-HALO-TIER: 10000;
-    --tibet-HALO-POPUP-TIER: 12500;
-    --tibet-HUD-TIER: 15000;
-    --tibet-HUD-POPUP-TIER: 17500;
-    --tibet-CONSOLE-INPUT-TIER: 20000;
-    --tibet-HUD-V-EDGE-TIER: 22500;
+    --tibet-SLIDER-TIER: 20500;
+    --tibet-MENU-TIER: 21000;
+    --tibet-POPUP-TIER: 21500;
+    --tibet-HALO-TIER: 22000;
+    --tibet-HALO-POPUP-TIER: 22500;
+    --tibet-HUD-TIER: 23000;
+    --tibet-HUD-POPUP-TIER: 23500;
+    --tibet-CONSOLE-INPUT-TIER: 24000;
+    --tibet-HUD-V-EDGE-TIER: 24500;
     --tibet-CONNECTOR-TIER: 25000;
-    --tibet-HUD-H-EDGE-TIER: 26250;
-    --tibet-HUD-CORNER-TIER: 27000;
-    --tibet-HUD-TILE-TIER: 27250;
-    --tibet-CONSOLE-OUTPUT-TIER: 27500;
-    --tibet-CONTEXT-MENU-TIER: 28750;
-    --tibet-HUD-OPENER-TIER: 29000;
-    --tibet-NOTIFER-TIER: 29000;
-    --tibet-DRAG-DROP-TIER: 30000;
-    --tibet-CURTAIN-TIER: 32500;
-    --tibet-ALERT-TIER: 32767;
+    --tibet-HUD-H-EDGE-TIER: 25500;
+    --tibet-HUD-CORNER-TIER: 26000;
+    --tibet-HUD-TILE-TIER: 26500;
+    --tibet-CONSOLE-OUTPUT-TIER: 27000;
+    --tibet-CONTEXT-MENU-TIER: 27500;
+    --tibet-HUD-OPENER-TIER: 28000;
+    --tibet-NOTIFER-TIER: 28500;
+    --tibet-DRAG-DROP-TIER: 29000;
+    --tibet-CURTAIN-TIER: 29500;
+    --tibet-ALERT-TIER: 30000;
 }
 
 /*
