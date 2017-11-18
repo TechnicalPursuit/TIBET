@@ -24,8 +24,7 @@ sherpa|opener {
 
     cursor: pointer;
 
-    /* This should match TIBET's HUD_OPENER_TIER constant */
-    z-index: 29000;
+    z-index: var(--tibet-HUD-OPENER-TIER);
 }
 
 sherpa|opener > .icon {

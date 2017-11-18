@@ -41,120 +41,120 @@ xctrls|content {
 .SLIDER_TIER,
 *|*[class~="SLIDER_TIER"] {
 
-    z-index: 500;
+    z-index: var(--tibet-SLIDER-TIER);
 }
 
 .MENU_TIER,
 *|*[class~="MENU_TIER"] {
 
-    z-index: 1000;
+    z-index: var(--tibet-MENU-TIER);
 }
 
 .POPUP_TIER,
 *|*[class~="POPUP_TIER"] {
 
-    z-index: 5000;
+    z-index: var(--tibet-POPUP-TIER);
 }
 
 .HALO_TIER,
 *|*[class~="HALO_TIER"] {
 
-    z-index: 10000;
+    z-index: var(--tibet-HALO-TIER);
 }
 
 .HALO_POPUP_TIER,
 *|*[class~="HALO_POPUP_TIER"] {
 
-    z-index: 12500;
+    z-index: var(--tibet-HALO-POPUP-TIER);
 }
 
 .HUD_TIER,
 *|*[class~="HUD_TIER"] {
 
-    z-index: 15000;
+    z-index: var(--tibet-HUD-TIER);
 }
 
 .HUD_POPUP_TIER,
 *|*[class~="HUD_POPUP_TIER"] {
 
-    z-index: 17500;
+    z-index: var(--tibet-HUD-POPUP-TIER);
 }
 
 .CONSOLE_INPUT_TIER,
 *|*[class~="CONSOLE_INPUT_TIER"] {
 
-    z-index: 20000;
+    z-index: var(--tibet-CONSOLE-INPUT-TIER);
 }
 
 .HUD_V_EDGE_TIER,
 *|*[class~="HUD_V_EDGE_TIER"] {
 
-    z-index: 22500;
+    z-index: var(--tibet-HUD-V-EDGE-TIER);
 }
 
 .CONNECTOR_TIER,
 *|*[class~="CONNECTOR_TIER"] {
 
-    z-index: 25000;
+    z-index: var(--tibet-CONNECTOR-TIER);
 }
 
 .HUD_H_EDGE_TIER,
 *|*[class~="HUD_H_EDGE_TIER"] {
 
-    z-index: 26250;
+    z-index: var(--tibet-HUD-H-EDGE-TIER);
 }
 
 .HUD_CORNER_TIER,
 *|*[class~="HUD_CORNER_TIER"] {
 
-    z-index: 27000;
+    z-index: var(--tibet-HUD-CORNER-TIER);
 }
 
 .HUD_TILE_TIER,
 *|*[class~="HUD_TILE_TIER"] {
 
-    z-index: 27250;
+    z-index: var(--tibet-HUD-TILE-TIER);
 }
 
 .CONSOLE_OUTPUT_TIER,
 *|*[class~="CONSOLE_OUTPUT_TIER"] {
 
-    z-index: 27500;
+    z-index: var(--tibet-CONSOLE-OUTPUT-TIER);
 }
 
 .CONTEXT_MENU_TIER,
 *|*[class~="CONTEXT_MENU_TIER"] {
 
-    z-index: 28750;
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
 }
 
 .HUD_OPENER_TIER,
 *|*[class~="HUD_OPENER_TIER"] {
 
-    z-index: 29000;
+    z-index: var(--tibet-HUD-OPENER-TIER);
 }
 
 .NOTIFIER_TIER,
 *|*[class~="NOTIFIER_TIER"] {
 
-    z-index: 29000;
+    z-index: var(--tibet-NOTIFIER-TIER);
 }
 
 .DRAG_DROP_TIER,
 *|*[class~="DRAG_DROP_TIER"] {
 
-    z-index: 30000;
+    z-index: var(--tibet-DRAG-DROP-TIER);
 }
 
 .CURTAIN_TIER,
 *|*[class~="CURTAIN_TIER"] {
 
-    z-index: 32500;
+    z-index: var(--tibet-CURTAIN-TIER);
 }
 
 .ALERT_TIER,
 *|*[class~="ALERT_TIER"] {
 
-    z-index: 32767;
+    z-index: var(--tibet-ALERT-TIER);
 }
 

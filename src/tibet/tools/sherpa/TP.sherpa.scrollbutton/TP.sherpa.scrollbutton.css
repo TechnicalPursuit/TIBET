@@ -30,8 +30,7 @@ sherpa|scrollbutton {
     -moz-user-select: none;
     -webkit-user-select: none;
 
-    /* This should match TIBET's SLIDER_TIER constant */
-    z-index: 500;
+    z-index: var(--tibet-SLIDER-TIER);
 }
 
 sherpa|scrollbutton[class~="more"] {

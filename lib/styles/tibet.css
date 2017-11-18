@@ -32,6 +32,36 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 /*
   ========================================================================
+  TIER z-index values
+  ========================================================================
+*/
+
+:root {
+
+    --tibet-SLIDER-TIER: 500;
+    --tibet-MENU-TIER: 1000;
+    --tibet-POPUP-TIER: 5000;
+    --tibet-HALO-TIER: 10000;
+    --tibet-HALO-POPUP-TIER: 12500;
+    --tibet-HUD-TIER: 15000;
+    --tibet-HUD-POPUP-TIER: 17500;
+    --tibet-CONSOLE-INPUT-TIER: 20000;
+    --tibet-HUD-V-EDGE-TIER: 22500;
+    --tibet-CONNECTOR-TIER: 25000;
+    --tibet-HUD-H-EDGE-TIER: 26250;
+    --tibet-HUD-CORNER-TIER: 27000;
+    --tibet-HUD-TILE-TIER: 27250;
+    --tibet-CONSOLE-OUTPUT-TIER: 27500;
+    --tibet-CONTEXT-MENU-TIER: 28750;
+    --tibet-HUD-OPENER-TIER: 29000;
+    --tibet-NOTIFER-TIER: 29000;
+    --tibet-DRAG-DROP-TIER: 30000;
+    --tibet-CURTAIN-TIER: 32500;
+    --tibet-ALERT-TIER: 32767;
+}
+
+/*
+  ========================================================================
   'Busy' FEEDBACK PANEL
   ========================================================================
 */

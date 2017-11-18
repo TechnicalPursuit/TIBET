@@ -12,8 +12,7 @@ sherpa|halo {
     min-height: 15px;
     min-width: 50px;
 
-    /* This should match TIBET's HALO_TIER constant */
-    z-index: 10000;
+    z-index: var(--tibet-CONSOLE-HALO-TIER);
 
     outline: dashed 1px #666;
 
@@ -127,12 +126,8 @@ sherpa|halo > sherpa|breadcrumb {
     pointer-events: auto;
 }
 
-/* We want the halo's busy layer to be lower than the HUD drawers. This doesn't
- * correspond to any official "TIER", but should be higher than
- * TP.HALO_POPUP_TIER and lower than TP.HUD_POPUP_TIER */
-
 div[busyFor="SherpaHalo"] {
 
-    z-index: 15000;
+    z-index: var(--tibet-HUD-TIER);
 }
 

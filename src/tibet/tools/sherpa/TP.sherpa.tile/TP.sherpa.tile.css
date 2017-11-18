@@ -19,8 +19,7 @@ sherpa|tile {
 
     box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
 
-    /* This should match TIBET's HUD_TILE_TIER constant */
-    z-index: 27250;
+    z-index: var(--tibet-HUD-TILE-TIER);
 
     -ms-user-select: none;
     -moz-user-select: none;
@@ -185,8 +184,7 @@ sherpa|tile > .right_resizer {
     width: 10px;
     height: 100%;
 
-    /* This should match TIBET's HUD_CURTAIN_TIER constant */
-    z-index: 32500;
+    z-index: var(--tibet-CURTAIN-TIER);
 
     cursor: e-resize;
 }
@@ -201,8 +199,7 @@ sherpa|tile > .bottom_resizer {
     width: 100%;
     height: 8px;
 
-    /* This should match TIBET's HUD_CURTAIN_TIER constant */
-    z-index: 32500;
+    z-index: var(--tibet-CURTAIN-TIER);
 
     cursor: s-resize;
 }

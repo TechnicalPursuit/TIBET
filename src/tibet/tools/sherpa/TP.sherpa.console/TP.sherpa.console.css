@@ -20,8 +20,7 @@ sherpa|console {
     margin-left: 3px;
     margin-right: 3px;
 
-    /* This should match TIBET's CONSOLE_INPUT_TIER constant */
-    z-index: 20000;
+    z-index: var(--tibet-CONSOLE-INPUT-TIER);
 
     border-radius: 3px;
 

@@ -20,8 +20,7 @@ sherpa|toggle {
     background-repeat: no-repeat;
     background-image: url("~lib_media/tibet_logo.svg");
 
-    /* This should match TIBET's DRAG_DROP_TIER constant */
-    z-index: 30000;
+    z-index: var(--tibet-DRAG-DROP-TIER);
 }
 
 #center.fullscreen ~ sherpa|toggle {
