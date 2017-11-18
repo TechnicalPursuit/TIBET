@@ -12,6 +12,7 @@
         make.sh.exec('npm install -d');
 
         make.sh.exec('mkdir ../../deps/ace');
+
         make.sh.exec('cp -f -R src-min-noconflict/ace.js ../../deps/ace/ace-tpi.js');
 
         make.sh.exec('cp -f -R src-min-noconflict/mode-javascript.js ../../deps/ace');
