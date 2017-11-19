@@ -4,6 +4,14 @@
     name="tibet_graphics" default="base" basedir="~tibet_src">
 
 <config id="base">
+    <config ref="d3"/>
+</config>
+
+<config id="full">
+    <config ref="base"/>
+</config>
+
+<config id="d3">
     <script src="~lib_deps/d3-tpi.min.js"
         if="boot.minified"  no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/d3-tpi.js"
@@ -31,10 +39,6 @@
 
     <script src="~lib/src/tibet/graphics/TP.core.D3Tag.js"/>
     <script src="~lib/src/tibet/graphics/TP.core.D3VirtualList.js"/>
-</config>
-
-<config id="full">
-    <config ref="base"/>
 </config>
 
 </package>

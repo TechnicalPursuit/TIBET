@@ -1058,7 +1058,7 @@
         // TIBET virtual paths all start with '~'
         if (aPath.indexOf('~') === 0) {
 
-            parts = aPath.split('/');
+            parts = aPath.split(/\\|\//);
             virtual = parts.shift();
 
             // If the path was ~/...something it's app_head prefixed.
@@ -1094,7 +1094,7 @@
 
                 // If the newly constructed path has the same virtual component
                 // then we're going to recurse.
-                if (virtual === nvpath.split('/')[0]) {
+                if (virtual === nvpath.split(/\\|\//)[0]) {
                     throw new Error('Recursive virtual path: ' + aPath);
                 }
 

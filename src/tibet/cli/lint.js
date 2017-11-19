@@ -523,6 +523,12 @@ Cmd.prototype.filterAssetList = function(list) {
             // Depending on the nature of the resource there are two
             // canonical attributes likely to point to the source file.
             src = item.getAttribute('src') || item.getAttribute('href');
+
+            //  If there's no value it must be an inline node. Ignore.
+            if (CLI.isEmpty(src)) {
+                cmd.verbose(src + ' # filtered (inline)');
+                return false;
+            }
         } else {
             src = item;
         }

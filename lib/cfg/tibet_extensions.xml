@@ -10,6 +10,10 @@
     <config ref="shells"/>
 </config>
 
+<config id="baseui">
+    <config ref="base"/>
+</config>
+
 <config id="full">
     <config ref="content"/>
     <config ref="parsers"/>

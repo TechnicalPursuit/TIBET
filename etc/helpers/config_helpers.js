@@ -394,16 +394,29 @@
              * @returns {Boolean} True for success, false for failure.
              */
             Cmd.prototype.writePackageData = function(pkgfile, pkgdata) {
-                var file;
+                var file,
+                    data;
 
                 this.trace('writing package file:' + pkgfile);
 
+                if (!pkgdata || typeof pkgdata !== 'string') {
+                    this.error('Invalid/empty package data.');
+                    return false;
+                }
+                data = pkgdata.trim();
+
                 file = CLI.expandPath(pkgfile);
+
+                //  Ensure we get a valid XML header. If the data came from node
+                //  serialization (which is typical) the header will be missing.
+                if (data.indexOf('<?xml') !== 0) {
+                    data = '<?xml version="1.0"?>\n' + data;
+                }
 
                 try {
                     //  'to' is a shelljs extension to String - we're assuming
                     //  that shelljs is loaded here.
-                    pkgdata.to(file);
+                    data.to(file);
                 } catch (e) {
                     this.error('Unable to save package data: ' + e.message);
                     return false;

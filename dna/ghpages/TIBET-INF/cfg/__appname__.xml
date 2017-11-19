@@ -47,7 +47,6 @@
 
 <config id="inlined" if="boot.phase_two boot.inlined">
     <!-- maintained by tibet resources command -->
-    <package src="~app_tags/APP.{{appname}}.app/" config="inlined" />
 </config>
 
 </package>

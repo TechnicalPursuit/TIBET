@@ -642,6 +642,68 @@ CLI.canRun = function(CmdType) {
 
 
 /**
+ * Cleanses a string, removing control and non-printable characters, essentially
+ * restricting it to just printable ASCII and Extended ASCII characters. Escape
+ * codes are also trimmed by default to assist with working with potentially
+ * colorized string values.
+ * @param {String} input The input string to cleanse.
+ * @param {Boolean} [escapes=true] False to turn off cleansing of escape codes.
+ * @returns {String} The cleansed string.
+ */
+CLI.clean = function(input, escapes) {
+    var str,
+        chars,
+        cleansed;
+
+    if (escapes !== false) {
+        //  Escape codes look like '[blah...m' where 'blah' is chunks of
+        //  semi-color separated numbers. We want to strip those off.
+        str = input.trim().replace(/\[([0-9]|;)*m/g, '');
+    } else {
+        str = input;
+    }
+
+    //  check for control characters etc.
+    chars = str.split('');
+
+    cleansed = chars.filter(function(c) {
+        var code;
+
+        code = c.charCodeAt(0);
+
+        //  a bit nasty, but seems to work even with &nbsp;
+        if (c <= ' ' || code === 160) {
+            //  control characters are largely stripped when found but
+            //  we do handle certain forms of whitespace to preserve
+            //  semantics.
+
+            if (c === ' ' || code === 160) {
+                //  space
+                return true;
+            } else if (c === '\t') {
+                //  tab
+                return true;
+            } else if (c === '\n') {
+                //  newline
+                return true;
+            } else if (c === '\r') {
+                //  the _other_ newline
+                return true;
+            }
+
+            //  control character...not valid.
+            return false;
+        }
+
+        //  Trim to ASCII and Extended ASCII minus 'DEL'
+        return code >= 32 && code !== 127 && code <= 255;
+    });
+
+    return cleansed.join('');
+};
+
+
+/**
  * Returns a function representing a curried version of the provided function.
  */
 CLI.curry = function(method) {
