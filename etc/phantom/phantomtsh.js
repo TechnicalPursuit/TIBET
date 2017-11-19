@@ -1285,7 +1285,7 @@
     PhantomTSH.page.onResourceError = function(resourceError) {
         var str;
 
-        str = 'Unable to load ' + resourceError.url +
+        str = 'ERROR: Unable to load ' + resourceError.url +
             ' (id: ' + resourceError.id +
             ', code: ' + resourceError.errorCode + ').';
 

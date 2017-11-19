@@ -175,16 +175,31 @@ helpers.resource_build = function(make, options) {
     });
 
     if (result.code !== 0) {
-        //  Output for rollup is potentially massive. The actual error will be
-        //  the line(s) which start with 'Error processing rollup:'
-        lines = result.output.split('\n');
-        lines = lines.filter(function(line) {
-            return line.trim().length !== 0;
-        });
-        msg = lines[lines.length - 1];
+
+        if (!CLI.options.verbose) {
+            //  Output for rollup is potentially massive. The actual error will be
+            //  the line(s) which start with 'Error processing rollup:'
+            lines = result.output.split('\n');
+            lines = lines.filter(function(line) {
+                var clean;
+
+                clean = CLI.clean(line, true);
+
+                //  Non-empty error or test failure output should be retained.
+                return clean.length !== 0 &&
+                    (/^ERROR/i.test(clean) ||
+                     /^Exception/i.test(clean) ||
+                     /^not ok/i.test(clean) ||
+                     /with status:/.test(clean));
+            });
+            msg = lines.join('\n');
+        } else {
+            msg = result.output;
+        }
+
         make.error(msg);
 
-        deferred.reject(msg);
+        deferred.reject();
         return deferred.promise;
     } else {
         deferred.resolve(result.output);
