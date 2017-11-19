@@ -173,8 +173,9 @@ function(aSignal) {
 
         overlayCSSClass,
 
-        triggerSignal,
         triggerDoc,
+        triggerSignal,
+
         triggerID,
         triggerTPElem,
 
@@ -189,12 +190,13 @@ function(aSignal) {
         overlayTPElem.addClass(overlayCSSClass);
     }
 
-    //  Grab the trigger signal from the OpenOverlay signal. This will be the
-    //  GUI signal that triggered the OpenOverlay.
-    triggerSignal = aSignal.at('trigger');
-
     triggerDoc = aSignal.at('triggerTPDocument');
     if (TP.notValid(triggerDoc)) {
+
+        //  Grab the trigger signal from the OpenOverlay signal. This will be
+        //  the GUI signal that triggered the OpenOverlay.
+        triggerSignal = aSignal.at('trigger');
+
         if (TP.isValid(triggerSignal)) {
             triggerDoc = triggerSignal.getDocument();
         } else {
