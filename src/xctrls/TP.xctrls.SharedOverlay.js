@@ -668,6 +668,10 @@ function(openSignal, overlayContent) {
         contentID = contentID.unquoted();
     }
 
+    //  If the signal has real content in its payload, then use that in
+    //  preference to the other mechanisms.
+    finalContent = openSignal.at('content');
+
     if (TP.isValid(overlayContent)) {
         //  see below for processing content
     } else if (TP.isURIString(contentURI)) {
