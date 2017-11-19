@@ -249,7 +249,7 @@ function(aSignal) {
     }
 
     //  Set the content of the overlay and activate it.
-    overlayTPElem.setContentAndActivate(aSignal);
+    overlayTPElem.setContentAndActivate(aSignal.getPayload());
 
     return this;
 }, {
@@ -320,7 +320,10 @@ TP.xctrls.SharedOverlay.Inst.defineAttribute('$triggerTPElement');
 
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$$hideOnSignalName');
 
-TP.xctrls.SharedOverlay.Inst.defineAttribute('$$lastOpenSignal');
+//  The content info of the last time this overlay was triggered. This is used
+//  to temporarily cache information while other asynchronous events (like a
+//  stylesheet being loaded) take place
+TP.xctrls.SharedOverlay.Inst.defineAttribute('$$lastContentInfo');
 
 TP.xctrls.SharedOverlay.Inst.defineAttribute('overlayContent',
     TP.cpc('> xctrls|content', TP.hc('shouldCollapse', true)));
@@ -608,7 +611,7 @@ function(aContentObject, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Inst.defineMethod('setContentAndActivate',
-function(openSignal, overlayContent) {
+function(contentInfo, overlayContent) {
 
     /**
      * @method setContentAndActivate
@@ -617,8 +620,8 @@ function(openSignal, overlayContent) {
      *     not supplied, then the supplied trigger signal will be queried for
      *     contentID (the ID of an inlined content element) or contentURI (a URI
      *     pointing to some content).
-     * @param {TP.sig.OpenOverlay} openSignal The signal that was thrown to
-     *     cause this overlay to show.
+     * @param {TP.core.Hash} contentInfo Information about the content, where to
+     *     obtain it, how to render it, where to position it, etc.
      * @param {String|Element|DocumentFragment} [overlayContent] The optional
      *     content to place inside of the overlay element.
      * @returns {TP.core.Node} The result of setting the content of the
@@ -655,23 +658,23 @@ function(openSignal, overlayContent) {
     //  last open signal cached above to call this method again.
     if (!this.isReadyToRender()) {
 
-        this.set('$$lastOpenSignal', openSignal);
+        this.set('$$lastContentInfo', contentInfo);
         return this;
     }
 
-    contentURI = openSignal.at('contentURI');
+    contentURI = contentInfo.at('contentURI');
     if (TP.notEmpty(contentURI)) {
         contentURI = contentURI.unquoted();
     }
 
-    contentID = openSignal.at('contentID');
+    contentID = contentInfo.at('contentID');
     if (TP.notEmpty(contentID)) {
         contentID = contentID.unquoted();
     }
 
     //  If the signal has real content in its payload, then use that in
     //  preference to the other mechanisms.
-    finalContent = openSignal.at('content');
+    finalContent = contentInfo.at('content');
 
     if (TP.isValid(overlayContent)) {
         //  see below for processing content
@@ -710,7 +713,7 @@ function(openSignal, overlayContent) {
 
                         //  Note the recursive call to this method, but this
                         //  time with content.
-                        this.setContentAndActivate(openSignal, elem);
+                        this.setContentAndActivate(contentInfo, elem);
 
                     }.bind(this));
 
@@ -734,7 +737,7 @@ function(openSignal, overlayContent) {
         //  Normalize whitespace
         TP.nodeNormalize(contentElem);
 
-        if (TP.isTrue(openSignal.at('useTopLevelContentElem'))) {
+        if (TP.isTrue(contentInfo.at('useTopLevelContentElem'))) {
             content = contentElem;
         } else if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
             //  Grab all of the content element's child nodes as a
@@ -759,7 +762,7 @@ function(openSignal, overlayContent) {
 
         //  Note the recursive call to this method, but this time with
         //  DocumentFragment content.
-        this.setContentAndActivate(openSignal, content);
+        this.setContentAndActivate(contentInfo, content);
 
         //  Return here - we have the recursive call above.
         return this;
@@ -825,7 +828,7 @@ function(openSignal, overlayContent) {
     handler.observe(tpContent, 'TP.sig.AttachComplete');
 
     //  First, see if the open signal provided a overlay point.
-    overlayPoint = openSignal.at('triggerPoint');
+    overlayPoint = contentInfo.at('triggerPoint');
 
     lastMoveEvent = TP.core.Mouse.$get('lastMove');
     lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
@@ -845,7 +848,7 @@ function(openSignal, overlayContent) {
         triggerRect = triggerTPElem.getGlobalRect();
 
         //  Compute the corner if its not supplied in the trigger signal.
-        overlayCorner = openSignal.at('corner');
+        overlayCorner = contentInfo.at('corner');
         if (TP.isEmpty(overlayCorner)) {
             overlayCorner = this.getOverlayCorner();
         }
@@ -865,7 +868,7 @@ function(openSignal, overlayContent) {
 
     //  If the signal doesn't have a flag to not position the overlay, then
     //  position the overlay relative to the overlay point and the corner.
-    if (TP.notTrue(openSignal.at('noPosition'))) {
+    if (TP.notTrue(contentInfo.at('noPosition'))) {
         this.positionUsing(overlayPoint, mousePoint);
     }
 
@@ -892,7 +895,7 @@ function(aStyleTPElem) {
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
-    var lastOpenSignal;
+    var lastContentInfo;
 
     //  If we're not awakening this tag, then exit - we want none of the
     //  machinery here to execute.
@@ -900,13 +903,13 @@ function(aStyleTPElem) {
         return this;
     }
 
-    lastOpenSignal = this.get('$$lastOpenSignal');
+    lastContentInfo = this.get('$$lastContentInfo');
 
-    if (TP.isValid(lastOpenSignal)) {
+    if (TP.isValid(lastContentInfo)) {
         //  Set the content of the overlay and activate it.
-        this.setContentAndActivate(lastOpenSignal);
+        this.setContentAndActivate(lastContentInfo);
 
-        this.set('$$lastOpenSignal', null);
+        this.set('$$lastContentInfo', null);
     }
 
     return this;
