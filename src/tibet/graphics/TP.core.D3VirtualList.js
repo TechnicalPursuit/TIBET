@@ -741,7 +741,8 @@ TP.extern.d3.VirtualScroller = function() {
                 /* eslint-disable no-extra-parens */
                 container.style(
                         'transform',
-                        'translate(0px, ' + (scrollPosition * rowHeight) + 'px)');
+                        'translate(0px, ' +
+                                    (scrollPosition * rowHeight) + 'px)');
                 /* eslint-enable no-extra-parens */
 
                 control.$set('$startOffset', startOffset, false);
