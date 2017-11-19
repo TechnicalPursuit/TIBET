@@ -370,6 +370,9 @@ function(anOverlayPoint, anAvoidPoint) {
 
         bodyScrollOffsets,
 
+        testPoint,
+        overlayCorner,
+
         diffX,
         diffY;
 
@@ -408,39 +411,70 @@ function(anOverlayPoint, anAvoidPoint) {
     //  If the computed overlay rectangle includes the 'avoid point' (in many
     //  cases, this is the current mouse location), then try to adjust its X and
     //  Y to avoid that point
-    if (TP.isValid(anAvoidPoint) && overlayRect.containsPoint(anAvoidPoint)) {
+    if (TP.isValid(anAvoidPoint)) {
 
-        if (overlayRect.containsPointX(anAvoidPoint)) {
+        testPoint = TP.copy(anAvoidPoint);
 
-            diffX = overlayRect.getX() + overlayRect.getWidth() -
-                anAvoidPoint.getX();
+        overlayCorner = this.getOverlayCorner();
 
-            //  If by subtracting the difference, we're still greater than 0,
-            //  then do that (shifting the overlay towards the left).
-            if (overlayRect.getX() - diffX > 0) {
-                overlayRect.subtractFromX(diffX);
-            } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
-                //  Otherwise, if by adding the difference, we're still less
-                //  than the body's rectangle, then do that (shifting the
-                //  overlay towards the right)
-                overlayRect.addToX(diffX);
-            }
+        //  Adjust the testing point based on our overlay corner. The intent is
+        //  to adjust the testing point by a pixel in both the X and Y
+        //  directions to not have it be part of the test itself.
+        switch (overlayCorner) {
+
+            case TP.NORTHEAST:
+                testPoint.subtractFromX(1);
+                testPoint.addToY(1);
+                break;
+            case TP.NORTHWEST:
+                testPoint.addToX(1);
+                testPoint.addToY(1);
+                break;
+            case TP.SOUTHEAST:
+                testPoint.subtractFromX(1);
+                testPoint.subtractFromY(1);
+                break;
+            case TP.SOUTHWEST:
+                testPoint.addToX(1);
+                testPoint.subtractFromY(1);
+                break;
+            default:
+                break;
         }
 
-        if (overlayRect.containsPointY(anAvoidPoint)) {
+        if (overlayRect.containsPoint(testPoint)) {
+            if (overlayRect.containsPointX(testPoint)) {
 
-            diffY = overlayRect.getY() + overlayRect.getHeight() -
-                anAvoidPoint.getY();
+                diffX = overlayRect.getX() + overlayRect.getWidth() -
+                        testPoint.getX();
 
-            //  If by subtracting the difference, we're still greater than 0,
-            //  then do that (shifting the overlay towards the top).
-            if (overlayRect.getY() - diffY > 0) {
-                overlayRect.subtractFromY(diffY);
-            } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
-                //  Otherwise, if by adding the difference, we're still less
-                //  than the body's rectangle, then do that (shifting the
-                //  overlay towards the bottom)
-                overlayRect.addToY(diffY);
+                //  If by subtracting the difference, we're still greater than 0,
+                //  then do that (shifting the overlay towards the left).
+                if (overlayRect.getX() - diffX > 0) {
+                    overlayRect.subtractFromX(diffX);
+                } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
+                    //  Otherwise, if by adding the difference, we're still less
+                    //  than the body's rectangle, then do that (shifting the
+                    //  overlay towards the right)
+                    overlayRect.addToX(diffX);
+                }
+            }
+
+            if (overlayRect.containsPointY(testPoint)) {
+
+                diffY = overlayRect.getY() + overlayRect.getHeight() -
+                        testPoint.getY();
+
+                //  If by subtracting the difference, we're still greater than 0,
+                //  then do that (shifting the overlay towards the top).
+                if (overlayRect.getY() - diffY > 0) {
+                    overlayRect.subtractFromY(diffY);
+                } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
+                    //  Otherwise, if by adding the difference, we're still less
+                    //  than the body's rectangle, then do that (shifting the
+                    //  overlay towards the bottom)
+                    overlayRect.addToY(diffY);
+                }
             }
         }
     }
