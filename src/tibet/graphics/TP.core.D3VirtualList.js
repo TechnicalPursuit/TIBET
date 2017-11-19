@@ -528,7 +528,7 @@ function() {
     //  Call it's render() to redraw. This is the same method that the virtual
     //  scroller object itself will call when we scroll and provides the
     //  'infinite scroll' capability.
-    virtualScroller.render(true);
+    virtualScroller.render();
 
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');
@@ -631,8 +631,7 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollerFunc,
 
-        isScrolling,
-        forceUpdate;
+        isScrolling;
 
     enter = null;
     update = null;
@@ -653,14 +652,13 @@ TP.extern.d3.VirtualScroller = function() {
     control = null;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
     isScrolling = false;
-    forceUpdate = false;
 
     scrollerFunc = function(container) {
 
         var render,
             scrollRenderFrame;
 
-        render = function(force) {
+        render = function() {
 
             var scrollTop,
                 lastPosition;
@@ -679,8 +677,6 @@ TP.extern.d3.VirtualScroller = function() {
             lastPosition = position;
             position = Math.floor(scrollTop / rowHeight);
             delta = position - lastPosition;
-
-            forceUpdate = force;
 
             scrollRenderFrame(position);
         };
@@ -717,10 +713,6 @@ TP.extern.d3.VirtualScroller = function() {
                 oldEndOffset === endOffset &&
                 oldTotalRows === totalRows &&
                 oldDataSize === dataSize) {
-
-                if (!isScrolling && !forceUpdate) {
-                    return;
-                }
 
                 container.each(
                     function() {
