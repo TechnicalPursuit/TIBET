@@ -650,8 +650,6 @@ function(openSignal, overlayContent) {
         lastMoveEvent,
         lastMoveSignal;
 
-    triggerTPElem = this.get('$triggerTPElement');
-
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will use the trigger and
     //  last open signal cached above to call this method again.
@@ -835,6 +833,8 @@ function(openSignal, overlayContent) {
 
     //  If no overlay point was given, compute one from the triggering element.
     if (TP.notValid(overlayPoint)) {
+
+        triggerTPElem = this.get('$triggerTPElement');
 
         if (TP.notValid(triggerTPElem)) {
             //  TODO: Raise an exception
