@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <package xmlns="http://www.technicalpursuit.com/1999//tibet" name="TIBET" default="base" basedir="~lib_cfg">
 
 <config id="loader">
@@ -109,6 +110,13 @@
     <config ref="sherpa-inlined"/>
     <config ref="test-inlined"/>
 
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.sticky_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.sticky_tpi.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">
