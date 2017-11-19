@@ -388,34 +388,19 @@ function(moveAction) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    //  Go ahead and 'focus' the editor.
-    this.$get('$editorObj').focus();
-
-    /*
-    var currentlyFocusedElem,
-        nativeTA;
-
-    //  Grab the currently focused element, wrap it and blur it. This helps to
-    //  keep things synchronized around the focus stack, etc.
-    currentlyFocusedElem = TP.documentGetFocusedElement(
-                                            this.getNativeDocument());
-    if (TP.isElement(currentlyFocusedElem)) {
-        TP.wrap(currentlyFocusedElem).blur();
-    }
-
-    //  Here we reach down into the private parts of CodeMirror and grab the
-    //  textarea that serves as the focusable element for CodeMirror and
-    //  temporarily swap that out for a TIBET-wrapped version so that focusing
-    //  it will cause the TIBET-related focus machinery to be invoked.
-    nativeTA = this.$get('$editorObj').display.input.textarea;
-    this.$get('$editorObj').display.input.textarea = TP.wrap(nativeTA);
+    var nativeTATPElem;
 
     //  Go ahead and 'focus' the editor.
     this.$get('$editorObj').focus();
 
-    //  Put the original native textarea back.
-    this.$get('$editorObj').display.input.textarea = nativeTA;
-    */
+    //  Make sure to do a separate 'focus' on the textarea that the ACE editor
+    //  uses. This keeps everything in sync for TIBET's focusing machinery.
+    nativeTATPElem = TP.byCSSPath(
+                        'textarea.ace_text-input',
+                        this.getNativeNode(),
+                        true);
+
+    nativeTATPElem.focus();
 
     return this;
 });
@@ -868,6 +853,12 @@ function() {
                     this.dispatch('TP.sig.EditorResize');
                 }.bind(this));
         }.bind(this), 250);
+
+    //  If an attribute was defined that tells us what type of content we're
+    //  going to have, use it.
+    if (this.hasAttribute('contenttype')) {
+        this.setEditorModeFromMIMEType(this.getAttribute('contenttype'));
+    }
 
     //  We're all set up and ready - signal that.
     this.dispatch('TP.sig.DOMReady');

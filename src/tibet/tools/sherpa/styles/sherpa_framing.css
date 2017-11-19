@@ -679,6 +679,7 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #CmdAssistantDialog {
+
     width: 600px;
     height: 370px;
 }
@@ -688,8 +689,8 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #systemPopup {
-    /* This should match the CONTEXT_MENU_TIER constant */
-    z-index: 28750;
+
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
 }
 
 /* -----------------------------*

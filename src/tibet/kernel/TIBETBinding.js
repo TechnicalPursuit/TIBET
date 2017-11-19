@@ -1641,8 +1641,42 @@ function(indexes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
+TP.core.ElementNode.Inst.defineMethod('flushBindingInfoCacheFor',
 function(attributeValue) {
+
+    /**
+     * @method flushBindingInfoCacheFor
+     * @summary Flushes the binding information cache for the supplied attribute
+     *     value.
+     * @param {String} attributeValue The attribute value to obtain binding
+     *     information from.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+        doc,
+
+        registry;
+
+    //  Grab the native Element and Document.
+    elem = this.getNativeNode();
+    doc = TP.nodeGetDocument(elem);
+
+    //  If there's no 'bind registry' installed on the Document, then just
+    //  return.
+    if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
+        return this;
+    }
+
+    registry.removeKey(attributeValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
+function(attributeValue, flushCache) {
 
     /**
      * @method getBindingInfoFrom
@@ -1650,6 +1684,8 @@ function(attributeValue) {
      *     supplied attribute name on the receiver.
      * @param {String} attributeValue The attribute value to obtain binding
      *     information from.
+     * @param {Boolean} [flushCache=false] Whether or not to flush any currently
+     *     cached binding info for the supplied attribute value.
      * @returns {TP.core.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
@@ -1674,6 +1710,10 @@ function(attributeValue) {
     if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
         registry = TP.hc();
         doc[TP.BIND_INFO_REGISTRY] = registry;
+    }
+
+    if (TP.isTrue(flushCache)) {
+        registry.removeKey(attributeValue);
     }
 
     //  If the attribute value (acting as a key) is already in the registry,
@@ -1764,8 +1804,10 @@ function() {
     //  significant' to be first.
     scopeVals.reverse();
 
-    //  Cache the values.
-    this.set('scopeValues', scopeVals);
+    //  Cache the values. Note here how we supply false to *not* broadcast a
+    //  change signal - otherwise, the binding machinery will get involved and
+    //  send extra notifications.
+    this.$set('scopeValues', scopeVals, false);
 
     return scopeVals;
 });
@@ -3806,8 +3848,8 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
      * @summary Sets the bound value of the receiver to the supplied value. This
      *     takes the supplied value and sets that value onto the model.
      * @param {Object} aValue The value to set onto the model.
-     * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
-     *     that, when combined, make up the entire bind scoping path).
+     * @param {String[]} scopeVals The list of scoping values (i.e. parts that,
+     *     when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
      *     bounds aspects of the receiver and what they're bound to.
@@ -4320,9 +4362,9 @@ function(shouldRender) {
                 if (!TP.equal(result, oldVal)) {
 
                     if (aspectName === 'value') {
-                        this.setValue(result, true);
+                        this.setValue(result);
                     } else {
-                        this.setFacet(aspectName, 'value', result, true);
+                        this.setFacet(aspectName, 'value', result);
                     }
 
                     valChanged = true;

@@ -53,8 +53,7 @@ div {
 
     position: absolute;
 
-    /* This should match TIBET's HUD_TIER constant */
-    z-index: 15000;
+    z-index: var(--tibet-HUD-TIER);
 }
 
 .drawer {

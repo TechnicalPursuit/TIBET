@@ -2490,7 +2490,7 @@ TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('hintSelectedIndex');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('currentCompletions');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('completedText');
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$completer');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$searcher');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
                                                 '$editorKeyCommandEntries');
@@ -2514,15 +2514,17 @@ function() {
      * @returns {TP.sherpa.AutoCompletionKeyResponder} A new instance.
      */
 
-    var completer;
+    var searcher;
 
     this.callNextMethod();
 
-    completer = TP.xctrls.Completer.construct();
-    completer.set('defaultMatcher',
+    searcher = TP.xctrls.Searcher.construct();
+
+    searcher.set('dynamicMatchers', true);
+    searcher.set('defaultMatcher',
                     TP.core.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', TP.global));
-    this.set('$completer', completer);
+    this.set('$searcher', searcher);
 
     return this;
 });
@@ -2581,6 +2583,11 @@ function(aSignal) {
 
         this.updateAutoCompletePanel(rowContent);
         this.updateAutoCompleteEditorRange(deltaInfo);
+
+        (function() {
+            consoleGUI.focusInput();
+        }).queueForNextRepaint(consoleGUI.getNativeWindow());
+
     }.bind(this);
 
     consoleGUI.get('consoleInput').setEditorEventHandler('change', handler);
@@ -2713,9 +2720,12 @@ function(aSignal) {
     completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
     completerList.setAttribute('hidden', true);
 
-    this.set('currentCompletions', TP.ac());
-
     this.removeAutoCompleteEditorRange(aSignal.at('trigger').at('acceptHint'));
+
+    //  NB: We need to do this *after* we remove the auto complete range. That
+    //  way, if we're accepting the hint but don't have a range, we can pull the
+    //  selected completion's text value.
+    this.set('currentCompletions', TP.ac());
 
     //  Allow mouse events to move the cursor again.
     consoleGUI.set('allowMouseCursorMovement', true);
@@ -2750,7 +2760,7 @@ function(index) {
         completerList.set('value', data.at(newIndex).at(0));
     }
 
-    this.$set('hintSelectedIndex', index);
+    this.$set('hintSelectedIndex', newIndex);
 
     return this;
 });
@@ -2901,7 +2911,7 @@ TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('updateAutoCompletePanel'
 function(sourceText) {
 
     var completerList,
-        completer,
+        searcher,
 
         completions,
 
@@ -2912,9 +2922,9 @@ function(sourceText) {
         completerValue;
 
     completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
-    completer = this.get('$completer');
+    searcher = this.get('$searcher');
 
-    completions = completer.completeUsing(sourceText);
+    completions = searcher.searchUsing(sourceText);
     this.set('currentCompletions', completions);
 
     if (TP.isEmpty(completions)) {
@@ -2928,7 +2938,6 @@ function(sourceText) {
     }
 
     this.set('completedText', null);
-
 
     data = TP.ac();
     completions.forEach(
@@ -2962,7 +2971,13 @@ function(shouldAcceptHintText) {
         editorObj,
 
         restOfTextRange,
-        restOfTextMarker;
+        restOfTextMarker,
+
+        currentCompletion,
+
+        Range,
+        currentPos,
+        startColPos;
 
     this.set('$shouldUpdateHint', false);
 
@@ -2990,8 +3005,41 @@ function(shouldAcceptHintText) {
     this.set('$shouldUpdateHint', true);
 
     if (shouldAcceptHintText) {
-        editorObj.moveCursorTo(restOfTextRange.end.row,
-                                restOfTextRange.end.column);
+
+        //  If we have a completion range that is marked out by the editor, then
+        //  we can just collapse the range by moving the cursor to the end of
+        //  it.
+        if (TP.isValid(restOfTextRange)) {
+            editorObj.moveCursorTo(restOfTextRange.end.row,
+                                    restOfTextRange.end.column);
+        } else {
+            //  Otherwise, we don't have a completion range, which means that we
+            //  must not have an 'exact' match, but a fuzzy match. Therefore, we
+            //  just get the current completion data and replace the search text
+            //  with the completion text.
+
+            currentCompletion = this.get('currentCompletions').at(
+                                            this.get('hintSelectedIndex'));
+
+            //  Compute a Range to slice back to where the completion began.
+            Range = TP.extern.ace.require('ace/range').Range;
+            currentPos = editorObj.getCursorPosition();
+
+            startColPos = currentPos.column - currentCompletion.input.length;
+
+            restOfTextRange = new Range(
+                                    currentPos.row,         //  startRow
+                                    startColPos,            //  startPos
+                                    currentPos.row,         //  endRow
+                                    currentPos.column       //  endPos
+                                    );
+            editorObj.session.remove(restOfTextRange);
+
+            //  Now, insert the completion text at that position.
+            editorObj.session.insert(
+                {row: currentPos.row, column: startColPos},
+                currentCompletion.text);
+        }
     }
 
     consoleGUI.focusInput();
@@ -3082,20 +3130,21 @@ function(deltaInfo) {
 
     if (TP.notEmpty(completionInput)) {
         completionInputMatcher = TP.rc('^' + TP.regExpEscape(completionInput));
+
+        if (!completionInputMatcher.test(completerValue)) {
+
+            this.set('$hintRestOfTextRange', null);
+            this.set('$hintRestOfTextMarker', null);
+
+            this.set('$shouldUpdateHint', true);
+
+            return this;
+        }
+
+        restOfText = completerValue.slice(completionInput.getSize());
+    } else {
+        restOfText = completerValue;
     }
-
-    if (TP.isEmpty(completionInput) ||
-        !completionInputMatcher.test(completerValue)) {
-
-        this.set('$hintRestOfTextRange', null);
-        this.set('$hintRestOfTextMarker', null);
-
-        this.set('$shouldUpdateHint', true);
-
-        return this;
-    }
-
-    restOfText = completerValue.slice(completionInput.getSize());
 
     colNum = currentPos.column;
     if (TP.isValid(deltaInfo) && deltaInfo.action === 'insert') {

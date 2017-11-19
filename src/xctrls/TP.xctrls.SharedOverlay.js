@@ -130,18 +130,21 @@ function(aSignal, triggerTPDocument) {
     triggerPath = aSignal.at('triggerPath');
     if (TP.notEmpty(triggerPath)) {
         triggerTPElem = TP.byPath(triggerPath, triggerTPDocument).first();
-    } else if (TP.isValid(triggerSignal) &&
-                TP.isValid(triggerSignal.at('target'))) {
-        //  If there's a target on the trigger signal, use that
-        triggerTPElem = TP.wrap(triggerSignal.at('target'));
     } else if (TP.isValid(triggerSignal)) {
-        //  Let it default to the trigger signal's origin
-        origin = triggerSignal.getOrigin();
-        if (TP.isString(origin)) {
-            triggerTPElem = TP.bySystemId(origin);
+        if (TP.isValid(triggerSignal.at('target'))) {
+            //  If there's a target on the trigger signal, use that
+            triggerTPElem = TP.wrap(triggerSignal.at('target'));
         } else {
-            triggerTPElem = TP.wrap(origin);
+            //  Let it default to the trigger signal's origin
+            origin = triggerSignal.getOrigin();
+            if (TP.isString(origin)) {
+                triggerTPElem = TP.bySystemId(origin);
+            } else {
+                triggerTPElem = TP.wrap(origin);
+            }
         }
+    } else {
+        triggerTPElem = triggerTPDocument.getBody();
     }
 
     if (TP.notValid(triggerTPElem)) {
@@ -171,8 +174,9 @@ function(aSignal) {
 
         overlayCSSClass,
 
-        triggerSignal,
         triggerDoc,
+        triggerSignal,
+
         triggerID,
         triggerTPElem,
 
@@ -187,12 +191,13 @@ function(aSignal) {
         overlayTPElem.addClass(overlayCSSClass);
     }
 
-    //  Grab the trigger signal from the OpenOverlay signal. This will be the
-    //  GUI signal that triggered the OpenOverlay.
-    triggerSignal = aSignal.at('trigger');
-
     triggerDoc = aSignal.at('triggerTPDocument');
     if (TP.notValid(triggerDoc)) {
+
+        //  Grab the trigger signal from the OpenOverlay signal. This will be
+        //  the GUI signal that triggered the OpenOverlay.
+        triggerSignal = aSignal.at('trigger');
+
         if (TP.isValid(triggerSignal)) {
             triggerDoc = triggerSignal.getDocument();
         } else {
@@ -368,6 +373,9 @@ function(anOverlayPoint, anAvoidPoint) {
 
         bodyScrollOffsets,
 
+        testPoint,
+        overlayCorner,
+
         diffX,
         diffY;
 
@@ -406,39 +414,70 @@ function(anOverlayPoint, anAvoidPoint) {
     //  If the computed overlay rectangle includes the 'avoid point' (in many
     //  cases, this is the current mouse location), then try to adjust its X and
     //  Y to avoid that point
-    if (TP.isValid(anAvoidPoint) && overlayRect.containsPoint(anAvoidPoint)) {
+    if (TP.isValid(anAvoidPoint)) {
 
-        if (overlayRect.containsPointX(anAvoidPoint)) {
+        testPoint = TP.copy(anAvoidPoint);
 
-            diffX = overlayRect.getX() + overlayRect.getWidth() -
-                anAvoidPoint.getX();
+        overlayCorner = this.getOverlayCorner();
 
-            //  If by subtracting the difference, we're still greater than 0,
-            //  then do that (shifting the overlay towards the left).
-            if (overlayRect.getX() - diffX > 0) {
-                overlayRect.subtractFromX(diffX);
-            } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
-                //  Otherwise, if by adding the difference, we're still less
-                //  than the body's rectangle, then do that (shifting the
-                //  overlay towards the right)
-                overlayRect.addToX(diffX);
-            }
+        //  Adjust the testing point based on our overlay corner. The intent is
+        //  to adjust the testing point by a pixel in both the X and Y
+        //  directions to not have it be part of the test itself.
+        switch (overlayCorner) {
+
+            case TP.NORTHEAST:
+                testPoint.subtractFromX(1);
+                testPoint.addToY(1);
+                break;
+            case TP.NORTHWEST:
+                testPoint.addToX(1);
+                testPoint.addToY(1);
+                break;
+            case TP.SOUTHEAST:
+                testPoint.subtractFromX(1);
+                testPoint.subtractFromY(1);
+                break;
+            case TP.SOUTHWEST:
+                testPoint.addToX(1);
+                testPoint.subtractFromY(1);
+                break;
+            default:
+                break;
         }
 
-        if (overlayRect.containsPointY(anAvoidPoint)) {
+        if (overlayRect.containsPoint(testPoint)) {
+            if (overlayRect.containsPointX(testPoint)) {
 
-            diffY = overlayRect.getY() + overlayRect.getHeight() -
-                anAvoidPoint.getY();
+                diffX = overlayRect.getX() + overlayRect.getWidth() -
+                        testPoint.getX();
 
-            //  If by subtracting the difference, we're still greater than 0,
-            //  then do that (shifting the overlay towards the top).
-            if (overlayRect.getY() - diffY > 0) {
-                overlayRect.subtractFromY(diffY);
-            } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
-                //  Otherwise, if by adding the difference, we're still less
-                //  than the body's rectangle, then do that (shifting the
-                //  overlay towards the bottom)
-                overlayRect.addToY(diffY);
+                //  If by subtracting the difference, we're still greater than 0,
+                //  then do that (shifting the overlay towards the left).
+                if (overlayRect.getX() - diffX > 0) {
+                    overlayRect.subtractFromX(diffX);
+                } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
+                    //  Otherwise, if by adding the difference, we're still less
+                    //  than the body's rectangle, then do that (shifting the
+                    //  overlay towards the right)
+                    overlayRect.addToX(diffX);
+                }
+            }
+
+            if (overlayRect.containsPointY(testPoint)) {
+
+                diffY = overlayRect.getY() + overlayRect.getHeight() -
+                        testPoint.getY();
+
+                //  If by subtracting the difference, we're still greater than 0,
+                //  then do that (shifting the overlay towards the top).
+                if (overlayRect.getY() - diffY > 0) {
+                    overlayRect.subtractFromY(diffY);
+                } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
+                    //  Otherwise, if by adding the difference, we're still less
+                    //  than the body's rectangle, then do that (shifting the
+                    //  overlay towards the bottom)
+                    overlayRect.addToY(diffY);
+                }
             }
         }
     }
@@ -632,6 +671,10 @@ function(openSignal, overlayContent) {
         contentID = contentID.unquoted();
     }
 
+    //  If the signal has real content in its payload, then use that in
+    //  preference to the other mechanisms.
+    finalContent = openSignal.at('content');
+
     if (TP.isValid(overlayContent)) {
         //  see below for processing content
     } else if (TP.isURIString(contentURI)) {
@@ -726,15 +769,24 @@ function(openSignal, overlayContent) {
 
     if (TP.notValid(finalContent)) {
         if (TP.notValid(overlayContent)) {
-            //  TODO: Raise an exception
-            return this;
+            finalContent =
+                TP.documentConstructElement(
+                        this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
+        } else {
+            finalContent = overlayContent;
         }
-
-        finalContent = overlayContent;
     }
 
     if (TP.isString(finalContent)) {
         content = TP.elem(finalContent.unquoted());
+
+        //  If we couldn't form an Element from the finalContent, then we wrap
+        //  it into an XHTML span and try again.
+        if (!TP.isElement(content)) {
+            content = TP.xhtmlnode('<span>' +
+                        finalContent.unquoted() +
+                        '</span>');
+        }
     } else if (TP.isElement(finalContent)) {
         content = TP.nodeCloneNode(finalContent);
         TP.elementRemoveAttribute(content, 'tibet:noawaken', true);

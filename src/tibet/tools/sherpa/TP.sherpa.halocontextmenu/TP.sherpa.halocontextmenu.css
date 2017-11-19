@@ -21,8 +21,7 @@ sherpa|halocontextmenu {
 
 xctrls|popup[class~="sherpahalocontextmenu"] {
 
-    /* This should match the CONTEXT_MENU_TIER constant */
-    z-index: 28750;
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
 }
 
 sherpa|halocontextmenu > .header {

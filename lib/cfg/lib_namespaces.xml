@@ -216,8 +216,8 @@
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
     <script src="xctrls/TP.xctrls.GenericElement.js"/>
 
-    <script src="xctrls/TP.xctrls.Completer/Matchers.js"/>
-    <script src="xctrls/TP.xctrls.Completer/TP.xctrls.Completer.js"/>
+    <script src="xctrls/TP.xctrls.Searcher/Matchers.js"/>
+    <script src="xctrls/TP.xctrls.Searcher/TP.xctrls.Searcher.js"/>
 
     <script src="xctrls/TP.xctrls.Lattice.js"/>
 
@@ -284,6 +284,10 @@
     <script src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.js"/>
     <property name="path.TP.xctrls.propertysheet.style" value="~TP.xctrls.propertysheet/TP.xctrls.propertysheet.less"/>
     <property name="path.TP.xctrls.propertysheet.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.propertysheet_tpi.less"/>
+
+    <script src="xctrls/TP.xctrls.sticky/TP.xctrls.sticky.js"/>
+    <property name="path.TP.xctrls.sticky.style" value="~TP.xctrls.sticky/TP.xctrls.sticky.less"/>
+    <property name="path.TP.xctrls.sticky.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.sticky_tpi.less"/>
 
     <script src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.js"/>
     <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/TP.xctrls.tabbar.less"/>

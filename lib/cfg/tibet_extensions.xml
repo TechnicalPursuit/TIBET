@@ -132,7 +132,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.fuse = Fuse;
+        TP.extern.Fuse = Fuse;
         ]]>
     </script>
 

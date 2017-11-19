@@ -71,6 +71,10 @@ function(aSignal) {
 
     this.setAttribute('hidden', true);
 
+    //  Make sure to clear the content. This will cause any mutation detach
+    //  teardown machinery to be invoked.
+    this.setContent('');
+
     return this;
 });
 

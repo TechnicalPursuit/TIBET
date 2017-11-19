@@ -3338,6 +3338,70 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetTextNodesMatching',
+function(anElement, aMatchFunction) {
+
+    /**
+     * @method elementGetTextNodesMatching
+     * @summary Returns any descendant Text nodes under the supplied element
+     *     that return true when the supplied matching Function executed against
+     *     their nodeValue.
+     * @param {Function} aMatchFunction The Function to execute against the
+     *     nodeValue of each descendant Text node. This should take one
+     *     argument, the text node to test, and return a Boolean as to whether
+     *     the text node matches.
+     * @returns {Text[]} An array of Text nodes that match the criteria in the
+     *     supplied matching Function.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is
+     *     provided to the method.
+     */
+
+    var iterator,
+        matchingTextNodes,
+        textNode;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (!TP.isCallable(aMatchFunction)) {
+        return TP.raise(this, 'TP.sig.InvalidFunction');
+    }
+
+    //  Create a NodeIterator that will walk the DOM tree.
+    iterator = TP.nodeGetDocument(anElement).createNodeIterator(
+                anElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false);
+
+    //  Keep a list of the Text nodes that pass the test.
+    matchingTextNodes = TP.ac();
+
+    //  Iterate to the first Text node.
+    textNode = iterator.nextNode();
+
+    //  NB: We can use the 'isNode()' test since the NodeIterator guarantees us
+    //  only Text nodes.
+    while (TP.isNode(textNode)) {
+
+        //  If executing the test Function returns true, then we add the Text
+        //  node to our result list.
+        if (aMatchFunction(textNode)) {
+            matchingTextNodes.push(textNode);
+        }
+
+        //  Move on to the next Text node.
+        textNode = iterator.nextNode();
+    }
+
+    return matchingTextNodes;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$elementGetPrefixedAttributeNode',
 function(anElement, attributeName, checkAttrNSURI) {
 
@@ -5932,7 +5996,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetDocumentPosition',
-function(aNode, joinChar, stopAncestor) {
+function(aNode, joinChar, stopAncestor, onlyElements) {
 
     /**
      * @method nodeGetDocumentPosition
@@ -5945,6 +6009,8 @@ function(aNode, joinChar, stopAncestor) {
      * @param {Element} [stopAncestor] An element between aNode and aNode's
      *     document node that the position computation will 'stop' at. This
      *     parameter is optional.
+     * @param {Boolean} [onlyElements=false] Whether or not to consider only
+     *     Element nodes when computing the index.
      * @example Compute a document-level index for an XML node:
      *     <code>
      *          xmlDoc = TP.documentFromString('<foo><bar>Some text<goo>More
@@ -5982,7 +6048,7 @@ function(aNode, joinChar, stopAncestor) {
 
     if (TP.isAttributeNode(aNode)) {
         node = TP.attributeGetOwnerElement(aNode);
-        index = TP.nodeGetIndexInParent(node);
+        index = TP.nodeGetIndexInParent(node, onlyElements);
         path.push(index + '@' + TP.attributeGetLocalName(aNode));
         node = node.parentNode;
     } else if (TP.isElement(aNode)) {
@@ -5997,7 +6063,8 @@ function(aNode, joinChar, stopAncestor) {
 
     while (TP.isElement(node) &&
             node !== stopAncestor &&
-            (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
+            (index = TP.nodeGetIndexInParent(node, onlyElements)) !==
+                                                        TP.NOT_FOUND) {
         path.push(index);
         node = node.parentNode;
     }
@@ -6162,8 +6229,8 @@ function(aNode, onlyElements) {
      *     this method or aNode couldn't be found in the parent, this method
      *     returns TP.NOT_FOUND.
      * @param {Node} aNode The DOM node to operate on.
-     * @param {Boolean} onlyElements Whether or not to consider only Element
-     *     nodes when computing the index. The default is false.
+     * @param {Boolean} [onlyElements=false] Whether or not to consider only
+     *     Element nodes when computing the index.
      * @example Get an XML node's index in its parent:
      *     <code>
      *          xmlDoc = TP.documentFromString(

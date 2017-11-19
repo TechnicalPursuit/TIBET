@@ -91,7 +91,7 @@ function(aRequest) {
     //  then just return. When our stylesheet loads, it will trigger the
     //  TP.sig.DOMReady signal.
     if (!tpElem.isReadyToRender()) {
-        return this;
+        return;
     }
 
     //  Signal that we are ready.
@@ -102,47 +102,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Lattice.Type.defineMethod('tagAttachDOM',
+TP.xctrls.Lattice.Type.defineMethod('tagDetachComplete',
 function(aRequest) {
 
     /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  If we're disabled, make sure our group is too - that's what the focus
-    //  management system is going to be looking at.
-    if (TP.elementHasAttribute(elem, 'disabled', true)) {
-        tpElem.get('group').setAttribute('disabled', true);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.Lattice.Type.defineMethod('tagDetachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagDetachDOM
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @method tagDetachComplete
+     * @summary Executes when the tag's detachment phases are fully complete.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -430,6 +395,29 @@ function(anID) {
     TP.elementSetAttribute(elem, 'id', anID, true);
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.xctrls.Lattice} The receiver.
+     */
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  If we're disabled, make sure our group is too - that's what the focus
+    //  management system is going to be looking at.
+    if (this.hasAttribute('disabled')) {
+        this.get('group').setAttribute('disabled', true);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

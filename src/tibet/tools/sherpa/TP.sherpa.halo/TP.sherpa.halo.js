@@ -266,6 +266,10 @@ function() {
 
             if (shouldDelete) {
 
+                //  Tell the main Sherpa object that it should go ahead and
+                //  process DOM mutations to the source DOM.
+                TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
                 //  This will cause the 'MutationDetach' signal to fire, which
                 //  will blur the halo, etc. See that handler for more
                 //  information.
@@ -300,6 +304,11 @@ function() {
         function(shouldEmpty) {
 
             if (shouldEmpty) {
+
+                //  Tell the main Sherpa object that it should go ahead and
+                //  process DOM mutations to the source DOM.
+                TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
                 currentTargetTPElem.empty();
             }
         });
@@ -892,7 +901,6 @@ function(aSignal) {
                     'hideOn', 'SelectMenuItem',
                     'useTopLevelContentElem', true,
                     'trigger', aSignal,
-                    'triggerPath', '#' + triggerTPDoc.getBody().getLocalID(),
                     'triggerTPDocument', triggerTPDoc,
                     'triggerPoint', aSignal.getGlobalPoint()));
         }

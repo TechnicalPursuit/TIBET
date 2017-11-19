@@ -9,19 +9,27 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.xctrls.Completer}
- * @summary Manages switchable XControls. This is a trait type that is meant to
- *     be 'traited' in to a concrete type.
+ * @type {TP.xctrls.Searcher}
+ * @summary
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('xctrls.Completer');
+TP.lang.Object.defineSubtype('xctrls.Searcher');
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Type.defineMethod('constructMatcherForGlobalJSContexts',
+TP.xctrls.Searcher.Type.defineMethod('constructMatcherForGlobalJSContexts',
 function() {
+
+    /**
+     * @method constructMatcherForGlobalJSContexts
+     * @summary Returns a special, locally-programmed,
+     *     TP.core.KeyedSourceMatcher, that can handle the JavaScript global
+     *     object better than a generic keyed source matcher.
+     * @returns {TP.core.KeyedSourceMatcher} A new matcher specially configured
+     *     to handle global JS contexts, including native JS constructors.
+     */
 
     var matcher,
 
@@ -30,11 +38,17 @@ function() {
         keySourceProto,
         keySourceName;
 
+    //  Construct a keyed source matcher with TP.global as the source.
     matcher = TP.core.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global);
+
+    //  Locally program 2 methods onto that instance that will manage native
+    //  objects better than a regular keyed source matcher will. Note the use of
+    //  closured variables - this is ok, since only one of these special
+    //  matchers will be in use at a particular time.
 
     matcher.defineMethod(
         'prepareForResultProcessing',
-        function(matches) {
+        function(matchResults) {
 
             keySource = this.get('keySource');
 
@@ -53,8 +67,8 @@ function() {
         });
 
     matcher.defineMethod(
-        'postProcessCompletion',
-        function(anItem, aCompletionEntry) {
+        'postProcessResult',
+        function(aCompletionEntry) {
 
             var itemText,
                 text;
@@ -64,11 +78,11 @@ function() {
             try {
                 if (keySourceIsNativeType) {
                     if (TP.isValid(Object.getOwnPropertyDescriptor(
-                                    keySource, anItem.original))) {
+                                    keySource, aCompletionEntry.string))) {
                         text = keySourceName + 'Type.' + itemText;
                     } else if (
                         TP.isValid(Object.getOwnPropertyDescriptor(
-                                    keySourceProto, anItem.original))) {
+                                    keySourceProto, aCompletionEntry.string))) {
                         text = keySourceName + 'Inst.' + itemText;
                     } else {
                         text = keySourceName + itemText;
@@ -99,29 +113,29 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineAttribute('$cssMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$cfgMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$keywordsMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$tshHistoryMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$tshExecutionInstanceMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$tshCommandsMatcher');
-TP.xctrls.Completer.Inst.defineAttribute('$uriMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$cssMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$cfgMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$keywordsMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$tshHistoryMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$tshExecutionInstanceMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$tshCommandsMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('$uriMatcher');
 
-TP.xctrls.Completer.Inst.defineAttribute('dynamicMatchers');
-TP.xctrls.Completer.Inst.defineAttribute('matchers');
-TP.xctrls.Completer.Inst.defineAttribute('defaultMatcher');
+TP.xctrls.Searcher.Inst.defineAttribute('dynamicMatchers');
+TP.xctrls.Searcher.Inst.defineAttribute('matchers');
+TP.xctrls.Searcher.Inst.defineAttribute('defaultMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('init',
+TP.xctrls.Searcher.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
-     * @summary
-     * @returns
+     * @summary Initialize the instance.
+     * @returns {TP.xctrls.Searcher} The receiver.
      */
 
     var tshCommands;
@@ -168,65 +182,71 @@ function() {
                     'TIBET_URIS'));
 
     this.set('matchers', TP.ac());
-    this.set('dynamicMatchers', true);
+    this.set('dynamicMatchers', false);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('completeUsing',
-function(aValue) {
+TP.xctrls.Searcher.Inst.defineMethod('addMatcher',
+function(aMatcher) {
 
-    var matchers,
-        defaultMatcher,
+    /**
+     * @method addMatcher
+     * @summary Adds the supplied matcher to the receiver's matcher list.
+     * @param {TP.core.Matcher} aMatcher The matcher to add to the receiver's
+     *     matcher list.
+     * @returns {TP.xctrls.Searcher} The receiver.
+     */
 
-        completions;
+    this.get('matchers').push(aMatcher);
 
-    if (this.get('dynamicMatchers')) {
-        this.updateMatchersFrom(aValue);
-    } else {
-        //  Iterate over the matcher list and set their value
-        this.get('matchers').forEach(
-            function(aMatcher) {
-                aMatcher.set('input', aValue);
-            });
-    }
-
-    //  NB: We do this here because the updateMatchersFrom call probably changed
-    //  this list.
-    matchers = this.get('matchers');
-
-    if (TP.isEmpty(matchers)) {
-        defaultMatcher = this.get('defaultMatcher');
-        if (TP.isValid(defaultMatcher)) {
-            matchers = TP.ac(defaultMatcher);
-        }
-    }
-
-    completions = this.computeCompletionsFrom(aValue, matchers);
-
-    return completions;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('computeCompletionsFrom',
+TP.xctrls.Searcher.Inst.defineMethod('computeResultsFrom',
 function(aValue, matchers) {
 
-    var completions;
+    /**
+     * @method computeResultsFrom
+     * @summary Computes and massages the search results using the supplied
+     *     search term value and set of search matchers.
+     * @param {String} aValue The search term value to search for.
+     * @param {TP.core.Matcher[]} matchers The list of matchers to use to
+     *     compute the result set from.
+     * @returns {Object[]} An Array of search result POJOs that contain one or
+     *     more of the following slots:
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this match result.
+     *          input       {String}    The input that the matcher used to
+     *                                  produce the match result.
+     *          text        {String}    The raw text of the match result.
+     *          score       {Number}    The score, between 0 and 1.0, that was
+     *                                  assigned to the match result. Lower
+     *                                  scores indicate 'better' matches (i.e.
+     *                                  more exact to the search term).
+     *          displayText {String}    A 'marked up' version of the match
+     *                                  result, using XHTML markup
+     *                                  '<span class="match_result">' to
+     *                                  indicate the portions of match result
+     *                                  that matched portions of the search
+     *                                  term.
+     */
 
-    completions = TP.ac();
+    var results;
+
+    results = TP.ac();
 
     matchers.forEach(
         function(matcher) {
 
-            var matchInput,
-                matches;
+            var matches;
 
-            matcher.prepareForMatch();
+            matcher.prepareForMatching();
 
-            matchInput = matcher.get('input');
             matches = matcher.match();
 
             if (TP.notEmpty(matches)) {
@@ -246,15 +266,19 @@ function(aValue, matchers) {
                             displayText,
                             highlightText,
 
-                            completionEntry;
+                            resultEntry;
+
+                        //  NB: 'anItem.string' is either the original datum
+                        //  value if there were no matches or the result datum
+                        //  value if there were.
 
                         if (TP.notValid(anItem.matches)) {
-                            completionEntry = {
+
+                            resultEntry = {
                                 matcherName: anItem.matcherName,
-                                input: matchInput,
+                                input: anItem.input,
                                 text: anItem.string,
                                 score: 1,
-                                className: anItem.cssClass,
                                 displayText: anItem.string
                             };
                         } else {
@@ -292,54 +316,63 @@ function(aValue, matchers) {
                                 }
                             }
 
-                            completionEntry = {
+                            resultEntry = {
                                 matcherName: anItem.matcherName,
-                                input: matchInput,
-                                text: itemEntry.value,
+                                input: anItem.input,
+                                text: anItem.string,
                                 score: anItem.score,
-                                className: anItem.cssClass,
                                 displayText: displayText,
                                 prefix: anItem.prefix
                             };
                         }
 
-                        matcher.postProcessCompletion(anItem, completionEntry);
+                        matcher.postProcessResult(resultEntry);
 
-                        completions.push(completionEntry);
+                        results.push(resultEntry);
                     });
             }
         });
 
-    if (TP.notEmpty(completions)) {
+    if (TP.notEmpty(results)) {
 
-        //  Sort all of the completions together using a custom sorting
-        //  function to go after parts of the completion itself.
-        completions.sort(
-            function(completionA, completionB) {
+        //  Sort all of the results together using a custom sorting function to
+        //  go after parts of the completion itself.
+        results.sort(
+            function(resultA, resultB) {
 
                 //  Sort by matcher name, score, and then text, in that order.
                 return TP.sort.COMPARE(
-                            completionB.matcherName,
-                            completionA.matcherName) ||
+                            resultB.matcherName,
+                            resultA.matcherName) ||
                         TP.sort.COMPARE(
-                            completionA.score,
-                            completionB.score) ||
+                            resultA.score,
+                            resultB.score) ||
                         TP.sort.COMPARE(
-                            completionA.text,
-                            completionB.text);
+                            resultA.text,
+                            resultB.text);
             });
     }
 
-    return completions;
+    return results;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('computeMatchersFrom',
+TP.xctrls.Searcher.Inst.defineMethod('computeMatchersFrom',
 function(aValue, topLevelObjects) {
 
     /**
      * @method computeMatchersFrom
+     * @summary Computes the list of matchers that will be used, based on the
+     *     supplied search term value and set of top level object. This is
+     *     applicable when the receiver is configured to use a 'dynamic matcher
+     *     set'.
+     * @param {String} aValue The search term value to use to compute the list
+     *     of matchers.
+     * @param {Object[]} topLevelObjects The list of top level objects that will
+     *     be used to compute matchers from. This is defaulted to TP.global.
+     * @returns {TP.core.Matcher[]} The list of matchers to use to search
+     *     various search spaces for the specified search term.
      */
 
     var resolveTopLevelObjectReference,
@@ -361,6 +394,10 @@ function(aValue, topLevelObjects) {
         return TP.ac();
     }
 
+    //  A Function that, starting at a particular object, will traverse the
+    //  supplied paths until it has exhausted them. If it doesn't exhaust the
+    //  entire set of paths, but cannot continue because of a non-valid value,
+    //  it will return null.
     resolveTopLevelObjectReference = function(startObj, propertyPaths) {
 
         var pathObj,
@@ -377,7 +414,7 @@ function(aValue, topLevelObjects) {
         }
 
         //  If we haven't exhausted the path, then it doesn't matter what we've
-        //  currently resolved - we must return null
+        //  currently resolved - we must return null.
         if (TP.notEmpty(paths)) {
             return null;
         }
@@ -387,16 +424,25 @@ function(aValue, topLevelObjects) {
 
     matchers = TP.ac();
 
-    info = this.tokenizeForMatchers(aValue);
+    //  Tokenize the value that we're using to try to get the best matcher to
+    //  use for this particular search.
+    info = this.tokenizeForMatcherComputation(aValue);
     tokenizedFragment = info.at('fragment');
 
     topLevelContexts = TP.ifInvalid(topLevelObjects, TP.ac(TP.global));
 
+    //  Switch based on the context that was computed in the tokenization
+    //  method.
     switch (info.at('context')) {
         case 'KEYWORD':
         case 'JS':
             resolutionChunks = info.at('resolutionChunks');
 
+            //  Iterate over each top level context that was supplied (defaulted
+            //  to a single object - TP.global - if none were supplied) and try
+            //  to resolve to an object based on the resolution chunks that were
+            //  computed. Stop at the first object that can be resolved
+            //  properly.
             for (i = 0; i < topLevelContexts.getSize(); i++) {
 
                 resolvedObj = resolveTopLevelObjectReference(
@@ -407,17 +453,18 @@ function(aValue, topLevelObjects) {
                 }
             }
 
-            //  If we couldn't get a resolved object and there were no
-            //  further resolution chunks found after the original tokenized
-            //  fragment, then we just set the resolved object to TP.global
-            //  and use a special keyed source matcher built to resolve objects
-            //  at the JS global scope. Additionally, since we're at the global
-            //  context, we also add the shared keywords matcher.
             tokenizedFragment = TP.ifInvalid(tokenizedFragment, '');
 
+            //  If we couldn't get a resolved object and there were no
+            //  further resolution chunks found after the original tokenized
+            //  fragment, then we just use a matcher that uses TP.global as the
+            //  resolved object and a special keyed source matcher built to
+            //  resolve objects at the JS global scope. Additionally, since
+            //  we're at the global context, we also add the shared JavaScript
+            //  keywords matcher if there's only one tokenized fragment.
             if (TP.notValid(resolvedObj)) {
                 newMatcher =
-                    TP.xctrls.Completer.constructMatcherForGlobalJSContexts();
+                    TP.xctrls.Searcher.constructMatcherForGlobalJSContexts();
                 newMatcher.set('input', tokenizedFragment);
                 matchers.push(newMatcher);
 
@@ -426,64 +473,30 @@ function(aValue, topLevelObjects) {
                                     set('input', aValue));
                 }
             } else {
+
+                //  Otherwise, just use a regular keyed source matcher against
+                //  the resolved object.
                 matchers.push(
                     TP.core.KeyedSourceMatcher.construct(
                                         'JS_CONTEXT', resolvedObj).
                         set('input', tokenizedFragment));
             }
-
-            /*
-            if (TP.notValid(resolvedObj) &&
-                TP.isEmpty(info.at('resolutionChunks'))) {
-
-                resolvedObj = TP.global;
-
-                matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
-                                        'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
-
-                matchers.push(this.get('$keywordsMatcher').
-                                set('input', aValue));
-            } else {
-                matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
-                                        'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
-            }
-            */
-
-            /*
-            } else {
-
-                matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
-                                        'JS_CONTEXT', resolvedObj).
-                        set('input', aValue),
-                    this.get('$keywordsMatcher').
-                        set('input', aValue));
-                    this.get('$tshExecutionInstanceMatcher').
-                        set('input', aValue));
-                    this.get('$tshHistoryMatcher').
-                        set('input', aValue));
-            }
-            */
 
             break;
 
         case 'TSH':
-            matchers.push(this.get('$tshCommandsMatcher').set('input', aValue));
 
+            matchers.push(this.get('$tshCommandsMatcher').set('input', aValue));
             break;
 
         case 'CFG':
-            matchers.push(this.get('$cfgMatcher').set('input', aValue));
 
+            matchers.push(this.get('$cfgMatcher').set('input', aValue));
             break;
 
         case 'URI':
-            matchers.push(this.get('$uriMatcher').set('input', aValue));
 
+            matchers.push(this.get('$uriMatcher').set('input', aValue));
             break;
 
         default:
@@ -495,11 +508,89 @@ function(aValue, topLevelObjects) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('tokenizeForMatchers',
-function(inputText) {
+TP.xctrls.Searcher.Inst.defineMethod('searchUsing',
+function(aValue) {
 
     /**
-     * @method tokenizeForMatchers
+     * @method searchUsing
+     * @summary Searches the various search spaces of the receiver's configured
+     *     matchers for the supplied search term.
+     * @param {String} aValue The search term value to search for.
+     * @returns {Object[]} An Array of search result POJOs that contain one or
+     *     more of the following slots:
+     *          matcherName {String}    The name of the matcher that produced
+     *                                  this match result.
+     *          input       {String}    The input that the matcher used to
+     *                                  produce the match result.
+     *          text        {String}    The raw text of the match result.
+     *          score       {Number}    The score, between 0 and 1.0, that was
+     *                                  assigned to the match result. Lower
+     *                                  scores indicate 'better' matches (i.e.
+     *                                  more exact to the search term).
+     *          displayText {String}    A 'marked up' version of the match
+     *                                  result, using XHTML markup
+     *                                  '<span class="match_result">' to
+     *                                  indicate the portions of match result
+     *                                  that matched portions of the search
+     *                                  term.
+     */
+
+    var matchers,
+        defaultMatcher,
+
+        results;
+
+    //  If we're using a dynamically computed matcher set, then we update that
+    //  every time we want to perform a search.
+    if (this.get('dynamicMatchers')) {
+        this.updateMatcherListUsing(aValue);
+    } else {
+        //  Iterate over the matcher list and set their value.
+        this.get('matchers').forEach(
+            function(aMatcher) {
+                aMatcher.set('input', aValue);
+            });
+    }
+
+    //  NB: We do this here because the updateMatcherListUsing call probably
+    //  changed this list.
+    matchers = this.get('matchers');
+
+    //  If there are no matchers, either computed dynamically because we're
+    //  using a dynamically computed matcher set or because the user didn't
+    //  configure a static matcher, then see if we have a default matcher
+    //  configured. If so, use it.
+    if (TP.isEmpty(matchers)) {
+        defaultMatcher = this.get('defaultMatcher');
+        if (TP.isValid(defaultMatcher)) {
+            defaultMatcher.set('input', aValue);
+            matchers = TP.ac(defaultMatcher);
+        }
+    }
+
+    //  If, after all of that, we've got matchers then use them.
+    if (TP.notEmpty(matchers)) {
+        results = this.computeResultsFrom(aValue, matchers);
+    }
+
+    return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Searcher.Inst.defineMethod('tokenizeForMatcherComputation',
+function(aValue) {
+
+    /**
+     * @method tokenizeForMatcherComputation
+     * @summary Tokenizes the supplied value and returns a hash containing
+     *     information that can be used to compute the set of matchers
+     *     appropriate for searching objects that use that notation to be
+     *     accessed.
+     * @param {String} aValue The search term value to tokenize for use in
+     *     determining the appropriate set of matchers.
+     * @returns {TP.core.Hash} The hash of information about the supplied search
+     *     term after it has been tokenized and analyzed.
      */
 
     var tokens,
@@ -520,9 +611,10 @@ function(inputText) {
 
         isWhitespace;
 
-    //  Invoke the tokenizer
+    //  Invoke the tokenizer to parse JS and TSH tokens (TSH ones mostly to get
+    //  the URI parsing).
     tokens = TP.$condenseJS(
-                    inputText, false, false,
+                    aValue, false, false,
                     //  All of the JS operators *and* the TSH operators
                     TP.tsh.script.$tshAndJSOperators,
                     true, true, true);
@@ -551,6 +643,8 @@ function(inputText) {
         /* eslint-enable no-extra-parens */
     };
 
+    //  Iterate over all of the tokens, many of them JavaScript constructs, but
+    //  others that are TSH ones, like URIs.
     len = tokens.getSize();
     for (i = 0; i < len; i++) {
         token = tokens.at(i);
@@ -687,6 +781,8 @@ function(inputText) {
                 break;
         }
 
+        //  If there are no matches, then set all of these to null, loop and try
+        //  again.
         if (noMatches) {
             context = null;
 
@@ -700,6 +796,8 @@ function(inputText) {
         }
     }
 
+    //  If we weren't able to compute any real resolution chunks, then just set
+    //  the sole one to the fragment itself and use that.
     if (TP.isEmpty(resolutionChunks) && TP.notEmpty(fragment)) {
         resolutionChunks = TP.ac(fragment);
     }
@@ -713,20 +811,42 @@ function(inputText) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Completer.Inst.defineMethod('updateMatchersFrom',
+TP.xctrls.Searcher.Inst.defineMethod('updateMatcherListUsing',
 function(aValue) {
+
+    /**
+     * @method updateMatcherListUsing
+     * @summary Updates the current matcher list using the supplied search term.
+     *     This is applicable when the receiver is configured to use a 'dynamic
+     *     matcher set'.
+     * @param {String} aValue The search term value to use to update the current
+     *     matcher list.
+     * @returns {TP.xctrls.Searcher} The receiver.
+     */
 
     var topLevelObjects,
         matchers;
 
+    //  The current set of global source objects that we'll use to update the
+    //  set of matchers that we're using to search.
+
+    //  TODO: We're currently skipping these objects... why?
+    //  TIBET_CFG
+    //  JS_COMMANDS
+    //  TSH_HISTORY
+    //  TSH_COMMANDS
+    //  TIBET_URIS
+
     topLevelObjects = TP.ac(
                         TP.global,
-                        TP.core.TSH.getDefaultInstance().getExecutionInstance(),
                         TP,
                         APP,
-                        CSS
+                        CSS,
+                        TP.core.TSH.getDefaultInstance().getExecutionInstance()
                     );
 
+    //  Compute the matchers to use using a variety of techniques, including
+    //  parsing the supplied value.
     matchers = this.computeMatchersFrom(aValue, topLevelObjects);
 
     this.set('matchers', matchers);

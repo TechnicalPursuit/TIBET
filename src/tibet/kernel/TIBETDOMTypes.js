@@ -12669,51 +12669,23 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('getTextNodesMatching',
-function(aMatchFunc) {
+function(aMatchFunction) {
 
     /**
      * @method getTextNodesMatching
      * @summary Returns any descendant Text nodes under the receiving element
      *     that return true when the supplied matching Function executed against
      *     their nodeValue.
-     * @param {Function} aMatchFunc The Function to execute against the
+     * @param {Function} aMatchFunction The Function to execute against the
      *     nodeValue of each descendant Text node. This should take one
      *     argument, the text node to test, and return a Boolean as to whether
      *     the text node matches.
+     * @returns {Text[]} An array of Text nodes that match the criteria in the
+     *     supplied matching Function.
      */
 
-    var iterator,
-        matchingTextNodes,
-        textNode;
-
-    //  Create a NodeIterator that will walk the DOM tree.
-    iterator = this.getDocument().getNativeNode().createNodeIterator(
-                this.getNativeNode(),
-                NodeFilter.SHOW_TEXT,
-                null,
-                false);
-
-    //  Keep a list of the Text node that pass the test.
-    matchingTextNodes = TP.ac();
-
-    //  Iterate to the first Text node.
-    textNode = iterator.nextNode();
-
-    //  NB: We can use the 'isNode()' test since the NodeIterator guarantees us
-    //  only Text nodes.
-    while (TP.isNode(textNode)) {
-
-        //  If executing the test Function returns true, then we add the Text
-        //  node to our result list.
-        if (aMatchFunc(textNode)) {
-            matchingTextNodes.push(textNode);
-        }
-
-        //  Move on to the next Text node.
-        textNode = iterator.nextNode();
-    }
-
-    return matchingTextNodes;
+    return TP.elementGetTextNodesMatching(
+                            this.getNativeNode(), aMatchFunction);
 });
 
 //  ------------------------------------------------------------------------

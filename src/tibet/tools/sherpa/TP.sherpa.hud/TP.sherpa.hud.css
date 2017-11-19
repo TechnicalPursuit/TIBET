@@ -58,8 +58,7 @@ div#zoomOut {
 
     will-change: width;
 
-    /* This should match TIBET's HUD_V_EDGE_TIER constant */
-    z-index: 22500;
+    z-index: var(--tibet-HUD-V-EDGE-TIER);
 }
 
 .framing.h-edge.north,
@@ -67,8 +66,7 @@ div#zoomOut {
 
     will-change: height;
 
-    /* This should match TIBET's HUD_H_EDGE_TIER constant */
-    z-index: 26250;
+    z-index: var(--tibet-HUD-H-EDGE-TIER);
 }
 
 /* Transition settings for when the HUD is hidden and is going through it's
@@ -153,8 +151,7 @@ sherpa|hud:not([pclass|closed]) .framing.v-edge.west {
 
     will-change: width, height;
 
-    /* This should match TIBET's HUD_CORNER_TIER constant */
-    z-index: 27000;
+    z-index: var(--tibet-HUD-CORNER-TIER);
 }
 
 /* Transition settings for when the HUD is hidden and is going through it's

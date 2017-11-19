@@ -1,0 +1,38 @@
+/*
+    CSS styles for the 'xctrls:sticky' control.
+*/
+
+@import (reference) url("../TP.xctrls_variables.less");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+xctrls|sticky {
+
+    position: absolute;
+    display: inline-block;
+
+    top: 0;
+    left: 0;
+
+    &[pclass|hidden] {
+
+        display: none;
+    }
+
+    & > xctrls|content {
+
+        width: 100%;
+        height: 100%;
+
+        line-height: 1.2;
+    }
+
+    /* NB: Any direct children of our content should be set to 'block' to fit
+    our content element */
+    & > xctrls|content > * {
+
+        display: block;
+    }
+}
+

@@ -57,7 +57,6 @@ function(anElement) {
 
         location;
 
-
     //  Query for any attributes named 'io', 'in', 'scope' or 'repeat', no
     //  matter what namespace they're in. Note that this is about as
     //  sophisticated as we can get with namespaces using the querySelectorAll()
@@ -293,6 +292,11 @@ function(anElement) {
                 TP.elementSetAttribute(newSpan,
                                         'tibet:scalar',
                                         'value',
+                                        true);
+
+                TP.elementSetAttribute(newSpan,
+                                        'tibet:desugaredTextBinding',
+                                        'true',
                                         true);
 
                 //  Replace that text node with the span, leaving the text nodes

@@ -76,6 +76,39 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Performs any 'detach' logic when the node is detached from its
+     *     owning document.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  Perform tear down for instances of this type.
+    tpElem.teardown();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -495,7 +528,7 @@ function() {
     //  Call it's render() to redraw. This is the same method that the virtual
     //  scroller object itself will call when we scroll and provides the
     //  'infinite scroll' capability.
-    virtualScroller.render(true);
+    virtualScroller.render();
 
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');
@@ -560,6 +593,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     * @summary Tears down the receiver by performing housekeeping cleanup, like
+     *     ignoring signals it's observing, etc.
+     * @returns {TP.sherpa.D3VirtualList} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.extern.d3.VirtualScroller = function() {
 
     var enter,
@@ -583,8 +631,7 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollerFunc,
 
-        isScrolling,
-        forceUpdate;
+        isScrolling;
 
     enter = null;
     update = null;
@@ -605,14 +652,13 @@ TP.extern.d3.VirtualScroller = function() {
     control = null;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
     isScrolling = false;
-    forceUpdate = false;
 
     scrollerFunc = function(container) {
 
         var render,
             scrollRenderFrame;
 
-        render = function(force) {
+        render = function() {
 
             var scrollTop,
                 lastPosition;
@@ -631,8 +677,6 @@ TP.extern.d3.VirtualScroller = function() {
             lastPosition = position;
             position = Math.floor(scrollTop / rowHeight);
             delta = position - lastPosition;
-
-            forceUpdate = force;
 
             scrollRenderFrame(position);
         };
@@ -670,10 +714,6 @@ TP.extern.d3.VirtualScroller = function() {
                 oldTotalRows === totalRows &&
                 oldDataSize === dataSize) {
 
-                if (!isScrolling && !forceUpdate) {
-                    return;
-                }
-
                 container.each(
                     function() {
                         var rowUpdateSelection,
@@ -701,7 +741,8 @@ TP.extern.d3.VirtualScroller = function() {
                 /* eslint-disable no-extra-parens */
                 container.style(
                         'transform',
-                        'translate(0px, ' + (scrollPosition * rowHeight) + 'px)');
+                        'translate(0px, ' +
+                                    (scrollPosition * rowHeight) + 'px)');
                 /* eslint-enable no-extra-parens */
 
                 control.$set('$startOffset', startOffset, false);

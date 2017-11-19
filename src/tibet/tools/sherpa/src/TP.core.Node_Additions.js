@@ -1163,5 +1163,74 @@ function(insertionPointElement, insertionPosition) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('sherpaDomHudGetLabel',
+function() {
+
+    /**
+     * @method sherpaDomHudGetLabel
+     * @summary Returns the label that the Sherpa's 'domhud' panel will use when
+     *     displaying it's representation for this node.
+     * @returns {String} The label to use in the 'domhud' panel.
+     */
+
+    return this.getFullName();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('sherpaGetTextContent',
+function() {
+
+    /**
+     * @method sherpaGetTextContent
+     * @summary Returns the text content that the Sherpa will use when
+     *     manipulating the receiver's 'text content'. Note that the Sherpa
+     *     currently only manipulates a single Text node that exists as a leaf
+     *     of an Element. If there is mixed Element and Text node content, then
+     *     that is ignored and this method returns the empty String.
+     * @returns {String} The text content that the Sherpa will use to manage the
+     *     receiver's 'text content'.
+     */
+
+    var str;
+
+    if (TP.isEmpty(this.getChildNodes())) {
+        str = '';
+    } else if (TP.notEmpty(this.getDescendantElements())) {
+        str = '';
+    } else {
+        str = this.getTextContent();
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('sherpaSetTextContent',
+function(aContent) {
+
+    /**
+     * @method sherpaSetTextContent
+     * @summary Sets the text content of the receiver as the Sherpa would do it.
+     *     Note that since the Sherpa currently does not handle more than a
+     *     single Text node as a leaf under an Element node, if the receiver has
+     *     descendant elements, this method will do nothing.
+     * @param {String} aContent The content to set the receiver's text content
+     *     to.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    if (TP.notEmpty(this.getDescendantElements())) {
+        return this;
+    } else {
+        this.setTextContent(aContent);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

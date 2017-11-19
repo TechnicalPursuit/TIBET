@@ -1460,6 +1460,12 @@ function(REQUEST$$, CMDTYPE$$) {
         // SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
         SCRIPT$$ = $SCRIPT;
 
+        //  Tell the main Sherpa object that it should go ahead and process DOM
+        //  mutations to the source DOM.
+        if (TP.sys.hasFeature('sherpa')) {
+            TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        }
+
         FLAG$$ = TP.sys.shouldThrowExceptions();
         TP.sys.shouldThrowExceptions(true);
 
@@ -1503,6 +1509,13 @@ function(REQUEST$$, CMDTYPE$$) {
                 END$$ = Date.now();
                 TIME$$ = TP.ifInvalid($REQUEST.get('$evaltime'), 0);
                 $REQUEST.set('$evaltime', TIME$$ + (END$$ - START$$));
+
+                //  An exception was thrown - no sense in having the main Sherpa
+                //  object process DOM mutations to the source DOM.
+                if (TP.sys.hasFeature('sherpa')) {
+                    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations',
+                                                false);
+                }
 
                 if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
                     //  If we're ignoring eval errors, then we just complete the

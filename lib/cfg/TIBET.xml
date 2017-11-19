@@ -159,6 +159,9 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tooltip.TP.xctrls.tooltip.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.tooltip.TP.xctrls.tooltip.css.js"/>
 
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.sticky.TP.xctrls.sticky.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.sticky.TP.xctrls.sticky.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
 
@@ -180,6 +183,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.notifier_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.table_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.tooltip_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.sticky_all.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_variables_tpi.css.js"/>
 
@@ -197,6 +201,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.notifier_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.table_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.tooltip_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.sticky_tpi.css.js"/>
 </config>
 
 <config id="sherpa-inlined" if="boot.phase_one boot.inlined">

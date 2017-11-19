@@ -45,6 +45,7 @@ function(aRequest) {
     tpElem = TP.wrap(elem);
 
     tpElem.observe(TP.uc('urn:tibet:domhud_attr_source'), 'ValueChange');
+    tpElem.observe(TP.uc('urn:tibet:domhud_content_source'), 'ValueChange');
 
     return;
 });
@@ -73,6 +74,7 @@ function(aRequest) {
     tpElem = TP.wrap(elem);
 
     tpElem.ignore(TP.uc('urn:tibet:domhud_attr_source'), 'ValueChange');
+    tpElem.ignore(TP.uc('urn:tibet:domhud_content_source'), 'ValueChange');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -153,6 +155,79 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
+    switch (aSignal.getOrigin()) {
+
+        case TP.uc('urn:tibet:domhud_attr_source'):
+            this.updateAttributes(aSignal);
+            break;
+        case TP.uc('urn:tibet:domhud_content_source'):
+            this.updateTextSource(aSignal);
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericContent.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of this content panel. For this type, this
+     *     updates the 'attributes model', which is what it's GUI is bound to.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     */
+
+    var attributesModel,
+
+        modelURI,
+
+        str,
+
+        textContentModel;
+
+    //  NB: In this method, 'value' is the source element that we're currently
+    //  inspecting.
+
+    //  Compute the attributes model.
+    attributesModel = this.buildAttributesModel(aValue);
+
+    //  Set it as the resource of the URI.
+    modelURI = TP.uc('urn:tibet:domhud_attr_source');
+    modelURI.setResource(attributesModel, TP.hc('signalChange', true));
+
+    //  Compute the text content model.
+    str = aValue.sherpaGetTextContent();
+
+    textContentModel = TP.hc('info', str);
+
+    modelURI = TP.uc('urn:tibet:domhud_content_source');
+    modelURI.setResource(textContentModel, TP.hc('signalChange', true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericContent.Inst.defineMethod('updateAttributes',
+function(aSignal) {
+
+    /**
+     * @method updateAttributes
+     * @summary Updates the attributes according to the data in their bound
+     *     source.
+     * @param {ValueChange} aSignal The signal that caused this update method to
+     *     be invoked.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
     var aspectPath,
 
         targetTPElem,
@@ -189,6 +264,10 @@ function(aSignal) {
     if (TP.notValid(targetTPElem)) {
         return this;
     }
+
+    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  mutations to the source DOM.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
     //  Grab an ordered list of all of the attribute names.
     allAttrNames = this.get('$attributeNames');
@@ -299,39 +378,51 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineMethod('setValue',
-function(aValue, shouldSignal) {
+TP.sherpa.domhud_genericContent.Inst.defineMethod('updateTextSource',
+function(aSignal) {
 
     /**
-     * @method setValue
-     * @summary Sets the value of this content panel. For this type, this
-     *     updates the 'attributes model', which is what it's GUI is bound to.
-     * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false
-     *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     * @method updateTextSource
+     * @summary Updates the text source according to the data in its bound
+     *     source.
+     * @param {ValueChange} aSignal The signal that caused this update method to
+     *     be invoked.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var attributesModel,
-        contentModel,
+    var aspectPath,
+        targetTPElem,
 
-        modelURI;
+        value;
 
-    //  Compute the attributes model.
-    attributesModel = this.buildAttributesModel(aValue);
+    aspectPath = aSignal.at('aspect');
 
-    //  Set it as the resource of the URI.
-    modelURI = TP.uc('urn:tibet:domhud_attr_source');
-    modelURI.setResource(attributesModel, TP.hc('signalChange', true));
+    //  If the whole value changed, we're not interested.
+    if (aspectPath === 'value') {
+        return this;
+    }
 
-    //  Set the editor under us to expect XHTML.
-    this.get('xctrls|codeeditor').setEditorModeFromMIMEType(TP.XHTML_ENCODED);
+    //  Make sure we have a valid attributes target.
+    targetTPElem =
+        TP.uc('urn:tibet:domhud_target_source').getResource().get('result');
+    if (TP.notValid(targetTPElem)) {
+        return this;
+    }
 
-    //  Compute the content model.
-    contentModel = aValue.getContent();
+    //  Grab the value from the content source and set that as the text content
+    //  of the element.
+    value = TP.uc('urn:tibet:domhud_content_source').
+                getResource().get('result').get(aspectPath);
 
-    modelURI = TP.uc('urn:tibet:domhud_content_source');
-    modelURI.setResource(contentModel, TP.hc('signalChange', true));
+    if (TP.isEmpty(TP.trim(value))) {
+        return this;
+    }
+
+    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  mutations to the source DOM.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
+    targetTPElem.sherpaSetTextContent(value);
 
     return this;
 });

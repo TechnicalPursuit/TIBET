@@ -235,7 +235,7 @@ function(aTPElement) {
 
             arr = TP.ac(
                     TP.lid(node, true),
-                    TP.elementGetFullName(node));
+                    aNode.sherpaDomHudGetLabel());
 
             if (aNode === aTPElement) {
                 arr.push('target');
@@ -339,9 +339,12 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var domContent;
+    var domContent,
+        doc;
 
     domContent = enterSelection.append('li');
+
+    doc = TP.sys.uidoc(true);
 
     domContent.attr(
             'pclass:selected',
@@ -387,9 +390,18 @@ function(enterSelection) {
 
                 return val;
             }).each(
-            function() {
+            function(d) {
+                var peerTPElem;
+
                 TP.elementSetAttribute(
                         this, 'dnd:accept', 'tofu dom_node', true);
+
+                if (d[1] !== 'spacer') {
+                    peerTPElem = TP.byId(d[0], doc);
+                    if (!peerTPElem.haloCanFocus()) {
+                        TP.wrap(this).setAttribute('disabled', true);
+                    }
+                }
             });
 
     return domContent;
@@ -454,6 +466,10 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var doc;
+
+    doc = TP.sys.uidoc(true);
+
     updateSelection.attr(
             'pclass:selected',
             function(d) {
@@ -498,9 +514,18 @@ function(updateSelection) {
 
                 return val;
             }).each(
-            function() {
+            function(d) {
+                var peerTPElem;
+
                 TP.elementSetAttribute(
                     this, 'dnd:accept', 'tofu dom_node', true);
+
+                if (d[1] !== 'spacer') {
+                    peerTPElem = TP.byId(d[0], doc);
+                    if (!peerTPElem.haloCanFocus()) {
+                        TP.wrap(this).setAttribute('disabled', true);
+                    }
+                }
             });
 
     return updateSelection;
@@ -946,7 +971,7 @@ function(aSignal) {
     //  Update the target source element before we refresh.
     TP.uc('urn:tibet:domhud_target_source').setResource(
             haloTarget,
-            TP.hc('signalChange', true));
+            TP.hc('observeResource', false, 'signalChange', true));
 
     return this.callNextMethod();
 });
@@ -1087,7 +1112,9 @@ function(aSignal) {
         existedHandler =
             function(aTileTPElem) {
 
-                modelURI.setResource(sourceTPElem, TP.hc('signalChange', true));
+                modelURI.setResource(
+                    sourceTPElem,
+                    TP.hc('observeResource', false, 'signalChange', true));
 
                 //  Position the tile
                 tileTPElem = TP.byId('DOMInfo_Tile',
@@ -1119,7 +1146,7 @@ function(aSignal) {
                 //  kick things off.
                 modelURI.setResource(
                     sourceTPElem,
-                    TP.hc('observeResource', true, 'signalChange', true));
+                    TP.hc('observeResource', false, 'signalChange', true));
 
                 //  Position the tile
                 aTileTPElem.setPagePosition(

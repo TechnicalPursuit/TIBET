@@ -28,8 +28,7 @@ sherpa|consoleoutput {
 
     overflow: auto;
 
-    /* This should match TIBET's CONSOLE_OUTPUT_TIER constant */
-    z-index: 27500;
+    z-index: var(--tibet-CONSOLE-OUTPUT-TIER);
 
     transition: margin 0.25s;
 

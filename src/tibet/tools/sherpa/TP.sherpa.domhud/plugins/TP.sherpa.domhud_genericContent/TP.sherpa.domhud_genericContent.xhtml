@@ -6,7 +6,7 @@
         <![CDATA[
             [
                 ["Attributes","Attributes"],
-                ["Content","Content"]
+                ["Text Content","Text Content"]
             ]
         ]]>
     </tibet:data>
@@ -38,9 +38,11 @@
             </xctrls:content>
         </xctrls:panel>
         <xctrls:panel>
-            <xctrls:value>Content</xctrls:value>
+            <xctrls:value>Text Content</xctrls:value>
             <xctrls:content>
-                <xctrls:codeeditor bind:in="urn:tibet:domhud_content_source"/>
+                <div class="textcontent_container">
+                    <textarea id="DOMInfo_Textcontent" bind:io="urn:tibet:domhud_content_source#tibet(info)"/>
+                </div>
             </xctrls:content>
         </xctrls:panel>
     </xctrls:panelbox>
