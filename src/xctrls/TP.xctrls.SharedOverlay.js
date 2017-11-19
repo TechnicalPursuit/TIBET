@@ -130,17 +130,18 @@ function(aSignal, triggerTPDocument) {
     triggerPath = aSignal.at('triggerPath');
     if (TP.notEmpty(triggerPath)) {
         triggerTPElem = TP.byPath(triggerPath, triggerTPDocument).first();
-    } else if (TP.isValid(triggerSignal) &&
-                TP.isValid(triggerSignal.at('target'))) {
-        //  If there's a target on the trigger signal, use that
-        triggerTPElem = TP.wrap(triggerSignal.at('target'));
     } else if (TP.isValid(triggerSignal)) {
-        //  Let it default to the trigger signal's origin
-        origin = triggerSignal.getOrigin();
-        if (TP.isString(origin)) {
-            triggerTPElem = TP.bySystemId(origin);
+        if (TP.isValid(triggerSignal.at('target'))) {
+            //  If there's a target on the trigger signal, use that
+            triggerTPElem = TP.wrap(triggerSignal.at('target'));
         } else {
-            triggerTPElem = TP.wrap(origin);
+            //  Let it default to the trigger signal's origin
+            origin = triggerSignal.getOrigin();
+            if (TP.isString(origin)) {
+                triggerTPElem = TP.bySystemId(origin);
+            } else {
+                triggerTPElem = TP.wrap(origin);
+            }
         }
     } else {
         triggerTPElem = triggerTPDocument.getBody();
