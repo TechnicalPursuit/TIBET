@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<xctrls:sticky
+        class="POPUP_TIER {{$SOURCE.(@class)}}"
+        tibet:assembly="xctrls:sticky"
+        pclass:hidden="true">
+    <xctrls:content tibet:focuscontext="true">
+        {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:sticky')])}}
+    </xctrls:content>
+</xctrls:sticky>
+
