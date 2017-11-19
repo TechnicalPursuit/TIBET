@@ -775,6 +775,14 @@ function(openSignal, overlayContent) {
 
     if (TP.isString(finalContent)) {
         content = TP.elem(finalContent.unquoted());
+
+        //  If we couldn't form an Element from the finalContent, then we wrap
+        //  it into an XHTML span and try again.
+        if (!TP.isElement(content)) {
+            content = TP.xhtmlnode('<span>' +
+                        finalContent.unquoted() +
+                        '</span>');
+        }
     } else if (TP.isElement(finalContent)) {
         content = TP.nodeCloneNode(finalContent);
         TP.elementRemoveAttribute(content, 'tibet:noawaken', true);
