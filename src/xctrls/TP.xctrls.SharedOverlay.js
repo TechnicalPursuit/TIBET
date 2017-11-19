@@ -766,11 +766,12 @@ function(openSignal, overlayContent) {
 
     if (TP.notValid(finalContent)) {
         if (TP.notValid(overlayContent)) {
-            //  TODO: Raise an exception
-            return this;
+            finalContent =
+                TP.documentConstructElement(
+                        this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
+        } else {
+            finalContent = overlayContent;
         }
-
-        finalContent = overlayContent;
     }
 
     if (TP.isString(finalContent)) {
