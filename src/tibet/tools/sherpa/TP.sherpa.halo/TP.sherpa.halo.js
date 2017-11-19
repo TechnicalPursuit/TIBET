@@ -901,7 +901,6 @@ function(aSignal) {
                     'hideOn', 'SelectMenuItem',
                     'useTopLevelContentElem', true,
                     'trigger', aSignal,
-                    'triggerPath', '#' + triggerTPDoc.getBody().getLocalID(),
                     'triggerTPDocument', triggerTPDoc,
                     'triggerPoint', aSignal.getGlobalPoint()));
         }

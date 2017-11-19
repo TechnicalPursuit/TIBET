@@ -142,6 +142,8 @@ function(aSignal, triggerTPDocument) {
         } else {
             triggerTPElem = TP.wrap(origin);
         }
+    } else {
+        triggerTPElem = triggerTPDocument.getBody();
     }
 
     if (TP.notValid(triggerTPElem)) {
