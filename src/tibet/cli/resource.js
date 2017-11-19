@@ -515,7 +515,8 @@ Cmd.prototype.processResources = function() {
                 return;
             }
 
-            base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
+            base = resource.slice(resource.indexOf(path.sep) + 1).replace(
+                /\//g, '-');
             file = path.join(buildpath, base);
             if (path.extname(file) !== '.js') {
                 file += '.js';
@@ -548,8 +549,9 @@ Cmd.prototype.processResources = function() {
                 methodName;
 
             //  Replace the resource name with a normalized variant.
-            // base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
-            base = resource.replace(/^~/, '').replace(/\//g, '.');
+            // base = resource.slice(resource.indexOf(path.sep) + 1).replace(
+            //      /\//g, '-');
+            base = resource.replace(/^~/, '').replace(/\//g, '-');
             file = path.join(buildpath, base);
             if (path.extname(file) !== '.js') {
                 file += '.js';
@@ -965,6 +967,7 @@ Cmd.prototype.updatePackage = function() {
             dirty = true;
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
+            assets.push(value);
         } else {
             void 0;
             // cmd.log(str + ' (exists)');

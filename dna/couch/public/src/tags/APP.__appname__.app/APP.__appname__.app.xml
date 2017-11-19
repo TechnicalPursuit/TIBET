@@ -20,8 +20,4 @@
     <resource src="APP.{{appname}}.app.css"/>
 </config>
 
-<config id="inlined" if="boot.phase_two boot.inlined">
-    <!-- don't edit this one; maintained by tibet resources command -->
-</config>
-
 </package>

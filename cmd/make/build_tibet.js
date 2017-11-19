@@ -18,6 +18,7 @@
             'check_package',
             'build_resources',
             '_rollup_base',
+            '_rollup_baseui',
             '_rollup_full',
             '_rollup_developer',
             '_rollup_contributor'

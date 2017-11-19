@@ -9,6 +9,12 @@
     <script src="~lib_build/tibet_base.min.js" if="boot.minified" unless="boot.teamtibet" />
 </config>
 
+<config id="baseui" if="boot.phase_one">
+    <package src="~lib_cfg/TIBET.xml" config="baseui" if="boot.teamtibet" />
+    <script src="~lib_build/tibet_baseui.js" unless="boot.minified boot.teamtibet" />
+    <script src="~lib_build/tibet_baseui.min.js" if="boot.minified" unless="boot.teamtibet" />
+</config>
+
 <config id="full" if="boot.phase_one">
     <package src="~lib_cfg/TIBET.xml" config="full" if="boot.teamtibet" />
     <script src="~lib_build/tibet_full.js" unless="boot.minified boot.teamtibet" />

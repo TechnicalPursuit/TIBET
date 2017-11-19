@@ -1,4 +1,4 @@
-{{topic}}({{section}}) -- manage CouchDB databases and applications
+{{topic}}({{section}}) -- manage the TIBET Workflow System (TWS)
 =============================================
 
 ## SYNOPSIS

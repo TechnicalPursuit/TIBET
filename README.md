@@ -45,10 +45,6 @@
 **Check your OS, browser, and Node/npm versions against
 TIBET's <a href="#prereqs">prerequisites</a>.**
 
-If you prefer to install via `git` see the <a href="#gitinstall">TIBET Git
-Installation</a> instructions.
-
-
 #### Installing TIBET via `npm`
 
 TIBET should be installed globally using `npm install -g`:<br/>
@@ -62,6 +58,12 @@ your network connection and the particular version being installed. Be patient
 :).
 
 **Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.**
+
+#### Installing TIBET via `git`
+
+If you prefer to install via `git` see the <a href="#gitinstall">TIBET Git
+Installation</a> instructions.
+
 
 <br/>
 
