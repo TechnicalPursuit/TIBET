@@ -308,6 +308,46 @@ function(aSignal) {
     return overlayTPElem;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Type.defineMethod('preload',
+function(contentInfo) {
+
+    /**
+     * @method preload
+     * @summary Preloads an overlay of the receiving type given the combination
+     *     of supplied overlayID and triggerID. Note that, if this is a shared
+     *     overlay, any content preloaded with this step might very well be
+     *     replaced with new content if the first invocation to 'activate' this
+     *     overlay is not from the same trigger.
+     * @param {TP.core.Hash} contentInfo Information about the content, where to
+     *     obtain it, how to render it, where to position it, etc.
+     * @returns {TP.xctrls.SharedOverlay} The receiver.
+     */
+
+    var triggerDoc,
+        overlayID,
+        triggerID,
+
+        overlayTPElem;
+
+    triggerDoc = contentInfo.at('triggerTPDocument');
+    overlayID = contentInfo.at('overlayID');
+    triggerID = contentInfo.at('triggerID');
+
+    //  Grab the (possibly shared) overlay element. This will cause whatever
+    //  'type-level' setup of the content to take place.
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
+    overlayTPElem.set('$currentTriggerID', triggerID);
+
+    //  Invoke loadContent with contentInfo. This should cause the
+    //  'instance-level' setup of the content to take place (as far as it can,
+    //  given that this might be a shared overlay).
+    overlayTPElem.loadContent(contentInfo);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
