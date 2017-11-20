@@ -327,13 +327,29 @@ function(contentInfo) {
 
     var triggerDoc,
         overlayID,
+
         triggerID,
+        triggerPath,
+        triggerTPElem,
 
         overlayTPElem;
 
     triggerDoc = contentInfo.at('triggerTPDocument');
     overlayID = contentInfo.at('overlayID');
+
+    //  Grab the triggerID from the supplied info. If it's not available, then
+    //  try to compute one from a triggerPath if it's supplied. If it's not
+    //  supplied, then use the body as the trigger element and obtain it's ID.
     triggerID = contentInfo.at('triggerID');
+    if (TP.notValid(triggerID)) {
+        triggerPath = contentInfo.at('triggerPath');
+        if (TP.notEmpty(triggerPath)) {
+            triggerTPElem = TP.byPath(triggerPath, triggerDoc).first();
+        } else {
+            triggerTPElem = triggerDoc.getBody();
+        }
+        triggerID = triggerTPElem.getLocalID(true);
+    }
 
     //  Grab the (possibly shared) overlay element. This will cause whatever
     //  'type-level' setup of the content to take place.
