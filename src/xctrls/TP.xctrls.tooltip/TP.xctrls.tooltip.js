@@ -50,6 +50,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.tooltip.Type.defineMethod('getSharedOverlayID',
+function() {
+
+    /**
+     * @method getSharedOverlayID
+     * @summary Returns the ID used as the 'shared overlay' for all tooltips.
+     * @returns {String} The ID to be used as the shared overlay ID.
+     */
+
+    return 'XCtrlsTooltip';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.tooltip.Type.defineHandler('OpenTooltip',
 function(aSignal) {
 

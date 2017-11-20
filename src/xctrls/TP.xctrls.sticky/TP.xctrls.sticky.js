@@ -52,6 +52,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.sticky.Type.defineMethod('getSharedOverlayID',
+function() {
+
+    /**
+     * @method getSharedOverlayID
+     * @summary Returns the ID used as the 'shared overlay' for all stickys.
+     * @returns {String} The ID to be used as the shared overlay ID.
+     */
+
+    return 'XCtrlsSticky';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.sticky.Type.defineHandler('OpenSticky',
 function(aSignal) {
 
