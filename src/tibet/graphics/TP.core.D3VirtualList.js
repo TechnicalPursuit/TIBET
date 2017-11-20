@@ -714,6 +714,10 @@ TP.extern.d3.VirtualScroller = function() {
                 oldTotalRows === totalRows &&
                 oldDataSize === dataSize) {
 
+                if (!isScrolling) {
+                    return;
+                }
+
                 container.each(
                     function() {
                         var rowUpdateSelection,
