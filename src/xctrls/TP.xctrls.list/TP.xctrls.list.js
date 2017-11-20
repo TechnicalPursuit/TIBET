@@ -145,6 +145,17 @@ TP.xctrls.list.Inst.defineAttribute(
 TP.xctrls.list.Inst.defineMethod('filter',
 function(aTerm) {
 
+    /**
+     * @method filter
+     * @summary Filters the receiver's data set by using the supplied search
+     *     in a fuzzy search algorithm, rerenders its content and, if the search
+     *     term is not empty, a small sticky over the right hand side of the
+     *     receiver to indicate to the user what the current search term value
+     *     is..
+     * @param {String} aTerm The search term to use to filter the data.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
     var searcher,
         searchResults,
 
