@@ -135,6 +135,7 @@ function(aSignal) {
      */
 
     this.setAttribute('hidden', true);
+    this.setAttribute('active', false);
 
     return;
 });
@@ -157,6 +158,13 @@ function(beHidden) {
     } else {
         this.observe(TP.ANY, 'TP.sig.CloseSticky');
     }
+
+    //  NB: We do this at the next repaint so that the 'pclass:hidden' flag
+    //  has a chance to take effect before flipping 'pclass:active' to true
+    //  as well.
+    (function() {
+        this.setAttribute('active', !beHidden);
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });
