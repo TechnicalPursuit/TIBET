@@ -629,9 +629,7 @@ TP.extern.d3.VirtualScroller = function() {
         dispatch,
         control,
 
-        scrollerFunc,
-
-        isScrolling;
+        scrollerFunc;
 
     enter = null;
     update = null;
@@ -651,7 +649,6 @@ TP.extern.d3.VirtualScroller = function() {
     delta = 0;
     control = null;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
-    isScrolling = false;
 
     scrollerFunc = function(container) {
 
@@ -713,10 +710,6 @@ TP.extern.d3.VirtualScroller = function() {
                 oldEndOffset === endOffset &&
                 oldTotalRows === totalRows &&
                 oldDataSize === dataSize) {
-
-                if (!isScrolling) {
-                    return;
-                }
 
                 container.each(
                     function() {
@@ -819,9 +812,7 @@ TP.extern.d3.VirtualScroller = function() {
         //  call render on scrolling event
         viewport.on('scroll.scrollerFunc',
                     function() {
-                        isScrolling = true;
                         render();
-                        isScrolling = false;
                     }, true);
     };
 
