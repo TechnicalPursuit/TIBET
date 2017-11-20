@@ -524,6 +524,226 @@ function() {
     return 0;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('loadContent',
+function(contentInfo, overlayContent, afterLoadHandler) {
+
+    /**
+     * @method loadContent
+     * @summary Loads the content of the receiver's native DOM counterpart to
+     *     the content supplied. If the content is not supplied, then the
+     *     supplied trigger signal will be queried for content.
+     * @param {TP.core.Hash} contentInfo Information about the content, where to
+     *     obtain it, how to render it, where to position it, etc.
+     * @param {String|Element|DocumentFragment} [overlayContent] The optional
+     *     content to place inside of the overlay element.
+     * @param {Function} [afterLoadHandler] The optional function to invoke
+     *     after the content has loaded (and refreshed from its data). This
+     *     Function should take a single parameter, a TP.core.ElementNode that
+     *     will represent the final content.
+     * @returns {TP.xctrls.SharedOverlay} The receiver.
+     */
+
+    var contentURI,
+        contentID,
+
+        finalContent,
+
+        extractElementFromResult,
+        contentElem,
+
+        content,
+
+        triggerID,
+
+        tpContent,
+        handler;
+
+    //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
+    //  then just return. When our stylesheet loads, it will use the trigger and
+    //  last cached content info to call this method again.
+    if (!this.isReadyToRender()) {
+        this.set('$$lastContentInfo', contentInfo);
+        return this;
+    }
+
+    contentURI = contentInfo.at('contentURI');
+    if (TP.notEmpty(contentURI)) {
+        contentURI = contentURI.unquoted();
+    }
+
+    contentID = contentInfo.at('contentID');
+    if (TP.notEmpty(contentID)) {
+        contentID = contentID.unquoted();
+    }
+
+    //  If the signal has real content in its payload, then use that in
+    //  preference to the other mechanisms.
+    finalContent = contentInfo.at('content');
+
+    if (TP.isValid(overlayContent)) {
+        //  see below for processing content
+    } else if (TP.isURIString(contentURI)) {
+
+        contentURI = TP.uc(contentURI);
+
+        extractElementFromResult = function(result) {
+
+            var elem;
+
+            //  If the URI pointed to a type and that type is a subtype
+            //  of TP.core.ElementNode, then create an Element using the
+            //  canonical name
+            if (TP.isType(result) &&
+                TP.isSubtypeOf(result, TP.core.ElementNode)) {
+                elem = TP.elem('<' + result.getCanonicalName() + '/>');
+            } else {
+                elem = TP.elem(result.get('data'));
+            }
+
+            return elem;
+        };
+
+        //  If we could create a real URI from the supplied URI, then fetch the
+        //  content and recursively call this method with that content.
+        if (TP.notEmpty(contentURI) && TP.isURI(contentURI)) {
+
+            if (contentURI.get('mode') === TP.core.SyncAsync.ASYNCHRONOUS) {
+                contentURI.getResource().then(
+                    function(result) {
+
+                        var elem;
+
+                        elem = extractElementFromResult(result);
+
+                        //  Note the recursive call to this method, but this
+                        //  time with content.
+                        this.loadContent(contentInfo, elem, afterLoadHandler);
+
+                    }.bind(this));
+
+                //  Return here - we have the recursive call above.
+                return this;
+            } else {
+                finalContent = extractElementFromResult(
+                                contentURI.getResource().get('result'));
+            }
+        }
+    } else if (TP.isString(contentID)) {
+
+        //  Try to grab the element where we'll find the content for the
+        //  overlay
+        contentElem = TP.byId(contentID, this.getNativeDocument(), false);
+        if (!TP.isElement(contentElem)) {
+            //  TODO: Raise an exception
+            return this;
+        }
+
+        //  Normalize whitespace
+        TP.nodeNormalize(contentElem);
+
+        if (TP.isTrue(contentInfo.at('useTopLevelContentElem'))) {
+            content = contentElem;
+        } else if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
+            //  Grab all of the content element's child nodes as a
+            //  DocumentFragment.
+            content = TP.nodeListAsFragment(contentElem.childNodes);
+        } else if (TP.isValid(contentElem.content)) {
+            //  If the content element has a '.content' slot on it, then it
+            //  might be an HTML5 <template> element. In this case, obtain its
+            //  content (a DocumentFragment) by using the '.content' slot, but
+            //  make sure to clone the content so that we don't remove it.
+            content = TP.nodeCloneNode(contentElem.content);
+        } else {
+            content = TP.nodeGetFirstChildElement(contentElem);
+        }
+
+        //  If the content isn't some kind of Node (DocumentFragment or
+        //  Element), then raise an exception and exit here.
+        if (!TP.isNode(content)) {
+            //  TODO: Raise an exception
+            return this;
+        }
+
+        //  Note the recursive call to this method, but this time with
+        //  DocumentFragment content.
+        this.loadContent(contentInfo, content, afterLoadHandler);
+
+        //  Return here - we have the recursive call above.
+        return this;
+    }
+
+    if (TP.notValid(finalContent)) {
+        if (TP.notValid(overlayContent)) {
+            finalContent =
+                TP.documentConstructElement(
+                        this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
+        } else {
+            finalContent = overlayContent;
+        }
+    }
+
+    if (TP.isString(finalContent)) {
+        content = TP.elem(finalContent.unquoted());
+
+        //  If we couldn't form an Element from the finalContent, then we wrap
+        //  it into an XHTML span and try again.
+        if (!TP.isElement(content)) {
+            content = TP.xhtmlnode(
+                            '<span>' + finalContent.unquoted() + '</span>');
+        }
+    } else if (TP.isElement(finalContent)) {
+        content = TP.nodeCloneNode(finalContent);
+        TP.elementRemoveAttribute(content, 'tibet:noawaken', true);
+    } else if (TP.isFragment(finalContent)) {
+        content = TP.documentConstructElement(
+                    this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
+        TP.nodeAppendChild(content, finalContent, false);
+    } else {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  Capture the trigger ID in case that same trigger uses this
+    //  overlay before another trigger uses it - we can use this for
+    //  comparison purposes for content refresh, etc.
+
+    triggerID = this.get('$currentTriggerID');
+    this.getType().set('$lastTriggerID', triggerID);
+
+    //  That will be the real element generated from the content that
+    //  got placed into our 'content' div.
+    tpContent = this.setContent(content);
+    tpContent.removeAttribute('id');
+
+    //  Show the overlay content
+    tpContent.setAttribute('hidden', false);
+
+    //  Observe the new content when it gets attached to the DOM. When
+    //  it does, refresh its bound data.
+    handler = function() {
+
+        //  Make sure to ignore here - otherwise, we'll fill up the
+        //  signal map.
+        handler.ignore(tpContent, 'TP.sig.AttachComplete');
+
+        //  Note here how we don't force the rendering behavior - if
+        //  the data has changed, the content will re-render.
+        tpContent.refresh();
+
+        //  If we were handed a callable Function to invoke after all of our
+        //  content has been loaded and refreshed, then call it.
+        if (TP.isCallable(afterLoadHandler)) {
+            afterLoadHandler(tpContent);
+        }
+    };
+
+    handler.observe(tpContent, 'TP.sig.AttachComplete');
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Inst.defineMethod('positionUsing',
@@ -618,259 +838,77 @@ function(contentInfo, overlayContent) {
      * @summary Sets the content of the receiver's native DOM counterpart to
      *     the content supplied and activates the receiver. If the content is
      *     not supplied, then the supplied trigger signal will be queried for
-     *     contentID (the ID of an inlined content element) or contentURI (a URI
-     *     pointing to some content).
+     *     content.
      * @param {TP.core.Hash} contentInfo Information about the content, where to
      *     obtain it, how to render it, where to position it, etc.
      * @param {String|Element|DocumentFragment} [overlayContent] The optional
      *     content to place inside of the overlay element.
-     * @returns {TP.core.Node} The result of setting the content of the
-     *     receiver.
+     * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
-    var extractElementFromResult,
+    //  Load the content using the supplied contentInfo and overlayContent and a
+    //  callback function that will actually position and activate the content
+    //  once all of the content loading is done.
+    this.loadContent(
+        contentInfo,
+        overlayContent,
+        function(tpContent) {
 
-        contentURI,
-        contentID,
+            var overlayCorner,
 
-        contentElem,
+                triggerRect,
+                overlayPoint,
+                mousePoint,
+                triggerTPElem,
 
-        content,
-        finalContent,
+                lastMoveEvent,
+                lastMoveSignal;
 
-        triggerID,
+            //  First, see if the open signal provided a overlay point.
+            overlayPoint = contentInfo.at('triggerPoint');
 
-        overlayCorner,
+            lastMoveEvent = TP.core.Mouse.$get('lastMove');
+            lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
+            mousePoint = lastMoveSignal.getGlobalPoint();
 
-        triggerRect,
-        overlayPoint,
-        mousePoint,
-        triggerTPElem,
+            //  If no overlay point was given, compute one from the triggering
+            //  element.
+            if (TP.notValid(overlayPoint)) {
 
-        tpContent,
-        handler,
+                triggerTPElem = this.get('$triggerTPElement');
 
-        lastMoveEvent,
-        lastMoveSignal;
+                if (TP.notValid(triggerTPElem)) {
+                    //  TODO: Raise an exception
+                    return this;
+                }
 
-    //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
-    //  then just return. When our stylesheet loads, it will use the trigger and
-    //  last open signal cached above to call this method again.
-    if (!this.isReadyToRender()) {
+                //  Grab the global rect from the supplied element.
+                triggerRect = triggerTPElem.getGlobalRect();
 
-        this.set('$$lastContentInfo', contentInfo);
-        return this;
-    }
+                //  Compute the corner if its not supplied in the trigger
+                //  signal.
+                overlayCorner = contentInfo.at('corner');
+                if (TP.isEmpty(overlayCorner)) {
+                    overlayCorner = this.getOverlayCorner();
+                }
 
-    contentURI = contentInfo.at('contentURI');
-    if (TP.notEmpty(contentURI)) {
-        contentURI = contentURI.unquoted();
-    }
-
-    contentID = contentInfo.at('contentID');
-    if (TP.notEmpty(contentID)) {
-        contentID = contentID.unquoted();
-    }
-
-    //  If the signal has real content in its payload, then use that in
-    //  preference to the other mechanisms.
-    finalContent = contentInfo.at('content');
-
-    if (TP.isValid(overlayContent)) {
-        //  see below for processing content
-    } else if (TP.isURIString(contentURI)) {
-
-        contentURI = TP.uc(contentURI);
-
-        extractElementFromResult = function(result) {
-
-            var elem;
-
-            //  If the URI pointed to a type and that type is a subtype
-            //  of TP.core.ElementNode, then create an Element using the
-            //  canonical name
-            if (TP.isType(result) &&
-                TP.isSubtypeOf(result, TP.core.ElementNode)) {
-                elem = TP.elem('<' + result.getCanonicalName() + '/>');
-            } else {
-                elem = TP.elem(result.get('data'));
+                //  The point that the overlay should appear at is the 'edge
+                //  point' for that compass edge of the trigger rectangle.
+                overlayPoint = triggerRect.getEdgePoint(overlayCorner);
+            } else if (overlayPoint === TP.MOUSE) {
+                overlayPoint = mousePoint;
             }
 
-            return elem;
-        };
+            //  Show the overlay and set up signal handlers.
+            this.setAttribute('hidden', false);
 
-        //  If we could create a real URI from the supplied URI, then fetch the
-        //  content and recursively call this method with that content.
-        if (TP.notEmpty(contentURI) && TP.isURI(contentURI)) {
-
-            if (contentURI.get('mode') === TP.core.SyncAsync.ASYNCHRONOUS) {
-                contentURI.getResource().then(
-                    function(result) {
-
-                        var elem;
-
-                        elem = extractElementFromResult(result);
-
-                        //  Note the recursive call to this method, but this
-                        //  time with content.
-                        this.setContentAndActivate(contentInfo, elem);
-
-                    }.bind(this));
-
-                //  Return here - we have the recursive call above.
-                return this;
-            } else {
-                finalContent = extractElementFromResult(
-                                contentURI.getResource().get('result'));
+            //  If the signal doesn't have a flag to not position the overlay,
+            //  then position the overlay relative to the overlay point and the
+            //  corner.
+            if (TP.notTrue(contentInfo.at('noPosition'))) {
+                this.positionUsing(overlayPoint, mousePoint);
             }
-        }
-    } else if (TP.isString(contentID)) {
-
-        //  Try to grab the element where we'll find the content for the
-        //  overlay
-        contentElem = TP.byId(contentID, this.getNativeDocument(), false);
-        if (!TP.isElement(contentElem)) {
-            //  TODO: Raise an exception
-            return this;
-        }
-
-        //  Normalize whitespace
-        TP.nodeNormalize(contentElem);
-
-        if (TP.isTrue(contentInfo.at('useTopLevelContentElem'))) {
-            content = contentElem;
-        } else if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
-            //  Grab all of the content element's child nodes as a
-            //  DocumentFragment.
-            content = TP.nodeListAsFragment(contentElem.childNodes);
-        } else if (TP.isValid(contentElem.content)) {
-            //  If the content element has a '.content' slot on it, then it
-            //  might be an HTML5 <template> element. In this case, obtain its
-            //  content (a DocumentFragment) by using the '.content' slot, but
-            //  make sure to clone the content so that we don't remove it.
-            content = TP.nodeCloneNode(contentElem.content);
-        } else {
-            content = TP.nodeGetFirstChildElement(contentElem);
-        }
-
-        //  If the content isn't some kind of Node (DocumentFragment or
-        //  Element), then raise an exception and exit here.
-        if (!TP.isNode(content)) {
-            //  TODO: Raise an exception
-            return this;
-        }
-
-        //  Note the recursive call to this method, but this time with
-        //  DocumentFragment content.
-        this.setContentAndActivate(contentInfo, content);
-
-        //  Return here - we have the recursive call above.
-        return this;
-    }
-
-    if (TP.notValid(finalContent)) {
-        if (TP.notValid(overlayContent)) {
-            finalContent =
-                TP.documentConstructElement(
-                        this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
-        } else {
-            finalContent = overlayContent;
-        }
-    }
-
-    if (TP.isString(finalContent)) {
-        content = TP.elem(finalContent.unquoted());
-
-        //  If we couldn't form an Element from the finalContent, then we wrap
-        //  it into an XHTML span and try again.
-        if (!TP.isElement(content)) {
-            content = TP.xhtmlnode('<span>' +
-                        finalContent.unquoted() +
-                        '</span>');
-        }
-    } else if (TP.isElement(finalContent)) {
-        content = TP.nodeCloneNode(finalContent);
-        TP.elementRemoveAttribute(content, 'tibet:noawaken', true);
-    } else if (TP.isFragment(finalContent)) {
-        content = TP.documentConstructElement(
-                    this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
-        TP.nodeAppendChild(content, finalContent, false);
-    } else {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    //  Capture the trigger ID in case that same trigger uses this overlay
-    //  before another trigger uses it - we can use this for comparison purposes
-    //  for content refresh, etc.
-
-    triggerID = this.get('$currentTriggerID');
-    this.getType().set('$lastTriggerID', triggerID);
-
-    //  That will be the real element generated from the content that got placed
-    //  into our 'content' div.
-    tpContent = this.setContent(content);
-    tpContent.removeAttribute('id');
-
-    //  Observe the new content when it gets attached to the DOM. When it does,
-    //  refresh its bound data.
-    handler = function() {
-
-        //  Make sure to ignore here - otherwise, we'll fill up the signal
-        //  map.
-        handler.ignore(tpContent, 'TP.sig.AttachComplete');
-
-        //  Note here how we don't force the rendering behavior - if the data
-        //  has changed, the content will re-render.
-        tpContent.refresh();
-    };
-
-    handler.observe(tpContent, 'TP.sig.AttachComplete');
-
-    //  First, see if the open signal provided a overlay point.
-    overlayPoint = contentInfo.at('triggerPoint');
-
-    lastMoveEvent = TP.core.Mouse.$get('lastMove');
-    lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-    mousePoint = lastMoveSignal.getGlobalPoint();
-
-    //  If no overlay point was given, compute one from the triggering element.
-    if (TP.notValid(overlayPoint)) {
-
-        triggerTPElem = this.get('$triggerTPElement');
-
-        if (TP.notValid(triggerTPElem)) {
-            //  TODO: Raise an exception
-            return this;
-        }
-
-        //  Grab the global rect from the supplied element.
-        triggerRect = triggerTPElem.getGlobalRect();
-
-        //  Compute the corner if its not supplied in the trigger signal.
-        overlayCorner = contentInfo.at('corner');
-        if (TP.isEmpty(overlayCorner)) {
-            overlayCorner = this.getOverlayCorner();
-        }
-
-        //  The point that the overlay should appear at is the 'edge point' for
-        //  that compass edge of the trigger rectangle.
-        overlayPoint = triggerRect.getEdgePoint(overlayCorner);
-    } else if (overlayPoint === TP.MOUSE) {
-        overlayPoint = mousePoint;
-    }
-
-    //  Show the overlay content
-    tpContent.setAttribute('hidden', false);
-
-    //  Show the overlay and set up signal handlers.
-    this.setAttribute('hidden', false);
-
-    //  If the signal doesn't have a flag to not position the overlay, then
-    //  position the overlay relative to the overlay point and the corner.
-    if (TP.notTrue(contentInfo.at('noPosition'))) {
-        this.positionUsing(overlayPoint, mousePoint);
-    }
+        }.bind(this));
 
     return this;
 });
@@ -905,9 +943,12 @@ function(aStyleTPElem) {
 
     lastContentInfo = this.get('$$lastContentInfo');
 
+    //  If there is a last content info, that means there was pending content
+    //  that had tried to load, but we weren't ready yet. (Re)invoke loadContent
+    //  to load it now.
     if (TP.isValid(lastContentInfo)) {
-        //  Set the content of the overlay and activate it.
-        this.setContentAndActivate(lastContentInfo);
+        //  Load the content of the overlay.
+        this.loadContent(lastContentInfo);
 
         this.set('$$lastContentInfo', null);
     }
