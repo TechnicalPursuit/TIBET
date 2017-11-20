@@ -1046,13 +1046,15 @@ function() {
      * @method teardown
      * @summary Tears down the receiver by performing housekeeping cleanup, like
      *     ignoring signals it's observing, etc.
-     * @returns {TP.sherpa.D3VirtualList} The receiver.
+     * @returns {TP.xctrls.list} The receiver.
      */
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
 
-    this.signal('CloseSticky');
+    if (this.hasAttribute('autocomplete')) {
+        this.signal('CloseSticky');
+    }
 
     return this;
 });
