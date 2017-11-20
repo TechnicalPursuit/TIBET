@@ -47,7 +47,8 @@ TP.xctrls.list.Inst.defineAttribute(
 
 TP.xctrls.list.Inst.defineAttribute(
     'listitems',
-    TP.cpc('> .scroller xctrls|content > xctrls|*', TP.hc('shouldCollapse', false)));
+    TP.cpc('> .scroller xctrls|content > xctrls|*',
+                                        TP.hc('shouldCollapse', false)));
 
 TP.xctrls.list.Inst.defineAttribute(
     'focusedItem',
