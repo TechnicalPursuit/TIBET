@@ -66,6 +66,20 @@ function() {
     this.updateNavigationButtons();
     this.updateToolbarButtons();
 
+    //  Preload the snippets menu
+    TP.xctrls.popup.preload(
+            TP.hc('triggerTPDocument', this.getDocument(),
+                    'overlayID', 'SnippetsPopup',
+                    'triggerID', 'snippetMenuTrigger',
+                    'contentURI', 'urn:tibet:TP.sherpa.snippetMenuContent'));
+
+    //  Preload the bookmarks menu
+    TP.xctrls.popup.preload(
+            TP.hc('triggerTPDocument', this.getDocument(),
+                    'overlayID', 'BookmarksPopup',
+                    'triggerID', 'showbookmarks',
+                    'contentURI', 'urn:tibet:TP.sherpa.bookmarkMenuContent'));
+
     //  Inspector observations
     this.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
 
