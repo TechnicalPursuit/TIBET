@@ -32,10 +32,93 @@ TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 TP.xctrls.list.Type.set('bidiAttrs', TP.ac('value'));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Type.defineMethod('onkeyup',
+function(aTargetElem, anEvent) {
+
+    /**
+     * @method onkeyup
+     * @summary Handles a 'keyup' native event that was dispatched against the
+     *     supplied native element.
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Event} anEvent The native event that was triggered.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var listTPElem,
+
+        accumValue,
+        keyname,
+
+        key;
+
+    if (!TP.isElement(aTargetElem)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  First, make sure that the target element has an 'autocomplete'
+    //  attribute. If not, just 'call up' and bail out.
+    if (!TP.elementHasAttribute(aTargetElem, 'autocomplete')) {
+        return this.callNextMethod();
+    }
+
+    listTPElem = TP.wrap(aTargetElem);
+
+    //  Grab the value that we're accumulating for autocompletion.
+    accumValue = listTPElem.get('$autocompleterValue');
+
+    //  Grab the name of the signal that would be signaled.
+    keyname = TP.eventGetDOMSignalName(anEvent);
+
+    //  If we're backing up, then slice off the last character.
+    if (keyname === 'DOM_Backspace_Up') {
+        if (TP.isEmpty(accumValue)) {
+            return this.callNextMethod();
+        }
+
+        //  Slice off the end of the accumulated value
+        accumValue = accumValue.slice(0, -1);
+    } else if (keyname === 'DOM_Esc_Up') {
+        //  We're exiting - set the accumulated value to the empty String.
+        accumValue = '';
+    } else if (TP.core.Keyboard.isPrintable(anEvent)) {
+
+        //  If we're dealing with a printable character, then grab the virtual
+        //  key that corresponds to it and append that to the accumulated value.
+        key = TP.core.Keyboard.getEventVirtualKey(anEvent);
+        accumValue = accumValue + key;
+    } else {
+        //  Otherwise, it was a non-printable key that we don't handle, so 'call
+        //  up' and exit here.
+        return this.callNextMethod();
+    }
+
+    //  Set the accumulated value to the newly computed value.
+    listTPElem.set('$autocompleterValue', accumValue);
+
+    //  Go ahead and run the filter.
+    listTPElem.filter(accumValue);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  The whole (unfiltered) data set being managed by the control.
+TP.xctrls.list.Inst.defineAttribute('$wholeData');
 TP.xctrls.list.Inst.defineAttribute('$dataKeys');
+
+//  The accumulated value being kept by the control for autocomplete purposes.
+TP.xctrls.list.Inst.defineAttribute('$autocompleterValue');
+
+//  The search object being used by the control for autocomplete purposes.
+TP.xctrls.list.Inst.defineAttribute('$autocompleterSearcher');
 
 //  The data as massaged into what this control needs. This is reset whenever
 //  the control's whole data set is reset.
@@ -57,6 +140,161 @@ TP.xctrls.list.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('filter',
+function(aTerm) {
+
+    var searcher,
+        searchResults,
+
+        wholeData,
+
+        filteredData,
+
+        ourDocument,
+        stickyTPElem,
+
+        positionPoint,
+
+        ourBorderVals,
+        itemBorderVals,
+        stickyOffset,
+
+        xCoord,
+
+        termWidth;
+
+    //  If the search term is empty, then close the sticky, reset our data back
+    //  to our whole data set and focus the first item.
+    if (TP.isEmpty(aTerm)) {
+        this.signal('CloseSticky');
+
+        this.setData(this.$get('$wholeData'), false, true);
+
+        this.get('listitems').first().focus();
+    } else {
+
+        //  Otherwise, grab the searcher to search through our data set. The
+        //  searcher's matcher's data set is set in the setData call after the
+        //  data it uses has been computed.
+        searcher = this.get('$autocompleterSearcher');
+        searcher.get('matchers').first().set(
+                        'minMatchCharLength', aTerm.getSize());
+
+        //  Use the searcher to produce a set of search results.
+        searchResults = searcher.searchUsing(aTerm);
+
+        //  Based on the type of our whole data set, generate a set of filtered
+        //  data using the match results as computed by the searcher.
+        wholeData = this.get('$wholeData');
+
+        if (TP.isHash(wholeData)) {
+            filteredData = TP.hc();
+            searchResults.perform(
+                function(aResult) {
+                    filteredData.atPut(aResult.text, aResult.displayText);
+                });
+        } else if (TP.isPlainObject(wholeData)) {
+            filteredData = {};
+            searchResults.perform(
+                function(aResult) {
+                    filteredData[aResult.text] = aResult.displayText;
+                });
+        } else if (TP.isPair(wholeData.first())) {
+            filteredData = TP.ac();
+            searchResults.perform(
+                function(aResult) {
+                    filteredData.push(
+                        TP.ac(aResult.text, aResult.displayText));
+                });
+        } else if (TP.isArray(wholeData)) {
+            filteredData = searchResults.collect(
+                function(aResult) {
+                    return aResult.text;
+                });
+        }
+
+        //  Grab our shared sticky, set it to the search term and position it
+        //  relative to ourself.
+        ourDocument = this.getDocument();
+
+        stickyTPElem = TP.byId('XCtrlsListFilterSticky', ourDocument);
+
+        positionPoint = this.getGlobalPoint();
+
+        //  Compute our border right value and our first item's border right
+        //  value. Sum that and use it as the 'stickyOffset', so that the right
+        //  edge of the sticky doesn't overlay our right edge.
+        ourBorderVals = TP.elementGetComputedStyleValuesInPixels(
+                            this.getNativeNode(),
+                            TP.ac('borderRightWidth'));
+        itemBorderVals = TP.elementGetComputedStyleValuesInPixels(
+                            this.get('listitems').first().getNativeNode(),
+                            TP.ac('borderRightWidth'));
+        stickyOffset = ourBorderVals.at('borderRightWidth') +
+                        itemBorderVals.at('borderRightWidth');
+
+        //  If we already have a valid sticky element for xctrls:list controls,
+        //  then set it's content and unhide it.
+        if (TP.isValid(stickyTPElem)) {
+            stickyTPElem.setContent(aTerm);
+            stickyTPElem.setAttribute('hidden', false);
+
+            //  Compute the xCoord for the sticky and position it based on that.
+            xCoord = positionPoint.getX() +
+                        this.getWidth() -
+                        stickyTPElem.getWidth() -
+                        stickyOffset;
+
+            positionPoint.setX(xCoord);
+            stickyTPElem.setGlobalPosition(positionPoint);
+        } else {
+
+            //  There is no sticky currently set up, so we compute the position
+            //  where we want the new sticky to appear and position it based on
+            //  that.
+
+            xCoord = positionPoint.getX() + this.getWidth();
+
+            termWidth = TP.elementGetPixelValue(
+                            this.getNativeNode(),
+                            aTerm.getSize() + 'em',
+                            'width',
+                            false);
+
+            xCoord -= termWidth - stickyOffset;
+
+            positionPoint.setX(xCoord);
+
+            //  Fire a signal to open the sticky.
+            this.signal(
+                'OpenSticky',
+                TP.hc(
+                    'overlayID', 'XCtrlsListFilterSticky',
+                    'useTopLevelContentElem', true,
+                    'content', aTerm,
+                    'triggerTPDocument', ourDocument,
+                    'triggerPoint', positionPoint));
+        }
+
+        //  If there is no filtered data, then use the whole data set.
+        if (TP.isEmpty(filteredData)) {
+            filteredData = wholeData;
+        }
+
+        this.deselectAll();
+
+        //  NB: This will re-render - our focused item will be gone.
+        this.setData(filteredData, false, true);
+
+        //  Focus the first item
+        this.get('listitems').first().focus();
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('getDisplayValue',
@@ -504,7 +742,7 @@ function(moveAction) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('setData',
-function(aDataObject, shouldSignal) {
+function(aDataObject, shouldSignal, isFiltered) {
 
     /**
      * @method setData
@@ -512,11 +750,16 @@ function(aDataObject, shouldSignal) {
      * @param {Object} aDataObject The object to set the receiver's internal
      *     data to.
      * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
+     * @param {Boolean} [isFiltered=false] Whether or not this is a filtered
+     *     data set being set by our filtering machinery.
      * @returns {TP.xctrls.list} The receiver.
      */
 
     var dataObj,
-        keys;
+        keys,
+
+        autoCompleteSource,
+        searcher;
 
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
@@ -538,21 +781,25 @@ function(aDataObject, shouldSignal) {
     //  Array is the key and the second item is the value.
     if (TP.isHash(dataObj)) {
         keys = dataObj.getKeys();
+        autoCompleteSource = keys;
     } else if (TP.isPlainObject(dataObj)) {
         //  Make sure to convert a POJO into a TP.core.Hash
         keys = TP.hc(dataObj).getKeys();
+        autoCompleteSource = keys;
     } else if (TP.isPair(dataObj.first())) {
         keys = dataObj.collect(
                 function(item) {
                     //  Note that we want a String here.
                     return item.first().toString();
                 });
+        autoCompleteSource = keys;
     } else if (TP.isArray(dataObj)) {
         keys = dataObj.getIndices().collect(
                 function(item) {
                     //  Note that we want a String here.
                     return item.toString();
                 });
+        autoCompleteSource = dataObj;
     }
 
     this.set('$dataKeys', keys);
@@ -571,6 +818,22 @@ function(aDataObject, shouldSignal) {
 
         //  When the data changes, we have to re-render.
         this.render();
+    }
+
+    //  If we're configured to allow autocomplete, then check to see if we're
+    //  setting the filtered data set or not. If we're not, then set the whole
+    //  data to the supplied data and configure the autocompleter searcher, if
+    //  there is one, with the data set that we've computed for it.
+    if (this.hasAttribute('autocomplete')) {
+        if (TP.notTrue(isFiltered)) {
+            this.$set('$wholeData', dataObj, false);
+
+            searcher = this.get('$autocompleterSearcher');
+            if (TP.isValid(searcher)) {
+                searcher.get('matchers').first().set(
+                                        'dataSet', autoCompleteSource);
+            }
+        }
     }
 
     return this;
@@ -740,6 +1003,56 @@ function(aValue) {
 
         this.changed('selection', TP.UPDATE);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var newSearcher;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    if (this.hasAttribute('autocomplete')) {
+
+        newSearcher = TP.xctrls.Searcher.construct();
+        newSearcher.addMatcher(
+                            TP.core.ListMatcher.construct(
+                                'XCTRLS_LIST_' + this.getLocalID()));
+
+        this.set('$autocompleterSearcher', newSearcher);
+        this.set('$autocompleterValue', '');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     * @summary Tears down the receiver by performing housekeeping cleanup, like
+     *     ignoring signals it's observing, etc.
+     * @returns {TP.sherpa.D3VirtualList} The receiver.
+     */
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    this.signal('CloseSticky');
 
     return this;
 });
@@ -1306,6 +1619,45 @@ function(selection) {
         );
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var ourDocument,
+        stickyTPElem;
+
+    //  If we're configured for autocomplete, then make sure that we have a
+    //  'sticky' control available for our use.
+    if (this.hasAttribute('autocomplete')) {
+
+        ourDocument = this.getDocument();
+        stickyTPElem = TP.byId('XCtrlsListFilterSticky', ourDocument);
+
+        //  If we can't obtain the sticky element for xctrls:list elements, then
+        //  preload one using the ID for the sticky that is shared amongst all
+        //  xctrls:list elements
+        if (TP.notValid(stickyTPElem)) {
+            TP.xctrls.sticky.preload(
+                                TP.hc(
+                                    'triggerTPDocument', ourDocument,
+                                    'overlayID', 'XCtrlsListFilterSticky'));
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
