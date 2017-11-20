@@ -172,10 +172,10 @@ function(openSignal, popupContent) {
 
         firstContentChildTPElem,
 
-        popupCorner,
+        stickyCorner,
 
         triggerRect,
-        popupPoint,
+        stickyPoint,
         triggerTPElem;
 
     lastTriggerID = this.getType().get('$lastTriggerID');
@@ -200,11 +200,11 @@ function(openSignal, popupContent) {
             firstContentChildTPElem.refresh();
 
             //  First, see if the open signal provided a popup point.
-            popupPoint = openSignal.at('triggerPoint');
+            stickyPoint = openSignal.at('triggerPoint');
 
             //  If no popup point was given, compute one from the triggering
             //  element.
-            if (TP.notValid(popupPoint)) {
+            if (TP.notValid(stickyPoint)) {
 
                 if (TP.notValid(triggerTPElem)) {
                     //  TODO: Raise an exception
@@ -216,21 +216,21 @@ function(openSignal, popupContent) {
 
                 //  Compute the corner if its not supplied in the trigger
                 //  signal.
-                popupCorner = openSignal.at('corner');
-                if (TP.isEmpty(popupCorner)) {
-                    popupCorner = TP.SOUTHWEST;
+                stickyCorner = openSignal.at('corner');
+                if (TP.isEmpty(stickyCorner)) {
+                    stickyCorner = TP.SOUTHWEST;
                 }
 
                 //  The point that the popup should appear at is the 'edge
                 //  point' for that compass edge of the trigger rectangle.
-                popupPoint = triggerRect.getEdgePoint(popupCorner);
+                stickyPoint = triggerRect.getEdgePoint(stickyCorner);
             }
 
             //  If the signal doesn't have a flag to not position the popup,
             //  then position the popup relative to the popup point and the
             //  corner.
             if (TP.notTrue(openSignal.at('noPosition'))) {
-                this.positionUsing(popupPoint);
+                this.positionUsing(stickyPoint);
             }
 
             //  Show the sticky
