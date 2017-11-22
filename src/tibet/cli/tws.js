@@ -175,7 +175,7 @@ Cmd.prototype.executeCancel = function() {
     thisref = this;
 
     //  Make sure our non-flag parameters (from _ array) contain a doc ID.
-    doc_id = this.getArgument(0);
+    doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -277,7 +277,7 @@ Cmd.prototype.executeDisableFlow = function() {
 
     thisref = this;
 
-    doc_id = this.getArgument(0);
+    doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -386,7 +386,7 @@ Cmd.prototype.executeEnableFlow = function() {
 
     thisref = this;
 
-    doc_id = this.getArgument(0);
+    doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -650,7 +650,7 @@ Cmd.prototype.executeList = function() {
 
     thisref = this;
 
-    doc_id = this.getArgument(0);
+    doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -854,7 +854,7 @@ Cmd.prototype.executePush = function() {
         boolean: flags.slice(0) // slice to copy since parse will modify.
     });
 
-    id = this.getArgument(0);
+    id = this.getArgument(1);
 
     if (CLI.notEmpty(id)) {
         fullpath = CLI.expandPath(id);
@@ -1028,7 +1028,7 @@ Cmd.prototype.executeSubmit = function() {
 
     thisref = this;
 
-    file = this.getArgument(0);
+    file = this.getArgument(1);
 
     if (CLI.isEmpty(file)) {
         this.usage('tibet tws submit <jobfile>');

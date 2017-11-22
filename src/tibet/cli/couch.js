@@ -279,7 +279,7 @@ Cmd.prototype.executePushapp = function() {
 
     cmd = this;
 
-    arg0 = this.getArgument(0);
+    arg0 = this.getArgument(1);
     if (!arg0) {
         this.usage('tibet couch pushapp [<[dbname.]appname>]');
         return;
@@ -731,7 +731,7 @@ Cmd.prototype.executeRemoveapp = function() {
 
     cmd = this;
 
-    arg0 = this.getArgument(0);
+    arg0 = this.getArgument(1);
     if (!arg0) {
         this.usage('tibet couch removeapp [<[dbname.]appname>]');
         return;
@@ -863,7 +863,7 @@ Cmd.prototype.executeView = function() {
         }
     });
 
-    arg0 = this.getArgument(0);
+    arg0 = this.getArgument(1);
     if (!arg0) {
         this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
         return;
