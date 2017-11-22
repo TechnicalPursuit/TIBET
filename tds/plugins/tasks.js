@@ -303,8 +303,7 @@
         acceptTask = function(job, task) {
             var step,
                 plugin,
-                runner,
-                params;
+                runner;
 
             //  See if the task uses a different plugin for require().
             plugin = task.plugin || task.name;
@@ -1115,8 +1114,7 @@
          */
         retryTask = function(job, task) {
             var count,
-                retryStep,
-                params;
+                retryStep;
 
             count = task.retry;
             if (count === undefined || count <= 0) {
