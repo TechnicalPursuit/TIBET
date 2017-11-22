@@ -41,6 +41,7 @@
             remapStdioParams,
             retrieveFlow,
             retrieveTask,
+            prepareParams,
             processOwnedTasks,
             refreshTaskState,
             isJobInitialized,
@@ -327,32 +328,7 @@
 
             job.state = task.name + '-' + job.steps.length;
 
-            //  Blend any task-specific parameters from the job into the
-            //  step logic. The step data ultimately drives task runners. NOTE
-            //  the order here matters since TDS.blend will _not_ replace
-            //  existing values, so we want to put in job values first, then any
-            //  task values so they act as defaults for missing values only.
-
-            //  We connect step output to step input via 'stdio' mappings
-            //  optionally provided in the task and/or flow definitions.
-            params = remapStdioParams(job, step, {});
-
-            //  Blend in state-specific (foo-N) parameters
-            if (job.params && job.params[job.state]) {
-                TDS.blend(params, job.params[job.state]);
-            }
-
-            //  Add in any 'general task' (foo) parameters
-            if (job.params && job.params[task.name]) {
-                TDS.blend(params, job.params[task.name]);
-            }
-
-            //  Blend in anything not specified by job/flow parameters.
-            if (task.params) {
-                TDS.blend(params, task.params);
-            }
-
-            step.params = params;
+            step.params = prepareParams(job, step, task);
 
             job.steps.push(step);
 
@@ -759,6 +735,66 @@
             return Date.now() - task.start > (task.timeout || 15000);
         };
 
+        /*
+         */
+        prepareParams = function(job, step, task) {
+
+            var params,
+
+                text,
+                template,
+                output;
+
+            //  Blend any task-specific parameters from the job into the
+            //  step logic. The step data ultimately drives task runners. NOTE
+            //  the order here matters since TDS.blend will _not_ replace
+            //  existing values, so we want to put in job values first, then any
+            //  task values so they act as defaults for missing values only.
+
+            //  We connect step output to step input via 'stdio' mappings
+            //  optionally provided in the task and/or flow definitions.
+            params = remapStdioParams(job, step, {});
+
+            //  Blend in state-specific (foo-N) parameters
+            if (job.params && job.params[job.state]) {
+                TDS.blend(params, job.params[job.state]);
+            }
+
+            //  Add in any 'general task' (foo) parameters
+            if (job.params && job.params[task.name]) {
+                TDS.blend(params, job.params[task.name]);
+            }
+
+            //  Blend in anything not specified by job/flow parameters.
+            if (task.params) {
+                TDS.blend(params, task.params);
+            }
+
+            //  Now, we interpolate any parameter values that we find, using
+            //  job, step and params as objects that can be referenced in those
+            //  values.
+
+            text = JSON.stringify(params);
+
+            template = TDS.template.compile(text);
+            output = template({
+                job: job,
+                step: step,
+                params: params
+            });
+
+            //  Note here that we allow embedded templates, but because of
+            //  escaping issues with JSON and Handlebars, we require these
+            //  templates to be written with double square brackets ('[[...]]')
+            //  and we need to replace them with double curly brackets
+            //  ('{{...}}') before sending them further into the system.
+            output = output.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
+
+            params = JSON.parse(output);
+
+            return params;
+        };
+
         /**
          * Handles document changes in the CouchDB change feed which are NOT
          * related to the project's design document.
@@ -1098,26 +1134,7 @@
             retryStep.index = job.steps.length;
             job.state = task.name + '-' + retryStep.index;
 
-            //  We connect step output to step input via 'stdio' mappings
-            //  optionally provided in the task and/or flow definitions.
-            params = remapStdioParams(job, retryStep, {});
-
-            //  Blend in state-specific (foo-N) parameters
-            if (job.params && job.params[job.state]) {
-                TDS.blend(params, job.params[job.state]);
-            }
-
-            //  Add in any 'general task' (foo) parameters
-            if (job.params && job.params[task.name]) {
-                TDS.blend(params, job.params[task.name]);
-            }
-
-            //  Blend in anything not specified by job/flow parameters.
-            if (task.params) {
-                TDS.blend(params, task.params);
-            }
-
-            retryStep.params = params;
+            retryStep.params = prepareParams(job, retryStep, task);
 
             job.steps.push(retryStep);
 
