@@ -286,7 +286,7 @@
                 }).catch(function(err) {
                     logger.error(job,
                         'error: ' + err.message +
-                        ' fetching task: ' + fullname);
+                        ' fetching/accepting task: ' + fullname);
                 });
             } else {
                 //  No next task...job is done.
