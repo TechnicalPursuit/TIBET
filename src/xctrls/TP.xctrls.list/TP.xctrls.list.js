@@ -69,7 +69,7 @@ function(aTargetElem, anEvent) {
     listTPElem = TP.wrap(aTargetElem);
 
     //  Grab the value that we're accumulating for autocompletion.
-    accumValue = listTPElem.get('$autocompleterValue');
+    accumValue = listTPElem.get('autocompleteValue');
 
     //  Grab the name of the signal that would be signaled.
     keyname = TP.eventGetDOMSignalName(anEvent);
@@ -98,10 +98,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Set the accumulated value to the newly computed value.
-    listTPElem.set('$autocompleterValue', accumValue);
-
-    //  Go ahead and run the filter.
-    listTPElem.filter(accumValue);
+    listTPElem.set('autocompleteValue', accumValue);
 
     return this.callNextMethod();
 });
@@ -115,7 +112,7 @@ TP.xctrls.list.Inst.defineAttribute('$wholeData');
 TP.xctrls.list.Inst.defineAttribute('$dataKeys');
 
 //  The accumulated value being kept by the control for autocomplete purposes.
-TP.xctrls.list.Inst.defineAttribute('$autocompleterValue');
+TP.xctrls.list.Inst.defineAttribute('autocompleteValue');
 
 //  The search object being used by the control for autocomplete purposes.
 TP.xctrls.list.Inst.defineAttribute('$autocompleterSearcher');
@@ -752,6 +749,32 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('setAutocompleteValue',
+function(aValue) {
+
+    /**
+     * @method setAutocompleteValue
+     * @summary Sets the receiver's value used for autocompletion against its
+     *     data set and runs the filtering function to filter the data. Note
+     *     that if an empty String is supplied here, the filter is cleared and
+     *     the receiver's entire data set is once again displayed.
+     * @param {String} aValue The value to use as the receiver's autocomplete
+     *     value.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    this.$set('autocompleteValue', aValue);
+
+    if (TP.notEmpty(this.get('data'))) {
+        //  Go ahead and run the filter.
+        this.filter(aValue);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal, isFiltered) {
 
@@ -770,7 +793,9 @@ function(aDataObject, shouldSignal, isFiltered) {
         keys,
 
         autoCompleteSource,
-        searcher;
+        searcher,
+
+        autocompleteValue;
 
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
@@ -843,6 +868,11 @@ function(aDataObject, shouldSignal, isFiltered) {
             if (TP.isValid(searcher)) {
                 searcher.get('matchers').first().set(
                                         'dataSet', autoCompleteSource);
+            }
+
+            autocompleteValue = this.get('autocompleteValue');
+            if (TP.notEmpty(autocompleteValue)) {
+                this.filter(autocompleteValue);
             }
         }
     }
@@ -1042,7 +1072,10 @@ function() {
                                 'XCTRLS_LIST_' + this.getLocalID()));
 
         this.set('$autocompleterSearcher', newSearcher);
-        this.set('$autocompleterValue', '');
+
+        //  NB: We use $set() here or otherwise we end up trying to update
+        //  currently non-existent GUI.
+        this.$set('autocompleteValue', '');
     }
 
     return this;
