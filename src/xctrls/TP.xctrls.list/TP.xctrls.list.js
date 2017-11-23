@@ -153,7 +153,9 @@ function(aTerm) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    var searcher,
+    var hasFocus,
+
+        searcher,
         searchResults,
 
         wholeData,
@@ -173,6 +175,8 @@ function(aTerm) {
 
         termWidth;
 
+    hasFocus = this.hasFocus();
+
     //  If the search term is empty, then close the sticky, reset our data back
     //  to our whole data set and focus the first item.
     if (TP.isEmpty(aTerm)) {
@@ -180,7 +184,9 @@ function(aTerm) {
 
         this.setData(this.$get('$wholeData'), false, true);
 
-        this.get('listitems').first().focus();
+        if (hasFocus) {
+            this.get('listitems').first().focus();
+        }
     } else {
 
         //  Otherwise, grab the searcher to search through our data set. The
@@ -297,7 +303,9 @@ function(aTerm) {
         this.setData(filteredData, false, true);
 
         //  Focus the first item
-        this.get('listitems').first().focus();
+        if (hasFocus) {
+            this.get('listitems').first().focus();
+        }
     }
 
     return this;
