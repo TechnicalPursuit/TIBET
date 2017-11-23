@@ -163,7 +163,7 @@ function(beClosed) {
      * @summary Sets the 'closed' attribute of the receiver. This method causes
      *     the HUD to show or hide itself.
      * @param {Boolean} beClosed Whether or not the console should be closed.
-     * @returns {TP.sherpa.hud} The receiver.
+     * @returns {Boolean} Whether the receiver's state is closed.
      */
 
     var wasClosed,

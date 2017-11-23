@@ -1474,7 +1474,7 @@ function(beHidden) {
      *     halo to show or hide itself independent of whether it's focused or
      *     not.
      * @param {Boolean} beHidden Whether or not the halo should be hidden.
-     * @returns {TP.sherpa.halo} The receiver.
+     * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
     var wasHidden;

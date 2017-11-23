@@ -671,7 +671,7 @@ function(beHidden) {
      *     the console output to show or hide itself as well and manages
      *     activation and deactivation of the input cell.
      * @param {Boolean} beHidden Whether or not the console should be hidden.
-     * @returns {TP.sherpa.console} The receiver.
+     * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
     var wasHidden,
