@@ -3430,6 +3430,33 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('hasFocus',
+function(includeDescendants) {
+
+    /**
+     * @method hasFocus
+     * @summary Returns whether or not the receiver (or any of its descendants,
+     *     by default), are currently the focused element.
+     * @param {Boolean} [includeDescendants=true] Should descendant elements be
+     *     considered when trying to determine whether the receiver has focus.
+     * @returns {Boolean} Whether or not the receiver has focus.
+     */
+
+    var focusedTPElem,
+        hasFocus;
+
+    focusedTPElem = this.getFocusedElement();
+
+    hasFocus = focusedTPElem.identicalTo(this);
+    if (!hasFocus && TP.notFalse(includeDescendants)) {
+        hasFocus = this.contains(focusedTPElem);
+    }
+
+    return hasFocus;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('hide',
 function(preserveSpace) {
 
