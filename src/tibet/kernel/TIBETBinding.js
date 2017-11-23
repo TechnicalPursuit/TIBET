@@ -4002,7 +4002,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                     }
                 }
             }
-        });
+        }.bind(this));
 
     return this;
 });
