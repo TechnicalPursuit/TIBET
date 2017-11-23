@@ -9139,7 +9139,8 @@ TP.boot.$$importComplete = function() {
     var stage,
         win,
 
-        autofocusedElem;
+        focusedElems,
+        focusedElem;
 
     //  if we've been 'importing' and the list is now empty then we're
     //  done with whatever phase we've been processing
@@ -9184,30 +9185,49 @@ TP.boot.$$importComplete = function() {
                         win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
                     }
 
-                    //  If we're using a login page, then focus (the first)
-                    //  element that has an 'autofocus' attribute. Sometimes,
-                    //  based on what's happening on boot, this field will have
-                    //  lost focus. NB: We do this in a fairly primitive fashion
+                    //  If we're using a login page, then focus the element that
+                    //  was last focused. Sometimes, based on what's happening
+                    //  on boot, this field will have lost focus.
+                    //  NB: We do this in a fairly primitive fashion
                     //  rather than using the prebuilt TIBET functionality to
-                    //  focus the autofocused element because we don't want to
+                    //  focus the last focused element because we don't want to
                     //  invoke other TIBET machinery this early in the boot
                     //  process. In particular, we don't want an 'Application'
                     //  singleton object to be created prematurely before the
                     //  phase two, which very well may include an Application
                     //  subtype. It is this subtype that we actually want the
                     //  singleton to be created from.
-                    if (TP.sys.cfg('boot.use_login')) {
-                        //  Grab the first element under supplied element that
-                        //  has an 'autofocus' attribute on it (the value of
-                        //  that attribute is irrelevant).
-                        autofocusedElem = TP.byCSSPath(
-                                            '*[autofocus]',
-                                            win.document.documentElement,
-                                            true,
-                                            false);
 
-                        if (TP.isElement(autofocusedElem)) {
-                            autofocusedElem.focus();
+                    if (TP.sys.cfg('boot.use_login')) {
+
+                        //  First, see if we had a focused element while the
+                        //  system was loading. We do this by querying for all
+                        //  of the elements that had focus and focusing on the
+                        //  last one. Note that we use this mechanism as the
+                        //  most reliable way to determine which element was
+                        //  focused, rather than relying on a singular 'had
+                        //  focus' flag. It is the most reliable way.
+                        focusedElems = TP.byCSSPath(
+                                            '*[onceHadFocus]',
+                                            win.document.documentElement,
+                                            false,
+                                            false);
+                        focusedElem = focusedElems.last();
+
+                        if (!TP.isElement(focusedElem)) {
+                            //  There was no previously focused element. So
+                            //  grab the first element under supplied element
+                            //  that has an 'autofocus' attribute on it (the
+                            //  value of that attribute is irrelevant).
+                            focusedElem = TP.byCSSPath(
+                                                '*[autofocus]',
+                                                win.document.documentElement,
+                                                true,
+                                                false);
+                        }
+
+                        if (TP.isElement(focusedElem)) {
+                            focusedElem.focus();
                         }
                     }
 
@@ -11262,7 +11282,11 @@ TP.boot.$uiRootReady = function() {
 
     var uiRootID,
         win,
-        login;
+        login,
+
+        bootWin,
+        fields,
+        i;
 
     uiRootID = TP.sys.cfg('tibet.uiroot') || 'UIROOT';
     win = TP.sys.getWindowById(uiRootID);
@@ -11285,6 +11309,26 @@ TP.boot.$uiRootReady = function() {
             win.$$phase_two = true;
             TP.boot.boot();
         } else {
+
+            //  Grab all of the 'input' elements in the page and install a
+            //  capturing focus handler on them that will set their
+            //  'onceHadFocus' flag. Note that we do *not* install a blur
+            //  handler that would remove this flag. Doing so causes a lot of
+            //  timing problems as we're in the middle of loading. So we just
+            //  track the fields that once had focus and then focus on the last
+            //  one that did after we're done loading.
+            bootWin = TP.sys.getWindowById(TP.sys.cfg('boot.uiboot'));
+            fields = bootWin.document.getElementsByTagName('input');
+
+            for (i = 0; i < fields.length; i++) {
+                fields[i].addEventListener(
+                    'focus',
+                    function(evt) {
+                        evt.target.setAttribute('onceHadFocus', true);
+                    },
+                    true);
+            }
+
             //  If login is true then the server will be in control of the pages
             //  we receive. There are two models: single-phase and two-phase.
             //  If we're booting single-phase we probably had a pure login page
