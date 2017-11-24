@@ -71,10 +71,10 @@ function(jsonObj, definitionName) {
     tree = {};
 
     //  Build up an AST metadata into the supplied tree.
-    if (TP.isArray(jsonObj)) {
-        this.$buildArraySchemaMetaFrom(tree, jsonObj);
+    if (TP.isArray(pojoObj)) {
+        this.$buildArraySchemaMetaFrom(tree, pojoObj);
     } else {
-        this.$buildObjectSchemaMetaFrom(tree, jsonObj);
+        this.$buildObjectSchemaMetaFrom(tree, pojoObj);
     }
 
     //  Now compile a schema from that metadata.
@@ -86,7 +86,7 @@ function(jsonObj, definitionName) {
 //  ------------------------------------------------------------------------
 
 TP.json.JSONSchemaType.Type.defineMethod('$buildArraySchemaMetaFrom',
-function(tree, jsonObj) {
+function(tree, pojoObj) {
 
     /**
      * @method $buildArraySchemaMetaFrom
@@ -94,7 +94,7 @@ function(tree, jsonObj) {
      *     supplied metadata tree object.
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
-     * @param {Array} jsonObj The object to describe in the AST metadata.
+     * @param {Array} pojoObj The object to describe in the AST metadata.
      * @returns {TP.json.JSONSchemaType} The receiver.
      */
 
@@ -117,12 +117,12 @@ function(tree, jsonObj) {
     //  If there is a JSON Object (i.e. {}) at the first spot in the Array, then
     //  check to see if there is a set of repeating objects in the Array and if
     //  they are the same composition (i.e. have the same keys) and length.
-    if (TP.isPlainObject(jsonObj.first())) {
+    if (TP.isPlainObject(pojoObj.first())) {
 
         //  Test to see if the items in the Array are all the same, structure
         //  wise, and then build an Object schema using the longest Object
         //  structure found.
-        results = this.$checkForSamenessIn(jsonObj);
+        results = this.$checkForSamenessIn(pojoObj);
         if (results.at('isSame')) {
 
             tree.uniqueItems = true;
@@ -132,10 +132,10 @@ function(tree, jsonObj) {
         }
     }
 
-    len = jsonObj.getSize();
+    len = pojoObj.getSize();
     for (i = 0; i < len; i++) {
 
-        val = jsonObj.at(i);
+        val = pojoObj.at(i);
 
         if (TP.isPlainObject(val)) {
 
@@ -176,7 +176,7 @@ function(tree, jsonObj) {
 //  ------------------------------------------------------------------------
 
 TP.json.JSONSchemaType.Type.defineMethod('$buildObjectSchemaMetaFrom',
-function(tree, jsonObj) {
+function(tree, pojoObj) {
 
     /**
      * @method $buildObjectSchemaMetaFrom
@@ -184,7 +184,7 @@ function(tree, jsonObj) {
      *     the supplied metadata tree object.
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
-     * @param {Object} jsonObj The object to describe in the AST metadata.
+     * @param {Object} pojoObj The object to describe in the AST metadata.
      * @returns {TP.json.JSONSchemaType} The receiver.
      */
 
@@ -205,13 +205,13 @@ function(tree, jsonObj) {
     tree.type = tree.type || 'object';
     tree.children = tree.children || {};
 
-    keys = TP.keys(jsonObj);
+    keys = TP.keys(pojoObj);
 
     len = keys.getSize();
     for (i = 0; i < len; i++) {
 
         key = keys.at(i);
-        val = jsonObj[key];
+        val = pojoObj[key];
 
         tree.children[key] = {};
 
@@ -239,7 +239,7 @@ function(tree, jsonObj) {
 //  ------------------------------------------------------------------------
 
 TP.json.JSONSchemaType.Type.defineMethod('$buildPrimitiveSchemaMetaFrom',
-function(tree, jsonObj) {
+function(tree, pojoObj) {
 
     /**
      * @method $buildPrimitiveSchemaMetaFrom
@@ -248,7 +248,7 @@ function(tree, jsonObj) {
      *     tree object.
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
-     * @param {Object} jsonObj The object to describe in the AST metadata.
+     * @param {Object} pojoObj The object to describe in the AST metadata.
      * @returns {TP.json.JSONSchemaType} The receiver.
      */
 
@@ -258,15 +258,15 @@ function(tree, jsonObj) {
     //  syntax, because it matches the process of building a JSON schema so
     //  well.
 
-    schemaTypeName = this.getSchemaType(jsonObj);
+    schemaTypeName = this.getSchemaType(pojoObj);
 
     tree.type = schemaTypeName;
 
     if (schemaTypeName === 'string') {
-        tree.minLength = jsonObj.length > 0 ? 1 : 0;
+        tree.minLength = pojoObj.length > 0 ? 1 : 0;
     }
 
-    if (TP.isValid(jsonObj)) {
+    if (TP.isValid(pojoObj)) {
         tree.required = true;
     }
 
