@@ -12,6 +12,25 @@
 /**
  * @type {TP.core.JSONSchemaType}
  * @summary The common supertype for all JSON Schema-defined data types.
+ * @description This type can produce a simple JSON Schema from a chunk of
+ *     parsed JSON data structure. Note that the following assumptions are made:
+ *
+ *     1. For primitive values (i.e. not Objects or Arrays), if the value is
+ *     valid (i.e. has value - even an empty string), then the schema generator
+ *     will emit 'required: true' for this property.
+ *
+ *     2. For primitive String values, if the value's length is greater than 0,
+ *     then the schema generator will emit 'minLength: 1' for this property.
+ *
+ *     3. For Array values, if the items in the Array are all Object structures
+ *     with the same keys, then an Object structure will be built from that set
+ *     of keys and types of values and the schema generator will emit
+ *     'uniqueItems: true' and 'minItems: 1' for this property.
+ *
+ *     4. For Array values, if the items in the Array are not all Object
+ *     structures with the same keys, then the schema generator will emit
+ *     'uniqueItems: true' and, if the Array is not empty, it will also emit a
+ *     'required' property with the items in the Array.
  */
 
 //  ------------------------------------------------------------------------
