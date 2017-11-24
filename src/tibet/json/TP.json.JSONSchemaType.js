@@ -263,8 +263,14 @@ function(tree, jsonObj) {
     tree.type = 'array';
     tree.children = {};
 
+    //  If there is a JSON Object (i.e. {}) at the first spot in the Array, then
+    //  check to see if there is a set of repeating objects in the Array and if
+    //  they are the same composition (i.e. have the same keys) and length.
     if (TP.isPlainObject(jsonObj.first())) {
 
+        //  Test to see if the items in the Array are all the same, structure
+        //  wise, and then build an Object schema using the longest Object
+        //  structure found.
         results = this.$checkForSamenessIn(jsonObj);
         if (results.at('isSame')) {
 
@@ -337,7 +343,9 @@ function(tree, jsonObj) {
         i,
 
         key,
-        val;
+        val,
+
+        schemaTypeName;
 
     //  NB: This method is one of the few places in TIBET where we use POJO
     //  syntax, because it matches the process of building a JSON schema so
@@ -356,7 +364,9 @@ function(tree, jsonObj) {
 
         tree.children[key] = {};
 
-        switch (this.getSchemaType(val)) {
+        schemaTypeName = this.getSchemaType(val);
+
+        switch (schemaTypeName) {
 
             case 'object':
                 this.$buildObjectSchemaMetaFrom(tree.children[key], val);
@@ -391,17 +401,17 @@ function(tree, jsonObj) {
      * @returns {TP.json.JSONSchemaType} The receiver.
      */
 
-    var objType;
+    var schemaTypeName;
 
     //  NB: This method is one of the few places in TIBET where we use POJO
     //  syntax, because it matches the process of building a JSON schema so
     //  well.
 
-    objType = this.getSchemaType(jsonObj);
+    schemaTypeName = this.getSchemaType(jsonObj);
 
-    tree.type = objType;
+    tree.type = schemaTypeName;
 
-    if (objType === 'string') {
+    if (schemaTypeName === 'string') {
         tree.minLength = jsonObj.length > 0 ? 1 : 0;
     }
 
@@ -424,10 +434,10 @@ function(anArray) {
      * @param {Object} anArray The Array to test for sameness.
      * @returns {TP.core.Hash} A two-entry hash, 'isSame' a Boolean indicating
      *     whether or not the entries are all the same and 'longest' which is
-     *     the entry in the Array that has the most number of keys.
+     *     the Object entry in the Array that has the most number of keys.
      */
 
-    var hashes,
+    var md5Vals,
         max,
         longest,
 
@@ -439,13 +449,13 @@ function(anArray) {
         key,
         val,
 
-        hash,
+        md5Val,
 
         moreKeys,
 
         hasSameStructure;
 
-    hashes = TP.hc();
+    md5Vals = TP.hc();
     max = 0;
     longest = null;
 
@@ -458,14 +468,14 @@ function(anArray) {
         val = anArray[key];
 
         if (TP.isPlainObject(val)) {
-            hash = TP.keys(val).sort().asJSONSource().asMD5();
+            md5Val = TP.keys(val).sort().asJSONSource().asMD5();
         } else if (TP.isArray(val)) {
-            hash = val.sort().asJSONSource().asMD5();
+            md5Val = val.sort().asJSONSource().asMD5();
         } else {
-            hash = val.asJSONSource().asMD5();
+            md5Val = val.asJSONSource().asMD5();
         }
 
-        hashes.atPut(hash, true);
+        md5Vals.atPut(md5Val, true);
 
         moreKeys = TP.keys(val);
 
@@ -475,7 +485,7 @@ function(anArray) {
         }
     }
 
-    hasSameStructure = hashes.getSize() === 1;
+    hasSameStructure = md5Vals.getSize() === 1;
 
     return TP.hc('isSame', hasSameStructure, 'longest', longest);
 });
