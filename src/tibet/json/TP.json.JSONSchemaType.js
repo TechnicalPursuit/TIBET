@@ -221,9 +221,9 @@ function(jsonObj, definitionName) {
 
     //  Build up an AST metadata into the supplied tree.
     if (TP.isArray(jsonObj)) {
-        this.buildArraySchemaMetaFrom(tree, jsonObj);
+        this.$buildArraySchemaMetaFrom(tree, jsonObj);
     } else {
-        this.buildObjectSchemaMetaFrom(tree, jsonObj);
+        this.$buildObjectSchemaMetaFrom(tree, jsonObj);
     }
 
     //  Now compile a schema from that metadata.
@@ -234,11 +234,11 @@ function(jsonObj, definitionName) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('buildArraySchemaMetaFrom',
+TP.json.JSONSchemaType.Type.defineMethod('$buildArraySchemaMetaFrom',
 function(tree, jsonObj) {
 
     /**
-     * @method buildArraySchemaMetaFrom
+     * @method $buildArraySchemaMetaFrom
      * @summary Builds a metadata AST description of the supplied Array into the
      *     supplied metadata tree object.
      * @param {Object} tree The plain JavaScript object holding the metadata
@@ -271,7 +271,7 @@ function(tree, jsonObj) {
             tree.uniqueItems = true;
             tree.minItems = 1;
 
-            return this.buildObjectSchemaMetaFrom(tree, results.at('longest'));
+            return this.$buildObjectSchemaMetaFrom(tree, results.at('longest'));
         }
     }
 
@@ -290,7 +290,7 @@ function(tree, jsonObj) {
                 tree.children[i].required = true;
             }
 
-            this.buildObjectSchemaMetaFrom(tree.children[i], val);
+            this.$buildObjectSchemaMetaFrom(tree.children[i], val);
 
         } else if (TP.isArray(val)) {
 
@@ -302,13 +302,13 @@ function(tree, jsonObj) {
                 tree.children[i].required = true;
             }
 
-            this.buildArraySchemaMetaFrom(tree.children[i], val);
+            this.$buildArraySchemaMetaFrom(tree.children[i], val);
 
         } else {
 
             if (tree.type === 'object') {
                 tree.children[i] = {};
-                this.buildPrimitiveSchemaMetaFrom(tree.children[i], val);
+                this.$buildPrimitiveSchemaMetaFrom(tree.children[i], val);
             }
         }
     }
@@ -318,11 +318,11 @@ function(tree, jsonObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('buildObjectSchemaMetaFrom',
+TP.json.JSONSchemaType.Type.defineMethod('$buildObjectSchemaMetaFrom',
 function(tree, jsonObj) {
 
     /**
-     * @method buildObjectSchemaMetaFrom
+     * @method $buildObjectSchemaMetaFrom
      * @summary Builds a metadata AST description of the supplied Object into
      *     the supplied metadata tree object.
      * @param {Object} tree The plain JavaScript object holding the metadata
@@ -359,15 +359,15 @@ function(tree, jsonObj) {
         switch (this.getSchemaType(val)) {
 
             case 'object':
-                this.buildObjectSchemaMetaFrom(tree.children[key], val);
+                this.$buildObjectSchemaMetaFrom(tree.children[key], val);
                 break;
 
             case 'array':
-                this.buildArraySchemaMetaFrom(tree.children[key], val);
+                this.$buildArraySchemaMetaFrom(tree.children[key], val);
                 break;
 
             default:
-                this.buildPrimitiveSchemaMetaFrom(tree.children[key], val);
+                this.$buildPrimitiveSchemaMetaFrom(tree.children[key], val);
                 break;
         }
     }
@@ -377,11 +377,11 @@ function(tree, jsonObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('buildPrimitiveSchemaMetaFrom',
+TP.json.JSONSchemaType.Type.defineMethod('$buildPrimitiveSchemaMetaFrom',
 function(tree, jsonObj) {
 
     /**
-     * @method buildPrimitiveSchemaMetaFrom
+     * @method $buildPrimitiveSchemaMetaFrom
      * @summary Builds a metadata AST description of the supplied primitive
      *     value object (i.e. a non-reference object) into the supplied metadata
      *     tree object.
