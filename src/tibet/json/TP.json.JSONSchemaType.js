@@ -205,7 +205,8 @@ function(jsonObj, definitionName) {
      *     from.
      * @param {String} definitionName The name to use for the 'definition' in
      *     the JSON Schema.
-     * @returns {Object} The JSON schema expressed in a plain JavaScript object.
+     * @returns {Object} The top-level JSON schema expressed in a plain
+     *     JavaScript object.
      */
 
     var tree,
@@ -586,7 +587,8 @@ function(tree, definitionName) {
      *     tree.
      * @param {String} definitionName The name of the JSON Schema 'definition'
      *     to generate into the schema.
-     * @returns {TP.json.JSONSchemaType} The receiver.
+     * @returns {Object} The top-level JSON schema expressed in a plain
+     *     JavaScript object.
      */
 
     var topSchema,
