@@ -46,22 +46,30 @@ TP.json.JSONSchemaType.Type.defineAttribute('schema');
 //  ------------------------------------------------------------------------
 
 TP.json.JSONSchemaType.Type.defineMethod('buildSchemaFrom',
-function(jsonObj, definitionName) {
+function(sourceObject, definitionName) {
 
     /**
      * @method buildSchemaFrom
      * @summary Builds a JSON schema from the data in the supplied plain
      *     JavaScript object.
-     * @param {Object} jsonObj The plain JavaScript object to build the schema
-     *     from.
+     * @param {TP.core.Hash|Object} sourceObject The JavaScript object to build
+     *     the schema from.
      * @param {String} definitionName The name to use for the 'definition' in
      *     the JSON Schema.
      * @returns {Object} The top-level JSON schema expressed in a plain
      *     JavaScript object.
      */
 
-    var tree,
+    var pojoObj,
+
+        tree,
         schema;
+
+    if (!TP.isPlainObject(sourceObject)) {
+        pojoObj = sourceObject.asObject();
+    } else {
+        pojoObj = sourceObject;
+    }
 
     //  NB: This method is one of the few places in TIBET where we use POJO
     //  syntax, because it matches the process of building a JSON schema so
