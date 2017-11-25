@@ -112,12 +112,12 @@ function(topLevelSchema, params) {
             type = definitionDesc.at('type');
 
             if (type === 'array') {
-                str += this.generateContentFromArrayDescription(
+                str += this.generateContentFromJSONSchemaArrayDescription(
                                                     definitionKey,
                                                     definitionDesc,
                                                     prefix);
             } else {
-                str += this.generateContentFromObjectDescription(
+                str += this.generateContentFromJSONSchemaObjectDescription(
                                                     definitionKey,
                                                     definitionDesc,
                                                     prefix);
@@ -134,7 +134,7 @@ function(topLevelSchema, params) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromArrayDescription',
+    'generateContentFromJSONSchemaArrayDescription',
 function(propertyKey, propertyDesc, prefix) {
 
     var subPrefix,
@@ -151,14 +151,14 @@ function(propertyKey, propertyDesc, prefix) {
     if (TP.isArray(items)) {
         items.forEach(
             function(anItem, anIndex) {
-                str += this.generateContentFrom(
+                str += this.generateContentFromJSONSchema(
                                         anItem.at('type'),
                                         propertyKey,
                                         anItem,
                                         subPrefix + anIndex);
             }.bind(this));
     } else {
-        str += this.generateContentFrom(
+        str += this.generateContentFromJSONSchema(
                                 items.at('type'),
                                 propertyKey,
                                 propertyDesc.at('items'),
@@ -171,7 +171,7 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromBooleanDescription',
+    'generateContentFromJSONSchemaBooleanDescription',
 function(propertyKey, propertyDesc, prefix) {
 
     var id,
@@ -202,7 +202,7 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromNumberDescription',
+    'generateContentFromJSONSchemaNumberDescription',
 function(propertyKey, propertyDesc, prefix) {
 
     var id,
@@ -233,7 +233,7 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromStringDescription',
+    'generateContentFromJSONSchemaStringDescription',
 function(propertyKey, propertyDesc, prefix) {
 
     var id,
@@ -264,7 +264,7 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromObjectDescription',
+    'generateContentFromJSONSchemaObjectDescription',
 function(propertyKey, propertyDesc, prefix) {
 
     var str,
@@ -306,7 +306,8 @@ function(propertyKey, propertyDesc, prefix) {
 
             str +=
                 '<div>\n' +
-                this.generateContentFrom(type, objKey, objDesc, subPrefix) +
+                this.generateContentFromJSONSchema(
+                                    type, objKey, objDesc, subPrefix) +
                 '</div>\n';
 
         }.bind(this));
@@ -323,7 +324,7 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFrom',
+    'generateContentFromJSONSchema',
 function(type, propertyKey, propertyDesc, prefix) {
 
     var str;
@@ -334,7 +335,7 @@ function(type, propertyKey, propertyDesc, prefix) {
 
         case 'array':
 
-            str += this.generateContentFromArrayDescription(
+            str += this.generateContentFromJSONSchemaArrayDescription(
                                     propertyKey,
                                     propertyDesc,
                                     prefix);
@@ -342,7 +343,7 @@ function(type, propertyKey, propertyDesc, prefix) {
 
         case 'boolean':
 
-            str += this.generateContentFromBooleanDescription(
+            str += this.generateContentFromJSONSchemaBooleanDescription(
                                     propertyKey,
                                     propertyDesc,
                                     prefix);
@@ -351,7 +352,7 @@ function(type, propertyKey, propertyDesc, prefix) {
         case 'integer':
         case 'number':
 
-            str += this.generateContentFromNumberDescription(
+            str += this.generateContentFromJSONSchemaNumberDescription(
                                     propertyKey,
                                     propertyDesc,
                                     prefix);
@@ -359,7 +360,7 @@ function(type, propertyKey, propertyDesc, prefix) {
 
         case 'object':
 
-            str += this.generateContentFromObjectDescription(
+            str += this.generateContentFromJSONSchemaObjectDescription(
                                     propertyKey,
                                     propertyDesc,
                                     prefix);
@@ -367,7 +368,7 @@ function(type, propertyKey, propertyDesc, prefix) {
 
         case 'string':
 
-            str += this.generateContentFromStringDescription(
+            str += this.generateContentFromJSONSchemaStringDescription(
                                     propertyKey,
                                     propertyDesc,
                                     prefix);
