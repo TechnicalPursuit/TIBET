@@ -306,6 +306,8 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.couchDocumentURIInsertionAssistant-TP.sherpa.couchDocumentURIInsertionAssistant.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.couchViewURIInsertionAssistant-TP.sherpa.couchViewURIInsertionAssistant.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.couchViewURIInsertionAssistant-TP.sherpa.couchViewURIInsertionAssistant.css.js"/>
+
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-schema-tibet_tooling_types.json.js"/>
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">

@@ -43,11 +43,15 @@ function(topLevelSchema, params) {
      */
 
     var paramHash,
+        renderInfo,
 
         definitions,
         str;
 
     paramHash = TP.ifInvalid(params, TP.hc());
+
+    renderInfo = paramHash.at('renderInfo');
+    renderInfo.atPutIfAbsent('mainMarkupNS', TP.w3.Xmlns.XHTML);
 
     definitions = topLevelSchema.get('definitions');
 
@@ -112,15 +116,17 @@ function(topLevelSchema, params) {
             type = definitionDesc.at('type');
 
             if (type === 'array') {
-                str += this.generateContentFromArrayDescription(
+                str += this.generateContentFromJSONSchemaArrayDescription(
                                                     definitionKey,
                                                     definitionDesc,
-                                                    prefix);
+                                                    prefix,
+                                                    renderInfo);
             } else {
-                str += this.generateContentFromObjectDescription(
+                str += this.generateContentFromJSONSchemaObjectDescription(
                                                     definitionKey,
                                                     definitionDesc,
-                                                    prefix);
+                                                    prefix,
+                                                    renderInfo);
             }
 
             //  ---
@@ -134,8 +140,8 @@ function(topLevelSchema, params) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromArrayDescription',
-function(propertyKey, propertyDesc, prefix) {
+    'generateContentFromJSONSchemaArrayDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var subPrefix,
 
@@ -151,18 +157,20 @@ function(propertyKey, propertyDesc, prefix) {
     if (TP.isArray(items)) {
         items.forEach(
             function(anItem, anIndex) {
-                str += this.generateContentFrom(
+                str += this.generateContentFromJSONSchema(
                                         anItem.at('type'),
                                         propertyKey,
                                         anItem,
-                                        subPrefix + anIndex);
+                                        subPrefix + anIndex,
+                                        renderInfo);
             }.bind(this));
     } else {
-        str += this.generateContentFrom(
+        str += this.generateContentFromJSONSchema(
                                 items.at('type'),
                                 propertyKey,
                                 propertyDesc.at('items'),
-                                subPrefix + '0');
+                                subPrefix + '0',
+                                renderInfo);
     }
 
     return str;
@@ -171,30 +179,58 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromBooleanDescription',
-function(propertyKey, propertyDesc, prefix) {
+    'generateContentFromJSONSchemaBooleanDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
 
         label,
+        hint,
+
         str;
 
     id = prefix + '_' + propertyKey;
 
     label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
 
-    str = '<label' +
-            ' for="' + id + '"' +
-            '>' +
-            label + ': ' +
-            '</label>';
+    hint = propertyDesc.at('description');
 
-    str +=
-        '<input' +
-        ' id="' + id + '"' +
-        ' type="checkbox"' +
-        ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
-        '/>\n';
+    if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XHTML) {
+        str = '<label' +
+                ' for="' + id + '"' +
+                '>' +
+                label + ': ' +
+                '</label>';
+
+        str +=
+            '<input' +
+            ' id="' + id + '"' +
+            ' type="checkbox"' +
+            ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
+            '/>\n';
+
+        if (TP.notEmpty(hint)) {
+            str += '<xctrls:hint for="' + id + '">' +
+                    hint +
+                    '</xctrls:hint>\n';
+        }
+    } else if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XCONTROLS) {
+        str +=
+            '<xctrls:checkitem' +
+            ' id="' + id + '"' +
+            ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
+            '>\n';
+
+        if (TP.notEmpty(hint)) {
+            str += '<xctrls:hint>' +
+                    hint +
+                    '</xctrls:hint>\n';
+        }
+
+        str += '<xctrls:label>' + label + ':</xctrls:label>';
+
+        str += '</xctrls:checkitem>';
+    }
 
     return str;
 });
@@ -202,17 +238,21 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromNumberDescription',
-function(propertyKey, propertyDesc, prefix) {
+    'generateContentFromJSONSchemaNumberDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
+
         label,
+        hint,
 
         str;
 
     id = prefix + '_' + propertyKey;
 
     label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    hint = propertyDesc.at('description');
 
     str = '<label' +
             ' for="' + id + '"' +
@@ -227,23 +267,33 @@ function(propertyKey, propertyDesc, prefix) {
         ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
         '/>\n';
 
+    if (TP.notEmpty(hint)) {
+        str += '<xctrls:hint for="' + id + '">' +
+                hint +
+                '</xctrls:hint>\n';
+    }
+
     return str;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromStringDescription',
-function(propertyKey, propertyDesc, prefix) {
+    'generateContentFromJSONSchemaStringDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
+
         label,
+        hint,
 
         str;
 
     id = prefix + '_' + propertyKey;
 
     label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    hint = propertyDesc.at('description');
 
     str = '<label' +
             ' for="' + id + '"' +
@@ -258,14 +308,20 @@ function(propertyKey, propertyDesc, prefix) {
         ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
         '/>\n';
 
+    if (TP.notEmpty(hint)) {
+        str += '<xctrls:hint for="' + id + '">' +
+                hint +
+                '</xctrls:hint>\n';
+    }
+
     return str;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromObjectDescription',
-function(propertyKey, propertyDesc, prefix) {
+    'generateContentFromJSONSchemaObjectDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var str,
         properties,
@@ -306,7 +362,8 @@ function(propertyKey, propertyDesc, prefix) {
 
             str +=
                 '<div>\n' +
-                this.generateContentFrom(type, objKey, objDesc, subPrefix) +
+                this.generateContentFromJSONSchema(
+                                type, objKey, objDesc, subPrefix, renderInfo) +
                 '</div>\n';
 
         }.bind(this));
@@ -323,8 +380,8 @@ function(propertyKey, propertyDesc, prefix) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFrom',
-function(type, propertyKey, propertyDesc, prefix) {
+    'generateContentFromJSONSchema',
+function(type, propertyKey, propertyDesc, prefix, renderInfo) {
 
     var str;
 
@@ -334,43 +391,48 @@ function(type, propertyKey, propertyDesc, prefix) {
 
         case 'array':
 
-            str += this.generateContentFromArrayDescription(
+            str += this.generateContentFromJSONSchemaArrayDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'boolean':
 
-            str += this.generateContentFromBooleanDescription(
+            str += this.generateContentFromJSONSchemaBooleanDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'integer':
         case 'number':
 
-            str += this.generateContentFromNumberDescription(
+            str += this.generateContentFromJSONSchemaNumberDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'object':
 
-            str += this.generateContentFromObjectDescription(
+            str += this.generateContentFromJSONSchemaObjectDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'string':
 
-            str += this.generateContentFromStringDescription(
+            str += this.generateContentFromJSONSchemaStringDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         default:

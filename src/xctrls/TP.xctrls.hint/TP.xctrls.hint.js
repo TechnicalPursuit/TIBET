@@ -106,7 +106,7 @@ function(anEvent) {
             //  Couldn't find one by traversing the ancestor chain. See if an
             //  xctrls:hint exists with a 'for=' attribute containing the target
             //  ID.
-            hintTPElem = TP.byCSSPath('*[for="' + targetID + '"]',
+            hintTPElem = TP.byCSSPath('xctrls|hint[for="' + targetID + '"]',
                                         sig.getDocument(),
                                         true);
         }
