@@ -1023,8 +1023,8 @@ Cmd.prototype.executeSubmit = function() {
         dat,
         doc,
         thisref,
-        params,
-        paramStr;
+        prompt,
+        params;
 
     thisref = this;
 
@@ -1063,29 +1063,54 @@ Cmd.prototype.executeSubmit = function() {
         return;
     }
 
-    params = doc.params;
-    if (params) {
-        paramStr = JSON.stringify(params);
 
-        //  Iterate over param string and prompt from replacement values for any
-        //  templating blocks.
-        paramStr = paramStr.replace(/\[\[[^\]]*\]\]/g, function(match) {
-            var value;
+    //  Helper function to support recursive prompt capability.
+    prompt = function(obj, root) {
+        var keys;
 
-            value = CLI.prompt.question(match + ' ? ');
-            value = value.replace(/"/g, '\\"');
-
-            //  If the value is empty return the original match (e.g. if they just
-            //  hit return without providing new data.
-            return value || match;
-        });
-
-        try {
-            doc.params = JSON.parse(paramStr);
-        } catch (e) {
-            this.error('Error parsing final job: ' + e.message);
+        if (!CLI.isPlainObject(obj)) {
             return;
         }
+
+        keys = Object.keys(obj);
+        keys.forEach(function(key) {
+            var val,
+                fullkey,
+                result;
+
+            if (root) {
+                fullkey = root + '.' + key;
+            } else {
+                fullkey = key;
+            }
+
+            val = obj[key];
+            if (CLI.isPlainObject(val)) {
+                prompt(val, fullkey);
+            } else if (typeof val === 'string') {
+
+                result = val.replace(/\[\[[^\]]*\]\]/g, function(match) {
+                    var value;
+
+                    value = CLI.prompt.question(match.slice(2, -2) +
+                        ' (' + fullkey + ') ? ');
+                    value = value.replace(/"/g, '\\"');
+
+                    //  If the value is empty return the original match (e.g. if
+                    //  they just hit return without providing new data.
+                    return value || match;
+                });
+
+                obj[key] = result;
+            }
+        });
+    };
+
+    params = doc.params;
+    if (params) {
+        //  Rely on helper function to recursively descend and prompt for any
+        //  embedded parameter values.
+        prompt(params);
     } else {
         doc.params = {};
     }
