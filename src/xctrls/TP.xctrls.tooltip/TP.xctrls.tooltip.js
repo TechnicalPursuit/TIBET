@@ -90,6 +90,9 @@ function(aSignal) {
     //  the tooltip shares and cache it on ourself.
     timer = setTimeout(
             function() {
+                //  By default, tooltips are triggered at the current mouse
+                //  point.
+                aSignal.atPutIfAbsent('triggerPoint', TP.MOUSE);
                 return this.openOverlay(aSignal);
             }.bind(this),
             delayVal);
