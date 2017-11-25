@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet package [ [--profile] &lt;pkg@cfg&gt; [--package <package>] [--config <cfg>] ]
+tibet package [ [--profile] <pkg_cfg> | [--package <package>] [--config <cfg>] ]
     [--phase <phase>] [--all] [--scripts] [--styles] [--images] [--resources]
     [--templates] [--inlined] [--nodes]
     [--include <asset names>] [--exclude <asset names>]
