@@ -836,10 +836,11 @@ CLI.getLibRoot = function() {
  * If no property is provided the entire set of configuration values is
  * returned.
  * @param {string} property A specific property value to check.
+ * @param {Object} [aDefault] Optional value to default the lookup to.
  * @returns {Object} The property value, or the entire configuration object.
  */
-CLI.getcfg = function(property) {
-    return this._package.getcfg(property);
+CLI.getcfg = function(property, aDefault) {
+    return this._package.getcfg(property, aDefault);
 };
 CLI.cfg = CLI.getcfg;
 
