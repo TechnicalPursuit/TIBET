@@ -1458,10 +1458,12 @@
     TP.sys.setcfg('keyboard.shortcut_cancel_delay', 500);
 
     //  ---
-    //  timeouts
+    //  timeouts/delays
     //  ---
 
     TP.sys.setcfg('editor.select.delay', 50);
+
+    TP.sys.setcfg('phantomjs.timeout', 5000);
 
     TP.sys.setcfg('shell.init.delay', 10);
     TP.sys.setcfg('shell.update.delay', 1000);
