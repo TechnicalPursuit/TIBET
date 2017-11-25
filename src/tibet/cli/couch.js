@@ -88,7 +88,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]';
+Cmd.prototype.USAGE = 'tibet couch <push|compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]';
 
 
 //  ---
@@ -248,6 +248,41 @@ Cmd.prototype.executeListall = function() {
             cmd.log(db);
         });
     });
+};
+
+
+/**
+ * Pushes content to a CouchDB database. You can push individual JSON documents
+ * or directories containing JSON documents.
+ */
+Cmd.prototype.executePush = function() {
+    var flags,
+        id,
+        fullpath;
+
+    id = this.getArgument(1);
+
+    if (CLI.notEmpty(id)) {
+        fullpath = CLI.expandPath(id);
+        if (!sh.test('-e', fullpath)) {
+            this.error('Source path not found: ' + fullpath);
+            return;
+        }
+
+        if (sh.test('-d', fullpath)) {
+            return this.pushDir(fullpath);
+        } else {
+            //  Has to be a JSON document.
+            if (path.extname(fullpath) !== '.json') {
+                this.error('Can only push JSON documents.');
+                return;
+            }
+            return this.pushFile(fullpath);
+        }
+    } else {
+        this.error('No source document reference provided.');
+        return 1;
+    }
 };
 
 
