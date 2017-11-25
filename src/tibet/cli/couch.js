@@ -116,10 +116,10 @@ Cmd.prototype.configure = function() {
         }
     }
 
-    //  All commands allow target specification via a dotted arg0 value. Since
+    //  All commands allow target specification via a dotted arg1 value. Since
     //  most commands operate on a database or database and appname we default
     //  to assuming dbname[.appname]. Subcommands may alter this as needed.
-    arg0 = this.getArgument(0);
+    arg0 = this.getArgument(1);
     if (arg0) {
         parts = arg0.split('.');
         switch (parts.length) {
