@@ -52,9 +52,9 @@
 
             //  Basic SMTP option sanity check. These params should include the
             //  service and auth (user/pass) data for the SMTP config.
-            if (!params.smtp) {
+            if (!params.transport) {
                 return TDS.Promise.reject(new Error(
-                    'Misconfigured SMTP task. No params.smtp.'));
+                    'Misconfigured SMTP task. No params.transport value.'));
             }
 
             //  We need a minimum of from/to/subject to do any mailing.
@@ -91,10 +91,10 @@
                 srctext = params[format];
             }
 
-            //  Map over the smtp parameters from the task as our top-level
+            //  Map over the transport parameters from the task as our top-level
             //  option data. This should give us service name, secure, host,
             //  port, auth: {user, pass} etc.
-            smtpOpts = TDS.blend({}, params.smtp);
+            smtpOpts = TDS.blend({}, params.transport);
 
             //  Decrypt the username, which should always be provided from the
             //  database and stored in encrypted form.
@@ -142,7 +142,7 @@
             //  'this' references to be correct.
             send = TDS.Promise.promisify(transporter.sendMail.bind(transporter));
 
-            logger.trace(job, ' sending email via smtp');
+            logger.trace(job, ' sending email via SMTP');
 
             return send(mailOpts);
         };

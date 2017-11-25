@@ -50,9 +50,9 @@
             TDS.ifDebug() ? logger.debug(JSON.stringify(step)) : 0;
 
             //  Basic sendmail option sanity check
-            if (!params.sendmail) {
+            if (!params.transport) {
                 return TDS.Promise.reject(new Error(
-                    'Misconfigured sendmail task. No params.sendmail.'));
+                    'Misconfigured sendmail task. No params.transport value.'));
             }
 
             //  Basic mail options sanity check
@@ -72,7 +72,7 @@
             //  Map over the sendmail parameters from the task as our top-level
             //  option data. This should give us optional values for the path,
             //  newline, and args for the nodemailer sendmail transport.
-            sendmailOpts = TDS.blend({}, params.sendmail);
+            sendmailOpts = TDS.blend({}, params.transport);
 
             sendmailOpts.path = sendmailOpts.path || 'sendmail';
             sendmailOpts.newline = sendmailOpts.newline || 'unix';

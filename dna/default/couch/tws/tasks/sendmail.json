@@ -4,7 +4,7 @@
     "owner": "Team TIBET",
     "plugin": "mail-sendmail",
     "params": {
-        "sendmail": {
+        "transport": {
             "path": "sendmail",
             "newline": "unix"
         },

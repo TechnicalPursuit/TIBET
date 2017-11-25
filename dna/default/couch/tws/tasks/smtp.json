@@ -4,7 +4,7 @@
     "owner": "Team TIBET",
     "plugin": "mail-smtp",
     "params": {
-        "smtp": {
+        "transport": {
             "service": "gmail",
             "auth": {
                 "user": "your_smtp_service_username_after_tibet_encrypt",
