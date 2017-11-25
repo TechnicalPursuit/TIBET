@@ -1455,6 +1455,7 @@
      * in TIBET. This version will look in command line options followed by any
      * loaded TIBET configuration data for the property in question.
      * @param {string} property The name of the property to look up.
+     * @param {Object} [aDefault] Optional value to default the lookup to.
      * @returns {Object} The property value.
      */
     Package.prototype.getcfg = function(property, aDefault) {
