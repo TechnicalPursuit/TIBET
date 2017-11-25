@@ -102,7 +102,7 @@ Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|pushapp|removeapp
 Cmd.prototype.configure = function() {
     var confirm,
         parts,
-        arg0;
+        arg1;
 
     //  Explicit flag always wins.
     if (this.hasArgument('confirm')) {
@@ -119,9 +119,9 @@ Cmd.prototype.configure = function() {
     //  All commands allow target specification via a dotted arg1 value. Since
     //  most commands operate on a database or database and appname we default
     //  to assuming dbname[.appname]. Subcommands may alter this as needed.
-    arg0 = this.getArgument(1);
-    if (arg0) {
-        parts = arg0.split('.');
+    arg1 = this.getArgument(1);
+    if (arg1) {
+        parts = arg1.split('.');
         switch (parts.length) {
             case 1:
                 this.options.db_name = parts[0];
@@ -256,7 +256,7 @@ Cmd.prototype.executeListall = function() {
  */
 Cmd.prototype.executePushapp = function() {
     var cmd,
-        arg0,
+        arg1,
         parts,
         params,
         db_url,
@@ -279,14 +279,14 @@ Cmd.prototype.executePushapp = function() {
 
     cmd = this;
 
-    arg0 = this.getArgument(1);
-    if (!arg0) {
+    arg1 = this.getArgument(1);
+    if (!arg1) {
         this.usage('tibet couch pushapp [<[dbname.]appname>]');
         return;
     }
 
     //  Assume appname as solo parameter, db.app when dotted.
-    parts = arg0.split('.');
+    parts = arg1.split('.');
     switch (parts.length) {
         case 1:
             delete this.options.db_name;
@@ -718,7 +718,7 @@ Cmd.prototype.executePushapp = function() {
  */
 Cmd.prototype.executeRemoveapp = function() {
     var cmd,
-        arg0,
+        arg1,
         parts,
         params,
         db_url,
@@ -731,14 +731,14 @@ Cmd.prototype.executeRemoveapp = function() {
 
     cmd = this;
 
-    arg0 = this.getArgument(1);
-    if (!arg0) {
+    arg1 = this.getArgument(1);
+    if (!arg1) {
         this.usage('tibet couch removeapp [<[dbname.]appname>]');
         return;
     }
 
     //  Assume appname as solo parameter, db.app when dotted.
-    parts = arg0.split('.');
+    parts = arg1.split('.');
     switch (parts.length) {
         case 1:
             delete this.options.db_name;
@@ -847,7 +847,7 @@ Cmd.prototype.executeView = function() {
         viewParams,
         method,
         thisref,
-        arg0,
+        arg1,
         parts,
         db;
 
@@ -863,16 +863,16 @@ Cmd.prototype.executeView = function() {
         }
     });
 
-    arg0 = this.getArgument(1);
-    if (!arg0) {
+    arg1 = this.getArgument(1);
+    if (!arg1) {
         this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
         return;
     }
 
-    //  View parsing of arg0 is different in that viewname is required, so we
+    //  View parsing of arg1 is different in that viewname is required, so we
     //  assume single values are viewnames. 2 parts are app.view, and 3 parts
     //  are db.app.view.
-    parts = arg0.split('.');
+    parts = arg1.split('.');
     switch (parts.length) {
         case 1:
             delete this.options.db_name;
