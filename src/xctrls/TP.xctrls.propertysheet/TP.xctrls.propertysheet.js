@@ -43,11 +43,13 @@ function(topLevelSchema, params) {
      */
 
     var paramHash,
+        renderInfo,
 
         definitions,
         str;
 
     paramHash = TP.ifInvalid(params, TP.hc());
+    renderInfo = paramHash.at('renderInfo');
 
     definitions = topLevelSchema.get('definitions');
 
@@ -115,12 +117,14 @@ function(topLevelSchema, params) {
                 str += this.generateContentFromJSONSchemaArrayDescription(
                                                     definitionKey,
                                                     definitionDesc,
-                                                    prefix);
+                                                    prefix,
+                                                    renderInfo);
             } else {
                 str += this.generateContentFromJSONSchemaObjectDescription(
                                                     definitionKey,
                                                     definitionDesc,
-                                                    prefix);
+                                                    prefix,
+                                                    renderInfo);
             }
 
             //  ---
@@ -135,7 +139,7 @@ function(topLevelSchema, params) {
 
 TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaArrayDescription',
-function(propertyKey, propertyDesc, prefix) {
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var subPrefix,
 
@@ -155,14 +159,16 @@ function(propertyKey, propertyDesc, prefix) {
                                         anItem.at('type'),
                                         propertyKey,
                                         anItem,
-                                        subPrefix + anIndex);
+                                        subPrefix + anIndex,
+                                        renderInfo);
             }.bind(this));
     } else {
         str += this.generateContentFromJSONSchema(
                                 items.at('type'),
                                 propertyKey,
                                 propertyDesc.at('items'),
-                                subPrefix + '0');
+                                subPrefix + '0',
+                                renderInfo);
     }
 
     return str;
@@ -172,7 +178,7 @@ function(propertyKey, propertyDesc, prefix) {
 
 TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaBooleanDescription',
-function(propertyKey, propertyDesc, prefix) {
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
 
@@ -203,7 +209,7 @@ function(propertyKey, propertyDesc, prefix) {
 
 TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaNumberDescription',
-function(propertyKey, propertyDesc, prefix) {
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
         label,
@@ -234,7 +240,7 @@ function(propertyKey, propertyDesc, prefix) {
 
 TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaStringDescription',
-function(propertyKey, propertyDesc, prefix) {
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
         label,
@@ -265,7 +271,7 @@ function(propertyKey, propertyDesc, prefix) {
 
 TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaObjectDescription',
-function(propertyKey, propertyDesc, prefix) {
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var str,
         properties,
@@ -307,7 +313,7 @@ function(propertyKey, propertyDesc, prefix) {
             str +=
                 '<div>\n' +
                 this.generateContentFromJSONSchema(
-                                    type, objKey, objDesc, subPrefix) +
+                                type, objKey, objDesc, subPrefix, renderInfo) +
                 '</div>\n';
 
         }.bind(this));
@@ -325,7 +331,7 @@ function(propertyKey, propertyDesc, prefix) {
 
 TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchema',
-function(type, propertyKey, propertyDesc, prefix) {
+function(type, propertyKey, propertyDesc, prefix, renderInfo) {
 
     var str;
 
@@ -338,7 +344,8 @@ function(type, propertyKey, propertyDesc, prefix) {
             str += this.generateContentFromJSONSchemaArrayDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'boolean':
@@ -346,7 +353,8 @@ function(type, propertyKey, propertyDesc, prefix) {
             str += this.generateContentFromJSONSchemaBooleanDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'integer':
@@ -355,7 +363,8 @@ function(type, propertyKey, propertyDesc, prefix) {
             str += this.generateContentFromJSONSchemaNumberDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'object':
@@ -363,7 +372,8 @@ function(type, propertyKey, propertyDesc, prefix) {
             str += this.generateContentFromJSONSchemaObjectDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         case 'string':
@@ -371,7 +381,8 @@ function(type, propertyKey, propertyDesc, prefix) {
             str += this.generateContentFromJSONSchemaStringDescription(
                                     propertyKey,
                                     propertyDesc,
-                                    prefix);
+                                    prefix,
+                                    renderInfo);
             break;
 
         default:
