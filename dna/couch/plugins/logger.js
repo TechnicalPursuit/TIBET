@@ -131,7 +131,7 @@
                     throw new Error();
                 }
             } catch (e) {
-                TDS.prelog('error',
+                TDS.prelog('warn',
                     'unable to parse tds.log.transports setting.', meta);
                 TDS.prelog('warn',
                     'Defaulting tds.log.transports to file+console.', meta);
