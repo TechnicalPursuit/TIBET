@@ -97,11 +97,12 @@ function(options) {
     schema = schemaResource.get('result');
 
     propertySheet = TP.xctrls.propertysheet.from(
-                        schema,
-                        TP.hc(
-                            'sheetAttrs',
-                            TP.hc('bind:scope',
-                                    options.at('bindLoc').asString())));
+                    schema,
+                    TP.hc(
+                        'sheetAttrs',
+                        TP.hc('bind:scope', options.at('bindLoc').asString()),
+                        'renderInfo',
+                        TP.hc('mainMarkupNS', TP.w3.Xmlns.XHTML)));
 
     return TP.unwrap(propertySheet);
 });

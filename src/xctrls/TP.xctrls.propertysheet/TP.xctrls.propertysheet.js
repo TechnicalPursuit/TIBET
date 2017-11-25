@@ -49,7 +49,9 @@ function(topLevelSchema, params) {
         str;
 
     paramHash = TP.ifInvalid(params, TP.hc());
+
     renderInfo = paramHash.at('renderInfo');
+    renderInfo.atPutIfAbsent('mainMarkupNS', TP.w3.Xmlns.XHTML);
 
     definitions = topLevelSchema.get('definitions');
 
@@ -183,24 +185,52 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
     var id,
 
         label,
+        hint,
+
         str;
 
     id = prefix + '_' + propertyKey;
 
     label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
 
-    str = '<label' +
-            ' for="' + id + '"' +
-            '>' +
-            label + ': ' +
-            '</label>';
+    hint = propertyDesc.at('description');
 
-    str +=
-        '<input' +
-        ' id="' + id + '"' +
-        ' type="checkbox"' +
-        ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
-        '/>\n';
+    if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XHTML) {
+        str = '<label' +
+                ' for="' + id + '"' +
+                '>' +
+                label + ': ' +
+                '</label>';
+
+        str +=
+            '<input' +
+            ' id="' + id + '"' +
+            ' type="checkbox"' +
+            ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
+            '/>\n';
+
+        if (TP.notEmpty(hint)) {
+            str += '<xctrls:hint for="' + id + '">' +
+                    hint +
+                    '</xctrls:hint>\n';
+        }
+    } else if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XCONTROLS) {
+        str +=
+            '<xctrls:checkitem' +
+            ' id="' + id + '"' +
+            ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
+            '>\n';
+
+        if (TP.notEmpty(hint)) {
+            str += '<xctrls:hint>' +
+                    hint +
+                    '</xctrls:hint>\n';
+        }
+
+        str += '<xctrls:label>' + label + ':</xctrls:label>';
+
+        str += '</xctrls:checkitem>';
+    }
 
     return str;
 });
@@ -212,13 +242,17 @@ TP.xctrls.propertysheet.Type.defineMethod(
 function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
+
         label,
+        hint,
 
         str;
 
     id = prefix + '_' + propertyKey;
 
     label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    hint = propertyDesc.at('description');
 
     str = '<label' +
             ' for="' + id + '"' +
@@ -233,6 +267,12 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
         ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
         '/>\n';
 
+    if (TP.notEmpty(hint)) {
+        str += '<xctrls:hint for="' + id + '">' +
+                hint +
+                '</xctrls:hint>\n';
+    }
+
     return str;
 });
 
@@ -243,13 +283,17 @@ TP.xctrls.propertysheet.Type.defineMethod(
 function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     var id,
+
         label,
+        hint,
 
         str;
 
     id = prefix + '_' + propertyKey;
 
     label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
+
+    hint = propertyDesc.at('description');
 
     str = '<label' +
             ' for="' + id + '"' +
@@ -263,6 +307,12 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
         ' type="text"' +
         ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
         '/>\n';
+
+    if (TP.notEmpty(hint)) {
+        str += '<xctrls:hint for="' + id + '">' +
+                hint +
+                '</xctrls:hint>\n';
+    }
 
     return str;
 });
