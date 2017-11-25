@@ -562,8 +562,12 @@ helpers.server = function(url) {
         };
 
         db.viewAsyncDocs = function(appname, viewname, viewParams) {
+            var params;
 
-            return db.viewAsync(appname, viewname, viewParams).then(
+            params = viewParams || {};
+            params.include_docs = true;
+
+            return db.viewAsync(appname, viewname, params).then(
                 function(result) {
                     var body,
                         docs;
