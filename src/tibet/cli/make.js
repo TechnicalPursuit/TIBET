@@ -199,10 +199,11 @@ Cmd.defineTaskOptions = function(name, options) {
  * with that root are returned. If no property name is given the entire set of
  * all configuration data is returned.
  * @param {string} property A specific property value to check.
+ * @param {Object} [aDefault] Optional value to default the lookup to.
  * @returns {Object} The property value, or a block of configuration data.
  */
-Cmd.getcfg = function(property) {
-    return CLI.getcfg(property);
+Cmd.getcfg = function(property, aDefault) {
+    return CLI.getcfg(property, aDefault);
 };
 Cmd.cfg = Cmd.getcfg;
 
@@ -778,11 +779,12 @@ Cmd.prototype.executeList = function(targets) {
  * Returns the configuration values currently in force by accessing the make
  * command type's getcfg implementation.
  * @param {string} property A specific property value to check.
+ * @param {Object} [aDefault] Optional value to default the lookup to.
  * @returns {Object} The property value, or the entire configuration object.
  */
-Cmd.prototype.getcfg = function(property) {
+Cmd.prototype.getcfg = function(property, aDefault) {
     //  NOTE we refer to the type method here, not CLI.
-    return Cmd.getcfg(property);
+    return Cmd.getcfg(property, aDefault);
 };
 Cmd.prototype.cfg = Cmd.prototype.getcfg;
 
