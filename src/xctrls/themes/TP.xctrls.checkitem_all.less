@@ -1,6 +1,6 @@
 
 /*
-	CSS styles common across 'xctrls:checkitem' controls for any theme.
+    CSS styles common across 'xctrls:checkitem' controls for any theme.
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
@@ -14,20 +14,27 @@
     xctrls|checkitem {
 
         cursor: pointer;
-    }
 
-    /* All themed 'xctrls:checkitem' controls ::value pseudo-element */
+        /* The checkitem label */
 
-    xctrls|checkitem > *[tibet|pelem="value"] {
-    }
+        & > xctrls|label {
 
-    /* All themed, non-disabled 'xctrls:checkitem' controls */
+            order: 1;
+        }
 
-    xctrls|checkitem:not([pclass|disabled]) {
-    }
+        /* All themed 'xctrls:checkitem' controls ::value pseudo-element */
 
-    /* All themed, non-disabled 'xctrls:checkitem' control labels */
+        & > *[tibet|pelem="value"] {
+        }
 
-    xctrls|checkitem:not([pclass|disabled]) xctrls|label {
+        /* All themed, non-disabled 'xctrls:checkitem' controls */
+
+        &:not([pclass|disabled]) {
+        }
+
+        /* All themed, non-disabled 'xctrls:checkitem' control labels */
+
+        &:not([pclass|disabled]) xctrls|label {
+        }
     }
 }

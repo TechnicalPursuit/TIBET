@@ -1,6 +1,6 @@
 
 /*
-	CSS styles common across 'xctrls:propertysheet' controls for any theme.
+    CSS styles common across 'xctrls:propertysheet' controls for any theme.
 */
 
 @namespace url("http://www.w3.org/1999/xhtml");
@@ -17,40 +17,40 @@
         height: 100%;
 
         overflow: auto;
-    }
 
-    /* All themed, non-disabled 'xctrls:propertysheet' controls */
+        /* All themed, non-disabled 'xctrls:propertysheet' controls */
 
-    xctrls|propertysheet:not([pclass|disabled]) {
-    }
+        &:not([pclass|disabled]) {
+        }
 
-    /* All themed, non-disabled 'xctrls:propertysheet' control labels */
+        /* All themed, non-disabled 'xctrls:propertysheet' control labels */
 
-    xctrls|propertysheet:not([pclass|disabled]) xctrls|label {
-    }
+        &:not([pclass|disabled]) xctrls|label {
+        }
 
-    xctrls|propertysheet > fieldset {
+        * > fieldset {
 
-        overflow: hidden;
+            overflow: hidden;
 
-        & div {
+            & div {
 
-            align-items: center;
+                align-items: center;
 
-            & label {
+                & label {
 
-                order: 1;
+                    order: 1;
 
-                white-space: nowrap;
+                    white-space: nowrap;
 
-                user-select: none;
+                    user-select: none;
 
-                cursor: pointer;
-            }
+                    cursor: pointer;
+                }
 
-            & label + * {
+                & label + *|* {
 
-                order: 2;
+                    order: 2;
+                }
             }
         }
     }
