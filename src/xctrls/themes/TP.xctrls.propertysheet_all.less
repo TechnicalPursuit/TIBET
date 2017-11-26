@@ -29,39 +29,29 @@
     xctrls|propertysheet:not([pclass|disabled]) xctrls|label {
     }
 
-    xctrls|propertysheet fieldset {
+    xctrls|propertysheet > fieldset {
+
+        overflow: hidden;
 
         & div {
 
             align-items: center;
-        }
 
-        & label {
+            & label {
 
-            order: 1;
+                order: 1;
 
-            text-align: right;
+                white-space: nowrap;
 
-            white-space: nowrap;
+                user-select: none;
 
-            user-select: none;
+                cursor: pointer;
+            }
 
-            cursor: pointer;
-        }
+            & label + * {
 
-        & input,
-        & textarea,
-        & select {
-
-            order: 2;
-            flex: 1 1 auto;
-        }
-
-        & input[type="checkbox"] ~ label,
-        & input[type="radio"] ~ label {
-
-            width: auto;
-            text-align: left;
+                order: 2;
+            }
         }
     }
 }
