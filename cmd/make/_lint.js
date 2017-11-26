@@ -2,17 +2,14 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        var result;
+        var proc;
 
         make.log('checking for lint...');
 
-        result = make.sh.exec('tibet lint --stop');
-        if (result.code !== 0) {
-            reject();
-            return;
-        }
-
-        resolve();
+        proc = make.spawn('tibet lint --stop');
+        proc.on('exit', function(code) {
+            code === 0 ? resolve() : reject();
+        });
     };
 
 }());
