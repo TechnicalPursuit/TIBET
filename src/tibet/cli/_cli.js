@@ -1830,10 +1830,8 @@ CLI.runViaGrunt = function(command) {
     cmd = this;
 
     str = process.argv.slice(2).join(' ');
-    this.debug('spawning: ' + str);
+    this.debug('running: ' + str);
 
-    //  TODO:   replace with shelljs-nodecli
-    // child = require('child_process').spawn('./node_modules/.bin/grunt',
     child = require('child_process').spawn('grunt',
         process.argv.slice(2),
         {cwd: this.getAppHead()}
@@ -1879,10 +1877,8 @@ CLI.runViaGulp = function(command) {
     cmd = this;
 
     str = process.argv.slice(2).join(' ');
-    this.debug('spawning: ' + str);
+    this.debug('running: ' + str);
 
-    //  TODO:   replace with shelljs-nodecli
-    // child = require('child_process').spawn('./node_modules/.bin/gulp',
     child = require('child_process').spawn('gulp',
         process.argv.slice(2),
         {cwd: cmd.getAppHead()}
