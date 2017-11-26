@@ -2,18 +2,15 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        var result;
+        var proc;
+
+        make.defineTaskOptions('_test', {timeout: 1000 * 60 * 15});
 
         make.log('running unit tests...');
 
-        result = make.sh.exec('tibet test');
-
-        if (result.code !== 0) {
-            reject();
-            return;
-        }
-
-        resolve();
+        proc = make.spawn('tibet test');
+        proc.on('exit', function(code) {
+            code === 0 ? resolve() : reject();
+        });
     };
-
 }());
