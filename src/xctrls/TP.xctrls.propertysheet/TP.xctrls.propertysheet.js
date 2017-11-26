@@ -50,7 +50,7 @@ function(topLevelSchema, params) {
 
     paramHash = TP.ifInvalid(params, TP.hc());
 
-    renderInfo = paramHash.at('renderInfo');
+    renderInfo = paramHash.atIfInvalid('renderInfo', TP.hc());
     renderInfo.atPutIfAbsent('mainMarkupNS', TP.w3.Xmlns.XHTML);
 
     definitions = topLevelSchema.get('definitions');
