@@ -1,10 +1,10 @@
 (function() {
     'use strict';
 
-    module.exports = function(make, resolve, reject) {
-        var proc;
+    var task;
 
-        make.defineTaskOptions('_test', {timeout: 1000 * 60 * 15});
+    task = function(make, resolve, reject) {
+        var proc;
 
         make.log('running unit tests...');
 
@@ -13,4 +13,8 @@
             code === 0 ? resolve() : reject();
         });
     };
+
+    task.options = {timeout: 1000 * 60 * 15};
+
+    module.exports = task;
 }());

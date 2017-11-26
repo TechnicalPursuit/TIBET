@@ -1,7 +1,9 @@
 (function() {
     'use strict';
 
-    module.exports = function(make, resolve, reject) {
+    var task;
+
+    task = function(make, resolve, reject) {
         var proc;
 
         make.log('checking for lint...');
@@ -12,4 +14,5 @@
         });
     };
 
+    module.exports = task;
 }());

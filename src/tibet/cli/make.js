@@ -83,8 +83,7 @@ Cmd.NAME = 'make';
  * the command line.
  * @type {Number}
  */
-Cmd.TIMEOUT = 90000;
-
+Cmd.TIMEOUT = 1000 * 30;
 
 //  ---
 //  Type Methods
@@ -166,7 +165,9 @@ Cmd.defineTask = function(name, task, options) {
         CLI.warn('redefining makefile target: ' + name);
     }
 
-    Cmd.$targets.push({name: name, task: taskfunc, options: options});
+    Cmd.$targets.push({name: name, task: taskfunc});
+
+    Cmd.defineTaskOptions(name, options);
 
     return;
 };
@@ -378,7 +379,7 @@ Cmd.loadTasks = function() {
 
         try {
             task = require(filepath);
-            Cmd.defineTask(name, task);
+            Cmd.defineTask(name, task, task.options || {});
         } catch (e) {
             CLI.error('Error loading task ' + name + ': ' + e);
         }
@@ -637,6 +638,18 @@ Cmd.prototype.chain = function(targets) {
     }
 
     return promise;
+};
+
+
+/**
+ * Defines options for a specific task. If the task doesn't exist this method
+ * will throw an exception.
+ * @param {String} name The name that uniquely identifies this task.
+ * @param {Object} options Default configuration options such as 'timeout'.
+ * @returns {Object} An object with name, task, and options properties.
+ */
+Cmd.prototype.defineTaskOptions = function(name, options) {
+    return Cmd.defineTaskOptions(name, options);
 };
 
 
