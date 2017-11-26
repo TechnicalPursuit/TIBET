@@ -88,7 +88,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet couch <push|compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]';
+Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|push|pushapp|removeapp|removedb|view> [<args>]';
 
 
 //  ---
