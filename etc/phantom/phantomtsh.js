@@ -835,8 +835,6 @@
         } else {
             PhantomTSH.url += '&boot.level=' + PhantomTSH.level;
         }
-
-        // PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;
     };
 
 
