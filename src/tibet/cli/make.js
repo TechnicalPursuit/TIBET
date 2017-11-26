@@ -661,7 +661,6 @@ Cmd.prototype.execute = function() {
 
     var targets,
         command,
-        handler,
         cmd,
         start;
 
@@ -709,27 +708,6 @@ Cmd.prototype.execute = function() {
     //  Ensure targets are prepped so they're all promisified.
     Cmd.$prepTargets(this);
 
-    //  Provide a common handler for reject/catch.
-    handler = function(err) {
-        var msg;
-
-        if (CLI.isValid(err)) {
-            if (typeof err === 'string') {
-                cmd.error(err);
-            } else if (err instanceof Error) {
-                cmd.error(err.message);
-            } else {
-                cmd.error(JSON.stringify(err));
-            }
-        }
-
-        msg = 'Task failure: ' +
-            ((new Date()).getTime() - start) + 'ms.';
-        cmd.error(msg);
-
-        process.exit(1);
-    };
-
     try {
         cmd = this;
 
@@ -761,15 +739,40 @@ Cmd.prototype.execute = function() {
 
                 process.exit(0);
             },
-            handler).catch(
-            handler);
+            function(err) {
+                var msg;
+
+                if (CLI.isValid(err)) {
+                    if (typeof err === 'string') {
+                        cmd.error(err);
+                    } else if (err instanceof Error) {
+                        cmd.error(err.message);
+                    } else {
+                        cmd.error(JSON.stringify(err));
+                    }
+                }
+
+                msg = 'Task failure: ' +
+                    ((new Date()).getTime() - start) + 'ms.';
+                cmd.error(msg);
+
+                process.exit(1);
+
+            }).catch(function(err) {
+                var msg;
+
+                msg = 'Task exception: ' + err + ' ' +
+                    ((new Date()).getTime() - start) + 'ms.';
+                cmd.error(msg);
+
+                process.exit(1);
+            });
 
     } catch (e) {
         this.error(e.message);
-        process.exit(1);
-    }
 
-    return 0;
+        return 1;
+    }
 };
 
 
