@@ -859,7 +859,7 @@ Cmd.prototype.executePush = function() {
     if (CLI.notEmpty(id)) {
         fullpath = CLI.expandPath(id);
         if (!sh.test('-e', fullpath)) {
-            this.error('Target path not found: ' + fullpath);
+            this.error('Source path not found: ' + fullpath);
             return;
         }
 
@@ -1046,7 +1046,7 @@ Cmd.prototype.executeSubmit = function() {
         file = path.join('~tws', 'jobs', file);
         fullpath = CLI.expandPath(file);
         if (!sh.test('-e', fullpath)) {
-            this.error('Target path not found: ' + fullpath);
+            this.error('Source path not found: ' + fullpath);
             return;
         }
     }
