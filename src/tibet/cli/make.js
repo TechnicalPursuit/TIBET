@@ -22,6 +22,7 @@ var CLI,
     fs,
     hb,
     sh,
+    child,
     nodecli,
     minimist,
     helpers,
@@ -34,6 +35,7 @@ path = require('path');
 hb = require('handlebars');
 sh = require('shelljs');
 fs = require('fs');
+child = require('child_process');
 path = require('path');
 minimist = require('minimist');
 nodecli = require('shelljs-nodecli');
@@ -813,6 +815,40 @@ Cmd.prototype.reparse = function(options) {
     opts = CLI.blend(opts, CLI.PARSE_OPTIONS);
 
     return CLI.blend(minimist(this.getArgv(), opts), this.options);
+};
+
+
+/**
+ * Spawns a sub-process whose stdio is attached to the main process and which
+ * has the shell flag set to true so it can be used similarly to exec. NOTE that
+ * there is no on.('exit') defined, you are expected to add that yourself to the
+ * process object returned from this call.
+ * @param {String} cmd The command string to be executed.
+ * @param {Array} [arglist] Optional argument list for the command.
+ * @param {Object} [options] Optional option list for the command.
+ * @return {Object} The Child Process object from Node.js.
+ */
+Cmd.prototype.spawn = function(cmd, arglist, options) {
+        var proc,
+            make,
+            args,
+            opts;
+
+        make = this;
+
+        args = arglist || [];
+        opts = CLI.blend(options, {
+            stdio: 'inherit',
+            shell: true
+        });
+
+        proc = child.spawn(cmd, args, opts);
+
+        proc.on('error', function(err) {
+            make.error(err);
+        });
+
+        return proc;
 };
 
 
