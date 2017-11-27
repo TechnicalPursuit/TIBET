@@ -24,7 +24,8 @@ var CLI,
     Promise,
     zlib,
     iltorb,
-    helpers;
+    helpers,
+    child;
 
 
 CLI = require('../../src/tibet/cli/_cli');
@@ -34,6 +35,7 @@ sh = require('shelljs');
 path = require('path');
 Promise = require('bluebird');
 zlib = require('zlib');
+child = require('child_process');
 
 //  Conditionally load iltorb. If this fails don't make a fuss, we just won't
 //  output brotli-compressed content.
@@ -60,11 +62,11 @@ helpers = {};
  */
 helpers.package_check = function(make, options) {
 
-    var result,
-        cmd,
+    var cmd,
         pkg,
         config,
         phase,
+        proc,
         deferred;
 
     if (CLI.notValid(options)) {
@@ -101,19 +103,20 @@ helpers.package_check = function(make, options) {
         (CLI.options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
-    result = sh.exec(cmd, {
-        silent: CLI.options.silent !== false
+
+    //  Use our wrapper function here, it'll log via the make object's logging
+    //  hooks so we get properly processed stdout and stderr data.
+    proc = make.spawn(cmd);
+
+    proc.on('exit', function(code) {
+        if (code !== 0) {
+            deferred.reject();
+            return;
+        }
+        deferred.resolve();
     });
 
-    if (result.code !== 0) {
-        make.error('Error in package:');
-        make.error('' + result.output);
-        deferred.reject(result.output);
-        return deferred.promise;
-    } else {
-        deferred.resolve(result.output);
-        return deferred.promise;
-    }
+    return deferred.promise;
 };
 
 
@@ -127,13 +130,11 @@ helpers.package_check = function(make, options) {
  */
 helpers.resource_build = function(make, options) {
 
-    var result,
-        cmd,
+    var cmd,
         pkg,
         config,
         phase,
-        lines,
-        msg,
+        proc,
         deferred;
 
     if (CLI.notValid(options)) {
@@ -170,41 +171,39 @@ helpers.resource_build = function(make, options) {
         (CLI.options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
-    result = sh.exec(cmd, {
-        silent: CLI.options.silent !== false
+
+    proc = child.spawn(cmd, {
+        shell: true
     });
 
-    if (result.code !== 0) {
+    proc.stderr.on('data', function(data) {
+        var clean;
 
         if (!CLI.options.verbose) {
-            //  Output for rollup is potentially massive. The actual error will be
-            //  the line(s) which start with 'Error processing rollup:'
-            lines = result.output.split('\n');
-            lines = lines.filter(function(line) {
-                var clean;
+            clean = CLI.clean(data, true);
 
-                clean = CLI.clean(line, true);
-
-                //  Non-empty error or test failure output should be retained.
-                return clean.length !== 0 &&
+            //  Non-empty error or test failure output should be retained.
+            if (clean.length !== 0 &&
                     (/^ERROR/i.test(clean) ||
                      /^Exception/i.test(clean) ||
                      /^not ok/i.test(clean) ||
-                     /with status:/.test(clean));
-            });
-            msg = lines.join('\n');
+                     /with status:/.test(clean))) {
+                make.error(clean);
+            }
         } else {
-            msg = result.output;
+            make.error(data);
         }
+    });
 
-        make.error(msg);
+    proc.on('exit', function(code) {
+        if (code !== 0) {
+            deferred.reject();
+            return;
+        }
+        deferred.resolve();
+    });
 
-        deferred.reject();
-        return deferred.promise;
-    } else {
-        deferred.resolve(result.output);
-        return deferred.promise;
-    }
+    return deferred.promise;
 };
 
 
@@ -225,14 +224,13 @@ helpers.resource_build = function(make, options) {
  */
 helpers.rollup = function(make, options) {
 
-    var result,
+    var buffer,
         cmd,
         ext,
         file,
         pkg,
         config,
         phase,
-        lines,
         msg,
         dir,
         prefix,
@@ -292,74 +290,83 @@ helpers.rollup = function(make, options) {
         (headers ? '' : ' --no-headers') +
         (minify ? ' --minify' : '');
 
+    if (minify) {
+        ext = '.min.js';
+    } else {
+        ext = '.js';
+    }
+
+    file = path.join(dir, prefix + root + ext);
+
     promise = new Promise(function(resolver, rejector) {
+        var proc;
 
         make.log('executing ' + cmd);
-        result = sh.exec(cmd, {
-            silent: CLI.options.silent !== false
+
+        proc = child.spawn(cmd, {
+            shell: true
         });
 
-        if (result.code !== 0) {
+        proc.stdout.on('data', function(data) {
+            if (!buffer) {
+                buffer = '';
+            }
+
+            buffer = buffer + data;
+        });
+
+        proc.stderr.on('data', function(data) {
+            var clean;
 
             if (!CLI.options.verbose) {
-                //  Output for rollup is potentially massive. The actual error will be
-                //  the line(s) which start with 'Error processing rollup:'
-                lines = result.output.split('\n');
-                lines = lines.filter(function(line) {
-                    var clean;
+                clean = CLI.clean(data, true);
 
-                    clean = CLI.clean(line, true);
-
-                    //  Non-empty error or test failure output should be retained.
-                    return clean.length !== 0 &&
+                //  Non-empty error or test failure output should be retained.
+                if (clean.length !== 0 &&
                         (/^ERROR/i.test(clean) ||
                          /^Exception/i.test(clean) ||
                          /^not ok/i.test(clean) ||
-                         /with status:/.test(clean));
-                });
-                msg = lines.join('\n');
+                         /with status:/.test(clean))) {
+                    make.error(clean);
+                }
             } else {
-                msg = result.output;
+                make.error(data);
+            }
+        });
+
+        proc.on('exit', function(code) {
+
+            if (code !== 0) {
+                rejector(msg);
+                return;
             }
 
-            make.error(msg);
+            try {
+                make.log('writing ' + buffer.length + ' chars to: ' + file);
+                buffer.to(file);
 
-            rejector(msg);
-            return;
-        }
-
-        if (minify) {
-            ext = '.min.js';
-        } else {
-            ext = '.js';
-        }
-
-        file = path.join(dir, prefix + root + ext);
-
-        try {
-            make.log('writing ' + result.output.length + ' chars to: ' + file);
-            result.output.to(file);
-
-            resolver();
-            return;
-        } catch (e) {
-            make.error('Unable to write to: ' + file);
-            make.error('' + e.message);
-            rejector(e);
-            return;
-        }
+                resolver();
+                return;
+            } catch (e) {
+                make.error('Unable to write to: ' + file);
+                make.error('' + e.message);
+                rejector(e);
+                return;
+            }
+        });
     });
 
     // gzip as well...
     if (options.zip) {
 
-        zipfile = file + '.gz';
-        make.log('creating zipped output in ' + zipfile);
-
         promise = promise.then(
             function() {
+
+                zipfile = file + '.gz';
+                make.log('creating zipped output in ' + zipfile);
+
                 return new Promise(function(resolver, rejector) {
-                    return Promise.promisify(zlib.gzip)(result.output).then(
+                    return Promise.promisify(zlib.gzip)(buffer).then(
                         function(zipresult) {
                             try {
                                 fs.writeFileSync(zipfile, zipresult);
@@ -394,16 +401,17 @@ helpers.rollup = function(make, options) {
             return promise;
         }
 
-        brotfile = file + '.br';
-        make.log('creating brotlied output in ' + brotfile);
-
         promise = promise.then(
             function() {
-                return new Promise(function(resolver, rejector) {
-                    var buffer;
 
-                    buffer = Buffer.from(result.output, 'utf8');
-                    return Promise.promisify(iltorb.compress)(buffer).then(
+                brotfile = file + '.br';
+                make.log('creating brotlied output in ' + brotfile);
+
+                return new Promise(function(resolver, rejector) {
+                    var buff;
+
+                    buff = Buffer.from(buffer, 'utf8');
+                    return Promise.promisify(iltorb.compress)(buff).then(
                         function(brresult) {
                             try {
                                 fs.writeFileSync(brotfile, brresult);
