@@ -178,7 +178,7 @@ Cmd.prototype.execute = function() {
         cmd.error(logmsg);
     });
 
-    server.on('close', function(code) {
+    server.on('exit', function(code) {
         if (code !== 0) {
             cmd.error('stopped with status: ' + code);
             /* eslint-disable no-process-exit */

@@ -296,7 +296,11 @@ Cmd.prototype.execute = function() {
         cmd.stderr(msg);
     });
 
-    child.on('close', function(code) {
+    child.on('error', function(err) {
+        cmd.stderr(err);
+    });
+
+    child.on('exit', function(code) {
         var msg;
 
         if (code !== 0) {

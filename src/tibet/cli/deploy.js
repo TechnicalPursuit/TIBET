@@ -194,7 +194,7 @@ Cmd.prototype.executeViaShipit = function() {
         cmd.error(msg);
     });
 
-    child.on('close', function(code) {
+    child.on('exit', function(code) {
         var msg;
 
         if (code !== 0) {

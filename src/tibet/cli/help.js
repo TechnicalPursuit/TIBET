@@ -256,8 +256,7 @@ Cmd.prototype.executeForCommand = function(command) {
 
     config = {
         env: env,
-        stdio: 'inherit',
-        stderr: 'inherit'
+        stdio: 'inherit'
     };
 
     subjects = [];
@@ -285,8 +284,8 @@ Cmd.prototype.executeForCommand = function(command) {
 
     proc = require('child_process');
     child = proc.spawn('man', subjects, config);
-    child.on('close', function() {
-        return 0;
+    child.on('exit', function(code) {
+        return code;
     });
 
     return 0;

@@ -364,7 +364,7 @@
                 }
             });
 
-            cli.on('close', function(code) {
+            cli.on('exit', function(code) {
                 var msg;
 
                 if (code !== 0) {
