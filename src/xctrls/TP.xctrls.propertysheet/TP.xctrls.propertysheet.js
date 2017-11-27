@@ -38,8 +38,32 @@ function(topLevelSchema, params) {
 
     /**
      * @method fromTP_json_JSONSchemaContent
-     * @summary
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
      * @param {TP.json.JSONSchemaContent} topLevelSchema
+     * @param {TP.core.Hash} params A hash of data available to this source to
+     *     generate the content. This may have the following keys, amongst
+     *     others:
+     *          'renderInfo':   The rendering information used by the methods
+     *                          on this object to determine what kind of GUI
+     *                          constructs to generate. This may have the
+     *                          following keys:
+     *                              'mainMarkupNS':         The namespace of the
+     *                                                      'main' markup
+     *                                                      language to use to
+     *                                                      generate GUI.
+     *                              'useRadiosForEnums':    Whether or not to
+     *                                                      use radio buttons
+     *                                                      for enumerated
+     *                                                      values. True or
+     *                                                      false.
+     *                              'inputType':            The 'input' type
+     *                                                      to generate for
+     *                                                      enumerated values -
+     *                                                      currently either
+     *                                                      'text' or 'number'.
+     * @returns {TP.core.ElementNode} The top-level element that was created
+     *     from the generated content.
      */
 
     var paramHash,
@@ -53,6 +77,9 @@ function(topLevelSchema, params) {
     renderInfo = paramHash.atIfInvalid('renderInfo', TP.hc());
     renderInfo.atPutIfAbsent('mainMarkupNS', TP.w3.Xmlns.XHTML);
 
+    //  Grab the top-level definitions from the JSON Schema. Note that we only
+    //  process JSON Schemas that have a 'definitions' block - we use that
+    //  information to define TIBET types when appropriate.
     definitions = topLevelSchema.get('definitions');
 
     str = '';
@@ -98,6 +125,8 @@ function(topLevelSchema, params) {
 
             str += '<xctrls:propertysheet';
 
+            //  Iterate over the supplied sheet attributes and generate markup
+            //  for them directly on the sheet.
             sheetAttrs = paramHash.at('sheetAttrs');
             if (TP.notEmpty(sheetAttrs)) {
                 sheetAttrs.perform(
@@ -116,13 +145,13 @@ function(topLevelSchema, params) {
             type = definitionDesc.at('type');
 
             if (type === 'array') {
-                str += this.generateContentFromJSONSchemaArrayDescription(
+                str += this.fromJSONSchemaArrayDescription(
                                                     definitionKey,
                                                     definitionDesc,
                                                     prefix,
                                                     renderInfo);
             } else {
-                str += this.generateContentFromJSONSchemaObjectDescription(
+                str += this.fromJSONSchemaObjectDescription(
                                                     definitionKey,
                                                     definitionDesc,
                                                     prefix,
@@ -139,9 +168,121 @@ function(topLevelSchema, params) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.propertysheet.Type.defineMethod('fromJSONSchema',
+function(type, propertyKey, propertyDesc, prefix, renderInfo) {
+
+    /**
+     * @method fromJSONSchema
+     * @summary Returns a chunk of generated markup that represents the given
+     *     type as a GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} type The JSONSchema 'type' (i.e. 'array', 'number', etc)
+     *     that the GUI is being generated for.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
+
+    var str;
+
+    str = '';
+
+    switch (type) {
+
+        case 'array':
+
+            str += this.fromJSONSchemaArrayDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix,
+                                    renderInfo);
+            break;
+
+        case 'boolean':
+
+            str += this.fromJSONSchemaBooleanDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix,
+                                    renderInfo);
+            break;
+
+        case 'integer':
+        case 'number':
+
+            str += this.fromJSONSchemaNumberDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix,
+                                    renderInfo);
+            break;
+
+        case 'object':
+
+            str += this.fromJSONSchemaObjectDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix,
+                                    renderInfo);
+            break;
+
+        case 'string':
+
+            str += this.fromJSONSchemaStringDescription(
+                                    propertyKey,
+                                    propertyDesc,
+                                    prefix,
+                                    renderInfo);
+            break;
+
+        default:
+            break;
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromJSONSchemaArrayDescription',
+    'fromJSONSchemaArrayDescription',
 function(propertyKey, propertyDesc, prefix, renderInfo) {
+
+    /**
+     * @method fromJSONSchemaArrayDescription
+     * @summary Returns a chunk of generated markup that represents an Array
+     *     as a GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
 
     var subPrefix,
 
@@ -157,7 +298,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
     if (TP.isArray(items)) {
         items.forEach(
             function(anItem, anIndex) {
-                str += this.generateContentFromJSONSchema(
+                str += this.fromJSONSchema(
                                         anItem.at('type'),
                                         propertyKey,
                                         anItem,
@@ -165,7 +306,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                                         renderInfo);
             }.bind(this));
     } else {
-        str += this.generateContentFromJSONSchema(
+        str += this.fromJSONSchema(
                                 items.at('type'),
                                 propertyKey,
                                 propertyDesc.at('items'),
@@ -179,8 +320,31 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromJSONSchemaBooleanDescription',
+    'fromJSONSchemaBooleanDescription',
 function(propertyKey, propertyDesc, prefix, renderInfo) {
+
+    /**
+     * @method fromJSONSchemaBooleanDescription
+     * @summary Returns a chunk of generated markup that represents a Boolean
+     *     as a GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
 
     var id,
 
@@ -198,6 +362,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
     str = '';
 
     if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XHTML) {
+
         str += '<label' +
                 ' for="' + id + '"' +
                 '>' +
@@ -245,32 +410,32 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromJSONSchemaNumberDescription',
+    '$fromJSONSchemaStringOrNumberDescription',
 function(propertyKey, propertyDesc, prefix, renderInfo) {
 
-    renderInfo.atPutIfAbsent('inputType', 'number');
-
-    return this.$generateContentFromJSONSchemaEnumeratedDescription(
-                propertyKey, propertyDesc, prefix, renderInfo);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromJSONSchemaStringDescription',
-function(propertyKey, propertyDesc, prefix, renderInfo) {
-
-    renderInfo.atPutIfAbsent('inputType', 'text');
-
-    return this.$generateContentFromJSONSchemaEnumeratedDescription(
-                propertyKey, propertyDesc, prefix, renderInfo);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.propertysheet.Type.defineMethod(
-    '$generateContentFromJSONSchemaEnumeratedDescription',
-function(propertyKey, propertyDesc, prefix, renderInfo) {
+    /**
+     * @method $fromJSONSchemaStringOrNumberDescription
+     * @summary Returns a chunk of generated markup that represents a JSON
+     *     Schema String or Number with a potentially 'enumerated value' as a
+     *     GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
 
     var id,
 
@@ -294,15 +459,21 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     str = '';
 
+    //  Grab the enumerated values that we'll use to populate various controls
+    //  below.
     enumValues = propertyDesc.at('enum');
 
+    //  We're generating XHTML markup
     if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XHTML) {
 
         if (TP.notEmpty(enumValues)) {
 
             len = enumValues.getSize();
 
-            if (TP.isTrue(renderInfo.at('useRadios'))) {
+            //  If the caller wanted radio buttons used for enumerations, then
+            //  generate a fieldset wrapping a set of XHTML 'input type="radio"'
+            //  controls.
+            if (TP.isTrue(renderInfo.at('useRadiosForEnums'))) {
 
                 str += '<label' +
                         ' for="' + id + '"' +
@@ -327,6 +498,9 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                 str += '</fieldset>';
 
             } else {
+
+                //  Otherwise, generate an XHTML 'select' element.
+
                 str += '<label' +
                         ' for="' + id + '"' +
                         '>' +
@@ -350,6 +524,10 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                 str += '</select>';
             }
         } else {
+
+            //  This isn't an enumerated value - just generate an XHTML 'input'
+            //  control with the designated 'input' type.
+
             str += '<label' +
                     ' for="' + id + '"' +
                     '>' +
@@ -371,11 +549,16 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
         }
     } else if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XCONTROLS) {
 
+        //  We're generating XControls markup
+
         if (TP.notEmpty(enumValues)) {
 
             len = enumValues.getSize();
 
-            if (TP.isTrue(renderInfo.at('useRadios'))) {
+            //  If the caller wanted radio buttons used for enumerations, then
+            //  generate an xctrls:itemgroup wrapping a set of
+            //  xctrls:radioitems.
+            if (TP.isTrue(renderInfo.at('useRadiosForEnums'))) {
 
                 str += '<label' +
                         ' for="' + id + '"' +
@@ -402,6 +585,19 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                 str += '</xctrls:itemgroup>';
 
             } else {
+
+                //  Otherwise, generate an xctrls:list along with an
+                //  accompanying static 'tibet:data' block to populate it.
+
+                //  Take the existing array of enumerated values and turn them
+                //  into pairs representing the value at both the first and
+                //  second positions. This allows us to drive the xctrls:list
+                //  with labels and values being the same.
+                //  So:
+                //      ['foo', 'bar', 'baz']
+                //  becomes:
+                //      [['foo', 'foo'], ['bar', 'bar'], ['baz', 'baz']]
+
                 enumValues = enumValues.collect(
                                 function(anItem) {
                                     return TP.ac(anItem, anItem);
@@ -427,6 +623,10 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                 str += '</xctrls:list>';
             }
         } else {
+
+            //  This isn't an enumerated value - just generate an XHTML 'input'
+            //  control with the designated 'input' type.
+
             str += '<label' +
                     ' for="' + id + '"' +
                     '>' +
@@ -454,8 +654,66 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromJSONSchemaObjectDescription',
+    'fromJSONSchemaNumberDescription',
 function(propertyKey, propertyDesc, prefix, renderInfo) {
+
+    /**
+     * @method fromJSONSchemaNumberDescription
+     * @summary Returns a chunk of generated markup that represents a Number
+     *     as a GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
+
+    renderInfo.atPutIfAbsent('inputType', 'number');
+
+    return this.$fromJSONSchemaStringOrNumberDescription(
+                propertyKey, propertyDesc, prefix, renderInfo);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    'fromJSONSchemaObjectDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
+
+    /**
+     * @method fromJSONSchemaObjectDescription
+     * @summary Returns a chunk of generated markup that represents an Object
+     *     as a GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
 
     var str,
         properties,
@@ -475,8 +733,12 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     properties = propertyDesc.at('properties');
 
+    //  Compute a 'sub prefix' that consists of the current prefix, an
+    //  underscore ('_') and the property key.
     subPrefix = prefix + '_' + propertyKey;
 
+    //  Iterate over all of the properties and generate JSON schema for each of
+    //  them.
     properties.perform(
         function(propertyKVPair) {
 
@@ -494,9 +756,12 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                 return;
             }
 
+            //  Note here how we wrap each chunk of markup generated for a
+            //  property with an XHTML '<div>'. This is to providing a 'wrapping
+            //  context' for further per-property styling.
             str +=
                 '<div>\n' +
-                this.generateContentFromJSONSchema(
+                this.fromJSONSchema(
                                 type, objKey, objDesc, subPrefix, renderInfo) +
                 '</div>\n';
 
@@ -514,66 +779,36 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.propertysheet.Type.defineMethod(
-    'generateContentFromJSONSchema',
-function(type, propertyKey, propertyDesc, prefix, renderInfo) {
+    'fromJSONSchemaStringDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
 
-    var str;
+    /**
+     * @method fromJSONSchemaStringDescription
+     * @summary Returns a chunk of generated markup that represents a String
+     *     as a GUI that will fit into a TP.xctrls.propertysheet.
+     * @param {String} propertyKey The key for the currently processing property
+     *     in its overall data structure.
+     * @param {Object} propertyDesc The POJO representing the description for the
+     *     currently processing property.
+     * @param {String} prefix A prefix used for indexing sub-items of the
+     *     currently processing property.
+     * @param {TP.core.Hash} renderInfo A hash of rendering information used by
+     *     the methods on this object to determine what kind of GUI constructs
+     *     to generate. This may have the following keys:
+     *          'mainMarkupNS':         The namespace of the 'main' markup
+     *                                  language to use to generate GUI.
+     *          'useRadiosForEnums':    Whether or not to use radio buttons for
+     *                                  enumerated values. True or false.
+     *          'inputType':            The 'input' type to generate for
+     *                                  enumerated values - currently either
+     *                                  'text' or 'number'.
+     * @returns {String} X(HT)ML markup representing the generated GUI.
+     */
 
-    str = '';
+    renderInfo.atPutIfAbsent('inputType', 'text');
 
-    switch (type) {
-
-        case 'array':
-
-            str += this.generateContentFromJSONSchemaArrayDescription(
-                                    propertyKey,
-                                    propertyDesc,
-                                    prefix,
-                                    renderInfo);
-            break;
-
-        case 'boolean':
-
-            str += this.generateContentFromJSONSchemaBooleanDescription(
-                                    propertyKey,
-                                    propertyDesc,
-                                    prefix,
-                                    renderInfo);
-            break;
-
-        case 'integer':
-        case 'number':
-
-            str += this.generateContentFromJSONSchemaNumberDescription(
-                                    propertyKey,
-                                    propertyDesc,
-                                    prefix,
-                                    renderInfo);
-            break;
-
-        case 'object':
-
-            str += this.generateContentFromJSONSchemaObjectDescription(
-                                    propertyKey,
-                                    propertyDesc,
-                                    prefix,
-                                    renderInfo);
-            break;
-
-        case 'string':
-
-            str += this.generateContentFromJSONSchemaStringDescription(
-                                    propertyKey,
-                                    propertyDesc,
-                                    prefix,
-                                    renderInfo);
-            break;
-
-        default:
-            break;
-    }
-
-    return str;
+    return this.$fromJSONSchemaStringOrNumberDescription(
+                propertyKey, propertyDesc, prefix, renderInfo);
 });
 
 //  ------------------------------------------------------------------------
