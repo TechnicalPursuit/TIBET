@@ -509,9 +509,9 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
                 size = renderInfo.atIfInvalid('listSize', 1);
 
-                str += '<select id="' + id +
+                str += '<select id="' + id + '"' +
                         ' size="' + size + '"' +
-                        '" bind:io="{value: ' + propertyKey + '}">';
+                        ' bind:io="{value: ' + propertyKey + '}">';
                 for (i = 0; i < len; i++) {
                     str +=
                         '<option' +
