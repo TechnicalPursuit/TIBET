@@ -195,8 +195,10 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     hint = propertyDesc.at('description');
 
+    str = '';
+
     if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XHTML) {
-        str = '<label' +
+        str += '<label' +
                 ' for="' + id + '"' +
                 '>' +
                 label + ': ' +
@@ -215,11 +217,14 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                     '</xctrls:hint>\n';
         }
     } else if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XCONTROLS) {
+
         str +=
-            '<xctrls:checkitem' +
+            '<xctrls:itemgroup' +
             ' id="' + id + '"' +
-            ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
-            '>\n';
+            ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
+            '>';
+
+        str += '<xctrls:checkitem>\n';
 
         if (TP.notEmpty(hint)) {
             str += '<xctrls:hint>' +
@@ -230,6 +235,8 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
         str += '<xctrls:label>' + label + ':</xctrls:label>';
 
         str += '</xctrls:checkitem>';
+
+        str += '</xctrls:itemgroup>';
     }
 
     return str;
@@ -241,39 +248,10 @@ TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaNumberDescription',
 function(propertyKey, propertyDesc, prefix, renderInfo) {
 
-    var id,
+    renderInfo.atPutIfAbsent('inputType', 'number');
 
-        label,
-        hint,
-
-        str;
-
-    id = prefix + '_' + propertyKey;
-
-    label = propertyDesc.atIfInvalid('title', propertyKey.asStartUpper());
-
-    hint = propertyDesc.at('description');
-
-    str = '<label' +
-            ' for="' + id + '"' +
-            '>' +
-            label + ': ' +
-            '</label>';
-
-    str +=
-        '<input' +
-        ' id="' + id + '"' +
-        ' type="number"' +
-        ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
-        '/>\n';
-
-    if (TP.notEmpty(hint)) {
-        str += '<xctrls:hint for="' + id + '">' +
-                hint +
-                '</xctrls:hint>\n';
-    }
-
-    return str;
+    return this.$generateContentFromJSONSchemaEnumeratedDescription(
+                propertyKey, propertyDesc, prefix, renderInfo);
 });
 
 //  ------------------------------------------------------------------------
@@ -282,12 +260,31 @@ TP.xctrls.propertysheet.Type.defineMethod(
     'generateContentFromJSONSchemaStringDescription',
 function(propertyKey, propertyDesc, prefix, renderInfo) {
 
+    renderInfo.atPutIfAbsent('inputType', 'text');
+
+    return this.$generateContentFromJSONSchemaEnumeratedDescription(
+                propertyKey, propertyDesc, prefix, renderInfo);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.propertysheet.Type.defineMethod(
+    '$generateContentFromJSONSchemaEnumeratedDescription',
+function(propertyKey, propertyDesc, prefix, renderInfo) {
+
     var id,
 
         label,
         hint,
 
-        str;
+        str,
+
+        enumValues,
+
+        size,
+
+        len,
+        i;
 
     id = prefix + '_' + propertyKey;
 
@@ -295,23 +292,160 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
     hint = propertyDesc.at('description');
 
-    str = '<label' +
-            ' for="' + id + '"' +
-            '>' +
-            label + ': ' +
-            '</label>';
+    str = '';
 
-    str +=
-        '<input' +
-        ' id="' + id + '"' +
-        ' type="text"' +
-        ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
-        '/>\n';
+    enumValues = propertyDesc.at('enum');
 
-    if (TP.notEmpty(hint)) {
-        str += '<xctrls:hint for="' + id + '">' +
-                hint +
-                '</xctrls:hint>\n';
+    if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XHTML) {
+
+        if (TP.notEmpty(enumValues)) {
+
+            len = enumValues.getSize();
+
+            if (TP.isTrue(renderInfo.at('useRadios'))) {
+
+                str += '<label' +
+                        ' for="' + id + '"' +
+                        '>' +
+                        label + ': ' +
+                        '</label>';
+
+                str += '<fieldset id="' + id + '">';
+                for (i = 0; i < len; i++) {
+                    str += '<label' +
+                            ' for="' + id + '_' + i + '"' +
+                            '>' +
+                            enumValues.at(i) + ': ' +
+                            '</label>';
+                    str +=
+                        '<input' +
+                        ' id="' + id + '_' + i + '"' +
+                        ' type="radio"' +
+                        ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
+                        '/>\n';
+                }
+                str += '</fieldset>';
+
+            } else {
+                str += '<label' +
+                        ' for="' + id + '"' +
+                        '>' +
+                        label + ': ' +
+                        '</label>';
+
+                size = renderInfo.atIfInvalid('listSize', 1);
+
+                str += '<select id="' + id +
+                        ' size="' + size + '"' +
+                        '" bind:io="{value: ' + propertyKey + '}">';
+                for (i = 0; i < len; i++) {
+                    str +=
+                        '<option' +
+                        ' id="' + id + '_' + i + '"' +
+                        ' value="' + enumValues.at(i) + '"' +
+                        '>' +
+                        enumValues.at(i) +
+                        '</option>';
+                }
+                str += '</select>';
+            }
+        } else {
+            str += '<label' +
+                    ' for="' + id + '"' +
+                    '>' +
+                    label + ': ' +
+                    '</label>';
+
+            str +=
+                '<input' +
+                ' id="' + id + '"' +
+                ' type="' + renderInfo.at('inputType') + '"' +
+                ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
+                '/>\n';
+        }
+
+        if (TP.notEmpty(hint)) {
+            str += '<xctrls:hint for="' + id + '">' +
+                    hint +
+                    '</xctrls:hint>\n';
+        }
+    } else if (renderInfo.at('mainMarkupNS') === TP.w3.Xmlns.XCONTROLS) {
+
+        if (TP.notEmpty(enumValues)) {
+
+            len = enumValues.getSize();
+
+            if (TP.isTrue(renderInfo.at('useRadios'))) {
+
+                str += '<label' +
+                        ' for="' + id + '"' +
+                        '>' +
+                        label + ': ' +
+                        '</label>';
+
+                str += '<xctrls:itemgroup' +
+                        ' id="' + id + '"' +
+                        ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
+                        '>';
+
+                for (i = 0; i < len; i++) {
+                    str += '<xctrls:radioitem>';
+                    str += '<xctrls:label>' +
+                            enumValues.at(i) +
+                            '</xctrls:label>';
+                    str += '<xctrls:value>' +
+                            enumValues.at(i) +
+                            '</xctrls:value>';
+                    str += '</xctrls:radioitem>';
+                }
+
+                str += '</xctrls:itemgroup>';
+
+            } else {
+                enumValues = enumValues.collect(
+                                function(anItem) {
+                                    return TP.ac(anItem, anItem);
+                                });
+
+                str += '<tibet:data' +
+                        ' name="urn:tibet:' + id + '_data"' +
+                        '>' +
+                        '<![CDATA[{"info": [' +
+                        enumValues.asJSONSource() +
+                        ']}]]>' +
+                        '</tibet:data>';
+
+                str += '<label' +
+                        ' for="' + id + '"' +
+                        '>' +
+                        label + ': ' +
+                        '</label>';
+
+                str += '<xctrls:list id="' + id +
+                        '" bind:io="{value: ' + propertyKey + ',' +
+                        ' data: urn:tibet:' + id + '_data#jpath($.info)}">';
+                str += '</xctrls:list>';
+            }
+        } else {
+            str += '<label' +
+                    ' for="' + id + '"' +
+                    '>' +
+                    label + ': ' +
+                    '</label>';
+
+            str +=
+                '<input' +
+                ' id="' + id + '"' +
+                ' type="' + renderInfo.at('inputType') + '"' +
+                ' bind:io="{' + 'value' + ': ' + propertyKey + '}"' +
+                '/>\n';
+        }
+
+        if (TP.notEmpty(hint)) {
+            str += '<xctrls:hint for="' + id + '">' +
+                    hint +
+                    '</xctrls:hint>\n';
+        }
     }
 
     return str;
