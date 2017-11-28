@@ -16,23 +16,6 @@
         text-align: center;
 
         cursor: pointer;
-    }
-
-    /* All themed, non-disabled 'xctrls:list' controls */
-
-    xctrls|list:not([pclass|disabled]) {
-
-        background: transparent;
-
-        text-decoration: none;
-    }
-
-    /* All themed, non-disabled 'xctrls:list' control labels */
-
-    xctrls|list:not([pclass|disabled]) xctrls|label {
-    }
-
-    xctrls|list {
 
         /* Here so that the control can read these in JS */
 
@@ -67,6 +50,20 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+        }
+
+        /* All themed, non-disabled 'xctrls:list' controls */
+
+        &:not([pclass|disabled]) {
+
+            background: transparent;
+
+            text-decoration: none;
+        }
+
+        /* All themed, non-disabled 'xctrls:list' control labels */
+
+        &:not([pclass|disabled]) xctrls|label {
         }
     }
 }

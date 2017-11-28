@@ -1,6 +1,6 @@
 
 /*
-	CSS styles common across 'xctrls:propertysheet' controls for any theme.
+    CSS styles common across 'xctrls:propertysheet' controls for any theme.
 */
 
 @namespace url("http://www.w3.org/1999/xhtml");
@@ -17,51 +17,41 @@
         height: 100%;
 
         overflow: auto;
-    }
 
-    /* All themed, non-disabled 'xctrls:propertysheet' controls */
+        /* All themed, non-disabled 'xctrls:propertysheet' controls */
 
-    xctrls|propertysheet:not([pclass|disabled]) {
-    }
-
-    /* All themed, non-disabled 'xctrls:propertysheet' control labels */
-
-    xctrls|propertysheet:not([pclass|disabled]) xctrls|label {
-    }
-
-    xctrls|propertysheet fieldset {
-
-        & div {
-
-            align-items: center;
+        &:not([pclass|disabled]) {
         }
 
-        & label {
+        /* All themed, non-disabled 'xctrls:propertysheet' control labels */
 
-            order: 1;
-
-            text-align: right;
-
-            white-space: nowrap;
-
-            user-select: none;
-
-            cursor: pointer;
+        &:not([pclass|disabled]) xctrls|label {
         }
 
-        & input,
-        & textarea,
-        & select {
+        * > fieldset {
 
-            order: 2;
-            flex: 1 1 auto;
-        }
+            overflow: hidden;
 
-        & input[type="checkbox"] ~ label,
-        & input[type="radio"] ~ label {
+            & div {
 
-            width: auto;
-            text-align: left;
+                align-items: center;
+
+                & label {
+
+                    order: 1;
+
+                    white-space: nowrap;
+
+                    user-select: none;
+
+                    cursor: pointer;
+                }
+
+                & label + *|* {
+
+                    order: 2;
+                }
+            }
         }
     }
 }

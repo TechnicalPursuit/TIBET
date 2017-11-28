@@ -1,6 +1,6 @@
 
 /*
-	CSS styles common across 'xctrls:radioitem' controls for any theme.
+    CSS styles common across 'xctrls:radioitem' controls for any theme.
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
@@ -14,20 +14,20 @@
     xctrls|radioitem {
 
         cursor: pointer;
-    }
 
-    /* All themed 'xctrls:radioitem' controls ::value pseudo-element */
+        /* All themed 'xctrls:radioitem' controls ::value pseudo-element */
 
-    xctrls|radioitem > *[tibet|pelem="value"] {
-    }
+        & > *[tibet|pelem="value"] {
+        }
 
-    /* All themed, non-disabled 'xctrls:radioitem' controls */
+        /* All themed, non-disabled 'xctrls:radioitem' controls */
 
-    xctrls|radioitem:not([pclass|disabled]) {
-    }
+        &:not([pclass|disabled]) {
+        }
 
-    /* All themed, non-disabled 'xctrls:radioitem' control labels */
+        /* All themed, non-disabled 'xctrls:radioitem' control labels */
 
-    xctrls|radioitem:not([pclass|disabled]) xctrls|label {
+        &:not([pclass|disabled]) xctrls|label {
+        }
     }
 }

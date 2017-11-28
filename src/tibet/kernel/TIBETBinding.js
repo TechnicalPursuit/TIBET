@@ -3392,23 +3392,12 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
             if (TP.isURIString(expr)) {
 
-                //  So, for now, we don't support mixed scoped and absolute
-                //  references to resources that are not the ones that we're
-                //  scoped for. So, since we already update absolute references
-                //  in the main change method, we filter for absolute references
-                //  that are not ones that we are currently part of the update
-                //  chain for.
-
                 sigOrigin = aSignal.getOrigin();
                 if (TP.isKindOf(sigOrigin, TP.core.URI)) {
 
                     primaryLocation = sigOrigin.getPrimaryLocation();
 
-                    if (expr.startsWith(primaryLocation)) {
-                        finalVal = TP.uc(expr).getResource().get('result');
-                    } else {
-                        continue;
-                    }
+                    finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     finalVal = initialVal;
                 }

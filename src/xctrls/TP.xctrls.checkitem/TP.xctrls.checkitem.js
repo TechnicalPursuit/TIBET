@@ -28,6 +28,30 @@ TP.xctrls.checkitem.Inst.defineAttribute('valuePElem',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.checkitem.Inst.defineMethod('$getPrimitiveValue',
+function() {
+
+    /**
+     * @method $getPrimitiveValue
+     * @summary Returns the low-level primitive value stored by the receiver in
+     *     internal storage.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    var value;
+
+    //  Go after child text of 'xctrls:value'
+    value = this.get('string(.//xctrls:value)');
+
+    if (TP.isEmpty(value)) {
+        value = this.$getVisualToggle();
+    }
+
+    return value;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.checkitem.Inst.defineMethod('$getVisualToggle',
 function() {
 

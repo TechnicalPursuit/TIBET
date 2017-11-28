@@ -16,23 +16,6 @@
         text-align: center;
 
         cursor: pointer;
-    }
-
-    /* All themed, non-disabled 'xctrls:table' controls */
-
-    xctrls|table:not([pclass|disabled]) {
-
-        background: transparent;
-
-        text-decoration: none;
-    }
-
-    /* All themed, non-disabled 'xctrls:table' control labels */
-
-    xctrls|table:not([pclass|disabled]) xctrls|label {
-    }
-
-    xctrls|table {
 
         /* Here so that the control can read it in JS */
         --xctrls-item-height: 20px;
@@ -66,6 +49,20 @@
                     text-overflow: ellipsis;
                 }
             }
+        }
+
+        /* All themed, non-disabled 'xctrls:table' controls */
+
+        &:not([pclass|disabled]) {
+
+            background: transparent;
+
+            text-decoration: none;
+        }
+
+        /* All themed, non-disabled 'xctrls:table' control labels */
+
+        &:not([pclass|disabled]) xctrls|label {
         }
     }
 }

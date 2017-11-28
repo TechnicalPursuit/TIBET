@@ -2725,10 +2725,20 @@ function(aSignal) {
      */
 
     var domTarget,
+        domTargetParentTPElem,
         value;
 
     //  Grab the 'value' from the current DOM target.
     domTarget = aSignal.getTarget();
+
+    //  If the parent of the DOM target is not an inspector item, then we bail
+    //  out here - we don't want selection signals in panel content to trigger
+    //  navigation.
+    domTargetParentTPElem = TP.wrap(domTarget.parentNode);
+    if (!TP.isKindOf(domTargetParentTPElem, TP.sherpa.inspectoritem)) {
+        return this;
+    }
+
     value = TP.wrap(domTarget).get('value');
 
     //  No value? Then just exit.

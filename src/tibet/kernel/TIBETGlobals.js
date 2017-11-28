@@ -2886,7 +2886,7 @@ TP.regex.ACP_BEGIN_CONTROL_STATEMENT = /\{\{:(with|if|for)(.*?)\}\}/;
 TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 
 //  '$' followed by a word character (including '_') or '*' or '#'
-TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP|APP|\$(\w|\*|#)+/;
+TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP\.|APP\.|\$(\w|\*|#)+/;
 
 TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 

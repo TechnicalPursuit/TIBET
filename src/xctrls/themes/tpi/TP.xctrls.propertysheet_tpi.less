@@ -1,5 +1,5 @@
 /*
-	CSS styles for 'xctrls:propertysheet' controls for the 'tpi' theme.
+    CSS styles for 'xctrls:propertysheet' controls for the 'tpi' theme.
 */
 
 @import (reference) url("TP.xctrls_variables_tpi.less");
@@ -30,6 +30,8 @@
 
         & > fieldset {
 
+            margin: 0;
+
             font-family: @xctrls_propertysheet-font-family;
             color: @xctrls_propertysheet-font-color-normal;
 
@@ -40,35 +42,28 @@
             border-radius: @xctrls_propertysheet-border-radius;
             border-color: @xctrls_propertysheet-border-color-normal;
 
-            & label {
+            & div {
 
-                width: 5em;
+                padding: 2px;
 
-                margin-top: 2px;
-                margin-right: 5px;
-            }
+                & label {
 
-            & input,
-            & textarea,
-            & select {
+                    flex: 1 0 120px;
 
-                margin-bottom: 2px;
+                    max-width: 120px;
+                }
 
-                border-width: @xctrls_propertysheet-border-width;
-                border-style: @xctrls_propertysheet-border-style;
-                border-radius: @xctrls_propertysheet-border-radius;
-                border-color: @xctrls_propertysheet-border-color-normal;
-            }
+                & label + *|* {
 
-            & input[type="checkbox"],
-            & input[type="radio"] {
+                    margin: 0;
 
-                margin-left: -4px;
-            }
+                    flex: 1 0 auto;
 
-            & input:checked ~ label {
-
-                font-weight: bold;
+                    border-width: @xctrls_propertysheet-border-width;
+                    border-style: @xctrls_propertysheet-border-style;
+                    border-radius: @xctrls_propertysheet-border-radius;
+                    border-color: @xctrls_propertysheet-border-color-normal;
+                }
             }
         }
 
