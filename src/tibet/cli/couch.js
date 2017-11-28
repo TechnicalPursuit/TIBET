@@ -256,8 +256,7 @@ Cmd.prototype.executeListall = function() {
  * or directories containing JSON documents.
  */
 Cmd.prototype.executePush = function() {
-    var flags,
-        id,
+    var id,
         fullpath;
 
     id = this.getArgument(1);
