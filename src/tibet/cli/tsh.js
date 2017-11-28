@@ -311,7 +311,7 @@ Cmd.prototype.execute = function() {
         cmd.stderr(err);
     });
 
-    child.on('close', function(code) {
+    child.on('exit', function(code) {
         var msg;
 
         if (code !== 0) {
@@ -554,7 +554,7 @@ Cmd.prototype.stderr = function(msg) {
 /**
  * Invoked any time the stdout channel to the client receives data. The default
  * is simply to log the data to the console. Subtypes may use this to capture
- * data for processing upon receipt of the 'close' event.
+ * data for processing upon receipt of the 'exit' event.
  */
 Cmd.prototype.stdout = function(data) {
     this.log(data);

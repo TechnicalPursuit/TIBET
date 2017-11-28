@@ -1855,7 +1855,7 @@ CLI.runViaGrunt = function(command) {
         cmd.error('' + err.message);
     });
 
-    child.on('close', function(code) {
+    child.on('exit', function(code) {
         process.exit(code);
     });
 
@@ -1902,7 +1902,7 @@ CLI.runViaGulp = function(command) {
         cmd.error('' + err.message);
     });
 
-    child.on('close', function(code) {
+    child.on('exit', function(code) {
         process.exit(code);
     });
 

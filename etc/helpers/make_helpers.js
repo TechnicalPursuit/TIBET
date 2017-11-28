@@ -108,7 +108,7 @@ helpers.package_check = function(make, options) {
     //  hooks so we get properly processed stdout and stderr data.
     proc = make.spawn(cmd);
 
-    proc.on('close', function(code) {
+    proc.on('exit', function(code) {
         if (code !== 0) {
             deferred.reject();
             return;
@@ -195,7 +195,7 @@ helpers.resource_build = function(make, options) {
         }
     });
 
-    proc.on('close', function(code) {
+    proc.on('exit', function(code) {
         if (code !== 0) {
             deferred.reject();
             return;
@@ -334,7 +334,7 @@ helpers.rollup = function(make, options) {
             }
         });
 
-        proc.on('close', function(code) {
+        proc.on('exit', function(code) {
 
             if (code !== 0) {
                 rejector(msg);
