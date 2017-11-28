@@ -97,6 +97,13 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
+ * The timeout used for command invocation. Processing TSH requires startup time
+ * etc. so default to 15 seconds here.
+ * @type {Number}
+ */
+Cmd.prototype.TIMEOUT = 15000;
+
+/**
  * The command usage string.
  * @type {String}
  */
@@ -222,6 +229,10 @@ Cmd.prototype.execute = function() {
                         this.options['remote-debug-port']);
     }
 
+    //  Need to tell phantomjs to be ok with more latency in command
+    //  output...esp for things like resource processing.
+    this.finalizeTimeout(arglist);
+
     // Push root path values since Phantom can't properly determine that based
     // on where it loads (app vs. lib, tibet_pub or not, etc).
     arglist.push('--app-head=\'' + CLI.expandPath('~') + '\'');
@@ -325,6 +336,74 @@ Cmd.prototype.execute = function() {
 Cmd.prototype.finalizeArglist = function(arglist) {
 
     arglist.push('--quiet');
+
+    return arglist;
+};
+
+
+/**
+ * Finalize the timeout flag value in the arglist. The goal here is to preserve
+ * and/or add whichever timeout value is highest. If a prior invocation set a
+ * timeout we want it preserved if it's larger. Otherwise we want to use
+ * whatever new value is provided.
+ * @param {Array.<String>} arglist The argument list to adjust.
+ * @returns {Array.<String>} The updated argument list.
+ */
+Cmd.prototype.finalizeTimeout = function(arglist) {
+    var timeout,
+        index,
+        finder,
+        prior;
+
+    timeout = this.options.timeout || this.TIMEOUT;
+
+    finder = function(arr) {
+        var ind;
+
+        ind = -1;
+        arr.forEach(function(item, i) {
+            if (typeof item !== 'string') {
+                return;
+            }
+
+            if (item === '--timeout' || item.indexOf('--timeout=') === 0) {
+                ind = i;
+            }
+        });
+
+        return ind;
+    };
+
+    index = finder(arglist);
+    if (index !== -1) {
+        prior = arglist[index];
+        if (prior.indexOf('=') === -1) {
+            //  No = means next value is the value...
+            prior = arglist[index + 1];
+            if (parseInt(prior, 10) < timeout) {
+                //  NOTE we do this twice to remove both flag and value
+                arglist.splice(index, 1);
+                arglist.splice(index, 1);
+            } else {
+                //  Convert to a single value.
+                arglist[index] = '--timeout=' + prior;
+                arglist.splice(index + 1, 1);
+            }
+        } else {
+            prior = prior.split('=')[1];
+            if (parseInt(prior, 10) < timeout) {
+                //  Only one splice here since value was joined via '='.
+                arglist.splice(index, 1);
+            }
+        }
+    }
+
+    //  Retest for timeout. If prior block removed it (or it was never found)
+    //  then add it now.
+    index = finder(arglist);
+    if (index === -1) {
+        arglist.push('--timeout=' + timeout);
+    }
 
     return arglist;
 };

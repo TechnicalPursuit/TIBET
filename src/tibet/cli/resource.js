@@ -124,6 +124,12 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
+/**
+ * The timeout used for command invocation. Processing resources can take a
+ * while so we default to 30 seconds.
+ * @type {Number}
+ */
+Cmd.prototype.TIMEOUT = 30000;
 
 /**
  * The command usage string.
@@ -175,13 +181,23 @@ Cmd.prototype.execute = function() {
  * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
-    var args;
+    var args,
+        index;
 
     args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
 
     //  Since we use the output from phantomjs to provide data we need it to be
     //  no-color, regardless of command setting for the command output itself.
+    index = args.indexOf('--color');
+    if (index !== -1) {
+        //  remove item since we'll be putting in an explicit --no-color
+        args.splice(index, 1);
+    }
     args.push('--no-color');
+
+    //  Adjust timeout value to the larger of any value which might already
+    //  exist or any provided locally.
+    this.finalizeTimeout(arglist);
 
     //  Force command to NOT try to load inlined resources since this can cause
     //  a circular failure condition where we're trying to boot TIBET to compute
