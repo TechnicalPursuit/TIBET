@@ -9,7 +9,7 @@
         make.log('running unit tests...');
 
         proc = make.spawn('tibet test');
-        proc.on('exit', function(code) {
+        proc.on('close', function(code) {
             code === 0 ? resolve() : reject();
         });
     };

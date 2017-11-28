@@ -311,7 +311,7 @@ Cmd.prototype.execute = function() {
         cmd.stderr(err);
     });
 
-    child.on('exit', function(code) {
+    child.on('close', function(code) {
         var msg;
 
         if (code !== 0) {

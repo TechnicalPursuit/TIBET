@@ -839,8 +839,8 @@ Cmd.prototype.reparse = function(options) {
 /**
  * Spawns a sub-process whose stdio is attached to the main process and which
  * has the shell flag set to true so it can be used similarly to exec. NOTE that
- * there is no on.('exit') defined, you are expected to add that yourself to the
- * process object returned from this call.
+ * there is no on.('close') or on('exit') defined, you are expected to add these
+ * yourself to the process object returned from this call.
  * @param {String} cmd The command string to be executed.
  * @param {Array} [arglist] Optional argument list for the command.
  * @param {Object} [options] Optional option list for the command.

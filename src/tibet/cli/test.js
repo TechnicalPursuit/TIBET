@@ -221,7 +221,7 @@ Cmd.prototype.executeViaKarma = function() {
         cmd.error(msg);
     });
 
-    child.on('exit', function(code) {
+    child.on('close', function(code) {
         var msg;
 
         if (code !== 0) {

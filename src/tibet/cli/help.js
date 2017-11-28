@@ -284,7 +284,7 @@ Cmd.prototype.executeForCommand = function(command) {
 
     proc = require('child_process');
     child = proc.spawn('man', subjects, config);
-    child.on('exit', function(code) {
+    child.on('close', function(code) {
         return code;
     });
 
