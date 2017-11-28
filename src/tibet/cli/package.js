@@ -125,7 +125,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  */
 Cmd.prototype.USAGE =
     'tibet package [[--profile ] <profile> | [--package <package>] [--config <cfg>]]\n' +
-    '\t[--phase <app|lib|all>] [--unresolved] [--unlisted] [--fix]\n' +
+    '\t[--phase <app|lib|all>] [--unresolved] [--unlisted]\n' +
     '\t[--add <file_list>] [--remove <file_list>]\n' +
     '\t[--include <asset names>] [--exclude <asset names>]\n' +
     '\t[--scripts] [--resources] [--images] [--nodes]';

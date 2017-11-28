@@ -7,7 +7,7 @@ tibet package [ [--profile] <pkg_cfg> | [--package <package>] [--config <cfg>] ]
     [--phase <phase>] [--all] [--scripts] [--styles] [--images] [--resources]
     [--templates] [--inlined] [--nodes]
     [--include <asset names>] [--exclude <asset names>]
-    [--add <list>] [--remove <list>] [--unresolved] [--unlisted] [--fix]
+    [--add <list>] [--remove <list>] [--unresolved] [--unlisted]
 
 ## DESCRIPTION
 
@@ -27,7 +27,6 @@ of this command is to run it with various options, of which there are many:
 --remove     list of resources to remove from the package.
 --unresolved output a list of unresolved (not found) assets of all types.
 --unlisted   output a list of potentially overlooked source files.
---fix        update the package with unresolved/unlisted data.
 
 --include    a space-separated list of asset tags to include.
 --exclude    a space-separated list of asset tags to include.
