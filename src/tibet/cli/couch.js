@@ -796,7 +796,7 @@ Cmd.prototype.executeRemoveapp = function() {
     doc_name = '_design/' + db_app;
 
     result = CLI.prompt.question(
-        'Delete [' +
+        'Delete ENTIRE application [' +
         couch.maskCouchAuth(db_url) + '/' + db_name + '/' + doc_name +
         '] ? Enter application name to confirm: ');
     if (!result || result.trim().toLowerCase() !== db_app) {
