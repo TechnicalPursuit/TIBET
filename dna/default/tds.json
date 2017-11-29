@@ -20,6 +20,9 @@
         }
     },
     "development": {
+        "log": {
+            "transports": ["file", "console"]
+        },
         "plugins": {
             "tds": ["cli", "patch", "tasks", "watch"]
         },
