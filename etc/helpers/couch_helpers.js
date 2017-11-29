@@ -370,6 +370,8 @@ helpers.getCouchURL = function(options) {
         if (db_user && db_pass) {
             db_url += db_user + ':' + db_pass + '@' + db_host;
         } else {
+            requestor.warn(
+                'Missing CouchDB credential(s). May need user:pass@host in URL.');
             db_url += db_host;
         }
 
