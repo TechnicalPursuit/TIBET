@@ -2710,7 +2710,8 @@
         Object.keys(opts).forEach(function(key) {
             var value,
                 name,
-                current;
+                current,
+                override;
 
             value = opts[key];
             if (prefix) {
@@ -2723,17 +2724,29 @@
             if (Object.prototype.toString.call(value) === '[object Object]') {
                 pkg.setRuntimeOptions(value, name, filter);
             } else {
-
                 if (filter) {
-                    //  Only set values that were explicitly on the command line or
-                    //  which have no value in the current configuration. This
-                    //  avoids cases where we overlay a config file value with a
-                    //  value defaulted by the command line processor.
+                    //  Only set values that were explicitly on the command line
+                    //  or which have no value in the current configuration.
+                    //  This avoids cases where we overlay a config file value
+                    //  with a value defaulted by the command line processor.
                     current = pkg.getcfg(name);
                     if (isValid(current) && !pkg.options.forceConfig) {
-                        //  Has a value. We have to see an explicit key to override.
-                        if (args.indexOf('--' + name) === -1 &&
-                            args.indexOf('--no-' + name === -1)) {
+                        //  Has a value. We have to see an explicit key to
+                        //  override.
+                        override = false;
+                        args.forEach(function(item) {
+                            if (typeof item !== 'string') {
+                                return;
+                            }
+
+                            if (item === '--' + name ||
+                                    item === '--no-' + name ||
+                                    item.indexOf('--' + name + '=' === 0)) {
+                                override = true;
+                            }
+                        });
+
+                        if (!override) {
                             return;
                         }
                     }
