@@ -675,13 +675,13 @@ Cmd.prototype.executeListFlows = function() {
 
     thisref = this;
 
-    this.dbView('flows').then(function(result) {
+    this.dbView('flows', {include_docs: true}).then(function(result) {
         if (thisref.options.verbose) {
             thisref.log(CLI.beautify(result));
         } else {
             result.forEach(function(item) {
-                thisref.log(item.value.name + '::' + item.value.owner + ' => ' +
-                    JSON.stringify(item.value.tasks.sequence) +
+                thisref.log(item.doc.name + '::' + item.doc.owner + ' => ' +
+                    JSON.stringify(item.doc.tasks.sequence) +
                     thisref.colorize(' (' + item.id + ')', 'gray'));
             });
         }
@@ -717,13 +717,13 @@ Cmd.prototype.executeListJobs = function() {
     }
     viewname = 'jobs_' + subset;
 
-    this.dbView(viewname).then(function(result) {
+    this.dbView(viewname, {include_docs: true}).then(function(result) {
         if (thisref.options.verbose) {
             thisref.log(CLI.beautify(result));
         } else {
             result.forEach(function(item) {
-                thisref.log(item.value.flow + '::' + item.value.owner + ' => ' +
-                    (item.value.state || '$$undefined') +
+                thisref.log(item.doc.flow + '::' + item.doc.owner + ' => ' +
+                    (item.doc.state || '$$undefined') +
                     thisref.colorize(' (' + item.id + ')', 'gray'));
             });
         }
@@ -742,21 +742,21 @@ Cmd.prototype.executeListTasks = function() {
 
     thisref = this;
 
-    this.dbView('tasks').then(function(result) {
+    this.dbView('tasks', {include_docs: true}).then(function(result) {
         if (thisref.options.verbose) {
             thisref.log(CLI.beautify(result));
         } else {
             result.forEach(function(item) {
                 var target;
 
-                if (item.value.flow) {
-                    target = 'flow ' + item.value.flow;
+                if (item.doc.flow) {
+                    target = 'flow ' + item.doc.flow;
                 } else {
-                   target = 'plugin ' + (item.value.plugin || item.value.name);
+                   target = 'plugin ' + (item.doc.plugin || item.doc.name);
                 }
 
                 //  TODO:   add owner when ready
-                thisref.log(item.value.name + ' => ' + target +
+                thisref.log(item.doc.name + ' => ' + target +
                     thisref.colorize(' (' + item.id + ')', 'gray'));
             });
         }
