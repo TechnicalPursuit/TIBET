@@ -36,7 +36,7 @@
             TDS,                // The TIBET Data Server instance.
             fileTransport,      // Logger-to-file transport.
             consoleTransport,   // Logger-to-console transport.
-            tmparr,             // Temporary array for JSON parse.
+            tmpobj,             // Temporary result for JSON parse.
             transports,         // List of transports to configure.
             transportNames,     // Config data for transport names.
             watchurl,           // Ignore logging calls to watch url.
@@ -124,15 +124,17 @@
         transports = [];
         transportNames = TDS.cfg('tds.log.transports', ['file', 'console']);
         if (!Array.isArray(transportNames)) {
+            transportNames = '{ "transports": ' + transportNames + '}';
             try {
-                tmparr = JSON.parse(transportNames);
-                transportNames = tmparr;
+                tmpobj = JSON.parse(transportNames);
+                transportNames = tmpobj.transports;
                 if (!Array.isArray(transportNames)) {
-                    throw new Error();
+                    transportNames = transportNames.split(',');
                 }
             } catch (e) {
-                TDS.prelog('warn',
-                    'unable to parse tds.log.transports setting.', meta);
+                TDS.prelog('error', e.message, meta);
+                TDS.prelog('error',
+                    'unable to parse tds.log.transports as Array.', meta);
                 TDS.prelog('warn',
                     'Defaulting tds.log.transports to file+console.', meta);
                 transportNames = ['file', 'console'];
