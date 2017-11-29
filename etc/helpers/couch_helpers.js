@@ -33,6 +33,13 @@ helpers = {};
 
 
 /**
+ * Cache of last-used couch parameters.
+ * @type {Object}
+ */
+helpers.lastCouchParams = null;
+
+
+/**
  * Iterates over the files in a directory and returns an object whose key/value
  * pairs are the file names and the function bodies returned by require() calls
  * to load each file. Used to load filters, shows, lists, etc. where the content
@@ -228,6 +235,11 @@ helpers.getCouchParameters = function(options) {
         opts.confirm = false;
     }
 
+    //  Check cache so we reuse across multiple non-confirm calls.
+    if (!opts.confirm && helpers.lastCouchParams) {
+        return helpers.lastCouchParams;
+    }
+
     cfg_root = opts.cfg_root || 'tds.couch.';
 
     db_url = opts.db_url || helpers.getCouchURL(opts);
@@ -292,6 +304,9 @@ helpers.getCouchParameters = function(options) {
         db_name: db_name,
         db_app: db_app
     };
+
+    //  Cache so we can reuse across multiple non-confirm calls.
+    helpers.lastCouchParams = params;
 
     return params;
 };
