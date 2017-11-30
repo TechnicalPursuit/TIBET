@@ -2741,7 +2741,7 @@
 
                             if (item === '--' + name ||
                                     item === '--no-' + name ||
-                                    item.indexOf('--' + name + '=' === 0)) {
+                                    item.indexOf('--' + name + '=') === 0) {
                                 override = true;
                             }
                         });
