@@ -401,6 +401,7 @@ Cmd.prototype.executeForEach = function(list) {
         excludeFiles.push(/\.css$/);
         excludeFiles.push(/\.less$/);
         excludeFiles.push(/\.sass$/);
+        excludeFiles.push(/\.scss$/);
         excludeFiles.push(/\.xhtml$/);
 
         if (CLI.inProject()) {
