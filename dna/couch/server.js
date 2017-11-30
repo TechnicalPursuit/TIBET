@@ -191,7 +191,9 @@
             TDS.logger.error('Uncaught: \n' + err.message, meta);
         }
 
-        TDS.logger.flush(true);
+        if (TDS.logger.flush) {
+            TDS.logger.flush(true);
+        }
 
         if (TDS.cfg('tds.stop_onerror')) {
             /* eslint-disable no-process-exit */
@@ -245,7 +247,9 @@
 
             TDS.logger.system('shutdown complete', meta);
 
-            TDS.logger.flush(true);
+            if (TDS.logger.flush) {
+                TDS.logger.flush(true);
+            }
 
             process.exit(code);
         });
