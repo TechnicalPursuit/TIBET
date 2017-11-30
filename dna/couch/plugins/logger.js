@@ -219,7 +219,7 @@
                 TDS.colorize('logging to ' +
                    TDS.getVirtualPath(logfile)) + ' ' +
                 TDS.colorize('(', 'dim') +
-                TDS.colorize(TDS.getNodeEnv(), 'env') +
+                TDS.colorize(app.get('env'), 'env') +
                 TDS.colorize(')', 'dim'));
         }
 

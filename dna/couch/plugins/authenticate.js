@@ -364,7 +364,7 @@
 
             //  If the request is made from the local host we can assume that's
             //  a developer and let it pass without typical authentication.
-            if (TDS.getNodeEnv() === 'development') {
+            if (app.get('env') === 'development') {
                 nodeIPs = TDS.getNodeIPs();
                 len = nodeIPs.length;
                 reqIP = req.ip;
@@ -396,7 +396,7 @@
 
             //  If the request is made from the local host we can assume that's
             //  a developer and let it pass without typical authentication.
-            if (TDS.getNodeEnv() === 'development') {
+            if (app.get('env') === 'development') {
                 nodeIPs = TDS.getNodeIPs();
                 len = nodeIPs.length;
                 reqIP = req.ip;

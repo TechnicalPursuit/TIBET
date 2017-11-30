@@ -72,13 +72,15 @@
     //  Map the defaulted environment from Express into our argument list. This
     //  will be used by the TDS initialization which may access both.
     argv.env = argv.env || env;
+    env = argv.env;
+    app.set('env', env);
 
     //  Configure the TDS's underlying TIBET Package instance. This instance is
     //  how we access all of TIBET's configuration data and functionality.
     TDS.initPackage(argv);
 
     //  Write the server announcement string.
-    TDS.announceTIBET(argv.env);
+    TDS.announceTIBET(env);
 
     //  Map TDS and app to each other so they have easy access to configuration
     //  data or other functionality.
@@ -309,5 +311,5 @@
 
     require('./plugins/poststart')(options);
 
-    TDS.announceStart(logger, protocol, port);
+    TDS.announceStart(logger, protocol, port, env);
 }());

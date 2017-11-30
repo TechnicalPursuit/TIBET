@@ -812,10 +812,11 @@ CLI.getArgv = function() {
 
 /**
  * Returns the current process environment (or 'development' if not set).
+ * Defaults to any command line value followed by NODE_ENV.
  * @returns {string} The environment string.
  */
-CLI.getNodeEnv = function() {
-    return process.env.NODE_ENV || 'development';
+CLI.getEnv = function() {
+    return this.options.env || process.env.NODE_ENV || 'development';
 };
 
 

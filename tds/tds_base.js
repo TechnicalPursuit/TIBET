@@ -346,8 +346,9 @@
      * @param {Logger} logger The logger instance to use for output.
      * @param {String} protocol The HTTP or HTTPS protocol the server is using.
      * @param {Number} port The port number the server is listening on.
+     * @param {String} [env] Optional environment hint from invoking call.
      */
-    TDS.announceStart = function(logger, protocol, port) {
+    TDS.announceStart = function(logger, protocol, port, env) {
         var project,
 
             allNodeIPs,
@@ -375,7 +376,7 @@
             host = '127.0.0.1';
         }
 
-        if (TDS.getNodeEnv() !== 'development') {
+        if (TDS.getEnv(env) !== 'development') {
             //  First output the 'default' or 'prod' or 'build' version which
             //  should be the one all projects default to without any '@'
             //  parameters....but only if we see build artifacts.
@@ -709,10 +710,11 @@
 
     /**
      * Returns the current process environment (or 'development' if not set).
+     * @param {String} [env] Optional environment to force value to.
      * @returns {string} The environment string.
      */
-    TDS.getNodeEnv = function() {
-        return process.env.NODE_ENV || 'development';
+    TDS.getEnv = function(env) {
+        return this.options.env || process.env.NODE_ENV || 'development';
     };
 
     /**
