@@ -714,7 +714,7 @@
      * @returns {string} The environment string.
      */
     TDS.getEnv = function(env) {
-        return this.options.env || process.env.NODE_ENV || 'development';
+        return env || process.env.NODE_ENV || 'development';
     };
 
     /**
