@@ -322,6 +322,7 @@ helpers.getCouchParameters = function(options) {
  */
 helpers.getCouchURL = function(options) {
     var opts,
+        msg,
         requestor,
         cfg_root,
         result,
@@ -370,8 +371,12 @@ helpers.getCouchURL = function(options) {
         if (db_user && db_pass) {
             db_url += db_user + ':' + db_pass + '@' + db_host;
         } else {
-            requestor.warn(
-                'Missing CouchDB credential(s). May need user:pass@host in URL.');
+            msg = 'Missing CouchDB credential(s). May need user:pass@host in URL.';
+            if (requestor.warn) {
+                requestor.warn(msg);
+            } else if (requestor.logger && requestor.logger.warn) {
+                requestor.logger.warn(msg);
+            }
             db_url += db_host;
         }
 
