@@ -71,6 +71,7 @@
         "minimist": "*",
         "mocha": "*",
         "nano": "https://github.com/TechnicalPursuit/couchdb-nano/tarball/master",
+        "node-sass": "^4.7.2",
         "node-forge": "https://github.com/TechnicalPursuit/forge/tarball/master",
         "opener": "^1.4.1",
         "permessage-deflate": "^0.1.5",

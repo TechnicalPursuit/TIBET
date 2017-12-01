@@ -22,6 +22,7 @@ var CLI,
     path,
     sh,
     less,
+    sass,
     Promise,
     Package,
     mm,
@@ -33,6 +34,7 @@ CLI = require('./_cli');
 fs = require('fs');
 path = require('path');
 less = require('less');
+sass = require('node-sass');
 sh = require('shelljs');
 helpers = require('../../../etc/helpers/config_helpers');
 Promise = require('bluebird');
@@ -734,6 +736,97 @@ Cmd.prototype.processLessResource = function(options) {
     });
 };
 
+/*
+ * Process common-style SASS files.
+ */
+Cmd.prototype.processScssResource = function(options) {
+    var cmd,
+
+        vars,
+        varStr,
+
+        cfg,
+        dataStr;
+
+    cmd = this;
+
+    vars = {};
+
+    varStr = '';
+
+    try {
+        //  Iterate over all of the 'path.' variables, getting each key and
+        //  slicing the 'path.' part off of it. Any remaining periods ('.') in
+        //  the key are replaced with '-'. Then, quote the value so that SASS
+        //  doesn't have issues with spaces, etc.
+        cfg = CLI.getcfg('path');
+        Object.keys(cfg).forEach(
+            function(aKey) {
+                var val;
+
+                //  If the cfg data has a real value for that key, get the key
+                //  and slice off the 'path.' portion. Any remaining periods
+                //  ('.') in the key are then replaced with '-'. Then, quote the
+                //  value so that LESS doesn't have issues with spaces, etc.
+                if (CLI.notEmpty(val = cfg[aKey])) {
+                    vars[aKey.slice(5).replace(/\./g, '-')] =
+                        '"' + CLI.expandPath(val) + '"';
+                }
+            });
+
+        Object.keys(vars).forEach(
+            function(aVar) {
+                varStr = '$' + aVar + ': ' + vars[aVar] + ';\n';
+            });
+
+    } catch (e) {
+        options.reject(e);
+        return;
+    }
+
+    dataStr = varStr + options.data;
+
+    return sass.render({data: dataStr}, function(error, output) {
+        var content,
+            rname,
+            fname,
+            finaloutput;
+
+        if (error) {
+            return options.reject(error);
+        }
+
+        rname = options.resource.replace(/\.scss$/, '.css');
+        fname = options.file.replace(/\.scss\.js$/, '.css.js');
+
+        cmd.products.push([options.resource, fname]);
+
+        //  adjust any @import statements in the source to have virtualized
+        //  paths. Otherwise, we end up with absolute paths in our output, which
+        //  causes problems for the runtime style machinery.
+        finaloutput = output.css.toString();
+        finaloutput = finaloutput.replace(
+                        Cmd.CSS_IMPORT_RULE,
+                        function(wholeMatch, leadingText, importLoc) {
+                            return '@import url("' +
+                                    CLI.getVirtualPath(importLoc) +
+                                    '");';
+                        });
+
+        content = 'TP.uc(\'' + rname + '\').setContent(\n';
+        content += CLI.quoted(finaloutput);
+        content += '\n);';
+        fs.writeFileSync(fname, content);
+
+        return options.resolve();
+    });
+};
+
+
+/*
+ * Alias for original-style SASS files.
+ */
+Cmd.prototype.processSassResource = Cmd.prototype.processScssResource;
 
 /**
  * Perform the work necessary to produce a cached copy of an XML resource.
