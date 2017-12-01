@@ -654,6 +654,7 @@ Cmd.prototype.processResources = function() {
 
 
 /*
+ * Process LESS files.
  */
 Cmd.prototype.processLessResource = function(options) {
     var cfg,
