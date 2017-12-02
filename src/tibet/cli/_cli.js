@@ -655,12 +655,17 @@ CLI.clean = function(input, escapes) {
         chars,
         cleansed;
 
+    if (!input) {
+        return '';
+    }
+
+    //  Convert any Buffer or String objects as needed.
+    str = '' + input;
+
     if (escapes !== false) {
         //  Escape codes look like '[blah...m' where 'blah' is chunks of
         //  semi-color separated numbers. We want to strip those off.
-        str = input.trim().replace(/\[([0-9]|;)*m/g, '');
-    } else {
-        str = input;
+        str = str.trim().replace(/\[([0-9]|;)*m/g, '');
     }
 
     //  check for control characters etc.
