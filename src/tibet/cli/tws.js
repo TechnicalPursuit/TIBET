@@ -194,9 +194,11 @@ Cmd.prototype.executeCancel = function() {
                 thisref.info(CLI.beautify(result2));
             }).catch(function(err) {
                 CLI.handleError(err, 'tws', 'cancel');
+                return;
             });
         }).catch(function(err) {
             CLI.handleError(err, 'tws', 'cancel');
+            return;
         });
     } else {
         this.usage('tibet tws cancel <job_id>');
@@ -296,9 +298,11 @@ Cmd.prototype.executeDisableFlow = function() {
                 thisref.info(CLI.beautify(result2));
             }).catch(function(err) {
                 CLI.handleError(err, 'tws', 'enable');
+                return;
             });
         }).catch(function(err) {
             CLI.handleError(err, 'tws', 'enable');
+            return;
         });
     } else {
         this.usage('tibet tws disable --flow <id>');
@@ -405,9 +409,11 @@ Cmd.prototype.executeEnableFlow = function() {
                 thisref.info(CLI.beautify(result2));
             }).catch(function(err) {
                 CLI.handleError(err, 'tws', 'enable');
+                return;
             });
         }).catch(function(err) {
             CLI.handleError(err, 'tws', 'enable');
+            return;
         });
     } else {
         this.usage('tibet tws enable --flow <id>');
@@ -657,6 +663,7 @@ Cmd.prototype.executeList = function() {
             thisref.info(CLI.beautify(result));
         }).catch(function(err) {
             CLI.handleError(err, 'tws', 'list');
+            return;
         });
 
         return;
@@ -687,6 +694,7 @@ Cmd.prototype.executeListFlows = function() {
         }
     }).catch(function(err) {
         CLI.handleError(err, 'tws', 'list');
+        return;
     });
 };
 
@@ -729,6 +737,7 @@ Cmd.prototype.executeListJobs = function() {
         }
     }).catch(function(err) {
         CLI.handleError(err, 'tws', 'list');
+        return;
     });
 };
 
@@ -762,6 +771,7 @@ Cmd.prototype.executeListTasks = function() {
         }
     }).catch(function(err) {
         CLI.handleError(err, 'tws', 'list');
+        return;
     });
 };
 
@@ -829,6 +839,7 @@ Cmd.prototype.executeListViews = function() {
 
     }).catch(function(err) {
         CLI.handleError(err, 'tws', 'list');
+        return;
     });
 };
 
@@ -921,12 +932,14 @@ Cmd.prototype.executePushDesign = function() {
             thisref.log(CLI.beautify(result2));
         }).catch(function(err) {
             CLI.handleError(err, 'push', 'design');
+            return;
         });
     }).catch(function(err) {
         if (err.message === 'missing') {
             thisref.error('Design document not found. Did you `tibet tws init` yet?');
         } else {
             CLI.handleError(err, 'push', 'design');
+            return;
         }
     });
 };
@@ -1121,6 +1134,7 @@ Cmd.prototype.executeSubmit = function() {
         thisref.info(CLI.beautify(result));
     }).catch(function(err) {
         CLI.handleError(err, 'tws', 'submit');
+        return;
     });
 };
 

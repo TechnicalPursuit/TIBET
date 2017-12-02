@@ -155,6 +155,7 @@
     Logger.prototype.log = function(msg, spec, level) {
         var lvl,
             str,
+            method,
             date;
 
         if (this.options.silent === true) {
@@ -164,6 +165,16 @@
         lvl = this.getLevelValue(level || Logger.INFO);
         if (lvl < this.getLevel()) {
             return;
+        }
+
+        switch (lvl) {
+            case Logger.ERROR:
+            case Logger.FATAL:
+                method = 'error';
+                break;
+            default:
+                method = 'log';
+                break;
         }
 
         str = '';
@@ -182,7 +193,7 @@
         }
         str += this.colorize(msg, spec);
 
-        return console.log(str);
+        return console[method](str);
     };
 
 

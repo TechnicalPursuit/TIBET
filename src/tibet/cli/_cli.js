@@ -655,12 +655,17 @@ CLI.clean = function(input, escapes) {
         chars,
         cleansed;
 
+    if (!input) {
+        return '';
+    }
+
+    //  Convert any Buffer or String objects as needed.
+    str = '' + input;
+
     if (escapes !== false) {
         //  Escape codes look like '[blah...m' where 'blah' is chunks of
         //  semi-color separated numbers. We want to strip those off.
-        str = input.trim().replace(/\[([0-9]|;)*m/g, '');
-    } else {
-        str = input;
+        str = str.trim().replace(/\[([0-9]|;)*m/g, '');
     }
 
     //  check for control characters etc.
@@ -893,12 +898,12 @@ CLI.getCommandOptions = function(command) {
             try {
                 CmdType.initialize();
             } catch (e) {
-                this.handleError(e, 'initializing', command);
+                return this.handleError(e, 'initializing', command);
             }
         }
         cmd = new CmdType();
     } catch (e) {
-        this.handleError(e, 'loading', command);
+        return this.handleError(e, 'loading', command);
     }
 
     //  Get the local (common) options for all commands via CLI options.
@@ -1623,7 +1628,7 @@ CLI.runCommand = function(command, cmdPath) {
         CmdType = require(cmdPath);
     } catch (e) {
         this.debug('cmdPath: ' + cmdPath);
-        this.handleError(e, 'loading', command);
+        return this.handleError(e, 'loading', command);
     }
 
     // Initialize the type if it has an initializer.
@@ -1631,7 +1636,7 @@ CLI.runCommand = function(command, cmdPath) {
         try {
             CmdType.initialize();
         } catch (e) {
-            this.handleError(e, 'initializing', command);
+            return this.handleError(e, 'initializing', command);
         }
     }
 
@@ -1639,7 +1644,7 @@ CLI.runCommand = function(command, cmdPath) {
     try {
         cmd = new CmdType();
     } catch (e) {
-        this.handleError(e, 'instantiating', command);
+        return this.handleError(e, 'instantiating', command);
     }
 
     parts = command.split(' ');
@@ -1692,7 +1697,7 @@ CLI.runCommand = function(command, cmdPath) {
             // this.warn(command + ' returned non-numeric status value');
         }
     } catch (e) {
-        this.handleError(e, 'processing', command);
+        return this.handleError(e, 'processing', command);
     }
 };
 

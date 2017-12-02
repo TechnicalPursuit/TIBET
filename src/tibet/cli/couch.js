@@ -728,6 +728,7 @@ Cmd.prototype.executePushapp = function() {
                 },
                 function(err2) {
                     CLI.handleError(err2, 'pushapp', 'couch');
+                    return;
                 });
         },
         function(error) {
@@ -739,9 +740,11 @@ Cmd.prototype.executePushapp = function() {
                     },
                     function(err2) {
                         CLI.handleError(err2, 'pushapp', 'couch');
+                        return;
                     });
             } else {
                 CLI.handleError(error, 'pushapp', 'couch');
+                return;
             }
         });
 };
@@ -824,6 +827,7 @@ Cmd.prototype.executeRemoveapp = function() {
     }).catch(function(err) {
         CLI.debug(params);
         CLI.handleError(err, 'removeapp', 'couch');
+        return;
     });
 };
 
@@ -975,6 +979,7 @@ Cmd.prototype.executeView = function() {
         } else {
             CLI.debug(CLI.beautify(dbParams));
             CLI.handleError(err, 'couch', 'view');
+            return;
         }
     });
 };
