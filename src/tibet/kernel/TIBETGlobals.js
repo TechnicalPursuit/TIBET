@@ -2059,6 +2059,10 @@ TP.RETURN_LAST = function(item) {
     return item.last();
 };
 
+//  when you just gotta have an array
+TP.RETURN_EMPTY_ARRAY = function() {
+    return [];
+};
 //  when you just gotta have a string
 TP.RETURN_EMPTY_STRING = function() {
     return '';
