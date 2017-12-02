@@ -898,12 +898,12 @@ CLI.getCommandOptions = function(command) {
             try {
                 CmdType.initialize();
             } catch (e) {
-                this.handleError(e, 'initializing', command);
+                return this.handleError(e, 'initializing', command);
             }
         }
         cmd = new CmdType();
     } catch (e) {
-        this.handleError(e, 'loading', command);
+        return this.handleError(e, 'loading', command);
     }
 
     //  Get the local (common) options for all commands via CLI options.
@@ -1628,7 +1628,7 @@ CLI.runCommand = function(command, cmdPath) {
         CmdType = require(cmdPath);
     } catch (e) {
         this.debug('cmdPath: ' + cmdPath);
-        this.handleError(e, 'loading', command);
+        return this.handleError(e, 'loading', command);
     }
 
     // Initialize the type if it has an initializer.
@@ -1636,7 +1636,7 @@ CLI.runCommand = function(command, cmdPath) {
         try {
             CmdType.initialize();
         } catch (e) {
-            this.handleError(e, 'initializing', command);
+            return this.handleError(e, 'initializing', command);
         }
     }
 
@@ -1644,7 +1644,7 @@ CLI.runCommand = function(command, cmdPath) {
     try {
         cmd = new CmdType();
     } catch (e) {
-        this.handleError(e, 'instantiating', command);
+        return this.handleError(e, 'instantiating', command);
     }
 
     parts = command.split(' ');
@@ -1697,7 +1697,7 @@ CLI.runCommand = function(command, cmdPath) {
             // this.warn(command + ' returned non-numeric status value');
         }
     } catch (e) {
-        this.handleError(e, 'processing', command);
+        return this.handleError(e, 'processing', command);
     }
 };
 

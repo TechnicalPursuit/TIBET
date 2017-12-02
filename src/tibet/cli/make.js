@@ -616,8 +616,7 @@ Cmd.prototype.chain = function(targets) {
     try {
         promise = task();
     } catch (e) {
-        CLI.handleError(e);
-        return -1;
+        return CLI.handleError(e);
     }
 
     while (list.length) {
