@@ -4945,7 +4945,8 @@ function(aHash, aLevel) {
     valueSuffix = TP.ifInvalid(params.at('valueSuffix'), '');
     itemSuffix = TP.ifInvalid(params.at('itemSuffix'), '');
     itemSeparator = TP.ifInvalid(params.at('itemSeparator'), '; ');
-    emptyFunction = TP.ifInvalid(params.at('emptyFunction'), TP.RETURN_EMPTY);
+    emptyFunction = TP.ifInvalid(params.at('emptyFunction'),
+                                    TP.RETURN_EMPTY_STRING);
     footer = TP.ifInvalid(params.at('footer'), ';');
     nullValue = TP.ifInvalid(params.at('nullValue'), 'null');
     filter = TP.ifInvalid(params.at('filter'), 'unique_attributes');

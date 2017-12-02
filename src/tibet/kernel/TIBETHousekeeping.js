@@ -231,7 +231,7 @@ TP.definePrimitive('RETURN_ARGS', TP.RETURN_ARGS);
 TP.definePrimitive('RETURN_FIRST', TP.RETURN_FIRST);
 TP.definePrimitive('RETURN_LAST', TP.RETURN_LAST);
 
-TP.definePrimitive('RETURN_EMPTY', TP.RETURN_EMPTY);
+TP.definePrimitive('RETURN_EMPTY_STRING', TP.RETURN_EMPTY_STRING);
 TP.definePrimitive('RETURN_SPACE', TP.RETURN_SPACE);
 
 TP.definePrimitive('RETURN_ORIG', TP.RETURN_ORIG);

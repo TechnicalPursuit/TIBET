@@ -2060,7 +2060,7 @@ TP.RETURN_LAST = function(item) {
 };
 
 //  when you just gotta have a string
-TP.RETURN_EMPTY = function() {
+TP.RETURN_EMPTY_STRING = function() {
     return '';
 };
 TP.RETURN_SPACE = function() {
