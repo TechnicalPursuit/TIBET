@@ -101,6 +101,99 @@ function(packageName, configName) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getAllPackagePaths',
+function(packageName, configName) {
+
+    /**
+     * @method getAllPackagePaths
+     * @summary Returns all package paths found in the supplied package and
+     *     config.
+     * @param {String} packageName The package name to locate and list package
+     *     paths from.
+     * @param {String} configName The config to load. Default is whatever is
+     *     listed as the default for that package (usually base).
+     * @returns {String[]} An Array of package paths in the supplied package and
+     *     config.
+     */
+
+    var packageProfile,
+        packageProfileParts,
+
+        pkgName,
+        cfgName,
+
+        uri,
+
+        packageAssets,
+        packagePackagePaths,
+
+        phaseOne,
+        phaseTwo;
+
+    //  Default the packageName and configName to what can be extracted from the
+    //  packaging profile.
+
+    packageProfile = TP.sys.cfg('project.packaging.profile', 'main@base');
+    packageProfileParts = packageProfile.split('@');
+
+    pkgName = TP.ifEmpty(packageName, packageProfileParts.first());
+    cfgName = TP.ifEmpty(configName, packageProfileParts.last());
+
+    //  Normalize the incoming package name to produce a viable config file.
+    uri = TP.uriExpandPath(pkgName);
+    if (!TP.isURIString(uri)) {
+        uri = TP.uriJoinPaths('~app_cfg', uri);
+    }
+
+    if (TP.isEmpty(TP.uriExtension(uri))) {
+        uri += '.xml';
+    }
+
+    //  Get the full list of package package files. This defines the list of
+    //  packages the system will use for importing.
+    try {
+        phaseOne = TP.sys.cfg('boot.phase_one');
+        phaseTwo = TP.sys.cfg('boot.phase_two');
+        TP.sys.setcfg('boot.phase_one', true);
+        TP.sys.setcfg('boot.phase_two', true);
+        packageAssets = TP.boot.$listPackageAssets(uri, cfgName, null, true);
+    } catch (e) {
+        //  Could be an unloaded/unexpanded manifest...meaning we can't really
+        //  tell what the script list is.
+        return null;
+    } finally {
+        TP.sys.setcfg('boot.phase_one', phaseOne);
+        TP.sys.setcfg('boot.phase_two', phaseTwo);
+    }
+
+    //  Normalize the list of packages (and filter out any asset that doesn't
+    //  have a 'src' - which means it's not a package).
+    packagePackagePaths = packageAssets.map(
+                            function(node) {
+                                var tn,
+                                    src;
+
+                                tn = node.tagName.toLowerCase();
+                                if (tn !== 'package') {
+                                    return '';
+                                }
+
+                                src = node.getAttribute('src');
+                                if (src) {
+                                    return TP.boot.$getFullPath(node, src);
+                                }
+
+                                return '';
+                            });
+
+    //  Remove any empty paths
+    TP.compact(packagePackagePaths, TP.isEmpty);
+
+    return packagePackagePaths;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('getUsedScriptPaths',
 function() {
 
