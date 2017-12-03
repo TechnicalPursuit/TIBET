@@ -10435,7 +10435,7 @@ TP.boot.$isLoadedScript = function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listConfigAssets = function(anElement, aList) {
+TP.boot.$listConfigAssets = function(anElement, aList, includePkgs) {
 
     /**
      * @method $listConfigAssets
@@ -10444,6 +10444,8 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
      *     recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
      * @param {Array} aList The array of asset descriptions to expand upon.
+     * @param {Boolean} [includePkgs=false] Whether or not to include nested
+     *     package nodes.
      * @returns {Array} The asset array.
      */
 
@@ -10492,7 +10494,8 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             if (TP.boot.$notValid(config)) {
                                 throw new Error('config not found: ' + ref);
                             }
-                            TP.boot.$listConfigAssets(config, result);
+                            TP.boot.$listConfigAssets(
+                                        config, result, includePkgs);
 
                             break;
 
@@ -10527,7 +10530,14 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
 
                             //  Make sure to fully expand the path.
                             src = TP.boot.$getFullPath(child, src);
-                            TP.boot.$listPackageAssets(src, config, result);
+
+                            if (includePkgs) {
+                                child.setAttribute('src', src);
+                                result.push(child);
+                            }
+
+                            TP.boot.$listPackageAssets(
+                                        src, config, result, includePkgs);
 
                             break;
 
@@ -10592,7 +10602,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listPackageAssets = function(aPackage, aConfig, aList) {
+TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
 
     /**
      * @method $listPackageAssets
@@ -10603,6 +10613,8 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList) {
      * @param {string} aPackage The package name or path to list.
      * @param {string} aConfig The ID of the config in the package to list.
      * @param {Array} aList The array of asset descriptions to expand upon.
+     * @param {Boolean} [includePkgs=false] Whether or not to include nested
+     *     package nodes.
      * @returns {Array} The asset array.
      */
 
@@ -10661,7 +10673,7 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList) {
             TP.boot.$$assets = {};
         }
         result = aList || [];
-        TP.boot.$listConfigAssets(node, result);
+        TP.boot.$listConfigAssets(node, result, includePkgs);
     } finally {
         TP.boot.$popPackage(path);
     }
