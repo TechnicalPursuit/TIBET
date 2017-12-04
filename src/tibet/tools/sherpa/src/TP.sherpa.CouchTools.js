@@ -17,6 +17,21 @@ TP.sherpa.CouchTools.Inst.defineAttribute('appAndViewName');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.CouchTools.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.Promise);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.CouchTools.Type.defineMethod('fetchURI',
 function(aURI) {
 

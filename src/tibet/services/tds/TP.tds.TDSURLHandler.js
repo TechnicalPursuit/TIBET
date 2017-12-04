@@ -203,6 +203,8 @@ function(targetURI, patch) {
                 });
 
     return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------

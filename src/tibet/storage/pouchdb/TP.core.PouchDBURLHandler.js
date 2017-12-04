@@ -27,6 +27,19 @@ TP.core.PouchDBURLHandler.Type.defineAttribute('watchers');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.core.PouchDBURLHandler.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.PouchDB);
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 //  CONTENT METHODS
 //  ------------------------------------------------------------------------

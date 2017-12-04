@@ -7956,6 +7956,8 @@ function(aNode, anXPath, resultType, logErrors) {
     } else {
         return null;
     }
+}, {
+    dependencies: [TP.extern.wgxpath, TP.extern.jxpath, TP.extern.jQuery]
 });
 
 //  ------------------------------------------------------------------------

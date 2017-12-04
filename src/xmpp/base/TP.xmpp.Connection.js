@@ -542,6 +542,8 @@ function(aJID, aPassword) {
     }
 
     return true;
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------

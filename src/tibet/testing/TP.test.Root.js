@@ -27,6 +27,23 @@ TP.test.Root.addTraits(TP.core.JobStatus);
 TP.test.Root.Inst.resolveTrait('resume', TP.core.JobStatus);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.test.Root.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.Promise);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

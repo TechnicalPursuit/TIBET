@@ -572,6 +572,8 @@ function(packageName, configName, shouldSignal) {
     //  Return a promise that resolves if all imports worked, or rejects if any
     //  of them failed.
     return TP.extern.Promise.all(promises);
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -646,6 +648,8 @@ function(aURI, aRequest) {
             throw new Error('ImportScriptError');
         }
     });
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ----------------------------------------------------------------------------
@@ -699,6 +703,8 @@ function(targetUrl) {
                 throw new Error('ImportSourceError');
             }
         });
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------

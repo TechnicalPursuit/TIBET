@@ -2107,6 +2107,8 @@ function(aStyleRule, sourceASTs) {
     }
 
     return TP.hc();
+}, {
+    dependencies: [TP.extern.cssParser]
 });
 
 //  ------------------------------------------------------------------------

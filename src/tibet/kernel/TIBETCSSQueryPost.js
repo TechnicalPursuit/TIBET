@@ -86,6 +86,8 @@ function(anElement, aSelector) {
     //  matched the supplied selector.
 
     return TP.notEmpty(TP.extern.Sizzle.matches(aSelector, [anElement]));
+}, {
+    dependencies: [TP.extern.jQuery, TP.extern.Sizzle]
 });
 
 //  ------------------------------------------------------------------------
@@ -238,6 +240,8 @@ function(aNode, aSelector, stopAncestor) {
     };
 
     return closest(elem, aSelector);
+}, {
+    dependencies: [TP.extern.jQuery, TP.extern.Sizzle]
 });
 
 //  ------------------------------------------------------------------------
@@ -345,6 +349,8 @@ function(aNode, aSelector, autoCollapse) {
     }
 
     return resultArr;
+}, {
+    dependencies: [TP.extern.jQuery, TP.extern.Sizzle]
 });
 
 //  ------------------------------------------------------------------------

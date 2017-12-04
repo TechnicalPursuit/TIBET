@@ -3962,6 +3962,8 @@ function(onFulfilled, onRejected) {
     }
 
     return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ========================================================================

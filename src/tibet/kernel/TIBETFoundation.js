@@ -705,6 +705,8 @@ function() {
     }
 
     return;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -1085,6 +1087,8 @@ function(newMethodText, loadedFromSourceFile) {
     }
 
     return TP.ac(patch, newContent);
+}, {
+    dependencies: [TP.extern.JsDiff]
 });
 
 //  ------------------------------------------------------------------------

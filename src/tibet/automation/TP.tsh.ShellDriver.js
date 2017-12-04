@@ -28,6 +28,23 @@ TP.lang.Object.defineSubtype('tsh.Driver');
 TP.tsh.Driver.Inst.defineAttribute('promiseProvider');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.tsh.Driver.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.Promise);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

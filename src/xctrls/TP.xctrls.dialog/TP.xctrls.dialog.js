@@ -31,6 +31,23 @@ TP.xctrls.dialog.Type.defineAttribute('opaqueBubblingSignalNames',
         TP.ac('TP.sig.UIActivate', 'TP.sig.UIDeactivate'));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.dialog.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.Promise);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

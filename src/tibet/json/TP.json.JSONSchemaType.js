@@ -45,6 +45,21 @@ TP.json.JSONSchemaType.Type.defineAttribute('schema');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.json.JSONSchemaType.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.jjv);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.json.JSONSchemaType.Type.defineMethod('buildSchemaFrom',
 function(sourceObject, definitionName) {
 

@@ -10562,6 +10562,21 @@ TP.core.XPathPath.Inst.defineAttribute('$tpContext');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.core.XPathPath.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.XPathParser);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XPathPath.Type.defineMethod('canonicalizePath',
 function(aPath) {
 

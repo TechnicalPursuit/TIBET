@@ -6633,6 +6633,8 @@ function(aMessage) {
         });
 
     return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  Alias TP.$alert to TP.alert. That way if TP.alert gets redefined, the
@@ -6676,6 +6678,8 @@ function(anAction) {
         });
 
     return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  Alias TP.$confirm to TP.confirm. That way if TP.confirm gets redefined, the
@@ -6723,6 +6727,8 @@ function(aQuestion, aDefaultAnswer) {
         });
 
     return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  Alias TP.$prompt to TP.prompt. That way if TP.prompt gets redefined, the

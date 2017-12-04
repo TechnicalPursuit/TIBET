@@ -552,6 +552,8 @@ function(options) {
                 summarize();
             });
     /* eslint-enable handle-callback-err */
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ========================================================================

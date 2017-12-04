@@ -1971,6 +1971,8 @@ function(aTarget, aSignal, aComment) {
 
 
     return hadMatch;
+}, {
+    dependencies: [TP.extern.sinon]
 });
 
 //  ------------------------------------------------------------------------

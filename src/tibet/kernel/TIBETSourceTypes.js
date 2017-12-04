@@ -3230,6 +3230,23 @@ function(message) {
 TP.core.Worker.defineSubtype('TP.core.PromiseWorker');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.PromiseWorker.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.Promise);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Inst Methods
 //  ------------------------------------------------------------------------
 

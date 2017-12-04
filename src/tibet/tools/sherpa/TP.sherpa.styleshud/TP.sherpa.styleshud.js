@@ -159,6 +159,8 @@ function(ruleInfo) {
     modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
 
     return modelObj;
+}, {
+    dependencies: [TP.extern.cssParser]
 });
 
 //  ------------------------------------------------------------------------

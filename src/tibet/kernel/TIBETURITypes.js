@@ -193,6 +193,21 @@ TP.core.URI.Type.defineAttribute('remoteChangeList', TP.hc());
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.addPackagingDependency(TP.extern.Promise);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Type.defineMethod('construct',
 function(aURI, aResource) {
 
@@ -5502,6 +5517,8 @@ function(aContent, alternateContent) {
                 }.bind(this));
 
     return promise;
+}, {
+    dependencies: [TP.extern.JsDiff]
 });
 
 //  ------------------------------------------------------------------------
