@@ -2645,6 +2645,16 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     method[TP.DESCRIPTOR] = desc;
     /* eslint-enable no-extra-parens */
 
+    //  If the method has dependencies to track, grab the Array from the
+    //  descriptor and add each dependency to the method's 'dependency'
+    //  metadata.
+    if (descriptor && descriptor.dependencies) {
+        descriptor.dependencies.forEach(
+            function(aDependency) {
+                TP.addPackagingDependency(method, aDependency);
+            });
+    }
+
     //  we don't wrap 'self' level methods so we need to patch on the load node
     //  manually. All others get it done via addMetadata.
     if (method[TP.OWNER] === self) {
