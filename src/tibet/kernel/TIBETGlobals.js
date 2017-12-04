@@ -150,6 +150,13 @@ TP.addPackagingDependency = function(anObject, aDependencySource) {
 
     var dependencies;
 
+    if (TP.notValid(aDependencySource)) {
+        /* eslint-disable no-console */
+        console.log('Undefined packaging dependency for: ' + anObject[TP.NAME]);
+        /* eslint-enable no-console */
+        return;
+    }
+
     dependencies = anObject[TP.DEPENDENCIES];
 
     if (!Array.isArray(dependencies)) {
