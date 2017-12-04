@@ -5,29 +5,17 @@
 
 <config id="vm" depends="">
 
+    <!--
+         NOTE NOTE NOTE
+         !!!The entries in this file are load order dependent!!!
+         At this point, the system is booting and is very load order sensitive.
+    -->
+
     <!--    KERNEL STAGE 1, BASE PRIMITIVES -->
     <script src="copyright.js" no-minify="no-minify"/>
 
     <script src="TIBETGlobals.js"/>
     <script src="TIBETVersion.js"/>
-
-    <script src="TIBETPrimitivesPre.js"/>
-    <script src="TIBETPrimitivesBase.js"/>
-    <script src="TIBETPrimitivesPlatform.js"/>
-    <script src="TIBETPrimitivesPost.js"/>
-
-    <script src="TIBETTokenizer.js"/>
-
-    <script src="TIBETDOMPrimitivesPre.js"/>
-    <script src="TIBETDOMPrimitivesBase.js"/>
-    <script src="TIBETDOMPrimitivesPlatform.js"/>
-    <script src="TIBETDOMPrimitivesPost.js"/>
-
-    <!--    KERNEL STAGE 2, "LANGUAGE" BASE -->
-
-    <script src="TIBETEncapsulation.js"/>
-    <script src="TIBETRegistration.js"/>
-    <script src="TIBETFoundation.js"/>
 
     <script src="~lib_deps/bluebird-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
@@ -42,6 +30,65 @@
         };
         ]]>
     </script>
+
+    <script src="TIBETPrimitivesPre.js"/>
+    <script src="TIBETPrimitivesBase.js"/>
+    <script src="TIBETPrimitivesPlatform.js"/>
+    <script src="TIBETPrimitivesPost.js"/>
+
+    <script src="TIBETTokenizer.js"/>
+
+    <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('Sizzle', window.Sizzle);
+        ]]>
+    </script>
+    <script src="~lib_deps/jquery-jquery-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('jQuery', window.jQuery);
+        ]]>
+    </script>
+    <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="no-lint"/>
+    <script src="TIBETCSSQueryPost.js"/>
+
+    <script src="~lib_deps/wgxpath.install.js"
+        no-lint="no-lint" no-minify="no-minify"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('wgxpath', window.wgxpath);
+        TP.extern.wgxpath.install();
+        ]]>
+    </script>
+
+    <script src="~lib_deps/jquery.xpath-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/jquery.xpath-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('jxpath', window.jQuery.xpath);
+        ]]>
+    </script>
+
+    <script src="TIBETDOMPrimitivesPre.js"/>
+    <script src="TIBETDOMPrimitivesBase.js"/>
+    <script src="TIBETDOMPrimitivesPlatform.js"/>
+    <script src="TIBETDOMPrimitivesPost.js"/>
+
+    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('JsDiff', window.JsDiff);
+        ]]>
+    </script>
+
+    <!--    KERNEL STAGE 2, "LANGUAGE" BASE -->
+
+    <script src="TIBETEncapsulation.js"/>
+    <script src="TIBETRegistration.js"/>
+    <script src="TIBETFoundation.js"/>
 
     <script src="~lib_deps/sprintf-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
@@ -95,53 +142,12 @@
 
     <script src="TIBETStringPrimitivesPost.js"/>
 
+    <script src="TIBETCSSParser.js"/>
+
     <script src="TIBETCSSPrimitivesPre.js"/>
     <script src="TIBETCSSPrimitivesBase.js"/>
     <script src="TIBETCSSPrimitivesPlatform.js"/>
     <script src="TIBETCSSPrimitivesPost.js"/>
-
-    <script src="TIBETCSSParser.js"/>
-
-    <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('Sizzle', window.Sizzle);
-        ]]>
-    </script>
-    <script src="~lib_deps/jquery-jquery-tpi.js" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('jQuery', window.jQuery);
-        ]]>
-    </script>
-    <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="no-lint"/>
-    <script src="TIBETCSSQueryPost.js"/>
-
-    <script src="~lib_deps/wgxpath.install.js"
-        no-lint="no-lint" no-minify="no-minify"/>
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('wgxpath', window.wgxpath);
-        TP.extern.wgxpath.install();
-        ]]>
-    </script>
-
-    <script src="~lib_deps/jquery.xpath-tpi.min.js"
-        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
-    <script src="~lib_deps/jquery.xpath-tpi.js"
-        unless="boot.minified" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('jxpath', window.jQuery.xpath);
-        ]]>
-    </script>
-
-    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('JsDiff', window.JsDiff);
-        ]]>
-    </script>
 
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
