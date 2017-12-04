@@ -75,7 +75,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 TP.sig.SignalSource.Inst.defineAttribute('observers');
 
 //  ------------------------------------------------------------------------
-//  Inst Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalSource.Inst.defineMethod('addObserver',
@@ -159,7 +159,7 @@ TP.sig.URISignalSource.isAbstract(true);
 TP.sig.URISignalSource.Inst.defineAttribute('uri');
 
 //  ------------------------------------------------------------------------
-//  Inst Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sig.URISignalSource.Inst.defineMethod('setURI',
@@ -216,7 +216,7 @@ TP.sig.MessageSource.Inst.defineAttribute('errorCount', 0);
 TP.sig.MessageSource.Inst.defineAttribute('source');
 
 //  ------------------------------------------------------------------------
-//  Inst Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sig.MessageSource.Inst.defineMethod('init',
@@ -595,7 +595,7 @@ TP.sig.MessageSource.defineSubtype('sig.MessageConnection');
 TP.sig.MessageConnection.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  Inst Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sig.MessageConnection.Inst.defineMethod('send',
@@ -1655,7 +1655,7 @@ TP.core.MediaQuery.Inst.defineAttribute('$query');
 TP.core.MediaQuery.Inst.defineAttribute('$window');
 
 //  ------------------------------------------------------------------------
-//  Inst Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.MediaQuery.Inst.defineMethod('init',
@@ -3247,7 +3247,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Inst Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseWorker.Inst.defineMethod('init',
