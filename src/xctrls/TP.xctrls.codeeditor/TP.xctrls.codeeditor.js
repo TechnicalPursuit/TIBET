@@ -143,6 +143,8 @@ function(aRequest) {
 
         scriptElem,
 
+        thisref,
+
         loadHandler;
 
     //  this makes sure we maintain parent processing
@@ -169,10 +171,13 @@ function(aRequest) {
         //  Define a handler that will define the global TIBET 'extern' slot
         //  that will point to the ACE editor and then call setup on the element
         //  that we're processing.
+        thisref = this;
         loadHandler = function() {
             scriptElem.removeEventListener('load', loadHandler, false);
 
-            TP.extern.ace = TP.nodeGetWindow(this).ace;
+            TP.registerExternalObject('ace', TP.nodeGetWindow(this).ace);
+            thisref.addPackagingDependency(TP.extern.ace);
+
             tpElem.setup();
         };
 
