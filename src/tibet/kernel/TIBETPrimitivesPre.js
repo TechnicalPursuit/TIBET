@@ -2463,7 +2463,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     installedInvocationsTracker = false;
 
-    if (descriptor && descriptor.trackInvocations) {
+    if (descriptor && descriptor.trackInvocations !== undefined) {
         methodWantsInvocationTracking = descriptor.trackInvocations;
     } else {
         methodWantsInvocationTracking = true;
