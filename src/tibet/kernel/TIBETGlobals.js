@@ -147,7 +147,7 @@ TP.addPackagingDependency = function(anObject, aDependencySource) {
         anObject[TP.DEPENDENCIES] = dependencies;
     }
 
-    dependencies.push(aDependentObject);
+    dependencies.push(aDependencySource);
 };
 
 //  Manual setup
