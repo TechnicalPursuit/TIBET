@@ -95,7 +95,7 @@ TP.registerLoadInfo = function(anObject) {
      * @method registerLoadInfo
      * @summary Registers load information about the object (such as load &
      *     source paths, load package and load config) onto the object itself.
-     * @param {Object} The object to register the load information for.
+     * @param {Object} anObject The object to register the load information for.
      */
 
     var lpath,
