@@ -62,6 +62,8 @@ function(aValue, aPassword) {
     encVal = encStr.decrypt(encKey, TP.hc('iv', ivStr));
 
     return encVal;
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -113,6 +115,8 @@ function(aValue, aPassword) {
     recordStr = TP.js2json(valueRecord);
 
     return recordStr;
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -185,6 +189,8 @@ function(anObject, aHashMode, aHashFormat) {
 
             return result;
     }
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -260,6 +266,8 @@ function(anObject, aKey, aHashMode, aHashFormat) {
         default:
             return hmac;
     }
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -281,6 +289,8 @@ function(numberOfBytes) {
     }
 
     return TP.extern.forge.random.getBytesSync(numberOfBytes);
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -330,6 +340,8 @@ function(aSalt, params) {
     encKey = TP.extern.forge.pkcs5.pbkdf2(str, aSalt, iterationCount, keySize);
 
     return encKey;
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -380,6 +392,8 @@ function(aKey, params) {
     cipher.finish();
 
     return cipher.output.data;
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
@@ -426,6 +440,8 @@ function(aKey, params) {
     cipher.finish();
 
     return cipher.output.toHex();
+}, {
+    dependencies: [TP.extern.forge]
 });
 
 //  ------------------------------------------------------------------------
