@@ -2643,7 +2643,6 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     //  capture the descriptor on the method (method body)
     method[TP.DESCRIPTOR] = desc;
-
     /* eslint-enable no-extra-parens */
 
     //  we don't wrap 'self' level methods so we need to patch on the load node
