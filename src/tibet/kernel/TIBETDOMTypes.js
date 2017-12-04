@@ -10496,6 +10496,37 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('getNamespaceType',
+function(mimeType) {
+
+    /**
+     * @method getNamespaceType
+     * @summary Returns the 'namespace' for the receiver. The canonical form of
+     *     the name of the namespace type is the namespace root (i.e. 'TP'),
+     *     followed by the namespace (i.e. 'html'), followed by 'XMLNS'.
+     * @returns {TP.meta.core.ElementNode} The type object representing the
+     *     receiver's namespace type.
+     */
+
+    var root,
+        nsName,
+        typeName,
+        type;
+
+    root = this.getNamespaceRoot();
+    nsName = this.getNamespacePrefix();
+
+    typeName = root + '.' + nsName + '.' + 'XMLNS';
+
+    if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
+        return;
+    }
+
+    return type;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
 function(wantsDeep, wantsCompiled, wantsDisabled) {
 
