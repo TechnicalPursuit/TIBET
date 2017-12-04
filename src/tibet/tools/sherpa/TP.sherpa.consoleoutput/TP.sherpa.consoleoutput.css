@@ -31,8 +31,6 @@ sherpa|consoleoutput {
     z-index: var(--tibet-CONSOLE-OUTPUT-TIER);
 
     transition: margin 0.25s;
-
-    opacity: 0.85;
 }
 
 sherpa|consoleoutput[pclass|hidden] {
