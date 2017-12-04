@@ -6207,7 +6207,7 @@ function(aSignal) {
      * @method handleRouteFinalize
      * @summary A handler for any finalizations to the current application
      *     route.
-     * @param {TP.sig.RouteFinalize} aSignal The startup signal.
+     * @param {TP.sig.RouteFinalize} aSignal The finalization signal.
      * @returns {TP.core.RouteController} The receiver.
      */
 
