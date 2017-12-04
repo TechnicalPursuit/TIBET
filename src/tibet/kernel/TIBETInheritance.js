@@ -557,6 +557,143 @@ function(it) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.defineMetaTypeMethod('getPackagingDependencies',
+function() {
+
+    /**
+     * @method getPackagingDependencies
+     * @summary Returns an Array of Objects that the receiver considers to be
+     *     it's manually determined set of 'dependent' objects that it needs in
+     *     order to operate successfully. These objects can be any type of
+     *     object in the system, so long as they themselves can respond to the
+     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     determine the chain of dependent objects. This terminates at the
+     *     meta-level by returning an empty Array.
+     * @description Many objects can be determined via method invocation
+     *     tracking to be included or excluded for packaging purposes. This
+     *     method allows the receiving object to statically force a particular
+     *     object to be included along with the receiver in the package. In
+     *     some cases this is the only way to determine whether or not an object
+     *     should be included/excluded in a particular package.
+     * @returns {Object[]} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    //  At this level, we just return an empty Array.
+    return [];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getPackagingDependencies',
+function() {
+
+    /**
+     * @method getPackagingDependencies
+     * @summary Returns an Array of Objects that the receiver considers to be
+     *     it's manually determined set of 'dependent' objects that it needs in
+     *     order to operate successfully. These objects can be any type of
+     *     object in the system, so long as they themselves can respond to the
+     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     determine the chain of dependent objects. This terminates at the
+     *     meta-level by returning an empty Array.
+     * @description Many objects can be determined via method invocation
+     *     tracking to be included or excluded for packaging purposes. This
+     *     method allows the receiving object to statically force a particular
+     *     object to be included along with the receiver in the package. In
+     *     some cases this is the only way to determine whether or not an object
+     *     should be included/excluded in a particular package.
+     * @returns {Object[]} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var dependencies;
+
+    //  First, grab whatever direct dependencies were programmed onto this
+    //  object.
+    dependencies = this[TP.DEPENDENCIES];
+    if (TP.isValid(dependencies)) {
+        dependencies =
+            dependencies.map(
+                function(anItem) {
+                    return anItem.getPackagingDependencies();
+                });
+    } else {
+        dependencies = TP.ac();
+    }
+
+    //  Make sure to flatten any nested Arrays.
+    dependencies = dependencies.flatten();
+
+    return dependencies;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.FunctionProto.defineMethod('getPackagingDependencies',
+function() {
+
+    /**
+     * @method getPackagingDependencies
+     * @summary Returns an Array of Objects that the receiver considers to be
+     *     it's manually determined set of 'dependent' objects that it needs in
+     *     order to operate successfully. These objects can be any type of
+     *     object in the system, so long as they themselves can respond to the
+     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     determine the chain of dependent objects. This terminates at the
+     *     meta-level by returning an empty Array.
+     * @description Many objects can be determined via method invocation
+     *     tracking to be included or excluded for packaging purposes. This
+     *     method allows the receiving object to statically force a particular
+     *     object to be included along with the receiver in the package. In
+     *     some cases this is the only way to determine whether or not an object
+     *     should be included/excluded in a particular package.
+     * @returns {Object[]} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var dependencies,
+        owner;
+
+    //  First, grab whatever direct dependencies were programmed onto this
+    //  object.
+    dependencies = this[TP.DEPENDENCIES];
+    if (TP.isValid(dependencies)) {
+        dependencies =
+            dependencies.map(
+                function(anItem) {
+                    return anItem.getPackagingDependencies();
+                });
+    } else {
+        dependencies = TP.ac();
+    }
+
+    //  Then, add whatever dependencies our TP.OWNER thinks is necessary. These
+    //  will already be flattened and the 'concat' will make sure that we don't
+    //  create a nested Array.
+    owner = this[TP.OWNER];
+    dependencies = dependencies.concat(
+                        owner.getPackagingDependencies());
+
+    //  For a pure Function or a Function with 'TP' or 'TP.sys' as its owner,
+    //  it could've been added anywhere, so we need to push an entry that will
+    //  represent the Function in the set of package dependencies.
+    if (owner === TP || owner === TP.sys) {
+        dependencies.push(
+            {
+                'singleSourceFileInfo': true,
+                '$$loadPackage': this[TP.LOAD_PACKAGE],
+                '$$loadConfig': this[TP.LOAD_CONFIG],
+                '$$srcPath': this[TP.SOURCE_PATH],
+                '$$oid': this[TP.SOURCE_PATH]
+            });
+    }
+
+    return dependencies;
+});
+
+//  ------------------------------------------------------------------------
 //  INSTANCE CREATION
 //  ------------------------------------------------------------------------
 
@@ -8145,6 +8282,72 @@ function(attributeName, includeSupertypes) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getPackagingDependencies',
+function() {
+
+    /**
+     * @method getPackagingDependencies
+     * @summary Returns an Array of Objects that the receiver considers to be
+     *     it's manually determined set of 'dependent' objects that it needs in
+     *     order to operate successfully. These objects can be any type of
+     *     object in the system, so long as they themselves can respond to the
+     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     determine the chain of dependent objects. This terminates at the
+     *     meta-level by returning an empty Array.
+     * @description Many objects can be determined via method invocation
+     *     tracking to be included or excluded for packaging purposes. This
+     *     method allows the receiving object to statically force a particular
+     *     object to be included along with the receiver in the package. In
+     *     some cases this is the only way to determine whether or not an object
+     *     should be included/excluded in a particular package.
+     * @returns {Object[]} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var dependencies,
+
+        superType,
+        traitTypes;
+
+    //  First, grab whatever direct dependencies were programmed onto this
+    //  object.
+    dependencies = this[TP.DEPENDENCIES];
+    if (TP.isValid(dependencies)) {
+        dependencies =
+            dependencies.map(
+                function(anItem) {
+                    return anItem.getPackagingDependencies();
+                });
+    } else {
+        dependencies = TP.ac();
+    }
+
+    //  Second, add ourself
+    dependencies.push(this);
+
+    //  Third, add the dependencies of the direct supertype
+    superType = this.getSupertype();
+    if (TP.isValid(superType)) {
+        dependencies.push(superType.getPackagingDependencies());
+    }
+
+    //  Third, add the trait types (and their supertypes)
+    traitTypes = this[TP.TRAITS];
+    if (TP.notEmpty(traitTypes)) {
+        traitTypes.forEach(
+            function(aTraitType) {
+                dependencies.push(aTraitType.getPackagingDependencies());
+            });
+    }
+
+    //  Make sure to flatten any nested Arrays.
+    dependencies = dependencies.flatten();
+
+    return dependencies;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('getDescriptorFor',
 function(attributeName, includeSupertypes) {
 
@@ -8164,6 +8367,53 @@ function(attributeName, includeSupertypes) {
 
     return this.getType().getInstDescriptorFor(attributeName,
                                                 includeSupertypes);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getPackagingDependencies',
+function() {
+
+    /**
+     * @method getPackagingDependencies
+     * @summary Returns an Array of Objects that the receiver considers to be
+     *     it's manually determined set of 'dependent' objects that it needs in
+     *     order to operate successfully. These objects can be any type of
+     *     object in the system, so long as they themselves can respond to the
+     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     determine the chain of dependent objects. This terminates at the
+     *     meta-level by returning an empty Array.
+     * @description Many objects can be determined via method invocation
+     *     tracking to be included or excluded for packaging purposes. This
+     *     method allows the receiving object to statically force a particular
+     *     object to be included along with the receiver in the package. In
+     *     some cases this is the only way to determine whether or not an object
+     *     should be included/excluded in a particular package.
+     * @returns {Object[]} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var dependencies,
+
+        superTypes,
+        traitTypes;
+
+    //  First, grab whatever direct dependencies were programmed onto this
+    //  object.
+    dependencies = this[TP.DEPENDENCIES];
+    if (TP.isValid(dependencies)) {
+        dependencies = TP.copy(dependencies);
+    } else {
+        dependencies = TP.ac();
+    }
+
+    //  Then, add whatever dependencies our type thinks is necessary. These will
+    //  already be flattened and the 'concat' will make sure that we don't
+    //  create a nested Array.
+    dependencies = dependencies.concat(
+                        this.getType().getPackagingDependencies());
+
+    return dependencies;
 });
 
 //  ------------------------------------------------------------------------

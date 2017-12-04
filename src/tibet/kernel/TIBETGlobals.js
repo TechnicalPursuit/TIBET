@@ -832,6 +832,9 @@ TP.META_TYPE_OWNER.getTypeName = function() {
 TP.META_TYPE_OWNER.getConstructor = function() {
     return Object;
 };
+TP.META_TYPE_OWNER.getPackagingDependencies = function() {
+    return [];
+};
 
 TP.META_TYPE_OWNER.meta_methods = {};
 
@@ -872,6 +875,9 @@ TP.META_INST_OWNER.getTypeName = function() {
 };
 TP.META_INST_OWNER.getConstructor = function() {
     return Object;
+};
+TP.META_INST_OWNER.getPackagingDependencies = function() {
+    return [];
 };
 
 TP.META_INST_OWNER.meta_methods = {};
@@ -3483,6 +3489,9 @@ TP.regex.XPATH_PATH_STRIPPER = /^(\s*|\/|\|)$/;
 
 TP[TP.TNAME] = 'Object';
 TP.sys[TP.TNAME] = 'Object';
+
+TP.getPackagingDependencies = TP.RETURN_EMPTY_ARRAY;
+TP.sys.getPackagingDependencies = TP.RETURN_EMPTY_ARRAY;
 
 //  a tmp for holding the 'real' i.e. non-spoofed browser for patching
 TP.sys.$$realBrowser = null;
