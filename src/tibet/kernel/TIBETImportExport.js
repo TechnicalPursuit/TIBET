@@ -248,34 +248,169 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getMissingScriptPaths',
+TP.sys.defineMethod('getUsedPackagingInfo',
+function() {
+
+    /**
+     * @method getUsedPackagingInfo
+     * @summary Returns a hash that has two Arrays: one of packages of code that
+     *     are used and can be represented by 'package' definitions and one of
+     *     'extra' source file paths for code that is used but is outside of
+     *     those packages.
+     * @description This method requires the 'oo.$$track_invocation' flag to be
+     *     true, otherwise there will be no data for this method to use for its
+     *     computation and it returns an empty hash.
+     * @returns {TP.core.Hash} A hash of two Arrays of paths to code used by the
+     *     system - one for packages and one for 'extra' source files outside of
+     *     those packages.
+     */
+
+    var usedMethods,
+        entries,
+
+        packageEntries,
+        len,
+
+        extraSourcePaths,
+
+        expandedSourcePaths,
+        expandedPackagePaths;
+
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
+        TP.ifError() ?
+            TP.error('Attempt to retrieve used types when invocation' +
+                        ' data isn\'t available.') : 0;
+        return null;
+    }
+
+    //  Get all of the used methods.
+    usedMethods = TP.sys.getUsedMethods();
+
+    entries = TP.ac();
+
+    usedMethods.perform(
+        function(kvPair) {
+
+            var methodObj;
+
+            methodObj = kvPair.last();
+
+            entries.push(methodObj.getPackagingDependencies());
+        });
+
+    entries = entries.flatten();
+
+    entries.unique();
+
+    //  Collect up all of the entries that are 'whole package' entries.
+    packageEntries = entries.select(
+                            function(anEntry) {
+                                return TP.isValid(anEntry.wholePackageInfo);
+                            });
+
+    len = packageEntries.getSize();
+
+    extraSourcePaths = TP.ac();
+
+    //  Now, iterate over all of the entries and collect up all of the source
+    //  paths for the objects that are *not* represented in one of the 'whole
+    //  package entries'
+    entries.perform(
+        function(anEntry) {
+            var i;
+
+            //  If the entry is a 'whole package' entry, then just move to the
+            //  next one.
+            if (TP.isValid(anEntry.wholePackageInfo)) {
+                return;
+            }
+
+            //  If there are no 'whole package' entries, then just add the
+            //  source path of the entry and move on.
+            if (len === 0) {
+                extraSourcePaths.push(anEntry[TP.SOURCE_PATH]);
+                return;
+            }
+
+            //  Otherwise, iterate over all of the 'whole package' entries. If
+            //  both the TP.LOAD_PACKAGE and the TP.LOAD_CONFIG from the entry
+            //  are also represented by one of the 'whole package' entries, then
+            //  we do *not* add that source path to the list of source paths. It
+            //  will be represented by the package.
+            for (i = 0; i < len; i++) {
+                if (anEntry[TP.LOAD_PACKAGE] ===
+                        packageEntries.at(i)[TP.LOAD_PACKAGE] &&
+                    anEntry[TP.LOAD_CONFIG] ===
+                        packageEntries.at(i)[TP.LOAD_CONFIG])
+                {
+                    return;
+                }
+            }
+
+            extraSourcePaths.push(anEntry[TP.SOURCE_PATH]);
+        });
+
+    extraSourcePaths.unique();
+    TP.compact(extraSourcePaths, TP.isEmpty);
+
+    //  Expand all of the paths for consistency.
+    expandedSourcePaths = extraSourcePaths.collect(
+                                function(aPath) {
+                                    return TP.uriExpandPath(aPath);
+                                });
+
+    //  'Stringify' the package entries into the canonical TIBET format for
+    //  them.
+    expandedPackagePaths = packageEntries.collect(
+                function(aPackageEntry) {
+                    return TP.uriExpandPath(aPackageEntry[TP.LOAD_PACKAGE]) +
+                            '@' +
+                            aPackageEntry[TP.LOAD_CONFIG];
+                });
+
+    return TP.hc('wholePackagePaths', expandedPackagePaths,
+                    'extraSourcePaths', expandedSourcePaths);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getMissingPackagingInfo',
 function(packageName, configName) {
 
     /**
-     * @method getMissingScriptPaths
-     * @summary Returns a list of source file paths that are missing from the
-     *     supplied package and config, given what the system has been able to
-     *     determine using invocation data.
+     * @method getMissingPackagingInfo
+     * @summary Returns a hash that has two Arrays: one of packages of code that
+     *     are used and can be represented by 'package' definitions, but are
+     *     missing from the supplied package/config combo and one of 'extra'
+     *     source file paths for code that is used but is outside of those
+     *     packages and are also missing from the supplied package/config combo.
      * @description This method requires the 'oo.$$track_invocation' flag to be
      *     true, otherwise there will be no data for this method to use for its
-     *     computation and it return an empty hash.
-     * @param {String} packageName The package name to locate and use script
-     *     paths from for comparison against what the runtime knows it needs.
+     *     computation and it returns an empty hash.
+     * @param {String} packageName The package name to locate and use package
+     *     and script paths from for comparison against what the runtime knows
+     *     it needs.
      * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
-     * @returns {String[]} An Array of script paths that are missing in the
-     *     supplied package and config, given what the runtime system knows it
-     *     needs.
+     * @returns {TP.core.Hash} A hash of two Arrays of paths to code used by the
+     *     system - one for packages and one for 'extra' source files outside of
+     *     those packages - but are missing from the supplied package/config
+     *     combo.
      */
 
-    var usedMethodPaths,
+    var usedMethodInfo,
+        usedMethodPaths,
 
         configScriptPaths,
 
         missingScriptPaths,
 
         filters,
-        filteredPaths;
+        filteredScriptPaths,
+
+        allPackagePaths,
+        usedPackagePaths,
+        missingPackagePaths;
 
     if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
         TP.ifError() ?
@@ -287,13 +422,15 @@ function(packageName, configName) {
     //  Grab all of the scripts paths that are currently used by the system.
     //  This uses invocation data to determine which methods got invoked and
     //  then messages them for their source paths.
-    usedMethodPaths = TP.sys.getUsedScriptPaths();
+    usedMethodInfo = TP.sys.getUsedPackagingInfo();
+
+    usedMethodPaths = usedMethodInfo.at('extraSourcePaths');
 
     //  Grab all of the script paths in the named packages and configs. This
     //  will be all of the paths that are contained in that package and config.
     configScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
 
-    //  Difference that config script paths against our master list of expanded
+    //  Difference the config script paths against our master list of expanded
     //  paths. This will produce a list of paths that the system knows about
     //  given the runtime information of used types and methods but isn't
     //  represented in the supplied package and config.
@@ -303,7 +440,7 @@ function(packageName, configName) {
     //  predetermined list of RegExps.
     filters = TP.EXCLUDE_INVOCATION_TRACKED_PATHS;
 
-    filteredPaths = missingScriptPaths.filter(
+    filteredScriptPaths = missingScriptPaths.filter(
                         function(aPath) {
 
                             var filterPath,
@@ -324,7 +461,22 @@ function(packageName, configName) {
                             return !filterPath;
                         });
 
-    return filteredPaths;
+    //  We obtain all reachable package paths from the named packages and
+    //  configs.
+    usedPackagePaths = usedMethodInfo.at('wholePackagePaths');
+
+    //  We obtain all reachable package paths from the named packages and
+    //  configs.
+    allPackagePaths = TP.sys.getAllPackagePaths(packageName, configName);
+
+    //  Difference all package paths against our list of used package paths.
+    //  This will produce a list of paths that the system knows about
+    //  given the runtime information of used types and methods but isn't
+    //  represented in the supplied package and config.
+    missingPackagePaths = usedPackagePaths.difference(allPackagePaths);
+
+    return TP.hc('packagePaths', missingPackagePaths,
+                    'scriptPaths', filteredScriptPaths);
 });
 
 //  ------------------------------------------------------------------------
