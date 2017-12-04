@@ -338,10 +338,12 @@ function() {
             //  we do *not* add that source path to the list of source paths. It
             //  will be represented by the package.
             for (i = 0; i < len; i++) {
+                /* eslint-disable brace-style */
                 if (anEntry[TP.LOAD_PACKAGE] ===
                         packageEntries.at(i)[TP.LOAD_PACKAGE] &&
                     anEntry[TP.LOAD_CONFIG] ===
                         packageEntries.at(i)[TP.LOAD_CONFIG])
+                /* eslint-enable brace-style */
                 {
                     return;
                 }

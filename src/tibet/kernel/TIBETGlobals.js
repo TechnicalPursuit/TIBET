@@ -90,11 +90,11 @@ TP.LOAD_CONFIG_ATTR = 'load_config';
 TP.DEPENDENCIES = '$$dependencies';
 TP.USE_WHOLE_PACKAGE = function() {
     return {
-            'wholePackageInfo': true,
-            '$$loadPackage': this[TP.LOAD_PACKAGE],
-            '$$loadConfig': this[TP.LOAD_CONFIG],
-            '$$oid': this[TP.LOAD_PACKAGE] + this[TP.LOAD_CONFIG]
-    }
+        wholePackageInfo: true,
+        $$loadPackage: this[TP.LOAD_PACKAGE],
+        $$loadConfig: this[TP.LOAD_CONFIG],
+        $$oid: this[TP.LOAD_PACKAGE] + this[TP.LOAD_CONFIG]
+    };
 };
 
 //  ------------------------------------------------------------------------

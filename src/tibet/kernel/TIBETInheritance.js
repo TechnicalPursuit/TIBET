@@ -682,11 +682,11 @@ function() {
     if (owner === TP || owner === TP.sys) {
         dependencies.push(
             {
-                'singleSourceFileInfo': true,
-                '$$loadPackage': this[TP.LOAD_PACKAGE],
-                '$$loadConfig': this[TP.LOAD_CONFIG],
-                '$$srcPath': this[TP.SOURCE_PATH],
-                '$$oid': this[TP.SOURCE_PATH]
+                singleSourceFileInfo: true,
+                $$loadPackage: this[TP.LOAD_PACKAGE],
+                $$loadConfig: this[TP.LOAD_CONFIG],
+                $$srcPath: this[TP.SOURCE_PATH],
+                $$oid: this[TP.SOURCE_PATH]
             });
     }
 
@@ -8393,10 +8393,7 @@ function() {
      *     receiver.
      */
 
-    var dependencies,
-
-        superTypes,
-        traitTypes;
+    var dependencies;
 
     //  First, grab whatever direct dependencies were programmed onto this
     //  object.

@@ -3290,7 +3290,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         info,
         infoKeys,
 
-        primaryLocation,
         sigOrigin,
 
         theVal,
@@ -3394,9 +3393,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
                 sigOrigin = aSignal.getOrigin();
                 if (TP.isKindOf(sigOrigin, TP.core.URI)) {
-
-                    primaryLocation = sigOrigin.getPrimaryLocation();
-
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     finalVal = initialVal;
