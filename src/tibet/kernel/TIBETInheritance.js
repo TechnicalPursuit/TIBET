@@ -8940,6 +8940,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('addPackagingDependency',
+function(aDependencySource) {
+
+    /**
+     * @method addPackagingDependency
+     * @summary Adds the supplied dependency source to the receiver as a
+     *     'dependency', such that when packaging computations take place, the
+     *     receiver will consider the dependency source as part of the
+     *     computation.
+     * @param {Object} aDependencySource The object to use as the dependency for
+     *     the receiver.
+     */
+
+    TP.addPackagingDependency(this, aDependencySource);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('shouldUseSingleton',
 function(aFlag) {
 

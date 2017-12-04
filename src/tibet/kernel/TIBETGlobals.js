@@ -124,6 +124,40 @@ TP.registerLoadInfo(TP.registerLoadInfo);
 
 //  ------------------------------------------------------------------------
 
+TP.addPackagingDependency = function(anObject, aDependencySource) {
+
+    /**
+     * @method addPackagingDependency
+     * @summary Adds the supplied dependency source to the object as a
+     *     'dependency', such that when packaging computations take place, the
+     *     object will consider the dependency source as part of the
+     *     computation.
+     * @param {Object} anObject The object to register the dependency
+     *     information for.
+     * @param {Object} aDependencySource The object to use as the dependency for
+     *     the target object.
+     */
+
+    var dependencies;
+
+    dependencies = anObject[TP.DEPENDENCIES];
+
+    if (!Array.isArray(dependencies)) {
+        dependencies = [];
+        anObject[TP.DEPENDENCIES] = dependencies;
+    }
+
+    dependencies.push(aDependentObject);
+};
+
+//  Manual setup
+TP.addPackagingDependency[TP.NAME] = 'addPackagingDependency';
+TP.addPackagingDependency[TP.OWNER] = TP;
+TP.addPackagingDependency[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.addPackagingDependency[TP.DISPLAY] = 'TP.addPackagingDependency';
+TP.registerLoadInfo(TP.addPackagingDependency);
+
+//  ------------------------------------------------------------------------
 TP.constructOrphanObject = function() {
 
     /**
