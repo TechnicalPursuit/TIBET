@@ -45,6 +45,9 @@ function(aRequest) {
         profileParts,
 
         results,
+        packagePaths,
+        scriptPaths,
+
         shouldFix,
 
         newArgs,
@@ -90,20 +93,20 @@ function(aRequest) {
     //  If we're looking for unlisted paths, then we have to ask the system for
     //  script paths that belong to methods that were actually invoked.
     if (unlisted) {
-        results = TP.sys.getMissingScriptPaths(
+        results = TP.sys.getMissingPackagingInfo(
                                 profileParts.first(), profileParts.last());
 
-        //  Iterate over all of the paths and convert them into their
-        //  virtual path form.
-        results = results.collect(
-                    function(aPath) {
-                        return TP.uriInTIBETFormat(aPath);
-                    });
+        packagePaths = results.at('packagePaths');
+        scriptPaths = results.at('scriptPaths');
 
         //  If the user is asking us to fix this situation, then we invoke a
         //  remote command to actually patch these into the config matching the
         //  profile.
         shouldFix = shell.getArgument(aRequest, 'tsh:fix', null, false);
+
+        //  TODO: This line should be removed when '--fix' capability is
+        //  available in the TDS version of the 'package' command.
+        shouldFix = false;
 
         if (shouldFix) {
 
@@ -153,10 +156,23 @@ function(aRequest) {
             //  Iterate over all of the paths and compose a chunk of markup that
             //  could be copied and pasted into a cfg file.
             str = '<ul>';
-            results.forEach(
+            packagePaths.forEach(
                 function(aPath) {
+                    var pathParts;
+
+                    pathParts = aPath.split('@');
+
                     str += '<li>' +
-                            '&lt;script src="' + aPath + '"/&gt;' +
+                            '&lt;package src="' + TP.uriInTIBETFormat(pathParts.first()) + '" config="' + pathParts.last() + '"/&gt;' +
+                            '</li>';
+                });
+            scriptPaths.forEach(
+                function(aPath) {
+                    var path;
+
+                    path = TP.uriInTIBETFormat(aPath);
+                    str += '<li>' +
+                            '&lt;script src="' + path + '"/&gt;' +
                             '</li>';
                 });
             str += '</ul>';
@@ -192,7 +208,10 @@ function(aRequest) {
 TP.core.TSH.addHelpTopic('package',
     TP.tsh.package.Type.getMethod('tshExecute'),
     'List package assets either as asset paths or nodes.',
-    ':package [--profile profilename] [--unlisted] [--fix]',
+    //  TODO: This line should be uncommented when '--fix' capability is
+    //  available in the TDS version of the 'package' command.
+    //':package [--profile profilename] [--unlisted] [--fix]',
+    ':package [--profile profilename] [--unlisted]',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------
