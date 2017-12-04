@@ -19,7 +19,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.d3 = d3;
+        TP.registerExternalObject('d3', window.d3);
         TP.w3.Xmlns.get('prefixes').perform(
                     function(item) {
 

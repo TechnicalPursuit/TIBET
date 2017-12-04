@@ -34,8 +34,7 @@
     <script src="~lib_deps/forge-tpi.min.js" no-minify="no-minify" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.forge = window.forge;
-        delete window.forge;
+        TP.registerExternalObject('forge', window.forge);
         ]]>
     </script>
     <script src="./crypto/TIBETCryptoPost.js"/>
@@ -46,7 +45,7 @@
     <script src="~lib_deps/xpath-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.XPathParser = XPathParser;
+        TP.registerExternalObject('XPathParser', window.XPathParser);
         ]]>
     </script>
 
@@ -95,7 +94,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.PouchDB = PouchDB;
+        TP.registerExternalObject('PouchDB', window.PouchDB);
         ]]>
     </script>
 
@@ -117,7 +116,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.jjv = jjv();
+        TP.registerExternalObject('jjv', window.jjv());
         ]]>
     </script>
 
@@ -136,7 +135,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.Fuse = Fuse;
+        TP.registerExternalObject('Fuse', window.Fuse);
         ]]>
     </script>
 

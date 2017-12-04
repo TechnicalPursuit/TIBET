@@ -36,7 +36,7 @@
     <script>
         <![CDATA[
         Promise[TP.NAME] = 'Promise';
-        TP.extern.Promise = window.Promise;
+        TP.registerExternalObject('Promise', window.Promise);
         TP.extern.Promise.construct = function(resolver, rejector) {
             return new Promise(resolver, rejector);
         };
@@ -105,13 +105,13 @@
     <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.Sizzle = window.Sizzle;
+        TP.registerExternalObject('Sizzle', window.Sizzle);
         ]]>
     </script>
     <script src="~lib_deps/jquery-jquery-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.jQuery = window.jQuery;
+        TP.registerExternalObject('jQuery', window.jQuery);
         ]]>
     </script>
     <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="no-lint"/>
@@ -121,7 +121,7 @@
         no-lint="no-lint" no-minify="no-minify"/>
     <script>
         <![CDATA[
-        TP.extern.wgxpath = window.wgxpath;
+        TP.registerExternalObject('wgxpath', window.wgxpath);
         TP.extern.wgxpath.install();
         ]]>
     </script>
@@ -132,14 +132,14 @@
         unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.jxpath = jQuery.xpath;
+        TP.registerExternalObject('jxpath', window.jQuery.xpath);
         ]]>
     </script>
 
     <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.JsDiff = JsDiff;
+        TP.registerExternalObject('JsDiff', window.JsDiff);
         ]]>
     </script>
 

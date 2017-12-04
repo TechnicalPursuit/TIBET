@@ -87,6 +87,16 @@ TP.LOAD_CONFIG = '$$loadConfig';
 TP.LOAD_PACKAGE_ATTR = 'load_package';
 TP.LOAD_CONFIG_ATTR = 'load_config';
 
+TP.DEPENDENCIES = '$$dependencies';
+TP.USE_WHOLE_PACKAGE = function() {
+    return {
+            'wholePackageInfo': true,
+            '$$loadPackage': this[TP.LOAD_PACKAGE],
+            '$$loadConfig': this[TP.LOAD_CONFIG],
+            '$$oid': this[TP.LOAD_PACKAGE] + this[TP.LOAD_CONFIG]
+    }
+};
+
 //  ------------------------------------------------------------------------
 
 TP.registerLoadInfo = function(anObject) {
@@ -158,6 +168,41 @@ TP.addPackagingDependency[TP.DISPLAY] = 'TP.addPackagingDependency';
 TP.registerLoadInfo(TP.addPackagingDependency);
 
 //  ------------------------------------------------------------------------
+
+TP.registerExternalObject = function(anExternalName, anExternalObj) {
+
+    /**
+     * @method registerExternalObject
+     * @summary Registers the supplied object as an 'external object', which
+     *     usually means that it is a third-party supplied object that we want
+     *     to make available under TP.extern[anExternalName]
+     * @param {String} anExternalName The name to register the external object
+     *     under using the 'TP.extern' namespace object.
+     * @param {Object} anExternalObj The external object to register with the
+     *     'TP.extern' object.
+     */
+
+    TP.extern[anExternalName] = anExternalObj;
+
+    //  We register 'load info' for the external object on the external object
+    //  and supply a Function that returns packaging dependencies (which, by
+    //  default for external objects, is the 'whole package' - because there's
+    //  usually global object fiddling involved with these objects).
+    TP.registerLoadInfo(anExternalObj);
+    anExternalObj.getPackagingDependencies = TP.USE_WHOLE_PACKAGE;
+
+    return;
+};
+
+//  Manual setup
+TP.registerExternalObject[TP.NAME] = 'registerExternalObject';
+TP.registerExternalObject[TP.OWNER] = TP;
+TP.registerExternalObject[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.registerExternalObject[TP.DISPLAY] = 'TP.registerExternalObject';
+TP.registerLoadInfo(TP.registerExternalObject);
+
+//  ------------------------------------------------------------------------
+
 TP.constructOrphanObject = function() {
 
     /**

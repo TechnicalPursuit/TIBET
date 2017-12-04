@@ -36,7 +36,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.sinon = sinon;
+        TP.registerExternalObject('sinon', window.sinon);
         ]]>
     </script>
     <script src="testing/TIBETSinonPost.js"/>

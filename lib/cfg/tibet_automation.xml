@@ -56,7 +56,7 @@
 
     <script>
         <![CDATA[
-        TP.extern.syn = Syn;
+        TP.registerExternalObject('syn', window.Syn);
         ]]>
     </script>
 </config>

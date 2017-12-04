@@ -321,7 +321,7 @@
     <script src="~lib_deps/codemirror/mode/css/css.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.extern.CodeMirror = CodeMirror;
+        TP.registerExternalObject('CodeMirror', window.CodeMirror);
         ]]>
     </script>
 
