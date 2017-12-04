@@ -970,21 +970,23 @@ function(anObject) {
     var str;
 
     str = '';
-    TP.extern.CodeMirror.runMode(
-        TP.str(anObject),
-        {
-            name: 'css'
-        },
-        function(text, style) {
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        TP.extern.CodeMirror.runMode(
+            TP.str(anObject),
+            {
+                name: 'css'
+            },
+            function(text, style) {
 
-            if (style) {
-                str += '<span class="cm-' + style + '">' +
-                         text.asEscapedXML() +
-                         '</span>';
-            } else {
-                str += text.asEscapedXML();
-            }
-        });
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text.asEscapedXML() +
+                             '</span>';
+                } else {
+                    str += text.asEscapedXML();
+                }
+            });
+    }
 
     return str;
 });
@@ -1087,21 +1089,23 @@ function(anObject) {
     var str;
 
     str = '';
-    TP.extern.CodeMirror.runMode(
-        TP.str(anObject),
-        {
-            name: 'javascript'
-        },
-        function(text, style) {
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        TP.extern.CodeMirror.runMode(
+            TP.str(anObject),
+            {
+                name: 'javascript'
+            },
+            function(text, style) {
 
-            if (style) {
-                str += '<span class="cm-' + style + '">' +
-                         text.asEscapedXML() +
-                         '</span>';
-            } else {
-                str += text.asEscapedXML();
-            }
-        });
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text.asEscapedXML() +
+                             '</span>';
+                } else {
+                    str += text.asEscapedXML();
+                }
+            });
+    }
 
     return str;
 });
@@ -1206,21 +1210,23 @@ function(anObject) {
     var str;
 
     str = '';
-    TP.extern.CodeMirror.runMode(
-        TP.str(anObject),
-        {
-            name: 'application/xml'
-        },
-        function(text, style) {
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        TP.extern.CodeMirror.runMode(
+            TP.str(anObject),
+            {
+                name: 'application/xml'
+            },
+            function(text, style) {
 
-            if (style) {
-                str += '<span class="cm-' + style + '">' +
-                         text.asEscapedXML() +
-                         '</span>';
-            } else {
-                str += text.asEscapedXML();
-            }
-        });
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text.asEscapedXML() +
+                             '</span>';
+                } else {
+                    str += text.asEscapedXML();
+                }
+            });
+    }
 
     return str;
 });
