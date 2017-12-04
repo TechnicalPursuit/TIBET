@@ -10527,6 +10527,44 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('getPackagingDependencies',
+function() {
+
+    /**
+     * @method getPackagingDependencies
+     * @summary Returns an Array of Objects that the receiver considers to be
+     *     it's manually determined set of 'dependent' objects that it needs in
+     *     order to operate successfully. These objects can be any type of
+     *     object in the system, so long as they themselves can respond to the
+     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     determine the chain of dependent objects. This terminates at the
+     *     meta-level by returning an empty Array.
+     * @description Many objects can be determined via method invocation
+     *     tracking to be included or excluded for packaging purposes. This
+     *     method allows the receiving object to statically force a particular
+     *     object to be included along with the receiver in the package. In
+     *     some cases this is the only way to determine whether or not an object
+     *     should be included/excluded in a particular package.
+     * @returns {Object[]} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var dependencies,
+
+        nsType;
+
+    //  First, grab whatever dependencies the supertype thinks are important.
+    dependencies = this.callNextMethod();
+
+    if (TP.isType(nsType = this.getNamespaceType())) {
+        dependencies.push(nsType);
+    }
+
+    return dependencies;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
 function(wantsDeep, wantsCompiled, wantsDisabled) {
 
