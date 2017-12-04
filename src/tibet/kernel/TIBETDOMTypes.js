@@ -10168,6 +10168,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('getCanonicalName',
+function() {
+
+    /**
+     * @method getCanonicalName
+     * @summary Returns the receiver's canonical tag name. For elements types,
+     * this is the tag prefix (usually corresponding to the tag type's
+     * namespace) followed by a colon (':') followed by the tag's 'local name'
+     * (usually corresponding to the tag type's name).
+     * @returns {String} The receiver's canonical name.
+     */
+
+    return this.get('nsPrefix') + ':' + this.get('localName');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
@@ -10479,45 +10496,6 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getXMLObserver',
-function(aSignal) {
-
-    /**
-     * @method getXMLObserver
-     * @summary Attempts to extract the actual observer of the signal from the
-     *     supplied signal. This is very useful in cases where the target of the
-     *     signal has been set to a type.
-     * @param {The} aSignal signal to attempt to extract the observer from.
-     * @returns {Object} The native observer.
-     */
-
-    var listener,
-        id,
-        inst;
-
-    listener = aSignal.get('listener');
-    if (!TP.isElement(listener)) {
-        return null;
-    }
-
-    if (TP.isEmpty(id = TP.elementGetAttribute(listener, 'observer'))) {
-        id = TP.elementGetAttribute(listener, 'ev:observer', true);
-        if (TP.isEmpty(id)) {
-            return;
-        }
-    }
-
-    inst = TP.bySystemId(id);
-    if (TP.notValid(inst)) {
-        return this.raise('TP.sig.InvalidHandler',
-                            'Unable to construct handler instance');
-    }
-
-    return inst;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
 function(wantsDeep, wantsCompiled, wantsDisabled) {
 
@@ -10726,19 +10704,41 @@ function(resource, mimeType, fallback) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getCanonicalName',
-function() {
+TP.core.ElementNode.Type.defineMethod('getXMLObserver',
+function(aSignal) {
 
     /**
-     * @method getCanonicalName
-     * @summary Returns the receiver's canonical tag name. For elements types,
-     * this is the tag prefix (usually corresponding to the tag type's
-     * namespace) followed by a colon (':') followed by the tag's 'local name'
-     * (usually corresponding to the tag type's name).
-     * @returns {String} The receiver's canonical name.
+     * @method getXMLObserver
+     * @summary Attempts to extract the actual observer of the signal from the
+     *     supplied signal. This is very useful in cases where the target of the
+     *     signal has been set to a type.
+     * @param {The} aSignal signal to attempt to extract the observer from.
+     * @returns {Object} The native observer.
      */
 
-    return this.get('nsPrefix') + ':' + this.get('localName');
+    var listener,
+        id,
+        inst;
+
+    listener = aSignal.get('listener');
+    if (!TP.isElement(listener)) {
+        return null;
+    }
+
+    if (TP.isEmpty(id = TP.elementGetAttribute(listener, 'observer'))) {
+        id = TP.elementGetAttribute(listener, 'ev:observer', true);
+        if (TP.isEmpty(id)) {
+            return;
+        }
+    }
+
+    inst = TP.bySystemId(id);
+    if (TP.notValid(inst)) {
+        return this.raise('TP.sig.InvalidHandler',
+                            'Unable to construct handler instance');
+    }
+
+    return inst;
 });
 
 //  ------------------------------------------------------------------------
