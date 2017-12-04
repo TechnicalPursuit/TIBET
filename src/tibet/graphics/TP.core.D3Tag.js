@@ -25,6 +25,23 @@ TP.core.ElementNode.defineSubtype('D3Tag');
 TP.core.D3Tag.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Initializes the type.
+     */
+
+    this.addPackagingDependency(TP.extern.d3);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
