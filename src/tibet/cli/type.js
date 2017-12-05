@@ -655,7 +655,11 @@ Cmd.prototype.executePackageCommon = function() {
         file = pair[1];
         value = CLI.getVirtualPath(file);
         tag = cmd.getTag(file);
-        str = '<' + tag + ' src="' + value + '"/>';
+        if (tag === 'script') {
+            str = '<' + tag + ' src="' + value + '"/>';
+        } else if (tag === 'resource') {
+            str = '<' + tag + ' href="' + value + '"/>';
+        }
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
@@ -698,7 +702,11 @@ Cmd.prototype.executePackageCommon = function() {
         file = pair[1];
         value = CLI.getVirtualPath(file);
         tag = cmd.getTag(file);
-        str = '<' + tag + ' src="' + value + '"/>';
+        if (tag === 'script') {
+            str = '<' + tag + ' src="' + value + '"/>';
+        } else if (tag === 'resource') {
+            str = '<' + tag + ' href="' + value + '"/>';
+        }
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
