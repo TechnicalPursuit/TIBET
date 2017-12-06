@@ -210,7 +210,7 @@ TP.core.TSH.addHelpTopic('package',
     'List package assets either as asset paths or nodes.',
     //  TODO: This line should be uncommented when '--fix' capability is
     //  available in the TDS version of the 'package' command.
-    //':package [--profile profilename] [--unlisted] [--fix]',
+    //  ':package [--profile profilename] [--unlisted] [--fix]',
     ':package [--profile profilename] [--unlisted]',
     'Coming Soon');
 
