@@ -1547,7 +1547,9 @@ function(indexes) {
         len2,
         j,
         scopedSibling,
-        scopeVal;
+        scopeVal,
+
+        thisref;
 
     elem = this.getNativeNode();
 
@@ -1633,6 +1635,15 @@ function(indexes) {
             }
         }
     }
+
+    //  Send a UIDidDelete with ourself as the target and the set of indexes
+    //  that the insertion happened at.
+    thisref = this;
+
+    (function() {
+        thisref.signal('TP.sig.UIDidDelete',
+                        TP.hc('target', thisref, 'indexes', indexes));
+    }).queueForNextRepaint(this.getNativeWindow());
 
     TP.$elementCSSFlush(elem);
 
@@ -2481,7 +2492,9 @@ function(indexes) {
         scopedSibling,
         scopeVal,
 
-        firstRow;
+        firstRow,
+
+        thisref;
 
     elem = this.getNativeNode();
 
@@ -2615,6 +2628,15 @@ function(indexes) {
             TP.wrap(firstRow).focusAutofocusedOrFirstFocusableDescendant();
         }).queueForNextRepaint(TP.nodeGetWindow(firstRow));
     }
+
+    //  Send a UIDidInsert with ourself as the target and the set of indexes
+    //  that the insertion happened at.
+    thisref = this;
+
+    (function() {
+        thisref.signal('TP.sig.UIDidInsert',
+                        TP.hc('target', thisref, 'indexes', indexes));
+    }).queueForNextRepaint(this.getNativeWindow());
 
     TP.$elementCSSFlush(elem);
 
