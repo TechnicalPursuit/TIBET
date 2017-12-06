@@ -170,25 +170,25 @@ function(aContentObject, aRequest) {
         //  NB: We don't need the result here - just ensuring that that new
         //  panel has an ID (hence the 'true' supplied here).
         panelTPElem.getLocalName(true);
-    }
 
-    if (TP.isValid(aContentObject)) {
+        if (TP.isValid(aContentObject)) {
 
-        //  Observe the new panel when it gets attached to the DOM. When it
-        //  does, refresh its bound data.
-        handler = function() {
+            //  Observe the new panel when it gets attached to the DOM. When it
+            //  does, refresh its bound data.
+            handler = function() {
 
-            //  Make sure to ignore here - otherwise, we'll fill up the signal
-            //  map.
-            handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
+                //  Make sure to ignore here - otherwise, we'll fill up the
+                //  signal map.
+                handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
 
-            panelTPElem.refresh();
-        };
+                panelTPElem.refresh();
+            };
 
-        handler.observe(panelTPElem, 'TP.sig.AttachComplete');
+            handler.observe(panelTPElem, 'TP.sig.AttachComplete');
 
-        //  Grab the panel's content element and set its content.
-        panelTPElem.get('contentElement').setContent(aContentObject);
+            //  Grab the panel's content element and set its content.
+            panelTPElem.get('contentElement').setContent(aContentObject);
+        }
     }
 
     this.setValue(contentKey);
