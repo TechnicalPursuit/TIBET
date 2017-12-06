@@ -147,7 +147,12 @@ function(aContentObject, aRequest) {
         handler,
 
         contentTPElem,
-        firstContentChildTPElem;
+        firstContentChildTPElem,
+
+        skipSettingContent,
+
+        tagName,
+        newContentTPElem;
 
     request = TP.request(aRequest);
 
