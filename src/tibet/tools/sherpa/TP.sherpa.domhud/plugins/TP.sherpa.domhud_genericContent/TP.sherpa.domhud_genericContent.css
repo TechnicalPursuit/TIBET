@@ -20,11 +20,26 @@ sherpa|domhud_genericContent .dom_attributes {
 }
 
 .dom_attributes input {
+
     height: 1em;
-    width: 42%;
 
     margin-left: 0;
     margin-bottom: 2px;
+}
+
+.dom_attributes input.propName {
+
+    width: 10em;
+}
+
+.dom_attributes input.propValue {
+
+    position: absolute;
+
+    right: 30px;
+    left: 11em;
+
+    width: calc(100% - 11em - 30px);
 }
 
 .dom_attributes .inserter {

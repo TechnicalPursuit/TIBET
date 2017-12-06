@@ -150,10 +150,24 @@ sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|s
 .styles_properties input {
 
     height: 1em;
-    width: 42%;
 
     margin-left: 0;
     margin-bottom: 2px;
+}
+
+.styles_properties input.propName {
+
+    width: 10em;
+}
+
+.styles_properties input.propValue {
+
+    position: absolute;
+
+    right: 30px;
+    left: 11em;
+
+    width: calc(100% - 11em -30px);
 }
 
 .styles_properties .inserter {

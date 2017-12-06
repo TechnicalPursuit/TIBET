@@ -752,8 +752,8 @@ function(aSignal) {
                         '<tibet:group wrapWhen="true" autofocus="autofocus">' +
                             '<span class="styles_properties" bind:scope="urn:tibet:styles_prop_source#jpath($.info)">' +
                                 '<div id="styleshud_properties" bind:repeat="ruleProps">' +
-                                        '<input type="text" bind:io="{value: rulePropName}" tabindex="0"/>' +
-                                        '<input type="text" bind:io="{value: rulePropValue}" tabindex="0"/>' +
+                                        '<input type="text" class="propName" bind:io="{value: rulePropName}" tabindex="0"/>' +
+                                        '<input type="text" class="propValue" bind:io="{value: rulePropValue}" tabindex="0"/>' +
                                         '<span class="deleter" on:click="{signal: DeleteItem, origin: \'styleshud_properties\', payload: {index:TP.TARGET}}"/>' +
                                     '<br/>' +
                                 '</div>' +
