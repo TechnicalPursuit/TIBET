@@ -2626,7 +2626,7 @@ function(indexes) {
         //  attribute - 'bind:focusfirst' or something).
         (function() {
             TP.wrap(firstRow).focusAutofocusedOrFirstFocusableDescendant();
-        }).queueForNextRepaint(TP.nodeGetWindow(firstRow));
+        }).queueForNextRepaint(this.getNativeWindow());
     }
 
     //  Send a UIDidInsert with ourself as the target and the set of indexes
