@@ -144,7 +144,10 @@ function(aContentObject, aRequest) {
         contentKey,
         panelTPElem,
 
-        handler;
+        handler,
+
+        contentTPElem,
+        firstContentChildTPElem;
 
     request = TP.request(aRequest);
 
@@ -188,6 +191,59 @@ function(aContentObject, aRequest) {
 
             //  Grab the panel's content element and set its content.
             panelTPElem.get('contentElement').setContent(aContentObject);
+        }
+    } else {
+        //  Grab the content element under the existing panel that we found with
+        //  that content key.
+        contentTPElem = panelTPElem.get('contentElement');
+        firstContentChildTPElem = contentTPElem.getFirstChildElement();
+
+        skipSettingContent = false;
+
+        //  If the request doesn't have a 'forceContentSet' flag set to true,
+        //  then test the content that's already tehre.
+        if (TP.notTrue(request.at('forceContentSet'))) {
+            //  If the supplied content is a TP.core.ElementNode, then compare
+            //  the tag names of the existing content and the supplied content.
+            //  If they're the same, then we skip setting content.
+            if (TP.isKindOf(aContentObject, TP.core.ElementNode)) {
+                if (aContentObject.getTagName() ===
+                    firstContentChildTPElem.getTagName()) {
+                    skipSettingContent = true;
+                }
+            }
+
+            //  If it's a String, then compare the tag name of the existing
+            //  content and the the opening content of the supplied content. If
+            //  they're the same, then we skip setting content.
+            if (TP.isString(aContentObject)) {
+                if (TP.regex.OPENING_TAG.test(aContentObject)) {
+                    tagName = TP.regex.OPENING_TAG.match(aContentObject).at(1);
+                    if (TP.notEmpty(tagName) &&
+                        tagName === firstContentChildTPElem.getTagName()) {
+                        skipSettingContent = true;
+                    }
+                }
+            }
+        }
+
+        //  If we're not skipping setting the content, then we do so and refresh
+        //  any data.
+        if (!skipSettingContent) {
+            newContentTPElem =
+                panelTPElem.get('contentElement').setContent(aContentObject);
+
+            handler = function() {
+
+                handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
+
+                newContentTPElem.refresh();
+            };
+
+            handler.observe(newContentTPElem, 'TP.sig.AttachComplete');
+        } else {
+            //  Otherwise, just refresh.
+            contentTPElem.refresh();
         }
     }
 
