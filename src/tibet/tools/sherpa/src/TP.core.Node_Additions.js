@@ -425,6 +425,83 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Type.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var items;
+
+    items = this.callNextMethod();
+
+    items.push(
+        TP.ac('Structure', 'Structure'),
+        TP.ac('Style', 'Style'));
+
+    return items;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Type.defineMethod('getEntryAt',
+function(aSourceName) {
+
+    /**
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {String} aSourceName The name of the entry to retrieve.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
+     */
+
+    var source;
+
+    switch (aSourceName) {
+
+        case 'Structure':
+            //  NB: We're returning the TP.core.URI instance itself here.
+            source = this.getResourceURI('template', TP.ietf.Mime.XHTML);
+
+            break;
+
+        case 'Style':
+            //  NB: We're returning the TP.core.URI instance itself here.
+            source = this.getResourceURI('style', TP.ietf.Mime.XHTML);
+
+            break;
+
+        default:
+            source = this.callNextMethod();
+            break;
+    }
+
+    return source;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
