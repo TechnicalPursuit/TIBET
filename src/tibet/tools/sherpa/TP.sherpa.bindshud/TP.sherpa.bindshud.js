@@ -88,6 +88,12 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineAttribute('highlighted');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -152,6 +158,241 @@ function(aTPElement) {
     this.get('listcontent').scrollTo(TP.BOTTOM);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.D3Tag Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('buildNewContent',
+function(enterSelection) {
+
+    /**
+     * @method buildNewContent
+     * @summary Builds new content onto the receiver by appending or inserting
+     *     content into the supplied d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
+     */
+
+    var domContent,
+        doc;
+
+    domContent = enterSelection.append('li');
+
+    doc = TP.sys.uidoc(true);
+
+    domContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+            }).attr(
+            'indexInData',
+            function(d, i) {
+                if (d[1] !== 'spacer') {
+                    return (i / 2).floor();
+                }
+            }).attr(
+            'peerID',
+            function(d) {
+                if (d[1] !== 'spacer') {
+                    return d[0];
+                }
+            }).text(
+            function(d) {
+                if (d[1] !== 'spacer') {
+                    return d[1];
+                }
+            }).attr(
+            'class',
+            function(d) {
+                var val;
+
+                val = 'item';
+
+                if (d[1] === 'spacer') {
+                    val += ' spacer';
+                } else {
+                    val += ' domnode';
+                }
+
+                return val;
+            }).each(
+            function(d) {
+                var targetTPElem,
+
+                    bindingExprs,
+                    expandedBindingExpr,
+
+                    hintContent,
+                    hintElement;
+
+                if (d[1] !== 'spacer') {
+                    targetTPElem = TP.byId(d[0]);
+                    bindingExprs = targetTPElem.
+                                    getFullyExpandedBindingExpressions();
+                    expandedBindingExpr = bindingExprs.at(
+                                            bindingExprs.getKeys().first());
+
+                    hintContent = TP.extern.d3.select(this).append(
+                                                            'xctrls:hint');
+                    hintContent.html(
+                        function() {
+                            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                                    expandedBindingExpr +
+                                    '</span>';
+                        }
+                    );
+
+                    hintElement = hintContent.node();
+
+                    TP.xctrls.hint.setupHintOn(
+                        this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
+                }
+            });
+
+    return domContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('computeSelectionData',
+function() {
+
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {Object} The selection data.
+     */
+
+    var data,
+        newData,
+
+        len,
+        i;
+
+    data = this.get('data');
+
+    newData = TP.ac();
+
+    len = data.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Push in a data row and then a spacer row.
+        //  NOTE: We construct the spacer row to take into account the fact, in
+        //  the 3rd slot, what the 'condition' (i.e. 'normal', 'target',
+        //  'child') is of the data row that it's a spacer for. This is because,
+        //  if the data row is being removed for some reason, we want the spacer
+        //  row to be removed as well. Otherwise, spurious spacer rows are left
+        //  around and, with the 'append' in the buildNewContent method, things
+        //  will get out of order in a hurry.
+        newData.push(
+            data.at(i),
+            TP.ac('spacer_' + i, 'spacer', 'spacer_' + data.at(i).at(2)));
+    }
+
+    return newData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('updateExistingContent',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContent
+     * @summary Updates any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that existing content should be altered in.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
+     */
+
+    var doc;
+
+    doc = TP.sys.uidoc(true);
+
+    updateSelection.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+            }).attr(
+            'indexInData',
+            function(d, i) {
+                if (d[1] !== 'spacer') {
+                    return (i / 2).floor();
+                }
+            }).attr(
+            'peerID',
+            function(d) {
+                if (d[1] !== 'spacer') {
+                    return d[0];
+                }
+            }).text(
+            function(d) {
+                if (d[1] !== 'spacer') {
+                    return d[1];
+                }
+            }).attr(
+            'class',
+            function(d) {
+                var val;
+
+                val = 'item';
+
+                if (d[1] === 'spacer') {
+                    val += ' spacer';
+                } else {
+                    val += ' domnode';
+                }
+
+                return val;
+            }).each(
+            function(d) {
+                var targetTPElem,
+
+                    bindingExprs,
+                    expandedBindingExpr,
+
+                    hintContent,
+                    hintElement;
+
+                if (d[1] !== 'spacer') {
+                    targetTPElem = TP.byId(d[0]);
+                    bindingExprs = targetTPElem.
+                                    getFullyExpandedBindingExpressions();
+                    expandedBindingExpr = bindingExprs.at(
+                                            bindingExprs.getKeys().first());
+
+                    hintContent = TP.extern.d3.select(this).append(
+                                                            'xctrls:hint');
+                    hintContent.html(
+                        function() {
+                            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
+                                    expandedBindingExpr +
+                                    '</span>';
+                        }
+                    );
+
+                    hintElement = hintContent.node();
+
+                    TP.xctrls.hint.setupHintOn(
+                        this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
+                }
+            });
+
+    return updateSelection;
 });
 
 //  ------------------------------------------------------------------------
@@ -479,6 +720,68 @@ function(aSignal) {
 
                 tileTPElem = aTileTPElem;
             }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineHandler('ToggleHighlight',
+function(aSignal) {
+
+    /**
+     * @method ToggleHighlight
+     * @summary Responds to mouse over/out notifications by toggling a
+     *     class on individual peer elements. The result is that as the user
+     *     hovers over elements in the sidebar the corresponding element in
+     *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
+     * @param {TP.sig.ToggleHighlight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var targetElem,
+        peerID,
+
+        halo,
+
+        target;
+
+    target = this.get('highlighted');
+
+    //  If target then we're leaving...clear and exit.
+    if (TP.isValid(target)) {
+        TP.elementRemoveClass(target, 'sherpa-hud-highlight');
+        this.$set('highlighted', null, false);
+        return;
+    }
+
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'domnode')) {
+        return this;
+    }
+
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
+    target = TP.byId(peerID);
+    if (TP.notValid(target)) {
+        return this;
+    }
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+    if (target !== halo.get('currentTargetTPElem')) {
+
+        target = target.getNativeNode();
+        TP.elementAddClass(target, 'sherpa-hud-highlight');
+        this.$set('highlighted', target, false);
     }
 
     return this;

@@ -31,38 +31,90 @@ sherpa|bindshud > ul {
     overflow: auto;
 }
 
-sherpa|bindshud > ul.content > li {
+/* All items */
+
+sherpa|bindshud > ul.content > li.item {
+
+    margin: 1px 5px;
+}
+
+sherpa|bindshud > ul.content > li.domnode {
 
     height: 1.75em;
     line-height: 1.75em;
 
     padding-left: 0.25em;
 
-    margin: 5px;
-
     border: 1px solid #666;
     border-radius: 5px;
 
     overflow: hidden;
-
     text-overflow: ellipsis;
 
     cursor: pointer;
 }
 
-sherpa|bindshud > ul.content > li:hover {
+sherpa|bindshud > ul.content > li.domnode[pclass|disabled] {
+
+    pointer-events: none;
+    cursor: default;
+
+    opacity: 0.3;
+}
+
+sherpa|bindshud > ul.content > li.domnode:hover {
+
     background-color: cornsilk;
     color: #666;
 }
 
-sherpa|bindshud > ul.content > li[pclass|selected] {
+sherpa|bindshud > ul.content > li.domnode[pclass|selected] {
+
     background-color: gold;
     border: 1px solid black;
     color: black;
 }
 
-sherpa|bindshud > ul.content > li[pclass|selected]:hover {
+sherpa|bindshud > ul.content > li.domnode[pclass|selected]:hover {
+
     background-color: gold;
+}
+
+/* spacer items */
+
+sherpa|bindshud > ul.content > li.spacer {
+
+    background-color: transparent;
+
+    height: 3px;
+
+    border: none;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: default;
+}
+
+sherpa|bindshud > ul.content > li.spacer.sherpa-bindshud-droptarget {
+
+    background-color: red;
+}
+
+sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget {
+
+    font-weight: bold;
+    border: 1px solid red;
+}
+
+sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|selected] {
+
+    font-weight: bold;
+}
+
+sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|selected]:hover {
+
+    font-weight: bold;
 }
 
 /* We omitted 'sherpa|tile' here because of this bug in stylelint:
