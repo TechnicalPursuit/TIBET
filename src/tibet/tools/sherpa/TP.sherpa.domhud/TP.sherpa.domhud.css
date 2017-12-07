@@ -70,17 +70,20 @@ sherpa|domhud > ul.content > li.domnode[child="true"] {
 }
 
 sherpa|domhud > ul.content > li.domnode:hover {
+
     background-color: cornsilk;
     color: #666;
 }
 
 sherpa|domhud > ul.content > li.domnode[pclass|selected] {
+
     background-color: gold;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|domhud > ul.content > li.domnode[pclass|selected]:hover {
+
     background-color: gold;
 }
 
@@ -120,6 +123,10 @@ sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected
 
     font-weight: bold;
 }
+
+/* We omitted 'sherpa|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
 
 #DOMInfo_Tile {
 
