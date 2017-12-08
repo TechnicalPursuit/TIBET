@@ -949,7 +949,7 @@ function(pathParts) {
 
         newPathParts = TP.ac();
 
-        aliases = this.ALIASES;
+        aliases = this.get('ALIASES');
 
         for (i = 0; i < pathParts.getSize(); i++) {
 
