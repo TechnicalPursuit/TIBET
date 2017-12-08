@@ -177,12 +177,9 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var domContent,
-        doc;
+    var domContent;
 
     domContent = enterSelection.append('li');
-
-    doc = TP.sys.uidoc(true);
 
     domContent.attr(
             'pclass:selected',
@@ -316,10 +313,6 @@ function(updateSelection) {
      *     selection that existing content should be altered in.
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
-
-    var doc;
-
-    doc = TP.sys.uidoc(true);
 
     updateSelection.attr(
             'pclass:selected',

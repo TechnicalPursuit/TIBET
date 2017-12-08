@@ -813,7 +813,7 @@ function(aStr) {
         return this.raise('InvalidParameter');
     }
 
-    result = aStr.replace(/\\\//g, '\/')
+    result = aStr.replace(/\\\//g, '\/');
 
     return result;
 });

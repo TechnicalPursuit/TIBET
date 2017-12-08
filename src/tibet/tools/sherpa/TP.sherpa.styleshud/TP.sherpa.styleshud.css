@@ -167,7 +167,7 @@ sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|s
     right: 30px;
     left: 11em;
 
-    width: calc(100% - 11em -30px);
+    width: calc(100% - 11em - 30px);
 }
 
 .styles_properties .inserter {
