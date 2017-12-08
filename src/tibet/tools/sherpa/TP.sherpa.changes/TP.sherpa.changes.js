@@ -128,6 +128,42 @@ TP.sherpa.changes.Inst.defineAttribute('lists',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.changes.Inst.defineHandler('BrowseToURI',
+function(aSignal) {
+
+    /**
+     * @method handleBrowseToURI
+     * @summary Handles when the user wants to browse to the selected URI.
+     * @param {TP.sig.BrowseToURI} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
+    var list,
+        selectedLoc,
+
+        cmdText;
+
+    //  Grab the value of item that was clicked on the list. This will be the
+    //  URI value.
+    list = TP.wrap(aSignal.getTarget());
+    selectedLoc = list.get('data').at(list.get('value'));
+
+    //  Make sure to escape any slashes - this is important as the Sherpa
+    //  inspector can use '/' as a 'path separator' and we want the URI to be
+    //  treated as a 'whole'.
+    selectedLoc = TP.stringEscapeSlashes(selectedLoc);
+
+    cmdText = ':inspect --path=\'_URIS_/' + selectedLoc + '\'';
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc('cmdText', cmdText));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.changes.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 

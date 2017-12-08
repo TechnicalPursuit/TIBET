@@ -45,7 +45,7 @@
                     <span class="title">Changed client URIs</span>
                     <span><button id="PushAllButton" on:click="PushAllLocalResources">Push All</button></span>
                     <br/>
-                    <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}">
+                    <xctrls:list bind:in="{data: urn:tibet:changedClientURIs}" on:dblclick="BrowseToURI">
                         <xctrls:textitem>
                             <xctrls:label>[[value.1]]<button on:click="PushLocalResource">Push Now</button></xctrls:label>
                             <xctrls:value>[[value.0]]</xctrls:value>
