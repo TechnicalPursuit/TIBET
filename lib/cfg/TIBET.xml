@@ -110,13 +110,6 @@
     <config ref="sherpa-inlined"/>
     <config ref="test-inlined"/>
 
-
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.sticky_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.sticky_tpi.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">
@@ -153,6 +146,7 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.popup-TP.xctrls.popup.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tabbar-TP.xctrls.tabbar.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.codeeditor-TP.xctrls.codeeditor.xhtml.js"/>
@@ -169,6 +163,7 @@
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.notifier_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.propertysheet_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.radioitem_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.sticky_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tabbar_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.table_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.textitem_all.css.js"/>
@@ -179,6 +174,7 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.popup-TP.xctrls.popup.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_mixins.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_grid.css.js"/>
@@ -189,6 +185,7 @@
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.list_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.notifier_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.propertysheet_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.sticky_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.radioitem_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tabbar_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.table_tpi.css.js"/>
@@ -232,6 +229,8 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tile-TP.sherpa.tile.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-TP.sherpa.domhud.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-TP.sherpa.domhud.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.breadcrumb-TP.sherpa.breadcrumb.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.breadcrumb-TP.sherpa.breadcrumb.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.urieditor-TP.sherpa.urieditor.xhtml.js"/>
