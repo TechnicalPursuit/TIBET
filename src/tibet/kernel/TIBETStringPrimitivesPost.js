@@ -443,6 +443,36 @@ function(str) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('stringEscapeSlashes',
+function(aStr) {
+
+    /**
+     * @method stringEscapeSlashes
+     * @summary Escapes any embedded '/' characters in the supplied String.
+     * @description This method respects '/'s escaped with '\'s such that they
+     *     will not be 'further' escaped.
+     * @param {String} aStr The String to escape the '/' character in.
+     * @returns {String} The supplied string with the slashes escaped.
+     */
+
+    var parts;
+
+    if (!TP.isString(aStr)) {
+        return this.raise('InvalidParameter');
+    }
+
+    //  Split on '/', but avoiding quoted ones (i.e. backslashed '/'s).
+    parts = aStr.match(/([^\\\][^/]|\\\/)+/g);
+
+    if (TP.notValid(parts)) {
+        return aStr;
+    }
+
+    return parts.join('\\/');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('stringFindDelimiterIndex',
 function(aStr, startDelim, endDelim, startPos) {
 
@@ -762,6 +792,30 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
     //  Return the result, but join() it first to convert from an Array to a
     //  String.
     return result.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('stringUnescapeSlashes',
+function(aStr) {
+
+    /**
+     * @method stringUnescapeSlashes
+     * @summary Unescapes any embedded escaped '/' characters in the supplied
+     *     String.
+     * @param {String} aStr The String to unescape the '/' character in.
+     * @returns {String} The supplied string with the escaped slashes unescaped.
+     */
+
+    var result;
+
+    if (!TP.isString(aStr)) {
+        return this.raise('InvalidParameter');
+    }
+
+    result = aStr.replace(/\\\//g, '\/')
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
