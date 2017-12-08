@@ -337,6 +337,11 @@ function(aSignal) {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
+    var drawerTPElem;
+
+    drawerTPElem = TP.wrap(this.getNativeNode().parentNode.parentNode);
+    drawerTPElem.setAttribute('closed', false);
+
     this.setSelectedPanel('client');
 
     return this;
@@ -355,6 +360,11 @@ function(aSignal) {
      *     triggered this method.
      * @returns {TP.sherpa.changes} The receiver.
      */
+
+    var drawerTPElem;
+
+    drawerTPElem = TP.wrap(this.getNativeNode().parentNode.parentNode);
+    drawerTPElem.setAttribute('closed', false);
 
     this.setSelectedPanel('server');
 
