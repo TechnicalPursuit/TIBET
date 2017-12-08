@@ -1740,7 +1740,6 @@ function(anInfo) {
         if (TP.isValid(target)) {
 
             rootBayItem = pathParts.shift();
-            targetPath = null;
 
             if (dynamicContentEntries.contains(target, TP.IDENTITY)) {
                 this.selectItemInBay(TP.id(target), 0);
