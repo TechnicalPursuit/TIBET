@@ -636,12 +636,6 @@ function(aPath, joinStr) {
         return aPath;
     }
 
-    //  Now, go through each component and convert the '\/' sequence into '/'
-    pathParts = pathParts.convert(
-                        function(item) {
-                            return item.replace(/\\\//g, '/');
-                        });
-
     return pathParts.join(joinStr);
 });
 
