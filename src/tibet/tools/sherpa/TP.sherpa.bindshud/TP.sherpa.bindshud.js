@@ -480,6 +480,74 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.bindshud.Inst.defineHandler('FocusHaloAndInspect',
+function(aSignal) {
+
+    /**
+     * @method handleFocusHaloAndInspect
+     * @summary Handles notifications of when the receiver wants to focus the
+     *     halo and shift the Sherpa's inspector to focus it on the halo's
+     *     target.
+     * @param {TP.sig.FocusHaloAndInspect} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var targetElem,
+        peerID,
+
+        targetTPElem,
+
+        bindingExprs,
+        expandedBindingExpr,
+
+        bindSrcURI,
+        primaryLoc,
+
+        cmdText;
+
+    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  This will be the ID of the element that we're trying to focus.
+    targetElem = aSignal.getDOMTarget();
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    //  No peerID? Exit here.
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
+    targetTPElem = TP.byId(peerID);
+
+    //  Grab the fully expanded binding expression. This will contain the
+    //  expression'sURI.
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
+
+    //  Make a URI from that and then get it's primary location. This will
+    //  ensure that we're going to get the 'root'ed data.
+    bindSrcURI = TP.uc(expandedBindingExpr);
+    primaryLoc = bindSrcURI.getPrimaryLocation();
+
+    //  Make sure to escape any slashes - this is important as the Sherpa
+    //  inspector can use '/' as a 'path separator' and we want the URI to be
+    //  treated as a 'whole'.
+    primaryLoc = TP.stringEscapeSlashes(primaryLoc);
+
+    //  Fire a 'ConsoleCommand' signal that will be picked up and processed by
+    //  the Sherpa console. Send command text asking it to inspect the current
+    //  target of the halo.
+    cmdText = ':inspect --path=\'_URIS_/' + primaryLoc + '\'';
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc('cmdText', cmdText));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.bindshud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
 
