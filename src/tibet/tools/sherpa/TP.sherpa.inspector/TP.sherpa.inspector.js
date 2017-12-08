@@ -828,8 +828,7 @@ TP.sherpa.inspector.Inst.resolveTrait('init', TP.sherpa.TemplatedTag);
 //  Path aliases for use in the system
 TP.sherpa.inspector.Type.defineConstant(
     'ALIASES', TP.hc(
-        '_TYPES_', TP.ac('TIBET', 'Types'),
-        '_URIS_', TP.ac('TIBET', 'URIs')
+        '_TYPES_', TP.ac('TIBET', 'Types')
     ));
 
 //  Commonly used options
@@ -892,6 +891,8 @@ function(pathParts) {
 
         haloTarget,
 
+        uriPath,
+
         aliases,
 
         i,
@@ -939,6 +940,11 @@ function(pathParts) {
             newPathParts = pathParts.slice(1);
             newPathParts.unshift(haloTarget.getID());
         }
+    } else if (pathParts.first() === '_URIS_') {
+
+        uriPath = TP.uriExpandPath(TP.stringUnescapeSlashes(pathParts.at(1)));
+
+        newPathParts = TP.ac('TIBET', 'URIs', uriPath);
     } else {
 
         newPathParts = TP.ac();
