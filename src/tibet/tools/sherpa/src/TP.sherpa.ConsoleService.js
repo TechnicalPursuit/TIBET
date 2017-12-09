@@ -1165,8 +1165,9 @@ function(aSignal) {
     //  Reset the number of 'new output items' in the console GUI to 0
     consoleGUI.set('newOutputCount', 0);
 
-    //  Is it the empty String?
-    if (TP.isEmpty(input)) {
+    //  Is it the empty String? Are we supposed to be using the last history
+    //  entry if the input is empty?
+    if (TP.isEmpty(input) && TP.isTrue(aSignal.at('useLastIfEmpty'))) {
         if (TP.isValid(model = this.get('model'))) {
             input = model.getHistory(model.getHistory().getSize() - 1);
         }

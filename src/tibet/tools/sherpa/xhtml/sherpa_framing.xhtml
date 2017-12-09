@@ -131,7 +131,7 @@
                 &#160;
                 <xctrls:hint>Change mode</xctrls:hint>
             </div>
-            <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput')">
+            <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput', TP.hc('useLastIfEmpty', true))">
                 <xctrls:hint>Execute input</xctrls:hint>
             </div>
             <button id="addsnippet" on:click="AddSnippet" tibet:ctrl="SherpaConsole">
