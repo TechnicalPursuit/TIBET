@@ -12,6 +12,11 @@
 
     'use strict';
 
+    var VERBS;
+
+    VERBS = ['get', 'put', 'post', 'patch', 'delete', 'trace', 'options',
+        'head', 'connect'];
+
     /**
      * Load any routes (or mocks) in the project's routes and mocks directories.
      * @param {Object} options Configuration options shared across TDS modules.
@@ -97,7 +102,9 @@
                     part,
                     pub,
                     verb,
-                    name;
+                    name,
+                    i,
+                    len;
 
                 base = path.basename(file);
                 ext = path.extname(base);
@@ -106,25 +113,50 @@
                 parts = name.split('_');
 
                 if (parts.length > 1) {
-                    parts = parts.reverse();
-                    part = parts.shift();
-                    while (part) {
-                        part = part.toLowerCase();
-                        if (part === 'public') {
-                            pub = true;
-                        } else if (part === 'router') {
-                            //  Ignore _router suffixes directly.
-                            void 0;
-                        } else if (typeof app[part] === 'function') {
-                            verb = part;
-                        } else {
-                            name = part;
-                            if (parts.length) {
-                                name = parts.reverse().join('_') + '_' + part;
+
+                    //  Router files should follow pattern of:
+                    //  {name}_router[_stuff][_public].js where
+                    //  stuff is purely for author clarity.
+                    if (parts[1] === 'router') {
+                        name = parts[0];
+                        len = parts.length;
+                        for (i = 2; i < len; i++) {
+                            if (parts[i] === 'public') {
+                                pub = true;
+                                break;
                             }
-                            break;
                         }
+                    } else {
+                        //  Order matters. Expectation is that 'public' is
+                        //  always last if present. Next is the verb. Anything
+                        //  in front of that is considered to be the route name
+                        //  which is joined back together.
+                        parts = parts.reverse();
                         part = parts.shift();
+                        while (part) {
+                            part = part.toLowerCase();
+                            if (part === 'public') {
+                                pub = true;
+                            } else if (part === 'router') {
+                                //  Ignore _router suffixes directly.
+                                logger.warn(
+                                    'Route file has misplaced `router` in name: ' +
+                                    file);
+                                void 0;
+                            } else if (VERBS.indexOf(part) !== -1) {
+                                verb = part;
+                            } else {
+                                name = part;
+                                if (parts.length) {
+                                    //  NOTE that when we rebuild we replace any
+                                    //  underscores with / to create deep paths.
+                                    name = parts.reverse().join('/') + '/' +
+                                        part;
+                                }
+                                break;
+                            }
+                            part = parts.shift();
+                        }
                     }
                 }
 
@@ -134,7 +166,7 @@
                 };
 
                 name = '/' + name;
-                verb = verb || 'post';
+                verb = verb || 'get';   //  Default to an idempotent verb.
 
                 //  JavaScript source files should simply be loaded and run. We
                 //  expect them to follow a module form that returns a function
@@ -170,6 +202,9 @@
                         //  really instances of something we can test well.
                         if (middleware &&
                                 typeof middleware.propfind === 'function') {
+                            //  Routers use this approach to registration where
+                            //  no verb is provided since that's done route by
+                            //  route.
                             if (pub) {
                                 app.use(name, parsers.json, parsers.urlencoded,
                                     middleware);
@@ -178,6 +213,7 @@
                                     options.loggedInOrLocalDev, middleware);
                             }
                         } else if (typeof middleware === 'function') {
+                            //  Normal (non-router) routes need a verb.
                             if (pub) {
                                 app[verb](name, parsers.json, parsers.urlencoded,
                                     middleware);
