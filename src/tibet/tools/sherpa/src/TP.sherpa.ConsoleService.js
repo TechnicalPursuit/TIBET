@@ -1144,7 +1144,9 @@ function(aSignal) {
      */
 
     var consoleGUI,
-        input;
+        input,
+
+        model;
 
     consoleGUI = this.get('$consoleGUI');
 
@@ -1162,6 +1164,13 @@ function(aSignal) {
 
     //  Reset the number of 'new output items' in the console GUI to 0
     consoleGUI.set('newOutputCount', 0);
+
+    //  Is it the empty String?
+    if (TP.isEmpty(input)) {
+        if (TP.isValid(model = this.get('model'))) {
+            input = model.getHistory(model.getHistory().getSize() - 1);
+        }
+    }
 
     this.submitRawInput(input);
 
