@@ -51,17 +51,20 @@ sherpa|respondershud > ul.content > li {
 }
 
 sherpa|respondershud > ul.content > li:hover {
+
     background-color: cornsilk;
     color: #666;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected] {
+
     background-color: gold;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected]:hover {
+
     background-color: gold;
 }
 
@@ -95,14 +98,16 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 #ResponderSummary_Tile > .body > #ResponderMethodList {
 
     position: absolute;
+
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
-    border: 0;
+
     width: 100%;
     height: 100%;
 
+    border: 0;
     border-radius: 0;
 
     line-height: inherit;
@@ -115,9 +120,12 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 }
 
 #ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem {
+
     position: relative;
+
     height: 1.75em;
     line-height: 1.75em;
+
     transform: none;
 }
 
@@ -125,6 +133,7 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 }
 
 #ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem xctrls|label {
+
     display: block;
     height: 1.75em;
     line-height: 1.75em;
@@ -132,6 +141,7 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
 }
 
 #ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem[grouping] xctrls|label {
+
     padding-left: 6px;
 }
 
