@@ -128,14 +128,15 @@ function(aTPElement) {
         //  also has a controller we want to push both into list.
         attr = node.getAttribute('tibet:ctrl');
         if (TP.notEmpty(attr)) {
-            info.push(TP.ac(TP.lid(node, true), attr));
+            info.push(TP.ac(TP.lid(node, true), attr, 'elem'));
         }
 
         attr = node.getAttribute('tibet:tag');
         if (TP.notEmpty(attr)) {
-            info.push(TP.ac(TP.lid(node, true), attr));
+            info.push(TP.ac(TP.lid(node, true), attr, 'elem'));
         } else {
-            info.push(TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node))));
+            info.push(
+                TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node)), 'elem'));
         }
 
         node = node.parentNode;
@@ -151,7 +152,8 @@ function(aTPElement) {
 
             //  NB: We filter out the Sherpa here
             if (tname !== 'TP.core.Sherpa') {
-                info.push(TP.ac(TP.lid(item, true), TP.tname(item)));
+                info.push(
+                    TP.ac(TP.lid(item, true), TP.tname(item), 'controller'));
             }
         });
 
@@ -688,6 +690,90 @@ function(aType) {
                 });
 
     return result;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.D3Tag Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('buildNewContent',
+function(enterSelection) {
+
+    /**
+     * @method buildNewContent
+     * @summary Builds new content onto the receiver by appending or inserting
+     *     content into the supplied d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
+     */
+
+    var newContent;
+
+    newContent = enterSelection.append('li');
+    newContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'indexInData',
+            function(d, i) {
+                return i;
+            }).text(
+            function(d) {
+                return d[1];
+            }).attr('type',
+            function(d) {
+                return d[2];
+            }).classed('item', true)
+
+    return newContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('updateExistingContent',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContent
+     * @summary Updates any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that existing content should be altered in.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
+     */
+
+    updateSelection.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'indexInData',
+            function(d, i) {
+                return i;
+            }).text(
+            function(d) {
+                return d[1];
+            }).attr('type',
+            function(d) {
+                return d[2];
+            }).classed('item', true)
+
+    return updateSelection;
 });
 
 //  ------------------------------------------------------------------------

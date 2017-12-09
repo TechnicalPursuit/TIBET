@@ -68,6 +68,14 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }
 
+sherpa|respondershud > ul.content > li[type="element"] {
+}
+
+sherpa|respondershud > ul.content > li[type="controller"] {
+
+    background-color: antiquewhite;
+}
+
 /* We omitted 'sherpa|tile' here because of this bug in stylelint:
  * https://github.com/stylelint/stylelint/issues/2711
  */
