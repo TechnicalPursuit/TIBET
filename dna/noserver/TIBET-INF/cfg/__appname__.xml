@@ -4,6 +4,7 @@
     name="{{appname}}" default="base" basedir="~app_src">
 
 <config id="base" if="boot.phase_two">
+    <config ref="addons"/>
     <config ref="scripts"/>
     <config ref="resources"/>
     <config ref="inlined"/>
@@ -22,6 +23,10 @@
     <config ref="developer"/>
 </config>
 
+<config id="addons">
+    <!-- put your a-la-carte library addons here -->
+</config>
+
 <config id="scripts">
     <!-- put your source script references here -->
     <script src="APP.{{appname}}.js" />
@@ -29,13 +34,6 @@
     <script src="APP.{{appname}}.Application.js" />
 
     <package src="~app_tags/APP.{{appname}}.app/" config="scripts" />
-</config>
-
-<config id="tests">
-    <!-- put your test scripts here -->
-    <script src="~app_test/APP_test.js" />
-
-    <package src="~app_tags/APP.{{appname}}.app/" config="tests" />
 </config>
 
 <config id="resources">
@@ -47,6 +45,13 @@
 
 <config id="inlined" if="boot.phase_two boot.inlined">
     <!-- maintained by tibet resources command -->
+</config>
+
+<config id="tests">
+    <!-- put your test scripts here -->
+    <script src="~app_test/APP_test.js" />
+
+    <package src="~app_tags/APP.{{appname}}.app/" config="tests" />
 </config>
 
 </package>
