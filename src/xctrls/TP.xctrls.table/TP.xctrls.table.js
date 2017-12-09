@@ -625,11 +625,15 @@ function(aDataObject, shouldSignal) {
     //  Make sure to clear our converted data.
     this.set('$convertedData', null);
 
-    keys = dataObj.getIndices().collect(
-            function(item) {
-                //  Note that we want a String here.
-                return item.toString();
-            });
+    if (TP.isValid(dataObj)) {
+        keys = dataObj.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    } else {
+        keys = null;
+    }
 
     this.set('$dataKeys', keys);
 

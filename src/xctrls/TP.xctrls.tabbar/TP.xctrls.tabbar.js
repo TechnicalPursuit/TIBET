@@ -609,29 +609,35 @@ function(aDataObject, shouldSignal) {
     //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
     //  Array of items: ['a','b','c']               -> [0, 1, 2]
 
-    //  If we have a hash as our data, this will convert it into an Array of
-    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-    //  Array is the key and the second item is the value.
-    if (TP.isHash(dataObj)) {
-        keys = dataObj.getKeys();
-    } else if (TP.isPlainObject(dataObj)) {
-        //  Make sure to convert a POJO into a TP.core.Hash
-        keys = TP.hc(dataObj).getKeys();
-    } else if (TP.isPair(dataObj.first())) {
-        keys = dataObj.collect(
-                function(item) {
-                    //  Note that we want a String here.
-                    return item.first().toString();
-                });
-    } else if (TP.isArray(dataObj)) {
-        keys = dataObj.getIndices().collect(
-                function(item) {
-                    //  Note that we want a String here.
-                    return item.toString();
-                });
-    }
+    if (TP.isValid(dataObj)) {
 
-    this.set('$dataKeys', keys);
+        //  If we have a hash as our data, this will convert it into an Array of
+        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+        //  Array is the key and the second item is the value.
+        if (TP.isHash(dataObj)) {
+            keys = dataObj.getKeys();
+        } else if (TP.isPlainObject(dataObj)) {
+            //  Make sure to convert a POJO into a TP.core.Hash
+            keys = TP.hc(dataObj).getKeys();
+        } else if (TP.isPair(dataObj.first())) {
+            keys = dataObj.collect(
+                    function(item) {
+                        //  Note that we want a String here.
+                        return item.first().toString();
+                    });
+        } else if (TP.isArray(dataObj)) {
+            keys = dataObj.getIndices().collect(
+                    function(item) {
+                        //  Note that we want a String here.
+                        return item.toString();
+                    });
+        }
+
+        this.set('$dataKeys', keys);
+
+    } else {
+        this.set('$dataKeys', null);
+    }
 
     //  Clear the selection model, since we're setting a whole new data set for
     //  the receiver.
