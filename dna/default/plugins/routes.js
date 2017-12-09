@@ -116,12 +116,10 @@
 
                 if (parts.length > 1) {
 
-                    //  If router is in the path everything in front of that is
-                    //  the 'name' in potentially underscore-separated form.
-                    //  Anything after the word 'router' is ignored except the
-                    //  word 'public' which says to register the route publicly.
-                    //  For non-router paths the other check in the parts is for
-                    //  a 'verb' indication.
+                    //  Route file names should be of the form:
+                    //  {name}[_router|_verb][_public].js
+                    //  The 'name' can itself use underscore as a placeholder
+                    //  for a '/' in the final registered path for the route.
 
                     tail = 0;
                     len = parts.length;
