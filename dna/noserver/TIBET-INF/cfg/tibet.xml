@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="{{appname}}" default="base" basedir="~app_cfg">
+    name="tibet" default="base" basedir="~lib_src">
 
 <config id="base" if="boot.phase_one">
     <package src="~lib_cfg/TIBET.xml" config="base" if="boot.teamtibet" />
