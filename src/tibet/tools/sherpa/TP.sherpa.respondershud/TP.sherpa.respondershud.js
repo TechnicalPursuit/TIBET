@@ -732,7 +732,7 @@ function(enterSelection) {
             }).attr('type',
             function(d) {
                 return d[2];
-            }).classed('item', true)
+            }).classed('item', true);
 
     return newContent;
 });
@@ -771,7 +771,7 @@ function(updateSelection) {
             }).attr('type',
             function(d) {
                 return d[2];
-            }).classed('item', true)
+            }).classed('item', true);
 
     return updateSelection;
 });
