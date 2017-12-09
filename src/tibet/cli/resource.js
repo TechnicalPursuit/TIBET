@@ -465,7 +465,9 @@ Cmd.prototype.processResources = function() {
 
         //  filter based on context
         if (CLI.inProject() && cmd.options.context !== 'lib') {
-            if (fullpath.indexOf(libpath) === 0) {
+            //  In lib...and not explicitly specified in app context...
+            if (fullpath.indexOf(libpath) === 0 &&
+                    cmd.specified.indexOf(resource) === -1) {
                 cmd.debug('filtered ' + resource + '. In project, lib resource.');
                 return false;
             }
