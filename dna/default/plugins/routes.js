@@ -101,7 +101,9 @@
                     parts,
                     part,
                     pub,
+                    router,
                     verb,
+                    tail,
                     name,
                     i,
                     len;
@@ -114,49 +116,50 @@
 
                 if (parts.length > 1) {
 
-                    //  Router files should follow pattern of:
-                    //  {name}_router[_stuff][_public].js where
-                    //  stuff is purely for author clarity.
-                    if (parts[1] === 'router') {
-                        name = parts[0];
-                        len = parts.length;
-                        for (i = 2; i < len; i++) {
-                            if (parts[i] === 'public') {
-                                pub = true;
-                                break;
-                            }
-                        }
-                    } else {
-                        //  Order matters. Expectation is that 'public' is
-                        //  always last if present. Next is the verb. Anything
-                        //  in front of that is considered to be the route name
-                        //  which is joined back together.
-                        parts = parts.reverse();
-                        part = parts.shift();
-                        while (part) {
-                            part = part.toLowerCase();
-                            if (part === 'public') {
-                                pub = true;
-                            } else if (part === 'router') {
-                                //  Ignore _router suffixes directly.
-                                logger.warn(
-                                    'Route file has misplaced `router` in name: ' +
+                    //  If router is in the path everything in front of that is
+                    //  the 'name' in potentially underscore-separated form.
+                    //  Anything after the word 'router' is ignored except the
+                    //  word 'public' which says to register the route publicly.
+                    //  For non-router paths the other check in the parts is for
+                    //  a 'verb' indication.
+
+                    tail = 0;
+                    len = parts.length;
+                    for (i = 0; i < len; i++) {
+                        part = parts[i];
+                        part = part.toLowerCase();
+
+                        if (part === 'router') {
+                            tail = tail || i;
+                            if (verb) {
+                                //  router files don't need verb; warn.
+                                logger.warn('Router route file has verb: ' +
                                     file);
-                                void 0;
-                            } else if (VERBS.indexOf(part) !== -1) {
-                                verb = part;
-                            } else {
-                                name = part;
-                                if (parts.length) {
-                                    //  NOTE that when we rebuild we replace any
-                                    //  underscores with / to create deep paths.
-                                    name = parts.reverse().join('/') + '/' +
-                                        part;
-                                }
-                                break;
                             }
-                            part = parts.shift();
+                            router = true;
+                        } else if (VERBS.indexOf(part) !== -1) {
+                            tail = tail || i;
+                            if (router) {
+                                //  router files don't need verb; warn.
+                                logger.warn('Router route file has verb: ' +
+                                    file);
+                            }
+                            verb = part;
+                        } else if (part === 'public') {
+                            tail = tail || i;
+                            if (i !== len - 1) {
+                                //  public should be last; warn.
+                                logger.warn('Route `public` should be last: ' +
+                                    file);
+                            }
+                            pub = true;
                         }
+
+                        if (tail) {
+                            parts = parts.slice(0, tail);
+                        }
+
+                        name = parts.join('/');
                     }
                 }
 
