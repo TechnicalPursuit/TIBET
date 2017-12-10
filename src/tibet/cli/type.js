@@ -606,7 +606,7 @@ Cmd.prototype.executePackageCommon = function() {
     //  split products into code vs. test chunks since we use a different config
     //  for tests no matter what the product config name is.
 
-    products = this.products;
+    products = this.products || [];
 
     tests = products.filter(function(pair) {
         return /_test\.js$/.test(pair[1]);
