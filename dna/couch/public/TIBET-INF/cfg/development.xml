@@ -28,6 +28,12 @@
     <property name="sherpa.pp.function_comments" value="true"/>
 </config>
 
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+
 <config id="base">
     <config ref="properties"/>
     <package src="main.xml" config="base"/>

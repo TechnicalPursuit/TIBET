@@ -3,6 +3,12 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="phantom" default="phantom" basedir="~lib">
 
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDITING NOT RECOMMENDED -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+
 <config id="properties" if="boot.phase_one">
     <property name="boot.inlined" value="false"/>
     <property name="boot.use_login" value="false"/>

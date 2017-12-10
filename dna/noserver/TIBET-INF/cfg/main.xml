@@ -2,6 +2,12 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="prod" basedir="~app_cfg">
 
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDITING NOT RECOMMENDED -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+
 <config id="prod">
     <package src="production.xml" config="prod"/>
 </config>
@@ -9,6 +15,11 @@
 <config id="base">
     <package src="tibet.xml" config="base"/>
     <package src="{{appname}}.xml" config="base"/>
+</config>
+
+<config id="baseui">
+    <package src="tibet.xml" config="baseui"/>
+    <package src="{{appname}}.xml" config="baseui"/>
 </config>
 
 <config id="full">

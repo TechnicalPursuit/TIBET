@@ -3,6 +3,12 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="prod" basedir="~app_cfg">
 
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+
 <config id="prod">
     <script src="~lib_build/tibet_base.min.js" if="boot.phase_one"/>
     <script src="~app_build/app_base.min.js" if="boot.phase_two"/>
