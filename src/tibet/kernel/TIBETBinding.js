@@ -1800,6 +1800,12 @@ function() {
                     scopeVals.push(scopeAttrVal);
                 }
 
+                //  If the scope value is a URI, then we break here - we now
+                //  have a fully-formed set of scopes.
+                if (TP.isURIString(scopeAttrVal)) {
+                    return TP.BREAK;
+                }
+
                 //  Then, check to see if there's a 'bind:scope' attribute. If
                 //  so, we want to use it's value next.
                 scopeAttrVal = TP.elementGetAttribute(
@@ -1807,6 +1813,12 @@ function() {
 
                 if (TP.notEmpty(scopeAttrVal)) {
                     scopeVals.push(scopeAttrVal);
+                }
+
+                //  If the scope value is a URI, then we break here - we now
+                //  have a fully-formed set of scopes.
+                if (TP.isURIString(scopeAttrVal)) {
+                    return TP.BREAK;
                 }
             }
         });
