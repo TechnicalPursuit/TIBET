@@ -134,7 +134,15 @@ function(options) {
     sourceLocs = TP.ac();
     uriKeys.forEach(
         function(aKey) {
-            sourceLocs.push(TP.uriExpandPath(uris.at(aKey).getLocation()));
+            var loc;
+
+            loc = TP.uriExpandPath(uris.at(aKey).getLocation());
+
+            //  Make sure that URIs that have a fragment are *not* placed into
+            //  the source locations.
+            if (TP.isEmpty(TP.uriFragment(loc))) {
+                sourceLocs.push(loc);
+            }
         });
 
     //  Now that they're all in their 'fully expanded' form, we need to unique
