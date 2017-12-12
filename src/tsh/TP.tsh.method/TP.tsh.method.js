@@ -152,11 +152,21 @@ function(aRequest) {
 
     //  Define the method (by invoking the computed method definition name
     //  against the target) dynamically in the system.
-    newMethod = target[defMethod](
-                    methodName,
-                    function() {
-                        //  empty
-                    });
+
+    //  If it's a handler, make sure to include the 'aSignal' parameter.
+    if (methodKind === 'handler') {
+        newMethod = target[defMethod](
+                        methodName,
+                        function(aSignal) {
+                            //  empty
+                        });
+    } else {
+        newMethod = target[defMethod](
+                        methodName,
+                        function() {
+                            //  empty
+                        });
+    }
 
     newMethod[TP.LOAD_PATH] = methodOwnerType[TP.LOAD_PATH];
     newMethod[TP.SOURCE_PATH] = methodOwnerType[TP.SOURCE_PATH];
