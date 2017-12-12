@@ -149,16 +149,15 @@
                                 //  public should be last; warn.
                                 logger.warn('Route `public` should be last: ' +
                                     file);
+                                }
+                                pub = true;
                             }
-                            pub = true;
-                        }
-
-                        if (tail) {
-                            parts = parts.slice(0, tail);
-                        }
-
-                        name = parts.join('/');
                     }
+
+                    if (tail) {
+                        parts = parts.slice(0, tail);
+                    }
+                    name = parts.join('/');
                 }
 
                 meta = {
