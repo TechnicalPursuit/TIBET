@@ -7478,7 +7478,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  'changed' message later with additional information. We also pass a
     //  second 'false' to avoid warnings on undeclared attributes.
 
-    targetObj.defineAttribute(path);
+    //  If it's not a hash, then define it as an attribute. A 'set()' on a hash
+    //  will do an atPut().
+    if (!TP.isKindOf(targetObj, TP.core.Hash)) {
+        targetObj.defineAttribute(path);
+    }
     retVal = targetObj.set(path, attributeValue, false);
 
     thisType.endChangedAddress();
