@@ -17,6 +17,8 @@
             loc,
             hash,
 
+            pathname,
+
             xhr,
 
             dat;
@@ -50,6 +52,8 @@
             loc = loc.slice(0, loc.indexOf('#'));
         }
 
+        pathname = top.location.pathname;
+
         xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== 4) {
@@ -57,9 +61,9 @@
             }
 
             if (xhr.status === 200) {
-                window.location.replace('/');
+                window.location.replace(pathname);
             } else {
-                window.location.replace('/login');
+                window.location.replace(pathname + 'login');
             }
         };
 
