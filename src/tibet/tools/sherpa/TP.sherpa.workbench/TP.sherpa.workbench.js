@@ -66,20 +66,6 @@ function() {
     this.updateNavigationButtons();
     this.updateToolbarButtons();
 
-    //  Preload the snippets menu
-    TP.xctrls.popup.preload(
-            TP.hc('triggerTPDocument', this.getDocument(),
-                    'overlayID', 'SnippetsPopup',
-                    'triggerID', 'snippetMenuTrigger',
-                    'contentURI', 'urn:tibet:TP.sherpa.snippetMenuContent'));
-
-    //  Preload the bookmarks menu
-    TP.xctrls.popup.preload(
-            TP.hc('triggerTPDocument', this.getDocument(),
-                    'overlayID', 'BookmarksPopup',
-                    'triggerID', 'showbookmarks',
-                    'contentURI', 'urn:tibet:TP.sherpa.bookmarkMenuContent'));
-
     //  Inspector observations
     this.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
 
@@ -95,6 +81,9 @@ function() {
 
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
                                 'TP.sig.DOMDNDCompleted'));
+
+    //  Sherpa observations
+    this.observe(TP.bySystemId('Sherpa'), 'SherpaReady');
 
     return this;
 });
@@ -553,6 +542,37 @@ function(aSignal) {
      */
 
     this.signal('NavigateInspector', TP.hc('direction', TP.HOME));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('SherpaReady',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaReady
+     * @summary Handles notification of when the Sherpa has completely opened to
+     *     its initial state and is ready for interaction.
+     * @param {TP.sig.SherpaReady} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    //  Preload the snippets menu
+    TP.xctrls.popup.preload(
+            TP.hc('triggerTPDocument', this.getDocument(),
+                    'overlayID', 'SnippetsPopup',
+                    'triggerID', 'snippetMenuTrigger',
+                    'contentURI', 'urn:tibet:TP.sherpa.snippetMenuContent'));
+
+    //  Preload the bookmarks menu
+    TP.xctrls.popup.preload(
+            TP.hc('triggerTPDocument', this.getDocument(),
+                    'overlayID', 'BookmarksPopup',
+                    'triggerID', 'showbookmarks',
+                    'contentURI', 'urn:tibet:TP.sherpa.bookmarkMenuContent'));
 
     return this;
 });

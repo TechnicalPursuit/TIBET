@@ -380,6 +380,9 @@ function() {
     tabSelectionURI = TP.uc('urn:tibet:current_console_tab#tibet(selection)');
     this.observe(tabSelectionURI, 'ValueChange');
 
+    //  Sherpa observations
+    this.observe(TP.bySystemId('Sherpa'), 'SherpaReady');
+
     return this;
 });
 
@@ -514,6 +517,39 @@ function(aSignal) {
     //  inspector, it will be redisplayed.
     inspector = TP.byId('SherpaInspector', this.getNativeDocument());
     inspector.repopulateBay();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineHandler('SherpaReady',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaReady
+     * @summary Handles notification of when the Sherpa has completely opened to
+     *     its initial state and is ready for interaction.
+     * @param {TP.sig.SherpaReady} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var consoleInput,
+        readyHandler;
+
+    consoleInput = this.get('consoleInput');
+
+    if (!consoleInput.isReadyToRender()) {
+        readyHandler = function() {
+            readyHandler.ignore(consoleInput, 'TP.sig.DOMReady');
+            consoleInput.focus();
+        };
+
+        readyHandler.observe(consoleInput, 'TP.sig.DOMReady');
+    } else {
+        consoleInput.focus();
+    }
 
     return this;
 });

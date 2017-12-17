@@ -2318,8 +2318,8 @@ function() {
 
     var viewWin,
 
-        consoleInput,
-        readyHandler;
+        thisref,
+        drawer;
 
     //  Grab the root window.
     viewWin = this.get('vWin');
@@ -2329,23 +2329,26 @@ function() {
     //  to go.
     TP.byId('SherpaConsole', viewWin).render();
 
+    thisref = this;
+    drawerElement = TP.byId('west', viewWin, false);
+
+    hudCompletelyOpenFunc = function(aSignal) {
+
+        //  Turn off any future notifications.
+        hudCompletelyOpenFunc.ignore(
+                                drawerElement, 'TP.sig.DOMTransitionEnd');
+
+        //  After the drawers have finished animating in, delay, giving the
+        //  animation a chance to finish cleanly before proceeding.
+        setTimeout(function() {
+            thisref.signal('SherpaReady');
+        }, 1000);
+    };
+    hudCompletelyOpenFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+
     //  Toggle the east and west drawers to their 'maximum open' state.
     TP.byCSSPath('#west sherpa|opener', viewWin).at(0).signal('UIToggle');
     TP.byCSSPath('#east sherpa|opener', viewWin).at(0).signal('UIToggle');
-
-    consoleInput = TP.byId('SherpaConsole', TP.win('UIROOT')).
-                                                    get('consoleInput');
-
-    if (!consoleInput.isReadyToRender()) {
-        readyHandler = function() {
-            readyHandler.ignore(consoleInput, 'TP.sig.DOMReady');
-            consoleInput.focus();
-        };
-
-        readyHandler.observe(consoleInput, 'TP.sig.DOMReady');
-    } else {
-        consoleInput.focus();
-    }
 
     return this;
 });
@@ -2898,6 +2901,8 @@ TP.sig.SherpaSignal.Type.isControllerSignal(true);
 TP.sig.SherpaSignal.isControllerRoot(true);
 
 TP.sig.SherpaSignal.defineSubtype('ToggleSherpa');
+
+TP.sig.SherpaSignal.defineSubtype('SherpaReady');
 
 //  Console input signals
 TP.sig.SherpaSignal.defineSubtype('ConsoleInput');
