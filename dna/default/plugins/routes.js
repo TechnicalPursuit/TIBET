@@ -149,9 +149,9 @@
                                 //  public should be last; warn.
                                 logger.warn('Route `public` should be last: ' +
                                     file);
-                                }
-                                pub = true;
                             }
+                            pub = true;
+                        }
                     }
 
                     if (tail) {

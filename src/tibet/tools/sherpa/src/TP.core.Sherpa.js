@@ -2319,7 +2319,9 @@ function() {
     var viewWin,
 
         thisref,
-        drawer;
+        drawerElement,
+
+        hudCompletelyOpenFunc;
 
     //  Grab the root window.
     viewWin = this.get('vWin');
