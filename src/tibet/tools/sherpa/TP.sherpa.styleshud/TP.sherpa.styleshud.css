@@ -59,18 +59,22 @@ sherpa|styleshud > ul.content > li.selector {
 }
 
 sherpa|styleshud > ul.content > li.selector:hover {
-    background-color: cornsilk;
+
+    background-color: #dbe9f0;
     color: #666;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected] {
+
     background-color: #acd;
-    border: 1px solid black;
     color: black;
+
+    border: 1px solid black;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
-    background-color: gold;
+
+    background-color: #86b6ce;
 }
 
 /* spacer items */
