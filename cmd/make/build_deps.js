@@ -14,7 +14,7 @@
             return;
         }
 
-        make.chain('rollup_ace',
+        make.chain('_rollup_ace',
             '_rollup_codemirror',
             '_rollup_cryptojs',
             '_rollup_bluebird',
