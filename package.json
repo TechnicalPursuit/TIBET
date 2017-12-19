@@ -40,6 +40,7 @@
         "ansi-256-colors": "^1.1.0",
         "ansi-styles": "^2.2.1",
         "bluebird": "https://github.com/TechnicalPursuit/bluebird/tarball/master",
+        "bower": "*",
         "chai": "*",
         "chokidar": "*",
         "codemirror": "https://github.com/TechnicalPursuit/CodeMirror/tarball/master",

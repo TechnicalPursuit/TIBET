@@ -16,6 +16,7 @@
 
         make.chain('rollup_ace',
             '_rollup_codemirror',
+            '_rollup_cryptojs',
             '_rollup_bluebird',
             '_rollup_d3',
             '_rollup_diff',

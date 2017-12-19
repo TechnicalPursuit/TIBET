@@ -31,6 +31,18 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/cryptojs/CryptoJS-core-tpi.js" no-lint="no-lint"/>
+    <script src="~lib_deps/cryptojs/CryptoJS-md5-tpi.js" no-lint="no-lint"/>
+    <script src="~lib_deps/cryptojs/CryptoJS-sha1-tpi.js" no-lint="no-lint"/>
+    <script src="~lib_deps/cryptojs/CryptoJS-enc-base64-tpi.js" no-lint="no-lint"/>
+    <script src="~lib_deps/cryptojs/CryptoJS-cipher-core-tpi.js" no-lint="no-lint"/>
+    <script src="~lib_deps/cryptojs/CryptoJS-format-hex-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('CryptoJS', window.CryptoJS);
+        ]]>
+    </script>
+
     <script src="TIBETPrimitivesPre.js"/>
     <script src="TIBETPrimitivesBase.js"/>
     <script src="TIBETPrimitivesPlatform.js"/>
