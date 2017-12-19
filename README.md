@@ -1,4 +1,4 @@
-# TIBET <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
+# TIBET&#8482; <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
 
 ## The Sum Of The Parts, Not Some Of The Parts&#8482;
 
