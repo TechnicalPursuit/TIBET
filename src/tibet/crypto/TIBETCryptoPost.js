@@ -130,8 +130,8 @@ function(anObject, aHashMode, aHashFormat) {
      * @param {Object} anObject The object to acquire a hash code for.
      * @param {Number} aHashMode TP.HASH_MD5 or TP.HASH_SHA1. The default is
      *     SHA-1 since MD5 has been cracked.
-     * @param {Number} aHashFormat TP.HASH_HEX, TP.HASH_B64, or TP.HASH_LATIN1.
-     *     The default is TP.HASH_HEX.
+     * @param {Number} aHashFormat TP.HASH_HEX or TP.HASH_B64. The default is
+     *     TP.HASH_HEX.
      * @exception TP.sig.InvalidParameter
      * @returns {String} The hashed string result.
      */
@@ -176,10 +176,6 @@ function(anObject, aHashMode, aHashFormat) {
         case TP.HASH_B64:
 
             return TP.extern.forge.util.encode64(result.digest().data);
-
-        case TP.HASH_LATIN1:
-
-            return result.digest().data;
 
         case TP.HASH_HEX:
 
