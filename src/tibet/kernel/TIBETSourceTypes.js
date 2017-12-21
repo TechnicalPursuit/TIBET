@@ -2945,6 +2945,257 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 });
 
 //  ========================================================================
+//  TP.sig.VisibilitySignalSource
+//  ========================================================================
+
+TP.sig.SignalSource.defineSubtype('sig.VisibilitySignalSource');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.VisibilitySignalSource.Type.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Invoked by observe() to add an observation or activate
+     *     underlying signaling hooks necessary to ensure proper signaling.
+     * @description This method is overridden on this type because the
+     *     TP.sig.DOMVisibility signal uses the 'IntersectionObserver' object to
+     *     monitor an element's visibility. There is no native browser event for
+     *     such a thing.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        handlerFunc,
+
+        len,
+        i,
+        signal,
+
+        len2,
+        j,
+
+        obj;
+
+    if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    //  If it's a Window or Document, just return true to tell the signaling
+    //  system to add the observation to the main notification engine.
+    if (TP.isWindow(anOrigin) || TP.isDocument(anOrigin)) {
+        return true;
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    handlerFunc = this.get('$handlerFunc');
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        signal = signals.at(i).getSignalName();
+
+        //  The only signals we're interested in are our own kind of signals.
+        if (signal !== 'TP.sig.DOMVisible' && signal !== 'TP.sig.DOMHidden') {
+            continue;
+        }
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            obj = origins.at(j);
+
+            if (TP.isString(obj)) {
+                obj = TP.sys.getObjectById(obj);
+            }
+
+            obj = TP.elem(TP.unwrap(obj));
+
+            //  We didn't get an Element, even after resolving and unwrapping -
+            //  that's a problem.
+            if (!TP.isElement(obj)) {
+                return this.raise('TP.sig.InvalidElement');
+            }
+
+            //  If the global IntersectionObserver that manages our visibility
+            //  events hasn't been allocated and initialized with the callback
+            //  function, do so now.
+            if (TP.notValid(TP.VISIBILITY_INTERSECTION_OBSERVER)) {
+                TP.VISIBILITY_INTERSECTION_OBSERVER =
+                    new IntersectionObserver(
+                        function(entries) {
+                            entries.forEach(
+                                function(anEntry) {
+                                    var target;
+
+                                    //  The target will be the target Element
+                                    //  whose intersection with the root element
+                                    //  has changed. Make sure it's an Element
+                                    //  and then signal the proper signal type
+                                    //  depending on whether it is now
+                                    //  intersecting or not.
+                                    target = anEntry.target;
+
+                                    if (!TP.isElement(target)) {
+                                        return;
+                                    }
+
+                                    if (anEntry.isIntersecting) {
+                                        TP.wrap(target).signal(
+                                                        'TP.sig.DOMVisible');
+                                    } else {
+                                        TP.wrap(target).signal(
+                                                        'TP.sig.DOMHidden');
+                                    }
+                                });
+                        },
+                        {
+                            root: null,
+                            rootMargin: '0px'
+                        });
+            }
+
+            TP.VISIBILITY_INTERSECTION_OBSERVER.observe(obj);
+        }
+    }
+
+    //  Tell the notification to register our handler, etc.
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.VisibilitySignalSource.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Invoked by ignore() to remove an observation or deactivate
+     *     underlying signaling hooks necessary to ensure proper signaling.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var handlerFunc,
+        i,
+        j,
+        len,
+        len2,
+        obj,
+        origins,
+        signal,
+        signals;
+
+    if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    //  If it's a Window or Document, just return true to tell the signaling
+    //  system to remove the observation from the main notification engine.
+    if (TP.isWindow(anOrigin) || TP.isDocument(anOrigin)) {
+        return true;
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    handlerFunc = this.get('$handlerFunc');
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        signal = signals.at(i).getSignalName();
+
+        //  The only signals we're interested in are our own kind of signals
+        if (signal !== 'TP.sig.DOMVisible' && signal !== 'TP.sig.DOMHidden') {
+            continue;
+        }
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            obj = origins.at(j);
+
+            if (TP.isString(obj)) {
+                obj = TP.sys.getObjectById(obj);
+            }
+
+            obj = TP.elem(TP.unwrap(obj));
+
+            //  We didn't get an Element, even after resolving and unwrapping -
+            //  that's a problem.
+            if (!TP.isElement(obj)) {
+                return this.raise('TP.sig.InvalidElement');
+            }
+
+            //  Remove the element from the global IntersectionObserver
+            //  machinery.
+            if (TP.isValid(TP.VISIBILITY_INTERSECTION_OBSERVER)) {
+                TP.VISIBILITY_INTERSECTION_OBSERVER.unobserve(obj);
+            }
+        }
+    }
+
+    //  Always tell the notification system to add our handler, etc.
+    //  presuming this was invoked indirectly via observe().
+    return true;
+});
+
+//  ========================================================================
 //  TP.core.Worker
 //  ========================================================================
 

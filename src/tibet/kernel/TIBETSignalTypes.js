@@ -2375,6 +2375,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMUISignal.defineSubtype('DOMVisibility');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMVisibility.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.sig.VisibilitySignalSource;
+});
+
+//  ---
+
+TP.sig.DOMVisibility.defineSubtype('DOMVisible');
+TP.sig.DOMVisibility.defineSubtype('DOMHidden');
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMUISignal.defineSubtype('DOMScroll');
 TP.sig.DOMScroll.Type.defineConstant('NATIVE_NAME', 'scroll');
 
