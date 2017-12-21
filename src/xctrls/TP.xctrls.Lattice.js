@@ -83,7 +83,7 @@ function(aRequest) {
     tpElem = TP.wrap(elem);
 
     //  Observe ourself for when we're resized
-    tpElem.observe(tpElem, 'TP.sig.DOMResize');
+    tpElem.observe(tpElem, TP.ac('TP.sig.DOMResize', 'TP.sig.DOMVisible'));
 
     tpElem.set('$numSpacingRows', 0);
 
@@ -128,7 +128,7 @@ function(aRequest) {
 
     //  We signed up with ourself for resize signals when our stylesheet was
     //  ready. We're going away now, so we need to clean up.
-    tpElem.ignore(tpElem, 'TP.sig.DOMResize');
+    tpElem.ignore(tpElem, TP.ac('TP.sig.DOMResize', 'TP.sig.DOMVisible'));
 
     return;
 });
