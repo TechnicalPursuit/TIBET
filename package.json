@@ -80,6 +80,7 @@
         "pouchdb": "TechnicalPursuit/pouchdb#5.4.4",
         "pouchdb-all-dbs": "https://github.com/TechnicalPursuit/pouchdb-all-dbs/tarball/master",
         "readline-sync": "^1.2.19",
+        "resize-observer-polyfill": "^1.5.0",
         "semver": "^5.3.0",
         "shelljs": "https://github.com/TechnicalPursuit/shelljs/tarball/master",
         "shelljs-nodecli": "*",

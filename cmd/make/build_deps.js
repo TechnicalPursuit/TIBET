@@ -27,6 +27,7 @@
             '_rollup_less',
             '_rollup_pouchdb',
             '_rollup_pouchdb_all_dbs',
+            '_rollup_resizeobserver',
             '_rollup_sinon',
             '_rollup_sprintf',
             '_rollup_syn',
