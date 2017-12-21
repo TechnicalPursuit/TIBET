@@ -252,6 +252,33 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineHandler('DOMVisible',
+function(aSignal) {
+
+    /**
+     * @method handleDOMResize
+     * @param {TP.sig.DOMVisible} aSignal The signal that caused this handler to
+     *     trip.
+     * @returns {TP.xctrls.Lattice} The receiver.
+     */
+
+    var currentRowCount,
+
+        newRowCount;
+
+    currentRowCount = this.$get('$endOffset') - this.$get('$startOffset');
+    newRowCount = this.computeGeneratedRowCount();
+
+    if (newRowCount !== currentRowCount) {
+        //  When the number of rows changed, we have to re-render.
+        this.render();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Lattice.Inst.defineMethod('refresh',
 function(shouldRender) {
 
