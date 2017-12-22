@@ -1005,7 +1005,6 @@ function(aSignal) {
     if (TP.isValid(target)) {
         TP.elementRemoveClass(target, 'sherpa-hud-highlight');
         this.$set('highlighted', null, false);
-        return;
     }
 
     targetElem = aSignal.getDOMTarget();
