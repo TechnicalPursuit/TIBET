@@ -2977,8 +2977,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     var origins,
         signals,
 
-        handlerFunc,
-
         len,
         i,
         signal,
@@ -3016,8 +3014,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
         return false;
     }
-
-    handlerFunc = this.get('$handlerFunc');
 
     len = signals.getSize();
 
@@ -3113,8 +3109,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     engine to remove the observation, false otherwise.
      */
 
-    var handlerFunc,
-        i,
+    var i,
         j,
         len,
         len2,
@@ -3151,8 +3146,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
         return false;
     }
-
-    handlerFunc = this.get('$handlerFunc');
 
     len = signals.getSize();
 

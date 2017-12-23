@@ -2,7 +2,6 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        var npmdir;
 
         make.sh.exec('bower install cryptojslib');
 
