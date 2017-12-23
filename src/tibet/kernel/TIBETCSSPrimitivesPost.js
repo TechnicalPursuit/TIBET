@@ -1379,7 +1379,7 @@ function(anElement, aProperty) {
      * @param {String|Array} aProperty An optional property name or names to
      *     query for.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {String} The computed style of the supplied element/property, or
      *     the empty String if there was no style.
      */
@@ -1395,7 +1395,7 @@ function(anElement, aProperty) {
 
     if (!TP.isStyleDeclaration(
             compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     if (TP.isString(aProperty)) {
@@ -1438,7 +1438,7 @@ function(anElement, aProperty) {
      * @param {String} aProperty The name of the style property to get.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
      */
@@ -1456,7 +1456,7 @@ function(anElement, aProperty) {
 
     if (!TP.isStyleDeclaration(
             compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  If the property is a CSS custom property, then use the
@@ -2031,6 +2031,7 @@ function(anElement, aProperty, aPropertyValue) {
      *     to.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var styleObj;
@@ -2044,7 +2045,7 @@ function(anElement, aProperty, aPropertyValue) {
     }
 
     if (!TP.isStyleDeclaration(styleObj = TP.elementGetStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  If the property is a CSS custom property, then use the setProperty()

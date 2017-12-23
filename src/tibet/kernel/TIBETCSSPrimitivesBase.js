@@ -1048,7 +1048,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidString
      * @exception TP.sig.InvalidParameter
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element.
      */
@@ -1097,7 +1097,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  Grab the computed style for the element.
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  We wrap this in a try...catch, since sometimes Mozilla throws an
@@ -2149,6 +2149,7 @@ function(aStyleRule) {
      * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
      *     stylesheet of.
      * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyleSheet
      * @returns {Array} An Array of the stylesheet object containing the rule
      *     and the index the rule can be found in the sheet.
      */
@@ -2164,7 +2165,7 @@ function(aStyleRule) {
     styleSheet = TP.styleRuleGetStyleSheet(aStyleRule);
 
     if (!TP.isStyleSheet(styleSheet)) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleSheet');
     }
 
     //  NB: Note how we do *not* expand imports here

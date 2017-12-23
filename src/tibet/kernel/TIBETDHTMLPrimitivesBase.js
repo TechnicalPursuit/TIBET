@@ -1172,7 +1172,7 @@ function(anElement) {
      *     is set to 50% opacity).
      * @param {HTMLElement} anElement The element to set the opacity of.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Number} The element's opacity level.
      */
 
@@ -1184,7 +1184,7 @@ function(anElement) {
 
     //  Grab the computed style for the element
     if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  If there is no 'opacity' property defined on the style for the
@@ -1258,7 +1258,7 @@ function(anElement, styleProperty, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Number} The supplied property as a pixel value.
      */
 
@@ -1274,7 +1274,7 @@ function(anElement, styleProperty, wantsTransformed) {
 
     //  Grab the computed style for the element
     if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     return TP.elementGetPixelValue(anElement,
@@ -1302,7 +1302,7 @@ function(anElement, styleProperties, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {TP.core.Hash} A TP.core.Hash of Numbers containing the supplied
      *     properties as a pixel value.
      */
@@ -1324,7 +1324,7 @@ function(anElement, styleProperties, wantsTransformed) {
 
     //  Grab the computed style for the element
     if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     valuesInPixels = TP.hc();
@@ -1589,6 +1589,7 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to check to see if it has been
      *     positioned.
      * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Boolean} Whether or not the element has been positioned.
      */
 
@@ -1602,7 +1603,7 @@ function(anElement) {
     //  Grab the computed style for the element
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     positionVal = computedStyle.position;

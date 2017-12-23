@@ -1353,7 +1353,7 @@ TP.hc(
          *     element has been transformed with a CSS transformation. The
          *     default is false.
          * @exception TP.sig.InvalidElement
-         * @exception TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidStyleDeclaration
          * @returns {Number|Array} The element's border in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
@@ -1374,7 +1374,7 @@ TP.hc(
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         //  Define a reusable helper Function that will avoid repetition below.
@@ -1556,7 +1556,7 @@ TP.hc(
          *     default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
-         * @exception TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidStyleDeclaration
          * @returns {Number|Array} The element's margin in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
@@ -1577,7 +1577,7 @@ TP.hc(
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         //  Define a reusable helper Function that will avoid repetition below.
@@ -1765,7 +1765,7 @@ TP.hc(
          *     default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
-         * @exception TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidStyleDeclaration
          * @returns {Number|Array} The element's padding in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
@@ -1790,7 +1790,7 @@ TP.hc(
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         //  Define a reusable helper Function that will avoid repetition below.
@@ -1880,7 +1880,7 @@ TP.hc(
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
          * @exception TP.sig.InvalidElement
-         * @exception TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidStyleDeclaration
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -1896,7 +1896,7 @@ TP.hc(
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         if (TP.isValid(val = computedStyle.MozTransform)) {
@@ -1921,7 +1921,7 @@ TP.hc(
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
          * @exception TP.sig.InvalidElement
-         * @exception TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidStyleDeclaration
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -1937,7 +1937,7 @@ TP.hc(
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         if (TP.isValid(val = computedStyle.msTransform)) {
@@ -1962,7 +1962,7 @@ TP.hc(
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
          * @exception TP.sig.InvalidElement
-         * @exception TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidStyleDeclaration
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -1978,7 +1978,7 @@ TP.hc(
         //  Grab the computed style for the element
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         if (TP.isValid(val = computedStyle.WebkitTransform)) {
