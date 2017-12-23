@@ -657,6 +657,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('sherpaDomHudGetTileContent',
+function() {
+
+    /**
+     * @method sherpaDomHudGetTileContent
+     * @summary Returns the label that the Sherpa's 'domhud' panel will use when
+     *     displaying it's 'tile' panel for this node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     domhud tile panel.
+     */
+
+    return TP.elem('<sherpa:domhud_genericContent/>');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
 function(insertionPointElement, insertionPosition) {
 

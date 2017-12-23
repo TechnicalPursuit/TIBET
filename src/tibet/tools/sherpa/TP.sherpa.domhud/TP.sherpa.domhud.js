@@ -1167,7 +1167,7 @@ function(aSignal) {
                 var newContentTPElem;
 
                 newContentTPElem = aTileTPElem.setContent(
-                    '<sherpa:domhud_genericContent/>');
+                                    sourceTPElem.sherpaDomHudGetTileContent());
                 newContentTPElem.awaken();
 
                 //  Set the resource of the model URI to the model object,
