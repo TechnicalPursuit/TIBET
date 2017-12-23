@@ -1784,7 +1784,7 @@ function(anElement, styleText) {
 
     //  If there's no valid text node under the style element, create one
     //  with the content.
-    if (TP.notValid(styleTextNode = anElement.firstChild)) {
+    if (!TP.isTextNode(styleTextNode = anElement.firstChild)) {
         TP.nodeAppendChild(
             anElement,
             TP.nodeGetDocument(anElement).createTextNode(styleText),
@@ -1851,7 +1851,7 @@ function(aStyleRule, allDocumentStyleSheets) {
 
         ruleEntry;
 
-    if (TP.notValid(aStyleRule)) {
+    if (!TP.isStyleRule(aStyleRule)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -1966,7 +1966,7 @@ function(aStyleRule, sourceASTs) {
 
         ruleInfo;
 
-    if (TP.notValid(aStyleRule)) {
+    if (!TP.isStyleRule(aStyleRule)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2126,7 +2126,7 @@ function(aStyleRule) {
      * @returns {CSSStyleSheet} The stylesheet object containing the rule.
      */
 
-    if (TP.notValid(aStyleRule)) {
+    if (!TP.isStyleRule(aStyleRule)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2157,13 +2157,13 @@ function(aStyleRule) {
         allRules,
         i;
 
-    if (TP.notValid(aStyleRule)) {
+    if (!TP.isStyleRule(aStyleRule)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     styleSheet = TP.styleRuleGetStyleSheet(aStyleRule);
 
-    if (TP.notValid(styleSheet)) {
+    if (!TP.isStyleSheet(styleSheet)) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
@@ -2200,7 +2200,7 @@ function(aStylesheet, expandImports) {
 
         hrefs;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2238,7 +2238,7 @@ function(aStylesheet, expandImports) {
 
         i;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2293,7 +2293,7 @@ function(aStylesheet) {
 
     var loc;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2341,7 +2341,7 @@ function(aStylesheet, expandImports) {
 
         i;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2399,7 +2399,7 @@ function(aStylesheet, selectorText) {
 
         i;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2462,7 +2462,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
         ownerTPElem;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2527,7 +2527,7 @@ function(aStylesheet) {
 
         appliedRules;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -2613,7 +2613,7 @@ function(aStylesheet, ruleIndex) {
 
     var ownerTPElem;
 
-    if (TP.notValid(aStylesheet)) {
+    if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 

@@ -928,7 +928,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             //  When fontSize is a percentage, it is computed from the
             //  element's *parent node* fontSize.
-            if (TP.notValid(targetElement = anElement.parentNode)) {
+            if (!TP.isElement(targetElement = anElement.parentNode)) {
                 return 0;
             }
             theValue = TP.elementGetComputedStyleValueInPixels(
@@ -970,8 +970,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             //  Vertical measurements are computed from the *offset
             //  parent*, not the parent node.
-            if (TP.notValid(targetElement =
-                            TP.elementGetOffsetParent(anElement))) {
+            if (!TP.isElement(targetElement =
+                                TP.elementGetOffsetParent(anElement))) {
                 //  If its the body element, then we can go ahead and use
                 //  the parent node, since we know that's the document
                 //  element.
@@ -1013,8 +1013,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             //  Horizontal (and other) measurements are computed from the
             //  *offset parent*, not the parent node, unless its the body
             //  element ;-).
-            if (TP.notValid(targetElement =
-                            TP.elementGetOffsetParent(anElement))) {
+            if (!TP.isElement(targetElement =
+                                TP.elementGetOffsetParent(anElement))) {
                 //  If its the body element, then we can go ahead and use
                 //  the parent node, since we know that's the document
                 //  element.
@@ -1261,7 +1261,7 @@ function(anElement, flushCaches) {
         }
 
         //  Make sure that stylesheet still has an owner node. If not, prune it.
-        if (TP.notValid(parentSS.ownerNode)) {
+        if (!TP.isNode(parentSS.ownerNode)) {
 
             //  If it has, remove the rule from the rule Array
             ruleArray.splice(i, 1);
@@ -1393,8 +1393,8 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.notValid(compStyleObj =
-                    TP.elementGetComputedStyleObj(anElement))) {
+    if (!TP.isStyleDeclaration(
+            compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
@@ -1454,7 +1454,8 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    if (TP.notValid(compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
+    if (!TP.isStyleDeclaration(
+            compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
@@ -2000,7 +2001,7 @@ function(anElement, theStyle) {
 
     styleObj = TP.elementGetStyleObj(anElement);
 
-    if (TP.notValid(theStyle)) {
+    if (!TP.isStyleDeclaration(theStyle)) {
         styleObj.cssText = null;
     } else if (TP.isString(theStyle)) {
         styleObj.cssText = theStyle;
@@ -2042,7 +2043,7 @@ function(anElement, aProperty, aPropertyValue) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    if (TP.notValid(styleObj = TP.elementGetStyleObj(anElement))) {
+    if (!TP.isStyleDeclaration(styleObj = TP.elementGetStyleObj(anElement))) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
