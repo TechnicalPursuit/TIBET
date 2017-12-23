@@ -3766,7 +3766,7 @@ TP.boot.$documentFromString = function(aString, shouldThrow) {
 if (TP.sys.isUA('GECKO')) {
     TP.boot.$$xmlParseErrorMsgMatcher =
         /XML Parsing Error: ([^\n]+)\nLocation: [^\n]+\nLine Number (\d+), Column (\d+)/;
-} else { //if (TP.sys.isUA('WEBKIT')) {
+} else { // if (TP.sys.isUA('WEBKIT')) {
     TP.boot.$$xmlParseErrorMsgMatcher =
         /error on line (\d+) at column (\d+): ([^<]+)/;
 }
@@ -10050,6 +10050,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         node,       //  Result of searching for our config by ID.
         package,    //  The package node from the XML doc.
         version,    //  A version specifier for the package.
+        txt,        //  Raw text value for unparsed XML file.
         msg;        //  Error message construction variable.
 
     expanded = TP.boot.$isEmpty(aPath) ? TP.sys.cfg('boot.package') : aPath;
