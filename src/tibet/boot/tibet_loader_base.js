@@ -3746,17 +3746,18 @@ nodeAsString and documentFromString processing to help with XML processing
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentFromString = function(aString) {
+TP.boot.$documentFromString = function(aString, shouldThrow) {
 
     /**
      * @method $documentFromString
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
+     * @param {Boolean} [shouldThrow=false] Should parse errors throw?
      * @returns {Node}
      */
 
-    return TP.boot.$documentFromStringCommon(aString);
+    return TP.boot.$documentFromStringCommon(aString, shouldThrow);
 };
 
 //  ----------------------------------------------------------------------------
@@ -3765,42 +3766,51 @@ TP.boot.$documentFromString = function(aString) {
 if (TP.sys.isUA('GECKO')) {
     TP.boot.$$xmlParseErrorMsgMatcher =
         /XML Parsing Error: ([^\n]+)\nLocation: [^\n]+\nLine Number (\d+), Column (\d+)/;
-} else if (TP.sys.isUA('WEBKIT')) {
+} else { //if (TP.sys.isUA('WEBKIT')) {
     TP.boot.$$xmlParseErrorMsgMatcher =
         /error on line (\d+) at column (\d+): ([^<]+)/;
 }
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentFromStringCommon = function(aString) {
+TP.boot.$documentFromStringCommon = function(aString, shouldThrow) {
 
     /**
      * @method $documentFromStringCommon
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
+     * @param {Boolean} [shouldThrow=false] Should parse errors throw?
      * @returns {XMLDocument} The XML document created from the supplied String.
      */
 
     var parser,
         xmlDoc,
-
+        str,
         errorElement,
         errorMatchResults;
 
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(aString, 'application/xml');
-
     if (TP.boot.$isValid(errorElement =
-                        xmlDoc.getElementsByTagName('parsererror')[0])) {
-        errorMatchResults = TP.boot.$$xmlParseErrorMsgMatcher.exec(
-                                        errorElement.firstChild.nodeValue);
+            xmlDoc.getElementsByTagName('parsererror')[0])) {
+
+        str = TP.boot.$nodeAsString(errorElement);
+        errorMatchResults = TP.boot.$$xmlParseErrorMsgMatcher.exec(str);
+
+        if (TP.boot.$isValid(errorMatchResults)) {
+            str = errorMatchResults[0];
+        }
+
+        if (shouldThrow) {
+            throw new Error(str);
+        }
 
         //  don't log, we use this call in logging - but go ahead and output to
         //  the browser console
 
         /* eslint-disable no-console */
-        console.log(errorMatchResults);
+        console.log(str);
         /* eslint-enable no-console */
 
         return null;
@@ -3811,13 +3821,14 @@ TP.boot.$documentFromStringCommon = function(aString) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentFromStringIE = function(aString) {
+TP.boot.$documentFromStringIE = function(aString, shouldThrow) {
 
     /**
      * @method $documentFromStringIE
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
+     * @param {Boolean} [shouldThrow=false] Should parse errors throw?
      * @returns {XMLDocument} The XML document created from the supplied String.
      */
 
@@ -3832,6 +3843,10 @@ TP.boot.$documentFromStringIE = function(aString) {
 
     if (successfulParse === false) {
         parseErrorObj = xmlDoc.parseError;
+
+        if (shouldThrow) {
+            throw new Error(parseErrorObj);
+        }
 
         //  don't log, we use this call in logging - but go ahead and output to
         //  the browser console
@@ -10057,7 +10072,15 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
             }
 
             if (!doc) {
-                throw new Error('Unable to read package: ' + expanded);
+                //  Usually an invalid XML file...try to provide parse info.
+                txt = TP.boot.$uriLoad(expanded, TP.TEXT, 'manifest');
+                if (TP.boot.$isValid(txt)) {
+                    doc = TP.boot.$documentFromString(txt, true);
+                }
+
+                if (!doc) {
+                    throw new Error('Unable to read package: ' + expanded);
+                }
             }
 
             TP.boot.$$packages[expanded] = doc;
