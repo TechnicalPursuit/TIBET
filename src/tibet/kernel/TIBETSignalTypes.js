@@ -1609,6 +1609,10 @@ TP.sig.DOMException.defineSubtype('DOMParseException');
 
 TP.sig.DOMException.defineSubtype('DOMComponentException');
 
+TP.sig.DOMException.defineSubtype('InvalidStyleDeclaration');
+TP.sig.DOMException.defineSubtype('InvalidStyleRule');
+TP.sig.DOMException.defineSubtype('InvalidStyleSheet');
+
 //  ------------------------------------------------------------------------
 //  DOM Error Indication Signals
 //  ------------------------------------------------------------------------
