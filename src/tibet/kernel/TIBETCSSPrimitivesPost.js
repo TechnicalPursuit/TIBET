@@ -1990,6 +1990,7 @@ function(anElement, theStyle) {
      *     for.
      * @param {String|TP.core.Hash} theStyle A string or hash of style content.
      * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
 
@@ -2009,7 +2010,7 @@ function(anElement, theStyle) {
         //  Pass 'false' to not quote values with whitespace.
         styleObj.cssText = TP.styleStringFromHash(theStyle, false);
     } else {
-        return TP.raise(this, 'InvalidStyle',
+        return TP.raise(this, 'InvalidParameter',
                         'Style content must be string or TP.core.Hash');
     }
 
