@@ -64,20 +64,20 @@ sherpa|bindshud > ul.content > li.domnode[pclass|disabled] {
 
 sherpa|bindshud > ul.content > li.domnode:hover {
 
-    background-color: cornsilk;
+    background-color: #ffcfca;
     color: #666;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected] {
 
-    background-color: gold;
+    background-color: #ff9f95;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected]:hover {
 
-    background-color: gold;
+    background-color: #ff5a49;
 }
 
 /* spacer items */
