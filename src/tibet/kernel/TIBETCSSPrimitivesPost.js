@@ -2002,7 +2002,7 @@ function(anElement, theStyle) {
 
     styleObj = TP.elementGetStyleObj(anElement);
 
-    if (!TP.isStyleDeclaration(theStyle)) {
+    if (TP.notValid(theStyle)) {
         styleObj.cssText = null;
     } else if (TP.isString(theStyle)) {
         styleObj.cssText = theStyle;
