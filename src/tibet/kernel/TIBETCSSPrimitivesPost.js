@@ -125,6 +125,57 @@ TP.CSS_DISALLOW_NEGATIVE_VALUES = TP.ac('borderWidth',
                                         'paddingTop',
                                         'width');
 
+TP.CSS_INHERITED_PROPERTIES = TP.ac('azimuth',
+                                    'borderCollapse',
+                                    'borderSpacing',
+                                    'captionSide',
+                                    'color',
+                                    'cursor',
+                                    'direction',
+                                    'elevation',
+                                    'emptyCells',
+                                    'fontFamily',
+                                    'fontSize',
+                                    'fontStyle',
+                                    'fontVariant',
+                                    'fontWeight',
+                                    'fontSizeAdjust',
+                                    'fontStretch',
+                                    'font',
+                                    'letterSpacing',
+                                    'lineHeight',
+                                    'listStyleImage',
+                                    'listStylePosition',
+                                    'listStyleType',
+                                    'listStyle',
+                                    'orphans',
+                                    'pitchRange',
+                                    'pitchQuotes',
+                                    'quotes',
+                                    'richness',
+                                    'speakHeader',
+                                    'speakNumeric',
+                                    'speakPunctuation',
+                                    'speak',
+                                    'speechRate',
+                                    'stress',
+                                    'tabSize',
+                                    'textAlign',
+                                    'textAlignLast',
+                                    'textDecorationColor',
+                                    'textIndent',
+                                    'textJustify',
+                                    'textShadow',
+                                    'textTransform',
+                                    'visibility',
+                                    'voiceFamily',
+                                    'volume',
+                                    'whiteSpace',
+                                    'widows',
+                                    'wordBreak',
+                                    'wordSpacing',
+                                    'wordWrap');
+
 TP.regex.CSS_COLOR_PROPERTY = /color/i;
 
 //  A TP.core.Hash of CSS color names. Note that the CSS3 color module
@@ -877,7 +928,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             //  When fontSize is a percentage, it is computed from the
             //  element's *parent node* fontSize.
-            if (TP.notValid(targetElement = anElement.parentNode)) {
+            if (!TP.isElement(targetElement = anElement.parentNode)) {
                 return 0;
             }
             theValue = TP.elementGetComputedStyleValueInPixels(
@@ -919,8 +970,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             //  Vertical measurements are computed from the *offset
             //  parent*, not the parent node.
-            if (TP.notValid(targetElement =
-                            TP.elementGetOffsetParent(anElement))) {
+            if (!TP.isElement(targetElement =
+                                TP.elementGetOffsetParent(anElement))) {
                 //  If its the body element, then we can go ahead and use
                 //  the parent node, since we know that's the document
                 //  element.
@@ -962,8 +1013,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             //  Horizontal (and other) measurements are computed from the
             //  *offset parent*, not the parent node, unless its the body
             //  element ;-).
-            if (TP.notValid(targetElement =
-                            TP.elementGetOffsetParent(anElement))) {
+            if (!TP.isElement(targetElement =
+                                TP.elementGetOffsetParent(anElement))) {
                 //  If its the body element, then we can go ahead and use
                 //  the parent node, since we know that's the document
                 //  element.
@@ -1210,7 +1261,7 @@ function(anElement, flushCaches) {
         }
 
         //  Make sure that stylesheet still has an owner node. If not, prune it.
-        if (TP.notValid(parentSS.ownerNode)) {
+        if (!TP.isNode(parentSS.ownerNode)) {
 
             //  If it has, remove the rule from the rule Array
             ruleArray.splice(i, 1);
@@ -1328,7 +1379,7 @@ function(anElement, aProperty) {
      * @param {String|Array} aProperty An optional property name or names to
      *     query for.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {String} The computed style of the supplied element/property, or
      *     the empty String if there was no style.
      */
@@ -1342,9 +1393,9 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.notValid(compStyleObj =
-                    TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+    if (!TP.isStyleDeclaration(
+            compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     if (TP.isString(aProperty)) {
@@ -1387,7 +1438,7 @@ function(anElement, aProperty) {
      * @param {String} aProperty The name of the style property to get.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
      */
@@ -1403,8 +1454,9 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    if (TP.notValid(compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+    if (!TP.isStyleDeclaration(
+            compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  If the property is a CSS custom property, then use the
@@ -1938,6 +1990,7 @@ function(anElement, theStyle) {
      *     for.
      * @param {String|TP.core.Hash} theStyle A string or hash of style content.
      * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
 
@@ -1957,7 +2010,7 @@ function(anElement, theStyle) {
         //  Pass 'false' to not quote values with whitespace.
         styleObj.cssText = TP.styleStringFromHash(theStyle, false);
     } else {
-        return TP.raise(this, 'InvalidStyle',
+        return TP.raise(this, 'InvalidParameter',
                         'Style content must be string or TP.core.Hash');
     }
 
@@ -1979,6 +2032,7 @@ function(anElement, aProperty, aPropertyValue) {
      *     to.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var styleObj;
@@ -1991,8 +2045,8 @@ function(anElement, aProperty, aPropertyValue) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    if (TP.notValid(styleObj = TP.elementGetStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+    if (!TP.isStyleDeclaration(styleObj = TP.elementGetStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  If the property is a CSS custom property, then use the setProperty()

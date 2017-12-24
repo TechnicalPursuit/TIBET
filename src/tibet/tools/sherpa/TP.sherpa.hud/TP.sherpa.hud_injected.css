@@ -3,6 +3,8 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 .sherpa-hud {
+
+    --sherpa-hud-highlight-color: rgba(255, 0, 0, 0.2);
 }
 
 /* stylelint-disable selector-type-no-unknown */
@@ -16,9 +18,67 @@
     overflow: auto;
 }
 
-.sherpa-hud .sherpa-hud-highlight:not(.sherpa-outliner-haloed),
-.sherpa-hud *|*[class~="sherpa-hud-highlight"]:not([class~="sherpa-outliner-haloed"]) {
+.sherpa-hud.sherpa-hud-highlighting b,
+.sherpa-hud.sherpa-hud-highlighting big,
+.sherpa-hud.sherpa-hud-highlighting i,
+.sherpa-hud.sherpa-hud-highlighting small,
+.sherpa-hud.sherpa-hud-highlighting tt,
+.sherpa-hud.sherpa-hud-highlighting abbr,
+.sherpa-hud.sherpa-hud-highlighting acronym,
+.sherpa-hud.sherpa-hud-highlighting cite,
+.sherpa-hud.sherpa-hud-highlighting code,
+.sherpa-hud.sherpa-hud-highlighting dfn,
+.sherpa-hud.sherpa-hud-highlighting em,
+.sherpa-hud.sherpa-hud-highlighting kbd,
+.sherpa-hud.sherpa-hud-highlighting strong,
+.sherpa-hud.sherpa-hud-highlighting samp,
+.sherpa-hud.sherpa-hud-highlighting var,
+.sherpa-hud.sherpa-hud-highlighting a,
+.sherpa-hud.sherpa-hud-highlighting bdo,
+.sherpa-hud.sherpa-hud-highlighting br,
+.sherpa-hud.sherpa-hud-highlighting img,
+.sherpa-hud.sherpa-hud-highlighting map,
+.sherpa-hud.sherpa-hud-highlighting object,
+.sherpa-hud.sherpa-hud-highlighting q,
+.sherpa-hud.sherpa-hud-highlighting script,
+.sherpa-hud.sherpa-hud-highlighting span,
+.sherpa-hud.sherpa-hud-highlighting sub,
+.sherpa-hud.sherpa-hud-highlighting sup,
+.sherpa-hud.sherpa-hud-highlighting button,
+.sherpa-hud.sherpa-hud-highlighting input,
+.sherpa-hud.sherpa-hud-highlighting label,
+.sherpa-hud.sherpa-hud-highlighting select,
+.sherpa-hud.sherpa-hud-highlighting textarea {
 
-    outline: dashed 2px black !important;
+    display: inline-block !important;
 }
 
+.sherpa-hud.sherpa-hud-highlighting *:not(tr).sherpa-hud-highlight,
+.sherpa-hud.sherpa-hud-highlighting *|*:not(tr)[class~="sherpa-hud-highlight"] {
+
+    position: relative;
+}
+
+.sherpa-hud.sherpa-hud-highlighting *:not(tr).sherpa-hud-highlight::before,
+.sherpa-hud.sherpa-hud-highlighting *|*:not(tr)[class~="sherpa-hud-highlight"]::before {
+
+    position: absolute;
+    display: block;
+
+    content: "";
+
+    top: 0;
+    left: 0;
+
+    right: 0;
+    bottom: 0;
+
+    z-index: 1;
+
+    background-color: var(--sherpa-hud-highlight-color);
+}
+
+.sherpa-hud.sherpa-hud-highlighting tr.sherpa-hud-highlight {
+
+    background-color: var(--sherpa-hud-highlight-color) !important;
+}

@@ -765,6 +765,76 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('hash',
+function(anObject, aHashMode, aHashFormat) {
+
+    /**
+     * @method hash
+     * @summary Hashes the string representation of the Object provided.
+     * @description Note that the full TIBET cryptography library will overlay
+     *     this method and install its own version.
+     * @param {Object} anObject The object to acquire a hash code for.
+     * @param {Number} aHashMode TP.HASH_MD5 or TP.HASH_SHA1. The default is
+     *     SHA-1 since MD5 has been cracked.
+     * @param {Number} aHashFormat TP.HASH_HEX or TP.HASH_B64. The default is
+     *     TP.HASH_HEX.
+     * @exception TP.sig.InvalidParameter
+     * @returns {String} The hashed string result.
+     */
+
+    var str,
+
+        mode,
+        fmt,
+
+        result;
+
+    if (TP.notValid(anObject)) {
+        return TP.raise(null, 'TP.sig.InvalidParameter');
+    }
+
+    str = TP.str(anObject);
+
+    mode = TP.ifInvalid(aHashMode, TP.HASH_SHA1);
+    fmt = TP.ifInvalid(aHashFormat, TP.HASH_HEX);
+
+    switch (mode) {
+        case TP.HASH_MD5:
+
+            result = TP.extern.CryptoJS.MD5(str);
+
+            break;
+
+        case TP.HASH_SHA1:
+
+            result = TP.extern.CryptoJS.SHA1(str);
+
+            break;
+
+        default:
+            break;
+    }
+
+    switch (fmt) {
+
+        case TP.HASH_B64:
+
+            return result.toString(TP.extern.CryptoJS.enc.Base64);
+
+        case TP.HASH_HEX:
+
+            return result.toString(TP.extern.CryptoJS.enc.Hex);
+
+        default:
+
+            return result;
+    }
+}, {
+    dependencies: [TP.extern.CryptoJS]
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('htmlEntitiesToLiterals',
 function(aString) {
 

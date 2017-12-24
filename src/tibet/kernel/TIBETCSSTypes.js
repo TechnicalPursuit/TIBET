@@ -433,7 +433,7 @@ function(job, params) {
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -494,7 +494,7 @@ function(job, params) {
     if (TP.isEmpty(from = params.at('from'))) {
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(element))) {
-            return this.raise('TP.sig.InvalidStyle');
+            return this.raise('TP.sig.InvalidStyleDeclaration');
         }
 
         from = computedStyle[styleProperty];
@@ -659,7 +659,7 @@ function(job, params) {
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -723,7 +723,7 @@ function(job, params) {
     if (TP.isEmpty(from = params.at('from'))) {
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(element))) {
-            return this.raise('TP.sig.InvalidStyle');
+            return this.raise('TP.sig.InvalidStyleDeclaration');
         }
 
         from = computedStyle[styleProperty];
@@ -807,7 +807,7 @@ function(job, params) {
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -902,7 +902,7 @@ function(job, params) {
         } else {
             if (TP.notValid(computedStyle =
                             TP.elementGetComputedStyleObj(element))) {
-                return this.raise('TP.sig.InvalidStyle');
+                return this.raise('TP.sig.InvalidStyleDeclaration');
             }
 
             fromAsNumber = TP.colorStringAsLongNumber(

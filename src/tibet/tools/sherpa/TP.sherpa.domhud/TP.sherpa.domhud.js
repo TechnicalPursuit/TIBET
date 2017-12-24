@@ -992,48 +992,79 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var targetElem,
+    var uiDoc,
+
+        target,
+
+        targetDocElem,
+        targetElem,
         peerID,
 
-        halo,
+        hudInjectedStyleElement;
 
-        target;
+    //  Grab the UI canvas's document
+    uiDoc = TP.sys.uidoc(true);
 
+    //  Grab the highlighted element.
     target = this.get('highlighted');
 
-    //  If target then we're leaving...clear and exit.
+    //  If target is valid, then we need to clear the highlighted element
     if (TP.isValid(target)) {
+
+        //  Clear the target of the highlight class
         TP.elementRemoveClass(target, 'sherpa-hud-highlight');
         this.$set('highlighted', null, false);
-        return;
+
+        //  Grab the document element and remove the class that indicates that
+        //  we're highlighting.
+        targetDocElem = uiDoc.documentElement;
+        TP.elementRemoveClass(targetDocElem, 'sherpa-hud-highlighting');
     }
 
+    //  Grab the new 'DOM target' element, which will be the lozenge that the
+    //  user is highlighting.
     targetElem = aSignal.getDOMTarget();
+
+    //  If that element doesn't have the 'domnode' class, then we exit. It may
+    //  be a spacer, which we're not interested in.
     if (!TP.elementHasClass(targetElem, 'domnode')) {
         return this;
     }
 
+    //  The peerID on the lozenge will indicate which element in the UI canvas
+    //  it is representing. If we don't have one, we exit.
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
     if (TP.isEmpty(peerID)) {
         return this;
     }
 
-    //  NB: We want to query the current UI canvas here - no node context
-    //  necessary.
-    target = TP.byId(peerID);
-    if (TP.notValid(target)) {
+    //  Query the DOM of the UI canvas for the target element.
+    target = TP.byId(peerID, uiDoc, false);
+    if (!TP.isElement(target)) {
         return this;
     }
 
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    //  Grab the style sheet that the HUD injected into the UI canvas.
+    hudInjectedStyleElement = TP.byId('hud_injected_generated',
+                                        uiDoc,
+                                        false);
 
-    if (target !== halo.get('currentTargetTPElem')) {
+    //  Set the '--sherpa-hud-highlight-color' to a light opacity version of our
+    //  full color.
+    TP.cssElementSetCustomCSSPropertyValue(
+        hudInjectedStyleElement,
+        '.sherpa-hud',
+        '--sherpa-hud-highlight-color',
+        'rgba(255, 215, 0, 0.2)');
 
-        target = target.getNativeNode();
-        TP.elementAddClass(target, 'sherpa-hud-highlight');
-        this.$set('highlighted', target, false);
-    }
+    //  Add the highlight class to the target.
+    TP.elementAddClass(target, 'sherpa-hud-highlight');
+    this.$set('highlighted', target, false);
+
+    //  Grab the document element and add the class that indicates that we're
+    //  highlighting.
+    targetDocElem = uiDoc.documentElement;
+    TP.elementAddClass(targetDocElem, 'sherpa-hud-highlighting');
 
     return this;
 });
@@ -1136,7 +1167,7 @@ function(aSignal) {
                 var newContentTPElem;
 
                 newContentTPElem = aTileTPElem.setContent(
-                    '<sherpa:domhud_genericContent/>');
+                                    sourceTPElem.sherpaDomHudGetTileContent());
                 newContentTPElem.awaken();
 
                 //  Set the resource of the model URI to the model object,

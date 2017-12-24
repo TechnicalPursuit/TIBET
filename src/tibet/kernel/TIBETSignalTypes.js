@@ -1609,6 +1609,10 @@ TP.sig.DOMException.defineSubtype('DOMParseException');
 
 TP.sig.DOMException.defineSubtype('DOMComponentException');
 
+TP.sig.DOMException.defineSubtype('InvalidStyleDeclaration');
+TP.sig.DOMException.defineSubtype('InvalidStyleRule');
+TP.sig.DOMException.defineSubtype('InvalidStyleSheet');
+
 //  ------------------------------------------------------------------------
 //  DOM Error Indication Signals
 //  ------------------------------------------------------------------------
@@ -2372,6 +2376,32 @@ function() {
 
     return TP.sig.ResizeSignalSource;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMUISignal.defineSubtype('DOMVisibility');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMVisibility.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.sig.VisibilitySignalSource;
+});
+
+//  ---
+
+TP.sig.DOMVisibility.defineSubtype('DOMVisible');
+TP.sig.DOMVisibility.defineSubtype('DOMHidden');
 
 //  ------------------------------------------------------------------------
 

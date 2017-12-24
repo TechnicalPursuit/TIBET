@@ -60,7 +60,7 @@ sherpa|styleshud > ul.content > li.selector {
 
 sherpa|styleshud > ul.content > li.selector:hover {
 
-    background-color: #dbe9f0;
+    background-color: #d4e5ee;
     color: #666;
 }
 
@@ -74,7 +74,7 @@ sherpa|styleshud > ul.content > li.selector[pclass|selected] {
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
 
-    background-color: #86b6ce;
+    background-color: #73abc7;
 }
 
 /* spacer items */

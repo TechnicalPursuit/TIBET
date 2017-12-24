@@ -2055,7 +2055,7 @@ function(anElement) {
      *     display property.
      * @param {HTMLElement} anElement The element to default the display of.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle,
@@ -2076,7 +2076,7 @@ function(anElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     displayValue = computedStyle.display;
@@ -2437,7 +2437,7 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to extract the clipping
      *     rectangle from.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Array} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
@@ -2457,7 +2457,7 @@ function(anElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     clipString = computedStyle.clip;
@@ -2517,7 +2517,7 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to get the containing block
      *     element of.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Element} The element's offset parent.
      */
 
@@ -2546,7 +2546,7 @@ function(anElement) {
     //  Grab the computed style for the element
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  Grab the position of the element
@@ -2702,7 +2702,7 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to obtain the effective
      *     background color for.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {String} The element's effective background color.
      */
 
@@ -2716,7 +2716,7 @@ function(anElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  First, check to see if our computed color is transparent
@@ -2737,7 +2737,7 @@ function(anElement) {
 
             if (TP.notValid(compStyle =
                             TP.elementGetComputedStyleObj(aParentElement))) {
-                return TP.raise(this, 'TP.sig.InvalidStyle');
+                return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
             }
 
             //  If we found one that was not transparent, we can stop now.
@@ -3913,7 +3913,7 @@ function(anElement) {
      *     over in the boot code.
      * @param {HTMLElement} anElement The element to get the offset parent of.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Element} The element's offset parent.
      */
 
@@ -3940,7 +3940,7 @@ function(anElement) {
     //  Grab the computed style for the element
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  Grab the position of the element
@@ -4001,7 +4001,6 @@ function(anElement) {
      *     'offsetParent' property, if the supplied Element doesn't have one.
      * @param {HTMLElement} anElement The element to get the offset parent of.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.
      */
 
@@ -4110,7 +4109,7 @@ function(anElement, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
@@ -4138,7 +4137,7 @@ function(anElement, wantsTransformed) {
 
         if (TP.notValid(computedStyle =
                         TP.elementGetComputedStyleObj(positionedAncestor))) {
-            return TP.raise(this, 'TP.sig.InvalidStyle');
+            return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
         }
 
         if (computedStyle.position === 'absolute' ||
@@ -4564,7 +4563,7 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to determine the displayed
      *     state of.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {Boolean} Whether or not anElement is displayed.
      */
 
@@ -4581,7 +4580,7 @@ function(anElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     elemComputedDisplay = computedStyle.display;
@@ -4722,7 +4721,7 @@ function(anElement) {
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make absolute.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle,
@@ -4735,7 +4734,7 @@ function(anElement) {
     //  If the element is already absolute, just bail out here.
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     if (computedStyle.position === 'absolute') {
@@ -4767,7 +4766,7 @@ function(anElement) {
      *     positioned, this method just returns.
      * @param {HTMLElement} anElement The element to make positioned.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle;
@@ -4778,7 +4777,7 @@ function(anElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     if (!/absolute|relative/i.test(computedStyle.position)) {
@@ -4799,7 +4798,7 @@ function(anElement) {
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make relative.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle,
@@ -4814,7 +4813,7 @@ function(anElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     //  If the element is already relative, just bail out here.
@@ -4872,7 +4871,7 @@ function(anElement, deltaX, deltaY) {
      * @param {Number} deltaX The X amount to move the element by.
      * @param {Number} deltaY The Y amount to move the element by.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle,
@@ -4887,7 +4886,7 @@ function(anElement, deltaX, deltaY) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     if (!/absolute|relative/i.test(computedStyle.position)) {
@@ -4956,7 +4955,7 @@ function(anElement, anotherElement) {
      * @param {HTMLElement} anElement The element to move 'up' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement over.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle,
@@ -4969,7 +4968,7 @@ function(anElement, anotherElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anotherElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     otherZ = parseInt(computedStyle.zIndex, 10);
@@ -4990,7 +4989,7 @@ function(anElement, anotherElement) {
      * @param {HTMLElement} anElement The element to move 'down' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement under.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      */
 
     var computedStyle,
@@ -5002,7 +5001,7 @@ function(anElement, anotherElement) {
 
     if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anotherElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle');
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
     }
 
     otherZ = parseInt(computedStyle.zIndex, 10);
@@ -5185,7 +5184,6 @@ function(anElement, attrName, attrValue) {
      *     from.
      * @param {String} attrValue The value to remove from the attribute's value.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidStyle
      * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */

@@ -799,6 +799,114 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineHandler('ToggleHighlight',
+function(aSignal) {
+
+    /**
+     * @method ToggleHighlight
+     * @summary Responds to mouse over/out notifications by toggling a
+     *     class on individual peer elements. The result is that as the user
+     *     hovers over elements in the sidebar the corresponding element in
+     *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
+     * @param {TP.sig.ToggleHighlight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var uiDoc,
+
+        highlightedElems,
+        targetDocElem,
+
+        targetElem,
+        index,
+
+        selector,
+
+        hudInjectedStyleElement;
+
+    //  Grab the UI canvas's document
+    uiDoc = TP.sys.uidoc(true);
+
+    //  Grab the highlighted elements.
+    highlightedElems = this.get('highlighted');
+
+    //  If there are highlighted elements, then we need to clear them
+    if (TP.notEmpty(highlightedElems)) {
+
+        //  Clear the elements of the highlight class
+        highlightedElems.forEach(
+            function(anElem) {
+                TP.elementRemoveClass(anElem, 'sherpa-hud-highlight');
+            });
+        this.$set('highlighted', null, false);
+
+        //  Grab the document element and remove the class that indicates that
+        //  we're highlighting.
+        targetDocElem = uiDoc.documentElement;
+        TP.elementRemoveClass(targetDocElem, 'sherpa-hud-highlighting');
+    }
+
+    //  Grab the new 'DOM target' element, which will be the lozenge that the
+    //  user is highlighting.
+    targetElem = aSignal.getDOMTarget();
+
+    //  If that element doesn't have the 'selector' class, then we exit. It may
+    //  be a spacer, which we're not interested in.
+    if (!TP.elementHasClass(targetElem, 'selector')) {
+        return this;
+    }
+
+    //  Grab the index in the data from our lozenge.
+    index = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    if (TP.isEmpty(index)) {
+        return this;
+    }
+
+    //  The selector will be at the 2nd place in the record at that index in our
+    //  data.
+    selector = this.get('data').at(index).at(1);
+    if (TP.isEmpty(selector)) {
+        return this;
+    }
+
+    //  Grab the elements from the UI canvas document that match the selector.
+    //  Note here that we don't autocollapse or autowrap, so we'll end up with
+    //  an Array of native Elements.
+    highlightedElems = TP.byCSSPath(selector, uiDoc, false, false);
+
+    if (TP.notEmpty(highlightedElems)) {
+        //  Grab the style sheet that the HUD injected into the UI canvas.
+        hudInjectedStyleElement = TP.byId('hud_injected_generated',
+                                            TP.sys.uidoc(true),
+                                            false);
+
+        //  Set the '--sherpa-hud-highlight-color' to a light opacity version of
+        //  our full color.
+        TP.cssElementSetCustomCSSPropertyValue(
+            hudInjectedStyleElement,
+            '.sherpa-hud',
+            '--sherpa-hud-highlight-color',
+            'rgba(170, 204, 221, 0.2)');
+
+        //  Add the highlight class to the target elements.
+        highlightedElems.forEach(
+            function(anElem) {
+                TP.elementAddClass(anElem, 'sherpa-hud-highlight');
+            });
+        this.$set('highlighted', highlightedElems, false);
+
+        //  Grab the document element and add the class that indicates that
+        //  we're highlighting.
+        targetDocElem = TP.sys.uidoc(true).documentElement;
+        TP.elementAddClass(targetDocElem, 'sherpa-hud-highlighting');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineHandler('ValueChange',
 function(aSignal) {
 

@@ -5063,7 +5063,7 @@ function() {
      * @method toggleVisibility
      * @summary Toggles the 'visibility' of the receiver from 'hidden' to
      *     'visible' or vice-versa, depending on the current visibility state.
-     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyleDeclaration
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -5076,12 +5076,12 @@ function() {
 
     //  Grab the style object for the element
     if (TP.notValid(styleObj = TP.elementGetStyleObj(elem))) {
-        return this.raise('TP.sig.InvalidStyle');
+        return this.raise('TP.sig.InvalidStyleDeclaration');
     }
 
     //  Grab the computed style object for the element
     if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(elem))) {
-        return this.raise('TP.sig.InvalidStyle');
+        return this.raise('TP.sig.InvalidStyleDeclaration');
     }
 
     if (computedStyle.visibility === 'visible') {

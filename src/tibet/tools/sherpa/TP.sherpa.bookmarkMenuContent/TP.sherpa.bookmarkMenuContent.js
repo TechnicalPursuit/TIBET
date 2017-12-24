@@ -109,6 +109,10 @@ function() {
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');
 
+    (function() {
+        menuContentTPElem.scrollTo(TP.TOP);
+    }).queueForNextRepaint(this.getNativeWindow());
+
     return this.callNextMethod();
 });
 

@@ -14,8 +14,9 @@
             return;
         }
 
-        make.chain('rollup_ace',
+        make.chain('_rollup_ace',
             '_rollup_codemirror',
+            '_rollup_cryptojs',
             '_rollup_bluebird',
             '_rollup_d3',
             '_rollup_diff',
@@ -26,6 +27,7 @@
             '_rollup_less',
             '_rollup_pouchdb',
             '_rollup_pouchdb_all_dbs',
+            '_rollup_resizeobserver',
             '_rollup_sinon',
             '_rollup_sprintf',
             '_rollup_syn',
