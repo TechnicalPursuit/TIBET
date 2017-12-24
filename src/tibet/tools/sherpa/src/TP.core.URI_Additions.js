@@ -49,18 +49,18 @@ function(options) {
      */
 
     var loc,
-        tabHasURI;
+        tabHasValue;
 
     //  Grab our location and see if there's already tab representing us in the
     //  inspector.
     loc = this.getLocation();
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
     //  If so, then we want to return false to force the inspector bay to use
     //  whatever content we hand it. This is based on more sophisticated logic
     //  than what is inherited.
-    if (tabHasURI) {
+    if (tabHasValue) {
         return false;
     }
 
@@ -97,7 +97,7 @@ function(options) {
      */
 
     var loc,
-        tabHasURI;
+        tabHasValue;
 
     this.callNextMethod();
 
@@ -107,12 +107,12 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
     //  If not, then possibly reset the content type to be that for a Sherpa
     //  urieditor.
-    if (!tabHasURI) {
+    if (!tabHasValue) {
         options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
     }
 
@@ -145,7 +145,7 @@ function(options) {
      */
 
     var loc,
-        tabHasURI,
+        tabHasValue,
 
         dataURI,
 
@@ -155,14 +155,14 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
 
     //  If so, then set the value of both the tabbar and the panel box to our
     //  location, causing them to switch. And return content that points the
     //  user down to the tabbar in the south drawer.
-    if (tabHasURI) {
+    if (tabHasValue) {
         TP.byId('SherpaConsoleTabbar', TP.win('UIROOT')).setValue(loc);
         TP.byId('SherpaConsolePanelbox', TP.win('UIROOT')).
                                                         setValue(loc);
@@ -318,17 +318,17 @@ function(options) {
      */
 
     var loc,
-        tabHasURI;
+        tabHasValue;
 
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
     //  If not, then return the uri toolbar content for placement into the
     //  proper place in the inspector.
-    if (!tabHasURI) {
+    if (!tabHasValue) {
         return TP.elem(
             '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
     }

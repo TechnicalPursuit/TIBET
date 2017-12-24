@@ -174,7 +174,7 @@ function(options) {
      */
 
     var displayName,
-        tabHasURI,
+        tabHasValue,
 
         config,
         bayInspectorItem,
@@ -186,13 +186,13 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     //  If so, then we want to return false to force the inspector bay to use
     //  whatever content we hand it. This is based on more sophisticated logic
     //  than what is inherited.
-    if (tabHasURI) {
+    if (tabHasValue) {
         return false;
     }
 
@@ -250,15 +250,15 @@ function(options) {
      */
 
     var displayName,
-        tabHasURI;
+        tabHasValue;
 
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
-    if (tabHasURI) {
+    if (tabHasValue) {
         //  Initially configure the content type to be an 'html:div'.
         options.atPut(TP.ATTR + '_contenttype', 'html:div');
 
@@ -297,7 +297,7 @@ function(options) {
      */
 
     var displayName,
-        tabHasURI,
+        tabHasValue,
 
         dataURI,
         methodEditorTPElem;
@@ -305,13 +305,13 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     //  If so, then set the value of both the tabbar and the panel box to our
     //  location, causing them to switch. And return content that points the
     //  user down to the tabbar in the south drawer.
-    if (tabHasURI) {
+    if (tabHasValue) {
         TP.byId('SherpaConsoleTabbar', TP.win('UIROOT')).setValue(displayName);
         TP.byId('SherpaConsolePanelbox', TP.win('UIROOT')).
                                                         setValue(displayName);
@@ -423,17 +423,17 @@ function(options) {
      */
 
     var displayName,
-        tabHasURI;
+        tabHasValue;
 
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasURI = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     //  If not, then return the uri toolbar content for placement into the
     //  proper place in the inspector.
-    if (!tabHasURI) {
+    if (!tabHasValue) {
         return TP.elem('<sherpa:methodEditorToolbarContent' +
                         ' tibet:ctrl="inspectorEditor"/>');
     }
