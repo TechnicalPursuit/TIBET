@@ -9976,7 +9976,6 @@ TP.boot.$expandConfig = function(anElement, configName) {
 
                             if (TP.boot.$notEmpty(config)) {
                                 config = TP.boot.$expandReference(config);
-                                //child.setAttribute('config', config);
                             }
 
                             key = src + '@' + config;
