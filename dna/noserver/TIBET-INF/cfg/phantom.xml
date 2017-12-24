@@ -8,7 +8,6 @@
 <!-- EDITING NOT RECOMMENDED -->
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 
-
 <config id="properties" if="boot.phase_one">
     <property name="boot.inlined" value="false"/>
     <property name="boot.use_login" value="false"/>
@@ -18,7 +17,7 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <package src="~app_cfg/main.xml" config="testing"/>
+    <package src="~app_cfg/main.xml" config="developer"/>
 </config>
 
 <config id="reflection">
@@ -28,7 +27,7 @@
     <property name="boot.teamtibet" value="true"/>
     <property name="boot.minified" value="false"/>
 
-    <package src="~app_cfg/main.xml" config="testing"/>
+    <package src="~app_cfg/main.xml" config="developer"/>
 </config>
 
 </package>

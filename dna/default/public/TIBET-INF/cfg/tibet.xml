@@ -8,7 +8,6 @@
 <!-- EDITING NOT RECOMMENDED -->
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 
-
 <config id="base" if="boot.phase_one">
     <package src="~lib_cfg/TIBET.xml" config="base" if="boot.teamtibet" />
     <script src="~lib_build/tibet_base.js" unless="boot.minified boot.teamtibet" />

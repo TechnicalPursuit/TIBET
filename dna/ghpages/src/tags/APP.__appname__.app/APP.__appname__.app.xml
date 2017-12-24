@@ -2,11 +2,26 @@
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     basedir="~app_tags/APP.{{appname}}.app"
-    name="{{appname}}.app" >
+    name="{{appname}}.app" default="base">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties">
+    <!-- put tag-specific property tags here -->
+</config>
 
 <config id="scripts">
-    <!-- tag-related source script references here -->
+    <!-- tag-related source file references here -->
     <script src="APP.{{appname}}.app.js"/>
+</config>
+
+<config id="resources">
+    <!-- tag-related resource entries here -->
+    <resource href="APP.{{appname}}.app.xhtml"/>
+    <resource href="APP.{{appname}}.app.css"/>
 </config>
 
 <config id="tests">
@@ -14,10 +29,20 @@
     <script src="APP.{{appname}}.app_test.js"/>
 </config>
 
-<config id="resources">
-    <!-- tag-related resource entries here -->
-    <resource src="APP.{{appname}}.app.xhtml"/>
-    <resource src="APP.{{appname}}.app.css"/>
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <config ref="scripts"/>
+    <config ref="resources"/>
+</config>
+
+<config id="developer">
+    <config ref="base"/>
+    <config ref="tests"/>
 </config>
 
 </package>

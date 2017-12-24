@@ -6,7 +6,8 @@
 
         make.chain('clean',
             'build_resources',
-            '_rollup'
+            '_rollup',
+            '_linkup'
         ).then(resolve, reject);
     };
 

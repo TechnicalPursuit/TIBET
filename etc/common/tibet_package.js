@@ -151,7 +151,6 @@
 
         this.packages = {};
         this.paths = {};
-        this.config = null;
 
         this.options = options || {};
         this.cfg = {};
@@ -620,7 +619,7 @@
             pkg = this;
 
             configs.forEach(function(node) {
-                pkg.expandConfig(node, true);
+                pkg.expandConfig(node, null, true);
             });
 
         } catch (e) {
@@ -642,18 +641,25 @@
      * Expands a single package configuration, resolving any embedded package
      * references and virtual paths which might be included.
      * @param {Element} anElement The config node to process and expand.
-     * @param {Boolean} expandAll True to cause full expansion of nested packages
-     *     and configurations.
+     * @param {String} [configName] Specific config name to expand, if any.
+     * @param {Boolean} [expandAll] True to cause full expansion of nested
+     *     packages and configurations.
      */
-    Package.prototype.expandConfig = function(anElement, expandAll) {
+    Package.prototype.expandConfig = function(anElement, configName, expandAll) {
 
         var pkg,
+            ident,
             list;
 
         pkg = this;
 
+        ident = anElement.getAttribute('id');
+        if (configName) {
+            ident += '.' + configName;
+        }
+
         this.trace('Expanding: ' +
-            this.getCurrentPackage() + '@' + anElement.getAttribute('id'), true);
+            this.getCurrentPackage() + '@' + ident, true);
 
         list = Array.prototype.slice.call(anElement.childNodes, 0);
         list.forEach(function(child) {
@@ -661,6 +667,7 @@
             var ref,
                 src,
                 config,
+                cfg,
                 key,
                 name,
                 elem,
@@ -680,22 +687,54 @@
                     case 'config':
                         ref = child.getAttribute('ref');
                         ref = pkg.expandReference(ref);
-                        config = anElement.ownerDocument.getElementById(ref);
+
+                        cfg = child.getAttribute('config') ||
+                            anElement.getAttribute('config');
+
+                        //  First try to find one qualified by the config. We
+                        //  have to clone them if qualified so they can live in
+                        //  the same document.
+                        if (notEmpty(cfg)) {
+                            config = anElement.ownerDocument.getElementById(
+                                ref + '_' + cfg);
+                            if (notValid(config)) {
+                                config =
+                                    anElement.ownerDocument.getElementById(ref);
+                                if (notValid(config)) {
+                                    msg = 'config not found: ' +
+                                        pkg.getCurrentPackage() + '@' + ref;
+                                    throw new Error(msg);
+                                }
+                                config = config.cloneNode(true);
+                                config.setAttribute('id', ref + '_' + cfg);
+                                config.setAttribute('config', cfg);
+                                config = pkg.getPackageNode(
+                                    anElement.ownerDocument).appendChild(config);
+                            }
+                        } else {
+                            config = anElement.ownerDocument.getElementById(ref);
+                        }
+
                         if (notValid(config)) {
-                            msg = '<config> not found: ' +
+                            msg = 'config not found: ' +
                                 pkg.getCurrentPackage() + '@' + ref;
                             throw new Error(msg);
                         }
 
                         key = pkg.getCurrentPackage() + '@' + ref;
+
+                        if (notEmpty(cfg)) {
+                            key += '.' + cfg;
+                        }
+
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate reference to: ' + key,
-                                true);
+                            pkg.trace('Ignoring duplicate config reference to: ' +
+                                key, true);
                             break;
                         }
 
                         pkg.configs.push(key);
-                        pkg.expandConfig(config, expandAll);
+                        pkg.expandConfig(config, cfg, expandAll);
 
                         break;
                     case 'echo':
@@ -765,7 +804,6 @@
                         }
                         break;
                     case 'package':
-
                         src = child.getAttribute('src');
 
                         //  For packages we allow a kind of shorthand where
@@ -782,16 +820,20 @@
                         src = pkg.getFullPath(child, src);
                         child.setAttribute('src', src);
 
-                        config = child.getAttribute('config');
+                        //  Explicit config on package wins...but we also check
+                        //  for any enclosing config on the parent.
+                        config = child.getAttribute('config') ||
+                            anElement.getAttribute('config') ||
+                            'default';
+
                         if (notEmpty(config)) {
                             config = pkg.expandReference(config);
-                            child.setAttribute('config', config);
                         }
 
                         key = src + '@' + config; // may be undefined, that's ok.
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate reference to: ' + key,
-                                true);
+                            pkg.trace('Ignoring duplicate package reference to: ' +
+                                key, true);
                             break;
                         }
 
@@ -995,18 +1037,16 @@
             }
 
             if (isEmpty(aConfig)) {
-                if (notValid(this.config)) {
-                    this.config = this.getcfg('config') ||
-                        this.getDefaultConfig(doc);
-                }
-                config = this.config;
+                config = this.getcfg('config') || this.getDefaultConfig(doc);
+            } else if (aConfig === 'default') {
+                config = this.getDefaultConfig(doc);
             } else {
                 config = aConfig;
             }
 
             node = doc.getElementById(config);
             if (!node) {
-                msg = '<config> not found: ' +
+                msg = 'config not found: ' +
                     this.getCurrentPackage() + '@' + config;
                 throw new Error(msg);
             }
@@ -1019,7 +1059,7 @@
 
             // Note that this may ultimately result in calls back into this routine
             // if the config in question has embedded package references.
-            this.expandConfig(node);
+            this.expandConfig(node, config);
         } catch (e) {
             msg = e.message;
             if (this.getcfg('stack')) {
@@ -1545,7 +1585,7 @@
 
         package = aPackageDoc.getElementsByTagName('package')[0];
         if (notValid(package)) {
-            msg = '<package> tag missing: ' + path;
+            msg = 'package tag missing: ' + path;
             throw new Error(msg);
         }
         // TODO: rename to 'all' in config files etc?
@@ -1594,6 +1634,16 @@
      */
     Package.prototype.getPackageConfig = function() {
         return this.npm;
+    };
+
+
+    /**
+     * Returns the package node (element) for the the document provided.
+     * @param {Document} aPackageDoc The XML package document to use.
+     * @returns {Element} The package node.
+     */
+    Package.prototype.getPackageNode = function(aPackageDoc) {
+        return aPackageDoc.getElementsByTagName('package')[0];
     };
 
 
@@ -2131,7 +2181,7 @@
             pkg = this;
 
             configs.forEach(function(node) {
-                pkg.listConfigAssets(node, result, true);
+                pkg.listConfigAssets(node, result, null, true);
             });
 
         } finally {
@@ -2148,10 +2198,11 @@
      * within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
      * @param {Array.<>} aList The array of asset descriptions to expand upon.
+     * @param {String} [configName] Specific config name to expand, if any.
      * @param {Boolean} listAll True to cause full listing of nested packages.
      * @returns {Array.<>} The asset array.
      */
-    Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
+    Package.prototype.listConfigAssets = function(anElement, aList, configName, listAll) {
 
         var pkg,
             list,
@@ -2178,6 +2229,7 @@
                 src,
                 key,
                 config,
+                cfg,
                 nodes,
                 text,
                 msg;
@@ -2202,16 +2254,47 @@
                     case 'config':
                         ref = child.getAttribute('ref');
 
-                        config = anElement.ownerDocument.getElementById(ref);
+                        cfg = child.getAttribute('config') ||
+                            anElement.getAttribute('config');
+
+                        //  First try to find one qualified by the config. We
+                        //  have to clone them if qualified so they can live in
+                        //  the same document.
+                        if (notEmpty(cfg)) {
+                            config = anElement.ownerDocument.getElementById(
+                                ref + '_' + cfg);
+                            if (notValid(config)) {
+                                config =
+                                    anElement.ownerDocument.getElementById(ref);
+                                if (notValid(config)) {
+                                    msg = 'config not found: ' +
+                                        pkg.getCurrentPackage() + '@' + ref;
+                                    throw new Error(msg);
+                                }
+                                config = config.cloneNode(true);
+                                config.setAttribute('id', ref + '_' + cfg);
+                                config.setAttribute('config', cfg);
+                                config = pkg.getPackageNode(
+                                    anElement.ownerDocument).appendChild(config);
+                            }
+                        } else {
+                            config = anElement.ownerDocument.getElementById(ref);
+                        }
+
                         if (notValid(config)) {
-                            msg = '<config> not found: ' + ref;
+                            msg = 'config not found: ' + ref;
                             throw new Error(msg);
                         }
 
                         key = pkg.getCurrentPackage() + '@' + ref;
+
+                        if (notEmpty(cfg)) {
+                            key += '.' + cfg;
+                        }
+
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate reference to: ' + key,
-                                true);
+                            pkg.trace('Ignoring duplicate config reference to: ' +
+                                key, true);
                             break;
                         }
 
@@ -2221,7 +2304,7 @@
                             result.push(child);
                         }
 
-                        pkg.listConfigAssets(config, result, listAll);
+                        pkg.listConfigAssets(config, result, cfg, listAll);
                         break;
                     case 'echo':
                         // Shouldn't exist, these should have been converted into
@@ -2241,18 +2324,22 @@
                             src = src + text + '.xml';
                         }
 
-                        config = child.getAttribute('config');
+                        //  Explicit at package, explicit at config wrapper, or
+                        //  explicitly passed for resolution.
+                        config = child.getAttribute('config') ||
+                            anElement.getAttribute('config') ||
+                            'default';
 
                         if (isEmpty(src)) {
-                            msg = '<package> missing src: ' +
+                            msg = 'package missing src: ' +
                                 serializer.serializeToString(child);
                             throw new Error(msg);
                         }
 
                         key = src + '@' + config; // may be undefined, that's ok.
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate reference to: ' + key,
-                                true);
+                            pkg.trace('Ignoring duplicate package reference to: ' +
+                                key, true);
                             break;
                         }
 
@@ -2364,18 +2451,16 @@
             }
 
             if (isEmpty(aConfig)) {
-                if (notValid(this.config)) {
-                    this.config = this.getcfg('config') ||
-                        this.getDefaultConfig(doc);
-                }
-                config = this.config;
+                config = this.getcfg('config') || this.getDefaultConfig(doc);
+            } else if (aConfig === 'default') {
+                config = this.getDefaultConfig(doc);
             } else {
                 config = aConfig;
             }
 
             node = doc.getElementById(config);
             if (notValid(node)) {
-                msg = '<config> not found: ' + config;
+                msg = 'config not found: ' + config;
                 throw new Error(msg);
             }
 
@@ -2385,7 +2470,7 @@
                 this.asset_paths = {};
             }
             result = aList || [];
-            this.listConfigAssets(node, result);
+            this.listConfigAssets(node, result, config);
         } finally {
             this.popPackage(expanded);
         }

@@ -9797,13 +9797,14 @@ TP.boot.$expand = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$expandConfig = function(anElement) {
+TP.boot.$expandConfig = function(anElement, configName) {
 
     /**
      * @method expandConfig
      * @summary Expands a single package configuration, resolving any embedded
      *     package references and virtual paths which might be included.
      * @param {Element} anElement The config node to process and expand.
+     * @param {String} [configName] A specific config name to expand.
      */
 
     var list;
@@ -9816,6 +9817,7 @@ TP.boot.$expandConfig = function(anElement) {
                 var ref,
                     src,
                     config,
+                    cfg,
                     key,
                     name,
                     elem,
@@ -9831,26 +9833,56 @@ TP.boot.$expandConfig = function(anElement) {
                     switch (child.tagName) {
 
                         case 'config':
-
                             ref = child.getAttribute('ref');
                             ref = TP.boot.$expandReference(ref);
-                            config = TP.boot.$documentGetElementById(
-                                anElement.ownerDocument, ref);
+
+                            cfg = child.getAttribute('config') ||
+                                anElement.getAttribute('config');
+
+                            //  First try to find one qualified by the config. We
+                            //  have to clone them if qualified so they can live in
+                            //  the same document.
+                            if (TP.boot.$notEmpty(cfg)) {
+                                config = anElement.ownerDocument.getElementById(
+                                    ref + '_' + cfg);
+                                if (TP.boot.$notValid(config)) {
+                                    config =
+                                        anElement.ownerDocument.getElementById(ref);
+                                    if (TP.boot.$notValid(config)) {
+                                        msg = 'config not found: ' +
+                                            TP.boot.$getCurrentPackage() + '@' + ref;
+                                        throw new Error(msg);
+                                    }
+                                    config = config.cloneNode(true);
+                                    config.setAttribute('id', ref + '_' + cfg);
+                                    config.setAttribute('config', cfg);
+                                    config = TP.boot.$getPackageNode(
+                                        anElement.ownerDocument).appendChild(config);
+                                }
+                            } else {
+                                config = anElement.ownerDocument.getElementById(ref);
+                            }
+
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('config not found: ' +
-                                    TP.boot.$getCurrentPackage() + '@' + ref);
+                                throw new Error('config not found: ' + ref);
                             }
 
                             key = TP.boot.$getCurrentPackage() + '@' + ref;
+
+                            if (TP.boot.$notEmpty(cfg)) {
+                                key += '.' + cfg;
+                            }
+
                             if (TP.boot.$$configs.indexOf(key) !== -1) {
                                 //  A duplicate/circular reference of some type.
                                 TP.boot.$stderr(
-                                    'Ignoring duplicate reference to: ' + key);
+                                    'Ignoring duplicate config reference to: ' +
+                                    key);
                                 break;
                             }
 
                             TP.boot.$$configs.push(key);
-                            TP.boot.$expandConfig(config);
+                            TP.boot.$expandConfig(config, cfg);
 
                             break;
 
@@ -9938,17 +9970,21 @@ TP.boot.$expandConfig = function(anElement) {
                             src = TP.boot.$getFullPath(child, src);
                             child.setAttribute('src', src);
 
-                            config = child.getAttribute('config');
+                            config = child.getAttribute('config') ||
+                                anElement.getAttribute('config') ||
+                                'default';
+
                             if (TP.boot.$notEmpty(config)) {
                                 config = TP.boot.$expandReference(config);
-                                child.setAttribute('config', config);
+                                //child.setAttribute('config', config);
                             }
 
                             key = src + '@' + config;
                             if (TP.boot.$$configs.indexOf(key) !== -1) {
                                 //  A duplicate/circular reference of some type.
                                 TP.boot.$stderr(
-                                    'Ignoring duplicate reference to: ' + key);
+                                    'Ignoring duplicate package reference to: ' +
+                                    key);
                                 break;
                             }
 
@@ -10116,7 +10152,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
             }
         }
 
-        if (TP.boot.$isEmpty(aConfig)) {
+        if (TP.boot.$isEmpty(aConfig) || aConfig === 'default') {
             config = TP.boot.$getDefaultConfig(doc);
         } else {
             config = aConfig;
@@ -10130,7 +10166,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
 
         //  Note that this may ultimately result in calls back into this routine
         //  if the config in question has embedded package references.
-        TP.boot.$expandConfig(node);
+        TP.boot.$expandConfig(node, config);
     } catch (e) {
         msg = e.message;
         throw new Error('Error expanding package: ' + expanded + '. ' + msg);
@@ -10362,6 +10398,20 @@ TP.boot.$getLoadedScripts = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$getPackageNode = function(aDocument) {
+
+    /**
+     * @method $getPackageNode
+     * @summary Returns the package node from the document provided.
+     * @param {Document} aDocument The XML package document to use.
+     * @returns {Element} The package element.
+     */
+
+    return aDocument.getElementsByTagName('package')[0];
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$ifAssetPassed = function(anElement) {
 
     /**
@@ -10459,7 +10509,7 @@ TP.boot.$isLoadedScript = function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listConfigAssets = function(anElement, aList, includePkgs) {
+TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) {
 
     /**
      * @method $listConfigAssets
@@ -10468,6 +10518,7 @@ TP.boot.$listConfigAssets = function(anElement, aList, includePkgs) {
      *     recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
      * @param {Array} aList The array of asset descriptions to expand upon.
+     * @param {String} [configName] Specific config name to expand, if any.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
      * @returns {Array} The asset array.
@@ -10494,6 +10545,8 @@ TP.boot.$listConfigAssets = function(anElement, aList, includePkgs) {
 
                 var ref,
                     src,
+                    msg,
+                    cfg,
                     text,
                     config;
 
@@ -10510,16 +10563,41 @@ TP.boot.$listConfigAssets = function(anElement, aList, includePkgs) {
                     switch (child.tagName) {
 
                         case 'config':
-
                             ref = child.getAttribute('ref');
 
-                            config = TP.boot.$documentGetElementById(
-                                anElement.ownerDocument, ref);
+                            cfg = child.getAttribute('config') ||
+                                anElement.getAttribute('config');
+
+                            //  First try to find one qualified by the config. We
+                            //  have to clone them if qualified so they can live in
+                            //  the same document.
+                            if (TP.boot.$notEmpty(cfg)) {
+                                config = anElement.ownerDocument.getElementById(
+                                    ref + '_' + cfg);
+                                if (TP.boot.$notValid(config)) {
+                                    config =
+                                        anElement.ownerDocument.getElementById(ref);
+                                    if (TP.boot.$notValid(config)) {
+                                        msg = 'config not found: ' +
+                                            TP.boot.$getCurrentPackage() + '@' + ref;
+                                        throw new Error(msg);
+                                    }
+                                    config = config.cloneNode(true);
+                                    config.setAttribute('id', ref + '_' + cfg);
+                                    config.setAttribute('config', cfg);
+                                    config = TP.boot.$getPackageNode(
+                                        anElement.ownerDocument).appendChild(config);
+                                }
+                            } else {
+                                config = anElement.ownerDocument.getElementById(ref);
+                            }
+
                             if (TP.boot.$notValid(config)) {
                                 throw new Error('config not found: ' + ref);
                             }
+
                             TP.boot.$listConfigAssets(
-                                        config, result, includePkgs);
+                                        config, result, cfg, includePkgs);
 
                             break;
 
@@ -10545,7 +10623,9 @@ TP.boot.$listConfigAssets = function(anElement, aList, includePkgs) {
                                 src = src + text + '.xml';
                             }
 
-                            config = child.getAttribute('config');
+                            config = child.getAttribute('config') ||
+                                anElement.getAttribute('config') ||
+                                'default';
 
                             if (TP.boot.$isEmpty(src)) {
                                 throw new Error('package missing src: ' +
@@ -10680,7 +10760,7 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
         }
 
         //  Determine the configuration we'll be listing.
-        if (TP.boot.$isEmpty(aConfig)) {
+        if (TP.boot.$isEmpty(aConfig) || aConfig === 'default') {
             config = TP.boot.$getDefaultConfig(doc);
         } else {
             config = aConfig;
@@ -10697,7 +10777,7 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
             TP.boot.$$assets = {};
         }
         result = aList || [];
-        TP.boot.$listConfigAssets(node, result, includePkgs);
+        TP.boot.$listConfigAssets(node, result, config, includePkgs);
     } finally {
         TP.boot.$popPackage(path);
     }

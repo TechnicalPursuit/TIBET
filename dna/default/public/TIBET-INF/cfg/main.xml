@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="{{appname}}" default="prod" basedir="~app_cfg">
+    name="{{appname}}" default="production" basedir="~app_cfg">
 
 
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 <!-- EDITING NOT RECOMMENDED -->
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 
-
-<config id="prod">
-    <package src="production.xml" config="prod"/>
+<!-- here to default apps to boot minified production config -->
+<config id="production">
+    <package src="production.xml" config="minified"/>
 </config>
 
 <config id="base">
@@ -34,11 +34,7 @@
 
 <config id="contributor">
     <package src="tibet.xml" config="contributor"/>
-    <package src="{{appname}}.xml" config="developer"/>
-</config>
-
-<config id="testing">
-    <config ref="developer"/>
+    <package src="{{appname}}.xml" config="contributor"/>
 </config>
 
 </package>
