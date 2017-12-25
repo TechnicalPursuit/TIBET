@@ -53,10 +53,9 @@ function() {
         keyCode,
         val;
 
-    this.addPackagingDependency(TP.extern.syn);
-    this.addPackagingDependency(TP.extern.Promise);
+    this.defineDependencies('TP.extern.syn', 'TP.extern.Promise');
 
-    //  If Syn isn't loaded, then don't try to manipulate it's keymap. Just
+    //  If Syn isn't loaded, then don't try to manipulate its keymap. Just
     //  return.
     if (TP.notValid(TP.extern.syn)) {
         return;

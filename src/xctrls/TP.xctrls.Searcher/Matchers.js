@@ -85,7 +85,7 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.addPackagingDependency(TP.extern.Fuse);
+    this.defineDependencies('TP.extern.Fuse');
 
     return;
 });

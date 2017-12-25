@@ -39,7 +39,7 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.addPackagingDependency(TP.extern.Promise);
+    this.defineDependencies('TP.extern.Promise');
 
     return;
 });

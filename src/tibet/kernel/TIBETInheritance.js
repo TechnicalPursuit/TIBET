@@ -558,16 +558,16 @@ function(it) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaTypeMethod('getPackagingDependencies',
+TP.defineMetaTypeMethod('getDependencies',
 function() {
 
     /**
-     * @method getPackagingDependencies
+     * @method getDependencies
      * @summary Returns an Array of Objects that the receiver considers to be
      *     it's manually determined set of 'dependent' objects that it needs in
      *     order to operate successfully. These objects can be any type of
      *     object in the system, so long as they themselves can respond to the
-     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     'getDependencies' method. In this way, we can recursively
      *     determine the chain of dependent objects. This terminates at the
      *     meta-level by returning an empty Array.
      * @description Many objects can be determined via method invocation
@@ -586,16 +586,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getPackagingDependencies',
+TP.defineMetaInstMethod('getDependencies',
 function() {
 
     /**
-     * @method getPackagingDependencies
+     * @method getDependencies
      * @summary Returns an Array of Objects that the receiver considers to be
      *     it's manually determined set of 'dependent' objects that it needs in
      *     order to operate successfully. These objects can be any type of
      *     object in the system, so long as they themselves can respond to the
-     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     'getDependencies' method. In this way, we can recursively
      *     determine the chain of dependent objects. This terminates at the
      *     meta-level by returning an empty Array.
      * @description Many objects can be determined via method invocation
@@ -617,7 +617,7 @@ function() {
         dependencies =
             dependencies.map(
                 function(anItem) {
-                    return anItem.getPackagingDependencies();
+                    return anItem.getDependencies();
                 });
     } else {
         dependencies = TP.ac();
@@ -631,16 +631,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.FunctionProto.defineMethod('getPackagingDependencies',
+TP.FunctionProto.defineMethod('getDependencies',
 function() {
 
     /**
-     * @method getPackagingDependencies
+     * @method getDependencies
      * @summary Returns an Array of Objects that the receiver considers to be
      *     it's manually determined set of 'dependent' objects that it needs in
      *     order to operate successfully. These objects can be any type of
      *     object in the system, so long as they themselves can respond to the
-     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     'getDependencies' method. In this way, we can recursively
      *     determine the chain of dependent objects. This terminates at the
      *     meta-level by returning an empty Array.
      * @description Many objects can be determined via method invocation
@@ -663,7 +663,7 @@ function() {
         dependencies =
             dependencies.map(
                 function(anItem) {
-                    return anItem.getPackagingDependencies();
+                    return anItem.getDependencies();
                 });
     } else {
         dependencies = TP.ac();
@@ -673,8 +673,7 @@ function() {
     //  will already be flattened and the 'concat' will make sure that we don't
     //  create a nested Array.
     owner = this[TP.OWNER];
-    dependencies = dependencies.concat(
-                        owner.getPackagingDependencies());
+    dependencies = dependencies.concat(owner.getDependencies());
 
     //  For a pure Function or a Function with 'TP' or 'TP.sys' as its owner,
     //  it could've been added anywhere, so we need to push an entry that will
@@ -8282,16 +8281,16 @@ function(attributeName, includeSupertypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('getPackagingDependencies',
+TP.lang.RootObject.Type.defineMethod('getDependencies',
 function() {
 
     /**
-     * @method getPackagingDependencies
+     * @method getDependencies
      * @summary Returns an Array of Objects that the receiver considers to be
      *     it's manually determined set of 'dependent' objects that it needs in
      *     order to operate successfully. These objects can be any type of
      *     object in the system, so long as they themselves can respond to the
-     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     'getDependencies' method. In this way, we can recursively
      *     determine the chain of dependent objects. This terminates at the
      *     meta-level by returning an empty Array.
      * @description Many objects can be determined via method invocation
@@ -8316,7 +8315,7 @@ function() {
         dependencies =
             dependencies.map(
                 function(anItem) {
-                    return anItem.getPackagingDependencies();
+                    return anItem.getDependencies();
                 });
     } else {
         dependencies = TP.ac();
@@ -8328,7 +8327,7 @@ function() {
     //  Third, add the dependencies of the direct supertype
     superType = this.getSupertype();
     if (TP.isValid(superType)) {
-        dependencies.push(superType.getPackagingDependencies());
+        dependencies.push(superType.getDependencies());
     }
 
     //  Third, add the trait types (and their supertypes)
@@ -8336,7 +8335,7 @@ function() {
     if (TP.notEmpty(traitTypes)) {
         traitTypes.forEach(
             function(aTraitType) {
-                dependencies.push(aTraitType.getPackagingDependencies());
+                dependencies.push(aTraitType.getDependencies());
             });
     }
 
@@ -8371,16 +8370,16 @@ function(attributeName, includeSupertypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Inst.defineMethod('getPackagingDependencies',
+TP.lang.RootObject.Inst.defineMethod('getDependencies',
 function() {
 
     /**
-     * @method getPackagingDependencies
+     * @method getDependencies
      * @summary Returns an Array of Objects that the receiver considers to be
      *     it's manually determined set of 'dependent' objects that it needs in
      *     order to operate successfully. These objects can be any type of
      *     object in the system, so long as they themselves can respond to the
-     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     'getDependencies' method. In this way, we can recursively
      *     determine the chain of dependent objects. This terminates at the
      *     meta-level by returning an empty Array.
      * @description Many objects can be determined via method invocation
@@ -8407,8 +8406,7 @@ function() {
     //  Then, add whatever dependencies our type thinks is necessary. These will
     //  already be flattened and the 'concat' will make sure that we don't
     //  create a nested Array.
-    dependencies = dependencies.concat(
-                        this.getType().getPackagingDependencies());
+    dependencies = dependencies.concat(this.getType().getDependencies());
 
     return dependencies;
 });
@@ -9187,20 +9185,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('addPackagingDependency',
-function(aDependencySource) {
+TP.lang.RootObject.Type.defineMethod('defineDependencies',
+function(varargs) {
 
     /**
-     * @method addPackagingDependency
-     * @summary Adds the supplied dependency source to the receiver as a
-     *     'dependency', such that when packaging computations take place, the
-     *     receiver will consider the dependency source as part of the
-     *     computation.
-     * @param {Object} aDependencySource The object to use as the dependency for
-     *     the receiver.
+     * @method defineDependencies
+     * @summary Adds the supplied dependency list to the receiver as a set of
+     *     dependencies, such that when packaging computations take place, the
+     *     receiver will consider the objects as part of the computation.
      */
 
-    TP.addPackagingDependency(this, aDependencySource);
+    var args;
+
+    args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(this);
+
+    TP.objectDefineDependencies.apply(TP, args);
 
     return this;
 });
