@@ -78,6 +78,7 @@
         //  ---
 
         dirs.forEach(function(dir) {
+            var order;
 
             style = dir === 'mocks' ? 'mock' : 'route';
 
@@ -89,6 +90,19 @@
                 base = path.basename(fname);
                 return !base.match(/^(\.|_)/) && !sh.test('-d', fname);
             });
+
+            //  Adjust list by cross-referencing against any specific load order
+            //  data in the tds.route.order config variable. We load that slice
+            //  first, then any "leftovers" in sort order.
+            order = TDS.getcfg('tds.route.order', []);
+            order = order.map(function(item) {
+                return path.join(TDS.expandPath('~'), dir, item);
+            });
+            list = list.filter(function(item) {
+                return order.indexOf(item) === -1;
+            });
+            list.sort();
+            list = order.concat(list);
 
             //  Process each file to produce a route if possible. File names and
             //  extentions drive how we process each file found.
