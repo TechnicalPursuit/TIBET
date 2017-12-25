@@ -132,7 +132,7 @@ Cmd.prototype.executeStart = function() {
         nodeargs.push('--inspect', '--debug-brk');
     }
 
-    args = nodeargs;
+    args = nodeargs.slice(0);
     args.push('server.js');
     args = args.concat(serverargs);
 
