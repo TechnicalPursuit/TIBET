@@ -28,6 +28,7 @@
         Logger,
         parser,
         serializer,
+        ifInvalid,
         isEmpty,
         isParserError,
         isValid,
@@ -48,6 +49,16 @@
 
     Color = require('./tibet_color');
     Logger = require('./tibet_logger');
+
+    ifInvalid = function(aValue, aDefault) {
+        //  Return default when defined and the value is invalid.
+        if (aValue === null || aValue === undefined) {
+            if (aDefault !== undefined) {
+                return aDefault;
+            }
+        }
+        return aValue;
+    };
 
     isEmpty = function(aReference) {
         /* eslint-disable no-extra-parens */
@@ -1514,7 +1525,7 @@
 
         // Make simple access as fast as possible.
         if (this.cfg.hasOwnProperty(property)) {
-            return this.cfg[property];
+            return ifInvalid(this.cfg[property], aDefault);
         }
 
         // Secondary check is for prefixed lookups.
@@ -1522,7 +1533,7 @@
             // Simple conversions from dotted to underscore should be checked first.
             name = property.replace(/\./g, '_');
             if (this.cfg.hasOwnProperty(name)) {
-                return this.cfg[name];
+                return ifInvalid(this.cfg[name], aDefault);
             }
         } else {
             name = property;
@@ -1552,7 +1563,7 @@
                 //  Exact match or potential prefix match.
                 key = keys[0];
                 if (key === name) {
-                    return pkg.cfg[key];
+                    return ifInvalid(pkg.cfg[key], aDefault);
                 } else {
                     return cfg;
                 }

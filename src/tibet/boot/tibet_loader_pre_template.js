@@ -1738,15 +1738,15 @@ TP.sys.getcfg = function(aKey, aDefault) {
     /**
      * @method getcfg
      * @summary Returns the value of the named configuration property, or the
-     *     default value when the property is undefined. Values with no '.' are
-     *     considered to be prefixes and will return the list of all
-     *     configuration parameters with that prefix. If no values are found for
-     *     the prefix a secondary check is done to see if the key is a value in
-     *     the 'tmp.' prefix used as the default prefix. An empty key returns
-     *     the full configuration dictionary.
+     *     default value when the property is invalid (null or undefined).
+     *     Values with no '.' are considered to be prefixes and will return the
+     *     list of all configuration parameters with that prefix. If no values
+     *     are found for the prefix a secondary check is done to see if the key
+     *     is a value in the 'tmp.' prefix used as the default prefix. An empty
+     *     key returns the full configuration dictionary.
      * @param {String} aKey The property name to retrieve.
      * @param {String} aDefault The default value to use when the named property
-     *     isn't defined.
+     *     isn't valid.
      * @returns {Object} The value of the named property.
      */
 
@@ -1766,8 +1766,11 @@ TP.sys.getcfg = function(aKey, aDefault) {
         val = TP.boot.$$getprop(TP.sys.configuration, aKey, aDefault);
     }
 
-    if (val === undefined) {
-        return aDefault;
+    //  Invalid value but defined default? Return that value instead.
+    if (val === null || val === undefined) {
+        if (aDefault !== undefined) {
+            return aDefault;
+        }
     }
 
     return val;
