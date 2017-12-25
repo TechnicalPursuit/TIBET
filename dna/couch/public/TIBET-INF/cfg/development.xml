@@ -3,6 +3,11 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="base" basedir="~app_cfg">
 
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
 <config id="properties" if="boot.phase_one">
     <property name="boot.level" value="debug"/>
     <property name="boot.console_log" value="true"/>
@@ -33,10 +38,14 @@
 <!-- EDIT WITH CAUTION BELOW -->
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 
-
 <config id="base">
     <config ref="properties"/>
     <package src="main.xml" config="base"/>
+</config>
+
+<config id="baseui">
+    <config ref="properties"/>
+    <package src="main.xml" config="baseui"/>
 </config>
 
 <config id="full">
@@ -52,11 +61,6 @@
 <config id="contributor">
     <config ref="properties"/>
     <package src="main.xml" config="contributor"/>
-</config>
-
-<config id="testing">
-    <config ref="properties"/>
-    <package src="main.xml" config="testing"/>
 </config>
 
 </package>

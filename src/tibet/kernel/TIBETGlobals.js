@@ -134,45 +134,59 @@ TP.registerLoadInfo(TP.registerLoadInfo);
 
 //  ------------------------------------------------------------------------
 
-TP.addPackagingDependency = function(anObject, aDependencySource) {
+TP.objectDefineDependencies = function(anObject, varargs) {
 
     /**
-     * @method addPackagingDependency
-     * @summary Adds the supplied dependency source to the object as a
-     *     'dependency', such that when packaging computations take place, the
-     *     object will consider the dependency source as part of the
-     *     computation.
+     * @method objectDefinedDependencies
+     * @summary Adds the supplied dependencies to the object as a form or
+     *     packaging dependency, such that when packaging takes place, the
+     *     object will consider the dependency as part of the computation.
      * @param {Object} anObject The object to register the dependency
      *     information for.
-     * @param {Object} aDependencySource The object to use as the dependency for
-     *     the target object.
+     * @param {Array} varargs One or more dependencies provided as a variable
+     *     argument list.
+     * @return {Array} The updated list of object dependencies.
      */
 
-    var dependencies;
+    var dependencies,
+        prereqs;
 
-    if (TP.notValid(aDependencySource)) {
+    if (arguments.length < 1) {
         /* eslint-disable no-console */
-        console.log('Undefined packaging dependency for: ' + anObject[TP.NAME]);
+        console.error('No dependencies provided for object ' +
+            anObject[TP.NAME]);
         /* eslint-enable no-console */
         return;
     }
 
     dependencies = anObject[TP.DEPENDENCIES];
-
     if (!Array.isArray(dependencies)) {
         dependencies = [];
         anObject[TP.DEPENDENCIES] = dependencies;
     }
 
-    dependencies.push(aDependencySource);
+    prereqs = Array.prototype.slice.call(arguments, 1);
+    prereqs.forEach(function(prereq) {
+        if (TP.notValid(prereq)) {
+            /* eslint-disable no-console */
+            console.error('Undefined dependency for object ' +
+                anObject[TP.NAME]);
+            /* eslint-enable no-console */
+            return;
+        }
+
+        dependencies.push(prereq);
+    });
+
+    return dependencies;
 };
 
 //  Manual setup
-TP.addPackagingDependency[TP.NAME] = 'addPackagingDependency';
-TP.addPackagingDependency[TP.OWNER] = TP;
-TP.addPackagingDependency[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.addPackagingDependency[TP.DISPLAY] = 'TP.addPackagingDependency';
-TP.registerLoadInfo(TP.addPackagingDependency);
+TP.objectDefineDependencies[TP.NAME] = 'objectDefineDependencies';
+TP.objectDefineDependencies[TP.OWNER] = TP;
+TP.objectDefineDependencies[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.objectDefineDependencies[TP.DISPLAY] = 'TP.objectDefineDependencies';
+TP.registerLoadInfo(TP.objectDefineDependencies);
 
 //  ------------------------------------------------------------------------
 
@@ -196,7 +210,7 @@ TP.registerExternalObject = function(anExternalName, anExternalObj) {
     //  default for external objects, is the 'whole package' - because there's
     //  usually global object fiddling involved with these objects).
     TP.registerLoadInfo(anExternalObj);
-    anExternalObj.getPackagingDependencies = TP.USE_WHOLE_PACKAGE;
+    anExternalObj.getDependencies = TP.USE_WHOLE_PACKAGE;
 
     return;
 };
@@ -884,7 +898,7 @@ TP.META_TYPE_OWNER.getTypeName = function() {
 TP.META_TYPE_OWNER.getConstructor = function() {
     return Object;
 };
-TP.META_TYPE_OWNER.getPackagingDependencies = function() {
+TP.META_TYPE_OWNER.getDependencies = function() {
     return [];
 };
 
@@ -928,7 +942,7 @@ TP.META_INST_OWNER.getTypeName = function() {
 TP.META_INST_OWNER.getConstructor = function() {
     return Object;
 };
-TP.META_INST_OWNER.getPackagingDependencies = function() {
+TP.META_INST_OWNER.getDependencies = function() {
     return [];
 };
 
@@ -3542,8 +3556,8 @@ TP.regex.XPATH_PATH_STRIPPER = /^(\s*|\/|\|)$/;
 TP[TP.TNAME] = 'Object';
 TP.sys[TP.TNAME] = 'Object';
 
-TP.getPackagingDependencies = TP.RETURN_EMPTY_ARRAY;
-TP.sys.getPackagingDependencies = TP.RETURN_EMPTY_ARRAY;
+TP.getDependencies = TP.RETURN_EMPTY_ARRAY;
+TP.sys.getDependencies = TP.RETURN_EMPTY_ARRAY;
 
 //  a tmp for holding the 'real' i.e. non-spoofed browser for patching
 TP.sys.$$realBrowser = null;

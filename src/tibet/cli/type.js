@@ -473,7 +473,7 @@ Cmd.prototype.executePackageBundled = function() {
     }
     vpath = CLI.getVirtualPath(file);
 
-    configs = ['scripts', 'resources', 'tests', 'inlined'];
+    configs = ['bundles'];
 
     configs.forEach(function(cfgName) {
         var pkgOpts,
@@ -515,8 +515,7 @@ Cmd.prototype.executePackageBundled = function() {
         });
 
         tag = 'package';
-        str = '<' + tag + ' src="' + vpath + '"' +
-            ' config="' + cfgName + '"' + '/>';
+        str = '<' + tag + ' src="' + vpath + '"' + '/>';
 
         if (assets.indexOf(vpath) === -1) {
             dirty = true;

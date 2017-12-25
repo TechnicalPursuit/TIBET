@@ -175,8 +175,8 @@ function(aRequest) {
         loadHandler = function() {
             scriptElem.removeEventListener('load', loadHandler, false);
 
-            TP.registerExternalObject('ace', TP.nodeGetWindow(this).ace);
-            thisref.addPackagingDependency(TP.extern.ace);
+            TP.registerExternalObject('ace', TP.nodeGetWindow(elem).ace);
+            thisref.defineDependencies('TP.extern.ace');
 
             tpElem.setup();
         };

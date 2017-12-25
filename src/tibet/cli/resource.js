@@ -84,6 +84,18 @@ Cmd.NAME = 'resource';
  */
 Cmd.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
 
+/**
+ * List of regular expressions used to filter out "source code" from inlining.
+ * @type {Array.<RegExp>}
+ */
+Cmd.INLINE_EXCLUDES = [
+    /\.less$/,
+    /\.sass$/,
+    /\.scss$/,
+    /\.coffee$/,
+    /\.ts$/
+];
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -943,6 +955,18 @@ Cmd.prototype.logConfigEntries = function() {
     }
 
     this.products.forEach(function(pair) {
+        var exclude;
+
+        //  Don't include "source code" files as inlined resources...no point.
+        exclude = Cmd.INLINE_EXCLUDES.some(function(regex) {
+            //  NOTE we test original, not "output" file path here.
+            return regex.test(pair[0]);
+        });
+
+        if (exclude) {
+            return;
+        }
+
         if (cmd.options.raw) {
             cmd.info(CLI.getVirtualPath(pair[1]));
             return;
@@ -1067,11 +1091,23 @@ Cmd.prototype.updatePackage = function() {
     this.products.forEach(function(pair) {
         var value,
             file,
+            exclude,
             tag,
             str;
 
         file = pair[1];
         value = CLI.getVirtualPath(file);
+
+        //  Don't include "source code" files as inlined resources...no point.
+        exclude = Cmd.INLINE_EXCLUDES.some(function(regex) {
+            //  NOTE we test original, not "output" file path here.
+            return regex.test(pair[0]);
+        });
+
+        if (exclude) {
+            return;
+        }
+
         tag = cmd.getTag(file);
         if (tag === 'script') {
             str = '<' + tag + ' src="' + value + '"/>';

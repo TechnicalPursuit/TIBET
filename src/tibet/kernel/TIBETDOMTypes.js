@@ -10527,16 +10527,16 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getPackagingDependencies',
+TP.core.ElementNode.Type.defineMethod('getDependencies',
 function() {
 
     /**
-     * @method getPackagingDependencies
+     * @method getDependencies
      * @summary Returns an Array of Objects that the receiver considers to be
      *     it's manually determined set of 'dependent' objects that it needs in
      *     order to operate successfully. These objects can be any type of
      *     object in the system, so long as they themselves can respond to the
-     *     'getPackagingDependencies' method. In this way, we can recursively
+     *     'getDependencies' method. In this way, we can recursively
      *     determine the chain of dependent objects. This terminates at the
      *     meta-level by returning an empty Array.
      * @description Many objects can be determined via method invocation

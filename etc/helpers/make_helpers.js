@@ -60,6 +60,87 @@ helpers = {};
  *     pkg - the package file path
  *     config - the package config id to be rolled up
  */
+helpers.linkup_app = function(make, options) {
+    var target,
+        source,
+        list,
+        config,
+        lnflags,
+        deferred;
+
+    deferred = Promise.pending();
+
+    target = make.CLI.expandPath('~app_build');
+    if (!sh.test('-d', target)) {
+        make.error('~app_build not found.');
+        deferred.reject();
+        return deferred;
+    }
+
+    source = make.CLI.expandPath('~lib_build');
+    if (!sh.test('-d', source)) {
+        make.error('~lib_build not found.');
+        deferred.reject();
+        return deferred;
+    }
+
+    config = options.config || 'base';
+
+    lnflags = '-sf';
+
+    list = [
+        'tibet_' + config + '.js',
+        'tibet_' + config + '.min.js',
+        'tibet_' + config + '.min.js.gz',
+        'tibet_' + config + '.min.js.br',
+        'app_' + config + '.js',
+        'app_' + config + '.min.js',
+        'app_' + config + '.min.js.gz',
+        'app_' + config + '.min.js.br'
+    ];
+
+    list.forEach(function(item) {
+        var linksrc,
+            linkdest,
+            lnerr;
+
+        if (item.indexOf('tibet') === 0) {
+            linksrc = path.join(source, item);
+        } else {
+            linksrc = path.join(target, item);
+        }
+        linkdest = path.join(target, item.replace('_' + config, ''));
+
+        if (!sh.test('-e', linksrc)) {
+            make.warn('skipping link for missing file ' +
+                make.CLI.getVirtualPath(linksrc));
+            return;
+        }
+
+        sh.ln(lnflags, linksrc, linkdest);
+        lnerr = sh.error();
+        if (lnerr) {
+            throw new Error('Error linking ' +
+                linksrc + ': ' + lnerr);
+        }
+    });
+
+    make.log('build assets linked successfully.');
+
+    deferred.resolve();
+
+    return deferred.promise;
+};
+
+
+/**
+ *
+ * @param {Cmd} make The make command handle which provides access to logging
+ *     and other CLI functionality specific to make operation.
+ * @param {Hash} options An object whose keys must include:
+ *     pkg - the package file path
+ *     config - the package config id to be rolled up
+ */
 helpers.package_check = function(make, options) {
 
     var cmd,

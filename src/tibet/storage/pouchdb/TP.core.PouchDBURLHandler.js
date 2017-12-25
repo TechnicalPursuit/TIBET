@@ -35,7 +35,7 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.addPackagingDependency(TP.extern.PouchDB);
+    this.defineDependencies('TP.extern.PouchDB');
 
     return;
 });

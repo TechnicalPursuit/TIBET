@@ -2651,7 +2651,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     if (descriptor && descriptor.dependencies) {
         descriptor.dependencies.forEach(
             function(aDependency) {
-                TP.addPackagingDependency(method, aDependency);
+                TP.objectDefineDependencies(method, aDependency);
             });
     }
 

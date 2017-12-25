@@ -661,7 +661,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     }
 
     if (CLI.notValid(this.pkgOpts.config)) {
-        this.pkgOpts.config = 'testing';
+        this.pkgOpts.config = 'developer';
     }
 
     this.trace('pkgOpts: ' + CLI.beautify(this.pkgOpts));

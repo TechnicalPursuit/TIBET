@@ -2,16 +2,20 @@
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     basedir="~app_tags/{{nsroot}}.{{nsname}}.{{typename}}"
-    name="{{nsname}}.{{typename}}" >
+    name="{{nsname}}.{{typename}}" default="base">
 
-<config id="scripts">
-    <!-- tag-related source script references here -->
-    <script src="{{nsroot}}.{{nsname}}.{{typename}}.js"/>
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties">
+    <!-- put tag-specific property tags here -->
 </config>
 
-<config id="tests">
-    <!-- tag-related test scripts here -->
-    <script src="{{nsroot}}.{{nsname}}.{{typename}}_test.js"/>
+<config id="scripts">
+    <!-- tag-related source file references here -->
+    <script src="{{nsroot}}.{{nsname}}.{{typename}}.js"/>
 </config>
 
 <config id="resources">
@@ -20,10 +24,25 @@
     <resource href="{{nsroot}}.{{nsname}}.{{typename}}.css"/>
 </config>
 
-<config id="inlined" if="boot.phase_two boot.inlined">
-    <!-- don't edit this one; maintained by tibet resources command -->
-    <script src="~app_build/app_tags-{{nsroot}}.{{nsname}}.{{typename}}-{{nsroot}}.{{nsname}}.{{typename}}.xhtml.js"/>
-    <script src="~app_build/app_tags-{{nsroot}}.{{nsname}}.{{typename}}-{{nsroot}}.{{nsname}}.{{typename}}.css.js"/>
+<config id="tests">
+    <!-- tag-related test scripts here -->
+    <script src="{{nsroot}}.{{nsname}}.{{typename}}_test.js"/>
+</config>
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <config ref="scripts"/>
+    <config ref="resources"/>
+</config>
+
+<config id="developer">
+    <config ref="base"/>
+    <config ref="tests"/>
 </config>
 
 </package>

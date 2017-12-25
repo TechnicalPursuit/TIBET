@@ -82,11 +82,13 @@ Cmd.prototype.USAGE = 'tibet tds start [--env <name>] [<tds options>]';
 /**
  */
 Cmd.prototype.executeStart = function() {
-    var child,  // The child_process module.
-        args,   // Argument list for child process.
-        server, // Spawned child process for the server.
-        cmd,    // Closure'd var providing access to the command object.
-        inuse;  // Flag to trap EADDRINUSE exceptions.
+    var child,      // The child_process module.
+        args,       // Argument list for child process.
+        nodeargs,
+        serverargs,
+        server,     // Spawned child process for the server.
+        cmd,        // Closure'd var providing access to the command object.
+        inuse;      // Flag to trap EADDRINUSE exceptions.
 
     cmd = this;
 
@@ -104,11 +106,39 @@ Cmd.prototype.executeStart = function() {
         return -1;
     }
 
-    //  Capture the command line arguments and place server.js on the front.
-    //  This essentially becomes the command line for a new 'node' command.
-    //  The slice() here removes the command name ('start').
-    args = this.getArglist().slice(1);
-    args.unshift('server.js');
+    //  The slice() here removes the 'tds' and 'start' portions
+    args = this.getArgv().slice(2);
+
+    //  Process the list. We treat any args beginning with --node- as
+    //  arguments to place _before_ the server.js command.
+    nodeargs = args.filter(function(arg) {
+        if (typeof arg === 'string') {
+            return arg.indexOf('--node-') === 0;
+        }
+        return false;
+    });
+    nodeargs = nodeargs.map(function(arg) {
+        return arg.replace('--node-', '--');
+    });
+
+    serverargs = args.filter(function(arg) {
+        if (typeof arg === 'string') {
+            return arg.indexOf('--node-') === -1;
+        }
+        return true;
+    });
+
+    if (this.options.debug && nodeargs.length === 0) {
+        nodeargs.push('--inspect', '--debug-brk');
+    }
+
+    args = nodeargs.slice(0);
+    args.push('server.js');
+    args = args.concat(serverargs);
+
+    if (nodeargs.length !== 0) {
+        cmd.system('node ' + args.join(' '));
+    }
 
     //  Create and invoke the command to run the server.
     server = child.spawn('node', args);

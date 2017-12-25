@@ -36,7 +36,7 @@ function() {
      * @summary Initializes the type.
      */
 
-    this.addPackagingDependency(TP.extern.d3);
+    this.defineDependencies('TP.extern.d3');
 
     return;
 });

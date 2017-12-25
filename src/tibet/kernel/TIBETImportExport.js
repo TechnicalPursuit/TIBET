@@ -295,7 +295,7 @@ function() {
 
             methodObj = kvPair.last();
 
-            entries.push(methodObj.getPackagingDependencies());
+            entries.push(methodObj.getDependencies());
         });
 
     entries = entries.flatten();
@@ -317,18 +317,30 @@ function() {
     //  package entries'
     entries.perform(
         function(anEntry) {
-            var i;
+            var i,
+                entry;
+
+            if (TP.isString(anEntry)) {
+                entry = TP.bySystemId(anEntry);
+                if (TP.notValid(entry)) {
+                    /* eslint-disable no-console */
+                    console.error('Undefined object dependency ' + anEntry);
+                    /* eslint-enable no-console */
+                }
+            } else {
+                entry = anEntry;
+            }
 
             //  If the entry is a 'whole package' entry, then just move to the
             //  next one.
-            if (TP.isValid(anEntry.wholePackageInfo)) {
+            if (TP.isValid(entry.wholePackageInfo)) {
                 return;
             }
 
             //  If there are no 'whole package' entries, then just add the
             //  source path of the entry and move on.
             if (len === 0) {
-                extraSourcePaths.push(anEntry[TP.SOURCE_PATH]);
+                extraSourcePaths.push(entry[TP.SOURCE_PATH]);
                 return;
             }
 
@@ -339,9 +351,9 @@ function() {
             //  will be represented by the package.
             for (i = 0; i < len; i++) {
                 /* eslint-disable brace-style */
-                if (anEntry[TP.LOAD_PACKAGE] ===
+                if (entry[TP.LOAD_PACKAGE] ===
                         packageEntries.at(i)[TP.LOAD_PACKAGE] &&
-                    anEntry[TP.LOAD_CONFIG] ===
+                    entry[TP.LOAD_CONFIG] ===
                         packageEntries.at(i)[TP.LOAD_CONFIG])
                 /* eslint-enable brace-style */
                 {
@@ -349,7 +361,7 @@ function() {
                 }
             }
 
-            extraSourcePaths.push(anEntry[TP.SOURCE_PATH]);
+            extraSourcePaths.push(entry[TP.SOURCE_PATH]);
         });
 
     extraSourcePaths.unique();
