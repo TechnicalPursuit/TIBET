@@ -1094,8 +1094,6 @@ function(aSignal) {
 
         targetElemPageRect,
 
-        tileTPElem,
-
         modelURI,
 
         existedHandler,
@@ -1142,6 +1140,8 @@ function(aSignal) {
     if (this.get('$tileContentConstructed')) {
         existedHandler =
             function(aTileTPElem) {
+
+                var tileTPElem;
 
                 modelURI.setResource(
                     sourceTPElem,
