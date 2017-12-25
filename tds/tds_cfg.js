@@ -138,7 +138,7 @@
         setcfg('tds.proxy.map', null);
 
         //  Optional array defining order for loading routes.
-        setcfg('tds.route.order', null);
+        setcfg('tds.route.order', []);
 
         setcfg('tds.static.private', []);
 
