@@ -152,7 +152,7 @@ function(aSignal) {
      * @method handleValueChange
      * @summary Handles when the user changes the value of the underlying model.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
-     * @returns {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud_genericContent} The receiver.
      */
 
     switch (aSignal.getOrigin()) {
@@ -225,7 +225,7 @@ function(aSignal) {
      *     source.
      * @param {ValueChange} aSignal The signal that caused this update method to
      *     be invoked.
-     * @returns {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud_genericContent} The receiver.
      */
 
     var aspectPath,
@@ -387,7 +387,7 @@ function(aSignal) {
      *     source.
      * @param {ValueChange} aSignal The signal that caused this update method to
      *     be invoked.
-     * @returns {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud_genericContent} The receiver.
      */
 
     var aspectPath,
