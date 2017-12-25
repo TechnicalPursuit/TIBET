@@ -751,28 +751,28 @@ TP.boot.$$stages = {
 prelaunch: {
     order: 0,
     log: 'Verifying',
-    head: 'Verifying platform...',
+    head: 'Verifying environment...',
     sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 configuring: {
     order: 1,
     log: 'Configuring',
-    head: 'Reading configuration data...',
+    head: 'Reading configuration...',
     sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 expanding: {
     order: 2,
     log: 'Expanding',
-    head: 'Expanding package@config...',
+    head: 'Expanding manifest...',
     sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 import_phase_one: {
     order: 3,
-    log: 'Loading Phase One',
-    head: 'Loading cross-platform kernel...',
+    log: 'Phase One',
+    head: 'Loading shared library...',
     sub: '',
     image: '~app_boot/media/tibet_logo.png'
 },
@@ -780,12 +780,12 @@ import_paused: {
     order: 4,
     log: 'Import Pause',
     head: 'Paused',
-    sub: 'Waiting to load application components...',
+    sub: 'Waiting to load app components...',
     image: '~app_boot/media/playpause.png'
 },
 import_phase_two: {
     order: 5,
-    log: 'Loading Phase Two',
+    log: 'Phase Two',
     head: 'Loading application components...',
     sub: '',
     image: '~app_boot/media/app_logo.png'
@@ -793,7 +793,7 @@ import_phase_two: {
 paused: {
     order: 6,
     log: 'Startup Paused',
-    head: 'Proceed when ready.',
+    head: 'Click play/pause to proceed.',
     sub: '',
     image: '~app_boot/media/playpause.png'
 },
