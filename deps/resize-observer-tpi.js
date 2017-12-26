@@ -261,6 +261,7 @@ var mutationObserverSupported = typeof MutationObserver !== 'undefined';
  */
 var ResizeObserverController = function() {
     this.connected_ = false;
+    this.connectedOnDoc_ = null;
     this.mutationEventsAdded_ = false;
     this.mutationsObserver_ = null;
     this.observers_ = [];
@@ -290,10 +291,11 @@ var ResizeObserverController = function() {
  * @private {MutationObserver}
  */
 
+
 /**
- * Indicates whether DOM listeners have been added.
+ * The document that the observer is being connected to.
  *
- * @private {boolean}
+ * @private {Document}
  */
 ResizeObserverController.prototype.addObserver = function (observer) {
     if (!~this.observers_.indexOf(observer)) {
@@ -380,12 +382,16 @@ ResizeObserverController.prototype.connect_ = function () {
         return;
     }
 
+    var target = this.observers_[0].observations_.values().next().value.target;
+    var win = target.ownerDocument.defaultView;
+    var doc = target.ownerDocument;
+
     // Subscription to the "Transitionend" event is used as a workaround for
     // delayed transitions. This way it's possible to capture at least the
     // final state of an element.
-    document.addEventListener('transitionend', this.onTransitionEnd_);
+    doc.addEventListener('transitionend', this.onTransitionEnd_);
 
-    window.addEventListener('resize', this.refresh);
+    win.addEventListener('resize', this.refresh);
 
     if (mutationObserverSupported) {
         this.mutationsObserver_ = new MutationObserver(this.refresh);
@@ -397,12 +403,13 @@ ResizeObserverController.prototype.connect_ = function () {
             subtree: true
         });
     } else {
-        document.addEventListener('DOMSubtreeModified', this.refresh);
+        doc.addEventListener('DOMSubtreeModified', this.refresh);
 
         this.mutationEventsAdded_ = true;
     }
 
     this.connected_ = true;
+    this.connectedOnDoc_ = doc;
 };
 
 /**
@@ -418,20 +425,21 @@ ResizeObserverController.prototype.disconnect_ = function () {
         return;
     }
 
-    document.removeEventListener('transitionend', this.onTransitionEnd_);
-    window.removeEventListener('resize', this.refresh);
+    this.connectedOnDoc_.removeEventListener('transitionend', this.onTransitionEnd_);
+    this.connectedOnDoc_.defaultView.removeEventListener('resize', this.refresh);
 
     if (this.mutationsObserver_) {
         this.mutationsObserver_.disconnect();
     }
 
     if (this.mutationEventsAdded_) {
-        document.removeEventListener('DOMSubtreeModified', this.refresh);
+        this.connectedOnDoc_.removeEventListener('DOMSubtreeModified', this.refresh);
     }
 
     this.mutationsObserver_ = null;
     this.mutationEventsAdded_ = false;
     this.connected_ = false;
+    this.connectedOnDoc_ = null;
 };
 
 /**
@@ -751,11 +759,11 @@ function createRectInit(x, y, width, height) {
  * provided DOM element and for keeping track of it's changes.
  */
 var ResizeObservation = function(target) {
-    this.broadcastWidth = 0;
-    this.broadcastHeight = 0;
-    this.contentRect_ = createRectInit(0, 0, 0, 0);
+  this.broadcastWidth = 0;
+  this.broadcastHeight = 0;
+  this.contentRect_ = createRectInit(0, 0, 0, 0);
 
-    this.target = target;
+  this.target = target;
 };
 
 /**
@@ -779,11 +787,11 @@ var ResizeObservation = function(target) {
  * @type {number}
  */
 ResizeObservation.prototype.isActive = function () {
-    var rect = getContentRect(this.target);
+  var rect = getContentRect(this.target);
 
-    this.contentRect_ = rect;
+  this.contentRect_ = rect;
 
-    return rect.width !== this.broadcastWidth || rect.height !== this.broadcastHeight;
+  return rect.width !== this.broadcastWidth || rect.height !== this.broadcastHeight;
 };
 
 /**
@@ -793,24 +801,24 @@ ResizeObservation.prototype.isActive = function () {
  * @returns {DOMRectInit} Last observed content rectangle.
  */
 ResizeObservation.prototype.broadcastRect = function () {
-    var rect = this.contentRect_;
+  var rect = this.contentRect_;
 
-    this.broadcastWidth = rect.width;
-    this.broadcastHeight = rect.height;
+  this.broadcastWidth = rect.width;
+  this.broadcastHeight = rect.height;
 
-    return rect;
+  return rect;
 };
 
 var ResizeObserverEntry = function(target, rectInit) {
-    var contentRect = createReadOnlyRect(rectInit);
+  var contentRect = createReadOnlyRect(rectInit);
 
-    // According to the specification following properties are not writable
-    // and are also not enumerable in the native implementation.
-    //
-    // Property accessors are not being used as they'd require to define a
-    // private WeakMap storage which may cause memory leaks in browsers that
-    // don't support this type of collections.
-    defineConfigurable(this, { target: target, contentRect: contentRect });
+  // According to the specification following properties are not writable
+  // and are also not enumerable in the native implementation.
+  //
+  // Property accessors are not being used as they'd require to define a
+  // private WeakMap storage which may cause memory leaks in browsers that
+  // don't support this type of collections.
+  defineConfigurable(this, { target: target, contentRect: contentRect });
 };
 
 var ResizeObserverSPI = function(callback, controller, callbackCtx) {
