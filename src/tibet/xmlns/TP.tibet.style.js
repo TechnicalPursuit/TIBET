@@ -384,7 +384,9 @@ function(anHref) {
 
                     //  Note how we *don't* specify 'refresh' here, since we
                     //  want the latest content as set into the URL.
-                    fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT);
+                    fetchOptions = TP.hc('async', false,
+                                            'resultType', TP.TEXT,
+                                            'signalChange', false);
                     inlineStyleContent =
                         styleURI.getResource(fetchOptions).get('result');
 
