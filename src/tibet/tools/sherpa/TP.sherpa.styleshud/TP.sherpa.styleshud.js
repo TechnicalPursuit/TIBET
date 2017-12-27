@@ -743,6 +743,8 @@ function(aSignal) {
 
     var uiDoc,
 
+        oldHighlightedElems,
+
         highlightedElems,
         targetDocElem,
 
@@ -757,13 +759,13 @@ function(aSignal) {
     uiDoc = TP.sys.uidoc(true);
 
     //  Grab the highlighted elements.
-    highlightedElems = this.get('highlighted');
+    oldHighlightedElems = this.get('highlighted');
 
     //  If there are highlighted elements, then we need to clear them
-    if (TP.notEmpty(highlightedElems)) {
+    if (TP.notEmpty(oldHighlightedElems)) {
 
         //  Clear the elements of the highlight class
-        highlightedElems.forEach(
+        oldHighlightedElems.forEach(
             function(anElem) {
                 TP.elementRemoveClass(anElem, 'sherpa-hud-highlight');
             });
@@ -802,6 +804,9 @@ function(aSignal) {
     //  Note here that we don't autocollapse or autowrap, so we'll end up with
     //  an Array of native Elements.
     highlightedElems = TP.byCSSPath(selector, uiDoc, false, false);
+    if (highlightedElems.equalTo(oldHighlightedElems)) {
+        return this;
+    }
 
     if (TP.notEmpty(highlightedElems)) {
         //  Grab the style sheet that the HUD injected into the UI canvas.

@@ -1011,6 +1011,7 @@ function(aSignal) {
 
     var uiDoc,
 
+        oldTarget,
         target,
 
         targetDocElem,
@@ -1023,13 +1024,13 @@ function(aSignal) {
     uiDoc = TP.sys.uidoc(true);
 
     //  Grab the highlighted element.
-    target = this.get('highlighted');
+    oldTarget = this.get('highlighted');
 
-    //  If target is valid, then we need to clear the highlighted element
-    if (TP.isValid(target)) {
+    //  If oldTarget is valid, then we need to clear the highlighted element
+    if (TP.isValid(oldTarget)) {
 
-        //  Clear the target of the highlight class
-        TP.elementRemoveClass(target, 'sherpa-hud-highlight');
+        //  Clear the oldTarget of the highlight class
+        TP.elementRemoveClass(oldTarget, 'sherpa-hud-highlight');
         this.$set('highlighted', null, false);
 
         //  Grab the document element and remove the class that indicates that
@@ -1058,6 +1059,11 @@ function(aSignal) {
     //  Query the DOM of the UI canvas for the target element.
     target = TP.byId(peerID, uiDoc, false);
     if (!TP.isElement(target)) {
+        return this;
+    }
+
+    //  If the target and the old target are the same, then just exit here.
+    if (target === oldTarget) {
         return this;
     }
 
