@@ -178,6 +178,7 @@ function(aTPElement) {
         nodes,
 
         children,
+        offsetParentTPElem,
 
         tileTPElem,
 
@@ -218,6 +219,8 @@ function(aTPElement) {
                     return true;
                 });
 
+    offsetParentTPElem = aTPElement.getOffsetParent();
+
     //  Concatenate the filtered child elements onto the list.
     nodes = nodes.concat(children);
     nodes.perform(
@@ -242,6 +245,8 @@ function(aTPElement) {
             } else if (aNode.getParentNode().getNativeNode() ===
                         aTPElement.getNativeNode()) {
                 arr.push('child');
+            } else if (aNode === offsetParentTPElem) {
+                arr.push('offsetParent');
             } else {
                 arr.push('normal');
             }
@@ -356,6 +361,12 @@ function(enterSelection) {
             'child',
             function(d) {
                 if (d[2] === 'child') {
+                    return true;
+                }
+            }).attr(
+            'offsetParent',
+            function(d) {
+                if (d[2] === 'offsetParent') {
                     return true;
                 }
             }).attr(
@@ -480,6 +491,12 @@ function(updateSelection) {
             'child',
             function(d) {
                 if (d[2] === 'child') {
+                    return true;
+                }
+            }).attr(
+            'offsetParent',
+            function(d) {
+                if (d[2] === 'offsetParent') {
                     return true;
                 }
             }).attr(

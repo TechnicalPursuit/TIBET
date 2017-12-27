@@ -64,9 +64,14 @@ sherpa|domhud > ul.content > li.domnode[pclass|disabled] {
     opacity: 0.3;
 }
 
-sherpa|domhud > ul.content > li.domnode[child="true"] {
+sherpa|domhud > ul.content > li.domnode[child] {
 
     margin-left: 2em;
+}
+
+sherpa|domhud > ul.content > li.domnode[offsetParent] {
+
+    background-color: antiquewhite;
 }
 
 sherpa|domhud > ul.content > li.domnode:hover {
