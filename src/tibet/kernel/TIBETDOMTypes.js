@@ -9512,9 +9512,13 @@ function(resource, mimeType, fallback) {
      *     style_{theme}, etc. but it could be essentially anything except the
      *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
-     * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
-     *     value of 'uri.<resource type>_fallback'.
-     * @returns {String} A properly computed URL in string form.
+     * @param {Boolean} [fallback] Whether or not to compute a fallback value
+     *     if the computation returns an empty value (but not TP.NO_RESULT -
+     *     those are considered non-empty).  Defaults to the value of
+     *     'uri.<resource type>_fallback'.
+     * @returns {String|TP.NO_RESULT} A properly computed URL in string form or
+     *     TP.NO_RESULT if the receiver has specifically determined that it has
+     *     no such resource.
      */
 
     var res,
@@ -9564,7 +9568,7 @@ function(resource, mimeType, fallback) {
     computed = TP.core.ElementNode.get('computedKeys');
     value = computed.at(cachekey);
     if (TP.notEmpty(value)) {
-        return value === TP.NO_RESULT ? void 0 : value;
+        return value;
     }
 
     //  ---
@@ -9581,9 +9585,7 @@ function(resource, mimeType, fallback) {
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         computed.atPut(cachekey, TP.uriNormalize(value));
-        if (value !== TP.NO_RESULT) {
-            return value;
-        }
+        return value;
     }
 
     //  ---
@@ -9596,9 +9598,7 @@ function(resource, mimeType, fallback) {
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         computed.atPut(cachekey, TP.uriNormalize(value));
-        if (value !== TP.NO_RESULT) {
-            return value;
-        }
+        return value;
     }
 
     //  ---
@@ -9609,7 +9609,7 @@ function(resource, mimeType, fallback) {
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         computed.atPut(cachekey, TP.uriNormalize(value));
-        return value === TP.NO_RESULT ? void 0 : value;
+        return value;
     }
 
     //  ---
@@ -9625,9 +9625,6 @@ function(resource, mimeType, fallback) {
             uri = this.get(res + 'URI');    // e.g. 'style' + 'URI'
         }
         if (TP.notEmpty(uri)) {
-            if (uri === TP.NO_RESULT) {
-                return;
-            }
             return uri;
         }
     }
@@ -9641,9 +9638,6 @@ function(resource, mimeType, fallback) {
         if (res !== 'resource') {
             uri = type.get(res.toLowerCase() + 'URI');
             if (TP.notEmpty(uri)) {
-                if (uri === TP.NO_RESULT) {
-                    return;
-                }
                 return uri;
             }
         }
@@ -10754,25 +10748,25 @@ function(resource, mimeType, fallback) {
      *     TP.ietf.Mime.INFO dictionary.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
      *     value of 'uri.fallbacks'.
-     * @returns {TP.core.URI} The computed resource URI.
+     * @returns {TP.core.URI|String|TP.NO_RESULT} The computed resource URI.
      */
 
-    var str,
+    var loc,
         uri;
 
-    str = this.computeResourceURI(resource, mimeType, fallback);
+    loc = this.computeResourceURI(resource, mimeType, fallback);
 
-    if (TP.notEmpty(str) && str !== 'NO_RESULT') {
-        uri = TP.uc(str);
+    if (TP.notEmpty(loc) && loc !== TP.NO_RESULT) {
+        uri = TP.uc(loc);
         if (TP.isValid(uri)) {
             return uri.getConcreteURI();
         } else {
             TP.ifWarn() ?
-                TP.warn('Unable to construct concrete URI for: ' + str) : 0;
+                TP.warn('Unable to construct concrete URI for: ' + loc) : 0;
         }
     }
 
-    return;
+    return loc;
 });
 
 //  ------------------------------------------------------------------------

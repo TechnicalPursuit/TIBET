@@ -2600,7 +2600,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                         computeResourceURI('template');
     }
 
-    if (TP.isEmpty(sourceLoc)) {
+    if (TP.isEmpty(sourceLoc) || sourceLoc === TP.NO_RESULT) {
         //  TODO: Raise an exception here
         return this;
     }
