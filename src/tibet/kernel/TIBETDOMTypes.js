@@ -15695,16 +15695,24 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentNode.Inst.defineMethod('getTheme',
-function() {
+function(fallback) {
 
     /**
      * @method getTheme
-     * @summary Gets the data-theme attribute on the document body that is
-     *     helping to drive themed CSS.
+     * @summary Returns the *current* UI 'project' theme. It does this by
+     *     obtaining the data-theme attribute on the receiver's body that is
+     *     helping to drive themed CSS. If the current 'project' theme isn't
+     *     available, and the fallback flag is supplied, then the current 'lib'
+     *     theme will be returned.
+     * @description Note that the receiver might be configured with both a 'lib'
+     *     theme and a 'project' theme. The value returned here will always be
+     *     the 'project' theme unless the fallback flag is supplied.
+     * @param {Boolean} [fallback=false] Whether or not to return the 'lib'
+     *     theme if the 'project' theme is unavailable.
      * @returns {String} The theme in effect for the receiver.
      */
 
-    return TP.documentGetTheme(this.getNativeNode());
+    return TP.documentGetTheme(this.getNativeNode(), fallback);
 });
 
 //  ------------------------------------------------------------------------
@@ -15990,8 +15998,10 @@ function(themeName) {
     /**
      * @method setTheme
      * @summary Sets a data-theme attribute on the receiver's body to help drive
-     *     themed CSS.
-     * @param {String} themeName The theme name to set for the document.
+     *     themed CSS. Note that this should be the UI 'project' theme. This
+     *     will have the 'lib' theme added to it for theming 'backstop'
+     *     purposes.
+     * @param {String} themeName The theme name to set for the receiver.
      * @returns {TP.core.DocumentNode} The receiver.
      */
 

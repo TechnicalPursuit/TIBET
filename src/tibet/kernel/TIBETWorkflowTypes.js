@@ -6599,28 +6599,26 @@ function() {
 
     /**
      * @method getTheme
-     * @summary Returns the current UI theme. The value here is taken from the
-     *     current canvas's data-theme value or the value for
-     *     project.theme.default if no theme is currently set.
+     * @summary Returns the *current* UI 'project' theme.
+     * @description Note that the current UI canvas might be configured with
+     *     both a 'lib' theme and a 'project' theme. The value returned here
+     *     will always be the 'project' theme and will taken from the current
+     *     canvas's data-theme value or the value for project.theme.default if
+     *     no theme is currently set.
      * @returns {String} The name of the current UI theme.
      */
 
     var uiTPDoc,
-        bodyTPElem,
-        bodyTheme;
+        docTheme;
 
     uiTPDoc = TP.sys.getUICanvas().getDocument();
     if (TP.isValid(uiTPDoc)) {
-        bodyTPElem = uiTPDoc.getBody();
-        if (TP.isValid(bodyTPElem)) {
-            bodyTheme = bodyTPElem.getAttribute('data-theme');
-        }
+        docTheme = uiTPDoc.getTheme();
     }
 
-    return TP.ifEmpty(
-        bodyTheme,
-        TP.sys.getcfg('project.theme.default',
-            TP.sys.getcfg('tibet.theme.default')));
+    return TP.ifEmpty(docTheme,
+                        TP.sys.getcfg('project.theme.default',
+                            TP.sys.getcfg('tibet.theme.default')));
 });
 
 //  ------------------------------------------------------------------------
