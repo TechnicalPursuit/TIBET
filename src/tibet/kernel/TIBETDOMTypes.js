@@ -10806,8 +10806,8 @@ function() {
     }
 
     if (TP.isEmpty(ext)) {
-        //  NOTE this is _not_ 'style.project.extension' in case there's a prefix
-        //  somewhere that's "project".
+        //  NOTE: this is _not_ 'style.project.extension' in case there's a
+        //  prefix somewhere that's "project".
         ext = TP.sys.getcfg('project.style.extension');
     }
 
