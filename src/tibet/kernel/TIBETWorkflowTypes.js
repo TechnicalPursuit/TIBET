@@ -6605,17 +6605,20 @@ function() {
      * @returns {String} The name of the current UI theme.
      */
 
-    var canvas,
-        doc,
-        body,
-        theme;
+    var uiTPDoc,
+        bodyTPElem,
+        bodyTheme;
 
-    canvas = TP.sys.getUICanvas();
-    doc = canvas.getDocument();
-    body = doc.getBody();
-    theme = body.getAttribute('data-theme');
+    uiTPDoc = TP.sys.getUICanvas().getDocument();
+    if (TP.isValid(uiTPDoc)) {
+        bodyTPElem = uiTPDoc.getBody();
+        if (TP.isValid(bodyTPElem)) {
+            bodyTheme = bodyTPElem.getAttribute('data-theme');
+        }
+    }
 
-    return TP.ifEmpty(theme,
+    return TP.ifEmpty(
+        bodyTheme,
         TP.sys.getcfg('project.theme.default',
             TP.sys.getcfg('tibet.theme.default')));
 });
