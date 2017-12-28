@@ -727,9 +727,6 @@ Cmd.prototype.processLessResource = function(options) {
         return;
     }
 
-    // this.debug('options: ' + CLI.beautify(JSON.stringify(options)));
-    // this.debug('lessOpts: ' + CLI.beautify(JSON.stringify(lessOpts)));
-
     return less.render(options.data, lessOpts).then(function(output) {
         var content,
             rname,
