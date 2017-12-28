@@ -549,6 +549,10 @@ function() {
         TP.ONLOAD,
         function(aDocument) {
 
+            //  Ensure any default theme value is set for the canvas.
+            TP.sys.getApplication().setTheme(
+                TP.sys.getApplication().getTheme());
+
             //  If the boot didn't trigger ONFAIL but is stopping then we're
             //  still essentially in failure mode. Make sure we do the right
             //  thing.

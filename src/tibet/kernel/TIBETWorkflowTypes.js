@@ -6600,12 +6600,24 @@ function() {
     /**
      * @method getTheme
      * @summary Returns the current UI theme. The value here is taken from the
-     *     tibet.theme configuration flag setting. The value returned by
-     *     this method is used as part of computations for loading CSS sheets.
+     *     current canvas's data-theme value or the value for
+     *     project.theme.default if no theme is currently set.
      * @returns {String} The name of the current UI theme.
      */
 
-    return TP.sys.cfg('tibet.theme');
+    var canvas,
+        doc,
+        body,
+        theme;
+
+    canvas = TP.sys.getUICanvas();
+    doc = canvas.getDocument();
+    body = doc.getBody();
+    theme = body.getAttribute('data-theme');
+
+    return TP.ifEmpty(theme,
+        TP.sys.getcfg('project.theme.default',
+            TP.sys.getcfg('tibet.theme.default')));
 });
 
 //  ------------------------------------------------------------------------
@@ -6752,9 +6764,6 @@ function(themeName) {
      */
 
     var canvas;
-
-    //  Update the configuration flag that drives the getTheme call.
-    TP.sys.setcfg('tibet.theme', themeName);
 
     //  Update the current canvas to reflect any changes.
     canvas = TP.sys.getUICanvas();

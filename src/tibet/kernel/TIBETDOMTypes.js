@@ -9428,7 +9428,7 @@ function(resource, mimeType) {
 
     //  If we have an explicit mapping for an extension we will avoid worrying
     //  about any mime type extension list and just rely on the explicit one.
-    ext = this.get(res + 'Extension');
+    ext = this.get(res.asTitleCase() + 'Extension');
     if (TP.isEmpty(ext)) {
 
         //  Without an explicit extension we'll drop back to mime type and see
@@ -9548,6 +9548,7 @@ function(resource, mimeType, fallback) {
     }
 
     if (res === 'tests') {
+        //  TODO: should _test be a config var?
         return TP.objectGetSourcePath(this).replace(/\.js$/, '_test.js');
     }
 
@@ -9574,6 +9575,8 @@ function(resource, mimeType, fallback) {
     //  override pretty much any other consideration in terms of computation
     //  order so we check those first.
 
+    //  TODO:   should we use a project-specific one here?
+    // key = 'path.' + project + '.' + res + '.rollup';
     key = 'path.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
@@ -9613,12 +9616,13 @@ function(resource, mimeType, fallback) {
     //  receiver method
     //  ---
 
-    //  Don't cause infinite recursion...
+    //  Don't cause infinite recursion... (get('resource' + 'URI') etc.)
     if (res !== 'resource') {
+        //  Must have asked for style_{theme} as the resource value.
         if (TP.notEmpty(theme)) {
             uri = this.get('themeURI', theme);
         } else {
-            uri = this.get(res + 'URI');
+            uri = this.get(res + 'URI');    // e.g. 'style' + 'URI'
         }
         if (TP.notEmpty(uri)) {
             if (uri === TP.NO_RESULT) {
@@ -10769,6 +10773,45 @@ function(resource, mimeType, fallback) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('getStyleExtension',
+function() {
+
+    /**
+     * @method getStyleExtension
+     * @summary Returns any mapped style extension. This allows projects to
+     *     configure for less or sass across all style URIs.
+     * @returns {String} The style extension, if any is mapped.
+     */
+
+    var name,
+        prefix,
+        key,
+        ext;
+
+    name = this.getResourceTypeName();
+    prefix = this.getNamespacePrefix().toLowerCase();
+
+    //  e.g. style.TP.xctrls.codeeditor.extension => 'css'
+    key = 'style.' + name + '.extension';
+    ext = TP.sys.getcfg(key);
+
+    if (TP.isEmpty(ext)) {
+        //  e.g. style.xctrls.extension => 'less'
+        key = 'style.' + prefix + '.extension';
+        ext = TP.sys.getcfg(key);
+    }
+
+    if (TP.isEmpty(ext)) {
+        //  NOTE this is _not_ 'style.project.extension' in case there's a prefix
+        //  somewhere that's "project".
+        ext = TP.sys.getcfg('project.style.extension');
+    }
+
+    return ext;
 });
 
 //  ------------------------------------------------------------------------

@@ -621,6 +621,12 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
+    //  theme support. The list is all themes for the app (which end up
+    //  packaged) while the default is what is set as data-theme when no
+    //  other data-theme is found.
+    TP.sys.setcfg('project.theme.default', null);
+    TP.sys.setcfg('project.theme.list', []);
+
     //  the profile used for application packaging purposes. this profile will
     //  be used to compare with project metadata to identify potentially missing
     //  dependencies.
@@ -1827,8 +1833,10 @@
     //  what tag should be used in place of the default {{appname}}.app tag.
     TP.sys.setcfg('tibet.apptag', null);
 
-    //  what CSS theme should we use? default is none.
-    TP.sys.setcfg('tibet.theme', null);
+    //  theme support specific to 'lib'. This defines the theme for the Sherpa
+    //  as well as the theme used by xctrls when dragged in via tofu etc.
+    TP.sys.setcfg('tibet.theme.default', 'tpi');
+    TP.sys.setcfg('tibet.theme.list', ['tpi']);
 
     //  what path should be opened by the 'start' command in the CLI?
     TP.sys.setcfg('path.start_page', '~app/index.html');

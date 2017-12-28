@@ -2276,12 +2276,20 @@ function(aRequest) {
 
     //  types will be a hash of names/type objects.
     types.perform(function(item) {
-        var itemtype;
+        var itemtype,
+            themes;
 
         itemtype = item.last();
         if (TP.canInvoke(itemtype, 'computeResourceURI')) {
             arr.push(itemtype.computeResourceURI('template'));
             arr.push(itemtype.computeResourceURI('style'));
+
+            //  Now iterate on the known themes...
+            themes = TP.sys.getcfg('project.theme.list', []);
+            themes = themes.concat(TP.sys.getcfg('tibet.theme.list', []));
+            themes.forEach(function(theme) {
+                arr.push(itemtype.computeResourceURI('style_' + theme));
+            });
 
             if (raw) {
                 arr.push(itemtype.computeResourceURI('source'));

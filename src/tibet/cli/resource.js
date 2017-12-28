@@ -96,6 +96,14 @@ Cmd.INLINE_EXCLUDES = [
     /\.ts$/
 ];
 
+Cmd.EXCLUDE_REPLACEMENTS = [
+    [/\.less$/, 'css'],
+    [/\.sass$/, 'css'],
+    [/\.scss$/, 'css'],
+    [/\.coffee$/, 'js'],
+    [/\.ts$/, 'js']
+];
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -539,7 +547,8 @@ Cmd.prototype.processResources = function() {
         }
 
         this.filtered.forEach(function(resource) {
-            var base,
+            var res,
+                base,
                 file;
 
             if (cmd.options.raw) {
@@ -547,7 +556,14 @@ Cmd.prototype.processResources = function() {
                 return;
             }
 
-            base = resource.slice(resource.indexOf(path.sep) + 1).replace(
+            //  Don't include "source code" files as inlined resources...do the
+            //  replacement to naming they'd normally do.
+            res = resource;
+            Cmd.EXCLUDE_REPLACEMENTS.forEach(function(pair) {
+                res = res.replace(pair[0], '.' + pair[1]);
+            });
+
+            base = res.slice(res.indexOf(path.sep) + 1).replace(
                 /\//g, '-');
             file = path.join(buildpath, base);
             if (path.extname(file) !== '.js') {
@@ -955,18 +971,6 @@ Cmd.prototype.logConfigEntries = function() {
     }
 
     this.products.forEach(function(pair) {
-        var exclude;
-
-        //  Don't include "source code" files as inlined resources...no point.
-        exclude = Cmd.INLINE_EXCLUDES.some(function(regex) {
-            //  NOTE we test original, not "output" file path here.
-            return regex.test(pair[0]);
-        });
-
-        if (exclude) {
-            return;
-        }
-
         if (cmd.options.raw) {
             cmd.info(CLI.getVirtualPath(pair[1]));
             return;
@@ -1100,8 +1104,9 @@ Cmd.prototype.updatePackage = function() {
 
         //  Don't include "source code" files as inlined resources...no point.
         exclude = Cmd.INLINE_EXCLUDES.some(function(regex) {
-            //  NOTE we test original, not "output" file path here.
-            return regex.test(pair[0]);
+            //  NOTE we test output, not original file path here so we don't
+            //  filter LESS that turned into CSS etc.
+            return regex.test(pair[1]);
         });
 
         if (exclude) {
