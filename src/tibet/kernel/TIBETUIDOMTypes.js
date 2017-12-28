@@ -79,7 +79,7 @@ TP.core.UIElementNode.defineAttribute('$asyncSwitchingContexts');
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Type.defineMethod('$addStylesheetResource',
-function(aDocument, ourID, sheetElemID, resource, themeName) {
+function(aDocument, ourID, sheetElemID, aStyleURI) {
 
     /**
      * @method $addStylesheetResource
@@ -92,11 +92,8 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
      *     the corresponding stylesheet for that theme for the receiver can't be
      *     found.
      * @param {String} sheetElemID The ID to use as the stylesheet element ID.
-     * @param {String} resource The resource name. If there is no theme, this
-     *     should be 'style'. Otherwise, it should be the word 'style_' with
-     *     the theme name appended.
-     * @param {String} themeName The name of the theme currently in force for
-     *     this document (i.e. the return value of TP.documentGetTheme).
+     * @param {String} aStyleURI The stylesheet URI to use as the source of the
+     *     style content.
      * @returns {Element|null} The newly inserted style element containing the
      *     stylesheet resource or null if no new style element was added because
      *     an existing one was found.
@@ -138,34 +135,8 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
         return;
     }
 
-    //  Couldn't find that CSS style sheet, so we ask ourself to compute a
-    //  'resource URI' for the sheet using the CSS mime type. NOTE that the
-    //  computation here will automatically adjust for theme.
-    styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
-    if (TP.notValid(styleURI)) {
-
-        //  If we were trying to get the theme URI and failed, then try to see
-        //  if the regular 'style' element is available. If so, just return.
-        if (TP.notEmpty(themeName)) {
-
-            sheetID = ourID;
-
-            styleElem = TP.byId(sheetID, aDocument, false);
-            if (TP.isElement(styleElem)) {
-                return;
-            }
-
-            styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
-            if (TP.notValid(styleURI)) {
-                return;
-            }
-        } else {
-
-            //  Otherwise, we were trying the regular 'style' URI and couldn't
-            //  find it.
-            return;
-        }
-    }
+    //  Capture this into a local since we may reassign it below.
+    styleURI = aStyleURI;
 
     styleLoc = styleURI.getLocation();
 
