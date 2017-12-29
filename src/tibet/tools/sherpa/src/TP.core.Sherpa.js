@@ -2552,6 +2552,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
     //  the XHTML namespace and b) has a 'tibet:tag' attribute, then its acting
     //  as it's own tag source. So we make it such and flip our wasSrcRoot flag.
     xmlns = searchElem.namespaceURI;
+    /*
     if (isAttrChange &&
         (!xhtmlURIs.contains(xmlns) ||
             TP.elementHasAttribute(searchElem, 'tibet:tag', true))) {
@@ -2559,7 +2560,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
         tagSrcElem = searchElem;
         wasSrcRoot = true;
     } else {
-
+    */
         //  If we're supposed to start our search for the tag source element at
         //  our search element, then the mutated node must be being detached and
         //  therefore the initial search element is set to the aNodeAncestor
@@ -2585,7 +2586,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
             tagSrcElem = tagSrcElem.parentNode;
         }
-    }
+    //}
 
     //  If no tag source element could be computed, that means we're going to
     //  use the whole document as the source.
@@ -2712,8 +2713,14 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                     ancestorAddresses.push(addresses.last());
                 }
 
-                //  Set it to be ready to go for logic below.
-                addresses = ancestorAddresses;
+                if (TP.notEmpty(ancestorAddresses)) {
+                    //  Set it to be ready to go for logic below.
+                    addresses = ancestorAddresses;
+                }
+
+                if (addresses.getSize() === 1 && addresses.first() === '') {
+                    addresses.empty();
+                }
             }
         } else {
             //  Now we get the address from the target element that the user is
@@ -2722,10 +2729,12 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
             originatingAddress = TP.nodeGetDocumentPosition(aNode,
                                                             null,
                                                             tagSrcElem);
-            addresses = originatingAddress.split('.');
+            if (TP.notEmpty(originatingAddress)) {
+                addresses = originatingAddress.split('.');
 
-            if (wasADesugaredTextBinding) {
-                addresses.pop();
+                if (wasADesugaredTextBinding) {
+                    addresses.pop();
+                }
             }
         }
 
