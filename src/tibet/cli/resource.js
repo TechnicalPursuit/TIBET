@@ -204,7 +204,8 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
     var args,
-        index;
+        index,
+        params;
 
     args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
 
@@ -221,11 +222,21 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     //  exist or any provided locally.
     this.finalizeTimeout(arglist);
 
+    params = args.filter(function(arg) {
+        return arg.indexOf('--boot.') === 0 &&
+            arg.indexOf('--boot.inlined=') === -1;
+    });
+    params = params.map(function(arg) {
+        return arg.slice(2);
+    });
+    params.push('boot.inlined=true');
+    params = params.join('&');
+
     //  Force command to NOT try to load inlined resources since this can cause
     //  a circular failure condition where we're trying to boot TIBET to compute
     //  resources but we are missing resource files because...we haven't been
     //  able to run this command to completion...etc.
-    args.push('--params=boot.inlined=false');
+    args.push('--params=' + params);
 
     return args;
 };
@@ -726,9 +737,6 @@ Cmd.prototype.processLessResource = function(options) {
         options.reject(e);
         return;
     }
-
-    // this.debug('options: ' + CLI.beautify(JSON.stringify(options)));
-    // this.debug('lessOpts: ' + CLI.beautify(JSON.stringify(lessOpts)));
 
     return less.render(options.data, lessOpts).then(function(output) {
         var content,

@@ -219,7 +219,7 @@ Cmd.prototype.execute = function() {
     arglist.unshift(tshpath);
 
     // Push an additional debug flag specific to phantom if set.
-    if (this.options.debug && this.options.verbose) {
+    if (this.options['phantom-debug']) {
         arglist.unshift(true);
         arglist.unshift('--debug');
     }
