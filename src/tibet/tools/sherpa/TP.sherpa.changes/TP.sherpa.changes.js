@@ -309,7 +309,7 @@ TP.sherpa.changes.Inst.defineHandler('RemoteResourceChanged',
 function(aSignal) {
 
     /**
-     * @method handleResourceDirty
+     * @method handleRemoteResourceChanged
      * @summary Handles when any URI's server-side 'dirty' state changes.
      * @param {TP.sig.RemoteResourceChanged} aSignal The TIBET signal which
      *     triggered this method.
