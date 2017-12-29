@@ -223,13 +223,15 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     this.finalizeTimeout(arglist);
 
     params = args.filter(function(arg) {
+        //  Don't let boot.inlined pass...we have to set to false or the
+        //  resource command can't boot during build operations.
         return arg.indexOf('--boot.') === 0 &&
             arg.indexOf('--boot.inlined=') === -1;
     });
     params = params.map(function(arg) {
         return arg.slice(2);
     });
-    params.push('boot.inlined=true');
+    params.push('boot.inlined=false');
     params = params.join('&');
 
     //  Force command to NOT try to load inlined resources since this can cause
