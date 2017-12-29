@@ -168,7 +168,8 @@ Cmd.prototype.pkgOpts = null;
  */
 Cmd.prototype.configure = function() {
     var arg0,
-        parts;
+        parts,
+        cmd;
 
     //  If we have an arg0 value (unqualified via flag) it should be the profile
     //  value, which then overrides any package/config data.
@@ -181,6 +182,24 @@ Cmd.prototype.configure = function() {
         parts = this.options.profile.split('@');
         this.options.package = parts[0];
         this.options.config = parts[1];
+    }
+
+    //  Process boot.* properties in particular since they can drive how we
+    //  resolve package if/unless flags at runtime. The issue here is that the
+    //  default command line parsing won't process these correctly if not
+    //  mentioned specifically as "boolean" but we want to make sure they are.
+    if (this.options.boot) {
+        cmd = this;
+        Object.keys(this.options.boot).forEach(function(key) {
+            var value;
+
+            value = cmd.options.boot[key];
+            if (value === 'true') {
+                cmd.options.boot[key] = true;
+            } else if (value === 'false') {
+                cmd.options.boot[key] = false;
+            }
+        });
     }
 
     return this.options;
