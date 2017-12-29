@@ -2277,23 +2277,41 @@ function(aRequest) {
     //  types will be a hash of names/type objects.
     types.perform(function(item) {
         var itemtype,
-            themes;
+            themes,
+            val;
 
         itemtype = item.last();
         if (TP.canInvoke(itemtype, 'computeResourceURI')) {
-            arr.push(itemtype.computeResourceURI('template'));
-            arr.push(itemtype.computeResourceURI('style'));
+            val = itemtype.computeResourceURI('template');
+            if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                arr.push(val);
+            }
+            val = itemtype.computeResourceURI('style');
+            if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                arr.push(val);
+            }
 
             //  Now iterate on the known themes...
             themes = TP.sys.getcfg('project.theme.list', []);
             themes = themes.concat(TP.sys.getcfg('tibet.theme.list', []));
-            themes.forEach(function(theme) {
-                arr.push(itemtype.computeResourceURI('style_' + theme));
-            });
+            themes.forEach(
+                function(theme) {
+                    val = itemtype.computeResourceURI('style_' + theme);
+                    if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                        arr.push(val);
+                    }
+                });
 
             if (raw) {
-                arr.push(itemtype.computeResourceURI('source'));
-                arr.push(itemtype.computeResourceURI('tests'));
+                val = itemtype.computeResourceURI('source');
+                if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                    arr.push(val);
+                }
+
+                val = itemtype.computeResourceURI('tests');
+                if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                    arr.push(val);
+                }
             }
         }
     });

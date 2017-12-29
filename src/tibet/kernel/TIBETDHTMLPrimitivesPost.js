@@ -976,21 +976,60 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentGetTheme',
-function(aDocument) {
+function(aDocument, fallback) {
 
     /**
      * @method documentGetTheme
-     * @summary Gets the data-theme attribute on the supplied document body that
-     *     is helping to drive themed CSS.
+     * @summary Returns the *current* UI 'project' theme. It does this by
+     *     obtaining the data-theme attribute on the supplied document body that
+     *     is helping to drive themed CSS. If the current 'project' theme isn't
+     *     available, and the fallback flag is supplied, then the current 'lib'
+     *     theme will be returned.
+     * @description Note that the supplied document might be configured with
+     *     both a 'lib' theme and a 'project' theme. The value returned here
+     *     will always be the 'project' theme unless the fallback flag is
+     *     supplied.
      * @param {Document} aDocument The document to get the theme for.
+     * @param {Boolean} [fallback=false] Whether or not to return the 'lib'
+     *     theme if the 'project' theme is unavailable.
      * @returns {String} The theme in effect for the supplied document.
      */
 
-    var body;
+    var body,
+        themeAttrVal,
+
+        libTheme,
+        themes;
 
     body = TP.documentGetBody(aDocument);
     if (TP.isElement(body)) {
-        return TP.elementGetAttribute(body, 'data-theme');
+
+        themeAttrVal = TP.elementGetAttribute(body, 'data-theme', true);
+
+        //  If there is a value of the 'data-theme' attribute from the body,
+        //  then try to determine the 'project' theme from it. Otherwise, if the
+        //  fallback flag is set, then return the 'lib' theme.
+        if (TP.notEmpty(themeAttrVal)) {
+
+            //  Grab the 'lib' theme so that we can filter and/or return it.
+            libTheme = TP.sys.getcfg('tibet.theme.default');
+
+            //  Split the 1...n theme names obtained from the attribute and
+            //  filter any that *aren't* the lib theme.
+            themes = themeAttrVal.split(' ');
+            themes = themes.select(
+                            function(aTheme) {
+                                return aTheme !== libTheme;
+                            });
+
+            //  Got a 'project' theme? Return the first one.
+            if (TP.notEmpty(themes)) {
+                return themes.first();
+            } else if (fallback) {
+                //  Otherwise, return the 'lib' theme if we're falling back.
+                return libTheme;
+            }
+        }
     }
 
     return;
@@ -1133,19 +1172,50 @@ function(aDocument, themeName) {
     /**
      * @method documentSetTheme
      * @summary Sets a data-theme attribute on the supplied document body to
-     *     help drive themed CSS.
+     *     help drive themed CSS. Note that this should be the UI 'project'
+     *     theme. This will have the 'lib' theme added to it for theming
+     *     'backstop' purposes.
      * @param {Document} aDocument The document to set the theme for.
      * @param {String} themeName The theme name to set for the document.
      */
 
-    var body;
+    var body,
+
+        libTheme,
+        projectTheme;
 
     body = TP.documentGetBody(aDocument);
     if (TP.isElement(body)) {
-        if (TP.isEmpty(themeName)) {
-            TP.elementRemoveAttribute(body, 'data-theme');
+
+        //  Grab the 'lib' theme so that we can use it.
+        libTheme = TP.sys.getcfg('tibet.theme.default');
+
+        //  If we're running the Sherpa and the document is the UIRoot document,
+        //  then we don't use the 'project' theme.
+        if (TP.sys.hasFeature('sherpa') &&
+            aDocument === TP.sys.getUIRoot(true).document) {
+            projectTheme = '';
         } else {
-            TP.elementSetAttribute(body, 'data-theme', themeName);
+            //  Otherwise, use the supplied theme name.
+            projectTheme = themeName;
+        }
+
+        //  If both the 'project' and 'lib' themes are empty, then just remove
+        //  the attribute.
+        if (TP.isEmpty(projectTheme)) {
+            if (TP.isEmpty(libTheme)) {
+                TP.elementRemoveAttribute(body, 'data-theme', true);
+            } else {
+                //  Otherwise, the project theme is blank - use the 'lib' theme
+                TP.elementSetAttribute(body, 'data-theme', libTheme, true);
+            }
+        } else if (projectTheme === libTheme) {
+            //  Otherwise, they're both the same - just use the 'project' theme.
+            TP.elementSetAttribute(body, 'data-theme', projectTheme, true);
+        } else {
+            //  Otherwise, use them both.
+            TP.elementSetAttribute(
+                body, 'data-theme', libTheme + ' ' + projectTheme, true);
         }
     }
 
@@ -8895,7 +8965,9 @@ function(aWindow) {
     //  awakening can work with an awareness of the ACL context
     TP.windowAssignACLKeys(aWindow);
 
-    //  Update the document theme based on the current application theme.
+    //  Update the document theme based on the current application theme. The
+    //  current application theme is computed from the current UI canvas
+    //  document or system properties if a theme cannot be found there.
     app = TP.sys.getApplication();
     if (TP.isValid(app) && TP.notEmpty(theme = app.getTheme())) {
         TP.documentSetTheme(aWindow.document, theme);

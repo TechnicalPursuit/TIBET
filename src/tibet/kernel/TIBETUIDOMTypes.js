@@ -79,7 +79,7 @@ TP.core.UIElementNode.defineAttribute('$asyncSwitchingContexts');
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Type.defineMethod('$addStylesheetResource',
-function(aDocument, ourID, sheetElemID, resource, themeName) {
+function(aDocument, ourID, sheetElemID, aStyleURI) {
 
     /**
      * @method $addStylesheetResource
@@ -92,11 +92,8 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
      *     the corresponding stylesheet for that theme for the receiver can't be
      *     found.
      * @param {String} sheetElemID The ID to use as the stylesheet element ID.
-     * @param {String} resource The resource name. If there is no theme, this
-     *     should be 'style'. Otherwise, it should be the word 'style_' with
-     *     the theme name appended.
-     * @param {String} themeName The name of the theme currently in force for
-     *     this document (i.e. the return value of TP.documentGetTheme).
+     * @param {String} aStyleURI The stylesheet URI to use as the source of the
+     *     style content.
      * @returns {Element|null} The newly inserted style element containing the
      *     stylesheet resource or null if no new style element was added because
      *     an existing one was found.
@@ -138,34 +135,8 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
         return;
     }
 
-    //  Couldn't find that CSS style sheet, so we ask ourself to compute a
-    //  'resource URI' for the sheet using the CSS mime type. NOTE that the
-    //  computation here will automatically adjust for theme.
-    styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
-    if (TP.notValid(styleURI)) {
-
-        //  If we were trying to get the theme URI and failed, then try to see
-        //  if the regular 'style' element is available. If so, just return.
-        if (TP.notEmpty(themeName)) {
-
-            sheetID = ourID;
-
-            styleElem = TP.byId(sheetID, aDocument, false);
-            if (TP.isElement(styleElem)) {
-                return;
-            }
-
-            styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
-            if (TP.notValid(styleURI)) {
-                return;
-            }
-        } else {
-
-            //  Otherwise, we were trying the regular 'style' URI and couldn't
-            //  find it.
-            return;
-        }
-    }
+    //  Capture this into a local since we may reassign it below.
+    styleURI = aStyleURI;
 
     styleLoc = styleURI.getLocation();
 
@@ -361,7 +332,16 @@ function(aDocument) {
         themeNewStyleElem,
         newStyleElem,
 
+        styleURI,
+
         observeID,
+
+        projectThemes,
+        libThemes,
+        allThemes,
+
+        len,
+        i,
 
         doc,
 
@@ -401,16 +381,24 @@ function(aDocument) {
     //  sheet that isn't standalone will @import what it requires.
 
     //  Note that we try to see if the document already has a theme, which will
-    //  override any application-level theme.
-    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
+    //  override any application-level theme (which is computed from the current
+    //  UI canvas document or system properties if a theme cannot be found
+    //  there). Note that this will be either the 'project' theme or the 'lib'
+    //  theme. If the 'project' theme cannot be found, then by passing true as
+    //  the second parameter, the 'lib' theme will be returned, if it can be
+    //  found.
+    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument, true))) {
         themeName = TP.sys.getApplication().getTheme();
     }
 
     //  Add the core stylesheet for the receiver. Note that we supply ourID for
     //  both the unique identifier for the receiver and as the element ID to use
     //  for this stylesheet.
-    newStyleElem = this.$addStylesheetResource(
-                            aDocument, ourID, ourID, 'style', null);
+    styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
+    if (TP.isValid(styleURI) && styleURI !== TP.NO_RESULT) {
+        newStyleElem = this.$addStylesheetResource(
+                                aDocument, ourID, ourID, styleURI);
+    }
 
     observeID = null;
 
@@ -418,17 +406,80 @@ function(aDocument) {
     //  receiver.
     if (TP.notEmpty(themeName)) {
 
-        themeNewStyleElem = this.$addStylesheetResource(
-                                aDocument,
-                                ourID,
-                                ourID + '_' + themeName,
-                                'style_' + themeName,
-                                themeName);
+        //  Grab the resource URI for the theme. Note here how we specify no
+        //  fallback for the resource URI, because .
+        styleURI = this.getResourceURI(
+                            'style_' + themeName, TP.ietf.Mime.CSS, false);
 
-        if (TP.isElement(themeNewStyleElem)) {
-            //  if we inserted a new style element for the theme stylesheet, set
-            //  the new style element to be that style element.
-            newStyleElem = themeNewStyleElem;
+        //  The themeing resource specifically indicated that it has no result,
+        //  so we skip any themeing fallback here
+        if (styleURI === TP.NO_RESULT) {
+            //  empty
+        } else {
+
+            //  Otherwise, we were meant to get a meaningful result, but didn't.
+            //  Let's try iterating through all of the other themes that the
+            //  system knows about and see if there's a defined URI that
+            //  matches.
+            if (TP.notValid(styleURI)) {
+                TP.ifWarn() ?
+                    TP.warn(
+                        'Couldn\'t compute a theme URI for type: ' +
+                        this.getName() +
+                        ' and theme: ' +
+                        themeName +
+                        '. Attempting fallback.') : 0;
+
+                //  Grab all of the 'project' and 'lib' themes.
+                projectThemes = TP.sys.getcfg('project.theme.list');
+                libThemes = TP.sys.getcfg('tibet.theme.list');
+
+                //  If we had a real set of 'project' themes, then copy them and
+                //  set all themes to that. This allows us to consider each
+                //  project theme, in order.
+                if (TP.isArray(projectThemes)) {
+                    allThemes = TP.copy(projectThemes);
+                } else {
+                    //  Otherwise, set all themes to an empty Array.
+                    allThemes = TP.ac();
+                }
+
+                //  If we have 'lib' themes, then we'll consider them after all
+                //  of the project themes, again in the order in which they were
+                //  defined.
+                if (TP.isArray(libThemes)) {
+                    allThemes = allThemes.concat(TP.copy(libThemes));
+                }
+
+                //  Iterate over all of the themes. If there is a defined URI
+                //  for the receiver and theme, then break.
+                len = allThemes.getSize();
+                for (i = 0; i < len; i++) {
+                    styleURI = this.getResourceURI(
+                                    'style_' + allThemes.at(i),
+                                    TP.ietf.Mime.CSS,
+                                    false);
+                    if (TP.isValid(styleURI)) {
+                        break;
+                    }
+                }
+            }
+
+            //  Got a valid style URI? Use it.
+            if (TP.isValid(styleURI)) {
+                themeNewStyleElem = this.$addStylesheetResource(
+                                        aDocument,
+                                        ourID,
+                                        ourID + '_' + themeName,
+                                        styleURI);
+
+                if (TP.isElement(themeNewStyleElem)) {
+                    //  if we inserted a new style element for the theme
+                    //  stylesheet, set the new style element to be that style
+                    //  element.
+                    newStyleElem = themeNewStyleElem;
+                }
+            }
         }
     }
 
