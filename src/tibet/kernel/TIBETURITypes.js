@@ -1843,7 +1843,7 @@ function() {
 
     //  clear any internal state flags that might cause issues reloading
     this.isLoaded(false);
-    this.isDirty(false);
+    this.isDirty(false, true);
 
     return this;
 });
@@ -3906,23 +3906,23 @@ function(aResource, aRequest, shouldSignal) {
         case 'get':
             this.$set('resource', newResource, false);
             this.isLoaded(true);
-            this.isDirty(false);
+            this.isDirty(false, true);
             break;
         case 'set':
             this.$set('resource', newResource, false);
             this.isLoaded(true);    //  arguable semantics but important for
                                     //  preloaded URIs
             if (loaded) {
-                this.isDirty(dirty);
+                this.isDirty(dirty, true);
             } else {
-                this.isDirty(false);
+                this.isDirty(false, true);
             }
             break;
         case 'save':
             //  NOTE we don't save results for save..., it's usually an empty
             //  response.
             this.isLoaded(true);
-            this.isDirty(false);
+            this.isDirty(false, true);
 
             //  We don't signal since we're only pushing data, not altering it.
             shouldSignalChange = false;
@@ -3931,7 +3931,7 @@ function(aResource, aRequest, shouldSignal) {
             //  NOTE we don't save results for delete..., it's usually an empty
             //  response.
             this.isLoaded(false);
-            this.isDirty(false);
+            this.isDirty(false, true);
 
             //  We always signal since whatever value was there is now undefined.
             shouldSignalChange = true;
@@ -4236,7 +4236,8 @@ function(aRequest, aResult, aResource, shouldSignal) {
 
             //  Send notification from the other URIs that are dependent on the
             //  new data.
-            this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
+            this.$sendDependentURINotifications(
+                        oldResource, aResource, pathInfo);
         } else {
             //  NOTE the 'true' here signifies 'primary only' so we'll always at
             //  least tell our primary we changed something.
@@ -4250,11 +4251,11 @@ function(aRequest, aResult, aResource, shouldSignal) {
     //  ourselves to be 'clean' until a subsequent change.
     if (request.at('loaded')) {
         if (!TP.equal(oldResource, aResource)) {
-            this.isDirty(true);
+            this.isDirty(true, true);
         }
     } else {
         this.isLoaded(true);
-        this.isDirty(false);
+        this.isDirty(false, true);
     }
 
     return result;
@@ -5181,7 +5182,7 @@ function(aResource, aRequest, shouldSignal) {
         case 'get':
             this.$set('resource', newResource, false);
             this.isLoaded(true);
-            this.isDirty(false);
+            this.isDirty(false, true);
             break;
         case 'set':
             this.$set('resource', newResource, false);
@@ -5190,14 +5191,14 @@ function(aResource, aRequest, shouldSignal) {
             if (loaded) {
                 this.isDirty(dirty);
             } else {
-                this.isDirty(false);
+                this.isDirty(false, true);
             }
             break;
         case 'save':
             //  NOTE we don't save results for save..., it's usually an empty
             //  response.
             this.isLoaded(true);
-            this.isDirty(false);
+            this.isDirty(false, true);
 
             //  We don't signal since we're only pushing data, not altering it.
             shouldSignalChange = false;
@@ -5206,7 +5207,7 @@ function(aResource, aRequest, shouldSignal) {
             //  NOTE we don't save results for delete..., it's usually an empty
             //  response.
             this.isLoaded(false);
-            this.isDirty(false);
+            this.isDirty(false, true);
 
             //  We always signal since whatever value was there is now undefined.
             shouldSignalChange = true;
@@ -11534,7 +11535,7 @@ function(targetURI, aRequest) {
             function(aResult) {
 
                 if (TP.isTrue(aResult)) {
-                    targetURI.isDirty(false);
+                    targetURI.isDirty(false, true);
                     targetURI.isLoaded(false);
 
                     subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);
@@ -11676,7 +11677,7 @@ function(targetURI, aRequest) {
 
                 if (TP.isTrue(aResult)) {
 
-                    targetURI.isDirty(false);
+                    targetURI.isDirty(false, true);
                     targetURI.isLoaded(true);
 
                     subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);

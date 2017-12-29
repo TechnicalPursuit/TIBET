@@ -1083,7 +1083,7 @@ function(newMethodText, loadedFromSourceFile) {
     //  If the path is a URI and the patch contains '@@', then there were diffs
     //  and the URI should be dirtied.
     if (TP.isURIString(TP.uriExpandPath(path)) && patch.contains('@@')) {
-        TP.uc(path).isDirty(true);
+        TP.uc(path).isDirty(true, true);
     }
 
     return TP.ac(patch, newContent);

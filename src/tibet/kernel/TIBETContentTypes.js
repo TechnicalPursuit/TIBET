@@ -437,7 +437,7 @@ function(anAspect, anAction, aDescription) {
 
         srcURI = this.get('sourceURI');
         if (TP.isURI(srcURI)) {
-            srcURI.isDirty(true);
+            srcURI.isDirty(true, true);
         }
     }
 
