@@ -2890,14 +2890,6 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
     //  Set the resource of the sourceURI back to the updated source node.
     sourceURI.setResource(sourceNode, TP.request('signalChange', false));
 
-    //  Note that, because we're modifying the original DOM directly here (the
-    //  handle that the URI's resource), the resource won't see this as a
-    //  'different' node (because the pointer is the same and it will be
-    //  comparing the same node for equality purposes). Therefore, we manually
-    //  mark the sourceURI as dirty (and supply a second parameter to tell the
-    //  URI to send the 'dirty changed' signal).
-    sourceURI.isDirty(true, true);
-
     return this;
 });
 
