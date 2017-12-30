@@ -253,28 +253,9 @@ helpers.resource_build = function(make, options) {
 
     make.log('executing ' + cmd);
 
-    proc = child.spawn(cmd, {
-        shell: true
-    });
-
-    proc.stderr.on('data', function(data) {
-        var clean;
-
-        if (!CLI.options.verbose) {
-            clean = CLI.clean(data, true);
-
-            //  Non-empty error or test failure output should be retained.
-            if (clean.length !== 0 &&
-                    (/^ERROR/i.test(clean) ||
-                     /^Exception/i.test(clean) ||
-                     /^not ok/i.test(clean) ||
-                     /with status:/.test(clean))) {
-                make.error(clean);
-            }
-        } else {
-            make.error(data);
-        }
-    });
+    //  Use our wrapper function here, it'll log via the make object's logging
+    //  hooks so we get properly processed stdout and stderr data.
+    proc = make.spawn(cmd);
 
     proc.on('exit', function(code) {
         if (code !== 0) {
