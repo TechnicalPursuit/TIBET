@@ -237,7 +237,9 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var inspector,
+    var sourceURI,
+
+        inspector,
         detachedValueAndName,
         newPanel,
         editorLID,
@@ -246,6 +248,13 @@ function(aSignal) {
         toolbarContent,
         tdcDrawer,
         elem;
+
+    sourceURI = this.get('sourceURI');
+
+    //  Since we're going to change our ID, we need to ignore these signals
+    //  coming from the sourceURI and re-observe at the end of this method when
+    //  we're done doing that.
+    this.ignore(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
 
     inspector = TP.byId('SherpaInspector', this.getNativeWindow());
 
@@ -316,6 +325,27 @@ function(aSignal) {
     if (TP.isValid(tdcDrawer)) {
         TP.signal(tdcDrawer, 'UIOpen');
     }
+
+    //  Re-observe our source URI for changes, now that we've changed our ID.
+    this.observe(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('DirtyChange',
+function(aSignal) {
+
+    /**
+     * @method handleDirtyChange
+     * @summary Handles when the source object's 'dirty' state changes.
+     * @param {TP.sig.DirtyChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    this.render();
 
     return this;
 });
@@ -917,7 +947,7 @@ function(anObj) {
     //  Grab the current source URI and ignore it for changes. This is important
     //  because we observe the source URI whenever it gets set on the receiver.
     if (TP.isURI(sourceURI = this.get('sourceURI'))) {
-        this.ignore(sourceURI, 'TP.sig.ValueChange');
+        this.ignore(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
     }
 
     sourceURI = anObj;
@@ -931,7 +961,7 @@ function(anObj) {
     }
 
     //  Observe the source URI for changes.
-    this.observe(sourceURI, 'TP.sig.ValueChange');
+    this.observe(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
 
     //  Note the use of '$set' to avoid recursion.
     this.$set('sourceURI', sourceURI);
@@ -1115,7 +1145,7 @@ function() {
     //  Grab the current source URI and ignore it for changes. This is important
     //  because we observe the source URI whenever it gets set on the receiver.
     if (TP.isURI(sourceURI = this.get('sourceURI'))) {
-        this.ignore(sourceURI, 'TP.sig.ValueChange');
+        this.ignore(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
     }
 
     this.get('editor').unsetEditorEventHandler(

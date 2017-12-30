@@ -469,7 +469,7 @@ function(anObj) {
     //  Grab the current source URI and ignore it for changes. This is important
     //  because we observe the source URI whenever it gets set on the receiver.
     if (TP.isURI(sourceURI = this.get('sourceURI'))) {
-        this.ignore(sourceURI, 'TP.sig.ValueChange');
+        this.ignore(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
     }
 
     //  Grab the source URI of the Function by creating it from it's source
@@ -484,7 +484,7 @@ function(anObj) {
     }
 
     //  Observe the source URI for changes.
-    this.observe(sourceURI, 'TP.sig.ValueChange');
+    this.observe(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
 
     //  Note the use of '$set' to avoid recursion.
     this.$set('sourceURI', sourceURI);
