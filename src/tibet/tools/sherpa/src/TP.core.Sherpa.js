@@ -2503,7 +2503,9 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         newNode,
 
-        results;
+        results,
+
+        wasDirty;
 
     /*
     console.log('nodeName: ' + aNode.nodeName + '\n' +
@@ -2612,6 +2614,13 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
     sourceNode =
         sourceURI.getResource(
             TP.hc('async', false, 'resultType', TP.DOM)).get('result');
+
+    //  Make sure to clone the source node before modifying the current node
+    //  (which will either be the sourceNode or a descendant of it). That way,
+    //  when we set the sourceURI's resource to it, it won't be the same node as
+    //  the one that the sourceURI is holding now and the 'equals' comparison
+    //  will operate properly.
+    sourceNode = TP.nodeCloneNode(sourceNode);
 
     //  If the element we're using to search for has a
     //  'tibet:desugaredTextBinding' attribute on it, that means that it was
@@ -2889,6 +2898,18 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
     //  Set the resource of the sourceURI back to the updated source node.
     sourceURI.setResource(sourceNode, TP.request('signalChange', false));
+
+    //  Lastly, because of the way that the dirtying machinery works, we need to
+    //  separately signal the dirty each time. This is because 2nd and
+    //  subsequent times, when the dirty flag is true, it won't send the
+    //  notification again. We need observers of 'dirty' to keep getting
+    //  notifications.
+    wasDirty = sourceURI.isDirty();
+    TP.$changed.call(
+        sourceURI,
+        'dirty',
+        TP.UPDATE,
+        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, true));
 
     return this;
 });
