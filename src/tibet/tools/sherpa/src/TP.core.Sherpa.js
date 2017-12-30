@@ -2464,7 +2464,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         xhtmlURIs,
 
-        xmlns,
+        // xmlns,
 
         tagSrcElem,
         wasSrcRoot,
@@ -2553,8 +2553,8 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
     //  If the element we're using to search for the source is itself a) not in
     //  the XHTML namespace and b) has a 'tibet:tag' attribute, then its acting
     //  as it's own tag source. So we make it such and flip our wasSrcRoot flag.
-    xmlns = searchElem.namespaceURI;
     /*
+    xmlns = searchElem.namespaceURI;
     if (isAttrChange &&
         (!xhtmlURIs.contains(xmlns) ||
             TP.elementHasAttribute(searchElem, 'tibet:tag', true))) {
@@ -2563,32 +2563,32 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
         wasSrcRoot = true;
     } else {
     */
-        //  If we're supposed to start our search for the tag source element at
-        //  our search element, then the mutated node must be being detached and
-        //  therefore the initial search element is set to the aNodeAncestor
-        //  above. We want to start the search there.
-        if (startAtSearchElem) {
-            tagSrcElem = searchElem;
-        } else {
+    //  If we're supposed to start our search for the tag source element at
+    //  our search element, then the mutated node must be being detached and
+    //  therefore the initial search element is set to the aNodeAncestor
+    //  above. We want to start the search there.
+    if (startAtSearchElem) {
+        tagSrcElem = searchElem;
+    } else {
 
-            //  Otherwise, we want to start the search for the tag source
-            //  element at the search element's parentNode.
-            tagSrcElem = searchElem.parentNode;
+        //  Otherwise, we want to start the search for the tag source
+        //  element at the search element's parentNode.
+        tagSrcElem = searchElem.parentNode;
+    }
+
+    //  Search the hierarchy for the nearest custom tag (using the same
+    //  search criteria as above) to set as the tag source element.
+    while (TP.isElement(tagSrcElem)) {
+
+        ansXmlns = tagSrcElem.namespaceURI;
+        if (!xhtmlURIs.contains(ansXmlns) ||
+            TP.elementHasAttribute(tagSrcElem, 'tibet:tag', true)) {
+            break;
         }
 
-        //  Search the hierarchy for the nearest custom tag (using the same
-        //  search criteria as above) to set as the tag source element.
-        while (TP.isElement(tagSrcElem)) {
-
-            ansXmlns = tagSrcElem.namespaceURI;
-            if (!xhtmlURIs.contains(ansXmlns) ||
-                TP.elementHasAttribute(tagSrcElem, 'tibet:tag', true)) {
-                break;
-            }
-
-            tagSrcElem = tagSrcElem.parentNode;
-        }
-    //}
+        tagSrcElem = tagSrcElem.parentNode;
+    }
+    // }
 
     //  If no tag source element could be computed, that means we're going to
     //  use the whole document as the source.
