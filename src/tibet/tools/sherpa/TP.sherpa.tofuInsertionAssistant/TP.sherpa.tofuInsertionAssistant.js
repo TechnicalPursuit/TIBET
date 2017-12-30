@@ -225,6 +225,10 @@ function(anObject) {
     autodefineMissingTags = TP.sys.cfg('sherpa.autodefine_missing_tags');
     TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
 
+    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  mutations to the source DOM.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
     //  Go ahead and insert the content.
     newTPElem = targetTPElem.insertContent(
                         str,
