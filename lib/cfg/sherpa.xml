@@ -112,6 +112,7 @@
     <script src="./src/TP.html_Additions.js"/>
     <script src="./src/TP.lang.RootObject_Additions.js"/>
     <script src="./src/TP.lang.Namespace_Additions.js"/>
+    <script src="./src/TP.xctrls_Additions.js"/>
 
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
