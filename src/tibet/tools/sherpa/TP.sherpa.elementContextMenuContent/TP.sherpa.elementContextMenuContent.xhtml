@@ -3,6 +3,7 @@
 <sherpa:elementContextMenuContent>
     <ul on:mouseup="SelectMenuItem">
         <li data-cmd=":inspect $HALO">Inspect</li>
+        <li data-cmd="TP.bySystemId('UIROOT#SherpaHalo').inspectTargetAspect(TP.ac('Structure'))">Edit Structure</li>
         <li data-cmd="TP.bySystemId('Sherpa').makeCustomTagFrom($HALO)">Make Custom Tag</li>
         <li data-cmd="TP.bySystemId('UIROOT#SherpaHalo').emptyTarget()">Empty Content</li>
         <li data-cmd="TP.bySystemId('UIROOT#SherpaHalo').deleteTarget()">Delete</li>
