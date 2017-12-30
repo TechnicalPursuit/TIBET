@@ -533,9 +533,10 @@ TP.core.CompiledTag.defineSubtype('tibet:root');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
+//  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.tibet.root.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tibet.root.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
