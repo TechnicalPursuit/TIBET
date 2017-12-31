@@ -153,20 +153,30 @@ function(aRequest) {
     //  Define the method (by invoking the computed method definition name
     //  against the target) dynamically in the system.
 
+    //  NOTE NOTE NOTE: The following method bodies are formatted this way
+    //  because they, along with their embedded whitespace, will be used as the
+    //  templates for new, empty method bodies at the global scope in the
+    //  receiving type  Therefore, indenting lint rules have been switched off
+    //  and they have been formatted this way on purpose.
+
+    /* eslint-disable indent */
+
     //  If it's a handler, make sure to include the 'aSignal' parameter.
     if (methodKind === 'handler') {
         newMethod = target[defMethod](
                         methodName,
                         function(aSignal) {
-                            //  empty
-                        });
+    //  empty
+});
     } else {
         newMethod = target[defMethod](
                         methodName,
                         function() {
-                            //  empty
-                        });
+    //  empty
+});
     }
+
+    /* eslint-enable indent */
 
     newMethod[TP.LOAD_PATH] = methodOwnerType[TP.LOAD_PATH];
     newMethod[TP.SOURCE_PATH] = methodOwnerType[TP.SOURCE_PATH];
