@@ -157,7 +157,8 @@ CLI.PARSE_OPTIONS = {
         'initpath', 'completion', 'tds-cli', 'force'],
     'string': ['app_root', 'lib_root', 'level'],
     'default': {
-        color: true
+        color: true,
+        'tds-cli': false
     }
 };
 /* eslint-enable quote-props */
