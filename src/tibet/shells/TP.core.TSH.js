@@ -2671,6 +2671,17 @@ function(aRequest) {
     seenKeys = TP.hc();
 
     args = this.getArguments(aRequest);
+
+    //  Filter arg0 variants when they are identical to the cmd value. We don't
+    //  want to have duplicate arguments sent over the wire.
+    if (args.at('ARG0') === cmd) {
+        args.removeKey('ARG0');
+        args.removeKey('tshARG0');
+        if (TP.isValid(args.at('ARGV'))) {
+            args.at('ARGV').shift();
+        }
+    }
+
     args.perform(
         function(arg) {
             var key,
