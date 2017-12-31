@@ -178,11 +178,11 @@ helpers.package_check = function(make, options) {
         (pkg ? ' --package \'' + pkg : '') +
         (config ? '\' --config ' + config : '') +
         (phase ? ' --phase ' + phase : '') +
-        (options.debug ? ' --debug' : '') +
-        (options.verbose ? ' --verbose' : '') +
-        (options.color ? '' : ' --no-color') +
-        (options['tds-cli'] ? '' : ' --tds-cli') +
-        (options.silent ? '' : ' --no-silent');
+        (make.options.debug ? ' --debug' : '') +
+        (make.options.verbose ? ' --verbose' : '') +
+        (make.options.color ? '' : ' --no-color') +
+        (make.options['tds-cli'] ? ' --tds-cli' : '') +
+        (make.options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
 
@@ -247,11 +247,11 @@ helpers.resource_build = function(make, options) {
         (pkg ? ' --package \'' + pkg : '') +
         (config ? '\' --config ' + config : '') +
         (phase ? ' --phase ' + phase : '') +
-        (options.debug ? ' --debug' : '') +
-        (options.verbose ? ' --verbose' : '') +
-        (options.color ? '' : ' --no-color') +
-        (options['tds-cli'] ? '' : ' --tds-cli') +
-        (options.silent ? '' : ' --no-silent');
+        (make.options.debug ? ' --debug' : '') +
+        (make.options.verbose ? ' --verbose' : '') +
+        (make.options.color ? '' : ' --no-color') +
+        (make.options['tds-cli'] ? ' --tds-cli' : '') +
+        (make.options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
 
@@ -347,11 +347,11 @@ helpers.rollup = function(make, options) {
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
         ' --phase ' + phase +
-        (options.debug ? ' --debug' : '') +
-        (options.verbose ? ' --verbose' : '') +
-        (options.color ? '' : ' --no-color') +
-        (options['tds-cli'] ? '' : ' --tds-cli') +
-        (options.silent ? '' : ' --no-silent') +
+        (make.options.debug ? ' --debug' : '') +
+        (make.options.verbose ? ' --verbose' : '') +
+        (make.options.color ? '' : ' --no-color') +
+        (make.options['tds-cli'] ? ' --tds-cli' : '') +
+        (make.options.silent ? '' : ' --no-silent') +
         (headers ? '' : ' --no-headers') +
         (minify ? ' --minify' : '');
 
@@ -383,7 +383,7 @@ helpers.rollup = function(make, options) {
         proc.stderr.on('data', function(data) {
             var clean;
 
-            if (!options.verbose) {
+            if (!make.options.verbose) {
                 clean = CLI.clean(data, true);
 
                 //  Non-empty error or test failure output should be retained.
