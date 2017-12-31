@@ -515,6 +515,77 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineHandler('InspectStyleSource',
+function(aSignal) {
+
+    /**
+     * @method handleInspectStyleSource
+     * @summary Handles when the user wants to inspect the source of a style
+     *     rule.
+     * @param {TP.sig.FocusHalo} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var targetElem,
+
+        data,
+        indexInData,
+        itemData,
+
+        target,
+        ruleMatcher;
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    //  Resolve the stylesheet URI that will be at the first position in the
+    //  Array. The resultant URI will be our target to inspect.
+    target = TP.bySystemId(itemData.at(0));
+
+    //  Generate a RegExp that will be used to try to find the rule within the
+    //  stylesheet using the selector.
+    //  ruleMatcher = TP.rc(TP.regExpEscape(itemData.at(1)) + '\\w*{');
+    //  TODO: For now, until we sort out issues with the editor searching a
+    //  RegExp, we have to use a simple String :-(
+    ruleMatcher = itemData.at(1);
+
+    //  Fire the inspector signal on the next repaint (which will ensure the
+    //  tile is closed before navigating).
+    (function() {
+        //  Signal to inspect the object with the rule matcher as 'extra
+        //  targeting information' under the 'findContent' key.
+        this.signal('InspectObject',
+                    TP.hc('targetObject', target,
+                            'targetAspect', TP.id(target),
+                            'showBusy', true,
+                            'extraTargetInfo',
+                                TP.hc('findContent', ruleMatcher)));
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineHandler('SelectRule',
 function(aSignal) {
 
