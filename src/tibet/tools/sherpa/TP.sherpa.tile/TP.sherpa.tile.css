@@ -73,14 +73,21 @@ sherpa|tile[class~="modal"] > .header {
 }
 
 sherpa|tile > .header > .header_text {
+
     position: absolute;
+    display: inline-block;
+
     left: 4px;
     right: 54px;
+
     line-height: 2em;
+
     vertical-align: middle;
+
     font-weight: bold;
-    display: inline-block;
+
     pointer-events: none;
+
     cursor: default;
 }
 
@@ -110,7 +117,9 @@ sherpa|tile[class~="modal"] > .header > .minimize_mark {
 sherpa|tile > .header > .close_mark {
 
     display: inline-block;
+
     float: right;
+
     margin: 4px 6px;
 
     cursor: pointer;
@@ -173,6 +182,23 @@ sherpa|tile > .footer {
     text-align: center;
 
     background: #eee;
+}
+
+sherpa|tile > .footer > button {
+
+    display: inline-block;
+
+    float: right;
+
+    margin: 3px 6px;
+
+    cursor: pointer;
+
+    width: 20px;
+    height: 20px;
+
+    background-size: 18px 18px;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
 sherpa|tile > .right_resizer {
