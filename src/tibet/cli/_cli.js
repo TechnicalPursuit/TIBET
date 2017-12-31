@@ -1653,8 +1653,15 @@ CLI.runCommand = function(command, cmdPath) {
     } else {
         argv = process.argv.slice(2);
     }
+
     this.options = minimist(argv,
         cmd.PARSE_OPTIONS) || {_: []};
+
+    //  Parse/reparse as available. This lets commands like make etc. ensure
+    //  they got all arguments on the command line parsed properly.
+    if (typeof cmd.reparse === 'function') {
+        cmd.reparse(this.options);
+    }
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
