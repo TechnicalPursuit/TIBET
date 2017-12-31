@@ -156,7 +156,7 @@ function(aRequest) {
     //  NOTE NOTE NOTE: The following method bodies are formatted this way
     //  because they, along with their embedded whitespace, will be used as the
     //  templates for new, empty method bodies at the global scope in the
-    //  receiving type  Therefore, indenting lint rules have been switched off
+    //  receiving type. Therefore, indenting lint rules have been switched off
     //  and they have been formatted this way on purpose.
 
     /* eslint-disable indent */

@@ -520,8 +520,8 @@ function(aSignal) {
 
     /**
      * @method handleSelectRule
-     * @summary
-     * @param {TP.sig.FocusHalo} aSignal The TIBET signal which triggered this
+     * @summary Handles when the user selects a rule from the rule list.
+     * @param {TP.sig.SelectRule} aSignal The TIBET signal which triggered this
      *     method.
      * @returns {TP.sherpa.styleshud} The receiver.
      */
