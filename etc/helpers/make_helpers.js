@@ -178,10 +178,11 @@ helpers.package_check = function(make, options) {
         (pkg ? ' --package \'' + pkg : '') +
         (config ? '\' --config ' + config : '') +
         (phase ? ' --phase ' + phase : '') +
-        (CLI.options.debug ? ' --debug' : '') +
-        (CLI.options.verbose ? ' --verbose' : '') +
-        (CLI.options.color ? '' : ' --no-color') +
-        (CLI.options.silent ? '' : ' --no-silent');
+        (options.debug ? ' --debug' : '') +
+        (options.verbose ? ' --verbose' : '') +
+        (options.color ? '' : ' --no-color') +
+        (options['tds-cli'] ? '' : ' --tds-cli') +
+        (options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
 
@@ -246,10 +247,11 @@ helpers.resource_build = function(make, options) {
         (pkg ? ' --package \'' + pkg : '') +
         (config ? '\' --config ' + config : '') +
         (phase ? ' --phase ' + phase : '') +
-        (CLI.options.debug ? ' --debug' : '') +
-        (CLI.options.verbose ? ' --verbose' : '') +
-        (CLI.options.color ? '' : ' --no-color') +
-        (CLI.options.silent ? '' : ' --no-silent');
+        (options.debug ? ' --debug' : '') +
+        (options.verbose ? ' --verbose' : '') +
+        (options.color ? '' : ' --no-color') +
+        (options['tds-cli'] ? '' : ' --tds-cli') +
+        (options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
 
@@ -345,10 +347,11 @@ helpers.rollup = function(make, options) {
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
         ' --phase ' + phase +
-        (CLI.options.debug ? ' --debug' : '') +
-        (CLI.options.verbose ? ' --verbose' : '') +
-        (CLI.options.color ? '' : ' --no-color') +
-        (CLI.options.silent ? '' : ' --no-silent') +
+        (options.debug ? ' --debug' : '') +
+        (options.verbose ? ' --verbose' : '') +
+        (options.color ? '' : ' --no-color') +
+        (options['tds-cli'] ? '' : ' --tds-cli') +
+        (options.silent ? '' : ' --no-silent') +
         (headers ? '' : ' --no-headers') +
         (minify ? ' --minify' : '');
 
@@ -380,7 +383,7 @@ helpers.rollup = function(make, options) {
         proc.stderr.on('data', function(data) {
             var clean;
 
-            if (!CLI.options.verbose) {
+            if (!options.verbose) {
                 clean = CLI.clean(data, true);
 
                 //  Non-empty error or test failure output should be retained.
