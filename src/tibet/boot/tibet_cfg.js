@@ -1931,7 +1931,7 @@
     //  couchdb servers known to the system.
     TP.sys.setcfg('couch.known_server_urls',
         [
-            ['Local CouchDB', 'http://127.0.0.1:5984']
+            ['localhost', 'http://127.0.0.1:5984']
             // ['Another CouchDB Server', 'http://foo.com:5984']
         ]);
 
