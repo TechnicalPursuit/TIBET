@@ -179,6 +179,42 @@ function(aTPElement) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineHandler('AddSignalHandler',
+function(aSignal) {
+
+    /**
+     * @method handleAddSignalHandler
+     * @summary Handles notifications of when the receiver wants to add a
+     *     signal handler.
+     * @param {TP.sig.AddSignalHandler} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var currentTarget,
+        typeName;
+
+    currentTarget = this.get('currentTarget');
+
+    if (TP.isType(currentTarget)) {
+        typeName = currentTarget.getName();
+
+        TP.signal(null,
+                    'ConsoleCommand',
+                    TP.hc(
+                        'cmdText',
+                            ':method --assist' +
+                                    ' --name=\'SignalName\'' +
+                                    ' --kind=\'handler\'' +
+                                    ' --owner=\'' + typeName + '\''
+                    ));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineHandler('FocusHalo',
 function(aSignal) {
 
@@ -559,6 +595,9 @@ function(aSignal) {
                         tileWidth;
             aTileTPElem.setPagePosition(
                         TP.pc(xCoord, targetElemPageRect.getY()));
+
+            aTileTPElem.get('footer').setContent(
+                TP.xhtmlnode('<button on:click="{signal: AddSignalHandler, origin: \'RespondersHUD\'}"/>'));
 
             contentTPElem = aTileTPElem.setContent(
                 TP.elem('<xctrls:list id="ResponderMethodList"' +
