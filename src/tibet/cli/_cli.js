@@ -205,7 +205,7 @@ CLI._package = null;
  */
 
 CLI.$log = function(level, msg, spec) {
-    if (this.getArgv().indexOf('--tds-cli') !== -1) {
+    if (this.options['tds-cli'] || this.getArgv().indexOf('--tds-cli') !== -1) {
         this.$tdsclilog(level, msg, spec);
     } else {
         this.logger[level](msg, spec);
