@@ -1930,7 +1930,7 @@ CLI.runViaMake = function(command) {
     // command provided and essentially slice off node, tibet, and the original
     // command name here to allow for redispatch.
     args = process.argv.slice(3);
-    this.runCommand('make ' + command + (args ? ' ' + args : ''),
+    this.runCommand('make ' + command + (args ? ' ' + args.join(' ') : ''),
         path.join(__dirname, 'make.js'));
 };
 
