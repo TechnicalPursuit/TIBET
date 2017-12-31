@@ -31,6 +31,9 @@ TP.sherpa.tile.Inst.defineAttribute('closeMark',
 TP.sherpa.tile.Inst.defineAttribute('body',
     TP.cpc('> .body', TP.hc('shouldCollapse', true)));
 
+TP.sherpa.tile.Inst.defineAttribute('footer',
+    TP.cpc('> .footer', TP.hc('shouldCollapse', true)));
+
 TP.sherpa.tile.Inst.defineAttribute('shouldDock');
 
 //  ------------------------------------------------------------------------
