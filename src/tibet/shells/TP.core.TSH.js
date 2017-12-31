@@ -2634,7 +2634,7 @@ function(aRequest) {
         args,
         str,
         req,
-
+        decolor,
         shell,
         cliSocket;
 
@@ -2711,6 +2711,14 @@ function(aRequest) {
     //  Helpers
     //  ---
 
+    //  Helper to remove color codes that may have snuck in to output.
+    decolor = function(data) {
+        var dat;
+
+        dat = '' + data;
+        return dat.replace(/\\u001b\[38;5;\d*m/g, '').replace(/\\u001b\[0m/g, '');
+    };
+
     //  Helper function to process a single result object (print/resolve).
     process = function(result, request) {
         var lvl,
@@ -2735,10 +2743,10 @@ function(aRequest) {
         if (TP.notEmpty(result.ok)) {
 
             if (result.ok === true) {
-                data = result.data;
+                data = decolor(result.data);
                 TP.notEmpty(data) ? request.stdout(data) : 0;
             } else {
-                reason = result.reason;
+                reason = decolor(result.reason);
                 TP.notEmpty(reason) ? request.stderr(reason) : 0;
             }
 
@@ -2753,12 +2761,12 @@ function(aRequest) {
         } else {
 
             if (result.status === 0) {
-                data = result.data;
+                data = decolor(result.data);
                 TP.notEmpty(data) ? request.stderr(data) : 0;
                 request.complete();
                 return;
             } else if (result.status !== undefined) {
-                reason = result.reason;
+                reason = decolor(result.reason);
                 TP.notEmpty(reason) ? request.stderr(reason) : 0;
                 request.fail();
                 return;
@@ -2783,14 +2791,16 @@ function(aRequest) {
         //  When data is received
         socket.defineMethod('onmessage',
             function(evt) {
-                var result;
+                var result,
+                    data;
 
                 try {
-                    result = JSON.parse(evt.data);
+                    data = decolor(evt.data);
+                    result = JSON.parse(data);
                     process(result, request);
                 } catch (e) {
                     request.stderr(e.message);
-                    result = evt.data;
+                    result = decolor(evt.data);
                     request.stdout(result);
                 }
             });
