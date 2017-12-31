@@ -34,12 +34,33 @@ function(info) {
      * @returns {String} The generated command string.
      */
 
-    var str;
+    var track,
+        name,
+
+        str;
+
+    if (info.at('methodTrack') === 'instance') {
+        track = TP.INST_TRACK;
+    } else if (info.at('methodTrack') === 'typelocal') {
+        track = TP.TYPE_LOCAL_TRACK;
+    } else {
+        track = TP.TYPE_TRACK;
+    }
+
+    if (info.at('methodKind') === 'handler') {
+        name = 'handle' + info.at('methodName') + 'FromANYWhenANY';
+    } else {
+        name = info.at('methodName');
+    }
 
     str = ':method --name=\'' + info.at('methodName') + '\'' +
             ' --kind=\'' + info.at('methodKind') + '\'' +
             ' --owner=\'' + info.at('methodOwnerTypeName') + '\'' +
-            ' --track=\'' + info.at('methodTrack') + '\'';
+            ' --track=\'' + info.at('methodTrack') + '\'' +
+            '; ' +
+            ':inspect ' + info.at('methodOwnerTypeName') + '.' +
+                            track + '.' +
+                            name;
 
     return str;
 });
