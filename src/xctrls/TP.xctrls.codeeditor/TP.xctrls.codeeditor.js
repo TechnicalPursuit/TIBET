@@ -329,45 +329,26 @@ function(aStringOrRegExp) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    /*
-    var editor,
-
-        cursor,
-        result,
-
-        foundPosition,
-        scrollInfo,
-        editorHeight;
+    var editor;
 
     editor = this.$get('$editorObj');
 
-    //  Grab a search cursor. We supply the search criteria (String or RegExp)
-    //  here.
-    cursor = editor.getSearchCursor(aStringOrRegExp);
+    setTimeout(
+        function() {
+            editor.find(
+                aStringOrRegExp,
+                {
+                    backwards: false,
+                    wrap: false,
+                    caseSensitive: true,
+                    wholeWord: false,
+                    regExp: TP.isRegExp(aStringOrRegExp)
+                });
 
-    //  Find the next occurrence of the text, if it exists.
-    result = cursor.findNext();
+            editor.findNext();
+        }, 500);
 
-    //  The return value could either be a Boolean or a structure detailing
-    //  match characteristics - either way, it's truthy.
-    if (TP.isTruthy(result)) {
-
-        //  Grab the position and the scrolling information from the editor and
-        //  scroll the text into view, dividing the overall height into 2
-        //  because the second parameter to 'scrollIntoView' wants a
-        //  'margining buffer' both top and bottom.
-
-        foundPosition = cursor.from();
-
-        scrollInfo = editor.getScrollInfo();
-
-        editorHeight = scrollInfo.clientHeight;
-
-        editor.scrollIntoView(foundPosition, editorHeight / 2);
-    }
-    */
-
-    return TP.todo('findAndScrollTo');
+    return this;
 });
 
 //  ------------------------------------------------------------------------
