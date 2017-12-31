@@ -9,7 +9,7 @@
         <p><a href="#" onclick="TP.signal(null, 'ToggleSherpa'); return false">Activate the TIBET Sherpa&#8482;</a> to begin your development cycle.</p>
         \{{/:if}}
 
-        <p class="hint">Click the link above or use <code>Alt-UpArrow</code> to toggle the \{{:if TP.has.sherpa}}Sherpa\{{:else}}boot log\{{/:if}}.</p>
+        <p class="hint">\{{:if TP.has.sherpa}}Click the link above or use\{{:else}}Use \{{/:if}} <code>Alt-UpArrow</code> to toggle the \{{:if TP.has.sherpa}}Sherpa\{{:else}}boot log\{{/:if}}.</p>
 
         <p>This content is found in your application's "app tag" template:</p>
         \{{:if TP.has.sherpa}}
