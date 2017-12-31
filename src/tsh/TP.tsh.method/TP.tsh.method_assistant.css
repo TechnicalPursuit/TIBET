@@ -18,39 +18,53 @@ tsh|method_assistant > .head {
 }
 
 tsh|method_assistant > .body {
+
     position: absolute;
+
     top: 0;
     right: auto;
     bottom: 7em;
     left: 0;
+
     width: 100%;
+
     overflow: auto;
+
     margin-bottom: 12px;
 }
 
 tsh|method_assistant > .foot {
+
     position: absolute;
+
     bottom: 0;
     left: 0;
     width: 100%;
     height: 7em;
+
     margin-bottom: 12px;
 }
 
 tsh|method_assistant > .body form {
+
     position: absolute;
+
     width: 100%;
     height: 100%;
 }
 
 tsh|method_assistant > .body .flex_outer {
+
     text-align: left;
+
     margin: 12px 20px;
 }
 
 tsh|method_assistant > .body .flex_outer li,
 .flex-inner {
+
     display: flex;
+
     align-items: center;
     flex-wrap: wrap;
     flex-grow: 1;
@@ -60,37 +74,48 @@ tsh|method_assistant > .body .flex_outer li,
 }
 
 tsh|method_assistant > .body .flex_outer > li > label {
+
     flex: 1 0 120px;
+
     max-width: 220px;
+
     font-weight: bold;
 }
 
 tsh|method_assistant > .body .flex_outer > li > label + * {
+
     flex: 1 0 220px;
 }
 
 tsh|method_assistant > .body .flex_inner {
+
     display: flex;
+
     margin: 0;
     padding: 0;
 }
 
 tsh|method_assistant > .body .flex_inner li {
+
     width: 100px;
 }
 
 tsh|method_assistant > .foot #generatedCmdLine {
-    text-align: left;
-    font-size: 100%;
 
-    background-color: cornsilk;
+    display: inline-block;
+
+    height: 4em;
+
+    padding: 0 12px;
+    margin: 0 20px;
 
     border: dashed 1px black;
 
-    height: 3em;
-    display: inline-block;
-    line-height: 1.5em;
-    padding: 0 12px;
-    margin: 0 20px;
+    background-color: cornsilk;
+
+    text-align: left;
+
+    font-size: 100%;
+    line-height: 1.2em;
 }
 
