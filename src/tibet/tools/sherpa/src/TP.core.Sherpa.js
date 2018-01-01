@@ -2505,6 +2505,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         results,
 
+        shouldMarkDirty,
         wasDirty;
 
     /*
@@ -2800,6 +2801,8 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
         return this;
     }
 
+    shouldMarkDirty = false;
+
     if (operation === TP.CREATE) {
 
         if (isAttrChange) {
@@ -2807,6 +2810,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                                     attributeName,
                                     attributeValue,
                                     true);
+            shouldMarkDirty = true;
         } else {
 
             //  If this was a Text node representing a desugared text binding
@@ -2831,6 +2835,8 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                     currentNode,
                     TP.nodeGetDocument(currentNode).createTextNode(bindExprStr),
                     false);
+
+                shouldMarkDirty = true;
             } else {
 
                 //  Clone the node
@@ -2854,17 +2860,21 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                                         newNode,
                                         false);
                 }
+
+                shouldMarkDirty = true;
             }
         }
     } else if (operation === TP.DELETE) {
 
         if (isAttrChange) {
             TP.elementRemoveAttribute(currentNode, attributeName, true);
+            shouldMarkDirty = true;
         } else {
             if (wasADesugaredTextBinding) {
                 //  NB: currentNode is the ancestor Element that is holding the
                 //  text node that represents the sugared binding expression.
                 TP.nodeDetach(currentNode.firstChild);
+                shouldMarkDirty = true;
             } else if (TP.isTextNode(aNode)) {
                 //  NB: currentNode is the ancestor Element holding the text
                 //  node that matches aNode. We have to find the text node that
@@ -2877,9 +2887,11 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                                     });
                 if (TP.notEmpty(results)) {
                     TP.nodeDetach(results.first());
+                    shouldMarkDirty = true;
                 }
             } else {
                 TP.nodeDetach(currentNode);
+                shouldMarkDirty = true;
             }
         }
 
@@ -2893,23 +2905,26 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                                     attributeName,
                                     attributeValue,
                                     true);
+            shouldMarkDirty = true;
         }
     }
 
-    //  Set the resource of the sourceURI back to the updated source node.
-    sourceURI.setResource(sourceNode, TP.request('signalChange', false));
+    if (shouldMarkDirty) {
+        //  Set the resource of the sourceURI back to the updated source node.
+        sourceURI.setResource(sourceNode, TP.request('signalChange', false));
 
-    //  Lastly, because of the way that the dirtying machinery works, we need to
-    //  separately signal the dirty each time. This is because 2nd and
-    //  subsequent times, when the dirty flag is true, it won't send the
-    //  notification again. We need observers of 'dirty' to keep getting
-    //  notifications.
-    wasDirty = sourceURI.isDirty();
-    TP.$changed.call(
-        sourceURI,
-        'dirty',
-        TP.UPDATE,
-        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, true));
+        //  Lastly, because of the way that the dirtying machinery works, we
+        //  need to separately signal the dirty each time. This is because 2nd
+        //  and subsequent times, when the dirty flag is true, it won't send the
+        //  notification again. We need observers of 'dirty' to keep getting
+        //  notifications.
+        wasDirty = sourceURI.isDirty();
+        TP.$changed.call(
+            sourceURI,
+            'dirty',
+            TP.UPDATE,
+            TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, true));
+    }
 
     return this;
 });
