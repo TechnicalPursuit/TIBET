@@ -100,6 +100,8 @@ function(anObject) {
         tSchema,
         schemaObj,
 
+        schemaFile,
+
         newTPElem,
         newElem,
 
@@ -113,7 +115,13 @@ function(anObject) {
 
         newLoadServiceElem,
         newSaveServiceElem,
-        newSaveButtonElem;
+        newSaveButtonElem,
+
+        insertionFunc,
+
+        schemaURI,
+
+        saveRequest;
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
@@ -209,47 +217,114 @@ function(anObject) {
 
     //  ---
 
-    //  Insert the new property sheet into target element at the inserted
-    //  position.
-    newTPElem = targetTPElem.insertContent(
-                                newTPElem, info.at('insertionPosition'));
+    //  Create a function that will perform the insertion. We do this because,
+    //  if we have a schema file path defined, we need to save it before we
+    //  insert the new element.
 
-    newElem = TP.unwrap(newTPElem);
-    newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
-    newElem[TP.SHERPA_MUTATION] = TP.INSERT;
+    insertionFunc = function() {
 
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  500ms
-    setTimeout(
-        function() {
-            var consoleGUI;
+        //  Tell the main Sherpa object that it should go ahead and process DOM
+        //  mutations to the source DOM.
+        //TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+        //  Insert the new property sheet into target element at the inserted
+        //  position.
+        newTPElem = targetTPElem.insertContent(
+                                    newTPElem, info.at('insertionPosition'));
 
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 500);
+        newElem = TP.unwrap(newTPElem);
+        newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
+        newElem[TP.SHERPA_MUTATION] = TP.INSERT;
 
-    //  Focus the halo onto the inserted element after 1000ms
-    setTimeout(
-        function() {
-            var halo;
+        //  Focus and set the cursor to the end of the Sherpa's input cell after
+        //  500ms
+        setTimeout(
+            function() {
+                var consoleGUI;
 
-            halo = TP.byId('SherpaHalo', this.getNativeDocument());
+                consoleGUI =
+                    TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
 
-            //  Blur and then focus the halo on our new element, passing true to
-            //  actually show the halo if it's hidden.
-            halo.blur();
-            halo.focusOn(newTPElem, true);
-        }.bind(this), 1000);
+                consoleGUI.focusInput();
+                consoleGUI.setInputCursorToEnd();
+            }, 500);
 
-    //  Set up a timeout to delete those flags after a set amount of time
-    setTimeout(
-        function() {
-            delete newElem[TP.INSERTION_POSITION];
-            delete newElem[TP.SHERPA_MUTATION];
-        }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
+        //  Focus the halo onto the inserted element after 1000ms
+        setTimeout(
+            function() {
+                var halo;
+
+                halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+                //  This will move the halo off of the old element. Note that we
+                //  do *not* check here whether or not we *can* blur - we
+                //  definitely want to blur off of the old DOM content - it's
+                //  probably gone now anyway.
+                halo.blur();
+
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                if (newTPElem.haloCanFocus(halo)) {
+                    halo.focusOn(newTPElem, true);
+                }
+            }.bind(this), 1000);
+
+        //  Set up a timeout to delete those flags after a set amount of time
+        setTimeout(
+            function() {
+                delete newElem[TP.INSERTION_POSITION];
+                delete newElem[TP.SHERPA_MUTATION];
+            }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
+    }.bind(this);
+
+    //  ---
+
+    //  Now, check to see if we have a schema file path defined. If not, execute
+    //  the insertion function immediately. If so, save the schema file and then
+    //  execute the insertion function
+    if (TP.isEmpty(schemaFile)) {
+        insertionFunc();
+    } else {
+
+        schemaURI = TP.uc(schemaFile);
+        schemaURI.set('shouldPatch', false);
+
+        schemaURI.setContent(schemaText);
+
+        if (!TP.isURI(schemaURI)) {
+            insertionFunc();
+        } else {
+
+            saveRequest = schemaURI.constructRequest(
+                                        TP.hc('method', TP.HTTP_PUT));
+
+            saveRequest.defineHandler(
+                'RequestSucceeded',
+                    function(aResponse) {
+
+                        var newContentElem;
+
+                        newContentElem =
+                            TP.elem('<tibet:content' +
+                                    ' name="' + localID + '"' +
+                                    ' baseType="TP.core.JSONContent"' +
+                                    ' schema="' + schemaFile + '"');
+
+                        TP.nodeInsertBefore(
+                            newElem, newContentElem, newLoadServiceElem, false);
+
+                        insertionFunc();
+                    });
+
+            saveRequest.defineHandler(
+                'RequestFailed',
+                    function(aResponse) {
+                        insertionFunc();
+                    });
+
+            schemaURI.save(saveRequest);
+        }
+    }
 
     return this;
 });
