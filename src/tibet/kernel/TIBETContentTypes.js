@@ -1919,6 +1919,21 @@ function(anObject, includeFacetChecks) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineMethod('asHTTPValue',
+function() {
+
+    /**
+     * @method asHTTPValue
+     * @summary Returns the best value to be used for the receiver to send via
+     *     HTTP.
+     * @returns {String} The best value for HTTP sending.
+     */
+
+    return this.asJSONSource();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('asJSONSource',
 function() {
 
@@ -3199,6 +3214,21 @@ function() {
     //  Callers will be interested in our data, not the 'data' structure
     //  itself.
     return TP.str(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('asHTTPValue',
+function() {
+
+    /**
+     * @method asHTTPValue
+     * @summary Returns the best value to be used for the receiver to send via
+     *     HTTP.
+     * @returns {Node} The best value for HTTP sending.
+     */
+
+    return this.getNativeNode();
 });
 
 //  ------------------------------------------------------------------------

@@ -5093,6 +5093,21 @@ function(aHash, aLevel) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('asHTTPValue',
+function() {
+
+    /**
+     * @method asHTTPValue
+     * @summary Returns the best value to be used for the receiver to send via
+     *     HTTP.
+     * @returns {Object} The best value for HTTP sending.
+     */
+
+    return this.getValue();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('asJSONSource',
 function() {
 

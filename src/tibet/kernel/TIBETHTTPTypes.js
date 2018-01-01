@@ -1021,10 +1021,8 @@ function(aRequest) {
         return;
     }
 
-    //  With some objects, like TP.core.Content objects, we want to encode their
-    //  value, not the wrapper. Therefore, we just call get('value') on all body
-    //  objects.
-    body = body.get('value');
+    //  Use whatever the body object reports back as it's 'best HTTP value'
+    body = body.asHTTPValue();
     aRequest.atPut('body', body);
 
     return TP.httpEncodeRequestBody(aRequest);
