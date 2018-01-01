@@ -322,7 +322,8 @@ function(anObj) {
 
     var data,
 
-        pojoData,
+        definitionName,
+
         pojoSchema,
 
         schemaText,
@@ -346,13 +347,15 @@ function(anObj) {
     data = anObj.at('uri').getResource(
                 TP.hc('resultType', TP.core.Content)).get('result').get('data');
 
-    //  Make sure its in a plain JS object format
-    pojoData = JSON.parse(TP.js2json(data));
+    definitionName = 'Couch_Doc_' + data.at('_id');
 
-    //  Build a JSON Schema from the POJO data and with the supplied insertion ID
-    //  as the JSON Schema 'definition name'.
-    pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(
-                                    pojoData, anObj.at('insertionID'));
+    //  Build a JSON Schema from the POJO data and with the ID of the Couch
+    //  document as the JSON Schema 'definition name'.
+    pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(data, definitionName);
+
+    if (TP.notValid(pojoSchema)) {
+        return this;
+    }
 
     //  Grab the text of the POJO schema object and format it out, using plain
     //  text encoding. This will become the value of the schema textarea.
