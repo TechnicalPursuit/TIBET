@@ -970,7 +970,10 @@ function(targetURI, aRequest) {
                     //  here.
                     origData.set('$._rev', newRev, false);
 
-                    targetURI.isDirty(false, true);
+                    //  Now set the URI to not being dirty and signal change for
+                    //  the whole URI.
+                    targetURI.isDirty(false);
+                    targetURI.$changed();
                 });
 
     return this.callNextMethod(targetURI, request);
