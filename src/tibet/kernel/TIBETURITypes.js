@@ -1687,6 +1687,7 @@ function(anAspect, anAction, aDescription) {
         desc = TP.isValid(aDescription) ? aDescription : TP.hc();
         desc.atPutIfAbsent('path', this.getFragmentExpr());
         desc.atPutIfAbsent('target', primaryResource);
+        desc.atPutIfAbsent(TP.NEWVAL, primaryResource);
 
         return this.callNextMethod(anAspect, anAction, desc);
     } else {
