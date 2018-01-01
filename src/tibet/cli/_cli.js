@@ -157,7 +157,8 @@ CLI.PARSE_OPTIONS = {
         'initpath', 'completion', 'tds-cli', 'force'],
     'string': ['app_root', 'lib_root', 'level'],
     'default': {
-        color: true
+        color: true,
+        'tds-cli': false
     }
 };
 /* eslint-enable quote-props */
@@ -205,7 +206,7 @@ CLI._package = null;
  */
 
 CLI.$log = function(level, msg, spec) {
-    if (this.getArgv().indexOf('--tds-cli') !== -1) {
+    if (this.options['tds-cli'] || this.getArgv().indexOf('--tds-cli') !== -1) {
         this.$tdsclilog(level, msg, spec);
     } else {
         this.logger[level](msg, spec);
@@ -1653,8 +1654,15 @@ CLI.runCommand = function(command, cmdPath) {
     } else {
         argv = process.argv.slice(2);
     }
+
     this.options = minimist(argv,
         cmd.PARSE_OPTIONS) || {_: []};
+
+    //  Parse/reparse as available. This lets commands like make etc. ensure
+    //  they got all arguments on the command line parsed properly.
+    if (typeof cmd.reparse === 'function') {
+        cmd.reparse(this.options);
+    }
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
@@ -1930,7 +1938,7 @@ CLI.runViaMake = function(command) {
     // command provided and essentially slice off node, tibet, and the original
     // command name here to allow for redispatch.
     args = process.argv.slice(3);
-    this.runCommand('make ' + command + (args ? ' ' + args : ''),
+    this.runCommand('make ' + command + (args ? ' ' + args.join(' ') : ''),
         path.join(__dirname, 'make.js'));
 };
 

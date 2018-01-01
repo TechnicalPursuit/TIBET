@@ -315,7 +315,12 @@
                         });
 
                         return;
-
+                    } else if (str.trim().length === 0) {
+                        //  Pure whitespace? Just send it along...
+                        obj = {
+                            ok: true,
+                            data: str
+                        };
                     } else {
                         errors += 1;
                         obj = {

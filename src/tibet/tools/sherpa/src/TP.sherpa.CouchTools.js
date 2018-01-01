@@ -358,15 +358,19 @@ function() {
 
     var elem;
 
+    //  TODO:   move this to a template file...and preferably make it a tag
     elem = TP.xhtmlnode(
-        '<div tibet:ctrl="urn:tibet:sherpa_inspector_target" style="font-size: 77%">' +
+        '<div class="couchtools" tibet:ctrl="urn:tibet:sherpa_inspector_target">' +
             '<label for="username_field">Username:</label>' +
             '<input id="username_field" type="text"/>' +
             '<br/>' +
             '<label for="password_field">Password:</label>' +
             '<input id="password_field" type="password"/>' +
             '<br/>' +
-            '<button on:UIActivate="AuthenticateConnection">Log Me In</button>' +
+            '<button id="couchlogin" on:UIActivate="AuthenticateConnection">Login</button>' +
+            '<br/>' +
+            '<a target="_blank" href="https://technicalpursuit.com/docs/couchdb.html">' +
+            'see TIBET+CouchDB for help...</a>' +
             '<br/>' +
             '<span id="user_message" pclass:hidden="true"></span>' +
         '</div>');
