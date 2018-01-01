@@ -969,6 +969,8 @@ function(targetURI, aRequest) {
                     //  Note here that we pass 'false' to *not* signal changes
                     //  here.
                     origData.set('$._rev', newRev, false);
+
+                    targetURI.isDirty(false, true);
                 });
 
     return this.callNextMethod(targetURI, request);
