@@ -95,7 +95,7 @@ function(anObject) {
         resultData,
         info,
 
-        schema,
+        schemaText,
 
         tSchema,
         schemaObj,
@@ -139,15 +139,15 @@ function(anObject) {
 
     //  ---
 
-    schema = info.at('schema');
+    schemaText = info.at('schema');
 
-    if (!TP.isJSONString(schema)) {
+    if (!TP.isJSONString(schemaText)) {
         //  Schema wasn't JSON. Exit here.
         //  TODO: Raise an exception
         return this;
     }
 
-    tSchema = TP.json2js(info.at('schema'));
+    tSchema = TP.json2js(schemaText);
 
     schemaObj = TP.json.JSONSchemaContent.construct(tSchema);
 
