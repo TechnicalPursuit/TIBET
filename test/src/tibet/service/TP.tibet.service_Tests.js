@@ -1123,7 +1123,7 @@ function() {
 
                                 test.assert.isEqualTo(
                                     req.requestBody,
-                                    TP.httpEncode(testBody.at('data'), TP.URL_ENCODED));
+                                    testBody.asHTTPValue());
 
                                 req.respond(
                                     200,
