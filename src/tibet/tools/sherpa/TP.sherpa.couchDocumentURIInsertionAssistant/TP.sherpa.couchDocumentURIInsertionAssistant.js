@@ -151,6 +151,9 @@ function(anObject) {
 
     schemaObj = TP.json.JSONSchemaContent.construct(tSchema);
 
+    //schemaFile = info.at('schemaFile');
+    schemaFile = null;
+
     //  ---
 
     targetElem = suppliedData.at('insertionPoint');
@@ -369,7 +372,8 @@ function(anObj) {
 
     //  The data for the chosen tag or entered tag names
     newInsertionInfo.atPut('schema', schemaText);
-    newInsertionInfo.atPut('schemaFile', '');
+    //newInsertionInfo.atPut('schemaFile',
+     //                       '~app_dat/' + definitionName + '.json');
 
     //  If we were handed an insertion position, then use it. Otherwise, default
     //  it to TP.BEFORE_END
