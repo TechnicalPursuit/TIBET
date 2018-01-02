@@ -774,6 +774,8 @@ function() {
 
     var editorObj,
 
+        textareaTPElem,
+
         vertScroller,
         vertScrollerInner,
 
@@ -795,16 +797,22 @@ function() {
     //  on the underlying ACE editor.
     this.observe(this, 'TP.sig.DOMResize');
 
-    //  Grab the underlying textarea that CodeMirror creates privately and
-    //  configure it to manage Tabs manually. This is checked in our keydown
-    //  handling in the TIBET kernel to see whether to allow this component to
-    //  handle its own Tabbing. If we don't do this, CodeMirror will never
-    //  process Tabs because the kernel code will preventDefault() on Tab key
-    //  downs.
-    /*
-    nativeTA = TP.byCSSPath('textarea', this.getNativeNode(), true, false);
-    TP.elementSetAttribute(nativeTA, 'tibet:manualTabs', true, true);
-    */
+    //  Dig around in the internals of ACE to find the element that acts as the
+    //  textarea - ugh.
+    textareaTPElem = TP.byCSSPath(
+                    'textarea.ace_text-input',
+                    this.getNativeNode(),
+                    true);
+    textareaTPElem.defineHandler('UIFocusNext',
+        function(aSignal) {
+            aSignal.stopPropagation();
+        });
+
+    //  Set the editor to use soft tabs and to navigate within them (i.e. allow
+    //  backspace and arrowing over the spaces that got inserted with a soft
+    //  tab).
+    editorObj.getSession().setUseSoftTabs(true);
+    editorObj.getSession().setNavigateWithinSoftTabs(true);
 
     //  Dig around in the internals of ACE to find the element that acts as the
     //  vertical scrollbar - ugh.
