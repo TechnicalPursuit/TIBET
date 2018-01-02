@@ -347,6 +347,9 @@ function(aSignal) {
 
     this.render();
 
+    //  Update the editor's state, including its dirty state.
+    this.updateEditorState();
+
     return this;
 });
 

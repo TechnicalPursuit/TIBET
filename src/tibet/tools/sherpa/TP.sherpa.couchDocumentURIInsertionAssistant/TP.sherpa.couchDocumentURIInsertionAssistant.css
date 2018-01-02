@@ -103,7 +103,7 @@ sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input[type=
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details textarea {
 
     width: 50em;
-    height: 16em;
+    height: 11em;
 }
 
 sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input {

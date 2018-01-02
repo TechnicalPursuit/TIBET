@@ -708,6 +708,11 @@ function(aSignal) {
 
     var newContent;
 
+    //  If the aspect isn't 'value', we're not interested.
+    if (aSignal.at('aspect') !== 'value') {
+        return this;
+    }
+
     //  Grab the new value from the signal, copy it and use it to update the
     //  result URI. This will cause any data bindings that are using the result
     //  URI to update.

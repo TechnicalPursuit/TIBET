@@ -3,7 +3,6 @@
 <sherpa:couchDocumentURIInsertionAssistant>
     <div class="head"/>
     <div class="body" bind:scope="urn:tibet:couchDocumentURIInsertionAssistant_source#jpath($.info)">
-        <br/>
         <div class="insertion_details">
             <form>
                 <ul class="flex_outer">
@@ -11,10 +10,12 @@
                     <label for="couchDocumentURIAssistant_Schema">JSON derived schema:</label>
                     <textarea id="couchDocumentURIAssistant_Schema" bind:io="schema"/>
                     </li>
+                    <!--
                     <li id="couchDocumentURIAssistant_Schemafile_row">
                     <label for="couchDocumentURIAssistant_Schemafile">Save Schema To:</label>
                     <input type="text" id="couchDocumentURIAssistant_Schemafile" bind:io="schemaFile"/>
                     </li>
+                    -->
                     <li>
                         <label>Insertion Point:</label>
                         <sherpa:breadcrumb id="couchDocumentURIInsertionAssistant_InsertionBreadcrumb"/>
