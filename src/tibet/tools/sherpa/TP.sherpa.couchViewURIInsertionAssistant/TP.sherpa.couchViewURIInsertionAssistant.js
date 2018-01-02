@@ -105,9 +105,17 @@ function(anObject) {
         localID,
         localLoc,
         remoteLoc,
+        selectionLoc,
+
+        generateDetailView,
 
         newLoadServiceElem,
-        newTableElem;
+        newTableElem,
+
+        insertionFunc,
+
+        remoteURI,
+        loadRequest;
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
@@ -151,6 +159,9 @@ function(anObject) {
     localLoc = info.at('localLocation');
 
     remoteLoc = info.at('remoteLocation');
+    selectionLoc = localLoc + '_selection';
+
+    generateDetailView = TP.bc(info.at('generateDetailView'));
 
     //  ---
 
@@ -163,59 +174,132 @@ function(anObject) {
                 ' on:TP.sig.AttachComplete="TP.sig.UIActivate"/>');
     TP.nodeAppendChild(newElem, newLoadServiceElem, false);
 
-    newTableElem = TP.elem(
-        '<xctrls:table' +
-        ' bind:in="{data: ' + localLoc + '#jpath($.rows[0:].value)}"/>');
+    if (generateDetailView) {
+        newTableElem = TP.elem(
+            '<xctrls:table' +
+            ' bind:in="{data: ' + localLoc + '#jpath($.rows[0:].value)}"' +
+            ' bind:io="{value: ' + selectionLoc + '}"/>');
+    } else {
+        newTableElem = TP.elem(
+            '<xctrls:table' +
+            ' bind:in="{data: ' + localLoc + '#jpath($.rows[0:].value)}"/>');
+    }
+
     TP.nodeAppendChild(newElem, newTableElem, false);
 
     //  ---
 
-    //  Insert the new data table group into target element at the inserted
-    //  position. Note the reassignment here to capture the newly inserted
-    //  content.
-    newTPElem = targetTPElem.insertContent(
-                                newTPElem,
-                                suppliedData.at('insertionPosition'));
+    //  Create a function that will perform the insertion. We do this because,
+    //  if we want to generate a detail view, we need to obtain the master data
+    //  first.
 
-    newElem = TP.unwrap(newTPElem);
-    newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
-    newElem[TP.SHERPA_MUTATION] = TP.INSERT;
+    insertionFunc = function() {
 
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  500ms
-    setTimeout(
-        function() {
-            var consoleGUI;
+        //  Insert the new data table group into target element at the inserted
+        //  position. Note the reassignment here to capture the newly inserted
+        //  content.
+        newTPElem = targetTPElem.insertContent(
+                                    newTPElem,
+                                    suppliedData.at('insertionPosition'));
 
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+        newElem = TP.unwrap(newTPElem);
+        newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
+        newElem[TP.SHERPA_MUTATION] = TP.INSERT;
 
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 500);
+        //  Focus and set the cursor to the end of the Sherpa's input cell after
+        //  500ms
+        setTimeout(
+            function() {
+                var consoleGUI;
 
-    //  Focus the halo onto the data table of the insertion after 1000ms
-    setTimeout(
-        function() {
-            var halo,
-                dataTableTPElem;
+                consoleGUI =
+                    TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
 
-            halo = TP.byId('SherpaHalo', this.getNativeDocument());
+                consoleGUI.focusInput();
+                consoleGUI.setInputCursorToEnd();
+            }, 500);
 
-            dataTableTPElem = newTPElem.get('xctrls|table');
+        //  Focus the halo onto the data table of the insertion after 1000ms
+        setTimeout(
+            function() {
+                var halo,
+                    dataTableTPElem;
 
-            //  Blur and then focus the halo on our new data table element,
-            //  passing true to actually show the halo if it's hidden.
-            halo.blur();
-            halo.focusOn(dataTableTPElem, true);
-        }.bind(this), 1000);
+                halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
-    //  Set up a timeout to delete those flags after a set amount of time
-    setTimeout(
-        function() {
-            delete newElem[TP.INSERTION_POSITION];
-            delete newElem[TP.SHERPA_MUTATION];
-        }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
+                dataTableTPElem = newTPElem.get('xctrls|table');
+
+                //  This will move the halo off of the old element. Note that we
+                //  do *not* check here whether or not we *can* blur - we
+                //  definitely want to blur off of the old DOM content - it's
+                //  probably gone now anyway.
+                halo.blur();
+
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                if (dataTableTPElem.haloCanFocus(halo)) {
+                    halo.focusOn(dataTableTPElem, true);
+                }
+
+            }.bind(this), 1000);
+
+        //  Set up a timeout to delete those flags after a set amount of time
+        setTimeout(
+            function() {
+                delete newElem[TP.INSERTION_POSITION];
+                delete newElem[TP.SHERPA_MUTATION];
+            }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
+    }.bind(this);
+
+    if (!generateDetailView) {
+        insertionFunc();
+    } else {
+
+        remoteURI = TP.uc(remoteLoc);
+
+        loadRequest = remoteURI.constructRequest(TP.hc('method', TP.HTTP_GET));
+
+        loadRequest.defineHandler(
+            'RequestSucceeded',
+                function(aResponse) {
+
+                    var newDetailGroupStr,
+
+                        columnCount,
+
+                        newDetailGroupElem,
+
+                        i;
+
+                    newDetailGroupStr =
+                        '<span bind:scope="' +
+                        selectionLoc +
+                        '" style="margin-left: 10px">';
+
+                    columnCount =
+                        aResponse.get('result').get('$.rows[0].value').getSize();
+
+                    for (i = 0; i < columnCount; i++) {
+                        newDetailGroupStr +=
+                            '<input type="text" bind:io="value[' + i + ']"/>';
+                    }
+
+                    newDetailGroupStr += '</span>';
+
+                    newDetailGroupElem = TP.xhtmlnode(newDetailGroupStr);
+                    TP.nodeAppendChild(newElem, newDetailGroupElem, false);
+
+                    insertionFunc();
+                });
+
+        loadRequest.defineHandler(
+            'RequestFailed',
+                function(aResponse) {
+                    insertionFunc();
+                });
+
+        remoteURI.load(loadRequest);
+    }
 
     return this;
 });
