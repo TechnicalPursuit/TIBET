@@ -3999,8 +3999,9 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                     newValue.defineAttribute('value');
                     newValue.set('value', aValue);
 
-                    primaryURI.setResource(newValue);
-
+                    primaryURI.setResource(
+                        newValue, TP.hc('observeResource', true,
+                                        'signalChange', true));
                 } else {
 
                     //  If no fragment could be computed, then we set the 'whole
