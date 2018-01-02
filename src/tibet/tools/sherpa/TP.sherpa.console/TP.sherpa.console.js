@@ -216,7 +216,9 @@ function() {
     loadHandler =
         function() {
             var editorObj,
-                themeName;
+                themeName,
+
+                aceTATPElem;
 
             loadHandler.ignore(consoleInputTPElem, 'TP.sig.DOMReady');
 
@@ -226,6 +228,18 @@ function() {
             consoleInputTPElem.setEditorTheme('ace/theme/' + themeName);
 
             editorObj = consoleInputTPElem.$get('$editorObj');
+
+            aceTATPElem = TP.byCSSPath(
+                            'textarea.ace_text-input',
+                            consoleInputTPElem,
+                            true);
+            aceTATPElem.defineHandler('UIFocusNext',
+                function(aSignal) {
+                    aSignal.stopPropagation();
+                });
+
+            editorObj.getSession().setUseSoftTabs(true);
+            editorObj.getSession().setNavigateWithinSoftTabs(true);
 
             editorObj.commands.addCommand({
                 name: 'RawInput',
