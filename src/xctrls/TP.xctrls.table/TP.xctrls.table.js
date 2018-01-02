@@ -1433,8 +1433,7 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var numCols,
-        rowNum;
+    var numCols;
 
     numCols = this.getAttribute('colcount').asNumber();
 
@@ -1446,6 +1445,7 @@ function(updateSelection) {
                 labelContent,
                 valueContent;
 
+            /* eslint-disable no-loop-func */
             for (i = 0; i < numCols; i++) {
 
                 //  'data' is a single row of data. Grab the individual datum at
@@ -1490,6 +1490,8 @@ function(updateSelection) {
                     }
                 );
             }
+
+            /* eslint-enable no-loop-func */
         });
 
     return updateSelection;
