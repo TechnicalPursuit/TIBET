@@ -159,7 +159,7 @@ function(anObject) {
 
     schemaObj = TP.json.JSONSchemaContent.construct(tSchema);
 
-    //schemaFile = info.at('schemaFile');
+    // schemaFile = info.at('schemaFile');
     schemaFile = null;
 
     //  ---
@@ -225,7 +225,7 @@ function(anObject) {
 
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
-        //TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        // TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
         //  Insert the new property sheet into target element at the inserted
         //  position.
@@ -450,8 +450,8 @@ function(anObj) {
 
     //  The data for the chosen tag or entered tag names
     newInsertionInfo.atPut('schema', schemaText);
-    //newInsertionInfo.atPut('schemaFile',
-     //                       '~app_dat/' + definitionName + '.json');
+    // newInsertionInfo.atPut('schemaFile',
+    //                        '~app_dat/' + definitionName + '.json');
 
     //  If we were handed an insertion position, then use it. Otherwise, default
     //  it to TP.BEFORE_END
