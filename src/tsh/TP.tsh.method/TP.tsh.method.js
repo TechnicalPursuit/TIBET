@@ -183,26 +183,37 @@ function(aRequest) {
     newMethod[TP.LOAD_PACKAGE] = methodOwnerType[TP.LOAD_PACKAGE];
     newMethod[TP.LOAD_CONFIG] = methodOwnerType[TP.LOAD_CONFIG];
 
-    methodSrc = '\n' + TP.src(newMethod);
+    //  Tag this method as 'not yet having persisted'
+    newMethod[TP.IS_PERSISTED] = false;
 
-    //  The patch text will be the first item in the Array returned by
-    //  getMethodPatch.
-    patchText = newMethod.getMethodPatch(methodSrc, false).first();
+    if (shell.getArgument(aRequest, 'tsh:push', null, false)) {
 
-    if (TP.notEmpty(patchText)) {
+        methodSrc = '\n' + TP.src(newMethod);
 
-        sourceLoc = TP.objectGetSourcePath(newMethod);
+        //  The patch text will be the first item in the Array returned by
+        //  getMethodPatch.
+        patchText = newMethod.getMethodPatch(methodSrc, false).first();
 
-        patchPromise = TP.tds.TDSURLHandler.sendPatch(
-                            TP.uc(sourceLoc),
-                            patchText);
+        if (TP.notEmpty(patchText)) {
 
-        patchPromise.then(
-            function(successfulPatch) {
-                if (successfulPatch) {
-                    this.signal('MethodAdded');
-                }
-            }.bind(this));
+            sourceLoc = TP.objectGetSourcePath(newMethod);
+
+            patchPromise = TP.tds.TDSURLHandler.sendPatch(
+                                TP.uc(sourceLoc),
+                                patchText);
+
+            patchPromise.then(
+                function(successfulPatch) {
+                    if (successfulPatch) {
+                        //  If we successfully patched, then we can remove this
+                        //  flag.
+                        delete newMethod[TP.IS_PERSISTED];
+                        this.signal('MethodAdded');
+                    }
+                }.bind(this));
+        }
+    } else {
+        this.signal('MethodAdded');
     }
 
     aRequest.complete(TP.TSH_NO_VALUE);
