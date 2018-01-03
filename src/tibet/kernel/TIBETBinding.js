@@ -3046,13 +3046,18 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             //  If the search path contains a complete URL, then we build the
             //  branch matcher directly from that.
             if (TP.isURIString(searchPath) || searchPath.startsWith('#')) {
-                branchMatcher =
-                    TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+                branchMatcher = TP.rc(
+                                '(^|:\\s*)' +
+                                TP.regExpEscape(searchPath) +
+                                '($|\\s*[,}])');
             } else {
                 branchMatcher =
-                    TP.rc('^(' + '(#[()a-zA-Z0-9]+)?' +
-                            TP.regExpEscape(searchPath) +
-                            '|.)$');
+                    TP.rc(
+                    '(^|:\\s*)' +
+                    '((#[()a-zA-Z0-9]+)?' +
+                    TP.regExpEscape(searchPath) +
+                    '|.)' +
+                    '($|\\s*[,}])');
             }
 
             //  If there is only one search part, and it is a URI, then we've
@@ -3060,7 +3065,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             //  that case, we only want to match 'leafs' that are looking at the
             //  'whole' URI, not all of the ones that have subparts that match.
             if (searchParts.getSize() === 1 && TP.isURIString(searchPath)) {
-                leafMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+                leafMatcher = TP.rc(
+                                '(^|:\\s*)' +
+                                TP.regExpEscape(searchPath) +
+                                '($|\\s*[,}])');
             } else {
                 leafMatcher = TP.rc(TP.regExpEscape(searchPath));
             }
@@ -3999,8 +4007,9 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                     newValue.defineAttribute('value');
                     newValue.set('value', aValue);
 
-                    primaryURI.setResource(newValue);
-
+                    primaryURI.setResource(
+                        newValue, TP.hc('observeResource', true,
+                                        'signalChange', true));
                 } else {
 
                     //  If no fragment could be computed, then we set the 'whole

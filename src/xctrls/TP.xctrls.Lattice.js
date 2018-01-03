@@ -477,6 +477,7 @@ function(aValue, shouldSignal) {
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        this.render();
         return this;
     }
 

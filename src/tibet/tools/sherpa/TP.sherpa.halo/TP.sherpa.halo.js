@@ -1400,10 +1400,6 @@ function(newTargetTPElem, shouldUnhide) {
         //  in *global* coordinates.
         theRect = currentTargetTPElem.getHaloRect(this);
     } else {
-        //  Grab rect for the new target. Note that this will be supplied in
-        //  *global* coordinates.
-        theRect = newTargetTPElem.getHaloRect(this);
-
         //  If the target element isn't ready to render (maybe its stylesheet
         //  hasn't loaded yet, then set up a handler to wait for the element to
         //  signal a TP.sig.DOMReady signal and then invoke this method again.
@@ -1417,7 +1413,13 @@ function(newTargetTPElem, shouldUnhide) {
             handler.observe(newTargetTPElem, 'TP.sig.DOMReady');
 
             return this;
+        } else {
+            newTargetTPElem.render();
         }
+
+        //  Grab rect for the new target. Note that this will be supplied in
+        //  *global* coordinates.
+        theRect = newTargetTPElem.getHaloRect(this);
     }
 
     //  Given that the halo rect returned by one of the targets above is in

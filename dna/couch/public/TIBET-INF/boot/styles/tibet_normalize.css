@@ -201,12 +201,12 @@ For pixels (px) Declare this percent (%)
 .select,
 *|*[class~="select"] {
     -webkit-touch-callout: default;
-    -webkit-user-select: auto;
-    -khtml-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    -o-user-select: auto;
-    user-select: auto;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -o-user-select: text;
+    user-select: text;
     cursor: auto;
 }
 

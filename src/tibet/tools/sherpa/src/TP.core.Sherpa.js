@@ -953,6 +953,12 @@ function(aTPElem) {
 
                             newTPElem = aTPElem.compile(null, true, newElem);
 
+                            //  Tell the main Sherpa object that it should go
+                            //  ahead and process DOM mutations to the source
+                            //  DOM.
+                            TP.bySystemId('Sherpa').set(
+                                'shouldProcessDOMMutations', true);
+
                             newElem = TP.unwrap(newTPElem);
                             newElem = TP.nodeReplaceChild(
                                         parentElem, newElem, oldElem);
@@ -2745,12 +2751,14 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                 if (wasADesugaredTextBinding) {
                     addresses.pop();
                 }
+            } else {
+                addresses = TP.ac();
             }
         }
 
         //  Make sure that the source node is not a Document.
         if (TP.isDocument(sourceNode)) {
-            sourceNode = TP.nodeGetDocument(sourceNode);
+            sourceNode = TP.nodeGetDocument(sourceNode).documentElement;
         }
 
         insertionParent = null;

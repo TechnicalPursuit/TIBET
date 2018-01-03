@@ -1433,55 +1433,65 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var numCols,
-        rowNum;
+    var numCols;
 
     numCols = this.getAttribute('colcount').asNumber();
 
-    rowNum = 0;
-
     updateSelection.each(
         function(data, index) {
-            var labelContent,
+            var i,
+                datum,
+
+                labelContent,
                 valueContent;
 
-            labelContent = TP.extern.d3.select(
-                                    TP.nodeGetDescendantAt(this, '0.0.0'));
-            labelContent.html(
-                function(d) {
+            /* eslint-disable no-loop-func */
+            for (i = 0; i < numCols; i++) {
 
-                    if (TP.regex.SPACING.test(d)) {
-                        return '&#160;';
+                //  'data' is a single row of data. Grab the individual datum at
+                //  that cell.
+                datum = data[i];
+
+                //  'this' is the 'row div' - select the 'div' representing its
+                //  column, 'textitem' and then 'label'
+                labelContent = TP.extern.d3.select(
+                                    TP.nodeGetDescendantAt(this, i + '.0.0'));
+                labelContent.html(
+                    function() {
+
+                        if (TP.regex.SPACING.test(datum)) {
+                            return '&#160;';
+                        }
+
+                        if (TP.regex.GROUPING.test(datum)) {
+                            return TP.regex.GROUPING.exec(datum)[1];
+                        }
+
+                        return datum;
                     }
+                );
 
-                    if (TP.regex.GROUPING.test(d)) {
-                        return TP.regex.GROUPING.exec(d)[1];
+                //  'this' is the 'row div' - select the 'div' representing its
+                //  column, 'textitem' and then 'value'
+                valueContent = TP.extern.d3.select(
+                                    TP.nodeGetDescendantAt(this, i + '.0.1'));
+                valueContent.text(
+                    function() {
+
+                        if (TP.regex.SPACING.test(datum)) {
+                            return '';
+                        }
+
+                        if (TP.regex.GROUPING.test(datum)) {
+                            return '';
+                        }
+
+                        return '__VALUE__' + index + '__' + i;
                     }
-
-                    return d;
-                }
-            );
-
-            valueContent = TP.extern.d3.select(
-                                    TP.nodeGetDescendantAt(this, '0.0.1'));
-            valueContent.text(
-                function(d) {
-
-                    if (TP.regex.SPACING.test(d)) {
-                        return '';
-                    }
-
-                    if (TP.regex.GROUPING.test(d)) {
-                        return '';
-                    }
-
-                    return '__VALUE__' + rowNum + '__' + index;
-                }
-            );
-
-            if (index === numCols - 1) {
-                rowNum++;
+                );
             }
+
+            /* eslint-enable no-loop-func */
         });
 
     return updateSelection;
