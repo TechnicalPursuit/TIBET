@@ -192,12 +192,20 @@ function(aSignal) {
      */
 
     var currentTarget,
-        typeName;
+        typeName,
+
+        tileTPElem;
 
     currentTarget = this.get('currentTarget');
 
     if (TP.isType(currentTarget)) {
         typeName = currentTarget.getName();
+
+        //  Hide the tile to get it out of the way.
+        tileTPElem = TP.byId('ResponderSummary_Tile', this.getNativeDocument());
+        if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+            tileTPElem.setAttribute('hidden', true);
+        }
 
         TP.signal(null,
                     'ConsoleCommand',

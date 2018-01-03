@@ -534,7 +534,9 @@ function(aSignal) {
         itemData,
 
         target,
-        ruleMatcher;
+        ruleMatcher,
+
+        tileTPElem;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -567,6 +569,12 @@ function(aSignal) {
     //  TODO: For now, until we sort out issues with the editor searching a
     //  RegExp, we have to use a simple String :-(
     ruleMatcher = itemData.at(1);
+
+    //  Hide the tile to get it out of the way.
+    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
+    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+        tileTPElem.setAttribute('hidden', true);
+    }
 
     //  Fire the inspector signal on the next repaint (which will ensure the
     //  tile is closed before navigating).
