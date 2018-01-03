@@ -497,6 +497,8 @@ function(aSignal) {
         bindSrcURI,
         primaryLoc,
 
+        tileTPElem,
+
         cmdText;
 
     //  Grab the target lozenge tile and get the value of its peerID attribute.
@@ -527,6 +529,12 @@ function(aSignal) {
     //  inspector can use '/' as a 'path separator' and we want the URI to be
     //  treated as a 'whole'.
     primaryLoc = TP.stringEscapeSlashes(primaryLoc);
+
+    //  Hide the tile to get it out of the way.
+    tileTPElem = TP.byId('BindSummary_Tile', this.getNativeDocument());
+    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+        tileTPElem.setAttribute('hidden', true);
+    }
 
     //  Fire a 'ConsoleCommand' signal that will be picked up and processed by
     //  the Sherpa console. Send command text asking it to inspect the current

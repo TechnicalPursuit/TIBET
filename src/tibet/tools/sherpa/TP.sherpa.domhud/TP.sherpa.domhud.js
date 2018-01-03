@@ -897,7 +897,9 @@ function(aSignal) {
         newTargetTPElem,
 
         halo,
-        currentTargetTPElem;
+        currentTargetTPElem,
+
+        tileTPElem;
 
     //  Grab the target lozenge tile and get the value of its peerID attribute.
     //  This will be the ID of the element that we're trying to focus.
@@ -930,6 +932,12 @@ function(aSignal) {
     }
 
     halo.setAttribute('hidden', false);
+
+    //  Hide the tile to get it out of the way.
+    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeDocument());
+    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+        tileTPElem.setAttribute('hidden', true);
+    }
 
     //  Fire a 'ConsoleCommand' signal that will be picked up and processed by
     //  the Sherpa console. Send command text asking it to inspect the current
