@@ -2750,7 +2750,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         //  Make sure that the source node is not a Document.
         if (TP.isDocument(sourceNode)) {
-            sourceNode = TP.nodeGetDocument(sourceNode);
+            sourceNode = TP.nodeGetDocument(sourceNode).documentElement;
         }
 
         insertionParent = null;
