@@ -97,6 +97,8 @@ TP.USE_WHOLE_PACKAGE = function() {
     };
 };
 
+TP.IS_PERSISTED = 'is_persisted';
+
 //  ------------------------------------------------------------------------
 
 TP.registerLoadInfo = function(anObject) {

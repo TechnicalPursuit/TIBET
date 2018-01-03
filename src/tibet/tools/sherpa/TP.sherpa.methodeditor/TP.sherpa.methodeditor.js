@@ -223,6 +223,8 @@ function() {
         serverSourceObject,
         sourceObject,
 
+        loadedFromSourceFile,
+
         patchResults,
         diffPatch,
         newContent,
@@ -239,10 +241,19 @@ function() {
     //  This is the method as the *client* currently sees it.
     sourceObject = this.get('sourceObject');
 
+    //  If we haven't persisted this method yet, then we explicitly tell the
+    //  getMethodPatch() method below that it wasn't loaded from a source file.
+    if (serverSourceObject[TP.IS_PERSISTED] === false) {
+        loadedFromSourceFile = false;
+    } else {
+        loadedFromSourceFile = true;
+    }
+
     //  Compute a diff patch by comparing the server source object against the
     //  new source text.
 
-    patchResults = serverSourceObject.getMethodPatch(newSourceText);
+    patchResults = serverSourceObject.getMethodPatch(
+                                        newSourceText, loadedFromSourceFile);
     diffPatch = patchResults.first();
     newContent = patchResults.last();
 
