@@ -373,6 +373,12 @@ function(aSignal) {
         }
     }
 
+    //  If the attribute was a binding attribute, then refresh the target
+    //  element (which will refresh it and all of its descendant bindings).
+    if (TP.notEmpty(name) && name.startsWith('bind:')) {
+        targetTPElem.refresh();
+    }
+
     return this;
 });
 
