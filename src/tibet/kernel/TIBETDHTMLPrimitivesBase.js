@@ -1012,7 +1012,18 @@ function(anElement, aHandler) {
                             if (TP.isElement(target)) {
                                 target[TP.RESIZE_LISTENERS].forEach(
                                     function(fn) {
-                                        fn.call(target);
+
+                                        //  Note here how we put these into a
+                                        //  setTimeout. Otherwise, Chrome (at
+                                        //  least) has trouble with servicing
+                                        //  the ResizeObserver loop (it seems
+                                        //  that supposed recursion loop checks
+                                        //  don't work - or not with deep
+                                        //  stacks, anyway).
+                                        setTimeout(
+                                            function() {
+                                                fn.call(target);
+                                            }, 0);
                                     });
                             }
                         });
