@@ -970,19 +970,37 @@ function(aDocument, newContent) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementAddResizeListener',
-function(anElement, aHandler) {
+function(anElement, aHandler, useTrackerElement) {
 
     /**
      * @method elementAddResizeListener
      * @summary Adds a 'resize listener' to the supplied element. This listener
      *     will be called back when the element resizes in the DOM.
+     * @description Note that there are two techniques to monitor resizing used
+     *     here, depending on the setting of the useTrackerElement parameter.
+     *     If useTrackerElement is false (the default) then the W3C standard
+     *     ResizeObserver (either native or a TIBET-provided shim) will be used
+     *     to monitor resizing.
+     *     If useTrackerElement is true, then a 'tracking element' approach is
+     *     taken. The technique embodied in this approach depends upon two
+     *     things: 1. That the supplied Element is positioned in some
+     *     fashion (and, in fact, the Element will be positioned 'relative' if
+     *     it's position is 'static' when it is supplied) and 2. an absolutely
+     *     positioned child element will be added to the supplied Element.
+     *     NB: This code adapted from:
+     *         http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
      * @param {HTMLElement} anElement The element to add a resize listener to.
      * @param {Function} aHandler The handler Function to invoke when the
      *     supplied Element is resized. Note that this Function will be invoked
      *     in the context of the supplied Element, such that the 'this'
      *     reference will be that Element.
+     * @param {Boolean} useTrackerElement Whether or not to use a 'tracker
+     *     element' approach.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidFunction
      */
+
+    var trackerFunc,
+        trackerElem;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -992,49 +1010,164 @@ function(anElement, aHandler) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    //  If the global ResizeObserver that manages our resizing events hasn't
-    //  been allocated and initialized with the callback function, do so now.
-    if (TP.notValid(TP.RESIZING_RESIZE_OBSERVER)) {
-        TP.RESIZING_RESIZE_OBSERVER =
-            /* eslint-disable no-undef */
-            new ResizeObserver(
-            /* eslint-enable no-undef */
-                function(entries, observer) {
+    if (useTrackerElement) {
 
-                    entries.forEach(
-                        function(anEntry) {
+        //  Define a 'work Function' that will execute when the tracking element
+        //  resizes.
+        trackerFunc = function(evt) {
+
+            var win;
+
+            //  Grab the content window of the tracker. This will be the target
+            //  of the event that triggered this hander.
+            win = TP.eventGetTarget(evt);
+
+            //  If we have a valid resizing requestAnimationFrame constant, then
+            //  cancel it.
+            if (TP.isValid(win.__resizeRAF__)) {
+                win.cancelAnimationFrame(win.__resizeRAF__);
+            }
+
+            //  Set up a resizing requestAnimationFrame constant by supplying a
+            //  Function that will use the resizing target (i.e. the Element
+            //  that we're installing the resize listener for) and, iterate over
+            //  its listeners, invoking the registered resize listener for each
+            //  one.
+            win.__resizeRAF__ =
+                win.requestAnimationFrame(
+                        function() {
                             var target;
 
-                            //  The target will be the target Element that got
-                            //  resized. Make sure it's an Element and then run
-                            //  the callback functions defined on the Element.
-                            target = anEntry.target;
+                            target = win.__resizeTarget__;
+
                             if (TP.isElement(target)) {
                                 target[TP.RESIZE_LISTENERS].forEach(
                                     function(fn) {
-
-                                        //  Note here how we put these into a
-                                        //  setTimeout. Otherwise, Chrome (at
-                                        //  least) has trouble with servicing
-                                        //  the ResizeObserver loop (it seems
-                                        //  that supposed recursion loop checks
-                                        //  don't work - or not with deep
-                                        //  stacks, anyway).
-                                        setTimeout(
-                                            function() {
-                                                fn.call(target);
-                                            }, 0);
+                                        fn.call(target);
                                     });
                             }
                         });
-                });
-    }
+        };
 
-    //  If the resize listener Array is empty, then set one up and cause the
-    //  global ResizeObserver to observe it.
-    if (TP.isEmpty(anElement[TP.RESIZE_LISTENERS])) {
-        anElement[TP.RESIZE_LISTENERS] = TP.ac();
-        TP.RESIZING_RESIZE_OBSERVER.observe(anElement);
+        //  If the resize listener Array is empty, then set one up and set up a
+        //  'resizing tracking element' that will be appended underneath the
+        //  supplied Element.
+
+        if (TP.isEmpty(anElement[TP.RESIZE_LISTENERS])) {
+
+            anElement[TP.RESIZE_LISTENERS] = TP.ac();
+            anElement[TP.RESIZE_LISTENERS].trackerFunc = trackerFunc;
+
+            //  If the element isn't positioned, we need to make it at least
+            //  'relative'. Then resizing will properly propagate to the tracker
+            //  child that we'll be adding below.
+            if (!TP.elementIsPositioned(anElement)) {
+                TP.elementSetStyleProperty(anElement, 'position', 'relative');
+            }
+
+            //  Create a tracker Element (which will be an XHTML 'object'
+            //  element) and style it to be 100%/100%, positioned absolute, but
+            //  not accepting any pointer events.
+            trackerElem = TP.documentConstructElement(
+                                        TP.nodeGetDocument(anElement),
+                                        'object',
+                                        TP.w3.Xmlns.XHTML);
+            TP.elementAddClass(trackerElem, 'resizetracker');
+
+            //  Capture a reference to the tracker element on the Array itself.
+            anElement[TP.RESIZE_LISTENERS].tracker = trackerElem;
+
+            //  Mark this element as one that was generated by TIBET and
+            //  shouldn't be considered in CSS queries, etc.
+            trackerElem[TP.GENERATED] = true;
+
+            //  Capture a reference to the target element back onto the tracker
+            //  element.
+            trackerElem.__resizeTarget__ = anElement;
+
+            //  Set up an onload on the tracker element that will add an
+            //  EventListener on it's 'contentWindow' that will call the
+            //  tracking function above when the 'contentWindow' resizes.
+            trackerElem.onload = function(evt) {
+
+                var win,
+                    doc;
+
+                win = this.contentWindow;
+
+                //  Fix for Safari/Webkit bug:
+                //  https://bugs.webkit.org/show_bug.cgi?id=148876
+                if (!TP.isWindow(win)) {
+
+                    doc = this.contentDocument;
+                    if (TP.isDocument(doc)) {
+                        win = doc.defaultView;
+                    }
+
+                    if (!TP.isWindow(win)) {
+                        return;
+                    }
+                }
+
+                win.__resizeTarget__ = this.__resizeTarget__;
+                win.addEventListener('resize', trackerFunc);
+            };
+
+            //  Set some necessary properties on the tracker element.
+            trackerElem.type = 'text/html';
+            trackerElem.data = 'about:blank';
+
+            //  Append the tracker element to the target element.
+            anElement.appendChild(trackerElem);
+        }
+    } else {
+        //  If the global ResizeObserver that manages our resizing events hasn't
+        //  been allocated and initialized with the callback function, do so now.
+        if (TP.notValid(TP.RESIZING_RESIZE_OBSERVER)) {
+            TP.RESIZING_RESIZE_OBSERVER =
+                /* eslint-disable no-undef */
+                new ResizeObserver(
+                /* eslint-enable no-undef */
+                    function(entries, observer) {
+
+                        entries.forEach(
+                            function(anEntry) {
+                                var target;
+
+                                //  The target will be the target Element that
+                                //  got resized. Make sure it's an Element and
+                                //  then run the callback functions defined on
+                                //  the Element.
+                                target = anEntry.target;
+                                if (TP.isElement(target)) {
+                                    target[TP.RESIZE_LISTENERS].forEach(
+                                        function(fn) {
+
+                                            //  Note here how we put these into
+                                            //  a requestAnimationFrame.
+                                            //  Otherwise, Chrome (at least) has
+                                            //  trouble with servicing the
+                                            //  ResizeObserver loop (it seems
+                                            //  that supposed recursion loop
+                                            //  checks don't work - or not with
+                                            //  deep stacks, anyway).
+                                            TP.nodeGetWindow(target).
+                                                requestAnimationFrame(
+                                                    function() {
+                                                        fn.call(target);
+                                                    });
+                                        });
+                                }
+                            });
+                    });
+        }
+
+        //  If the resize listener Array is empty, then set one up and cause the
+        //  global ResizeObserver to observe it.
+        if (TP.isEmpty(anElement[TP.RESIZE_LISTENERS])) {
+            anElement[TP.RESIZE_LISTENERS] = TP.ac();
+            TP.RESIZING_RESIZE_OBSERVER.observe(anElement);
+        }
     }
 
     //  Push the handler onto the Array of element resize listeners.
@@ -1703,7 +1836,8 @@ function(anElement, aHandler) {
      * @method elementRemoveResizeListener
      * @summary Removes a 'resize listener' from the supplied element. This
      *     listener would have been registered using
-     *     TP.elementAddResizeListener.
+     *     TP.elementAddResizeListener. See that method for more explanation on
+     *     how resizing is monitored.
      * @param {HTMLElement} anElement The element to remove a resize listener
      *     from.
      * @param {Function} aHandler The handler Function that was registered when
@@ -1724,17 +1858,46 @@ function(anElement, aHandler) {
     //  Grab the Array of resize listeners from the target Element.
     listeners = anElement[TP.RESIZE_LISTENERS];
 
-    if (TP.isEmpty(listeners)) {
-        return;
-    }
-
     //  Splice out the handler from the list of listeners
     listeners.splice(listeners.indexOf(aHandler), 1);
 
-    //  If that list is now empty, remove the element from the global
-    //  ResizeObserver machinery.
-    if (TP.isEmpty(listeners)) {
-        TP.RESIZING_RESIZE_OBSERVER.unobserve(anElement);
+    //  If it's a set of listeners that's using a 'tracker element', then we
+    //  need to remove that, if the listeners are empty etc.
+    if (TP.isElement(listeners.tracker)) {
+
+        if (TP.isEmpty(listeners)) {
+            //  Grab the tracker element and function from where they were
+            //  placed by the TP.elementAddResizeListener method - directly on
+            //  the listener Array.
+            trackerElem = listeners.tracker;
+            trackerFunc = listeners.trackerFunc;
+
+            //  Remove the tracker function as a tracker element's
+            //  contentWindow's resize listener and remove the tracker element
+            //  from the target element. Note that sometimes, in a detachment
+            //  scenario, the tracker element's contentWindow will already be
+            //  gone. So we test for that here before accessing it.
+            if (TP.isWindow(trackerElem.contentWindow)) {
+                trackerElem.contentWindow.removeEventListener(
+                                                'resize', trackerFunc);
+            }
+            anElement.removeChild(trackerElem);
+
+            //  Null out all references for GC purposes and return
+
+            listeners.trackerFunc = null;
+            listeners.tracker = null;
+
+            anElement[TP.RESIZE_LISTENERS] = null;
+        }
+
+    } else {
+        //  If we're using ResizeObserver and the listener list is now empty,
+        //  remove the element from the global ResizeObserver machinery.
+        if (TP.isEmpty(listeners)) {
+            TP.RESIZING_RESIZE_OBSERVER.unobserve(anElement);
+            anElement[TP.RESIZE_LISTENERS] = null;
+        }
     }
 
     return;
