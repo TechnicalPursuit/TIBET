@@ -953,6 +953,12 @@ function(aTPElem) {
 
                             newTPElem = aTPElem.compile(null, true, newElem);
 
+                            //  Tell the main Sherpa object that it should go
+                            //  ahead and process DOM mutations to the source
+                            //  DOM.
+                            TP.bySystemId('Sherpa').set(
+                                'shouldProcessDOMMutations', true);
+
                             newElem = TP.unwrap(newTPElem);
                             newElem = TP.nodeReplaceChild(
                                         parentElem, newElem, oldElem);
