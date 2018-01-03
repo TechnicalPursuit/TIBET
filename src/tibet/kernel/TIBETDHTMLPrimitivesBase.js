@@ -1845,7 +1845,10 @@ function(anElement, aHandler) {
      * @exception TP.sig.InvalidElement,TP.sig.InvalidFunction
      */
 
-    var listeners;
+    var listeners,
+
+        trackerElem,
+        trackerFunc;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
