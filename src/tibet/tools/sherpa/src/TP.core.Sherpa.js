@@ -2751,6 +2751,8 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                 if (wasADesugaredTextBinding) {
                     addresses.pop();
                 }
+            } else {
+                addresses = TP.ac();
             }
         }
 
