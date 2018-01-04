@@ -2675,7 +2675,7 @@ function(aRequest) {
     //  want to have duplicate arguments sent over the wire.
     if (args.at('ARG0') === cmd) {
         args.removeKey('ARG0');
-        args.removeKey('tshARG0');
+        args.removeKey('tsh:ARG0');
         if (TP.isValid(args.at('ARGV'))) {
             args.at('ARGV').shift();
         }
