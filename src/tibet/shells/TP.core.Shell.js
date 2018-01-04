@@ -330,8 +330,8 @@ TP.core.Shell.Type.defineAttribute(
                 'STARTER_SNIPPETS',
                 TP.ac(
                         TP.ac(':clear', 'Clear'),
-                        TP.ac(':flag', 'Config flags'),
-                        TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                        TP.ac(':config', 'Config Settings'),
+                        TP.ac('TP.sys.getBootLog()', 'Show Boot Log')
                 ));
 
 //  ------------------------------------------------------------------------
@@ -3705,14 +3705,13 @@ TP.core.Shell.addHelpTopic('clear',
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeFlag',
+TP.core.Shell.Inst.defineMethod('executeConfig',
 function(aRequest) {
 
     /**
-     * @method executeFlag
-     * @summary Processes configuration flag commands, allowing the user to
-     *     view a list of all flags, flags with a specific prefix, a specific
-     *     flag, or allowing a flag value to be set.
+     * @method executeConfig
+     * @summary A shortcut specific to working with setcfg/getcfg to manage
+     *     TIBET and application configuration values.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -3755,7 +3754,7 @@ function(aRequest) {
         //  positional parameters collected, so it works like "auto-quoting"
         if (TP.notDefined(TP.sys.get('configuration').at(name))) {
             TP.ifWarn() ?
-                TP.warn('Unknown flag: ' + name) : 0;
+                TP.warn('Unknown config setting: ' + name) : 0;
         }
 
         TP.sys.setcfg(name, value);
@@ -3765,12 +3764,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic('flag',
-    TP.core.Shell.Inst.getMethod('executeFlag'),
-    'Generates a list of TIBET control flags.',
-    ':flag [name[=value]]',
-    'Shows the names and values for all control flags if no arguments are' +
-    ' supplied, shows the value for one if its name is supplied, or sets' +
+TP.core.Shell.addHelpTopic('config',
+    TP.core.Shell.Inst.getMethod('executeConfig'),
+    'Generates a list of TIBET configuration values.',
+    ':config [name[=value]]',
+    'Shows the names and values for all configuration values if no arguments' +
+    ' are supplied, shows the value for one if its name is supplied, or sets' +
     ' the value if both a name and value are supplied.');
 
 //  ------------------------------------------------------------------------
@@ -3843,7 +3842,7 @@ function(aRequest) {
         ':foo',
             'Used to output a tag in the shell’s current default namespace',
         '.', 'Used as an alias for the ‘source’ or ‘import’ commands',
-        '/', 'Used as an alias for the ‘flag’ command',
+        '/', 'Used as an alias for the ‘config’ command',
         '?', 'Used an an alias for the ‘help’ command'
     );
 

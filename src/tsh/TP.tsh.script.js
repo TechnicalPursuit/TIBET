@@ -1760,7 +1760,7 @@ function(source, shell, sibling, request) {
                                     token = arr[i];
                                 }
 
-                                command.push('<tsh:flag');
+                                command.push('<tsh:config');
 
                                 if (args.length > 0) {
                                     command.push(' name="',
@@ -1776,7 +1776,7 @@ function(source, shell, sibling, request) {
                                     i--;
                                 }
                                 mode = 'tag';
-                                tagname = 'tsh:flag';
+                                tagname = 'tsh:config';
                                 break;
 
                             case '?':
