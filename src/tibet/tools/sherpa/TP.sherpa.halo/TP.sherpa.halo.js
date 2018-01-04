@@ -299,6 +299,16 @@ function() {
         return TP.TSH_NO_VALUE;
     }
 
+    //  Now, we have to make sure that we can empty the target
+    if (!currentTargetTPElem.haloCanEmpty(this)) {
+
+        TP.alert('The halo\'ed element \'&lt;' +
+                    currentTargetTPElem.getFullName() +
+                    '/&gt;\' cannot be emptied');
+
+        return TP.TSH_NO_VALUE;
+    }
+
     //  Make sure to confirm this operation, since it's destructive.
     TP.confirm('Really empty the halo\'ed element?').then(
         function(shouldEmpty) {

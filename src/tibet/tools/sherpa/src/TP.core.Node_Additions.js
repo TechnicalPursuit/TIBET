@@ -54,6 +54,25 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('haloCanEmpty',
+function(aHalo) {
+
+    /**
+     * @method haloCanEmpty
+     * @summary Returns whether or not the halo can empty the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can empty the receiver.
+     * @returns {Boolean} Whether or not the halo can empty the receiver.
+     */
+
+    //  We return false here because, at this level, the halo should not be
+    //  emptying.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('haloCanFocus',
 function(aHalo) {
 
@@ -499,6 +518,23 @@ function(aHalo) {
 
         return false;
     }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('haloCanEmpty',
+function(aHalo) {
+
+    /**
+     * @method haloCanEmpty
+     * @summary Returns whether or not the halo can empty the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can empty the receiver.
+     * @returns {Boolean} Whether or not the halo can empty the receiver.
+     */
 
     return true;
 });

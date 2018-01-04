@@ -157,6 +157,60 @@ function(aHUD, targetTPElem) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.html.Inst.defineMethod('haloCanEmpty',
+function(aHalo) {
+
+    /**
+     * @method haloCanEmpty
+     * @summary Returns whether or not the halo can empty the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can empty the receiver.
+     * @returns {Boolean} Whether or not the halo can empty the receiver.
+     */
+
+    //  The <html> Element cannot be emptied.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.body.Inst.defineMethod('haloCanEmpty',
+function(aHalo) {
+
+    /**
+     * @method haloCanEmpty
+     * @summary Returns whether or not the halo can empty the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can empty the receiver.
+     * @returns {Boolean} Whether or not the halo can empty the receiver.
+     */
+
+    //  The <body> Element cannot be emptied.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.head.Inst.defineMethod('haloCanEmpty',
+function(aHalo) {
+
+    /**
+     * @method haloCanEmpty
+     * @summary Returns whether or not the halo can empty the receiver from its
+     *     DOM tree.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can empty the receiver.
+     * @returns {Boolean} Whether or not the halo can empty the receiver.
+     */
+
+    //  The <head> Element cannot be deleted.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.span.Inst.defineMethod('sherpaDomHudGetLabel',
 function() {
 
