@@ -3376,7 +3376,7 @@ function(aRequest, forms) {
     for (i = 0; i < len; i++) {
         argKey = argKeys.at(i);
         if (!keyTester.test(argKey)) {
-            dict.atPut(prefix + argKey, dict.at(argKey));
+            dict.atPut(prefix + ':' + argKey, dict.at(argKey));
         }
     }
 
