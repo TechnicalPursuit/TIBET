@@ -327,7 +327,7 @@ function(aString, aRequest, aShell, expand) {
 
     //  if we got a reference to another history execution do a deeper
     //  translation
-    while (/!\d*/.test(cmd)) {
+    while (/^!\d*/.test(cmd)) {
         cmd = this.translateHistoryReference(
             cmd.slice(1), aRequest, aShell, expand);
 

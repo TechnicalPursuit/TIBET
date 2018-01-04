@@ -139,7 +139,7 @@
  *     trailing character since that wouldn't be valid JS.
  *
  *     /    &sol;       Used in conjunction with ~ and . for paths. Also used
- *                      as prefix for shell flags such as /tsh.log_execute etc.
+ *                      as prefix for config such as /log.level etc.
  *
  *     =    &equals;    Used at the start of a pipe segment as sugar for the
  *                      tsh:where tag, which serves as a filter on content.
@@ -236,15 +236,14 @@ TP.core.TSH.Type.defineConstant('COMMAND_START_REGEX',
 TP.core.TSH.Type.defineAttribute(
                 'STARTER_SNIPPETS',
                 TP.ac(
-                        TP.ac(':history', 'History'),
                         TP.ac(':help', 'Help'),
                         TP.ac(':clear', 'Clear'),
-                        TP.ac(':flag', 'Config flags'),
+                        TP.ac(':history', 'History'),
+                        TP.ac(':config', 'Config'),
                         TP.ac(':doclint', 'Doclint'),
-                        TP.ac(':test', 'Run App Tests'),
                         TP.ac(':toggleRemoteWatch', 'Toggle Remote Watch'),
                         TP.ac(':listChangedRemotes', 'List Changed Remotes'),
-                        TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                        TP.ac('TP.sys.getBootLog()', 'Show Boot Log')
                 ));
 
 //  standard phases for content processing pipeline. NOTE that there are two
@@ -2676,7 +2675,7 @@ function(aRequest) {
     //  want to have duplicate arguments sent over the wire.
     if (args.at('ARG0') === cmd) {
         args.removeKey('ARG0');
-        args.removeKey('tshARG0');
+        args.removeKey('tsh:ARG0');
         if (TP.isValid(args.at('ARGV'))) {
             args.at('ARGV').shift();
         }
