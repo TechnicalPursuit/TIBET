@@ -61,8 +61,14 @@ function() {
                                         //  (filter follows)
             '.|?*', '.&?*', '.|&?*',    //  pipe w/wo stderr
                                         //  (splatted filter)
+            '.|%', '.&%', '.|&%',       //  pipe w/wo stderr
+                                        //  (format follows)
+            '.|%*', '.&%*', '.|&%*',    //  pipe w/wo stderr
+                                        //  (splatted format)
 
-            '.?', '.?*', '.*',          //  shorthands
+            '.*',                       //  shorthands (iterate)
+            '.?', '.?*',                //  shorthands (filter)
+            '.%', '.%*',                //  shorthands (format)
 
             '.||', '.&&',               //  conditional pipes
 
@@ -79,7 +85,6 @@ function() {
             '.<<',                      //  'here document'
 
             '.;',                       //  pipe segment terminator
-            '.%', '.%*',                //  format
 
             '.((', '.))',               //  nested tsh:script with own
                                         //  request
@@ -2243,28 +2248,44 @@ function(aRequest) {
                 //  ---
 
                 case '.|':      //  stdout
-                case '.|*':     //  stdout (and iterate)
                 case '.*':      //  stdout (and iterate)
+                case '.|*':     //  stdout (and iterate)
+
                 case '.?':      //  stdout (and filter)
                 case '.|?':     //  stdout (and filter)
+
+                case '.%':      //  stdout (and format)
+                case '.|%':     //  stdout (and format)
+
                 case '.?*':     //  stdout (iterate and filter)
                 case '.|?*':    //  stdout (iterate and filter)
+
+                case '.%*':     //  stdout (iterate and format)
+                case '.|%*':    //  stdout (iterate and format)
 
                     cmdRequest.atPut(TP.STDOUT, TP.ac());
                     break outer;
 
                 case '.&':      //  stderr
-                case '.&?':     //  stderr
                 case '.&*':     //  stderr (and iterate)
+
+                case '.&?':     //  stderr (and filter)
                 case '.&?*':    //  stderr (iterate and filter)
+
+                case '.&%':     //  stderr (and format)
+                case '.&%*':    //  stderr (iterate and format)
 
                     cmdRequest.atPut(TP.STDERR, TP.ac());
                     break outer;
 
                 case '.|&':     //  both
-                case '.|?&':    //  both
                 case '.|&*':    //  both (and iterate)
+
+                case '.|&?':    //  both (and filter)
                 case '.|&?*':   //  both (iterate and filter)
+
+                case '.|&%':    //  both (and format)
+                case '.|&%*':   //  both (iterate and format)
 
                     cmdRequest.atPut(TP.STDIO, TP.ac());
                     break outer;
@@ -3375,26 +3396,36 @@ function() {
         case '.|':      //  stdout
         case '.|*':     //  stdout (and iterate)
         case '.*':      //  stdout (and iterate shorthand)
+
         case '.|?':     //  stdout (and filter)
         case '.?':      //  stdout (and filter shorthand)
         case '.|?*':    //  stdout (iterate and filter)
         case '.?*':     //  stdout (iterate and filter shorthand)
 
+        case '.|%':     //  stdout (and format)
+        case '.%':      //  stdout (and format shorthand)
+        case '.|%*':    //  stdout (iterate and format)
+        case '.%*':     //  stdout (iterate and format shorthand)
+
             name = TP.STDOUT;
             break;
 
         case '.&':      //  stderr
-        case '.&?':     //  stderr (and filter)
         case '.&*':     //  stderr (and iterate)
+        case '.&?':     //  stderr (and filter)
+        case '.&%':     //  stderr (and format)
         case '.&?*':    //  stderr (iterate and filter)
+        case '.&%*':    //  stderr (iterate and format)
 
             name = TP.STDERR;
             break;
 
         case '.|&':     //  both
-        case '.|&?':    //  both
         case '.|&*':    //  both (and iterate)
-        case '.|&?*':   //  both (and iterate)
+        case '.|&?':    //  both (and filter)
+        case '.|&%':    //  both (and format)
+        case '.|&?*':   //  both (iterate and filter)
+        case '.|&%*':   //  both (iterate and format)
 
             name = TP.STDIO;
             break;
@@ -3744,6 +3775,18 @@ function(aRequest) {
 
         case '.|&':
         case '.|&*':
+
+        case '.%':
+        case '.%*':
+
+        case '.|%':
+        case '.|%*':
+
+        case '.&%':
+        case '.&%*':
+
+        case '.|&%':
+        case '.|&%*':
 
             if (TP.canInvoke(type, 'cmdTransformInput')) {
                 fname = 'cmdTransformInput';
