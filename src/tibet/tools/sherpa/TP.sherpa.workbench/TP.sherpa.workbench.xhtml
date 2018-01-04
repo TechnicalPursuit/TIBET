@@ -56,11 +56,11 @@
             <xctrls:button class="deploy" on:click="TSHDeploy">
                 <xctrls:hint>Deploy project</xctrls:hint>
             </xctrls:button>
-            <xctrls:button class="test" on:click="TSHTest">
-                <xctrls:hint>Test project</xctrls:hint>
-            </xctrls:button>
             <xctrls:button class="build" on:click="TSHBuild">
                 <xctrls:hint>Build project</xctrls:hint>
+            </xctrls:button>
+            <xctrls:button class="test" on:click="TSHTest">
+                <xctrls:hint>Test project</xctrls:hint>
             </xctrls:button>
 
             <button id="snippetMenuTrigger" on:UIActivate="{signal: TogglePopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: 'SnippetsPopup'}}">
