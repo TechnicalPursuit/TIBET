@@ -1234,7 +1234,10 @@ function(shouldAnimate) {
 
     if (TP.isFalse(shouldAnimate)) {
         (function() {
-            var styleStr;
+            var styleStr,
+
+                editorTPElem,
+                editorObj;
 
             //  We can only do this after letting the GUI thread service,
             //  otherwise it has no effect.
@@ -1245,6 +1248,13 @@ function(shouldAnimate) {
             styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
 
             TP.elementSetStyleString(drawerElement, styleStr);
+            editorTPElem = TP.byCSSPath(
+                                'xctrls|codeeditor', drawerElement, true);
+            editorObj = editorTPElem.$get('$editorObj');
+            if (TP.isValid(editorObj)) {
+                editorObj.resize();
+            }
+
         }).queueForNextRepaint(this.getNativeWindow());
     }
 
