@@ -2250,16 +2250,12 @@ function(aRequest) {
                 case '.|':      //  stdout
                 case '.*':      //  stdout (and iterate)
                 case '.|*':     //  stdout (and iterate)
-
                 case '.?':      //  stdout (and filter)
                 case '.|?':     //  stdout (and filter)
-
                 case '.%':      //  stdout (and format)
                 case '.|%':     //  stdout (and format)
-
                 case '.?*':     //  stdout (iterate and filter)
                 case '.|?*':    //  stdout (iterate and filter)
-
                 case '.%*':     //  stdout (iterate and format)
                 case '.|%*':    //  stdout (iterate and format)
 
@@ -2268,10 +2264,8 @@ function(aRequest) {
 
                 case '.&':      //  stderr
                 case '.&*':     //  stderr (and iterate)
-
                 case '.&?':     //  stderr (and filter)
                 case '.&?*':    //  stderr (iterate and filter)
-
                 case '.&%':     //  stderr (and format)
                 case '.&%*':    //  stderr (iterate and format)
 
@@ -2280,10 +2274,8 @@ function(aRequest) {
 
                 case '.|&':     //  both
                 case '.|&*':    //  both (and iterate)
-
                 case '.|&?':    //  both (and filter)
                 case '.|&?*':   //  both (iterate and filter)
-
                 case '.|&%':    //  both (and format)
                 case '.|&%*':   //  both (iterate and format)
 
@@ -3396,12 +3388,10 @@ function() {
         case '.|':      //  stdout
         case '.|*':     //  stdout (and iterate)
         case '.*':      //  stdout (and iterate shorthand)
-
         case '.|?':     //  stdout (and filter)
         case '.?':      //  stdout (and filter shorthand)
         case '.|?*':    //  stdout (iterate and filter)
         case '.?*':     //  stdout (iterate and filter shorthand)
-
         case '.|%':     //  stdout (and format)
         case '.%':      //  stdout (and format shorthand)
         case '.|%*':    //  stdout (iterate and format)
