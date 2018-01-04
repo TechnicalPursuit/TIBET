@@ -832,11 +832,6 @@ function(aSignal) {
         aSignal.stopPropagation();
 
         this.changeHaloFocusOnClick(aSignal);
-
-    } else if (this.contains(aSignal.getTarget())) {
-
-        //  Otherwise, dispatch off to a 'corner-based' click handler.
-        this[TP.composeHandlerName('HaloClick')](aSignal);
     }
 
     return this;
@@ -1088,63 +1083,6 @@ function(aSignal) {
     if (TP.isFalse(this.getAttribute('hidden'))) {
         currentTargetTPElem = this.get('currentTargetTPElem');
         this.moveAndSizeToTarget(currentTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('HaloClick',
-function(aSignal) {
-
-    /**
-     * @method handleHaloClick
-     * @summary Handles notifications of mouse click signals when they aren't
-     *     being used to focus and blur the receiver.
-     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered this
-     *     method.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var sigTarget,
-        sigCorner,
-
-        cornerSuffix;
-
-    sigTarget = aSignal.getTarget();
-
-    sigCorner = sigTarget.getAttribute('id');
-
-    if (sigCorner.startsWith('haloCorner-')) {
-
-        cornerSuffix = sigCorner.slice(11);
-
-        switch (cornerSuffix) {
-            case 'North':
-                break;
-            case 'Northeast':
-                break;
-            case 'East':
-                break;
-            case 'Southeast':
-                break;
-            case 'South':
-                break;
-            case 'Southwest':
-                break;
-            case 'West':
-                break;
-            case 'Northwest':
-                break;
-            default:
-                //  TODO: error?
-                break;
-        }
-
-        this.signal('TP.sig.Halo' + cornerSuffix + 'Click',
-                    aSignal.getEvent(),
-                    TP.INHERITANCE_FIRING);
     }
 
     return this;
