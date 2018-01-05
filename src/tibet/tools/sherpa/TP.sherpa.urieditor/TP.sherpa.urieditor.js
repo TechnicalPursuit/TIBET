@@ -649,7 +649,9 @@ function() {
             //  If we don't have a valid result, then just set both our local
             //  version of the source content and the editor display value to
             //  the empty String and return. Nothing else to do here.
-            if (TP.isEmpty(sourceResult)) {
+            //  NB: We use TP.notValid here rather than TP.isEmpty since, if we
+            //  have an empty Element, we still want to display it.
+            if (TP.notValid(sourceResult)) {
 
                 this.set('localSourceContent', '');
                 editor.setDisplayValue('');
