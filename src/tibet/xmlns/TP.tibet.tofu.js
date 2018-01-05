@@ -34,11 +34,11 @@ function(aTagTypeName) {
 
     /**
      * @method replaceOccurrencesOf
-     * @summary Replaces any occurrences of the supplied tag name with a
-     *     'tibet:tofu' tag in all currently loaded screen document in the
-     *     Sherpa.
-     * @param {String} aTagTypeName The name of the tags to replace with
-     *     tibet:tofu tags.
+     * @summary Replaces any occurrences of the 'tibet:tofu' tag that is a proxy
+     *     for the supplied tag name with an instance of that tag in all
+     *     currently loaded screen document in the Sherpa.
+     * @param {String} aTagTypeName The name of the tags to find the proxy
+     *     tibet:tofu tags with and replace.
      * @returns {TP.tibet.tofu} The receiver.
      */
 
