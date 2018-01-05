@@ -1589,14 +1589,22 @@
     //  the root entries and their types in the inspector
     TP.sys.setcfg('sherpa.inspector_root_sources',
         [
-            ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
             ['APP', 'TP.sherpa.AppRootInspectorSource'],
-            ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
-            ['TSH', 'TP.sherpa.TSHRootInspectorSource'],
-            ['TWS', 'TP.sherpa.TWSRootInspectorSource'],
             ['REST', 'TP.sherpa.RESTRootInspectorSource'],
-            ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource']
+            ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
+            ['Tag Store', 'TP.sherpa.TWSRootInspectorSource'],
+            ['Summit', 'TP.sherpa.TWSRootInspectorSource'],
+            ['Support', 'TP.sherpa.TWSRootInspectorSource']
         ]);
+
+    //  REST entries for the REST inspector
+    TP.sys.setcfg('sherpa.inspector_rest_sources',
+        [
+            ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource'],
+            ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
+            ['TWS', 'TP.sherpa.TWSRootInspectorSource']
+        ]);
+
 
     //  the initial location to load into screen_0 in the Sherpa. Note this
     //  might be the same as 'project.homepage', but the Sherpa contains

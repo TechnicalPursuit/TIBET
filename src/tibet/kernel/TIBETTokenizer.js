@@ -134,7 +134,7 @@ TP.boot.defineAttribute('$operatorString',
         '__' + TP.boot.$operators.join('__') + '__');
 
 TP.boot.defineAttribute('$tshOpRegex',
-        /^\.[|?*&<>\(\{\[;][|&<>!\*\?\(\{\[]*/);
+        /^\.[|?%*&<>\(\{\[;][|&<>!\*\?\%\(\{\[]*/);
 
 //  Considered 'built-in' by TIBET, but other schemes are added when
 //  registered.

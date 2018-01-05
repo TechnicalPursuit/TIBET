@@ -74,13 +74,17 @@ function() {
 
     this.registerMethodSuffixForPath(
             'ServerDesignation',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+'));
 
     this.registerMethodSuffixForPath(
             'ServerInfo',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -89,7 +93,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'AllDatabases',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -100,7 +106,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'DatabaseDesignation',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -110,7 +118,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'DatabaseInfo',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -123,7 +133,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'AllDocuments',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -136,7 +148,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'DesignDocuments',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -149,7 +163,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'Views',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -164,7 +180,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'DocumentContent',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
@@ -180,7 +198,9 @@ function() {
 
     this.registerMethodSuffixForPath(
             'ViewContent',
-            TP.ac('CouchDB',
+            TP.ac('REST',
+                    TP.PATH_SEP,
+                    'CouchDB',
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+',
                     TP.PATH_SEP,
