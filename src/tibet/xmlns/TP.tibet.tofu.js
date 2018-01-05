@@ -81,27 +81,34 @@ function(aTagTypeName) {
             allTofus = allTofus.concat(docTofus);
         });
 
-    //  Iterate over all of the found instances, create an empty tag with the
-    //  created tag name and replace the tofu with it. This will cause the new
-    //  tag to replace this empty tag version of itself with either compiled or
-    //  templated content.
-    allTofus.forEach(
-            function(tofuTPElem) {
+    if (TP.notEmpty(allTofus)) {
 
-                var newElem,
-                    newTPElem;
+        if (TP.sys.hasFeature('sherpa')) {
+            TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        }
 
-                newElem = TP.nodeFromString('<' + tagName + '/>');
-                if (TP.isElement(newElem)) {
+        //  Iterate over all of the found instances, create an empty tag with the
+        //  created tag name and replace the tofu with it. This will cause the new
+        //  tag to replace this empty tag version of itself with either compiled or
+        //  templated content.
+        allTofus.forEach(
+                function(tofuTPElem) {
 
-                    //  Capture the return value of replacing the tofu and make
-                    //  sure to null out its global ID. This will help the
-                    //  Sherpa halo to obtain the proper lock on the new element
-                    //  and allow it to let go of the tofu element.
-                    newTPElem = tofuTPElem.replaceWith(newElem);
-                    TP.unwrap(newTPElem)[TP.GLOBAL_ID] = null;
-                }
-            });
+                    var newElem,
+                        newTPElem;
+
+                    newElem = TP.nodeFromString('<' + tagName + '/>');
+                    if (TP.isElement(newElem)) {
+
+                        //  Capture the return value of replacing the tofu and make
+                        //  sure to null out its global ID. This will help the
+                        //  Sherpa halo to obtain the proper lock on the new element
+                        //  and allow it to let go of the tofu element.
+                        newTPElem = tofuTPElem.replaceWith(newElem);
+                        TP.unwrap(newTPElem)[TP.GLOBAL_ID] = null;
+                    }
+                });
+    }
 
     return this;
 });
