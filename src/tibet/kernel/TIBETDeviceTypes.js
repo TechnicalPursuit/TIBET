@@ -1562,6 +1562,16 @@ function(normalizedEvent, keyName, shift) {
         sigkey = keyName.toUpperCase();
     }
 
+    //  Because the modifier name for 'Control' is 'Ctrl', users of TIBET will
+    //  expect that, when trying to observe *the Control key itself*, that they
+    //  can use the word 'Ctrl'. In other words, because they can subscribe to
+    //  'DOM_Ctrl_K_Press' that they will also be able to subscribe to
+    //  'DOM_Ctrl_Press'. The W3C name for Control is 'Control', but that's not
+    //  what will be expected.
+    if (keyName === 'Control') {
+        sigkey = 'Ctrl';
+    }
+
     //  All key events get a suffix suitable to that event
     switch (TP.eventGetType(normalizedEvent)) {
         case 'keyup':
@@ -1595,7 +1605,7 @@ function(normalizedEvent, keyName, shift) {
         signame = 'Alt_' + signame;
     }
 
-    if (TP.eventGetCtrlKey(normalizedEvent) && sigkey !== 'Control') {
+    if (TP.eventGetCtrlKey(normalizedEvent) && sigkey !== 'Ctrl') {
         signame = 'Ctrl_' + signame;
     }
 

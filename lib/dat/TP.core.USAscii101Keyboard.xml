@@ -82,6 +82,9 @@
   <key keycode="_13" key="Enter"/>
 
   <key keycode="_16" key="Shift"/>
+  <!-- Note that, even though we follow the W3C name of 'Control' here, TIBET
+       will rename this key to 'Ctrl' for consistency with key names that are
+       generated with the 'Ctrl' modifier. -->
   <key keycode="_17" key="Control"/>
   <key keycode="_18" key="Alt"/>
   <key keycode="_19" platform="win" key="Pause"/>
