@@ -1571,7 +1571,7 @@ function(aSignal) {
 
     keyName = aSignal.getKeyName();
 
-    if (keyName !== 'DOM_Alt_Down') {
+    if (keyName !== 'DOM_Ctrl_Down') {
         TP.bySystemId('SherpaOutliner').deactivateMouseHandler();
     }
 
@@ -1632,7 +1632,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Alt_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Ctrl_Down',
 function(aSignal) {
 
     TP.bySystemId('SherpaOutliner').activateMouseHandler();
@@ -1644,7 +1644,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Alt_Up',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Ctrl_Up',
 function(aSignal) {
 
     TP.bySystemId('SherpaOutliner').deactivateMouseHandler();
