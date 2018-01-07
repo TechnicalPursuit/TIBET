@@ -58,6 +58,7 @@ function(aRequest) {
 
         'Ctrl-U', 'Clears the input cell of content',
         'Ctrl-K', 'Clears the output area of all output cells',
+        'Ctrl-A', 'Activates auto-complete mode.',
 
         'Ctrl-DownArrow', 'Cycle output mode downward (will wrap)',
         'Ctrl-UpArrow', 'Cycle output mode upward (will wrap)',
@@ -71,6 +72,7 @@ function(aRequest) {
         'PageDown', 'Scroll last output cell down 1 page',
         'PageUp', 'Scroll last output cell up 1 page',
 
+        'Esc', 'Cancels an autocomplete operation'
         'Shift-Esc', 'Cancels a multi-prompt operations'
     );
 
