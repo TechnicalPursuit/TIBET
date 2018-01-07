@@ -3830,20 +3830,19 @@ function(aRequest) {
 
     //  ---
 
-    output += '<div style="text-align: center; font-weight: bold; font-size: large">Shortcuts</div>';
+    output += '<div style="text-align: center; font-weight: bold; font-size: large">Prefixes</div>';
 
     result = TP.hc(
-        '~', 'Used to reference virtual URIs',
-        '!', 'Used to repeat commands',
-        '%', 'Used to list jobs',
-        '&', 'Used to resolve an entity',
-        '=',
-            'Used to escape all following content and treat like regular JS',
-        ':foo',
-            'Used to output a tag in the shell’s current default namespace',
-        '.', 'Used as an alias for the ‘source’ or ‘import’ commands',
-        '/', 'Used as an alias for the ‘config’ command',
-        '?', 'Used an an alias for the ‘help’ command'
+        '?', 'Alias for the help command. \':help (tsh:help)\'',
+        ':', 'Command prefix for shell tags. \':test => tsh:test\'',
+        '!', 'Command history reference and execution. \'!!\' or \'!23\' etc',
+        '=', 'Disable TSH parsing for input. \'=raw_js (functions etc)\'',
+        ';', 'Turns off output cell creation. \';do_not_output_retval\'',
+        '~', 'Starts a virtual URI reference. \'~app/tibet.json\'',
+        '.', 'Source in following reference. \'.APP.hello.world (loads JS)\'',
+        '/', 'Get or set a configuration flag. \'/{{some_flag}}=true\'',
+        '&', 'List HTML/XML entity table. \'&amp;\'',
+        '%', 'List active TIBET jobs. \'%\''
     );
 
     //  ---

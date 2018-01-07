@@ -52,26 +52,26 @@ function(aRequest) {
     }
 
     keys = TP.hc(
-        'Alt-UpArrow-Up', 'Show/Hide HUD',
-        'Shift-Return-Up', 'Execute',
-        'Shift-Up-Shift-Up', 'Focus Input Cell',
+        'Alt-UpArrow', 'Show/Hide HUD',
+        'Shift-Shift', 'Focus Input Cell',
+        'Shift-Return', 'Execute',
 
-        'Shift-DownArrow-Up', 'Move to "next" history entry (will not wrap)',
-        'Shift-UpArrow-Up', 'Move to "last" history entry (will not wrap)',
+        'Ctrl-U', 'Clears the input cell of content',
+        'Ctrl-K', 'Clears the output area of all output cells',
 
-        'Ctrl-DownArrow-Up', 'Cycle output mode downward (will wrap)',
-        'Ctrl-UpArrow-Up', 'Cycle output mode upward (will wrap)',
+        'Ctrl-DownArrow', 'Cycle output mode downward (will wrap)',
+        'Ctrl-UpArrow', 'Cycle output mode upward (will wrap)',
 
-        'Ctrl-U-Up', 'Clears the input cell of content',
-        'Ctrl-K-Up', 'Clears the output area of all output cells',
+        'Shift-DownArrow', 'Move to "next" history entry (will not wrap)',
+        'Shift-UpArrow', 'Move to "last" history entry (will not wrap)',
 
-        'DownArrow-Down', 'Scroll last output cell down 1 line',
-        'UpArrow-Down', 'Scroll last output cell up 1 line',
+        'DownArrow', 'Scroll last output cell down 1 line',
+        'UpArrow', 'Scroll last output cell up 1 line',
 
-        'PageDown-Down', 'Scroll last output cell down 1 page',
-        'PageUp-Down', 'Scroll last output cell up 1 page',
+        'PageDown', 'Scroll last output cell down 1 page',
+        'PageUp', 'Scroll last output cell up 1 page',
 
-        'Shift-Esc-Up', 'Cancels a multi-prompt operations'
+        'Shift-Esc', 'Cancels a multi-prompt operations'
     );
 
     output = '<dl>';
