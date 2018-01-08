@@ -62,7 +62,12 @@ function(aRequest) {
         patchText,
 
         sourceLoc,
-        patchPromise;
+        sourceURI,
+
+        existingMethodResource,
+
+        putParams,
+        saveRequest;
 
     shell = aRequest.at('cmdShell');
 
@@ -186,34 +191,59 @@ function(aRequest) {
     //  Tag this method as 'not yet having persisted'
     newMethod[TP.IS_PERSISTED] = false;
 
-    if (shell.getArgument(aRequest, 'tsh:push', null, false)) {
+    methodSrc = '\n' + TP.src(newMethod);
 
-        methodSrc = '\n' + TP.src(newMethod);
+    //  The patch text will be the first item in the Array returned by
+    //  getMethodPatch.
+    patchText = newMethod.getMethodPatch(methodSrc, false).first();
 
-        //  The patch text will be the first item in the Array returned by
-        //  getMethodPatch.
-        patchText = newMethod.getMethodPatch(methodSrc, false).first();
+    //  If the path is a URI and the patch contains '@@', then there were diffs
+    //  and the URI should be dirtied.
+    if (patchText.contains('@@')) {
 
-        if (TP.notEmpty(patchText)) {
+        //  Grab the source URI and it's existing method resource.
+        sourceLoc = TP.objectGetSourcePath(newMethod);
+        sourceURI = TP.uc(sourceLoc);
 
-            sourceLoc = TP.objectGetSourcePath(newMethod);
+        existingMethodResource = sourceURI.getResource();
+        existingMethodResource.then(
+            function(aResult) {
+                var finalContent;
 
-            patchPromise = TP.tds.TDSURLHandler.sendPatch(
-                                TP.uc(sourceLoc),
-                                patchText);
+                //  Apply the patch to the source URI's current content and set
+                //  the result as the URI's new content.
+                finalContent = TP.extern.JsDiff.applyPatch(aResult, patchText);
+                sourceURI.setResource(finalContent);
 
-            patchPromise.then(
-                function(successfulPatch) {
-                    if (successfulPatch) {
-                        //  If we successfully patched, then we can remove this
-                        //  flag.
-                        delete newMethod[TP.IS_PERSISTED];
-                        this.signal('MethodAdded');
-                    }
-                }.bind(this));
-        }
-    } else {
-        this.signal('MethodAdded');
+                //  If the '--push' flag was supplied, then save the URI
+                //  contents to the server immediately.
+                if (shell.getArgument(aRequest, 'tsh:push', null, false)) {
+
+                    putParams = TP.hc('method', TP.HTTP_PUT);
+                    saveRequest = sourceURI.constructRequest(putParams);
+
+                    saveRequest.defineHandler('RequestSucceeded',
+                        function(aResponse) {
+                            delete newMethod[TP.IS_PERSISTED];
+                            this.signal('MethodAdded');
+                        }.bind(this));
+
+                    saveRequest.defineHandler('RequestFailed',
+                        function(aResponse) {
+                            //  empty
+                        });
+
+                    saveRequest.defineHandler('RequestCompleted',
+                        function(aResponse) {
+                            //  empty
+                        });
+
+                    //  Do the deed.
+                    sourceURI.save(saveRequest);
+                } else {
+                    this.signal('MethodAdded');
+                }
+            }.bind(this));
     }
 
     aRequest.complete(TP.TSH_NO_VALUE);
