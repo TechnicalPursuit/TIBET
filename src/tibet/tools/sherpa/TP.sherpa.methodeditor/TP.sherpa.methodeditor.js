@@ -41,7 +41,16 @@ function() {
         newSourceText,
 
         sourceObj,
-        newSourceObj;
+        newSourceObj,
+
+        serverSourceObject,
+        loadedFromSourceFile,
+
+        patchResults,
+        diffPatch,
+
+        sourceURI,
+        existingMethodResource;
 
     editor = this.get('editor');
 
@@ -75,18 +84,46 @@ function() {
     //  whether the editor content is currently dirty.
     this.set('localSourceContent', newSourceText);
 
-    //  Mark our source URI as dirty, since we just set new content into it.
-    //  Note passing the second 'true' here to signal change of the 'dirty'
-    //  flag.
-    this.get('sourceURI').isDirty(true, true);
+    //  This is the method as the *server* sees it. This got replaced when we
+    //  'applied' whatever changes to it that we did in the applyResource()
+    //  method.
+    serverSourceObject = this.get('serverSourceObject');
 
-    //  Now that we've marked things dirty that need to be, mark ourself as
-    //  *not* dirty. This will cause other controls watching us to update.
-    this.isDirty(false);
+    //  If we haven't persisted this method yet, then we explicitly tell the
+    //  getMethodPatch() method below that it wasn't loaded from a source file.
+    if (serverSourceObject[TP.IS_PERSISTED] === false) {
+        loadedFromSourceFile = false;
+    } else {
+        loadedFromSourceFile = true;
+    }
 
-    //  Now that we've set the content and various flags to false, we can unset
-    //  the 'changing content' flag.
-    this.set('$changingSourceContent', false);
+    //  Compute a diff patch by comparing the server source object against the
+    //  new source text.
+    patchResults = serverSourceObject.getMethodPatch(
+                                        newSourceText, loadedFromSourceFile);
+    diffPatch = patchResults.first();
+
+    sourceURI = this.get('sourceURI');
+    existingMethodResource = sourceURI.getResource();
+    existingMethodResource.then(
+        function(aResult) {
+            var finalContent;
+
+            finalContent = TP.extern.JsDiff.applyPatch(aResult, diffPatch);
+
+            //  This will mark our source URI as dirty.
+            sourceURI.setResource(finalContent);
+
+            //  But, since the toolbar only observes us for dirty changed, we
+            //  need to signal the fact that our dirty state changed. Not that
+            //  it really did - it was our URI's dirty state that changed. But
+            //  the toolbar will refresh from both sources.
+            this.changed('dirty');
+
+            //  Now that we've set the content and various flags to false, we can
+            //  unset the 'changing content' flag.
+            this.set('$changingSourceContent', false);
+        }.bind(this));
 
     return this;
 });
