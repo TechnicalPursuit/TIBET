@@ -225,7 +225,7 @@ function(aRequest) {
 
         //  when provided with inline content the first step is always to
         //  set that as the new content for the URI
-        url.setContent(body);
+        url.setResource(body);
     }
 
     //  inline content can be overwritten by input redirection provided
@@ -238,7 +238,7 @@ function(aRequest) {
         body = stdin.at(i);
         if (TP.isValid(body)) {
             params.atPut('body', body);
-            url.setContent(body);
+            url.setResource(body);
             break;
         }
         i--;

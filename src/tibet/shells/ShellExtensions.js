@@ -1152,7 +1152,7 @@ function(aRequest, cmdType) {
             //  as that will flip the 'isLoaded' flag to true.
             crud = obj.isLoaded() ? TP.UPDATE : TP.CREATE;
 
-            result = obj.setContent(content);
+            result = obj.setResource(content);
 
             //  if ! for commit is present then we can simply queue the save
             //  operation and rely on the subrequest to handle resync.
