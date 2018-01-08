@@ -836,7 +836,7 @@ function(shouldRefresh) {
     //  below after we refresh the editor. This attempts to prevent the 'scroll
     //  jumping' that happens when the editor refreshes and sets the scroll
     //  position back to 0,0.
-    editor.captureCurrentScrollInfo();
+    //  editor.captureCurrentScrollInfo();
 
     //  Grab our source URI's resource. Note that this may be an asynchronous
     //  fetch. Note also that we specify that we want the result wrapped in some
@@ -912,7 +912,7 @@ function(shouldRefresh) {
             /* eslint-disable no-extra-parens */
             (function() {
 
-                editor.scrollUsingLastScrollInfo();
+                //  editor.scrollUsingLastScrollInfo();
 
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');

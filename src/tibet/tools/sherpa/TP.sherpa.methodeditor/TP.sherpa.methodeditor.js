@@ -423,7 +423,7 @@ function(shouldRefresh) {
     //  below after we refresh the editor. This attempts to prevent the 'scroll
     //  jumping' that happens when the editor refreshes and sets the scroll
     //  position back to 0,0.
-    editor.captureCurrentScrollInfo();
+    //  editor.captureCurrentScrollInfo();
 
     //  Initialize our local copy of the content with the source String and set
     //  the dirty flag to false.
@@ -450,7 +450,7 @@ function(shouldRefresh) {
     /* eslint-disable no-extra-parens */
     (function() {
 
-        editor.scrollUsingLastScrollInfo();
+        //  editor.scrollUsingLastScrollInfo();
 
         //  Signal to observers that this control has rendered.
         this.signal('TP.sig.DidRender');
