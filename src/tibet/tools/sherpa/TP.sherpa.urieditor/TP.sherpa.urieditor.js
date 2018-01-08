@@ -550,16 +550,16 @@ function() {
                             TP.UPDATE,
                             TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
 
-            //  Notify the user of success
-            TP.bySystemId('SherpaConsoleService').notify(
-                'Resource successfully saved to: ' + sourceURI.getLocation());
-
+            //  Let the editor know that the push succeeded.
+            this.pushResourceSucceeded(aResponse);
         }.bind(this));
 
     saveRequest.defineHandler('RequestFailed',
         function(aResponse) {
-            //  empty
-        });
+
+            //  Let the editor know that the push failed.
+            this.pushResourceFailed(aResponse);
+        }.bind(this));
 
     saveRequest.defineHandler('RequestCompleted',
         function(aResponse) {
@@ -573,6 +573,48 @@ function() {
 
     //  Do the deed.
     sourceURI.save(saveRequest);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('pushResourceFailed',
+function(aResponse) {
+
+    /**
+     * @method pushResourceFailed
+     * @summary Invoked when pushing to the server failed.
+     * @param {TP.sig.Response} aResponse The response for the request that
+     *     failed.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    //  Notify the user of failure
+    TP.bySystemId('SherpaConsoleService').notify(
+        'Resource FAILED saving to: ' +
+                this.get('sourceURI').getLocation());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('pushResourceSucceeded',
+function(aResponse) {
+
+    /**
+     * @method pushResourceSucceeded
+     * @summary Invoked when pushing to the server succeeded.
+     * @param {TP.sig.Response} aResponse The response for the request that
+     *     succeeded.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    //  Notify the user of success
+    TP.bySystemId('SherpaConsoleService').notify(
+        'Resource successfully saved to: ' +
+                this.get('sourceURI').getLocation());
 
     return this;
 });
