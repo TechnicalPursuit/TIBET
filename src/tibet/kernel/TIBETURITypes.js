@@ -8867,7 +8867,11 @@ function(aRequest, filterResult) {
     //  we have one, or its the data from our primary URI in unrefreshed
     //  form.
     if (TP.notTrue(refresh)) {
-        result = this.$get('resource');
+        if ((url = this.getPrimaryURI()) !== this) {
+            result = url.$get('resource');
+        } else {
+            result = this.$get('resource');
+        }
         result = this.$getResourceResult(request, result, async, filter);
 
         if (TP.canInvoke(aRequest, 'complete')) {
