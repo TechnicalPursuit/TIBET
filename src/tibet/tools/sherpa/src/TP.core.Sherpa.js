@@ -2780,7 +2780,8 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                 //  address, then we're doing a pure append (in the case of the
                 //  operation being a TP.CREATE). Therefore, we set currentNode
                 //  (our insertion point) to null.
-                if (!TP.isNode(currentNode.childNodes[address])) {
+                if (TP.notValid(currentNode) ||
+                        !TP.isNode(currentNode.childNodes[address])) {
                     currentNode = null;
                 } else {
                     //  Otherwise, set the currentNode (used as the insertion
