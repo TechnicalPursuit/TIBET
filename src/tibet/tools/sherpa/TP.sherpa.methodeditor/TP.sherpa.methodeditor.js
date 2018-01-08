@@ -308,6 +308,71 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.methodeditor.Inst.defineMethod('pushResourceFailed',
+function(aResponse) {
+
+    /**
+     * @method pushResourceFailed
+     * @summary Invoked when pushing to the server failed.
+     * @param {TP.sig.Response} aResponse The response for the request that
+     *     failed.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    //  Notify the user of success
+    TP.bySystemId('SherpaConsoleService').notify(
+        'Resource FAILED saving to: ' + this.get('sourceURI').getLocation());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('pushResourceSucceeded',
+function(aResponse) {
+
+    /**
+     * @method pushResourceSucceeded
+     * @summary Invoked when pushing to the server succeeded.
+     * @param {TP.sig.Response} aResponse The response for the request that
+     *     succeeded.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var serverSourceObject,
+        sourceObject;
+
+    //  This is the method as the *server* sees it. This got replaced when we
+    //  'applied' whatever changes to it that we did in the applyResource()
+    //  method.
+    serverSourceObject = this.get('serverSourceObject');
+    delete serverSourceObject[TP.IS_PERSISTED];
+
+    //  This is the method as the *client* currently sees it.
+    sourceObject = this.get('sourceObject');
+
+    //  Now that they're sync'ed and the client changes have been pushed to the
+    //  server, make them be the same object.
+    this.set('serverSourceObject', sourceObject);
+
+    //  We need to signal that we are not dirty - we're not
+    //  really dirty anyway, since the applyResource() above set
+    //  us to not be dirty, but there are controls that rely on
+    //  us signaling when either us or our sourceURI's 'dirty'
+    //  state changes.
+    this.changed('dirty',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
+
+    //  Notify the user of success
+    TP.bySystemId('SherpaConsoleService').notify(
+        'Method successfully patched.');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.methodeditor.Inst.defineMethod('render',
 function() {
 
