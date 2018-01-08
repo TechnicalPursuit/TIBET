@@ -72,8 +72,8 @@ function(aRequest) {
         'PageDown', 'Scroll last output cell down 1 page',
         'PageUp', 'Scroll last output cell up 1 page',
 
-        'Esc', 'Cancels an autocomplete operation'
-        'Shift-Esc', 'Cancels a multi-prompt operations'
+        'Esc', 'Cancels an autocomplete operation',
+        'Shift-Esc', 'Cancels a multi-prompt request sequence'
     );
 
     output = '<dl>';
