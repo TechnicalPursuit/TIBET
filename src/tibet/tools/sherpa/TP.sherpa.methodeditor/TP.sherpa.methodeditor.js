@@ -41,7 +41,16 @@ function() {
         newSourceText,
 
         sourceObj,
-        newSourceObj;
+        newSourceObj,
+
+        serverSourceObject,
+        loadedFromSourceFile,
+
+        patchResults,
+        diffPatch,
+
+        sourceURI,
+        existingMethodResource;
 
     editor = this.get('editor');
 
@@ -75,18 +84,46 @@ function() {
     //  whether the editor content is currently dirty.
     this.set('localSourceContent', newSourceText);
 
-    //  Mark our source URI as dirty, since we just set new content into it.
-    //  Note passing the second 'true' here to signal change of the 'dirty'
-    //  flag.
-    this.get('sourceURI').isDirty(true, true);
+    //  This is the method as the *server* sees it. This got replaced when we
+    //  'applied' whatever changes to it that we did in the applyResource()
+    //  method.
+    serverSourceObject = this.get('serverSourceObject');
 
-    //  Now that we've marked things dirty that need to be, mark ourself as
-    //  *not* dirty. This will cause other controls watching us to update.
-    this.isDirty(false);
+    //  If we haven't persisted this method yet, then we explicitly tell the
+    //  getMethodPatch() method below that it wasn't loaded from a source file.
+    if (serverSourceObject[TP.IS_PERSISTED] === false) {
+        loadedFromSourceFile = false;
+    } else {
+        loadedFromSourceFile = true;
+    }
 
-    //  Now that we've set the content and various flags to false, we can unset
-    //  the 'changing content' flag.
-    this.set('$changingSourceContent', false);
+    //  Compute a diff patch by comparing the server source object against the
+    //  new source text.
+    patchResults = serverSourceObject.getMethodPatch(
+                                        newSourceText, loadedFromSourceFile);
+    diffPatch = patchResults.first();
+
+    sourceURI = this.get('sourceURI');
+    existingMethodResource = sourceURI.getResource();
+    existingMethodResource.then(
+        function(aResult) {
+            var finalContent;
+
+            finalContent = TP.extern.JsDiff.applyPatch(aResult, diffPatch);
+
+            //  This will mark our source URI as dirty.
+            sourceURI.setResource(finalContent);
+
+            //  But, since the toolbar only observes us for dirty changed, we
+            //  need to signal the fact that our dirty state changed. Not that
+            //  it really did - it was our URI's dirty state that changed. But
+            //  the toolbar will refresh from both sources.
+            this.changed('dirty');
+
+            //  Now that we've set the content and various flags to false, we can
+            //  unset the 'changing content' flag.
+            this.set('$changingSourceContent', false);
+        }.bind(this));
 
     return this;
 });
@@ -190,118 +227,65 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('isSourceDirty',
-function() {
+TP.sherpa.methodeditor.Inst.defineMethod('pushResourceFailed',
+function(aResponse) {
 
     /**
-     * @method isSourceDirty
-     * @summary Returns true if the receiver's *source* has changed since it was
-     *     last loaded. For this type, this effectively means whether the source
-     *     object (the client side version of a method) and the server source
-     *     object (the server side version of a method) are not the same.
-     * @returns {Boolean} Whether or not the *source* of the receiver is
-     *     'dirty'.
+     * @method pushResourceFailed
+     * @summary Invoked when pushing to the server failed.
+     * @param {TP.sig.Response} aResponse The response for the request that
+     *     failed.
+     * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    return this.get('sourceObject') !== this.get('serverSourceObject');
+    //  Notify the user of success
+    TP.bySystemId('SherpaConsoleService').notify(
+        'Resource FAILED saving to: ' + this.get('sourceURI').getLocation());
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('pushResource',
-function() {
+TP.sherpa.methodeditor.Inst.defineMethod('pushResourceSucceeded',
+function(aResponse) {
 
     /**
-     * @method pushResource
-     * @summary Pushes changes that have been made to the editor's underlying
-     *     resource to the remote endpoint denoted by our source URI.
-     * @returns {TP.sherpa.methodeditor} The receiver.
+     * @method pushResourceSucceeded
+     * @summary Invoked when pushing to the server succeeded.
+     * @param {TP.sig.Response} aResponse The response for the request that
+     *     succeeded.
+     * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var newSourceText,
-
-        serverSourceObject,
-        sourceObject,
-
-        loadedFromSourceFile,
-
-        patchResults,
-        diffPatch,
-        newContent,
-
-        patchPromise;
-
-    newSourceText = this.get('editor').getDisplayValue();
+    var serverSourceObject,
+        sourceObject;
 
     //  This is the method as the *server* sees it. This got replaced when we
     //  'applied' whatever changes to it that we did in the applyResource()
     //  method.
     serverSourceObject = this.get('serverSourceObject');
+    delete serverSourceObject[TP.IS_PERSISTED];
 
     //  This is the method as the *client* currently sees it.
     sourceObject = this.get('sourceObject');
 
-    //  If we haven't persisted this method yet, then we explicitly tell the
-    //  getMethodPatch() method below that it wasn't loaded from a source file.
-    if (serverSourceObject[TP.IS_PERSISTED] === false) {
-        loadedFromSourceFile = false;
-    } else {
-        loadedFromSourceFile = true;
-    }
+    //  Now that they're sync'ed and the client changes have been pushed to the
+    //  server, make them be the same object.
+    this.set('serverSourceObject', sourceObject);
 
-    //  Compute a diff patch by comparing the server source object against the
-    //  new source text.
+    //  We need to signal that we are not dirty - we're not
+    //  really dirty anyway, since the applyResource() above set
+    //  us to not be dirty, but there are controls that rely on
+    //  us signaling when either us or our sourceURI's 'dirty'
+    //  state changes.
+    this.changed('dirty',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
 
-    patchResults = serverSourceObject.getMethodPatch(
-                                        newSourceText, loadedFromSourceFile);
-    diffPatch = patchResults.first();
-    newContent = patchResults.last();
-
-    if (TP.notEmpty(diffPatch)) {
-
-        //  Send the patch to the TDS and get a Promise back that we can wait on
-        //  to see if the patch was successful.
-        patchPromise = TP.tds.TDSURLHandler.sendPatch(
-                            this.get('sourceURI'),
-                            diffPatch);
-
-        patchPromise.then(
-            function(successfulPatch) {
-
-                var sourceURI;
-
-                if (successfulPatch) {
-                    this.set('serverSourceObject', sourceObject);
-
-                    //  Make sure to update the source URI's resource with the
-                    //  new content generated for the whole file to keep things
-                    //  in sync with what just happened on the server.
-                    sourceURI = this.get('sourceURI');
-                    sourceURI.$set('resource', newContent, false);
-                    sourceURI.isLoaded(true);
-
-                    //  Mark our source URI as *not* dirty, since we just pushed
-                    //  it's new content to the server.
-                    //  Note passing the second 'true' here to signal change of
-                    //  the 'dirty' flag.
-                    sourceURI.isDirty(false, true);
-
-                    //  We need to signal that we are not dirty - we're not
-                    //  really dirty anyway, since the applyResource() above set
-                    //  us to not be dirty, but there are controls that rely on
-                    //  us signaling when either us or our sourceURI's 'dirty'
-                    //  state changes.
-                    this.changed('dirty',
-                                    TP.UPDATE,
-                                    TP.hc(TP.OLDVAL, true, TP.NEWVAL, false));
-
-                    //  Notify the user of success
-                    TP.bySystemId('SherpaConsoleService').notify(
-                        'Method successfully patched.');
-
-                }
-            }.bind(this));
-    }
+    //  Notify the user of success
+    TP.bySystemId('SherpaConsoleService').notify(
+        'Method successfully patched.');
 
     return this;
 });
@@ -423,7 +407,7 @@ function(shouldRefresh) {
     //  below after we refresh the editor. This attempts to prevent the 'scroll
     //  jumping' that happens when the editor refreshes and sets the scroll
     //  position back to 0,0.
-    editor.captureCurrentScrollInfo();
+    //  editor.captureCurrentScrollInfo();
 
     //  Initialize our local copy of the content with the source String and set
     //  the dirty flag to false.
@@ -450,7 +434,7 @@ function(shouldRefresh) {
     /* eslint-disable no-extra-parens */
     (function() {
 
-        editor.scrollUsingLastScrollInfo();
+        //  editor.scrollUsingLastScrollInfo();
 
         //  Signal to observers that this control has rendered.
         this.signal('TP.sig.DidRender');
