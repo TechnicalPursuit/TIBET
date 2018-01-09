@@ -786,7 +786,7 @@ function() {
                         'about',
                         'alias',
                         'clear',
-                        'flag',
+                        'config',
                         'save',
                         'set',
                         //  Built-in TSH commands
