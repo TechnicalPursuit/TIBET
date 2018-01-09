@@ -237,13 +237,12 @@ TP.core.TSH.Type.defineAttribute(
                 'STARTER_SNIPPETS',
                 TP.ac(
                         TP.ac(':help', 'Help'),
+                        TP.ac(':keys', 'Keys'),
                         TP.ac(':clear', 'Clear'),
                         TP.ac(':history', 'History'),
                         TP.ac(':config', 'Config'),
                         TP.ac(':doclint', 'Doclint'),
-                        TP.ac(':toggleRemoteWatch', 'Toggle Remote Watch'),
-                        TP.ac(':listChangedRemotes', 'List Changed Remotes'),
-                        TP.ac('TP.sys.getBootLog()', 'Show Boot Log')
+                        TP.ac('TP.sys.getBootLog()', 'Boot Log')
                 ));
 
 //  standard phases for content processing pipeline. NOTE that there are two
