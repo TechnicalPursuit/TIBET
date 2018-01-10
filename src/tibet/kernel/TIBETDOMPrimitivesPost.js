@@ -6820,6 +6820,42 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeRefreshDescendantDocumentPositions',
+function(aNode) {
+
+    /**
+     * @method nodeRefreshDescendantDocumentPositions
+     * @summary Refreshes the document positions for all of the descendant nodes
+     *     of the supplied node.
+     * @description This method refreshes the 0-indexed document position for
+     *     each descendant node.
+     * @param {Node} aNode The DOM node to operate on.
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method.
+     */
+
+    var allDescendantNodes;
+
+    //  no child nodes for anything that isn't an element, document or
+    //  document fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode',
+                            'Node not a collection Node.');
+    }
+
+    //  Grab all of the descendants (all descendants - not just Elements) and
+    //  iterate, updating the document position.
+    allDescendantNodes = TP.nodeGetDescendants(aNode);
+
+    allDescendantNodes.forEach(
+        function(descendantNode) {
+            descendantNode[TP.PREVIOUS_POSITION] =
+                TP.nodeGetDocumentPosition(descendantNode);
+        });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeReplaceChild',
 function(aNode, newNode, oldNode, shouldAwake) {
 
