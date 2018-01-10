@@ -6031,20 +6031,20 @@ function(aNode, joinChar, stopAncestor, onlyElements) {
      *     the method.
      */
 
-    var node,
-        index,
-        path;
+    var path,
+
+        usingParent,
+
+        node,
+        index;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    path = aNode[TP.PREVIOUS_POSITION];
-    if (TP.notEmpty(path)) {
-        return path;
-    }
-
     path = TP.ac();
+
+    usingParent = false;
 
     if (TP.isAttributeNode(aNode)) {
         node = TP.attributeGetOwnerElement(aNode);
@@ -6054,13 +6054,18 @@ function(aNode, joinChar, stopAncestor, onlyElements) {
     } else if (TP.isElement(aNode)) {
         node = aNode;
     } else {
+        //  A node, but not an Attribute, not an Element. Since we use a
+        //  TP.isElement check below, we need to make sure to track that we're
+        //  using the parent.
         node = aNode.parentNode;
+        usingParent = true;
     }
 
     if (TP.isNode(stopAncestor) && node === stopAncestor) {
         return '';
     }
 
+    //  Note the TP.isElement check - we don't want the Document node in here.
     while (TP.isElement(node) &&
             node !== stopAncestor &&
             (index = TP.nodeGetIndexInParent(node, onlyElements)) !==
@@ -6071,6 +6076,14 @@ function(aNode, joinChar, stopAncestor, onlyElements) {
 
     if (index === TP.NOT_FOUND) {
         return TP.NOT_FOUND;
+    }
+
+    //  If we were iterating on the parent (because the node was a
+    //  non-Attribute, non-Element kind of node), then we need to unshift the
+    //  node's index to its parent to get a complete path.
+    if (usingParent) {
+        index = TP.nodeGetIndexInParent(aNode, onlyElements);
+        path.unshift(index);
     }
 
     return path.reverse().join(joinChar || '.');
