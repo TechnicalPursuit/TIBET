@@ -6082,8 +6082,8 @@ function(aNode, joinChar, stopAncestor, onlyElements) {
     //  non-Attribute, non-Element kind of node), then we need to unshift the
     //  node's index to its parent to get a complete path.
     if (usingParent) {
-        index = TP.nodeGetIndexInParent(aNode, onlyElements);
-        path.unshift(index);
+        //index = TP.nodeGetIndexInParent(aNode, onlyElements);
+        //path.unshift(index);
     }
 
     return path.reverse().join(joinChar || '.');
