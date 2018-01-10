@@ -9279,6 +9279,10 @@ function(aNode, prevNode, aValue) {
             action = TP.UPDATE;
         }
 
+        //  Obtain the node's document position - we will use this as our
+        //  address.
+        address = TP.nodeGetDocumentPosition(aNode);
+
     } else if (TP.isTextNode(aNode)) {
 
         elem = aNode.parentNode;
@@ -9291,6 +9295,10 @@ function(aNode, prevNode, aValue) {
             action = TP.UPDATE;
         }
 
+        //  Obtain our parent node's document position - we will use this as
+        //  our address.
+        address = TP.nodeGetDocumentPosition(aNode.parentNode);
+
     } else if (TP.isElement(elem = aNode)) {
 
         //  We need to flag changes on the content element, but not if the
@@ -9300,10 +9308,11 @@ function(aNode, prevNode, aValue) {
         if (TP.notValid(action = TP.elementGetChangeAction(elem, TP.SELF))) {
             action = TP.UPDATE;
         }
-    }
 
-    //  Obtain the node's document position - we will use this as our address.
-    address = TP.nodeGetDocumentPosition(aNode);
+        //  Obtain the node's document position - we will use this as our
+        //  address.
+        address = TP.nodeGetDocumentPosition(aNode);
+    }
 
     //  If we're doing a TP.UPDATE *with a valid value*, we message ourself to
     //  determine whether to change an 'update' to a 'delete'/'create'
