@@ -360,28 +360,40 @@ function(storageInfo) {
 
     currentStore = storageInfo.at('store');
 
-    //  If we're not actually serializing our own template, then store off the
-    //  current result - we'll need it below.
-    if (currentStore !== loc) {
-        currentResult = storageInfo.at('result');
-    }
+    //  If we're 'locking' the store, that means that all serialization results
+    //  will go into a single serialization store. That means that nested tags
+    //  will represent themselves in their hosting template - their template
+    //  won't change.
+    if (TP.notTrue(storageInfo.at('lockStore'))) {
 
-    //  Set our template resource URI as the current 'store' key and create a
-    //  new result Array.
-    storageInfo.atPut('store', loc);
-    storageInfo.atPut('result', TP.ac());
+        //  If we're not actually serializing our own template, then store off
+        //  the current result - we'll need it below.
+        if (currentStore !== loc) {
+            currentResult = storageInfo.at('result');
+        }
 
-    //  Serialize ourself - this will loop back around to this method, hence the
-    //  '$areSerializing' flag. This will also place any generated results
-    //  'under' us into the 'stores' hash under our store key.
-    this.serializeForStorage(storageInfo);
+        //  Set our template resource URI as the current 'store' key and create
+        //  a new result Array.
+        storageInfo.atPut('store', loc);
+        storageInfo.atPut('result', TP.ac());
 
-    //  If we're not actually serializing our own template, then restore the
-    //  current 'store' (i.e. location) and result.
-    if (currentStore !== loc) {
-        //  Restore the previous 'store' key and result.
-        storageInfo.atPut('store', currentStore);
-        storageInfo.atPut('result', currentResult);
+        //  Serialize ourself - this will loop back around to this method, hence
+        //  the '$areSerializing' flag. This will also place any generated
+        //  results 'under' us into the 'stores' hash under our store key.
+        this.serializeForStorage(storageInfo);
+
+        //  If we're not actually serializing our own template, then restore the
+        //  current 'store' (i.e. location) and result.
+        if (currentStore !== loc) {
+            //  Restore the previous 'store' key and result.
+            storageInfo.atPut('store', currentStore);
+            storageInfo.atPut('result', currentResult);
+        }
+    } else {
+        //  Serialize ourself - this will loop back around to this method, hence
+        //  the '$areSerializing' flag. This will also place any generated
+        //  results 'under' us into the 'stores' hash under our store key.
+        this.serializeForStorage(storageInfo);
     }
 
     //  Turn the serializing flag off.
@@ -390,7 +402,7 @@ function(storageInfo) {
     //  If we're not actually serializing our own template, then return an empty
     //  version of ourself as the placeholder in the 'higher level' markup that
     //  we're being serialized as a part of.
-    if (currentStore !== loc) {
+    if (currentStore !== loc && TP.notTrue(storageInfo.at('lockStore'))) {
         //  Return an Array containing our full name (as opposed to our actual
         //  rendered tag name) as an empty tag and continue on to our next
         //  sibling, thereby treating our child content as opaque.

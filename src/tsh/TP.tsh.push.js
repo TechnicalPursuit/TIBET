@@ -71,7 +71,8 @@ function(aRequest) {
                 //  Make sure to let the save request know that we're not
                 //  interested in serializing 'xmlns:' attributes.
                 req.atPut('serializationParams',
-                            TP.hc('wantsPrefixedXMLNSAttrs', false));
+                            TP.hc('wantsPrefixedXMLNSAttrs', false,
+                                    'lockStore', true));
 
                 //  Do the deed.
                 locURIPair.last().save(req);
@@ -97,7 +98,8 @@ function(aRequest) {
             //  Make sure to let the save request know that we're not interested
             //  in serializing 'xmlns:' attributes.
             saveRequest.atPut('serializationParams',
-                                TP.hc('wantsPrefixedXMLNSAttrs', false));
+                                TP.hc('wantsPrefixedXMLNSAttrs', false,
+                                        'lockStore', true));
 
             //  Do the deed.
             url.save(saveRequest);

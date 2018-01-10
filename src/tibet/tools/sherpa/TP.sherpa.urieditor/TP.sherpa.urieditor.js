@@ -569,7 +569,8 @@ function() {
     //  Make sure to let the save request know that we're not interested in
     //  serializing 'xmlns:' attributes.
     saveRequest.atPut('serializationParams',
-                        TP.hc('wantsPrefixedXMLNSAttrs', false));
+                        TP.hc('wantsPrefixedXMLNSAttrs', false,
+                                'lockStore', true));
 
     //  Do the deed.
     sourceURI.save(saveRequest);
@@ -707,7 +708,8 @@ function() {
             //  output. TIBET handles prefixed markup very well through its
             //  'auto-prefixing' mechanism.
             sourceStr = sourceResult.asCleanString(
-                                    TP.hc('wantsPrefixedXMLNSAttrs', false));
+                                    TP.hc('wantsPrefixedXMLNSAttrs', false,
+                                            'lockStore', true));
 
             //  If the source String isn't valid (not even the empty String),
             //  then set our editor's display value to the empty String, our
@@ -880,7 +882,8 @@ function(shouldRefresh) {
             //  output. TIBET handles prefixed markup very well through its
             //  'auto-prefixing' mechanism.
             sourceStr = sourceResult.asCleanString(
-                                    TP.hc('wantsPrefixedXMLNSAttrs', false));
+                                    TP.hc('wantsPrefixedXMLNSAttrs', false,
+                                            'lockStore', true));
 
             //  If the source String isn't valid (not even the empty String),
             //  then set our editor's display value to the empty String, our
