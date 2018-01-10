@@ -377,6 +377,11 @@ function(srcNode, destNode, shouldRemove) {
                                 val :
                                 destNode[TP.GENERATOR];
 
+    destNode[TP.PREVIOUS_POSITION] =
+                            TP.notEmpty(val = srcNode[TP.PREVIOUS_POSITION]) ?
+                            val :
+                            destNode[TP.PREVIOUS_POSITION];
+
     if (TP.isDocument(srcNode) && TP.isDocument(destNode)) {
         destNode[TP.SRC_LOCATION] =
                     TP.notEmpty(val = srcNode[TP.SRC_LOCATION]) ?
@@ -396,6 +401,7 @@ function(srcNode, destNode, shouldRemove) {
         srcNode[TP.SHOULD_SUSPEND_SIGNALING] = null;
 
         srcNode[TP.GENERATOR] = null;
+        srcNode[TP.PREVIOUS_POSITION] = null;
 
         if (TP.isDocument(srcNode) && TP.isDocument(destNode)) {
             srcNode[TP.SRC_LOCATION] = null;
