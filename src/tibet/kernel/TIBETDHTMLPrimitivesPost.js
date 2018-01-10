@@ -6734,7 +6734,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
                 }
 
                 //  Remove anElement from its parent - we're replacing it.
-                elemParent.removeChild(anElement);
+                TP.nodeRemoveChild(elemParent, anElement);
             } else {
                 //  Otherwise, it wasn't table markup so we can just use
                 //  'outerHTML'.
@@ -6881,7 +6881,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             if (/(table|thead|tbody|tfoot|tr|th|td)/.test(elemTagName)) {
                 //  Clear it out manually using DOM methods and looping.
                 while (anElement.hasChildNodes()) {
-                    anElement.removeChild(anElement.lastChild);
+                    TP.nodeRemoveChild(anElement, anElement.lastChild);
                 }
             } else {
                 anElement.innerHTML = '';
@@ -6910,7 +6910,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             if (/(table|thead|tbody|tfoot|tr|th|td)/.test(elemTagName)) {
                 //  Clear it out manually using DOM methods and looping.
                 while (anElement.hasChildNodes()) {
-                    anElement.removeChild(anElement.lastChild);
+                    TP.nodeRemoveChild(anElement, anElement.lastChild);
                 }
 
                 //  The trick here is to build a DOM using the table markup
@@ -8356,7 +8356,7 @@ function(aNode) {
                         //  Clear it out manually using DOM methods and
                         //  looping.
                         while (aNode.hasChildNodes()) {
-                            aNode.removeChild(aNode.lastChild);
+                            TP.nodeRemoveChild(aNode, aNode.lastChild);
                         }
                     } else {
                         aNode.innerHTML = '';
