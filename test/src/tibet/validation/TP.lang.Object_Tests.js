@@ -1054,7 +1054,9 @@ function() {
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
             resp = TP.uc('~lib_schema/tibet_common_types.json').
-                    getResource(TP.hc('async', false, 'resultType', TP.WRAP));
+                    getResource(
+                        TP.hc('async', false,
+                                'contenttype', TP.json.JSONSchemaContent));
             jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
 
