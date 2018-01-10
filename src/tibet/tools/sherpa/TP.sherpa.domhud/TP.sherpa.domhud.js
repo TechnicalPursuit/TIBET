@@ -564,14 +564,20 @@ function(aSignal) {
      */
 
     var hud,
-        hudIsHidden;
+        hudIsHidden,
+
+        sourceTPElem;
 
     //  Grab the HUD and see if it's currently open or closed.
     hud = TP.byId('SherpaHUD', this.getNativeDocument());
     hudIsHidden = TP.bc(hud.getAttribute('closed'));
 
     if (!hudIsHidden) {
-        this.focusOnUICanvasRoot();
+        sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
+                                            get('currentTargetTPElem');
+        if (TP.notValid(sourceTPElem) || sourceTPElem.isDetached()) {
+            this.focusOnUICanvasRoot();
+        }
     }
 
     return this;
