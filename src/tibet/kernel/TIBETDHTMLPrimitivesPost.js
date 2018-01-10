@@ -8366,6 +8366,8 @@ function(aNode) {
                 }
             } else {
                 while (aNode.hasChildNodes()) {
+                    //  NB: Note how we remove from the back... this helps when
+                    //  computing previous document position.
                     TP.nodeDetach(aNode.lastChild);
                 }
             }
