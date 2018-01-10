@@ -8598,7 +8598,10 @@ function(aNode, breadthFirst) {
      */
 
     var arr,
-        func;
+        func,
+
+        doc,
+        walker;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -8609,14 +8612,30 @@ function(aNode, breadthFirst) {
 
     arr = TP.ac();
     func = function(node) {
-
         arr.push(node);
     };
 
     if (TP.isTrue(breadthFirst)) {
         TP.nodeBreadthTraversal(aNode, func, null, func, false);
     } else {
-        TP.nodeDepthTraversal(aNode, func, null, func, false);
+        doc = TP.nodeGetDocument(aNode);
+
+        //  Create a TreeWalker that looks for CDATA sections, comments,
+        //  text nodes (basically, what the DOM calls 'CharacterData') and
+        //  elements.
+        walker = doc.createTreeWalker(
+                    aNode,
+                    NodeFilter.SHOW_CDATA_SECTION |
+                        NodeFilter.SHOW_COMMENT |
+                        NodeFilter.SHOW_TEXT |
+                        NodeFilter.SHOW_ELEMENT,
+                    null,
+                    false);
+
+        //  Iterate and push the resultant nodes.
+        while (walker.nextNode()) {
+            arr.push(walker.currentNode);
+        }
     }
 
     return arr;
