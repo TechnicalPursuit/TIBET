@@ -6403,6 +6403,9 @@ function(targetNode, observerID) {
     observerCallback = function(mutationRecords, observer) {
 
         var handledSlotName,
+
+            allRecords,
+
             records;
 
         //  Compute a 'handled' slot based on the ID of the observer
@@ -6410,7 +6413,15 @@ function(targetNode, observerID) {
         handledSlotName = 'HANDLED_FOR_' +
                             observer.registryRecord.at('observerID');
 
-        records = mutationRecords.filter(
+        //  Note that we grab the mutationRecords parameter and then obtain
+        //  *any* remaining currently queued mutation records from the observer
+        //  by calling 'takeRecords'. This significantly speeds processing by
+        //  avoiding multiple callbacks firing as mutation records are serviced
+        //  and allows callbacks to handle the whole block of mutation records
+        //  at once.
+        allRecords = mutationRecords.concat(observer.takeRecords());
+
+        records = allRecords.filter(
             function(aRecord) {
 
                 var filterFuncs,
