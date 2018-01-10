@@ -1172,6 +1172,12 @@ function() {
 
     this.isDirty(currentEditorStr !== localSourceStr);
 
+    //  We need to signal that we are not dirty - we're not really dirty
+    //  anyway, since the applyResource() above set us to not be dirty,
+    //  but there are controls that rely on us signaling when either us
+    //  or our sourceURI's 'dirty' state changes.
+    this.changed('dirty', TP.UPDATE);
+
     return this;
 });
 
