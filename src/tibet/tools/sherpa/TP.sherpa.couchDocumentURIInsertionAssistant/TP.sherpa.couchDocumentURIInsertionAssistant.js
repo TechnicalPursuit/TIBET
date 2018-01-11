@@ -225,7 +225,7 @@ function(anObject) {
 
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
-        // TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
         //  Insert the new property sheet into target element at the inserted
         //  position.
