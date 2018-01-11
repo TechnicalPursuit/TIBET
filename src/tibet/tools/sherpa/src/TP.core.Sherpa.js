@@ -2613,17 +2613,18 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('updateUICanvasSource',
-function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
-         oldAttributeValue) {
+function(mutatedNodes, mutationAncestor, operation, attributeName,
+         attributeValue, oldAttributeValue) {
 
     /**
      * @method updateUICanvasSource
      * @summary Updates the source of the document currently being displayed as
      *     the UI canvas.
-     * @param {Node} aNode The target Node that the mutation occurred against.
-     * @param {Element} aNodeAncestor The ancestor of the mutating Element.
-     *     This is particularly useful when deleting nodes because the mutating
-     *     Element will already be detached from the DOM.
+     * @param {Node[]} mutatedNodes The set of target Nodes that the mutations
+     *     occurred against.
+     * @param {Element} mutationAncestor The common ancestor of the mutating
+     *     nodes. This is particularly useful when deleting nodes because the
+     *     mutating Element will already be detached from the DOM.
      * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
      *     TP.DELETE that is currently causing the mutation.
      * @param {String} attributeName The name of the attribute that is changing
@@ -2640,12 +2641,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         xhtmlURIs,
 
-        // xmlns,
-
         tagSrcElem,
-        wasSrcRoot,
-
-        startAtSearchElem,
 
         searchElem,
 
@@ -2660,14 +2656,21 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         wasADesugaredTextBinding,
 
+        processingNodes,
+        mutatedNode,
+        mutatedElem,
+
         originatingAddress,
         addresses,
         ancestorAddresses,
 
         currentNode,
 
-        len,
+        leni,
         i,
+
+        lenj,
+        j,
 
         address,
 
@@ -2679,82 +2682,38 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         newNode,
 
-        results,
-
         shouldMarkDirty,
         wasDirty;
 
     /*
-    console.log('nodeName: ' + aNode.nodeName + '\n' +
-                'operation: ' + operation + '\n' +
-                'attrName: ' + attributeName + '\n' +
-                'oldAttrValue: ' + oldAttributeValue + '\n' +
-                'attrValue: ' + attributeValue);
+    for (i = 0; i < mutatedNodes.getSize(); i++) {
+        console.log('nodeName: ' + mutatedNodes.at(i).nodeName + '\n' +
+                    'operation: ' + operation + '\n' +
+                    'attrName: ' + attributeName + '\n' +
+                    'oldAttrValue: ' + oldAttributeValue + '\n' +
+                    'attrValue: ' + attributeValue);
+    }
     */
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Raise an exception here
+    if (TP.isEmpty(mutatedNodes)) {
         return this;
     }
 
-    if (TP.isElement(aNode)) {
-        this.signal('CanvasChanged', TP.hc('target', aNode,
-                                            'operation', operation,
-                                            'attrName', attributeName,
-                                            'newValue', attributeValue,
-                                            'prevValue', oldAttributeValue));
-    }
+    //  Signal the system to let it know that the UI canvas changed.
+    this.signal('CanvasChanged', TP.hc('targets', mutatedNodes,
+                                        'operation', operation,
+                                        'attrName', attributeName,
+                                        'newValue', attributeValue,
+                                        'prevValue', oldAttributeValue));
 
     isAttrChange = TP.notEmpty(attributeName);
 
     xhtmlURIs = TP.w3.Xmlns.getXHTMLURIs();
 
-    //  Whether or not the target Element is actually a 'source root' (i.e. is
-    //  it itself a custom tag of some sort with a source). Initially set to
-    //  false.
-    wasSrcRoot = false;
+    //  Search the hierarchy for the nearest custom tag (using the same search
+    //  criteria as above) to set as the tag source element.
+    tagSrcElem = mutationAncestor;
 
-    //  If the target Node is detached (or its not an Element), that means it
-    //  must be being deleted from the visible DOM. By the time this method is
-    //  called, because of the way MutationObservers work, its parentNode will
-    //  be set to null and we have to use a more complex mechanism to get it's
-    //  position in the DOM.
-    if (TP.nodeIsDetached(aNode) || !TP.isElement(aNode)) {
-        searchElem = aNodeAncestor;
-        startAtSearchElem = true;
-    } else {
-        searchElem = aNode;
-        startAtSearchElem = false;
-    }
-
-    //  If the element we're using to search for the source is itself a) not in
-    //  the XHTML namespace and b) has a 'tibet:tag' attribute, then its acting
-    //  as it's own tag source. So we make it such and flip our wasSrcRoot flag.
-    /*
-    xmlns = searchElem.namespaceURI;
-    if (isAttrChange &&
-        (!xhtmlURIs.contains(xmlns) ||
-            TP.elementHasAttribute(searchElem, 'tibet:tag', true))) {
-
-        tagSrcElem = searchElem;
-        wasSrcRoot = true;
-    } else {
-    */
-    //  If we're supposed to start our search for the tag source element at
-    //  our search element, then the mutated node must be being detached and
-    //  therefore the initial search element is set to the aNodeAncestor
-    //  above. We want to start the search there.
-    if (startAtSearchElem) {
-        tagSrcElem = searchElem;
-    } else {
-
-        //  Otherwise, we want to start the search for the tag source
-        //  element at the search element's parentNode.
-        tagSrcElem = searchElem.parentNode;
-    }
-
-    //  Search the hierarchy for the nearest custom tag (using the same
-    //  search criteria as above) to set as the tag source element.
     while (TP.isElement(tagSrcElem)) {
 
         ansXmlns = tagSrcElem.namespaceURI;
@@ -2765,7 +2724,18 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         tagSrcElem = tagSrcElem.parentNode;
     }
-    // }
+
+    //  If the target Node is detached (or its not an Element), that means it
+    //  must be being deleted from the visible DOM. By the time this method is
+    //  called, because of the way MutationObservers work, its parentNode will
+    //  be set to null and we have to use a more complex mechanism to get it's
+    //  position in the DOM.
+    if (TP.nodeIsDetached(mutatedNodes.first()) ||
+        !TP.isElement(mutatedNodes.first())) {
+        searchElem = mutationAncestor;
+    } else {
+        searchElem = mutatedNodes.first();
+    }
 
     //  If no tag source element could be computed, that means we're going to
     //  use the whole document as the source.
@@ -2799,120 +2769,130 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
     //  will operate properly.
     sourceNode = TP.nodeCloneNode(sourceNode);
 
-    //  If the element we're using to search for has a
-    //  'tibet:desugaredTextBinding' attribute on it, that means that it was
-    //  created by the mechanism that looks for ACP expressions in markup and
-    //  creates a 'span' to wrap them.
-    wasADesugaredTextBinding =
-        TP.elementHasAttribute(searchElem, 'tibet:desugaredTextBinding');
-
     //  Find the location in the *source* DOM (the one that we just retrieved)
-    //  that represents the underlying DOM structure of the source that rendered
-    //  the current GUI that we're modifying.
+    //  that represents the underlying DOM structure of the source that we're
+    //  modifying.
 
-    if (!wasSrcRoot) {
+    processingNodes = TP.ac();
 
-        if (TP.nodeIsDetached(aNode)) {
+    leni = mutatedNodes.getSize();
+    for (i = 0; i < leni; i++) {
 
-            //  If aNode was detached and the operation is *not* TP.DELETE,
-            //  then we have a problem. Raise an exception and exit.
+        mutatedNode = mutatedNodes.at(i);
+
+        //  Compute a 'mutated element' from the mutated node. This may be the
+        //  node itself, if it's an Element.
+        if (TP.isElement(mutatedNode)) {
+            mutatedElem = mutatedNode;
+        } else if (TP.isElement(mutatedNode.parentNode)) {
+            mutatedElem = mutatedNode.parentNode;
+        } else {
+            mutatedElem = mutationAncestor;
+        }
+
+        //  If the mutated *element* (which could be the parent Element of the
+        //  mutated node, if the mutated node is a Text node) has a
+        //  'tibet:desugaredTextBinding' attribute on it, that means that it was
+        //  created by the mechanism that looks for ACP expressions in markup
+        //  and creates a 'span' to wrap them.
+        wasADesugaredTextBinding =
+            TP.elementHasAttribute(
+                mutatedElem, 'tibet:desugaredTextBinding');
+
+        if (TP.nodeIsDetached(mutatedNode)) {
+
+            //  If mutatedNode was detached and the operation is *not*
+            //  TP.DELETE, then we have a problem. Raise an exception and exit.
             if (operation !== TP.DELETE) {
                 //  TODO: Raise an exception here
                 return this;
             }
 
-            //  If aNode was a Text node that was a desugared text binding, then
-            //  we normalize the searchElem (which will be the parent Element
-            //  node) and grab it's address to use to find the source DOM's
-            //  corresponding Text node.
+            //  If mutatedNode was a Text node that was a desugared text
+            //  binding, then we normalize the mutatedElem (which will be the
+            //  parent Element node) and grab it's address to use to find the
+            //  source DOM's corresponding Text node.
             if (wasADesugaredTextBinding) {
-
-                TP.nodeNormalize(searchElem);
+                TP.nodeNormalize(mutatedElem);
 
                 originatingAddress = TP.nodeGetDocumentPosition(
-                                        searchElem.parentNode,
+                                        mutatedElem,
                                         null,
                                         tagSrcElem);
                 addresses = originatingAddress.split('.');
 
             } else {
 
-                //  If aNode was a regular Text, then use the address of the
-                //  node ancestor (which will be it's parent Element node).
-                if (TP.isTextNode(aNode)) {
-                    ancestorAddresses = TP.nodeGetDocumentPosition(
-                                            aNodeAncestor, null, tagSrcElem);
-                    ancestorAddresses = ancestorAddresses.split('.');
-                } else {
-                    //  Now, we need to make sure that our detached node has a
-                    //  TP.PREVIOUS_POSITION value. This is placed by TIBET
-                    //  routines before the node is deleted and provides the
-                    //  document position that the node had before it was
-                    //  removed. We need this, because the node is detached and
-                    //  we no longer have access to its (former) parentNode.
-                    originatingAddress = aNode[TP.PREVIOUS_POSITION];
-                    if (TP.isEmpty(originatingAddress)) {
-                        //  TODO: Raise an exception here
-                        return this;
-                    }
-
-                    addresses = originatingAddress.split('.');
-
-                    //  Note here how we get the ancestor addresses all the way
-                    //  to the top of the document. This is by design because
-                    //  the TP.PREVIOUS_POSITION for the detached node will have
-                    //  been computed the same way.
-                    ancestorAddresses =
-                        TP.nodeGetDocumentPosition(aNodeAncestor).split('.');
-
-                    //  If the size difference between the ancestor addresses
-                    //  and the originating address is more than 1, then the
-                    //  node is more than 1 level 'deeper' from the ancestor and
-                    //  we don't worry about it because we assume that one of
-                    //  the direct children of the ancestor (an ancestor of our
-                    //  detached node) will be detached via this mechanism,
-                    //  thereby taking care of us.
-                    if (addresses.getSize() - ancestorAddresses.getSize() > 1) {
-                        return this;
-                    }
-
-                    //  Now, we recompute the addresses for the traversal below
-                    //  to be between the updating ancestor and the tag source
-                    //  Element. This will then be accurate to update the source
-                    //  DOM, which is always relative to the tag source element.
-                    ancestorAddresses = TP.nodeGetDocumentPosition(
-                                            aNodeAncestor, null, tagSrcElem);
-
-                    //  This will be empty if aNodeAncestor and tagSrcElem are
-                    //  the same node.
-                    if (TP.isEmpty(ancestorAddresses)) {
-                        ancestorAddresses = TP.ac();
-                    } else {
-                        ancestorAddresses = ancestorAddresses.split('.');
-                    }
-
-                    //  Finally, we push on the last position of the address
-                    //  that the detached node had. Given our test above of 'not
-                    //  more than 1 level between the updating ancestor and the
-                    //  detached node', this will complete the path that we need
-                    //  to update the source DOM.
-                    ancestorAddresses.push(addresses.last());
+                //  Now, we need to make sure that our detached node has a
+                //  TP.PREVIOUS_POSITION value. This is placed by TIBET routines
+                //  before the node is deleted and provides the document
+                //  position that the node had before it was removed. We need
+                //  this, because the node is detached and we no longer have
+                //  access to its (former) parentNode.
+                originatingAddress = mutatedNode[TP.PREVIOUS_POSITION];
+                if (TP.isEmpty(originatingAddress)) {
+                    //  TODO: Raise an exception here
+                    return this;
                 }
+
+                addresses = originatingAddress.split('.');
+
+                //  Note here how we get the ancestor addresses all the way to
+                //  the top of the document. This is by design because the
+                //  TP.PREVIOUS_POSITION for the detached node will have been
+                //  computed the same way.
+                ancestorAddresses =
+                    TP.nodeGetDocumentPosition(mutationAncestor).split('.');
+
+                //  If the size difference between the ancestor addresses and
+                //  the originating address is more than 1, then the node is
+                //  more than 1 level 'deeper' from the ancestor and we don't
+                //  worry about it because we assume that one of the direct
+                //  children of the ancestor (an ancestor of our detached node)
+                //  will be detached via this mechanism, thereby taking care of
+                //  us.
+                if (addresses.getSize() - ancestorAddresses.getSize() > 1) {
+                    return this;
+                }
+
+                //  Now, we recompute the addresses for the traversal below to
+                //  be between the updating ancestor and the tag source Element.
+                //  This will then be accurate to update the source DOM, which
+                //  is always relative to the tag source element.
+                ancestorAddresses = TP.nodeGetDocumentPosition(
+                                        mutationAncestor, null, tagSrcElem);
+
+                //  This will be empty if mutationAncestor and tagSrcElem are the
+                //  same node.
+                if (TP.isEmpty(ancestorAddresses)) {
+                    ancestorAddresses = TP.ac();
+                } else {
+                    ancestorAddresses = ancestorAddresses.split('.');
+                }
+
+                //  Finally, we push on the last position of the address that
+                //  the detached node had. Given our test above of 'not more
+                //  than 1 level between the updating ancestor and the detached
+                //  node', this will complete the path that we need to update
+                //  the source DOM.
+                ancestorAddresses.push(addresses.last());
 
                 if (TP.notEmpty(ancestorAddresses)) {
                     //  Set it to be ready to go for logic below.
                     addresses = ancestorAddresses;
                 }
 
+                //  If it just contains one item, the empty string, then empty
+                //  it.
                 if (addresses.getSize() === 1 && addresses.first() === '') {
                     addresses.empty();
                 }
             }
         } else {
             //  Now we get the address from the target element that the user is
-            //  actually manipulating up through the tag source element. We will
-            //  use this address information to traverse the source DOM.
-            originatingAddress = TP.nodeGetDocumentPosition(aNode,
+            //  actually manipulating as offset by the tag source element. We
+            //  will use this address information to traverse the source DOM.
+            originatingAddress = TP.nodeGetDocumentPosition(mutatedNode,
                                                             null,
                                                             tagSrcElem);
             if (TP.notEmpty(originatingAddress)) {
@@ -2937,12 +2917,12 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
         //  Loop over all of the addresses and traverse the source DOM using
         //  those addresses until we find the target of the mutations.
-        len = addresses.getSize();
-        for (i = 0; i < len; i++) {
+        lenj = addresses.getSize();
+        for (j = 0; j < lenj; j++) {
 
-            address = addresses.at(i);
+            address = addresses.at(j);
 
-            if (i === len - 1) {
+            if (j === lenj - 1) {
 
                 insertionParent = currentNode;
 
@@ -2950,8 +2930,7 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                 //  address, then we're doing a pure append (in the case of the
                 //  operation being a TP.CREATE). Therefore, we set currentNode
                 //  (our insertion point) to null.
-                if (TP.notValid(currentNode) ||
-                        !TP.isNode(currentNode.childNodes[address])) {
+                if (!TP.isNode(currentNode.childNodes[address])) {
                     currentNode = null;
                 } else {
                     //  Otherwise, set the currentNode (used as the insertion
@@ -2963,18 +2942,28 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
                 break;
             }
 
+            if (!TP.isNode(currentNode)) {
+                //  TODO: Raise an exception.
+                return this;
+            }
+
             currentNode = currentNode.childNodes[address];
         }
-    } else {
 
-        //  Otherwise, the tag source element is itself being modified, so we
-        //  can shortcut the whole search process here.
-        currentNode = sourceNode;
+        //  NB: This might push 'null'... and for TP.CREATE operations, "that's
+        //  ok" (since it will basically become an 'append' below).
+        processingNodes.push(currentNode);
     }
 
-    //  If we're changing the attribute, but don't have an element to change it
-    //  one, then raise an exception and exit
-    if (isAttrChange && !TP.isElement(currentNode)) {
+    if (TP.isEmpty(processingNodes)) {
+
+        //  TODO: Raise an exception.
+        return this;
+    }
+
+    //  If we're changing the attribute, but don't have at last one element to
+    //  change it on, then raise an exception and exit
+    if (isAttrChange && TP.isEmpty(processingNodes)) {
 
         //  TODO: Raise an exception.
         return this;
@@ -2982,109 +2971,117 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
 
     shouldMarkDirty = false;
 
-    if (operation === TP.CREATE) {
+    leni = processingNodes.getSize();
+    for (i = 0; i < leni; i++) {
 
-        if (isAttrChange) {
-            TP.elementSetAttribute(currentNode,
-                                    attributeName,
-                                    attributeValue,
-                                    true);
-            shouldMarkDirty = true;
-        } else {
+        currentNode = processingNodes.at(i);
 
-            //  If this was a Text node representing a desugared text binding
-            //  then we have to update the text expression by using the first
-            //  data expression found in the updating ancestor's (to the Text
-            //  node) binding information.
-            if (wasADesugaredTextBinding) {
+        if (operation === TP.CREATE) {
 
-                updatingAnsTPElem = TP.wrap(aNodeAncestor);
-                bindInfo = updatingAnsTPElem.getBindingInfoFrom(
+            if (isAttrChange) {
+                TP.elementSetAttribute(currentNode,
+                                        attributeName,
+                                        attributeValue,
+                                        true);
+                shouldMarkDirty = true;
+            } else {
+
+                mutatedNode = mutatedNodes.at(i);
+
+                if (TP.isElement(mutatedNode)) {
+                    mutatedElem = mutatedNode;
+                } else if (TP.isElement(mutatedNode.parentNode)) {
+                    mutatedElem = mutatedNode.parentNode;
+                } else {
+                    mutatedElem = mutationAncestor;
+                }
+
+                wasADesugaredTextBinding =
+                    TP.elementHasAttribute(
+                        mutatedElem, 'tibet:desugaredTextBinding');
+
+                //  If this was a Text node representing a desugared text
+                //  binding then we have to update the text expression by using
+                //  the first data expression found in the updating ancestor's
+                //  (to the Text node) binding information.
+                if (wasADesugaredTextBinding) {
+
+                    updatingAnsTPElem = TP.wrap(mutationAncestor);
+                    bindInfo = updatingAnsTPElem.getBindingInfoFrom(
                                     updatingAnsTPElem.getAttribute('bind:in'));
 
-                bindExprStr = bindInfo.at('value').at('dataExprs').at(0);
-                bindExprStr = '[[' + bindExprStr + ']]';
+                    bindExprStr = bindInfo.at('value').at('dataExprs').at(0);
+                    bindExprStr = '[[' + bindExprStr + ']]';
 
-                //  Create a new text node and append it to the current node in
-                //  the source DOM (the ancestor of the Text node there) that
-                //  contains the binding expression. Note that the Text node
-                //  containing the old binding expression will have already been
-                //  removed by a prior mutation.
-                TP.nodeAppendChild(
-                    currentNode,
-                    TP.nodeGetDocument(currentNode).createTextNode(bindExprStr),
-                    false);
+                    //  Create a new text node and append it to the current node
+                    //  in the source DOM (the ancestor of the Text node there)
+                    //  that contains the binding expression. Note that the Text
+                    //  node containing the old binding expression will have
+                    //  already been removed by a prior mutation.
+                    TP.nodeAppendChild(
+                        currentNode,
+                        TP.nodeGetDocument(currentNode).createTextNode(
+                                                                bindExprStr),
+                        false);
 
-                shouldMarkDirty = true;
-            } else {
+                    shouldMarkDirty = true;
+                } else {
 
-                //  Clone the node
-                newNode = TP.nodeCloneNode(aNode, true, false);
+                    //  Clone the node
+                    newNode = TP.nodeCloneNode(mutatedNode, true, false);
 
-                if (TP.isElement(newNode)) {
+                    if (TP.isElement(newNode)) {
 
-                    //  'Clean' the Element of any runtime constructs put there
-                    //  by TIBET.
-                    TP.elementClean(newNode);
+                        //  'Clean' the Element of any runtime constructs put
+                        //  there by TIBET.
+                        TP.elementClean(newNode);
 
-                    TP.nodeInsertBefore(insertionParent,
-                                        newNode,
-                                        currentNode,
-                                        false);
-                } else if (TP.isTextNode(newNode)) {
+                        TP.nodeInsertBefore(insertionParent,
+                                            newNode,
+                                            currentNode,
+                                            false);
+                    } else if (TP.isTextNode(newNode)) {
 
-                    //  It's just a Text node - we use it and it's contents
-                    //  literally.
-                    TP.nodeAppendChild(currentNode,
-                                        newNode,
-                                        false);
-                }
+                        //  It's just a Text node - we use it and it's contents
+                        //  literally.
+                        TP.nodeAppendChild(currentNode,
+                                            newNode,
+                                            false);
+                    }
 
-                shouldMarkDirty = true;
-            }
-        }
-    } else if (operation === TP.DELETE) {
-
-        if (isAttrChange) {
-            TP.elementRemoveAttribute(currentNode, attributeName, true);
-            shouldMarkDirty = true;
-        } else {
-            if (wasADesugaredTextBinding) {
-                //  NB: currentNode is the ancestor Element that is holding the
-                //  text node that represents the sugared binding expression.
-                TP.nodeDetach(currentNode.firstChild);
-                shouldMarkDirty = true;
-            } else if (TP.isTextNode(aNode)) {
-                //  NB: currentNode is the ancestor Element holding the text
-                //  node that matches aNode. We have to find the text node that
-                //  matches the nodeValue of aNode and remove it.
-                results = TP.elementGetTextNodesMatching(
-                                    currentNode,
-                                    function(aTextNode) {
-                                        return aTextNode.nodeValue ===
-                                                aNode.nodeValue;
-                                    });
-                if (TP.notEmpty(results)) {
-                    TP.nodeDetach(results.first());
                     shouldMarkDirty = true;
                 }
+            }
+        } else if (operation === TP.DELETE) {
+
+            if (isAttrChange) {
+                TP.elementRemoveAttribute(currentNode, attributeName, true);
+                shouldMarkDirty = true;
             } else {
-                TP.nodeDetach(currentNode);
+                if (wasADesugaredTextBinding) {
+                    //  NB: currentNode is the ancestor Element that is holding
+                    //  the text node that represents the sugared binding
+                    //  expression.
+                    TP.nodeDetach(currentNode.firstChild);
+                    shouldMarkDirty = true;
+                } else {
+                    TP.nodeDetach(currentNode);
+                    shouldMarkDirty = true;
+                }
+            }
+
+        } else if (operation === TP.UPDATE) {
+
+            //  No other node types except Attribute nodes will have a TP.UPDATE
+            //  operation (the other nodes - Elements and Text nodes - will
+            //  'delete' and 'insert' themselves in two separate operations.
+            if (isAttrChange) {
+                TP.elementSetAttribute(currentNode,
+                                        attributeName,
+                                        attributeValue,
+                                        true);
                 shouldMarkDirty = true;
             }
-        }
-
-    } else if (operation === TP.UPDATE) {
-
-        //  No other node types except Attribute nodes will have a TP.UPDATE
-        //  operation (the other nodes - Elements and Text nodes - will 'delete'
-        //  and 'insert' themselves in two separate operations.
-        if (isAttrChange) {
-            TP.elementSetAttribute(currentNode,
-                                    attributeName,
-                                    attributeValue,
-                                    true);
-            shouldMarkDirty = true;
         }
     }
 
