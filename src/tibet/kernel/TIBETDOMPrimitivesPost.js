@@ -1856,7 +1856,8 @@ function(anElement) {
 
     allElems.forEach(
         function(anElem) {
-            TP.elementRemoveAttribute(anElem, 'id', true);
+            //  TODO: Figure out what really needs to be removed here.
+            //  TP.elementRemoveAttribute(anElem, 'id', true);
         });
 
     return;
