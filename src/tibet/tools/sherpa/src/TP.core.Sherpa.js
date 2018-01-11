@@ -1084,9 +1084,6 @@ function(mutationRecords) {
         i,
         record,
 
-        lenj,
-        j,
-
         attrName,
         attrPrefix,
         attrValue,
@@ -1095,7 +1092,26 @@ function(mutationRecords) {
         attrIsEmpty,
         attrWasEmpty,
 
-        node;
+        attrCreatedRecords,
+        attrUpdatedRecords,
+        attrDeletedRecords,
+
+        descendantListCreatedRecords,
+        descendantListDeletedRecords,
+
+        descendantListDeletions,
+        descendantListCreations;
+
+    //  Create separate Arrays for the various kinds of operations we'll be
+    //  processing. The mutation records will be sorted into these Arrays so
+    //  that a single 'batch' of records for a particular operation will be
+    //  processed all at once.
+    attrCreatedRecords = TP.ac();
+    attrUpdatedRecords = TP.ac();
+    attrDeletedRecords = TP.ac();
+
+    descendantListCreatedRecords = TP.ac();
+    descendantListDeletedRecords = TP.ac();
 
     len = mutationRecords.getSize();
     for (i = 0; i < len; i++) {
@@ -1140,26 +1156,40 @@ function(mutationRecords) {
                     attrWasEmpty = TP.isEmpty(attrOldValue);
 
                     if (!attrIsEmpty && attrWasEmpty) {
-                        this.updateUICanvasSource(record.target,
-                                                    null,
-                                                    TP.CREATE,
-                                                    attrName,
-                                                    attrValue,
-                                                    null);
+
+                        //  Capture the attributeName and attributeValue
+                        //  directly onto the record Object under private TIBET
+                        //  names. We'll use this later when dispatching.
+                        record.tp_attrName = attrName;
+                        record.tp_attrValue = attrValue;
+
+                        //  Add this record to the proper sorting Array for its
+                        //  particular kind of operation.
+                        attrCreatedRecords.push(record);
                     } else if (!attrIsEmpty && !attrWasEmpty) {
-                        this.updateUICanvasSource(record.target,
-                                                    null,
-                                                    TP.UPDATE,
-                                                    attrName,
-                                                    attrValue,
-                                                    attrOldValue);
+
+                        //  Capture the attributeName, attributeValue and
+                        //  oldAttributeValue directly onto the record Object
+                        //  under private TIBET names. We'll use this later when
+                        //  dispatching.
+                        record.tp_attrName = attrName;
+                        record.tp_attrValue = attrValue;
+                        record.tp_attrOldValue = attrOldValue;
+
+                        //  Add this record to the proper sorting Array for its
+                        //  particular kind of operation.
+                        attrUpdatedRecords.push(record);
                     } else if (attrIsEmpty && !attrWasEmpty) {
-                        this.updateUICanvasSource(record.target,
-                                                    null,
-                                                    TP.DELETE,
-                                                    attrName,
-                                                    null,
-                                                    attrOldValue);
+
+                        //  Capture the attributeName and old attributeValue
+                        //  directly onto the record Object under private TIBET
+                        //  names. We'll use this later when dispatching.
+                        record.tp_attrName = attrName;
+                        record.tp_attrOldValue = attrOldValue;
+
+                        //  Add this record to the proper sorting Array for its
+                        //  particular kind of operation.
+                        attrDeletedRecords.push(record);
                     }
                 }
 
@@ -1167,30 +1197,16 @@ function(mutationRecords) {
 
             case 'childList':
 
-                //  NB: We process the removed nodes *first* here. This allows
-                //  us to keep things in sync much better when replacing one
-                //  node with another. They will typically come in on the same
-                //  mutation record with 1 node removed and 1 node added and we
-                //  want to keep that order.
-
                 if (TP.notEmpty(record.removedNodes)) {
-                    lenj = record.removedNodes.length;
-                    for (j = 0; j < lenj; j++) {
-
-                        node = record.removedNodes[j];
-                        this.updateUICanvasSource(
-                                    node, record.target, TP.DELETE);
-                    }
+                    //  Add this record to the proper sorting Array for its
+                    //  particular kind of operation.
+                    descendantListDeletedRecords.push(record);
                 }
 
                 if (TP.notEmpty(record.addedNodes)) {
-                    lenj = record.addedNodes.length;
-                    for (j = 0; j < lenj; j++) {
-
-                        node = record.addedNodes[j];
-                        this.updateUICanvasSource(
-                                    node, record.target, TP.CREATE);
-                    }
+                    //  Add this record to the proper sorting Array for its
+                    //  particular kind of operation.
+                    descendantListCreatedRecords.push(record);
                 }
 
                 break;
@@ -1198,6 +1214,151 @@ function(mutationRecords) {
             default:
                 break;
         }
+    }
+
+    //  Process all of the records that created attributes.
+    len = attrCreatedRecords.getSize();
+    for (i = 0; i < len; i++) {
+        record = attrCreatedRecords.at(i);
+
+        //  Call the method to update our current UI canvas's source DOM. Note
+        //  here how there be only one mutated node (the Element that the
+        //  Attribute mutated on) and how we pass it's parent node as the
+        //  'mutation ancestor'.
+        this.updateUICanvasSource(TP.ac(record.target),
+                                    record.target.parentNode,
+                                    TP.CREATE,
+                                    record.tp_attrName,
+                                    record.tp_attrValue,
+                                    null);
+    }
+
+    //  Process all of the records that updated attributes.
+    len = attrUpdatedRecords.getSize();
+    for (i = 0; i < len; i++) {
+        record = attrUpdatedRecords.at(i);
+
+        //  Call the method to update our current UI canvas's source DOM. Note
+        //  here how there be only one mutated node (the Element that the
+        //  Attribute mutated on) and how we pass it's parent node as the
+        //  'mutation ancestor'.
+        this.updateUICanvasSource(TP.ac(record.target),
+                                    record.target.parentNode,
+                                    TP.UPDATE,
+                                    record.tp_attrName,
+                                    record.tp_attrValue,
+                                    record.tp_attrOldValue);
+    }
+
+    //  Process all of the records that deleted attributes.
+    len = attrDeletedRecords.getSize();
+    for (i = 0; i < len; i++) {
+        record = attrDeletedRecords.at(i);
+
+        //  Call the method to update our current UI canvas's source DOM. Note
+        //  here how there be only one mutated node (the Element that the
+        //  Attribute mutated on) and how we pass it's parent node as the
+        //  'mutation ancestor'.
+        this.updateUICanvasSource(TP.ac(record.target),
+                                    record.target.parentNode,
+                                    TP.DELETE,
+                                    record.tp_attrName,
+                                    null,
+                                    record.tp_attrOldValue);
+    }
+
+    //  Process all of the records that deleted child nodes.
+    if (TP.notEmpty(descendantListDeletedRecords)) {
+
+        //  Group the records by the target. This ensures that all mutated nodes
+        //  that were descendants of a particular target are going to get
+        //  processed at once. This will create a TP.core.Hash.
+        descendantListDeletions = descendantListDeletedRecords.groupBy(
+                                function(item, index) {
+                                    return TP.gid(item.target);
+                                });
+
+        //  Iterate over the hash and process each batch of grouped records.
+        descendantListDeletions.perform(
+            function(kvPair) {
+
+                var deletionRecords,
+                    mutatedNodes,
+
+                    recordsLen,
+                    j,
+
+                    nodesLen,
+                    k;
+
+                deletionRecords = kvPair.last();
+
+                mutatedNodes = TP.ac();
+
+                //  Iterate over each record and collect up all of the mutated
+                //  nodes into a single Array.
+                recordsLen = deletionRecords.getSize();
+                for (j = 0; j < recordsLen; j++) {
+                    record = deletionRecords.at(j);
+
+                    nodesLen = record.removedNodes.length;
+                    for (k = 0; k < nodesLen; k++) {
+                        mutatedNodes.push(record.removedNodes[k]);
+                    }
+                }
+
+                //  Call the method to update our current UI canvas's source
+                //  DOM.
+                this.updateUICanvasSource(
+                        mutatedNodes, record.target, TP.DELETE);
+            }.bind(this));
+    }
+
+    //  Process all of the records that created child nodes.
+    if (TP.notEmpty(descendantListCreatedRecords)) {
+
+        //  Group the records by the target. This ensures that all mutated nodes
+        //  that were descendants of a particular target are going to get
+        //  processed at once. This will create a TP.core.Hash.
+        descendantListCreations = descendantListCreatedRecords.groupBy(
+                                function(item, index) {
+                                    return TP.gid(item.target);
+                                });
+
+        //  Iterate over the hash and process each batch of grouped records.
+        descendantListCreations.perform(
+            function(kvPair) {
+
+                var creationRecords,
+                    mutatedNodes,
+
+                    recordsLen,
+                    j,
+
+                    nodesLen,
+                    k;
+
+                creationRecords = kvPair.last();
+
+                mutatedNodes = TP.ac();
+
+                //  Iterate over each record and collect up all of the mutated
+                //  nodes into a single Array.
+                recordsLen = creationRecords.getSize();
+                for (j = 0; j < recordsLen; j++) {
+                    record = creationRecords.at(j);
+
+                    nodesLen = record.addedNodes.length;
+                    for (k = 0; k < nodesLen; k++) {
+                        mutatedNodes.push(record.addedNodes[k]);
+                    }
+                }
+
+                //  Call the method to update our current UI canvas's source
+                //  DOM.
+                this.updateUICanvasSource(
+                        mutatedNodes, record.target, TP.CREATE);
+            }.bind(this));
     }
 
     return this;
