@@ -2906,10 +2906,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             }
         }
 
-        //  Make sure that the source node is not a Document.
-        if (TP.isDocument(sourceNode)) {
-            sourceNode = TP.nodeGetDocument(sourceNode).documentElement;
-        }
+        //  It's ok if the source node is a Document since addresses take into
+        //  account the index from the #document into the root Element.
 
         insertionParent = null;
 
