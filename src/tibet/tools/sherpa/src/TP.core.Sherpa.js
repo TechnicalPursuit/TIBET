@@ -2639,9 +2639,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     var isAttrChange,
 
-        xhtmlURIs,
-
         tagSrcElem,
+        tagTPSrcElem,
 
         searchElem,
 
@@ -2708,17 +2707,13 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     isAttrChange = TP.notEmpty(attributeName);
 
-    xhtmlURIs = TP.w3.Xmlns.getXHTMLURIs();
-
     //  Search the hierarchy for the nearest custom tag (using the same search
     //  criteria as above) to set as the tag source element.
     tagSrcElem = mutationAncestor;
 
     while (TP.isElement(tagSrcElem)) {
-
-        ansXmlns = tagSrcElem.namespaceURI;
-        if (!xhtmlURIs.contains(ansXmlns) ||
-            TP.elementHasAttribute(tagSrcElem, 'tibet:tag', true)) {
+        tagTPSrcElem = TP.wrap(tagSrcElem);
+        if (TP.isKindOf(tagTPSrcElem, TP.core.TemplatedTag)) {
             break;
         }
 
