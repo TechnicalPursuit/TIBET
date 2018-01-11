@@ -2922,6 +2922,11 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
             address = addresses.at(j);
 
+            if (!TP.isNode(currentNode)) {
+                //  TODO: Raise an exception.
+                return this;
+            }
+
             if (j === lenj - 1) {
 
                 insertionParent = currentNode;
@@ -2940,11 +2945,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 }
 
                 break;
-            }
-
-            if (!TP.isNode(currentNode)) {
-                //  TODO: Raise an exception.
-                return this;
             }
 
             currentNode = currentNode.childNodes[address];
