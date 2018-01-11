@@ -2644,8 +2644,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         searchElem,
 
-        ansXmlns,
-
         originatingDoc,
 
         sourceLoc,
