@@ -318,6 +318,10 @@ function() {
         tpElem = TP.byId('center', viewDoc);
         tpElem.setAttribute('tibet:nomutationtracking', true);
 
+        //  Make sure to refresh all of the descendant document positions for
+        //  the UI canvas.
+        TP.nodeRefreshDescendantDocumentPositions(TP.sys.uidoc(true));
+
         consoleService = TP.bySystemId('SherpaConsoleService');
 
         //  Now that all components have loaded (and possibly installed state
@@ -575,7 +579,9 @@ function(aSignal) {
      */
 
     var world,
-        currentScreenTPWin;
+        currentScreenTPWin,
+
+        doc;
 
     //  Set up managed mutation observer machinery that uses our
     //  'processUICanvasMutationRecords' method to manage changes to the UI
@@ -592,9 +598,12 @@ function(aSignal) {
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
     currentScreenTPWin = world.get('selectedScreen').getContentWindow();
 
-    TP.activateMutationObserver(
-        currentScreenTPWin.getNativeDocument(),
-        'BUILDER_OBSERVER');
+    //  Make sure to refresh all of the descendant document positions for the UI
+    //  canvas.
+    doc = currentScreenTPWin.getNativeDocument();
+    TP.nodeRefreshDescendantDocumentPositions(doc);
+
+    TP.activateMutationObserver(doc, 'BUILDER_OBSERVER');
 
     return this;
 });
@@ -2934,6 +2943,9 @@ function(aNode, aNodeAncestor, operation, attributeName, attributeValue,
             TP.UPDATE,
             TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, true));
     }
+
+    //  Make sure to refresh all of the descendant document positions.
+    TP.nodeRefreshDescendantDocumentPositions(TP.sys.uidoc(true));
 
     return this;
 });
