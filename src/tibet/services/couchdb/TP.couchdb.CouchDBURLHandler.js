@@ -809,27 +809,56 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response} The request's response object.
      */
 
-    var request;
+    var request,
+
+        reqParams,
+        newReq,
+
+        authRequest;
 
     request = TP.request(aRequest);
 
     //  Make sure that the connection has been authenticated.
     if (!this.isAuthenticated(targetURI)) {
 
-        //  If its not, simulate a HTTP 401 error and report it / fail it like
-        //  the TIBET low-level HTTP code will.
+        reqParams = TP.copy(request.getParameters());
+        reqParams.atPut('uri', targetURI);
 
-        request.set('faultCode', 401);
-        request.set('faultText', 'Unauthorized');
+        newReq = TP.sig.HTTPLoadRequest.construct(reqParams);
+        request.andJoinChild(newReq);
 
-        TP.httpError(targetURI.getLocation(), 'HTTPException', request, false);
+        authRequest = this.authenticate(targetURI);
+        authRequest.defineHandler('RequestSucceeded',
+            function(aResponse) {
+                TP.core.HTTPService.handle(newReq);
+            });
 
-        request.fail(request.at('message'),
-                        request.getFaultCode(),
-                        TP.hc('error', request.at('error'),
-                                'message', request.at('message')));
+        authRequest.defineHandler('RequestFailed',
+            function(aResponse) {
 
-        return request.getResponse();
+                //  If it doesn't authenticate, notify the user and simulate a
+                //  HTTP 401 error and report it / fail it like the TIBET
+                //  low-level HTTP code will.
+
+                TP.alert('Authentication Failed').then(
+                    function() {
+                        request.set('faultCode', 401);
+                        request.set('faultText', 'Unauthorized');
+
+                        TP.httpError(targetURI.getLocation(),
+                                        'HTTPException',
+                                        request,
+                                        false);
+
+                        request.fail(
+                                request.at('message'),
+                                request.getFaultCode(),
+                                TP.hc('error', request.at('error'),
+                                        'message', request.at('message')));
+                    });
+            });
+
+        return authRequest.getResponse();
     }
 
     //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
@@ -858,27 +887,56 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response} The request's response object.
      */
 
-    var request;
+    var request,
+
+        reqParams,
+        newReq,
+
+        authRequest;
 
     request = TP.request(aRequest);
 
     //  Make sure that the connection has been authenticated.
     if (!this.isAuthenticated(targetURI)) {
 
-        //  If its not, simulate a HTTP 401 error and report it / fail it like
-        //  the TIBET low-level HTTP code will.
+        reqParams = TP.copy(request.getParameters());
+        reqParams.atPut('uri', targetURI);
 
-        request.set('faultCode', 401);
-        request.set('faultText', 'Unauthorized');
+        newReq = TP.sig.HTTPDeleteRequest.construct(reqParams);
+        request.andJoinChild(newReq);
 
-        TP.httpError(targetURI.getLocation(), 'HTTPException', request, false);
+        authRequest = this.authenticate(targetURI);
+        authRequest.defineHandler('RequestSucceeded',
+            function(aResponse) {
+                TP.core.HTTPService.handle(newReq);
+            });
 
-        request.fail(request.at('message'),
-                        request.getFaultCode(),
-                        TP.hc('error', request.at('error'),
-                                'message', request.at('message')));
+        authRequest.defineHandler('RequestFailed',
+            function(aResponse) {
 
-        return request.getResponse();
+                //  If it doesn't authenticate, notify the user and simulate a
+                //  HTTP 401 error and report it / fail it like the TIBET
+                //  low-level HTTP code will.
+
+                TP.alert('Authentication Failed').then(
+                    function() {
+                        request.set('faultCode', 401);
+                        request.set('faultText', 'Unauthorized');
+
+                        TP.httpError(targetURI.getLocation(),
+                                        'HTTPException',
+                                        request,
+                                        false);
+
+                        request.fail(
+                                request.at('message'),
+                                request.getFaultCode(),
+                                TP.hc('error', request.at('error'),
+                                        'message', request.at('message')));
+                    });
+            });
+
+        return authRequest.getResponse();
     }
 
     //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
@@ -915,6 +973,12 @@ function(targetURI, aRequest) {
      */
 
     var request,
+
+        reqParams,
+        newReq,
+
+        authRequest,
+
         saveURI;
 
     //  TODO: Only do this if targetURI is pointing to a CouchDB document
@@ -924,20 +988,44 @@ function(targetURI, aRequest) {
     //  Make sure that the connection has been authenticated.
     if (!this.isAuthenticated(targetURI)) {
 
-        //  If its not, simulate a HTTP 401 error and report it / fail it like
-        //  the TIBET low-level HTTP code will.
+        reqParams = TP.copy(request.getParameters());
+        reqParams.atPut('uri', targetURI);
 
-        request.set('faultCode', 401);
-        request.set('faultText', 'Unauthorized');
+        newReq = TP.sig.HTTPSaveRequest.construct(reqParams);
+        request.andJoinChild(newReq);
 
-        TP.httpError(targetURI.getLocation(), 'HTTPException', request, false);
+        authRequest = this.authenticate(targetURI);
+        authRequest.defineHandler('RequestSucceeded',
+            function(aResponse) {
+                TP.core.HTTPService.handle(newReq);
+            });
 
-        request.fail(request.at('message'),
-                        request.getFaultCode(),
-                        TP.hc('error', request.at('error'),
-                                'message', request.at('message')));
+        authRequest.defineHandler('RequestFailed',
+            function(aResponse) {
 
-        return request.getResponse();
+                //  If it doesn't authenticate, notify the user and simulate a
+                //  HTTP 401 error and report it / fail it like the TIBET
+                //  low-level HTTP code will.
+
+                TP.alert('Authentication Failed').then(
+                    function() {
+                        request.set('faultCode', 401);
+                        request.set('faultText', 'Unauthorized');
+
+                        TP.httpError(targetURI.getLocation(),
+                                        'HTTPException',
+                                        request,
+                                        false);
+
+                        request.fail(
+                                request.at('message'),
+                                request.getFaultCode(),
+                                TP.hc('error', request.at('error'),
+                                        'message', request.at('message')));
+                    });
+            });
+
+        return authRequest.getResponse();
     }
 
     saveURI = targetURI;
