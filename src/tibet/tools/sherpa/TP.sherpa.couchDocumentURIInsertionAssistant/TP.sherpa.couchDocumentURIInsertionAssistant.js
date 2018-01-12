@@ -113,6 +113,8 @@ function(anObject) {
         localID,
         localLoc,
 
+        doc,
+
         newLoadServiceElem,
         newSaveServiceElem,
         newSaveButtonElem,
@@ -186,6 +188,8 @@ function(anObject) {
 
     newTPElem.setAttribute('bind:scope', localLoc + '#jpath($)');
 
+    doc = TP.nodeGetDocument(newElem);
+
     newLoadServiceElem =
         TP.elem('<tibet:service' +
                 ' id="' + localID + '_loader"' +
@@ -194,6 +198,7 @@ function(anObject) {
                 ' watched="true"' +
                 ' on:TP.sig.AttachComplete="TP.sig.UIActivate"/>');
     TP.nodeAppendChild(newElem, newLoadServiceElem, false);
+    TP.nodeAppendChild(newElem, doc.createTextNode('\n'), false);
 
     newSaveServiceElem =
         TP.elem('<tibet:service' +
@@ -204,6 +209,7 @@ function(anObject) {
                 ' method="PUT"' +
                 ' mimetype="application/json"/>');
     TP.nodeAppendChild(newElem, newSaveServiceElem, false);
+    TP.nodeAppendChild(newElem, doc.createTextNode('\n'), false);
 
     newSaveButtonElem =
         TP.xhtmlnode(
@@ -214,6 +220,7 @@ function(anObject) {
                 '<xctrls:label>Save Property Sheet</xctrls:label>' +
                 '</xctrls:button>');
     TP.nodeAppendChild(newElem, newSaveButtonElem, false);
+    TP.nodeAppendChild(newElem, doc.createTextNode('\n'), false);
 
     //  ---
 
