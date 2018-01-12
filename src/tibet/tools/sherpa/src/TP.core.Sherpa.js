@@ -1407,7 +1407,17 @@ function(storageSerialization, successFunc, failFunc) {
             }
 
             uri = TP.uc(loc);
-            req = uri.constructRequest();
+            req = uri.constructRequest(
+                    TP.hc('serializationParams',
+                        TP.hc(
+                            'store',
+                                storageSerialization.at('store'),
+                            'lockStore',
+                                storageSerialization.at('lockStore'),
+                            'wantsPrefixedXMLNSAttrs',
+                                storageSerialization.at(
+                                                'wantsPrefixedXMLNSAttrs')
+                        )));
 
             //  Install a success handler if a success Function was supplied.
             if (TP.isCallable(successFunc)) {
