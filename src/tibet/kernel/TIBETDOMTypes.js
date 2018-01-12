@@ -13443,6 +13443,7 @@ function(storageInfo) {
 
                 case 'acl':
                 case 'xml':
+                case 'pclass':
                     continue;
 
                 case 'tibet':
