@@ -948,10 +948,16 @@ function(aTPElem) {
             this.saveElementSerialization(
                     serializationStorage,
                     function() {
-                        var oldElem,
+                        var newElem,
+
+                            oldElem,
                             parentElem,
+
                             newTPElem,
-                            newElem,
+
+                            prevPosition,
+                            oldElemClone,
+                            newElemClone,
 
                             halo;
 
@@ -969,15 +975,37 @@ function(aTPElem) {
 
                             newTPElem = aTPElem.compile(null, true, newElem);
 
-                            //  Tell the main Sherpa object that it should go
-                            //  ahead and process DOM mutations to the source
-                            //  DOM.
-                            TP.bySystemId('Sherpa').set(
-                                'shouldProcessDOMMutations', true);
-
                             newElem = TP.unwrap(newTPElem);
+
+                            prevPosition = oldElem[TP.PREVIOUS_POSITION];
+
+                            oldElemClone = TP.nodeCloneNode(oldElem, false);
+                            oldElemClone[TP.PREVIOUS_POSITION] = prevPosition;
+
+                            newElemClone = TP.nodeCloneNode(newElem, false);
+                            newElemClone[TP.PREVIOUS_POSITION] = prevPosition;
+
+                            this.updateUICanvasSource(
+                                    TP.ac(oldElemClone),
+                                    oldElem.parentNode,
+                                    TP.DELETE,
+                                    null,
+                                    null,
+                                    null,
+                                    false);
+
                             newElem = TP.nodeReplaceChild(
                                         parentElem, newElem, oldElem);
+
+                            this.updateUICanvasSource(
+                                    TP.ac(newElemClone),
+                                    newElem.parentNode,
+                                    TP.CREATE,
+                                    null,
+                                    null,
+                                    null,
+                                    false);
+
                             newTPElem = TP.wrap(newElem);
 
                             halo = TP.byId('SherpaHalo', sherpaDoc);
@@ -995,7 +1023,7 @@ function(aTPElem) {
                                 halo.focusOn(newTPElem);
                             }
                         }
-                    });
+                    }.bind(this));
         }
     }.bind(this);
 
