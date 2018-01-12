@@ -13470,9 +13470,10 @@ function(storageInfo) {
                     //  element is processed) then try to grab the URI and build
                     //  an 'xmlns' attribute.
                     if (!currentNSPrefixes.contains(attrPrefix)) {
-                        currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
 
                         if (wantsPrefixedXMLNSAttrs) {
+
+                            currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
 
                             if (TP.notEmpty(currentNSURI)) {
                                 result.push(' ', 'xmlns:', attrPrefix,
