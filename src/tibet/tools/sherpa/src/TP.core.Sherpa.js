@@ -2614,7 +2614,7 @@ function() {
 
 TP.core.Sherpa.Inst.defineMethod('updateUICanvasSource',
 function(mutatedNodes, mutationAncestor, operation, attributeName,
-         attributeValue, oldAttributeValue) {
+         attributeValue, oldAttributeValue, shouldSignal) {
 
     /**
      * @method updateUICanvasSource
@@ -2627,13 +2627,14 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
      *     mutating Element will already be detached from the DOM.
      * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
      *     TP.DELETE that is currently causing the mutation.
-     * @param {String} attributeName The name of the attribute that is changing
+     * @param {String} [attributeName] The name of the attribute that is changing
      *     (if this is an 'attributes' mutation).
-     * @param {String} attributeValue The value of the attribute that is
+     * @param {String} [attributeValue] The value of the attribute that is
      *     changing (if this is an 'attributes' mutation).
-     * @param {String} oldAttributeValue The prior value of the attribute that
+     * @param {String} [oldAttributeValue] The prior value of the attribute that
      *     is changing (if this is an 'attributes' mutation and the operation is
      *     TP.UPDATE or TP.DELETE).
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @returns {TP.core.sherpa} The receiver.
      */
 
@@ -2696,12 +2697,14 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         return this;
     }
 
-    //  Signal the system to let it know that the UI canvas changed.
-    this.signal('CanvasChanged', TP.hc('targets', mutatedNodes,
-                                        'operation', operation,
-                                        'attrName', attributeName,
-                                        'newValue', attributeValue,
-                                        'prevValue', oldAttributeValue));
+    if (TP.notFalse(shouldSignal)) {
+        //  Signal the system to let it know that the UI canvas changed.
+        this.signal('CanvasChanged', TP.hc('targets', mutatedNodes,
+                                            'operation', operation,
+                                            'attrName', attributeName,
+                                            'newValue', attributeValue,
+                                            'prevValue', oldAttributeValue));
+    }
 
     isAttrChange = TP.notEmpty(attributeName);
 
