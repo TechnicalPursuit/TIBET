@@ -892,7 +892,10 @@ function(aTPElem) {
             tagName,
 
             resourceURI,
+            loc,
+
             serializationStorage,
+            str,
 
             sherpaDoc;
 
@@ -921,17 +924,21 @@ function(aTPElem) {
             //  Get the resource URI that we'll use to store it under.
             resourceURI = tagType.getResourceURI('template');
 
+            loc = resourceURI.getLocation();
+
             //  Create a serialization storage object and populate the root
             //  store location with the resource URI.
-            serializationStorage = TP.hc();
-            serializationStorage.atPut('store', resourceURI.getLocation());
-
-            //  Stamp the 'tibet:tag' attribute on it before it goes out.
-            TP.elementSetAttribute(TP.unwrap(aTPElem),
-                                    'tibet:tag', tagName, true);
+            serializationStorage = TP.hc(
+                                    'store', loc,
+                                    'lockStore', true,
+                                    'wantsPrefixedXMLNSAttrs', false);
 
             //  Run the serialization engine on it.
             aTPElem.serializeForStorage(serializationStorage);
+
+            str = serializationStorage.at('stores').at(loc);
+            str = '<' + tagName + '>\n' + str + '</' + tagName + '>';
+            serializationStorage.at('stores').atPut(loc, str);
 
             //  The document that we were installed into.
             sherpaDoc = this.get('vWin').document;
