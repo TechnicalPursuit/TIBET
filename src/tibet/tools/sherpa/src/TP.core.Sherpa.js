@@ -2794,13 +2794,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         if (TP.nodeIsDetached(mutatedNode)) {
 
-            //  If mutatedNode was detached and the operation is *not*
-            //  TP.DELETE, then we have a problem. Raise an exception and exit.
-            if (operation !== TP.DELETE) {
-                //  TODO: Raise an exception here
-                return this;
-            }
-
             //  If mutatedNode was a Text node that was a desugared text
             //  binding, then we normalize the mutatedElem (which will be the
             //  parent Element node) and grab it's address to use to find the
