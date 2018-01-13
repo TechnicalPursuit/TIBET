@@ -1247,6 +1247,10 @@ function(anElement, flushCaches) {
     //  Grab the 'applied rules' cache on the element.
     ruleArray = anElement[TP.APPLIED_RULES];
 
+    if (TP.notValid(ruleArray)) {
+        return TP.ac();
+    }
+
     //  Make sure that any rules that are associated with stale style sheets get
     //  pruned. NB: We fetch the ruleArray's size *each time* through the loop,
     //  since we could be shortening the Array as we go.
