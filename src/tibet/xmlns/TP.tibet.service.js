@@ -329,6 +329,12 @@ function() {
                 isValid,
                 newResource;
 
+            //  Mark the URI as being loaded, since we marked it as not being so
+            //  above. We need to do this manually to ensure that, if the
+            //  resource came back the same, this flag gets set back to it's
+            //  prior value, which the URI won't do.
+            uri.isLoaded(true);
+
             //  Signal the fact that we've done the work.
             thisref.signal('TP.sig.UIDataReceived');
 
