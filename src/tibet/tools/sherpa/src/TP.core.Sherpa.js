@@ -1021,6 +1021,8 @@ function(aTPElem) {
 
                             newTPElem.defineMethod('stylesheetReady',
                                 function(aStyleTPElem) {
+
+                                    this.callNextMethod();
                                     if (this.haloCanFocus(halo)) {
                                         halo.focusOn(this);
                                     }
