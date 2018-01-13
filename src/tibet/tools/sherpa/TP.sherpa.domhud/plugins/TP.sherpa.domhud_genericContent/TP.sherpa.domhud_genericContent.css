@@ -134,6 +134,8 @@ xctrls|panelbox#DOMInfo_Tabpanelbox xctrls|panel {
 
 div.textcontent_container {
 
+    position: absolute;
+
     top: 0;
     right: 0;
     bottom: 0;
