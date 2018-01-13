@@ -3076,7 +3076,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
                         //  It's just a Text node - we use it and it's contents
                         //  literally.
-                        TP.nodeAppendChild(currentNode,
+                        TP.nodeAppendChild(insertionParent,
                                             newNode,
                                             false);
                     }
