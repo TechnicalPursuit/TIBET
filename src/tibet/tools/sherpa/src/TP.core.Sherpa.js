@@ -1019,9 +1019,12 @@ function(aTPElem) {
                             //  Blur and refocus the halo on the haloTarget.
                             halo.blur();
 
-                            if (newTPElem.haloCanFocus(halo)) {
-                                halo.focusOn(newTPElem);
-                            }
+                            newTPElem.defineMethod('stylesheetReady',
+                                function(aStyleTPElem) {
+                                    if (this.haloCanFocus(halo)) {
+                                        halo.focusOn(this);
+                                    }
+                                });
                         }
                     }.bind(this));
         }
