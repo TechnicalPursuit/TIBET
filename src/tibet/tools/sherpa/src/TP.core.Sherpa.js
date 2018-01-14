@@ -1035,6 +1035,8 @@ function(aTPElem) {
     handler.observe(TP.ANY, 'TypeAdded');
 
     return this;
+}, {
+    patchCallee: false
 });
 
 //  ----------------------------------------------------------------------------
