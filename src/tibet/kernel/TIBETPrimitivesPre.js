@@ -2348,8 +2348,8 @@ TP.functionNeedsCallee = function(aFunction, aName) {
 
     //  Since tokenizing to find out the answer is heavy on startup we want to
     //  help optimize by suggesting that an explicit flag be set.
-    TP.warn('Method ' + aName + ' should use explicit callee value of ' +
-        result);
+    TP.warn('Method ' + aName + ' should use explicit patchCallee value of ' +
+                result);
 
     return result;
 };
