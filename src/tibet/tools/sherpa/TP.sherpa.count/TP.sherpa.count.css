@@ -21,7 +21,7 @@ sherpa|count {
 }
 
 sherpa|count:hover {
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 sherpa|count[pclass|selected] {
@@ -29,7 +29,7 @@ sherpa|count[pclass|selected] {
 }
 
 sherpa|count[pclass|selected]:hover {
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 sherpa|count[nonzero="true"]:hover {

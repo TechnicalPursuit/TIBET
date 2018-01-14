@@ -23,7 +23,7 @@ sherpa|search > .footer {
 
     border-top: 1px solid white;
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|search > .footer > .circle {
@@ -58,7 +58,7 @@ sherpa|search > .footer > .circle {
 
 sherpa|search > .footer > .circle:hover {
 
-    background-color: cornsilk;
+    background-color: gold;
 
     color: #333;
 }
@@ -75,7 +75,7 @@ sherpa|search > .content {
     min-width: 0;
     max-width: none;
 
-    background-color: #eee;
+    background-color: #efefef;
 
     border-bottom: 1px solid #aaa;
 }

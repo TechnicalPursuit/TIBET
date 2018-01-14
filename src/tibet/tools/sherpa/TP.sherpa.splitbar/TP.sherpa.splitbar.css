@@ -8,9 +8,14 @@ sherpa|splitbar {
 
     top: 50%;
     height: 18px;
-    width: 100%;
+    left: 0;
+    right: 0;
+    width: auto;
 
     margin-top: -9px;
+    z-index: 1;
+
+    background: #efefef;
 }
 
 sherpa|splitbar > .handle {
@@ -35,7 +40,7 @@ sherpa|splitbar > .handle {
 }
 
 sherpa|splitbar > .handle:hover {
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 sherpa|splitbar > .bar {
@@ -50,6 +55,6 @@ sherpa|splitbar > .bar {
 
     border-bottom: 1px solid white;
 
-    margin: 0 4px;
+    margin: 0;
 }
 

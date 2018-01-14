@@ -20,6 +20,8 @@ sherpa|dispenser {
     border: 1px solid #666;
     border-bottom: 0;
     border-radius: 5px;
+
+    background: white;
 }
 
 sherpa|dispenseritem {
@@ -43,7 +45,6 @@ sherpa|dispenseritem {
 }
 
 sherpa|dispenseritem:hover {
-
-    background-color: cornsilk;
+    background-color: gold;
 }
 

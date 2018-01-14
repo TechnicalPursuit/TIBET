@@ -128,7 +128,7 @@ sherpa|consoleoutputitem {
     position: relative;
 
     margin-top: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
 }
 
 sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child {
@@ -157,7 +157,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 
 .flex-item {
 
-    background-color: #eee;
+    background-color: #efefef;
 
     border: solid 1px #666;
     border-radius: 5px;
@@ -176,7 +176,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background-color: #eee;
+    background-color: #efefef;
 
     min-width: auto;
 
@@ -337,19 +337,19 @@ sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
 sherpa|consoleoutputitem[class~="trace"] .flex-item,
 sherpa|consoleoutputitem[class~="trace"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|consoleoutputitem[class~="debug"] .flex-item,
 sherpa|consoleoutputitem[class~="debug"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|consoleoutputitem[class~="info"] .flex-item,
 sherpa|consoleoutputitem[class~="info"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|consoleoutputitem[class~="warn"] .flex-item,
@@ -380,25 +380,25 @@ sherpa|consoleoutputitem[class~="system"] .flex-item > .header {
 sherpa|consoleoutputitem[class~="tap-pass"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-pass"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|consoleoutputitem[class~="tap-fail"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-fail"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|consoleoutputitem[class~="tap-comment"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-comment"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 /* Output styles based on log level */
@@ -467,7 +467,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     right: 0;
     height: 8px;
 
-    background-color: #eee;
+    background-color: #efefef;
 
     min-width: auto;
 
@@ -501,7 +501,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
 .flex-item > .content dl > dt:nth-of-type(even) {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 .flex-item > .content dl > dd {
@@ -517,7 +517,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
 .flex-item > .content dl > dd:nth-of-type(even) {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 .flex-item > .content ul {
@@ -541,7 +541,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
 .flex-item > .content ul > li:nth-of-type(even) {
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 .flex-item > .content > .result a {

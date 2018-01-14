@@ -429,10 +429,10 @@ function(aSignal) {
 
     if (!watchIsSelected) {
         this.get('processRemoteChangesCheckbox').setAttrDisabled(true);
-        this.get('lists').first().setAttrDisabled(true);
+        this.get('lists').last().setAttrDisabled(true);
     } else {
         this.get('processRemoteChangesCheckbox').setAttrDisabled(false);
-        this.get('lists').first().setAttrDisabled(processIsSelected);
+        this.get('lists').last().setAttrDisabled(processIsSelected);
     }
 
     return this;

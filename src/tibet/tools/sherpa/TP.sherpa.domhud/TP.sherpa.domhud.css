@@ -5,6 +5,8 @@ sherpa|domhud {
 
     width: 100%;
     height: 100%;
+
+    background: #f9f9f9;
 }
 
 sherpa|domhud > ul {
@@ -98,7 +100,7 @@ sherpa|domhud > ul.content > li.spacer {
 
     background-color: transparent;
 
-    height: 3px;
+    height: 4px;
 
     border: none;
 

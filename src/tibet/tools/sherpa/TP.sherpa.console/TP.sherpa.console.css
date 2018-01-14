@@ -15,14 +15,7 @@ sherpa|console {
     left: 0;
     bottom: 0;
 
-    /* Because we're display: relative, we need use margins for left and
-        right */
-    margin-left: 3px;
-    margin-right: 3px;
-
     z-index: var(--tibet-CONSOLE-INPUT-TIER);
-
-    border-radius: 3px;
 
     text-align: left;
     line-height: 1;
@@ -34,14 +27,11 @@ sherpa|console[pclass|hidden] {
 }
 
 sherpa|console > xctrls|codeeditor {
-
+    background-color: white;
     overflow: hidden;
 }
 
 sherpa|console > xctrls|codeeditor > div {
-
-    top: 3px;
-
     background-color: transparent !important;
 }
 
