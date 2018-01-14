@@ -583,7 +583,7 @@ sherpa|hud:not([pclass|closed]) #center {
 
     position: absolute;
 
-    top: 36px;
+    top: 72px;
     right: 0;
 
     width: 24px;
