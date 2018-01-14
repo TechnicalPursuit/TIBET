@@ -94,9 +94,9 @@ xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem > .close_mark {
 xctrls|panelbox#DOMInfo_Tabpanelbox {
     position: absolute;
     top: 24px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+    right: 0;
+    bottom: 0;
+    left: 0;
 
     border-top: solid 1px #aaa;
 }
