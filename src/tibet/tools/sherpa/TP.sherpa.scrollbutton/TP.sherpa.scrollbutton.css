@@ -13,7 +13,7 @@ sherpa|scrollbutton {
     margin: 0.25em auto;
 
     color: #aaa;
-    background-color: #eee;
+    background-color: #efefef;
 
     border: 1px solid #aaa;
     border-radius: 9px;
@@ -47,7 +47,7 @@ sherpa|scrollbutton[class~="more"] {
 
 sherpa|scrollbutton[class~="more"]:hover {
 
-    background-color: cornsilk;
+    background-color: gold;
 
     border: 1px solid #666;
 }

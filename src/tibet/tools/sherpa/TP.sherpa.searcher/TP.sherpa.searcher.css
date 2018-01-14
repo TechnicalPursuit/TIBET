@@ -21,7 +21,7 @@ sherpa|searcher {
 
     font: 13px/1.231 "arial", "helvetica", "clean", sans-serif;
 
-    background-color: #eee;
+    background-color: #efefef;
 
     line-height: 1.5em;
 
@@ -48,8 +48,8 @@ sherpa|searcher > .scroller > ul > li {
     white-space: nowrap;
 
     border-left: 1px solid white;
-    border-right: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    border-right: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
 
     padding: 0;
 

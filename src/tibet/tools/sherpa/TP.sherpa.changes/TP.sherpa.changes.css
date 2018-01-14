@@ -24,13 +24,12 @@ sherpa|changes > .header {
     height: 30px;
 
     border: 0;
-    border-top: 1px solid white;
     border-top-left-radius: 5px;
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
-sherpa|changes > .header > sherpa|count[name="server"] {
+sherpa|changes > .header > sherpa|count[name="client"] {
 
     position: absolute;
 
@@ -48,7 +47,7 @@ sherpa|changes > .header > sherpa|sync {
     margin-left: -11px;
 }
 
-sherpa|changes > .header > sherpa|count[name="client"] {
+sherpa|changes > .header > sherpa|count[name="server"] {
 
     position: absolute;
 
@@ -69,7 +68,7 @@ sherpa|changes > .content {
     min-width: 0;
     max-width: none;
 
-    background-color: #eee;
+    background-color: white;
 
     border-top: 1px solid #aaa;
 }
@@ -92,6 +91,7 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content .title {
 
     position: absolute;
 
+    left: 0;
     margin-top: 6px;
     margin-left: 20px;
 
@@ -117,14 +117,21 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content #processRemoteChanges {
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton {
-
     position: absolute;
-
     right: 20px;
-
     height: 1.5em;
-
     line-height: 1;
+    border: 0;
+    box-shadow: none;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:focus {
+    background: cornsilk;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:hover {
+    background: gold;
+    text-decoration: underline;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
@@ -140,10 +147,19 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
     height: auto;
 
     min-height: auto;
-
     margin: 0 20px 4px;
 
-    line-height: 1.5em;
+    line-height: 2em;
+    border-radius: 0;
+    border: 0;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem {
+    border-right: 0;
+}
+
+sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem:first-child {
+    border-top: #efefef;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem button {
@@ -153,9 +169,7 @@ sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem button {
 
     right: 5px;
 
-    height: 1.5em;
-
-    font-size: 69%;
+    font-size: 75%;
 
     margin: 0;
     margin-top: 2px;
@@ -163,6 +177,9 @@ sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem button {
     padding-top: 0;
 
     vertical-align: middle;
+
+    border: 0;
+    box-shadow: none;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem:hover button {
@@ -176,8 +193,11 @@ sherpa|changes > .header > .trigger.button {
 
     top: 0;
     left: 0;
-    width: 48px;
+    width: 42px;
     height: 30px;
+
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 
     background-size: 20px;
     background-position: 12px;
@@ -189,9 +209,7 @@ sherpa|changes > .header > .trigger.button {
 }
 
 sherpa|changes > .header > .trigger.button:hover {
-
-    background-color: cornsilk;
-
+    background-color: gold;
     color: #333;
 }
 
@@ -200,7 +218,7 @@ sherpa|changes > .header > .trigger.button:hover {
         background: transparent;
     }
     50% {
-        background: red;
+        background: gold;
     }
     100% {
         background: transparent;

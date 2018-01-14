@@ -23,7 +23,7 @@ sherpa|about > .footer {
 
     border-top: 1px solid white;
 
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 .framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
@@ -60,8 +60,11 @@ sherpa|about > .footer > .trigger.button {
 
     top: 0;
     right: 0;
-    width: 48px;
+    width: 42px;
     height: 30px;
+
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 
     background-size: 24px;
     background-position: 12px;
@@ -73,9 +76,7 @@ sherpa|about > .footer > .trigger.button {
 }
 
 sherpa|about > .footer > .trigger.button:hover {
-
-    background-color: cornsilk;
-
+    background-color: gold;
     color: #333;
 }
 
@@ -91,7 +92,7 @@ sherpa|about > .content {
     min-width: 0;
     max-width: none;
 
-    background-color: #eee;
+    background-color: white;
 
     border-bottom: 1px solid #aaa;
 }

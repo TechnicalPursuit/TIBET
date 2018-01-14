@@ -14,7 +14,7 @@ sherpa|worldthumbnails {
 
     width: 200px;
 
-    background-color: #eee;
+    background-color: #efefef;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -65,7 +65,7 @@ sherpa|worldthumbnails > .content > ul > li {
 
     border-top: 1px solid transparent;
     border-right: 1px solid transparent;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #efefef;
     border-left: 1px solid transparent;
 
     overflow: hidden;

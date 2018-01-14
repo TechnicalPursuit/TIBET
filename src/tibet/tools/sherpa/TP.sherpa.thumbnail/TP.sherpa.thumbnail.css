@@ -28,10 +28,9 @@ sherpa|thumbnail > .header {
     height: 30px;
 
     border: 0;
-    border-top: 1px solid white;
     border-top-left-radius: 5px;
 
-    background-color: #eee;
+    background-color: #efefef;
 
     text-align: left;
 }
@@ -51,7 +50,7 @@ sherpa|thumbnail > .header > .trigger {
     position: absolute;
 
     top: 0;
-    right: 12px;
+    right: 8px;
 
     height: 19px;
     width: 24px;
@@ -67,8 +66,7 @@ sherpa|thumbnail > .header > .trigger {
 }
 
 sherpa|thumbnail > .header > .trigger:hover {
-
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 sherpa|thumbnail > .header > .trigger > .one {
@@ -137,7 +135,7 @@ sherpa|thumbnail > .content {
 
     border-top: 1px solid #aaa;
 
-    background-color: #eee;
+    background-color: white;
 
     display: flex;
     justify-content: center;

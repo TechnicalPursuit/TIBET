@@ -6,6 +6,8 @@ sherpa|respondershud {
 
     width: 100%;
     height: 100%;
+
+    background: #f9f9f9;
 }
 
 sherpa|respondershud > ul {
@@ -39,7 +41,7 @@ sherpa|respondershud > ul.content > li {
 
     padding-left: 0.25em;
 
-    margin: 5px;
+    margin: 6px 5px;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -91,7 +93,7 @@ sherpa|respondershud > ul.content > li[type="controller"] {
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 1em;
 
-    background: #eee;
+    background: #efefef;
     padding: 0;
 }
 

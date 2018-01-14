@@ -37,7 +37,7 @@ sherpa|workbench > .content {
     min-width: 0;
     max-width: none;
     width: 100%;
-    background-color: #eee;
+    background-color: #efefef;
     border-top: 1px solid #fff;
     border-bottom: 1px solid #aaa;
 }
@@ -50,7 +50,7 @@ sherpa|workbench > .footer {
     height: 30px;
     width: auto;
     border-top: 1px solid white;
-    background-color: #eee;
+    background-color: #efefef;
 }
 
 .workbench-nav > button.navigation {
@@ -116,6 +116,7 @@ sherpa|workbench > .footer {
 #snippetMenuTrigger {
     float: right;
     margin-left: 32px;
+    margin-top: 3px;
     width: 24px;
     height: 24px;
     background-size: 18px 18px;
@@ -149,7 +150,7 @@ sherpa|workbench > .footer xctrls|button[class~="build"] {
     float: right;
     width: 24px;
     height: 24px;
-    margin: 4px 2px;
+    margin: 3px 2px;
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
@@ -160,7 +161,7 @@ sherpa|workbench > .footer xctrls|button[class~="test"] {
     float: right;
     width: 24px;
     height: 24px;
-    margin: 4px 2px;
+    margin: 3px 2px;
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
@@ -171,7 +172,7 @@ sherpa|workbench > .footer xctrls|button[class~="deploy"] {
     float: right;
     width: 24px;
     height: 24px;
-    margin: 4px 2px;
+    margin: 3px 2px;
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
@@ -182,6 +183,7 @@ sherpa|workbench > .footer xctrls|buttonitem {
     float: right;
     width: 24px;
     height: 24px;
+    margin-top: 3px;
 }
 
 sherpa|workbench > .footer xctrls|buttonitem > xctrls|label {
