@@ -605,7 +605,7 @@ function(aSignal) {
                         TP.pc(xCoord, targetElemPageRect.getY()));
 
             aTileTPElem.get('footer').setContent(
-                TP.xhtmlnode('<button on:click="{signal: AddSignalHandler, origin: \'RespondersHUD\'}"/>'));
+                TP.xhtmlnode('<button class="inserter" on:click="{signal: AddSignalHandler, origin: \'RespondersHUD\'}"/>'));
 
             contentTPElem = aTileTPElem.setContent(
                 TP.elem('<xctrls:list id="ResponderMethodList"' +

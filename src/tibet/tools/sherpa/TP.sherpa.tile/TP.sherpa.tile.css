@@ -17,7 +17,7 @@ sherpa|tile {
 
     line-height: 1.5em;
 
-    box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 3px 3px rgba(0, 0, 0, 0.2);
 
     z-index: var(--tibet-HUD-TILE-TIER);
 
@@ -184,7 +184,7 @@ sherpa|tile > .footer {
     background: #efefef;
 }
 
-sherpa|tile > .footer > button {
+sherpa|tile > .footer > button.inserter {
 
     display: inline-block;
 

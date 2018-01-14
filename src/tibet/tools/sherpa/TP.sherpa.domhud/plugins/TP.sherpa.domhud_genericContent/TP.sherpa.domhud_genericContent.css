@@ -16,7 +16,7 @@ sherpa|domhud_genericContent .dom_attributes {
     position: absolute;
 
     top: 0;
-    bottom: 26px;
+    bottom: 0;
     right: 0;
     left: 0;
 
@@ -27,7 +27,8 @@ sherpa|domhud_genericContent .dom_attributes {
 
 .dom_attributes input {
 
-    height: 1em;
+    height: 1.25em;
+    line-height: 1.25em;
 
     margin-left: 0;
     margin-bottom: 2px;
@@ -46,26 +47,6 @@ sherpa|domhud_genericContent .dom_attributes {
     left: 11em;
 
     width: calc(100% - 11em - 30px);
-}
-
-.dom_attributes .inserter {
-
-    position: absolute;
-
-    right: 4px;
-    bottom: 3px;
-
-    width: 24px;
-    height: 24px;
-
-    cursor: pointer;
-
-    z-index: 1;
-
-    background-size: 75%;
-    background-position: 100% 100%;
-    background-repeat: no-repeat;
-    background-image: url("../../../media/ic_add_circle_outline_black_24px.svg");
 }
 
 .dom_attributes .deleter {
@@ -88,13 +69,10 @@ sherpa|domhud_genericContent .dom_attributes {
 }
 
 xctrls|tabbar#DOMInfo_Tabbar {
-
     position: absolute;
-
-    top: 4px;
+    top: 5px;
     right: 4px;
     left: 4px;
-
     height: 22px;
 
     /* 250 more than our 'sherpa:drawer' parent */
@@ -102,8 +80,9 @@ xctrls|tabbar#DOMInfo_Tabbar {
 }
 
 xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem {
-    font-size: 77%;
-    padding-bottom: 5px;
+    font-size: 85%;
+    padding-top: 4px;
+    padding-bottom: 4px;
     padding-right: 10px;
 }
 
@@ -113,15 +92,13 @@ xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem > .close_mark {
 }
 
 xctrls|panelbox#DOMInfo_Tabpanelbox {
-
     position: absolute;
-
     top: 24px;
-    right: 4px;
-    bottom: 4px;
-    left: 4px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
 
-    border: solid 1px #aaa;
+    border-top: solid 1px #aaa;
 }
 
 xctrls|panelbox#DOMInfo_Tabpanelbox xctrls|panel {

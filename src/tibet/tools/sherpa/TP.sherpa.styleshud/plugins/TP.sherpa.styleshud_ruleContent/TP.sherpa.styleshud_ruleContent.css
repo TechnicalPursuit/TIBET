@@ -16,7 +16,7 @@ sherpa|styleshud_ruleContent .styles_properties {
     position: absolute;
 
     top: 0;
-    bottom: 26px;
+    bottom: 0;
     right: 0;
     left: 0;
 
@@ -27,10 +27,11 @@ sherpa|styleshud_ruleContent .styles_properties {
 
 .styles_properties input {
 
-    height: 1em;
-
+    height: 1.25em;
+    line-height: 1.25em;
     margin-left: 0;
     margin-bottom: 2px;
+
 }
 
 .styles_properties input.propName {

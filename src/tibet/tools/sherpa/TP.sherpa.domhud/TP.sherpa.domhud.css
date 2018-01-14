@@ -13,9 +13,9 @@ sherpa|domhud > ul {
 
     position: absolute;
 
-    top: 30px;
+    top: 8px;
     right: 0;
-    bottom: 36px;
+    bottom: 42px;
     left: 0;
 
     height: auto;
@@ -36,8 +36,7 @@ sherpa|domhud > ul {
 /* All items */
 
 sherpa|domhud > ul.content > li.item {
-
-    margin: 1px 5px;
+    margin: 1px 8px;
 }
 
 /* DOM node items */
@@ -136,19 +135,22 @@ sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected
  */
 
 #DOMInfo_Tile {
-
     min-width: 300px;
-    min-height: 200px;
+    min-height: 270px;
+}
+
+#DOMInfo_Tile > .header {
+    background: #f9f9f9;
 }
 
 #DOMInfo_Tile > .body {
 }
 
 #DOMInfo_Tile > .header > .minimize_mark {
-
     visibility: hidden;
 }
 
 #DOMInfo_Tile > .footer {
+    background: #f9f9f9;
 }
 

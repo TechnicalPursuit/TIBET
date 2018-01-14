@@ -6,16 +6,16 @@ sherpa|bindshud {
     width: 100%;
     height: 100%;
 
-    background: #f9f9f9;
+    background: white;
 }
 
 sherpa|bindshud > ul {
 
     position: absolute;
 
-    top: 36px;
+    top: 39px;
     right: 0;
-    bottom: 30px;
+    bottom: 8px;
     left: 0;
 
     height: auto;
@@ -37,7 +37,7 @@ sherpa|bindshud > ul {
 
 sherpa|bindshud > ul.content > li.item {
 
-    margin: 1px 5px;
+    margin: 1px 8px;
 }
 
 sherpa|bindshud > ul.content > li.domnode {
@@ -126,16 +126,19 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
 #BindSummary_Tile {
 
     min-width: 300px;
-    min-height: 200px;
+    min-height: 270px;
 }
 
 #BindSummary_Tile > .body {
 
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
-    font-size: 93%;
-
-    background: #efefef;
+    font-size: 100%;
+    background: white;
     padding: 8px;
+}
+
+#BindSummary_Tile > .header {
+    background: #f9f9f9;
 }
 
 #BindSummary_Tile > .header > .minimize_mark {
@@ -144,4 +147,5 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
 }
 
 #BindSummary_Tile > .footer {
+    background: #f9f9f9;
 }

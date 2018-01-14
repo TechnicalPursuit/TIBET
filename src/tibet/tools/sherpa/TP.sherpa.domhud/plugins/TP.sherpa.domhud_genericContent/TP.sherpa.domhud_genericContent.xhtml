@@ -6,7 +6,7 @@
         <![CDATA[
             [
                 ["Attributes","Attributes"],
-                ["Text Content","Text Content"]
+                ["Content","Content"]
             ]
         ]]>
     </tibet:data>
@@ -32,13 +32,12 @@
                             <span class="deleter" on:click="{signal: DeleteItem, origin: 'DOMAttributes_Repeat', payload: {index:TP.TARGET}}"/>
                             <br/>
                         </div>
-                        <div class="inserter" on:click="{signal: InsertItem, origin: 'DOMAttributes_Repeat', payload: {source: 'urn:tibet:dom_attr_data_blank', copy: true}}"></div>
                     </span>
                 </tibet:group>
             </xctrls:content>
         </xctrls:panel>
         <xctrls:panel>
-            <xctrls:value>Text Content</xctrls:value>
+            <xctrls:value>Content</xctrls:value>
             <xctrls:content>
                 <div class="textcontent_container">
                     <textarea id="DOMInfo_Textcontent" bind:io="urn:tibet:domhud_content_source#tibet(info)"/>

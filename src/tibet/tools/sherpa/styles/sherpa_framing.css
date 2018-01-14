@@ -228,13 +228,13 @@ input[type="text"]:not([disabled]):hover,
 input[type="button"]:not([disabled]):hover,
 button:not([disabled]):hover {
 
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 input[type="checkbox"]:not([disabled]):hover,
 input[type="radio"]:not([disabled]):hover {
 
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 input[type="text"]:not([disabled]):focus,
@@ -345,6 +345,10 @@ sherpa|*[class="hud"] > ul.content > li {
  * opener
  * ---------------------------- */
 
+.v-edge .drawer {
+    background-color: #efefef;
+}
+
 .v-edge.west sherpa|opener {
 
     position: absolute;
@@ -395,7 +399,7 @@ sherpa|readout > .content.mouse {
 
 sherpa|readout:hover > .content {
 
-    background-color: cornsilk;
+    background-color: gold;
 }
 
 sherpa|readout:hover > .content.mouse {
@@ -411,6 +415,13 @@ sherpa|readout:hover > .content.keyboard {
 /* -----------------------------*
  * splitbox
  * ---------------------------- */
+
+.v-edge sherpa|splitbox {
+    top: 30px;
+    bottom: 32px;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
 
 /* TEMPORARY FOR DEMO PURPOSES */
 sherpa|splitbox {

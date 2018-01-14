@@ -7,16 +7,16 @@ sherpa|respondershud {
     width: 100%;
     height: 100%;
 
-    background: #f9f9f9;
+    background: white;
 }
 
 sherpa|respondershud > ul {
 
     position: absolute;
 
-    top: 30px;
+    top: 8px;
     right: 0;
-    bottom: 36px;
+    bottom: 42px;
     left: 0;
 
     height: auto;
@@ -41,7 +41,8 @@ sherpa|respondershud > ul.content > li {
 
     padding-left: 0.25em;
 
-    margin: 6px 5px;
+    /* note this top/bottom margin differs from dom/styles since no spacers */
+    margin: 6px 8px;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -50,6 +51,11 @@ sherpa|respondershud > ul.content > li {
     text-overflow: ellipsis;
 
     cursor: pointer;
+}
+
+sherpa|respondershud > ul.content > li:first-child {
+    margin-top: 0;
+
 }
 
 sherpa|respondershud > ul.content > li:hover {
@@ -85,16 +91,20 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 #ResponderSummary_Tile {
 
     min-width: 300px;
-    min-height: 200px;
+    min-height: 270px;
 }
 
 #ResponderSummary_Tile > .body {
 
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
-    font-size: 1em;
+    font-size: 100%;
 
-    background: #efefef;
+    background: white;
     padding: 0;
+}
+
+#ResponderSummary_Tile > .header {
+    background: #f9f9f9;
 }
 
 #ResponderSummary_Tile > .header > .minimize_mark {
@@ -103,6 +113,7 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 }
 
 #ResponderSummary_Tile > .footer {
+    background: #f9f9f9;
 }
 
 #ResponderSummary_Tile > .body > #ResponderMethodList {
@@ -133,8 +144,8 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 
     position: relative;
 
-    height: 1.75em;
-    line-height: 1.75em;
+    height: 2em;
+    line-height: 2em;
 
     transform: none;
 }
@@ -145,8 +156,8 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 #ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem xctrls|label {
 
     display: block;
-    height: 1.75em;
-    line-height: 1.75em;
+    height: 2em;
+    line-height: 2em;
     padding-left: 12px;
 }
 

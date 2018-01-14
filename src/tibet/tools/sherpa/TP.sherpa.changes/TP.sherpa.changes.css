@@ -123,6 +123,7 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton {
     line-height: 1;
     border: 0;
     box-shadow: none;
+    text-decoration: underline;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:focus {
@@ -131,7 +132,6 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:focus {
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:hover {
     background: gold;
-    text-decoration: underline;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {

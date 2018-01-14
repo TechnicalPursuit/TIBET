@@ -751,6 +751,9 @@ function(aSignal) {
                 contentElem = TP.elem('<sherpa:styleshud_ruleContent/>');
 
                 newContentTPElem = aTileTPElem.setContent(contentElem);
+
+                aTileTPElem.get('footer').setContent(TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'styleshud_properties\', payload: {source: \'urn:tibet:style_prop_data_blank\', copy: true}}"></button>'));
+
                 newContentTPElem.awaken();
 
                 //  Grab the current target source.

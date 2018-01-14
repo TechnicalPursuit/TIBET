@@ -13,9 +13,9 @@ sherpa|styleshud > ul {
 
     position: absolute;
 
-    top: 36px;
+    top: 39px;
     right: 0;
-    bottom: 30px;
+    bottom: 8px;
     left: 0;
 
     height: auto;
@@ -37,7 +37,7 @@ sherpa|styleshud > ul {
 
 sherpa|styleshud > ul.content > li.item {
 
-    margin: 1px 5px;
+    margin: 1px 8px;
 }
 
 /* Selector items */
@@ -123,16 +123,20 @@ sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|s
 #StyleSummary_Tile {
 
     min-width: 300px;
-    min-height: 200px;
+    min-height: 270px;
 }
 
 #StyleSummary_Tile > .body {
 
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
-    font-size: 93%;
+    font-size: 100%;
 
-    background: #efefef;
+    background: white;
     padding: 8px;
+}
+
+#StyleSummary_Tile > .header {
+    background: #f9f9f9;
 }
 
 #StyleSummary_Tile > .header > .minimize_mark {
@@ -141,5 +145,6 @@ sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|s
 }
 
 #StyleSummary_Tile > .footer {
+    background: #f9f9f9;
 }
 

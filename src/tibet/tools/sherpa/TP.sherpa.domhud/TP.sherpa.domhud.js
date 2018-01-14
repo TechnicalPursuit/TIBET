@@ -1205,6 +1205,9 @@ function(aSignal) {
 
                 newContentTPElem = aTileTPElem.setContent(
                                     sourceTPElem.sherpaDomHudGetTileContent());
+
+                aTileTPElem.get('footer').setContent(
+                    TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'DOMAttributes_Repeat\', payload: {source: \'urn:tibet:dom_attr_data_blank\', copy: true}}"></button>'));
                 newContentTPElem.awaken();
 
                 //  Set the resource of the model URI to the model object,
@@ -1233,7 +1236,7 @@ function(aSignal) {
     //  with a CodeMirror CSS class to make the styling work.
     TP.bySystemId('Sherpa').showTileAt(
         'DOMInfo_Tile',
-        sourceTPElem.getFullName() + ' Info',
+        'DOM Info - ' + sourceTPElem.getFullName(),
         existedHandler,
         newHandler);
 
