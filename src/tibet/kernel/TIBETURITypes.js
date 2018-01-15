@@ -6726,7 +6726,7 @@ function() {
         //  above. This will ensure that the URL doesn't think it's still dirty
         //  after we've reloaded it per the semantics of this method.
         if (url.isWatched()) {
-            url.isLoaded(false);
+            url.isLoaded(true);
         }
 
         //  Is the changed location one of our loaded package files? If so we
