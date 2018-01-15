@@ -784,7 +784,7 @@ function(aSignal) {
 
                 xCoord = centerTPElemPageRect.getX() +
                             centerTPElemPageRect.getWidth() -
-                            tileWidth;
+                            tileWidth - 2;
                 aTileTPElem.setPagePosition(
                     TP.pc(xCoord, targetElemPageRect.getY()));
 
