@@ -42,8 +42,7 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem,
-        tpElem;
+    var elem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -54,9 +53,7 @@ function(aRequest) {
         return;
     }
 
-    tpElem = TP.wrap(elem);
-
-    tpElem.setup();
+    TP.wrap(elem).setup();
 
     return;
 });
@@ -73,8 +70,7 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem,
-        tpElem;
+    var elem;
 
     //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -82,13 +78,7 @@ function(aRequest) {
         return;
     }
 
-    tpElem = TP.wrap(elem);
-
-    tpElem.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidFocus');
-
-    tpElem.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidBlur');
+    TP.wrap(elem).teardown();
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -287,6 +277,24 @@ function() {
                             'ClosedChange');
 
     this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     * @summary Tears down the receiver by performing housekeeping cleanup, like
+     *     ignoring signals it's observing, etc.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidFocus');
+    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
 
     return this;
 });
