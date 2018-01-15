@@ -28,7 +28,9 @@ xctrls|codeeditor > div {
 }
 
 xctrls|codeeditor .ace_editor {
+
     margin-top: 1px;
+
     font-size: 77%;
 }
 

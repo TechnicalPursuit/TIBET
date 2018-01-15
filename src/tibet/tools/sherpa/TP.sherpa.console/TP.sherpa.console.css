@@ -27,11 +27,17 @@ sherpa|console[pclass|hidden] {
 }
 
 sherpa|console > xctrls|codeeditor {
-    background-color: white;
+
     overflow: hidden;
 }
 
+sherpa|console > xctrls|codeeditor .ace_editor {
+
+    margin-top: 3px;
+}
+
 sherpa|console > xctrls|codeeditor > div {
+
     background-color: transparent !important;
 }
 
