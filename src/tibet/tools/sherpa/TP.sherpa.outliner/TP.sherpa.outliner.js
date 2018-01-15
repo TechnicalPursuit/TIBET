@@ -561,7 +561,7 @@ function(aSignal) {
     //  Remove the containing block CSS class from the drop zone element that
     //  we're hovering over.
     containingBlockElem = this.get('$containingBlockElem');
-    if (TP.isValid(containingBlockElement)) {
+    if (TP.isValid(containingBlockElem)) {
         TP.elementRemoveClass(containingBlockElem, 'sherpa-outliner-containingblock');
         this.set('$containingBlockElem', null);
     }
