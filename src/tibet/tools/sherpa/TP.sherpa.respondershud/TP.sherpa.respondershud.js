@@ -18,6 +18,8 @@ TP.sherpa.hudsidebar.defineSubtype('respondershud');
 
 TP.sherpa.respondershud.Inst.defineAttribute('currentTarget');
 
+TP.sherpa.respondershud.Inst.defineAttribute('highlighted');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -821,6 +823,112 @@ function(updateSelection) {
             }).classed('item', true);
 
     return updateSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('ToggleHighlight',
+function(aSignal) {
+
+    /**
+     * @method ToggleHighlight
+     * @summary Responds to mouse over/out notifications by toggling a
+     *     class on individual peer elements. The result is that as the user
+     *     hovers over elements in the sidebar the corresponding element in
+     *     the canvas gets a 'sherpa-hud-highlight' class add/removed.
+     * @param {TP.sig.ToggleHighlight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var uiDoc,
+
+        oldTarget,
+        target,
+        targetData,
+        targetDocElem,
+        targetElem,
+        peerID,
+
+        hudInjectedStyleElement;
+
+    //  Grab the UI canvas's document
+    uiDoc = TP.sys.uidoc(true);
+
+    //  Grab the highlighted element.
+    oldTarget = this.get('highlighted');
+
+    //  If oldTarget is valid, then we need to clear the highlighted element
+    if (TP.isValid(oldTarget)) {
+
+        //  Clear the oldTarget of the highlight class
+        TP.elementRemoveClass(oldTarget, 'sherpa-hud-highlight');
+        this.$set('highlighted', null, false);
+
+        //  Grab the document element and remove the class that indicates that
+        //  we're highlighting.
+        targetDocElem = uiDoc.documentElement;
+        TP.elementRemoveClass(targetDocElem, 'sherpa-hud-highlighting');
+    }
+
+    //  Grab the new 'DOM target' element, which will be the lozenge that the
+    //  user is highlighting.
+    targetElem = aSignal.getDOMTarget();
+
+    //  If element doesn't have an 'indexInData' it's not something we can use.
+    if (!TP.elementHasAttribute(targetElem, 'indexInData')) {
+        return this;
+    }
+
+    //  The peerID on the lozenge will indicate which element in the UI canvas
+    //  it is representing. If we don't have one, we exit.
+    targetData = this.data.at(TP.elementGetAttribute(targetElem, 'indexInData'));
+    if (TP.isEmpty(targetData)) {
+        return this;
+    }
+
+    peerID = targetData.at(0);
+
+    //  We can't highlight actual types like controllers. We need an ID to an
+    //  element for proper highlighting.
+    if (TP.regex.HAS_PERIOD.test(peerID)) {
+        return this;
+    }
+
+    //  Query the DOM of the UI canvas for the target element.
+    target = TP.byId(peerID, uiDoc, false);
+    if (!TP.isElement(target)) {
+        return this;
+    }
+
+    //  If the target and the old target are the same, then just exit here.
+    if (target === oldTarget) {
+        return this;
+    }
+
+    //  Grab the style sheet that the HUD injected into the UI canvas.
+    hudInjectedStyleElement = TP.byId('hud_injected_generated',
+                                        uiDoc,
+                                        false);
+
+    //  Set the '--sherpa-hud-highlight-color' to a light opacity version of our
+    //  full color.
+    TP.cssElementSetCustomCSSPropertyValue(
+        hudInjectedStyleElement,
+        '.sherpa-hud',
+        '--sherpa-hud-highlight-color',
+        'rgba(134, 175, 155, 0.3)');
+
+    //  Add the highlight class to the target.
+    TP.elementAddClass(target, 'sherpa-hud-highlight');
+    this.$set('highlighted', target, false);
+
+    //  Grab the document element and add the class that indicates that we're
+    //  highlighting.
+    targetDocElem = uiDoc.documentElement;
+    TP.elementAddClass(targetDocElem, 'sherpa-hud-highlighting');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
