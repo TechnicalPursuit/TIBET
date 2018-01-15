@@ -2950,7 +2950,7 @@ TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
 
 /* eslint-disable max-len */
 TP.regex.SPLIT_HANDLER_NAME =
-    /^handle([A-Z0-9$][a-zA-Z0-9_]*?)(Capture)*(From([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
+    /^handle([A-Z0-9$][a-zA-Z0-9_]*?)(Capturing)*(From([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
 /* eslint-enable max-len */
 
 //  ---
