@@ -42,8 +42,43 @@ function() {
      * @returns {TP.xctrls.tooltip} The receiver.
      */
 
+    var cancellingSignalNames;
+
     //  Set up an observation for TP.sig.OpenTooltip and TP.sig.CancelTooltip
     this.observe(TP.ANY, TP.ac(TP.sig.OpenTooltip, TP.sig.CancelTooltip));
+
+    //  Set up a capturing handler that will capture the following signals:
+    cancellingSignalNames =
+        TP.ac(
+            'TP.sig.DOMClick',
+            'TP.sig.DOMDblClick',
+
+            'TP.sig.DOMContextMenu',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+
+            'TP.sig.DOMMouseDown',
+            'TP.sig.DOMMouseUp',
+
+            'TP.sig.DOMMouseWheel',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+            'TP.sig.DOMModifierKeyChange',
+
+            'TP.sig.DOMDragDown',
+            'TP.sig.DOMDragUp'
+        );
+
+    //  Observe those signals.
+    this.observe(
+        TP.ANY,
+        cancellingSignalNames,
+        null,
+        TP.sig.SignalMap.REGISTER_CAPTURING);
 
     return this;
 });
@@ -60,6 +95,28 @@ function() {
      */
 
     return 'XCtrlsTooltip';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.tooltip.Type.defineHandler('DOMUISignal',
+function(aSignal) {
+
+    /**
+     * @method handleDOMUISignal
+     * @summary Handles notifications of a variety of mouse and key signals.
+     * @param {TP.sig.DOMUISignal} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.xctrls.tooltip} The receiver.
+     */
+
+    //  For the cancelling signals that we subscribed to above, clear the
+    //  timeout to avoid showing the tooltip.
+    clearTimeout(this.get('$displayDelayTimer'));
+
+    return this;
+}, {
+    phase: TP.CAPTURING
 });
 
 //  ------------------------------------------------------------------------
