@@ -218,7 +218,13 @@ function(anObject) {
 
     str += '/>';
 
-    targetTPElem = TP.wrap(targetElem);
+    newElem = TP.nodeFromString(str);
+
+    if (!TP.isElement(newElem)) {
+        //  Can't make valid markup from the computed String? Exit here.
+        //  TODO: Raise an exception
+        return this;
+    }
 
     //  If the user has entered a tag that we don't know about, we force the
     //  system to autodefine missing tags here.
@@ -229,9 +235,12 @@ function(anObject) {
     //  mutations to the source DOM.
     TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
-    //  Go ahead and insert the content.
+    //  Go ahead and insert the content. Because we're using the wrapper method
+    //  here, this *will* compile the content into the markup necessary for the
+    //  canvas.
+    targetTPElem = TP.wrap(targetElem);
     newTPElem = targetTPElem.insertContent(
-                        str,
+                        newElem,
                         info.at('insertionPosition'));
 
     //  Put the autodefine setting back to what it was.
