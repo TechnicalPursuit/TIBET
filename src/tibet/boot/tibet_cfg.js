@@ -1434,7 +1434,7 @@
     TP.sys.setcfg('mouse.drag_buttons', ['left']);
 
     //  how far (in pixels) the mouse has to move to start a drag operation
-    TP.sys.setcfg('mouse.drag_distance', 3);
+    TP.sys.setcfg('mouse.drag_distance', 2);
 
     //  how long (in ms) the event system has to wait before triggering drag
     //  events.
