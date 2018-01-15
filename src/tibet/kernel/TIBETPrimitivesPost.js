@@ -6523,20 +6523,18 @@ function(observerID) {
                 'No managed Mutation Observer entry for: ' + observerID);
     }
 
-    //  Make sure that we have a valid native Mutation Observer object.
+    //  Make sure that we have a valid native Mutation Observer object. Note
+    //  that, if the node that the observer was watching is no longer valid, the
+    //  observer will be automatically garbage collected, according to the
+    //  Mutation Observers specification. In that case, we don't worry about it.
     observerObj = registryRecord.at('$observerObj');
-    if (TP.notValid(observerObj)) {
-        return TP.raise(
-                this,
-                'TP.sig.InvalidObject',
-                'No native Mutation Observer object for: ' + observerID);
+    if (TP.isValid(observerObj)) {
+        //  Clean the native Mutation Observers queue. NB: This may cause the
+        //  callback that we installed in TP.activateMutationObserver() above to
+        //  activate.
+        observerObj.takeRecords();
+        observerObj.disconnect();
     }
-
-    //  Clean the native Mutation Observers queue. NB: This may cause the
-    //  callback that we installed in TP.activateMutationObserver() above to
-    //  activate.
-    observerObj.takeRecords();
-    observerObj.disconnect();
 
     //  The target node is of no use to us now - remove it.
     registryRecord.removeKey('targetNode');
