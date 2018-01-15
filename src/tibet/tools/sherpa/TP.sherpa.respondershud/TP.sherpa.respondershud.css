@@ -59,29 +59,25 @@ sherpa|respondershud > ul.content > li:first-child {
 }
 
 sherpa|respondershud > ul.content > li:hover {
-
-    background-color: cornsilk;
-    color: #666;
+    background-color: #c2d7cd;
+    color: black;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected] {
-
-    background-color: gold;
+    background-color: #86AF9B;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected]:hover {
-
-    background-color: gold;
+    background-color: #86AF9B;
 }
 
 sherpa|respondershud > ul.content > li[type="element"] {
 }
 
 sherpa|respondershud > ul.content > li[type="controller"] {
-
-    background-color: antiquewhite;
+    background-color: #e6efeb;
 }
 
 /* We omitted 'sherpa|tile' here because of this bug in stylelint:
@@ -104,7 +100,7 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 }
 
 #ResponderSummary_Tile > .header {
-    background: #f9f9f9;
+    background: #c2d7cd;
 }
 
 #ResponderSummary_Tile > .header > .minimize_mark {

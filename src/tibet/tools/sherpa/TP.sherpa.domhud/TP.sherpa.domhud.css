@@ -6,7 +6,7 @@ sherpa|domhud {
     width: 100%;
     height: 100%;
 
-    background: #f9f9f9;
+    background: white;
 }
 
 sherpa|domhud > ul {
@@ -71,26 +71,23 @@ sherpa|domhud > ul.content > li.domnode[child] {
 }
 
 sherpa|domhud > ul.content > li.domnode[offsetParent] {
-
-    background-color: antiquewhite;
+    background-color: cornsilk;
 }
 
 sherpa|domhud > ul.content > li.domnode:hover {
-
-    background-color: cornsilk;
-    color: #666;
+    background-color: #feeca1;
+    color: black;
 }
 
 sherpa|domhud > ul.content > li.domnode[pclass|selected] {
-
     background-color: gold;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|domhud > ul.content > li.domnode[pclass|selected]:hover {
-
     background-color: gold;
+    color: black;
 }
 
 /* spacer items */
@@ -110,14 +107,13 @@ sherpa|domhud > ul.content > li.spacer {
 }
 
 sherpa|domhud > ul.content > li.spacer.sherpa-domhud-droptarget {
-
-    background-color: red;
+    background-color: gold;
 }
 
 sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget {
-
     font-weight: bold;
-    border: 1px solid red;
+    border: 1px dashed black;
+    box-shadow: 2px 2px 2px #e0e0e0;
 }
 
 sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected] {
@@ -140,7 +136,7 @@ sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected
 }
 
 #DOMInfo_Tile > .header {
-    background: #f9f9f9;
+    background: #feeca1;
 }
 
 #DOMInfo_Tile > .body {

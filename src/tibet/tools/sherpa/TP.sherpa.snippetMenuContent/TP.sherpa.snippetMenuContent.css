@@ -6,10 +6,10 @@ sherpa|snippetMenuContent {
 
     display: block;
 
-    width: 192px;
-    height: 256px;
+    width: 10em;
+    height: 17em;
 
-    background-color: #efefef;
+    background-color: white;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -22,7 +22,7 @@ sherpa|snippetMenuContent > .content {
     position: absolute;
 
     top: 0;
-    bottom: 25px;
+    bottom: 36px;
     right: 0;
     left: 0;
 
@@ -89,7 +89,7 @@ sherpa|snippetMenuContent > .footer {
     left: 0;
     bottom: 0;
 
-    height: 25px;
+    height: 32px;
 
     background-color: #efefef;
 
@@ -105,8 +105,8 @@ sherpa|snippetMenuContent > .footer > sherpa|scrollbutton {
 }
 
 sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="up"] {
-
-    right: 28px;
+    top: 5px;
+    right: 5em;
 }
 
 sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="up"] .icon::after {
@@ -116,8 +116,8 @@ sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="up"] .ico
 }
 
 sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="down"] {
-
-    right: 8px;
+    top: 5px;
+    right: 3em;
 }
 
 sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="down"] .icon::after {

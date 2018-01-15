@@ -902,7 +902,7 @@ function(aSignal) {
             hudInjectedStyleElement,
             '.sherpa-hud',
             '--sherpa-hud-highlight-color',
-            'rgba(170, 204, 221, 0.2)');
+            'rgba(145, 169, 192, 0.3)');
 
         //  Add the highlight class to the target elements.
         highlightedElems.forEach(

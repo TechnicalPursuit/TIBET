@@ -36,12 +36,10 @@ sherpa|bindshud > ul {
 /* All items */
 
 sherpa|bindshud > ul.content > li.item {
-
     margin: 1px 8px;
 }
 
 sherpa|bindshud > ul.content > li.domnode {
-
     height: 1.75em;
     line-height: 1.75em;
 
@@ -65,27 +63,23 @@ sherpa|bindshud > ul.content > li.domnode[pclass|disabled] {
 }
 
 sherpa|bindshud > ul.content > li.domnode:hover {
-
-    background-color: #ffcfca;
-    color: #666;
+    background-color: #dcb6a2;
+    color: black;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected] {
-
-    background-color: #ff9f95;
+    background-color: #C88B6B;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected]:hover {
-
-    background-color: #ff5a49;
+    background-color: #C88B6B;
 }
 
 /* spacer items */
 
 sherpa|bindshud > ul.content > li.spacer {
-
     background-color: transparent;
 
     height: 4px;
@@ -99,23 +93,20 @@ sherpa|bindshud > ul.content > li.spacer {
 }
 
 sherpa|bindshud > ul.content > li.spacer.sherpa-bindshud-droptarget {
-
-    background-color: red;
+    background-color: #C88B6B;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget {
-
     font-weight: bold;
-    border: 1px solid red;
+    border: 1px dashed black ;
+    box-shadow: 2px 2px 2px #e0e0e0;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|selected] {
-
     font-weight: bold;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|selected]:hover {
-
     font-weight: bold;
 }
 
@@ -138,7 +129,7 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
 }
 
 #BindSummary_Tile > .header {
-    background: #f9f9f9;
+    background: #e3c5b5;
 }
 
 #BindSummary_Tile > .header > .minimize_mark {

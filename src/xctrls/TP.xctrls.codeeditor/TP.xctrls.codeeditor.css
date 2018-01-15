@@ -27,6 +27,10 @@ xctrls|codeeditor > div {
     height: 100%;
 }
 
+xctrls|codeeditor .ace_scroller {
+    background: white;
+}
+
 xctrls|codeeditor .ace_editor {
 
     margin-top: 1px;

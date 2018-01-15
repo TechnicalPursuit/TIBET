@@ -67,6 +67,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_position {
     display: flex;
     align-items: center;
     margin-left: 12px;
+    position: relative;
 }
 
 sherpa|tofuInsertionAssistant > .body .insertion_position label {
@@ -80,11 +81,13 @@ sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner {
     align-items: center;
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner li {
     display: flex;
     align-items: center;
+    margin-right: 2em;
 }
 
 sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner li input {
@@ -164,7 +167,7 @@ xctrls|list#tofuInsertionAssistant_TagTypes {
 
 #tofuInsertionAssistant_AttributesTable input {
     height: 1em;
-    width: 10em;
+    width: 9.5em;
     margin-left: 0;
     margin-bottom: 2px;
 }
@@ -186,11 +189,12 @@ sherpa|tofuInsertionAssistant > .body .insertion_details .inserter {
     height: 24px;
     cursor: pointer;
     float: right;
-    margin-right: -4px;
+    margin-right: 0;
+    margin-top: -3px;
     background-size: 75%;
     background-repeat: no-repeat;
-    background-position-x: right;
-    background-position-y: bottom;
+    background-position-x: center;
+    background-position-y: center;
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
@@ -214,7 +218,7 @@ sherpa|tofuInsertionAssistant > .foot #generatedTag {
 
     background-color: cornsilk;
     border: dotted 1px black;
-
+    width: 90%;
     display: inline-block;
     height: 1.5em;
     line-height: 1.5em;

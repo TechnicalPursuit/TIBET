@@ -6,7 +6,7 @@ sherpa|styleshud {
     width: 100%;
     height: 100%;
 
-    background: #f9f9f9;
+    background: white;
 }
 
 sherpa|styleshud > ul {
@@ -61,28 +61,23 @@ sherpa|styleshud > ul.content > li.selector {
 }
 
 sherpa|styleshud > ul.content > li.selector:hover {
-
-    background-color: #d4e5ee;
-    color: #666;
+    background-color: #cdd7e2;
+    color: black;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected] {
-
-    background-color: #acd;
+    background-color: #91A9C0;
     color: black;
-
     border: 1px solid black;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
-
-    background-color: #73abc7;
+    background-color: #91A9C0;
 }
 
 /* spacer items */
 
 sherpa|styleshud > ul.content > li.spacer {
-
     background-color: transparent;
 
     height: 4px;
@@ -96,14 +91,13 @@ sherpa|styleshud > ul.content > li.spacer {
 }
 
 sherpa|styleshud > ul.content > li.spacer.sherpa-styleshud-droptarget {
-
-    background-color: red;
+    background-color: #91A9C0;
 }
 
 sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget {
-
     font-weight: bold;
-    border: 1px solid red;
+    border: 1px dashed black;
+    box-shadow: 2px 2px 2px #e0e0e0;
 }
 
 sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|selected] {
@@ -136,7 +130,7 @@ sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|s
 }
 
 #StyleSummary_Tile > .header {
-    background: #f9f9f9;
+    background: #cdd7e2;
 }
 
 #StyleSummary_Tile > .header > .minimize_mark {

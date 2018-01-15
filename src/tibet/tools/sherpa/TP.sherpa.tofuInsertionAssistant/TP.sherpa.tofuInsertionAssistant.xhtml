@@ -46,15 +46,13 @@
                 <ul>
                     <li id="tofuInsertionAssistant_AttributesTable">
                         <label>Attributes (click + to add):</label>
+                        <button class="inserter" on:click="{signal: InsertItem, origin: 'tofuInsertionAssistant_Attributes', payload: {source: 'urn:tibet:dom_attr_data_blank', copy: true}}"></button>
                         <div id="tofuInsertionAssistant_Attributes" bind:repeat="tagAttrs">
                                 <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
                                 <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
                                 <span class="deleter" on:click="{signal: DeleteItem, origin: 'tofuInsertionAssistant_Attributes', payload: {index:TP.TARGET}}"/>
                             <br/>
                         </div>
-                    </li>
-                    <li>
-                        <div class="inserter" on:click="{signal: InsertItem, origin: 'tofuInsertionAssistant_Attributes', payload: {source: 'urn:tibet:dom_attr_data_blank', copy: true}}"></div>
                     </li>
                 </ul>
             </form>

@@ -15,7 +15,7 @@ sherpa|splitbar {
     margin-top: -9px;
     z-index: 1;
 
-    background: #efefef;
+    background: #f9f9f9;
 }
 
 sherpa|splitbar > .handle {

@@ -50,7 +50,7 @@ tsh|type_assistant > .body .supertype_chooser {
     right: auto;
     bottom: 0;
 
-    width: 192px;
+    width: 20em;
 
     margin: 12px 20px;
 
@@ -65,16 +65,20 @@ xctrls|list#TypeAssistantSupertypes {
     font-weight: normal;
 
     width: 100%;
-    height: 10em;
+    height: 12.8em;
 
     overflow-y: auto;
 
     line-height: 1.5;
+
+    margin-top: 1em;
 }
 
 input#SupertypeFilterField {
-
-    width: 10.65em;
+    width: 19.7em;
+    margin-left: 0;
+    margin-top: 12px;
+    margin-bottom: 0;
 }
 
 tsh|type_assistant > .body .new_type_details {
@@ -82,10 +86,10 @@ tsh|type_assistant > .body .new_type_details {
     position: absolute;
 
     top: 0;
-    left: 200px;
+    left: auto;
     right: 0;
     bottom: 0;
-
+    width: 20em;
     margin: 8px 20px;
 }
 
@@ -131,8 +135,8 @@ tsh|type_assistant > .body .new_type_details .flex_outer > li > label {
 }
 
 tsh|type_assistant > .body .new_type_details .flex_outer > li > label + * {
-
     flex: 1 0 100px;
+    width: 9em;
 }
 
 tsh|type_assistant > .body .new_type_details .top_level_ns {
@@ -140,8 +144,7 @@ tsh|type_assistant > .body .new_type_details .top_level_ns {
 }
 
 tsh|type_assistant > .body .new_type_details .top_level_ns li {
-
-    width: 100px;
+    width: 5em;
 }
 
 tsh|type_assistant > .body ul.dna_radios {

@@ -6,7 +6,7 @@
 
     transform-style: preserve-3d;
 
-    outline: dashed 1px blue;
+    outline: dashed 1px gray;
 
     overflow: visible;
 }
@@ -24,7 +24,7 @@
     transform: translate3d(0, 0, 50px);
     transform-style: preserve-3d;
 
-    outline: dashed 1px red;
+    outline: dashed 1px gray;
 
     background-color: white;
 
@@ -86,15 +86,14 @@
 
     text-align: center;
 
-    color: white;
-
-    background-color: red;
+    color: black;
+    background-color: lightgray;
 }
 
 .sherpa-outliner:not(.sherpa-outliner-haloed)::before,
 .sherpa-outliner:not([class~="sherpa-outliner-haloed"])::before {
 
-    background-color: blue;
+    background-color: lightgray;
 }
 
 /* The following rules selectors both for highlighting the current outliner target itself as the haloed element and highlighting a descendant of the current outliner target as the haloed element. These rules apply both to XHTML (where the . class shorthand can be used) and non-XHTML custom elements */
@@ -103,9 +102,9 @@
 .sherpa-outliner[class~="sherpa-outliner-haloed"],
 .sherpa-outliner .sherpa-outliner-haloed,
 .sherpa-outliner *|*[class~="sherpa-outliner-haloed"] {
-
-    outline-style: solid;
-    outline-color: black;
+    outline-width: 2px;
+    outline-style: dashed;
+    outline-color: gold;
 }
 
 .sherpa-outliner.sherpa-outliner-haloed::before,
@@ -126,7 +125,7 @@
 
     content: "";
 
-    background-image: radial-gradient(circle at center, #acd 5px, transparent 6px), radial-gradient(circle at center, #acd 5px, transparent 6px);
+    background-image: radial-gradient(circle at center, gold 5px, transparent 6px), radial-gradient(circle at center, gold 5px, transparent 6px);
     background-size: 20px 20px;
     background-position: top center, bottom center;
     background-repeat: no-repeat;
@@ -155,6 +154,6 @@
 .sherpa-outliner .sherpa-outliner-droptarget,
 .sherpa-outliner *|*[class~="sherpa-outliner-droptarget"] {
 
-    outline: dashed 2px black;
+    outline: solid 2px black;
 }
 

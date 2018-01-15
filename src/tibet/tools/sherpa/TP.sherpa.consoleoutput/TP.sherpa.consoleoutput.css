@@ -228,15 +228,10 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 }
 
 .flex-item > .header > .typeinfo {
-
     display: inline-block;
-
     float: right;
-
     margin: 0 8px;
-
-    color: darkgoldenrod;
-
+    color: black;
     white-space: pre-wrap;
 }
 
