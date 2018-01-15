@@ -148,10 +148,16 @@ function(aTPElement) {
 
     this.setValue(info);
 
-    //  Halo target is always last in the list, and always considered selected.
-    last = this.get('listitems').last();
-    if (select === true && TP.isValid(last)) {
-        last.setAttribute('pclass:selected', 'true');
+    if (select === true) {
+
+        //  Filter out any spacers...we don't select them.
+        last = this.get('listitems').filter(function(item) {
+            return !TP.elementHasClass(item.getNativeNode(), 'spacer');
+        }).last();
+
+        if (TP.isValid(last)) {
+            last.setAttribute('pclass:selected', 'true');
+        }
     }
 
     //  Scroll our list content to its bottom.
