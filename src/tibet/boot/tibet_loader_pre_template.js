@@ -403,7 +403,7 @@ TP.FAILED = 4;                              //  See TIBETGlobals.js for value.
 TP.NOT_FOUND = -1;                          //  missing data
 TP.BAD_INDEX = -1;                          //  bad array index
 TP.NO_SIZE = -1;                            //  bad object size
-TP.NO_RESULT = Number.NEGATIVE_INFINITY;    //  invalid response
+TP.NO_RESULT = 'NO_RESULT';                 //  invalid response
 
 //  file load return types
 TP.DOM = 1;

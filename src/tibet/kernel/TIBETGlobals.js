@@ -1010,7 +1010,7 @@ TP.INPUT = 1;
 TP.BAD_INDEX = -1;                          //  bad array/hash index
 TP.NOT_FOUND = -1;                          //  missing data
 TP.NO_SIZE = -1;                            //  bad object size
-TP.NO_RESULT = Number.NEGATIVE_INFINITY;    //  invalid response
+TP.NO_RESULT = 'NO_RESULT';                 //  invalid response
 
 //  deleted items flag
 TP.DELETED = '$$DELETED$$';
