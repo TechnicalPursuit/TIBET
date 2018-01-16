@@ -214,30 +214,27 @@ function(enterSelection) {
 
     var domContent,
 
-        currentRuleIndex,
-        indexInData;
+        currentRuleIndex;
 
     domContent = enterSelection.append('li');
 
     currentRuleIndex = this.get('$currentRuleIndex');
-    indexInData = 0;
 
     domContent.attr(
             'pclass:selected',
             function(d, i) {
+                if (d[1] === 'spacer') {
+                    return;
+                }
+
                 if ((i / 2).floor() === currentRuleIndex) {
                     return true;
                 }
             }).attr(
             'indexInData',
-            function(d) {
-                var currentIndex;
-
+            function(d, i) {
                 if (d[1] !== 'spacer') {
-                    currentIndex = indexInData;
-                    indexInData++;
-
-                    return currentIndex;
+                    return i / 2;
                 }
             }).text(
             function(d) {
@@ -346,28 +343,25 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var currentRuleIndex,
-        indexInData;
+    var currentRuleIndex;
 
     currentRuleIndex = this.get('$currentRuleIndex');
-    indexInData = 0;
 
     updateSelection.attr(
             'pclass:selected',
             function(d, i) {
+                if (d[1] === 'spacer') {
+                    return;
+                }
+
                 if ((i / 2).floor() === currentRuleIndex) {
                     return true;
                 }
             }).attr(
             'indexInData',
-            function(d) {
-                var currentIndex;
-
+            function(d, i) {
                 if (d[1] !== 'spacer') {
-                    currentIndex = indexInData;
-                    indexInData++;
-
-                    return currentIndex;
+                    return i / 2;
                 }
             }).text(
             function(d) {
