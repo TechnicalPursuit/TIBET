@@ -1092,7 +1092,9 @@ function(aSignal) {
         hudInjectedStyleElement,
         '.sherpa-hud',
         '--sherpa-hud-highlight-color',
-        'rgba(254, 214, 49, 0.3)');
+        'rgba(254, 214, 49, 0.3)',
+        null,
+        false);
 
     //  Add the highlight class to the target.
     TP.elementAddClass(target, 'sherpa-hud-highlight');
