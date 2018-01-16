@@ -69,7 +69,7 @@ function(targetDoc, cssHref, inlineRuleText) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentAddCSSLinkElement',
-function(targetDoc, linkHref, beforeNode) {
+function(targetDoc, linkHref, beforeNode, shouldSignal) {
 
     /**
      * @method documentAddCSSLinkElement
@@ -80,6 +80,7 @@ function(targetDoc, linkHref, beforeNode) {
      * @param {String} linkHref The href to use on the newly added 'link'
      *     element.
      * @param {Node} beforeNode Optional 'insertion point'.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link element that was added.
      */
@@ -116,13 +117,21 @@ function(targetDoc, linkHref, beforeNode) {
     //  sheet rules asynchronously.
     TP.elementSetAttribute(newLinkElement, 'href', linkHref);
 
+    if (TP.notFalse(shouldSignal)) {
+        //  Signal from the new element that we added.
+        TP.signal(TP.tpdoc(newLinkElement),
+                    'TP.sig.MutationStyleChange',
+                    TP.hc('mutationTarget', TP.wrap(newLinkElement),
+                            'operation', TP.CREATE));
+    }
+
     return newLinkElement;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentAddCSSStyleElement',
-function(targetDoc, styleText, beforeNode) {
+function(targetDoc, styleText, beforeNode, shouldSignal) {
 
     /**
      * @method documentAddCSSStyleElement
@@ -133,6 +142,7 @@ function(targetDoc, styleText, beforeNode) {
      * @param {String} styleText The optional rule text to use in the newly
      *     created style element.
      * @param {Node} beforeNode Optional 'insertion point'.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new style element that was added.
      */
@@ -166,6 +176,14 @@ function(targetDoc, styleText, beforeNode) {
     if (TP.isString(styleText)) {
         //  Set the content of the style element to the new style text.
         TP.cssStyleElementSetContent(newStyleElement, styleText);
+    }
+
+    if (TP.notFalse(shouldSignal)) {
+        //  Signal from the new element that we added.
+        TP.signal(TP.tpdoc(newStyleElement),
+                    'TP.sig.MutationStyleChange',
+                    TP.hc('mutationTarget', TP.wrap(newStyleElement),
+                            'operation', TP.CREATE));
     }
 
     return newStyleElement;
@@ -855,7 +873,7 @@ function(aDocument, flushCaches) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentReloadCSSLinkElementHref',
-function(aDocument, anHref) {
+function(aDocument, anHref, shouldSignal) {
 
     /**
      * @method documentReloadCSSLinkElementHref
@@ -864,6 +882,7 @@ function(aDocument, anHref) {
      * @param {Document} aDocument The document to look for 'link' elements
      *     in.
      * @param {String} anHref The href to try to find to reload.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidString
      */
@@ -877,7 +896,9 @@ function(aDocument, anHref) {
         len,
         i,
 
-        index;
+        index,
+
+        linkElem;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -963,7 +984,16 @@ function(aDocument, anHref) {
     //  it's 'href' to the supplied href, adding a query that will ensure that
     //  any caching is busted and it reloads from the server.
     if (index !== TP.NOT_FOUND) {
-        currentTopLevelLinkElems.at(index).href = TP.uriAddUniqueQuery(oldHref);
+        linkElem = currentTopLevelLinkElems.at(index);
+        linkElem.href = TP.uriAddUniqueQuery(oldHref);
+
+        if (TP.notFalse(shouldSignal)) {
+            //  Signal from the new element that we added.
+            TP.signal(TP.tpdoc(linkElem),
+                        'TP.sig.MutationStyleChange',
+                        TP.hc('mutationTarget', TP.wrap(linkElem),
+                                'operation', TP.UPDATE));
+        }
     }
 
     return;
@@ -1633,7 +1663,8 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('cssElementSetCustomCSSPropertyValue',
-function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex) {
+function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex,
+         shouldSignal) {
 
     /**
      * @method cssElementSetCustomCSSProperty
@@ -1648,8 +1679,9 @@ function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex) {
      *     to.
      * @param {Number} [aRuleIndex=0] The index of the rule to change if there
      *     is more than 1 rule that has the same selector.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidStyleSheet
      * @exception TP.sig.InvalidStyleRule
      */
@@ -1659,7 +1691,10 @@ function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex) {
         styleRules,
 
         index,
-        targetRule;
+        targetRule,
+
+        oldVal,
+        operation;
 
     //  Make sure we were handed a 'link' or 'style' element.
     if (!TP.isElement(anElement) ||
@@ -1669,7 +1704,7 @@ function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex) {
     }
 
     if (TP.isEmpty(selectorText)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Grab the stylesheet associated with the supplied CSS element.
@@ -1695,9 +1730,26 @@ function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex) {
         return TP.raise(this, 'TP.sig.InvalidStyleRule');
     }
 
+    oldVal = targetRule.style.getPropertyValue(aPropertyName);
+
     //  Use the setProperty call to set the custom property on the rule's style
     //  object.
     targetRule.style.setProperty(aPropertyName, aPropertyValue);
+
+    if (TP.notFalse(shouldSignal)) {
+        operation = TP.notEmpty(oldVal) ? TP.UPDATE : TP.CREATE;
+
+        //  Signal from our (wrapped) owner element that we modified a style
+        //  rule.
+        TP.signal(TP.tpdoc(anElement),
+                    'TP.sig.MutationStyleChange',
+                    TP.hc('mutationTarget', TP.wrap(anElement),
+                            'mutatedRule', targetRule,
+                            'mutatedProperty', aPropertyName,
+                            'operation', operation,
+                            TP.OLDVAL, oldVal,
+                            TP.NEWVAL, aPropertyValue));
+    }
 
     return;
 });
@@ -1834,7 +1886,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('cssStyleElementSetContent',
-function(anElement, styleText) {
+function(anElement, styleText, shouldSignal) {
 
     /**
      * @method cssStyleElementSetContent
@@ -1844,6 +1896,7 @@ function(anElement, styleText) {
      * @param {Element} anElement The 'style' element to set the CSS text for.
      * @param {String} styleText The CSS text to use as the rule text for the
      *     style element.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidElement
      */
 
@@ -1863,6 +1916,14 @@ function(anElement, styleText) {
             false);
     } else {
         styleTextNode.nodeValue = styleText;
+    }
+
+    if (TP.notFalse(shouldSignal)) {
+        //  Signal from the new element that we added.
+        TP.signal(TP.tpdoc(anElement),
+                    'TP.sig.MutationStyleChange',
+                    TP.hc('mutationTarget', TP.wrap(anElement),
+                            'operation', TP.UPDATE));
     }
 
     return;
@@ -2254,6 +2315,123 @@ function(aStyleRule) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleRuleSetProperty',
+function(aStyleRule, aPropertyName, aPropertyValue, shouldSignal) {
+
+    /**
+     * @method styleRuleSetProperty
+     * @summary Sets the supplied style property in the supplied rule to the
+     *     supplied style value.
+     * @param {CSSStyleRule} aStyleRule The style rule to set the property in.
+     * @param {String} aPropertyName The CSS property name to set the value of.
+     * @param {String} aPropertyValue The value to set the CSS property to.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
+     * @exception TP.sig.InvalidStyleRule
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var oldVal,
+
+        stylesheet,
+        ownerElem,
+
+        operation;
+
+    if (!TP.isStyleRule(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidStyleRule');
+    }
+
+    if (TP.isEmpty(aPropertyName) || TP.isEmpty(aPropertyValue)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    oldVal = aStyleRule.style.getPropertyValue(aPropertyName);
+
+    aStyleRule.style.setProperty(aPropertyName, aPropertyValue);
+
+    if (TP.notFalse(shouldSignal)) {
+        stylesheet = TP.styleRuleGetStyleSheet(aStyleRule);
+        if (TP.isStyleSheet(stylesheet)) {
+            ownerElem = stylesheet.ownerNode;
+
+            if (TP.isElement(ownerElem)) {
+                operation = TP.notEmpty(oldVal) ? TP.UPDATE : TP.CREATE;
+
+                //  Signal from our (wrapped) owner element that we modified a
+                //  style rule.
+                TP.signal(TP.tpdoc(ownerElem),
+                            'TP.sig.MutationStyleChange',
+                            TP.hc('mutationTarget', TP.wrap(ownerElem),
+                                    'mutatedRule', aStyleRule,
+                                    'mutatedProperty', aPropertyName,
+                                    'operation', operation,
+                                    TP.OLDVAL, oldVal,
+                                    TP.NEWVAL, aPropertyValue));
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('styleRuleRemoveProperty',
+function(aStyleRule, aPropertyName, shouldSignal) {
+
+    /**
+     * @method styleRuleRemoveProperty
+     * @summary Removes the supplied style property from the supplied rule.
+     * @param {CSSStyleRule} aStyleRule The style rule to remove the property
+     *     from.
+     * @param {String} aPropertyName The name of the CSS property to remove.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
+     * @exception TP.sig.InvalidStyleRule
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var oldVal,
+
+        stylesheet,
+        ownerElem;
+
+    if (!TP.isStyleRule(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidStyleRule');
+    }
+
+    if (TP.isEmpty(aPropertyName)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    oldVal = aStyleRule.style.getPropertyValue(aPropertyName);
+
+    aStyleRule.style.removeProperty(aPropertyName);
+
+    if (TP.notFalse(shouldSignal)) {
+        stylesheet = TP.styleRuleGetStyleSheet(aStyleRule);
+        if (TP.isStyleSheet(stylesheet)) {
+            ownerElem = stylesheet.ownerNode;
+
+            if (TP.isElement(ownerElem)) {
+
+                //  Signal from our (wrapped) owner element that we modified a
+                //  style rule.
+                TP.signal(TP.tpdoc(ownerElem),
+                            'TP.sig.MutationStyleChange',
+                            TP.hc('mutationTarget', TP.wrap(ownerElem),
+                                    'mutatedRule', aStyleRule,
+                                    'mutatedProperty', aPropertyName,
+                                    'operation', TP.DELETE,
+                                    TP.OLDVAL, oldVal));
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetGetImportHrefs',
 function(aStylesheet, expandImports) {
 
@@ -2521,6 +2699,8 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
      * @param {String} ruleText The style text of the rule.
      * @param {Number} ruleIndex The index to insert the style rule at. If not
      *     supplied, the rule will be inserted at the end.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidString
      * @returns {Number} The index of the newly created rule within the
@@ -2533,7 +2713,8 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
         newRuleIndex,
 
-        ownerTPElem;
+        rule,
+        ownerElem;
 
     if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -2548,17 +2729,26 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
     newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
 
-    aStylesheet.insertRule(TP.join(selectorText, '{', theRuleText, '}'),
-                            newRuleIndex);
+    newRuleIndex = aStylesheet.insertRule(
+                        TP.join(selectorText, '{', theRuleText, '}'),
+                        newRuleIndex);
 
-    if (TP.isElement(aStylesheet.ownerNode)) {
+    if (TP.notFalse(shouldSignal)) {
+        //  Grab the rule that we're inserting.
+        rule = aStylesheet.cssRules[ruleIndex];
 
-        ownerTPElem = TP.wrap(aStylesheet.ownerNode);
+        ownerElem = aStylesheet.ownerNode;
+        if (TP.isElement(ownerElem)) {
 
-        //  Signal from our (wrapped) owner element that we a style rule.
-        TP.signal(TP.tpdoc(aStylesheet.ownerNode),
-                    'TP.sig.MutationStyleChange',
-                    TP.hc('mutationTarget', ownerTPElem));
+            //  Signal from our (wrapped) owner element that we added a style
+            //  rule.
+            TP.signal(TP.tpdoc(ownerElem),
+                        'TP.sig.MutationStyleChange',
+                        TP.hc('mutationTarget', TP.wrap(ownerElem),
+                                'mutatedRule', rule,
+                                'ruleIndex', newRuleIndex,
+                                'operation', TP.CREATE));
+        }
     }
 
     return newRuleIndex;
@@ -2671,7 +2861,7 @@ function(aStylesheet) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('styleSheetRemoveRule',
-function(aStylesheet, ruleIndex) {
+function(aStylesheet, ruleIndex, shouldSignal) {
 
     /**
      * @method styleSheetRemoveRule
@@ -2681,26 +2871,38 @@ function(aStylesheet, ruleIndex) {
      *     from.
      * @param {Number} ruleIndex The index of the rule within the stylesheet to
      *     remove.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
      * @exception TP.sig.InvalidParameter
      */
 
-    var ownerTPElem;
+    var rule,
+        ownerElem;
 
     if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
+    //  Grab the rule that we're deleting.
+    rule = aStylesheet.cssRules[ruleIndex];
+
     //  The W3C standard is 'deleteRule'.
     aStylesheet.deleteRule(ruleIndex);
 
-    if (TP.isElement(aStylesheet.ownerNode)) {
+    if (TP.notFalse(shouldSignal)) {
 
-        ownerTPElem = TP.wrap(aStylesheet.ownerNode);
+        ownerElem = aStylesheet.ownerNode;
+        if (TP.isElement(ownerElem)) {
 
-        //  Signal from our (wrapped) owner element that we a style rule.
-        TP.signal(TP.tpdoc(aStylesheet.ownerNode),
-                    'TP.sig.MutationStyleChange',
-                    TP.hc('mutationTarget', ownerTPElem));
+            //  Signal from our (wrapped) owner element that we removed a style
+            //  rule.
+            TP.signal(TP.tpdoc(ownerElem),
+                        'TP.sig.MutationStyleChange',
+                        TP.hc('mutationTarget', TP.wrap(ownerElem),
+                                'mutatedRule', rule,
+                                'ruleIndex', ruleIndex,
+                                'operation', TP.DELETE));
+        }
     }
 
     return;
