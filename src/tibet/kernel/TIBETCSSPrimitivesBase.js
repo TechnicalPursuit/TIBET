@@ -2686,7 +2686,7 @@ function(aStylesheet, selectorText) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('styleSheetInsertRule',
-function(aStylesheet, selectorText, ruleText, ruleIndex) {
+function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
 
     /**
      * @method styleSheetInsertRule
