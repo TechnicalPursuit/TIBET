@@ -1297,7 +1297,7 @@ function(insertionPointElement, insertionPosition) {
                 TP.hc(
                     'dialogID', 'CouchDocumentURIAssistantDialog',
                     'isModal', true,
-                    'title', 'Insert New Schema-Driven Property Sheet',
+                    'title', 'Insert Property Sheet',
                     'templateContent', assistantContentTPElem));
 
             //  After the dialog is showing, set the assistant parameters on the
