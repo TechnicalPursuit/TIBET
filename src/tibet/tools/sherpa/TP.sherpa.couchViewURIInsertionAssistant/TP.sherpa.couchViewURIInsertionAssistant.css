@@ -100,8 +100,7 @@ sherpa|couchViewURIInsertionAssistant > .body .insertion_details input:first-chi
 }
 
 sherpa|couchViewURIInsertionAssistant > .body .insertion_details input:checked + label {
-
-    font-weight: bold;
+    font-weight: normal;
 }
 
 #couchViewURIInsertionAssistant_InsertionBreadcrumb {
