@@ -261,7 +261,7 @@ button:not([disabled]):focus {
 
 input[type="checkbox"]:not([disabled]):focus,
 input[type="radio"]:not([disabled]):focus {
-    /*outline: solid 1px gold;*/
+    /* outline: solid 1px gold; */
 }
 
 select {
