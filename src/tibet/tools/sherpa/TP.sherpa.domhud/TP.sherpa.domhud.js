@@ -50,12 +50,6 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.observe(tpElem.get('listcontent'),
-                    TP.ac('TP.sig.DOMDNDTargetOver',
-                            'TP.sig.DOMDNDTargetOut'));
-
-    tpElem.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
-
     //  Grab the west drawer and define a function that, when the drawer
     //  animates back and forth into and out of its collapsed position that, if
     //  a tile is showing, will move the tile to the edge of the drawer.
@@ -563,21 +557,30 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var hud,
-        hudIsHidden,
+    var hudIsClosed,
 
         sourceTPElem;
 
-    //  Grab the HUD and see if it's currently open or closed.
-    hud = TP.byId('SherpaHUD', this.getNativeDocument());
-    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (!hudIsHidden) {
+    if (!hudIsClosed) {
         sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
                                             get('currentTargetTPElem');
         if (TP.notValid(sourceTPElem) || sourceTPElem.isDetached()) {
             this.focusOnUICanvasRoot();
         }
+
+        this.observe(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
+    } else {
+        this.ignore(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
     }
 
     return this;
