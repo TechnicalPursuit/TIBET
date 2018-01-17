@@ -1953,12 +1953,13 @@ function(aStyleRule, allDocumentStyleSheets) {
      *          selector:           The simple selector split out from the whole
      *                              selector.
      *          specificityInfo:    Specificity information about the selector.
-     *                              See the calculateSingleCSSSelectorSpecificity()
+     *                              See the
+     *                              calculateSingleCSSSelectorSpecificity()
      *                              method for more information on the values
      *                              here.
      *          sheetLocation:      The URL location of the stylesheet.
-     *          sheetPosition:      The position of the stylesheet in the list of
-     *                              stylesheets in a document.
+     *          sheetPosition:      The position of the stylesheet in the list
+     *                              of stylesheets in a document.
      *          rulePosition:       The position of the rule in the list of
      *                              rules in its stylesheet.
      *          rule:               The original CSSStyleRule object.
@@ -2531,7 +2532,7 @@ function(aStylesheet) {
     /**
      * @method styleSheetGetLocation
      * @summary Retrieves the location for the supplied stylesheet. Note that
-     *     some stylesheet, like those produced from compiled or processed CSS,
+     *     some stylesheets, like those produced from compiled or processed CSS,
      *     will be associated with an XHTML 'style' element that doesn't have an
      *     'href' pointing back to the source of the sheet. In this case, we
      *     have stamped a TIBETan attribute on it that points back to the
