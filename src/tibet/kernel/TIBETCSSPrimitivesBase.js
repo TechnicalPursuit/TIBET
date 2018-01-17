@@ -2581,7 +2581,8 @@ function(aStylesheet) {
      * @returns {Node} The owner node for the supplied stylesheet
      */
 
-    var node;
+    var node,
+        parentSS;
 
     if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');

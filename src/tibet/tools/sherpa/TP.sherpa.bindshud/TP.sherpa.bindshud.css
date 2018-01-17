@@ -68,13 +68,13 @@ sherpa|bindshud > ul.content > li.domnode:hover {
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected] {
-    background-color: #C88B6B;
+    background-color: #c88b6b;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected]:hover {
-    background-color: #C88B6B;
+    background-color: #c88b6b;
 }
 
 /* spacer items */
@@ -93,12 +93,12 @@ sherpa|bindshud > ul.content > li.spacer {
 }
 
 sherpa|bindshud > ul.content > li.spacer.sherpa-bindshud-droptarget {
-    background-color: #C88B6B;
+    background-color: #c88b6b;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget {
     font-weight: bold;
-    border: 1px dashed black ;
+    border: 1px dashed black;
     box-shadow: 2px 2px 2px #e0e0e0;
 }
 

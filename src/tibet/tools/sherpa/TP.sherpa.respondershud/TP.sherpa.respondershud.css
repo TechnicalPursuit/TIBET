@@ -55,7 +55,6 @@ sherpa|respondershud > ul.content > li {
 
 sherpa|respondershud > ul.content > li:first-child {
     margin-top: 0;
-
 }
 
 sherpa|respondershud > ul.content > li:hover {
@@ -64,13 +63,13 @@ sherpa|respondershud > ul.content > li:hover {
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected] {
-    background-color: #86AF9B;
+    background-color: #86af9b;
     border: 1px solid black;
     color: black;
 }
 
 sherpa|respondershud > ul.content > li[pclass|selected]:hover {
-    background-color: #86AF9B;
+    background-color: #86af9b;
 }
 
 sherpa|respondershud > ul.content > li[type="element"] {

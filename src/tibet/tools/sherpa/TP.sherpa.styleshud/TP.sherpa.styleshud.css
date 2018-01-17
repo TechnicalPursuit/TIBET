@@ -66,13 +66,13 @@ sherpa|styleshud > ul.content > li.selector:hover {
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected] {
-    background-color: #91A9C0;
+    background-color: #91a9c0;
     color: black;
     border: 1px solid black;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
-    background-color: #91A9C0;
+    background-color: #91a9c0;
 }
 
 /* spacer items */
@@ -91,7 +91,7 @@ sherpa|styleshud > ul.content > li.spacer {
 }
 
 sherpa|styleshud > ul.content > li.spacer.sherpa-styleshud-droptarget {
-    background-color: #91A9C0;
+    background-color: #91a9c0;
 }
 
 sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget {
