@@ -1342,7 +1342,7 @@ function(insertionPointElement, insertionPosition) {
                 TP.hc(
                     'dialogID', 'CouchViewURIAssistantDialog',
                     'isModal', true,
-                    'title', 'Insert New Data Table',
+                    'title', 'Insert Data Table',
                     'templateContent', assistantContentTPElem));
 
             //  After the dialog is showing, set the assistant parameters on the

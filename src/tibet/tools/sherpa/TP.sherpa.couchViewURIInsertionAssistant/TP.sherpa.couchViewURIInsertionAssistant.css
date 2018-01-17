@@ -47,8 +47,7 @@ sherpa|couchViewURIInsertionAssistant > .body .insertion_details {
 }
 
 sherpa|couchViewURIInsertionAssistant > .body .insertion_details .flex_outer {
-
-    margin-left: 0;
+    margin: 0;
 }
 
 sherpa|couchViewURIInsertionAssistant > .body .insertion_details .flex_outer li,
@@ -64,16 +63,12 @@ sherpa|couchViewURIInsertionAssistant > .body .insertion_details .flex_outer li,
 }
 
 sherpa|couchViewURIInsertionAssistant > .body .insertion_details .flex_outer > li > label {
-
-    flex: 1 0 150px;
-
-    max-width: 150px;
+    margin: 12px;
 }
 
 sherpa|couchViewURIInsertionAssistant > .body .insertion_details .flex_outer > li > label + *,
 .flex_inner {
-
-    margin: 0;
+    margin: 0 22px 0 12px;
 }
 
 sherpa|couchViewURIInsertionAssistant > .body .insertion_details .flex_inner {
