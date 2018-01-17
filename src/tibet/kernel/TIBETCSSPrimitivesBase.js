@@ -2353,7 +2353,7 @@ function(aStyleRule, aPropertyName, aPropertyValue, shouldSignal) {
     if (TP.notFalse(shouldSignal)) {
         stylesheet = TP.styleRuleGetStyleSheet(aStyleRule);
         if (TP.isStyleSheet(stylesheet)) {
-            ownerElem = stylesheet.ownerNode;
+            ownerElem = TP.styleSheetGetOwnerNode(stylesheet);
 
             if (TP.isElement(ownerElem)) {
                 operation = TP.notEmpty(oldVal) ? TP.UPDATE : TP.CREATE;
@@ -2411,7 +2411,7 @@ function(aStyleRule, aPropertyName, shouldSignal) {
     if (TP.notFalse(shouldSignal)) {
         stylesheet = TP.styleRuleGetStyleSheet(aStyleRule);
         if (TP.isStyleSheet(stylesheet)) {
-            ownerElem = stylesheet.ownerNode;
+            ownerElem = TP.styleSheetGetOwnerNode(stylesheet);
 
             if (TP.isElement(ownerElem)) {
 
@@ -2543,7 +2543,8 @@ function(aStylesheet) {
      * @returns {String} The location URL of the source of the stylesheet.
      */
 
-    var loc;
+    var loc,
+        ownerElem;
 
     if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -2557,9 +2558,48 @@ function(aStylesheet) {
 
     //  Otherwise, if we can get to the stylesheet's owner node, return whatever
     //  is stored in 'tibet:originalHref'.
-    if (TP.isElement(aStylesheet.ownerNode)) {
-        return TP.elementGetAttribute(
-                    aStylesheet.ownerNode, 'tibet:originalHref', true);
+    ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
+    if (TP.isElement(ownerElem)) {
+        return TP.elementGetAttribute(ownerElem, 'tibet:originalHref', true);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('styleSheetGetOwnerNode',
+function(aStylesheet) {
+
+    /**
+     * @method styleSheetGetOwnerNode
+     * @summary Returns the 'owning node' (i.e. Element)  for the supplied
+     *     stylesheet.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     owner node of.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Node} The owner node for the supplied stylesheet
+     */
+
+    var node;
+
+    if (!TP.isStyleSheet(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  If there is an 'ownerNode', use it.
+    node = aStylesheet.ownerNode;
+    if (TP.isNode(node)) {
+        return node;
+    }
+
+    parentSS = aStylesheet.parentStyleSheet;
+    while (!TP.isNode(parentSS.ownerNode)) {
+        parentSS = parentSS.parentStyleSheet;
+    }
+
+    if (TP.isNode(parentSS.ownerNode)) {
+        return parentSS.ownerNode;
     }
 
     return null;
@@ -2738,7 +2778,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
         //  Grab the rule that we're inserting.
         rule = aStylesheet.cssRules[ruleIndex];
 
-        ownerElem = aStylesheet.ownerNode;
+        ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
         if (TP.isElement(ownerElem)) {
 
             //  Signal from our (wrapped) owner element that we added a style
@@ -2892,7 +2932,7 @@ function(aStylesheet, ruleIndex, shouldSignal) {
 
     if (TP.notFalse(shouldSignal)) {
 
-        ownerElem = aStylesheet.ownerNode;
+        ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
         if (TP.isElement(ownerElem)) {
 
             //  Signal from our (wrapped) owner element that we removed a style
