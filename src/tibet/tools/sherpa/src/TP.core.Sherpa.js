@@ -244,12 +244,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('finishSetup',
-function() {
+function(finalizationFunc) {
 
     /**
      * @method finishSetup
      * @summary Finishes the Sherpa setup process by setting up all of the
      *     Sherpa's tools and configuring its drawers.
+     * @param {Function} finalizationFunc The Function to execute when the setup
+     *     is truly finished.
      * @returns {TP.core.Sherpa} The receiver.
      */
 
@@ -336,6 +338,11 @@ function() {
             worldTPElem.get('selectedScreen').getContentWindow());
 
         thisref.set('setupComplete', true);
+
+        //  If a finalization Function was supplied, execute it.
+        if (TP.isCallable(finalizationFunc)) {
+            finalizationFunc();
+        }
 
     }, TP.sys.cfg('sherpa.setup.delay', 250));
 
@@ -1548,14 +1555,10 @@ function() {
                 //  the setup here (after the drawers animate in). Note that
                 //  this will exit but want to service part of its code after
                 //  a short delay.
-                thisref.finishSetup();
-
-                //  Complete the setup after a final delay - we want to
-                //  schedule this *after* the finishSetup().
-                setTimeout(function() {
-                    TP.byId('SherpaHUD', win).toggle('closed');
-                    thisref.sherpaSetupComplete();
-                }, 250);
+                thisref.finishSetup(
+                        function() {
+                            thisref.sherpaSetupComplete();
+                        });
 
             }, 1000);
 
@@ -2578,8 +2581,9 @@ function() {
         //  After the drawers have finished animating in, delay, giving the
         //  animation a chance to finish cleanly before proceeding.
         setTimeout(function() {
+            TP.byId('SherpaHUD', viewWin).toggle('closed');
             thisref.signal('SherpaReady');
-        }, 1000);
+        }, 1500);
     };
     hudCompletelyOpenFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
