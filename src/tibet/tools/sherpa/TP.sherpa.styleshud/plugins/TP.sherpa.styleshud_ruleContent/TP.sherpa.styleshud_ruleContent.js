@@ -298,7 +298,7 @@ function(aSignal) {
             //  If we got one, remove the attribute at that position.
             if (TP.notEmpty(oldPropName)) {
                 try {
-                    rule.style.removeProperty(oldPropName);
+                    TP.styleRuleRemoveProperty(rule, oldPropName);
                 } catch (e) {
                     TP.ifError() ?
                         TP.error('Error removing old CSS property: ' +
@@ -311,7 +311,7 @@ function(aSignal) {
             allPropNames.replace(oldPropName, name);
 
             try {
-                rule.style.setProperty(name, value);
+                TP.styleRuleSetProperty(rule, name, value);
             } catch (e) {
                 TP.ifError() ?
                     TP.error('Error setting CSS property: ' + name) : 0;
@@ -326,7 +326,7 @@ function(aSignal) {
             }
 
             try {
-                rule.style.setProperty(name, value);
+                TP.styleRuleSetProperty(rule, name, value);
             } catch (e) {
                 TP.ifError() ?
                     TP.error('Error setting CSS property: ' + name) : 0;
@@ -346,7 +346,7 @@ function(aSignal) {
                 allPropNames.remove(name);
 
                 try {
-                    rule.style.removeProperty(name);
+                    TP.styleRuleRemoveProperty(rule, name);
                 } catch (e) {
                     TP.ifError() ?
                         TP.error('Error removing CSS property: ' + name) : 0;
