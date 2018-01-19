@@ -172,17 +172,19 @@ xctrls|list#TSHCompleterList {
 
     position: absolute !important;
 
-    bottom: 75px;
-    left: 220px;
+    bottom: 78px;
+    left: 280px;
 
-    width: 30em;
-    height: 10em;
+    width: 23em;
+    height: 15em;
 
     max-height: initial;
 
     line-height: 1.5em;
 
-    border: none;
+    border: 1px solid #999;
+    border-radius: 0;
+    box-shadow: 2px 2px 1px rgba(128, 128, 128, 0.3);
 
     overflow-y: auto;
 
@@ -193,9 +195,11 @@ xctrls|list#TSHCompleterList {
             & > xctrls|label {
 
                 font-family: "Inconsolata";
+                letter-spacing: 3px;
+                color: #666;
 
                 & span.match_result {
-
+                    color: black;
                     font-weight: bold;
                 }
             }
