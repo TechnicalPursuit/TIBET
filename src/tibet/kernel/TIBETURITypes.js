@@ -6713,7 +6713,8 @@ function() {
     callback = function(result) {
 
         var url,
-            resourceHash;
+            resourceHash,
+            pkgcfg;
 
         if (TP.isError(result)) {
             TP.error(result);
@@ -6736,9 +6737,10 @@ function() {
             //  Import any new scripts that would have booted with the system.
             //  NOTE we pass 'true' to the shouldSignal flag here to tell this
             //  particular import we want scripts to signal Change on load.
-            TP.sys.importPackage(TP.boot.$$bootfile,
-                                    TP.boot.$$bootconfig,
-                                    true);
+            pkgcfg = TP.isEmpty(TP.boot.$$bootconfig) ?
+                TP.boot.$$bootfile :
+                TP.boot.$$bootfile + '@' + TP.boot.$$bootconfig;
+            TP.sys.importPackage(pkgcfg, true);
         }
 
         //  Trigger post-processing for specific URIs.

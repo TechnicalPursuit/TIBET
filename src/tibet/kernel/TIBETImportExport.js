@@ -9,16 +9,14 @@
 //  ========================================================================
 
 TP.sys.defineMethod('getAllScriptPaths',
-function(packageName, configName) {
+function(packageConfig) {
 
     /**
      * @method getAllScriptPaths
      * @summary Returns all script paths found in the supplied package and
      *     config.
-     * @param {String} packageName The package name to locate and list script
-     *     paths from.
-     * @param {String} configName The config to load. Default is whatever is
-     *     listed as the default for that package (usually base).
+     * @param {String} packageConfig The package name to locate and import along
+     *     with an optional [@config] section. For example 'hello@base'.
      * @returns {String[]} An Array of script paths in the supplied package and
      *     config.
      */
@@ -31,15 +29,23 @@ function(packageName, configName) {
 
         uri,
 
+        packageParts,
+        packageName,
+        configName,
+
         packageAssets,
         packageScriptPaths,
 
         phaseOne,
         phaseTwo;
 
+    //  Process the incoming package@config value.
+    packageParts = packageConfig.split('@');
+    packageName = packageParts.first();
+    configName = packageParts.last();
+
     //  Default the packageName and configName to what can be extracted from the
     //  packaging profile.
-
     packageProfile = TP.sys.cfg('project.packaging.profile', 'main@base');
     packageProfileParts = packageProfile.split('@');
 
@@ -102,22 +108,24 @@ function(packageName, configName) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getAllPackagePaths',
-function(packageName, configName) {
+function(packageConfig) {
 
     /**
      * @method getAllPackagePaths
      * @summary Returns all package paths found in the supplied package and
      *     config.
-     * @param {String} packageName The package name to locate and list package
-     *     paths from.
-     * @param {String} configName The config to load. Default is whatever is
-     *     listed as the default for that package (usually base).
+     * @param {String} packageConfig The package name to locate and import along
+     *     with an optional [@config] section. For example 'hello@base'.
      * @returns {String[]} An Array of package paths in the supplied package and
      *     config.
      */
 
     var packageProfile,
         packageProfileParts,
+
+        packageParts,
+        packageName,
+        configName,
 
         pkgName,
         cfgName,
@@ -130,9 +138,13 @@ function(packageName, configName) {
         phaseOne,
         phaseTwo;
 
+    //  Process the incoming package@config value.
+    packageParts = packageConfig.split('@');
+    packageName = packageParts.first();
+    configName = packageParts.last();
+
     //  Default the packageName and configName to what can be extracted from the
     //  packaging profile.
-
     packageProfile = TP.sys.cfg('project.packaging.profile', 'main@base');
     packageProfileParts = packageProfile.split('@');
 
@@ -355,10 +367,10 @@ function() {
                         packageEntries.at(i)[TP.LOAD_PACKAGE] &&
                     entry[TP.LOAD_CONFIG] ===
                         packageEntries.at(i)[TP.LOAD_CONFIG])
-                /* eslint-enable brace-style */
                 {
                     return;
                 }
+                /* eslint-enable brace-style */
             }
 
             extraSourcePaths.push(entry[TP.SOURCE_PATH]);
@@ -389,7 +401,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getMissingPackagingInfo',
-function(packageName, configName) {
+function(packageConfig) {
 
     /**
      * @method getMissingPackagingInfo
@@ -401,11 +413,8 @@ function(packageName, configName) {
      * @description This method requires the 'oo.$$track_invocation' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it returns an empty hash.
-     * @param {String} packageName The package name to locate and use package
-     *     and script paths from for comparison against what the runtime knows
-     *     it needs.
-     * @param {String} configName The config to load. Default is whatever is
-     *     listed as the default for that package (usually base).
+     * @param {String} packageConfig The package name to locate and import along
+     *     with an optional [@config] section. For example 'hello@base'.
      * @returns {TP.core.Hash} A hash of two Arrays of paths to code used by the
      *     system - one for packages and one for 'extra' source files outside of
      *     those packages - but are missing from the supplied package/config
@@ -442,7 +451,7 @@ function(packageName, configName) {
 
     //  Grab all of the script paths in the named packages and configs. This
     //  will be all of the paths that are contained in that package and config.
-    configScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
+    configScriptPaths = TP.sys.getAllScriptPaths(packageConfig);
 
     //  Difference the config script paths against our master list of expanded
     //  paths. This will produce a list of paths that the system knows about
@@ -481,7 +490,7 @@ function(packageName, configName) {
 
     //  We obtain all reachable package paths from the named packages and
     //  configs.
-    allPackagePaths = TP.sys.getAllPackagePaths(packageName, configName);
+    allPackagePaths = TP.sys.getAllPackagePaths(packageConfig);
 
     //  Difference all package paths against our list of used package paths.
     //  This will produce a list of paths that the system knows about
@@ -531,16 +540,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importPackage',
-function(packageName, configName, shouldSignal) {
+function(packageConfig, shouldSignal) {
 
     /**
      * @method importPackage
      * @summary Imports a specific package/config file's script resources. Note
      *     that when dealing with rollups this also includes the package's
      *     rolled up resources in the form of TP.uc() content.
-     * @param {String} packageName The package name to locate and import.
-     * @param {String} configName The config to load. Default is whatever is
-     *     listed as the default for that package (usually base).
+     * @param {String} packageConfig The package name to locate and import along
+     *     with an optional [@config] section. For example 'hello@base'.
      * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
      *     they've completed their import process?
      * @returns {Promise} A promise which resolved based on success.
@@ -552,7 +560,7 @@ function(packageName, configName, shouldSignal) {
 
         promises;
 
-    packageScriptPaths = TP.sys.getAllScriptPaths(packageName, configName);
+    packageScriptPaths = TP.sys.getAllScriptPaths(packageConfig);
     if (TP.isNull(packageScriptPaths)) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is. Trigger a failure.

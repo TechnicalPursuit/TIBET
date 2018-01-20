@@ -88,13 +88,10 @@ function(aRequest) {
         profile = TP.sys.cfg('boot.profile', 'main@base');
     }
 
-    profileParts = profile.split('@');
-
     //  If we're looking for unlisted paths, then we have to ask the system for
     //  script paths that belong to methods that were actually invoked.
     if (unlisted) {
-        results = TP.sys.getMissingPackagingInfo(
-                                profileParts.first(), profileParts.last());
+        results = TP.sys.getMissingPackagingInfo(profile);
 
         packagePaths = results.at('packagePaths');
         scriptPaths = results.at('scriptPaths');
@@ -185,6 +182,8 @@ function(aRequest) {
     } else {
 
         //  Otherwise, we just list the package assets
+
+        profileParts = profile.split('@');
 
         uri = TP.uriExpandPath(profileParts.first());
         if (!TP.isURIString(uri)) {
