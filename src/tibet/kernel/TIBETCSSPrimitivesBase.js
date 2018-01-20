@@ -2211,8 +2211,9 @@ function(aStyleRule, sourceASTs) {
             continue;
         }
 
-        //  We skip comments
-        if (rule.type === 'comment') {
+        //  We skip comments and charsets (charsets are skipped by the native
+        //  browser machinery per the spec).
+        if (rule.type === 'comment' || rule.type === 'charset') {
             continue;
         }
 
