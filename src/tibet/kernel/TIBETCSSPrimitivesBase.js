@@ -1446,11 +1446,16 @@ function(anElement) {
 
     //  Try to obtain the style element and its sheet - if its not
     //  available, create one and grab its sheet
-    if (!TP.isElement(styleElem =
-                        TP.nodeGetElementById(TP.nodeGetDocument(anElement),
-                                                'pseudo_inline_rules'))) {
-        if (!TP.isElement(styleElem =
-                TP.documentAddCSSStyleElement(TP.nodeGetDocument(anElement)))) {
+    styleElem = TP.nodeGetElementById(TP.nodeGetDocument(anElement),
+                                                'pseudo_inline_rules');
+    if (!TP.isElement(styleElem)) {
+        //  Note here how we pass 'false' as the final parameter to avoid having
+        //  this call signal and possibly cause a recursion.
+        styleElem = TP.documentAddCSSStyleElement(TP.nodeGetDocument(anElement),
+                                                    null,
+                                                    null,
+                                                    false);
+        if (!TP.isElement(styleElem)) {
             //  TODO: Raise an exception and return
             void 0;
         }
@@ -1742,7 +1747,7 @@ function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex,
         //  Signal from our (wrapped) owner element that we modified a style
         //  rule.
         TP.signal(TP.tpdoc(anElement),
-                    'TP.sig.MutationStyleChange',
+                    'TP.sig.MutationStylePropertyChange',
                     TP.hc('mutationTarget', TP.wrap(anElement),
                             'mutatedRule', targetRule,
                             'mutatedProperty', aPropertyName,
@@ -2206,8 +2211,9 @@ function(aStyleRule, sourceASTs) {
             continue;
         }
 
-        //  We skip comments
-        if (rule.type === 'comment') {
+        //  We skip comments and charsets (charsets are skipped by the native
+        //  browser machinery per the spec).
+        if (rule.type === 'comment' || rule.type === 'charset') {
             continue;
         }
 
@@ -2361,7 +2367,7 @@ function(aStyleRule, aPropertyName, aPropertyValue, shouldSignal) {
                 //  Signal from our (wrapped) owner element that we modified a
                 //  style rule.
                 TP.signal(TP.tpdoc(ownerElem),
-                            'TP.sig.MutationStyleChange',
+                            'TP.sig.MutationStylePropertyChange',
                             TP.hc('mutationTarget', TP.wrap(ownerElem),
                                     'mutatedRule', aStyleRule,
                                     'mutatedProperty', aPropertyName,
@@ -2418,7 +2424,7 @@ function(aStyleRule, aPropertyName, shouldSignal) {
                 //  Signal from our (wrapped) owner element that we modified a
                 //  style rule.
                 TP.signal(TP.tpdoc(ownerElem),
-                            'TP.sig.MutationStyleChange',
+                            'TP.sig.MutationStylePropertyChange',
                             TP.hc('mutationTarget', TP.wrap(ownerElem),
                                     'mutatedRule', aStyleRule,
                                     'mutatedProperty', aPropertyName,
@@ -2785,7 +2791,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
             //  Signal from our (wrapped) owner element that we added a style
             //  rule.
             TP.signal(TP.tpdoc(ownerElem),
-                        'TP.sig.MutationStyleChange',
+                        'TP.sig.MutationStyleRuleChange',
                         TP.hc('mutationTarget', TP.wrap(ownerElem),
                                 'mutatedRule', rule,
                                 'ruleIndex', newRuleIndex,
@@ -2939,7 +2945,7 @@ function(aStylesheet, ruleIndex, shouldSignal) {
             //  Signal from our (wrapped) owner element that we removed a style
             //  rule.
             TP.signal(TP.tpdoc(ownerElem),
-                        'TP.sig.MutationStyleChange',
+                        'TP.sig.MutationStyleRuleChange',
                         TP.hc('mutationTarget', TP.wrap(ownerElem),
                                 'mutatedRule', rule,
                                 'ruleIndex', ruleIndex,
