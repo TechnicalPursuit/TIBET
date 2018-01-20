@@ -157,6 +157,8 @@
             });
 
             transports.push(consoleTransport);
+
+            TDS.hasConsole(true);
         }
 
         //  If file is listed, or there are no transports defined, then log to

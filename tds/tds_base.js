@@ -148,6 +148,12 @@
     TDS.crypto = crypto;
 
     /**
+     * A flag for whether this instance has a console level logger.
+     * @type {Boolean}
+     */
+    TDS.$$hasConsole = null;
+
+    /**
      * List of logging levels keyed by logging constant string. Used to look up
      * logging level value for output.
      * @type {Object}
@@ -355,6 +361,8 @@
             v4NodeIPs,
             host,
 
+            msg,
+
             builddir,
             artifacts;
 
@@ -384,32 +392,49 @@
             if (sh.test('-d', builddir)) {
                 artifacts = sh.ls(builddir);
                 if (artifacts.length) {
-                    logger.system(project +
+                    msg = project +
                         TDS.colorize(' @ ', 'dim') +
                         TDS.colorize(protocol + '://' + host +
                             (port === 80 ? '' : ':' + port), 'host') +
-                        TDS.colorize(' (production build)', 'dim'),
+                        TDS.colorize(' (production build)', 'dim');
+
+                    logger.system(msg,
                         {comp: 'TDS', type: 'tds', name: 'build'});
+
+                    if (!TDS.hasConsole()) {
+                        process.stdout.write(msg);
+                    }
                 }
             }
         } else if (TDS.getcfg('sherpa.enabled')) {
             //  And a sherpa-enabled link for those who want to run the sherpa.
-            logger.system(project +
+            msg = project +
                 TDS.colorize(' @ ', 'dim') +
                 TDS.colorize(protocol + '://' + host +
                     (port === 80 ? '' : ':' + port +
                      '#?boot.profile=development@developer'),
-                    'host'),
+                    'host');
+            logger.system(msg,
                 {comp: 'TDS', type: 'tds', name: 'sherpa'});
+
+            if (!TDS.hasConsole()) {
+                process.stdout.write(msg);
+            }
         } else {
             //  Output a development link for non-sherpa operation ala the basic
             //  quickstart/essentials guide approach to development.
-            logger.system(project +
+            msg = project +
                 TDS.colorize(' @ ', 'dim') +
                 TDS.colorize(protocol + '://' + host +
                     (port === 80 ? '' : ':' + port +
-                     '#?boot.profile=development'), 'host'),
+                     '#?boot.profile=development'), 'host');
+
+            logger.system(msg,
                 {comp: 'TDS', type: 'tds', name: 'dev'});
+
+            if (!TDS.hasConsole()) {
+                process.stdout.write(msg);
+            }
         }
     };
 
@@ -748,6 +773,20 @@
         this.initPackage();
 
         return TDS._package.getVirtualPath(aPath);
+    };
+
+    /**
+     * Combined setter/getter for whether the current server instance has a
+     * console logger. This helps the TDS decide how to log certain startup
+     * messages such as the host:port announcement as well as the shutdown
+     * message if a clean shutdown is requested.
+     */
+    TDS.hasConsole = function(aFlag) {
+        if (aFlag !== undefined) {
+            TDS.$$hasConsole = !!aFlag;
+        }
+
+        return TDS.$$hasConsole;
     };
 
     /**
@@ -1196,6 +1235,10 @@
             code;
 
         TDS.logger.system('shutting down TDS middleware', meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(
+                TDS.colorize('shutting down TDS middleware', 'error'));
+        }
 
         code = err ? 1 : 0;
 
@@ -1206,10 +1249,17 @@
             } catch (e) {
                 code = 1;
                 TDS.logger.error(e.message, meta);
+                if (!TDS.hasConsole()) {
+                    process.stderr.write(e.message);
+                }
             }
         });
 
         TDS.logger.system('TDS middleware shut down', meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(
+                TDS.colorize('TDS middleware shut down', 'error'));
+        }
 
         return code;
     };

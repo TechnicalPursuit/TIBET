@@ -208,22 +208,36 @@
 
     called = false;
     shutdown = function() {
+        var msg;
 
         if (called) {
             return;
         }
         called = true;
 
+        msg = 'processing shutdown request';
+
         TDS.logger.system();    //  blank to get past ctrl char etc.
-        TDS.logger.system('processing shutdown request', meta);
+        TDS.logger.system(msg, meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(TDS.colorize(msg, 'error'));
+        }
 
         if (TDS.httpsServer) {
 
-            TDS.logger.system('shutting down HTTPS server', meta);
+            msg = 'shutting down HTTPS server';
+            TDS.logger.system(msg, meta);
+            if (!TDS.hasConsole()) {
+                process.stdout.write(TDS.colorize(msg, 'error'));
+            }
 
             TDS.httpsServer.close(function(err) {
                 if (err) {
-                    TDS.logger.error('HTTPS server: ' + err.message, meta);
+                    msg = 'HTTPS server: ' + err.message;
+                    TDS.logger.error(msg, meta);
+                    if (!TDS.hasConsole()) {
+                        process.stderr.write(TDS.colorize(msg, 'error'));
+                    }
                 }
                 //  NOTE we don't exit process from here...we rely on the
                 //  httpServer to do that so they don't fight over it. We have
@@ -233,19 +247,31 @@
             });
         }
 
-        TDS.logger.system('shutting down HTTP server', meta);
+        msg = 'shutting down HTTP server';
+        TDS.logger.system(msg, meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(TDS.colorize(msg, 'error'));
+        }
 
         TDS.httpServer.close(function(err) {
             var code;
 
             if (err) {
-                TDS.logger.error('HTTP server: ' + err.message, meta);
+                msg = 'HTTP server: ' + err.message;
+                TDS.logger.error(msg, meta);
+                if (!TDS.hasConsole()) {
+                    process.stderr.write(TDS.colorize(msg, 'error'));
+                }
             }
 
             //  This will call process.exit();
             code = TDS.shutdown(err, meta);
 
-            TDS.logger.system('shutdown complete', meta);
+            msg = 'shutdown complete';
+            TDS.logger.system(msg, meta);
+            if (!TDS.hasConsole()) {
+                process.stdout.write(TDS.colorize(msg, 'error'));
+            }
 
             if (TDS.logger.flush) {
                 TDS.logger.flush(true);

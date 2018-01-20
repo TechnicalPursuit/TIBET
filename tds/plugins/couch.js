@@ -910,9 +910,15 @@
         //  ---
 
         TDS.addShutdownHook(function(server) {
+            var msg;
 
+            msg = 'shutting down CouchDB change feed follower';
             meta.style = 'error';
-            server.logger.system('shutting down CouchDB change feed follower', meta);
+
+            server.logger.system(msg, meta);
+            if (!TDS.hasConsole()) {
+                process.stdout.write(TDS.colorize(msg, 'error'));
+            }
 
             //  TODO
         });
