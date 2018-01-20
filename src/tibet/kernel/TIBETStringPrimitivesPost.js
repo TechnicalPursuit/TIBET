@@ -455,7 +455,8 @@ function(aStr) {
      * @returns {String} The supplied string with the slashes escaped.
      */
 
-    var parts;
+    var parts,
+        str;
 
     if (!TP.isString(aStr)) {
         return this.raise('InvalidParameter');
@@ -468,7 +469,19 @@ function(aStr) {
         return aStr;
     }
 
-    return parts.join('\\/');
+    str = parts.join('\\/');
+
+    //  Now, join won't put back on leading/trailing '/' chars if they were in
+    //  the original string...so verify that here.
+    if (aStr.charAt(0) === '/') {
+        str = '/' + str;
+    }
+
+    if (aStr.charAt(aStr.length - 1) === '/') {
+        str = str + '/';
+    }
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
