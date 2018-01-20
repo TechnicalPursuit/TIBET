@@ -112,16 +112,15 @@ helpers.linkup_app = function(make, options) {
         linkdest = path.join(target, item.replace('_' + config, ''));
 
         if (!sh.test('-e', linksrc)) {
-            make.warn('skipping link for missing file ' +
-                make.CLI.getVirtualPath(linksrc));
+            make.warn('skipping link for missing file \'' +
+                make.CLI.getVirtualPath(linksrc) + '\'');
             return;
         }
 
         sh.ln(lnflags, linksrc, linkdest);
         lnerr = sh.error();
         if (lnerr) {
-            throw new Error('Error linking ' +
-                linksrc + ': ' + lnerr);
+            throw new Error('Error linking \'' + linksrc + '\': ' + lnerr);
         }
     });
 
