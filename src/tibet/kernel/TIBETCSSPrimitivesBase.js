@@ -1446,11 +1446,16 @@ function(anElement) {
 
     //  Try to obtain the style element and its sheet - if its not
     //  available, create one and grab its sheet
-    if (!TP.isElement(styleElem =
-                        TP.nodeGetElementById(TP.nodeGetDocument(anElement),
-                                                'pseudo_inline_rules'))) {
-        if (!TP.isElement(styleElem =
-                TP.documentAddCSSStyleElement(TP.nodeGetDocument(anElement)))) {
+    styleElem = TP.nodeGetElementById(TP.nodeGetDocument(anElement),
+                                                'pseudo_inline_rules');
+    if (!TP.isElement(styleElem)) {
+        //  Note here how we pass 'false' as the final parameter to avoid having
+        //  this call signal and possibly cause a recursion.
+        styleElem = TP.documentAddCSSStyleElement(TP.nodeGetDocument(anElement),
+                                                    null,
+                                                    null,
+                                                    false);
+        if (!TP.isElement(styleElem)) {
             //  TODO: Raise an exception and return
             void 0;
         }
