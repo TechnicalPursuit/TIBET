@@ -10600,11 +10600,16 @@ function() {
         configInfo,
         controllerName,
         controller,
+        appDefault,
         defaulted;
+
+    controllerName = 'APP.' + TP.sys.cfg('project.name') + '.' +
+        'RouteController';
+    appDefault = TP.sys.getTypeByName(controllerName);
 
     route = this.getRoute();
     if (TP.isEmpty(route)) {
-        return TP.core.RouteController;
+        return TP.ifInvalid(appDefault, TP.core.RouteController);
     }
 
     //  See if the value is a route configuration key.
@@ -10615,7 +10620,7 @@ function() {
         routeKey = 'route';
         config = TP.sys.cfg(routeKey);
         if (TP.isEmpty(config)) {
-            return TP.core.RouteController;
+            return TP.ifInvalid(appDefault, TP.core.RouteController);
         }
     }
 
@@ -10629,7 +10634,7 @@ function() {
             this.raise('InvalidObject',
                         'Unable to build config data from entry: ' + config);
 
-            return TP.core.RouteController;
+            return TP.ifInvalid(appDefault, TP.core.RouteController);
         }
     } else {
         configInfo = config;
@@ -10663,7 +10668,8 @@ function() {
                 routeKey + '.controller') : 0;
     }
 
-    return TP.ifInvalid(controller, TP.core.RouteController);
+    return TP.ifInvalid(controller,
+        TP.ifInvalid(appDefault, TP.core.RouteController));
 });
 
 //  ------------------------------------------------------------------------

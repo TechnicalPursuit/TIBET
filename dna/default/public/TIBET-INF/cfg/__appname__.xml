@@ -21,6 +21,7 @@
     <script src="APP.{{appname}}.js" />
     <script src="APP.{{appname}}.Object.js" />
     <script src="APP.{{appname}}.Application.js" />
+    <script src="APP.{{appname}}.RouteController.js" />
 </config>
 
 <config id="resources">
