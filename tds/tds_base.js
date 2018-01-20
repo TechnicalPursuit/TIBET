@@ -783,7 +783,7 @@
      */
     TDS.hasConsole = function(aFlag) {
         if (aFlag !== undefined) {
-            TDS.$$hasConsole = !!aFlag;
+            TDS.$$hasConsole = new Boolean(aFlag);
         }
 
         return TDS.$$hasConsole;
