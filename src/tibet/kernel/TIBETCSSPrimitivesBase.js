@@ -1747,7 +1747,7 @@ function(anElement, selectorText, aPropertyName, aPropertyValue, aRuleIndex,
         //  Signal from our (wrapped) owner element that we modified a style
         //  rule.
         TP.signal(TP.tpdoc(anElement),
-                    'TP.sig.MutationStyleChange',
+                    'TP.sig.MutationStylePropertyChange',
                     TP.hc('mutationTarget', TP.wrap(anElement),
                             'mutatedRule', targetRule,
                             'mutatedProperty', aPropertyName,
@@ -2366,7 +2366,7 @@ function(aStyleRule, aPropertyName, aPropertyValue, shouldSignal) {
                 //  Signal from our (wrapped) owner element that we modified a
                 //  style rule.
                 TP.signal(TP.tpdoc(ownerElem),
-                            'TP.sig.MutationStyleChange',
+                            'TP.sig.MutationStylePropertyChange',
                             TP.hc('mutationTarget', TP.wrap(ownerElem),
                                     'mutatedRule', aStyleRule,
                                     'mutatedProperty', aPropertyName,
@@ -2423,7 +2423,7 @@ function(aStyleRule, aPropertyName, shouldSignal) {
                 //  Signal from our (wrapped) owner element that we modified a
                 //  style rule.
                 TP.signal(TP.tpdoc(ownerElem),
-                            'TP.sig.MutationStyleChange',
+                            'TP.sig.MutationStylePropertyChange',
                             TP.hc('mutationTarget', TP.wrap(ownerElem),
                                     'mutatedRule', aStyleRule,
                                     'mutatedProperty', aPropertyName,
@@ -2790,7 +2790,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
             //  Signal from our (wrapped) owner element that we added a style
             //  rule.
             TP.signal(TP.tpdoc(ownerElem),
-                        'TP.sig.MutationStyleChange',
+                        'TP.sig.MutationStyleRuleChange',
                         TP.hc('mutationTarget', TP.wrap(ownerElem),
                                 'mutatedRule', rule,
                                 'ruleIndex', newRuleIndex,
@@ -2944,7 +2944,7 @@ function(aStylesheet, ruleIndex, shouldSignal) {
             //  Signal from our (wrapped) owner element that we removed a style
             //  rule.
             TP.signal(TP.tpdoc(ownerElem),
-                        'TP.sig.MutationStyleChange',
+                        'TP.sig.MutationStyleRuleChange',
                         TP.hc('mutationTarget', TP.wrap(ownerElem),
                                 'mutatedRule', rule,
                                 'ruleIndex', ruleIndex,

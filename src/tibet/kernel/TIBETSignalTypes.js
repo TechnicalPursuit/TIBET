@@ -1161,6 +1161,11 @@ TP.sig.MutationComplete.defineSubtype('MutationDetach');
 
 TP.sig.MutationComplete.defineSubtype('MutationStyleChange');
 
+TP.sig.MutationStyleChange.Type.defineAttribute('defaultPolicy',
+                                                TP.INHERITANCE_FIRING);
+TP.sig.MutationStyleChange.defineSubtype('MutationStyleRuleChange');
+TP.sig.MutationStyleChange.defineSubtype('MutationStylePropertyChange');
+
 TP.sig.Signal.defineSubtype('NodeWillRecast');
 TP.sig.Signal.defineSubtype('NodeDidRecast');
 
