@@ -6,17 +6,20 @@
 /*
 SHERPA COLORS:
 
-            Primary Second  Third
-            000000  000000  000000
+           Darker   Primary Second  Third
+                    000000  000000  000000
 
-(golds)     gold    feeca1  cornsilk
-            fed631  feeca1  fef7d9
-(blues)     91a9c0  cdd7e2  ebeff3
-(greens)    86af9b  c2d7cd  e6efeb
-(rusts)     c88b6b  e3c5b5  f1e2da
+(golds)     b99c24  gold    feeca1  cornsilk
+                    fed631  feeca1  fef7d9
+
+(blues)     6a7b8c  91a9c0  cdd7e2  ebeff3
+
+(greens)    4a6055  86af9b  c2d7cd  e6efeb
+
+(rusts)     6e4c3b  c88b6b  e3c5b5  f1e2da
 
 //  currently unused
-(sands)     bcad75  e0d9c0  f2f0e5
+(sands)     897e56  bcad75  e0d9c0  f2f0e5
 */
 
 @font-face {

@@ -105,11 +105,10 @@ sherpa|consoleoutput[class~="fade_out"] {
 }
 
 sherpa|consoleoutput a {
-
-    color: slateblue;
+    color: #6a7b8c;
 }
 
-.wrapper {
+sherpa|consoleoutput .wrapper {
 
     display: inline-flex;
 
@@ -138,8 +137,8 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     border-bottom-right-radius: 5px;
 }
 
-.up_arrow,
-.down_arrow {
+sherpa|consoleoutput .up_arrow,
+sherpa|consoleoutput .down_arrow {
 
     display: none;
 
@@ -150,20 +149,20 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     width: 20px;
     height: 20px;
 
-    background-color: yellow;
+    background-color: #feeca1;
 
     border: solid 1px black;
 }
 
-.flex-item {
+sherpa|consoleoutput .flex-item {
 
-    background-color: #efefef;
+    background-color: #f9f9f9;
 
     border: solid 1px #666;
     border-radius: 5px;
 }
 
-.flex-item > .header {
+sherpa|consoleoutput .flex-item > .header {
 
     top: 0;
     right: 0;
@@ -171,12 +170,13 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 
     height: 15px;
 
-    margin: 2px;
+    margin: 0;
+    padding: 2px;
 
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 
     min-width: auto;
 
@@ -185,7 +185,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     font-size: inherit;
 }
 
-.flex-item > .header > * {
+sherpa|consoleoutput .flex-item > .header > * {
 
     /* line-height: 30px; */
 
@@ -193,7 +193,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     /* font-size: 116%; */
 }
 
-.flex-item > .header > .hid {
+sherpa|consoleoutput .flex-item > .header > .hid {
 
     position: relative;
     display: inline-block;
@@ -205,12 +205,12 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     text-decoration: none;
 }
 
-.flex-item > .header > .hid:hover {
+sherpa|consoleoutput .flex-item > .header > .hid:hover {
 
     font-weight: bold;
 }
 
-.flex-item > .header > .content {
+sherpa|consoleoutput .flex-item > .header > .content {
 
     position: relative;
     display: inline-block;
@@ -222,12 +222,12 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-item > .header > .content > span {
+sherpa|consoleoutput .flex-item > .header > .content > span {
 
     user-select: text;
 }
 
-.flex-item > .header > .typeinfo {
+sherpa|consoleoutput .flex-item > .header > .typeinfo {
     display: inline-block;
     float: right;
     margin: 0 8px;
@@ -235,7 +235,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-item > .header > .stats {
+sherpa|consoleoutput .flex-item > .header > .stats {
 
     display: inline-block;
 
@@ -243,12 +243,12 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 
     margin: 0 8px;
 
-    color: grey;
+    color: #999;
 
     white-space: pre-wrap;
 }
 
-.flex-item > .content {
+sherpa|consoleoutput .flex-item > .content {
 
     top: 31px;
     right: 0;
@@ -259,8 +259,9 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
 
     min-width: auto;
 
-    margin: 2px;
-    border: 1px dotted #dadada;
+    margin: 1px;
+    padding: 2px;
+    border: 0;
 
     overflow: auto;
 
@@ -269,19 +270,19 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     color: black;
 }
 
-.flex-item > .content > * {
+sherpa|consoleoutput .flex-item > .content > * {
 
     line-height: 1em;
 
     white-space: pre-wrap;
 }
 
-.flex-item > .content > .result.asis-container {
+sherpa|consoleoutput .flex-item > .content > .result.asis-container {
 
     white-space: initial;
 }
 
-.flex-item > .content > .result iframe {
+sherpa|consoleoutput .flex-item > .content > .result iframe {
 
     position: relative;
 
@@ -289,35 +290,35 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child 
     height: 1024px;
 }
 
-.flex-item > .content > sherpa|scrollbutton {
+sherpa|consoleoutput .flex-item > .content > sherpa|scrollbutton {
 
 }
 
-.flex-item > .content > sherpa|scrollbutton[orientation="up"] {
+sherpa|consoleoutput .flex-item > .content > sherpa|scrollbutton[orientation="up"] {
 
     bottom: 10px;
     left: calc(50% - 16px);
 }
 
-.flex-item > .content > sherpa|scrollbutton .icon {
+sherpa|consoleoutput .flex-item > .content > sherpa|scrollbutton .icon {
 
     bottom: 2px;
     font-size: 18px;
 }
 
-.flex-item > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
+sherpa|consoleoutput .flex-item > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
 
     /* This is the same as '&#8593' */
     content: "\2191";
 }
 
-.flex-item > .content > sherpa|scrollbutton[orientation="down"] {
+sherpa|consoleoutput .flex-item > .content > sherpa|scrollbutton[orientation="down"] {
 
     bottom: 10px;
     left: calc(50% + 16px);
 }
 
-.flex-item > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
+sherpa|consoleoutput .flex-item > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
 
     /* This is the same as '&#8595' */
     content: "\2193";
@@ -332,152 +333,148 @@ sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
 sherpa|consoleoutputitem[class~="trace"] .flex-item,
 sherpa|consoleoutputitem[class~="trace"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 }
 
 sherpa|consoleoutputitem[class~="debug"] .flex-item,
 sherpa|consoleoutputitem[class~="debug"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 }
 
 sherpa|consoleoutputitem[class~="info"] .flex-item,
 sherpa|consoleoutputitem[class~="info"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 }
 
 sherpa|consoleoutputitem[class~="warn"] .flex-item,
 sherpa|consoleoutputitem[class~="warn"] .flex-item > .header {
 
-    background-color: orange;
+    background-color: gold;
 }
 
 sherpa|consoleoutputitem[class~="error"] .flex-item,
 sherpa|consoleoutputitem[class~="error"] .flex-item > .header {
 
-    background-color: red;
+    background-color: #c88b6b;
 }
 
 sherpa|consoleoutputitem[class~="fatal"] .flex-item,
 sherpa|consoleoutputitem[class~="fatal"] .flex-item > .header {
 
-    background-color: red;
+    background-color: #6e4c3b;
 }
 
 sherpa|consoleoutputitem[class~="system"] .flex-item,
 sherpa|consoleoutputitem[class~="system"] .flex-item > .header {
 
-    background-color: mediumseagreen;
+    background-color: #86af9b;
 }
 
 /* Output styles for the consoleoutputitem based on TAP result */
 sherpa|consoleoutputitem[class~="tap-pass"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-pass"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: #86af9b;
 }
 
 sherpa|consoleoutputitem[class~="tap-fail"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-fail"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: gold;
 }
 
 sherpa|consoleoutputitem[class~="tap-comment"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-comment"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 }
 
 sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item,
 sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 }
 
 /* Output styles based on log level */
-.flex-item > .content.trace {
-
+sherpa|consoleoutput .flex-item > .content.trace {
     color: #aaa;
 }
 
-.flex-item > .content.debug {
-
-    color: #aaa;
+sherpa|consoleoutput .flex-item > .content.debug {
+    color: #999;
 }
 
-.flex-item > .content.info {
-
+sherpa|consoleoutput .flex-item > .content.info {
     color: black;
 }
 
-.flex-item > .content.warn {
-
-    color: orange;
+sherpa|consoleoutput .flex-item > .content.warn {
+    color: gold;
 }
 
-.flex-item > .content.error {
-
-    color: red;
+sherpa|consoleoutput .flex-item > .content.error {
+    color: #c88b6b;
 }
 
-.flex-item > .content.fatal {
-
-    color: red;
+sherpa|consoleoutput .flex-item > .content.fatal {
+    color: #6e4c3b;
 }
 
-.flex-item > .content.system {
-
-    color: green;
+sherpa|consoleoutput .flex-item > .content.system {
+    color: #86af9b;
 }
 
 /* Output styles based on TAP result */
-.flex-item > .content.tap-pass {
-
-    color: green;
+sherpa|consoleoutput .flex-item > .content.tap-pass {
+    color: #4a6055;
 }
 
-.flex-item > .content.tap-fail {
-    color: orange;
+sherpa|consoleoutput .flex-item > .content.tap-skip {
+    color: gold;
 }
 
-.flex-item > .content.tap-error {
-    color: red;
+sherpa|consoleoutput .flex-item > .content.tap-fail {
+    color: #6e4c3b;
 }
 
-.flex-item > .content.tap-comment {
+sherpa|consoleoutput .flex-item > .content.tap-error {
+    color: #c88b6b;
+}
+
+sherpa|consoleoutput .flex-item > .content.tap-comment {
     color: #aaa;
 }
 
-.flex-item > .content.tap-unknown {
-    color: gray;
+sherpa|consoleoutput .flex-item > .content.tap-unknown {
+    color: #666;
 }
 
 /* Footer style */
-.flex-item > .footer {
+sherpa|consoleoutput .flex-item > .footer {
 
     bottom: 0;
     left: 0;
     right: 0;
     height: 8px;
 
-    background-color: #efefef;
+    background-color: #f0f0f0;
 
     min-width: auto;
 
     margin: 2px;
 
     border: 1px solid #666;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 
     overflow: hidden;
 
     text-align: center;
 }
 
-.flex-item > .content dl {
+sherpa|consoleoutput .flex-item > .content dl {
 
     display: flex;
 
@@ -485,7 +482,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     flex-direction: row;
 }
 
-.flex-item > .content dl > dt {
+sherpa|consoleoutput .flex-item > .content dl > dt {
 
     flex: 0 0 25%;
 
@@ -494,12 +491,12 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     line-height: 2em;
 }
 
-.flex-item > .content dl > dt:nth-of-type(even) {
+sherpa|consoleoutput .flex-item > .content dl > dt:nth-of-type(even) {
 
-    background-color: #efefef;
+    background-color: #f9f9f9;
 }
 
-.flex-item > .content dl > dd {
+sherpa|consoleoutput .flex-item > .content dl > dd {
 
     flex: 0 0 75%;
 
@@ -510,12 +507,12 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     user-select: text;
 }
 
-.flex-item > .content dl > dd:nth-of-type(even) {
+sherpa|consoleoutput .flex-item > .content dl > dd:nth-of-type(even) {
 
-    background-color: #efefef;
+    background-color: #f9f9f9;
 }
 
-.flex-item > .content ul {
+sherpa|consoleoutput .flex-item > .content ul {
 
     display: flex;
 
@@ -523,7 +520,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     flex-direction: row;
 }
 
-.flex-item > .content ul > li {
+sherpa|consoleoutput .flex-item > .content ul > li {
 
     flex: 0 0 100%;
 
@@ -534,26 +531,21 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
     user-select: text;
 }
 
-.flex-item > .content ul > li:nth-of-type(even) {
+sherpa|consoleoutput .flex-item > .content ul > li:nth-of-type(even) {
 
-    background-color: #efefef;
+    background-color: #f9f9f9;
 }
 
-.flex-item > .content > .result a {
-
-    color: inherit;
-
+sherpa|consoleoutput .flex-item > .content > .result a {
     text-decoration: none;
 }
 
-.flex-item > .content > .result a:hover {
-
-    color: slateblue;
-
+sherpa|consoleoutput .flex-item > .content > .result a:hover {
+    color: #6a7b8c;
     text-decoration: underline;
 }
 
-.flex-item > .content > .result a[target="_blank"]::after {
+sherpa|consoleoutput .flex-item > .content > .result a[target="_blank"]::after {
 
     content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==");
 
@@ -561,7 +553,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 }
 
 /* The first 'span' skips over the tibet:template_expr span */
-.flex-item > .content > .result > span span {
+sherpa|consoleoutput .flex-item > .content > .result > span span {
 
     user-select: text;
 }
