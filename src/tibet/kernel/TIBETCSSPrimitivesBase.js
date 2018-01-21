@@ -1515,7 +1515,7 @@ function(anElement) {
     }
 
     //  Create a new rule and add it to the end of the stylesheet.
-    TP.styleSheetInsertRule(styleSheet, selectorText, '');
+    TP.styleSheetInsertRule(styleSheet, selectorText, '', null, false);
 
     sheetRules = styleSheet.cssRules;
 
