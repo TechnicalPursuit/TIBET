@@ -2285,7 +2285,7 @@ function(aFlag) {
 
     /**
      * @method shouldScanSupertypes
-     * @summary Returns true if the signal should notify observers agressively
+     * @summary Returns true if the signal should notify observers aggressively
      *     by scanning supertypes during notification. Note that this is not the
      *     same as inheritance firing. See notifyObservers for more info.
      * @param {Boolean} aFlag Scan supertypes?

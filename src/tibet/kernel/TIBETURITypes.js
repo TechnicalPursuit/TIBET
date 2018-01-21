@@ -5438,10 +5438,10 @@ function(aContent, alternateContent) {
     //  Grab the String representation of the new content
     newContent = TP.str(aContent);
 
-    //  In order to produce a proper patch, we need the remote content *in
-    //  text form* and *how it currently exactly exists on the server* but
-    //  *without updating the receiver's resource*. To accomplish this, we fetch
-    //  using a low-level //  routine.
+    //  In order to produce a proper patch, we need the remote content *in text
+    //  form* and *how it currently exactly exists on the server* but *without
+    //  updating the receiver's resource*. To accomplish this, we fetch using a
+    //  low-level routine.
     promise = TP.extern.Promise.construct(
                 function(resolver, rejector) {
 
