@@ -50,12 +50,6 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.observe(tpElem.get('listcontent'),
-                    TP.ac('TP.sig.DOMDNDTargetOver',
-                            'TP.sig.DOMDNDTargetOut'));
-
-    tpElem.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
-
     //  Grab the west drawer and define a function that, when the drawer
     //  animates back and forth into and out of its collapsed position that, if
     //  a tile is showing, will move the tile to the edge of the drawer.
@@ -393,6 +387,97 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 //  Handlers
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin,
+
+        hudIsClosed;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (!hudIsClosed) {
+        this.observe(world, 'ToggleScreen');
+        this.observe(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+        this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+        this.observe(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
+
+    } else {
+        this.ignore(world, 'ToggleScreen');
+        this.ignore(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+        this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+        this.ignore(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
+    }
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.styleshud.Inst.defineHandler('DOMDNDTargetOver',
@@ -582,6 +667,34 @@ function(aSignal) {
                             'extraTargetInfo',
                                 TP.hc('findContent', ruleMatcher)));
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('MutationStyleChange',
+function(aSignal) {
+
+    /**
+     * @method handleMutationStyleChange
+     * @summary Handles notifications of node style changes from the overall
+     *     canvas that the styleshud is working with.
+     * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var halo,
+        currentTargetTPElem;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+    currentTargetTPElem = halo.get('currentTargetTPElem');
+
+    if (TP.isValid(currentTargetTPElem)) {
+        this.focusOnTarget(currentTargetTPElem);
+    }
 
     return this;
 });
@@ -911,6 +1024,45 @@ function(aSignal) {
         //  we're highlighting.
         targetDocElem = TP.sys.uidoc(true).documentElement;
         TP.elementAddClass(targetDocElem, 'sherpa-hud-highlighting');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    /**
+     * @method handleToggleScreen
+     * @summary Handles notifications of screen toggle signals.
+     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var world,
+        oldScreenTPWin,
+
+        newScreen,
+        newScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the old screen TP.core.Window and ignore
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    //  Grab the new screen TP.core.Window and observe
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    newScreen = world.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(newScreen)) {
+        newScreenTPWin = newScreen.getContentWindow();
+        this.observe(newScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
     }
 
     return this;
