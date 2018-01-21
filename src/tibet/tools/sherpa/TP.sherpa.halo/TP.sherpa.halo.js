@@ -834,6 +834,9 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
+    //  In case the popup menu is open, close it.
+    this.signal('ClosePopup');
+
     //  If the Shift key is down and we're not currently hidden, then change our
     //  focus based on a variety of key combinations and mouse button states.
     if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
@@ -873,6 +876,9 @@ function(aSignal) {
         //  pop up.
         aSignal.preventDefault();
         aSignal.stopPropagation();
+
+        //  In case the popup menu is open, close it.
+        this.signal('ClosePopup');
 
         //  Change focus of the halo to a target element contained within the
         //  signal. Note that this will *not* affect whether the halo is
