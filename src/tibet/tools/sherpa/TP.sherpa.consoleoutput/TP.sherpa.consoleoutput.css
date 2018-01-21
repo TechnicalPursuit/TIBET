@@ -554,7 +554,7 @@ sherpa|consoleoutput .flex-item > .content > .result a[target="_blank"]::after {
 
 /* The first 'span' skips over the tibet:template_expr span */
 sherpa|consoleoutput .flex-item > .content > .result > span span {
-
+    color: #345;
     user-select: text;
 }
 
