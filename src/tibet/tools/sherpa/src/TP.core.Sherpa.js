@@ -588,7 +588,7 @@ function(aSignal) {
     var world,
         currentScreenTPWin,
 
-        doc;
+        canvasDoc;
 
     //  Set up managed mutation observer machinery that uses our
     //  'processUICanvasMutationRecords' method to manage changes to the UI
@@ -607,10 +607,14 @@ function(aSignal) {
 
     //  Make sure to refresh all of the descendant document positions for the UI
     //  canvas.
-    doc = currentScreenTPWin.getNativeDocument();
-    TP.nodeRefreshDescendantDocumentPositions(doc);
+    canvasDoc = currentScreenTPWin.getNativeDocument();
+    TP.nodeRefreshDescendantDocumentPositions(canvasDoc);
 
-    TP.activateMutationObserver(doc, 'BUILDER_OBSERVER');
+    //  Grab the canvas document and observe mutation style change signals from
+    //  it.
+    this.observe(TP.wrap(canvasDoc), 'TP.sig.MutationStyleChange');
+
+    TP.activateMutationObserver(canvasDoc, 'BUILDER_OBSERVER');
 
     return this;
 });
@@ -628,9 +632,23 @@ function(aSignal) {
      * @returns {TP.core.sherpa} The receiver.
      */
 
+    var world,
+        currentScreenTPWin,
+
+        canvasDoc;
+
     if (TP.sys.isTesting()) {
         return this;
     }
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    canvasDoc = currentScreenTPWin.getNativeDocument();
+
+    //  Grab the canvas document and ignore mutation style change signals from
+    //  it.
+    this.ignore(TP.wrap(canvasDoc), 'TP.sig.MutationStyleChange');
 
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
@@ -713,6 +731,143 @@ function(aSignal) {
                 'FocusInspectorForBrowsing',
                 aSignal.getPayload());
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('MutationStyleChange',
+function(aSignal) {
+
+    /**
+     * @method handleMutationStyleChange
+     * @summary Handles notifications of node style changes from the overall
+     *     canvas that the Sherpa is working with.
+     * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.core.Sherpa} The receiver.
+     */
+
+    var mutatedRule,
+        loc,
+        sheetURI,
+
+        shouldRefresh,
+        currentResource,
+        currentContent,
+
+        str,
+
+        matcher,
+        match,
+
+        startIndex,
+        endIndex,
+        ruleText,
+        propertyMatcher,
+        operation,
+
+        newStr,
+        newContent,
+        patch,
+        finalContent;
+
+    //  The native CSSRule object that mutated is in the signal
+    mutatedRule = aSignal.at('mutatedRule');
+
+    //  Grab its location and make a URI.
+    loc = TP.styleSheetGetLocation(TP.styleRuleGetStyleSheet(mutatedRule));
+    sheetURI = TP.uc(loc);
+
+    if (!TP.isURI(sheetURI)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  Load the URI's content if it isn't already loaded and obtain it.
+    shouldRefresh = !sheetURI.isLoaded();
+    currentResource = sheetURI.getResource(
+                        TP.hc('refresh', shouldRefresh, 'async', false));
+
+    //  NB: We'll get a CSS stylesheet content object here - we want its String.
+    currentContent = currentResource.get('result').asString();
+
+    //  Look for the rule by using the selector text
+    //  NOTE: This will *not* handle multiple rules with the same selector in
+    //  the same URI properly. FIX THIS!
+    str = mutatedRule.selectorText + ' {';
+
+    //  Generate a matcher RegExp
+    matcher = TP.rc(RegExp.escapeMetachars(
+                    str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
+                        replace(/SECRET_SAUCE/g, '\\s*'));
+
+    //  Find the rule text start in the content by matching using the generated
+    //  RegExp.
+    match = currentContent.match(matcher);
+
+    //  If no match could be found, exit here.
+    if (TP.notValid(match)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  The rule text starts where the match was made and ends at the trailing
+    //  bracket ('}');
+    startIndex = match.index;
+    endIndex = currentContent.indexOf('}', startIndex) + 1;
+
+    //  Grab the rule text
+    ruleText = currentContent.slice(startIndex, endIndex);
+
+    //  Generate a RegExp that will match the name of the mutated property and
+    //  it's declaration through the semicolon (';').
+    propertyMatcher = TP.rc(aSignal.at('mutatedProperty') +
+                            '\\s*:.+;[\\n\\r]?');
+
+    //  Switch on the operation performed.
+    operation = aSignal.at('operation');
+    switch (operation) {
+        case TP.CREATE:
+            //  If we're creating a new property, just splice it in before the
+            //  closing brace ('}') for the whole rule.
+            newStr = ruleText.slice(0, -1) +
+                        aSignal.at('mutatedProperty') + ': ' +
+                        aSignal.at(TP.NEWVAL) + ';\n';
+            newStr += '}';
+            break;
+        case TP.UPDATE:
+            //  If we're updating an existing property, using the property
+            //  matcher RegExp we generated above to replace the property's
+            //  value with the new value.
+            newStr = ruleText.replace(
+                        propertyMatcher,
+                        aSignal.at('mutatedProperty') + ': ' +
+                        aSignal.at(TP.NEWVAL) + ';\n');
+            break;
+        case TP.DELETE:
+            //  If we're updating an existing property, using the property
+            //  matcher RegExp we generated above to replace the property's
+            //  value with the empty String.
+            newStr = ruleText.replace(propertyMatcher, '');
+            break;
+        default:
+            break;
+    }
+
+    //  Splice the newly generated content into the current content.
+    newContent = currentContent.slice(0, startIndex) +
+                    newStr +
+                    currentContent.slice(endIndex);
+
+    //  Generate a patch against the existing content and then immediately apply
+    //  the patch.
+    patch = TP.extern.JsDiff.createPatch(loc, currentContent, newContent);
+    finalContent = TP.extern.JsDiff.applyPatch(currentContent, patch);
+
+    //  Set the resource of the sheetURI. This should dirty it.
+    sheetURI.setResource(finalContent);
 
     return this;
 });
@@ -2160,6 +2315,11 @@ function() {
     TP.activateMutationObserver(
         currentScreenTPWin.getNativeDocument(),
         'BUILDER_OBSERVER');
+
+    //  Grab the canvas document and observe mutation style change signals from
+    //  it.
+    this.observe(currentScreenTPWin.getDocument(),
+                    'TP.sig.MutationStyleChange');
 
     return this;
 });
