@@ -71,6 +71,8 @@ TP.core.Matcher.Inst.defineAttribute('threshold');
 TP.core.Matcher.Inst.defineAttribute('location');
 TP.core.Matcher.Inst.defineAttribute('distance');
 TP.core.Matcher.Inst.defineAttribute('maxPatternLength');
+
+TP.core.Matcher.Inst.defineAttribute('useSearchTermLengthForMatches');
 TP.core.Matcher.Inst.defineAttribute('minMatchCharLength');
 
 //  ------------------------------------------------------------------------
@@ -114,6 +116,10 @@ function(matcherName) {
     this.set('location', 0);
     this.set('distance', 1000);
     this.set('maxPatternLength', 32);
+
+    //  If this is true, then the search term length will be used for match
+    //  length, not the 'minMatchCharLength' attribute.
+    this.set('useSearchTermLengthForMatches', true);
     this.set('minMatchCharLength', 1);
 
     return this;
@@ -184,7 +190,9 @@ function(rawData, searchTerm, keys) {
         location: this.get('location'),
         distance: this.get('distance'),
         maxPatternLength: this.get('maxPatternLength'),
-        minMatchCharLength: this.get('minMatchCharLength'),
+        minMatchCharLength: this.get('useSearchTermLengthForMatches') ?
+                            searchTerm.getSize() :
+                            this.get('minMatchCharLength'),
         keys: keys
     };
 
