@@ -2960,7 +2960,6 @@ function(sourceText) {
     completerList.set('data', data);
 
     completerList.setAttribute('hidden', false);
-    completerList.render();
 
     selectedIndex = 0;
     this.set('hintSelectedIndex', selectedIndex);
