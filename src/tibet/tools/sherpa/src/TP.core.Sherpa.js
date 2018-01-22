@@ -776,6 +776,13 @@ function(aSignal) {
     //  The native CSSRule object that mutated is in the signal
     mutatedRule = aSignal.at('mutatedRule');
 
+    //  If there is no mutated rule, (which will happen if the signal isn't a
+    //  TP.sig.MutationStylePropertyChange or TP.sig.MutationStyleRuleChange)
+    //  then exit here.
+    if (TP.notValid(mutatedRule)) {
+        return this;
+    }
+
     //  Grab its location and make a URI.
     loc = TP.styleSheetGetLocation(TP.styleRuleGetStyleSheet(mutatedRule));
     sheetURI = TP.uc(loc);
