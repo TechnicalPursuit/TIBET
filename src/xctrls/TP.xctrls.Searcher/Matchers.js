@@ -109,10 +109,10 @@ function(matcherName) {
 
     this.set('$matcherName', matcherName);
 
-    this.set('caseSensitive', true);
-    this.set('threshold', 0.6);
+    this.set('caseSensitive', false);
+    this.set('threshold', 0.1);
     this.set('location', 0);
-    this.set('distance', 32);
+    this.set('distance', 1000);
     this.set('maxPatternLength', 32);
     this.set('minMatchCharLength', 1);
 
