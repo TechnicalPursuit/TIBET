@@ -2955,6 +2955,8 @@ function(sourceText) {
             data.push(TP.ac(aCompletion.text, aCompletion.displayText));
         });
 
+    //  Set a hard 'size' of the list to a maximum of 15 items high
+    completerList.setAttribute('size', data.getSize().min(15));
     completerList.set('data', data);
 
     completerList.setAttribute('hidden', false);
