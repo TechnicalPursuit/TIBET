@@ -511,11 +511,11 @@ function() {
         dataSet = TP.interface(keySource.prototype, TP.SLOT_FILTERS.attributes);
     } else {
         if (TP.canInvoke(keySource, 'getType')) {
-            if (TP.isNativeType(keySource.getType())) {
-                wantsProtoChain = true;
-            } else {
-                wantsProtoChain = false;
-            }
+            wantsProtoChain = TP.isNativeType(keySource.getType()) ||
+                                keySource === TP ||
+                                keySource === TP.sys ||
+                                keySource === TP.boot ||
+                                keySource === TP.global;
         } else {
             //  All TIBET objects respond to 'getType', so if it can't, it's a
             //  native object that we definitely want all prototype properties
