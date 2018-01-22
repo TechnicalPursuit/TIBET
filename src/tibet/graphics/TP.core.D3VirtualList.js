@@ -167,6 +167,22 @@ function() {
         return currentHeight;
     }
 
+    rowHeight = this.getRowHeight();
+
+    //  If the current height is less than the row height (a single row height),
+    //  then return that.
+    if (currentHeight < rowHeight) {
+        return rowHeight;
+    }
+
+    //  See if a fixed size is available.
+    fixedSize = this.getAttribute('size');
+    fixedSize = fixedSize.asNumber();
+
+    if (TP.isNumber(fixedSize)) {
+        currentHeight = fixedSize * rowHeight;
+    }
+
     //  If we have a 'maximum height' in our computed style then return the
     //  maximum height.
     maxHeight = this.getComputedStyleProperty('max-height', true);
@@ -182,29 +198,6 @@ function() {
     if (TP.isNumber(minHeight) && minHeight > 0 &&
         currentHeight <= minHeight) {
         return minHeight;
-    }
-
-    rowHeight = this.getRowHeight();
-
-    //  See if a fixed size is available
-    fixedSize = this.getAttribute('size');
-    fixedSize = fixedSize.asNumber();
-
-    if (TP.isNumber(fixedSize)) {
-        fixedSize = fixedSize * rowHeight;
-    } else {
-        fixedSize = 0;
-    }
-
-    //  If we have a fixed size due to a 'size' attribute, and the current
-    //  height is less than that, then return that.
-    if (fixedSize !== 0 && currentHeight < fixedSize) {
-        return fixedSize;
-    }
-
-    //  If the current height is less than the row height, then return that.
-    if (currentHeight < rowHeight) {
-        return rowHeight;
     }
 
     return currentHeight;
