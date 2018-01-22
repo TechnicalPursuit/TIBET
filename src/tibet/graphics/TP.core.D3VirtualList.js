@@ -170,7 +170,8 @@ function() {
     //  If we have a 'maximum height' in our computed style then return the
     //  maximum height.
     maxHeight = this.getComputedStyleProperty('max-height', true);
-    if (TP.isNumber(maxHeight) && maxHeight > 0) {
+    if (TP.isNumber(maxHeight) && maxHeight > 0 &&
+        currentHeight >= maxHeight) {
         return maxHeight;
     }
 
