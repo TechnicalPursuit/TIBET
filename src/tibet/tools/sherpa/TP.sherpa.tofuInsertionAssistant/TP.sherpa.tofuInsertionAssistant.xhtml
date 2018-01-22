@@ -5,7 +5,7 @@
     <div class="body">
 
         <div class="insertion_data">
-            <form bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
+            <div bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
                 <div class="insertion_point">
                     <label>Ancestors:</label>
                     <sherpa:breadcrumb id="tofuInsertionAssistant_InsertionBreadcrumb"/>
@@ -32,7 +32,7 @@
                         </li>
                     </ul>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div id="tofuInsertionAssistant_TypeChooser">
@@ -42,7 +42,7 @@
         </div>
 
         <div class="insertion_details">
-            <form bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
+            <div class="insertion_attrs" bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
                 <ul>
                     <li id="tofuInsertionAssistant_AttributesTable">
                         <label>Attributes (click + to add):</label>
@@ -55,7 +55,7 @@
                         </div>
                     </li>
                 </ul>
-            </form>
+            </div>
         </div>
 
     </div>

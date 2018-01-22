@@ -44,7 +44,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_data {
     text-align: left;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_data form {
+sherpa|tofuInsertionAssistant > .body .insertion_data div.insertion_attrs {
     position: absolute;
     top: 0;
     left: 0;
