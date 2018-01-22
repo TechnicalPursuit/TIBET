@@ -195,6 +195,10 @@ function(anObject) {
 
     insertionFunc = function() {
 
+        //  Tell the main Sherpa object that it should go ahead and process DOM
+        //  mutations to the source DOM.
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
         //  Insert the new data table group into target element at the inserted
         //  position. Note the reassignment here to capture the newly inserted
         //  content.
