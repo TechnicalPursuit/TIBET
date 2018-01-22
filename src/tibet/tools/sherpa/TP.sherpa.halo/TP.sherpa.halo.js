@@ -1355,7 +1355,7 @@ function(newTargetTPElem, shouldUnhide) {
         theRect = currentTargetTPElem.getHaloRect(this);
     } else {
         //  If the target element isn't ready to render (maybe its stylesheet
-        //  hasn't loaded yet, then set up a handler to wait for the element to
+        //  hasn't loaded yet), then set up a handler to wait for the element to
         //  signal a TP.sig.DOMReady signal and then invoke this method again.
         if (!newTargetTPElem.isReadyToRender()) {
 
