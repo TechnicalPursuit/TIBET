@@ -2753,61 +2753,6 @@ function() {
     return this;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.Sherpa.Inst.defineMethod('showTileAt',
-function(tileID, title, existedHandler, newHandler) {
-
-    /**
-     * @method showTileAt
-     * @summary Shows a tile with the supplied title and content at the supplied
-     *     point.
-     * @param {String} tileID The unique ID of the tile. If a tile with this ID
-     *     cannot be found in the same document as the sidebar, then a new tile
-     *     will be created.
-     * @param {String} title The title of the tile.
-     * @param {Function} [existedHandler] If supplied, this Function is executed
-     *     after the tile is shown on screen when the tile already existed and
-     *     wasn't created again.
-     * @param {Function} [newHandler] If supplied, this Function is executed
-     *     after the tile is shown on screen when the tile was newly created.
-     * @returns {TP.core.Sherpa} The receiver.
-     */
-
-    var alreadyExisted,
-        tileTPElem;
-
-    alreadyExisted = false;
-
-    //  Look for an existing tile.
-    tileTPElem = TP.byId(tileID, this.get('vWin'));
-
-    //  Couldn't find one? Create one.
-    if (TP.notValid(tileTPElem)) {
-        //  NB: Because we don't supply a parent here, the Sherpa will use the
-        //  'common tile layer'.
-        tileTPElem = this.makeTile(tileID, title);
-    } else {
-        tileTPElem.setHeaderText(title);
-        alreadyExisted = true;
-    }
-
-    //  Show the tile.
-    tileTPElem.setAttribute('hidden', false);
-
-    if (alreadyExisted) {
-        if (TP.isCallable(existedHandler)) {
-            existedHandler(tileTPElem);
-        }
-    } else {
-        if (TP.isCallable(newHandler)) {
-            newHandler(tileTPElem);
-        }
-    }
-
-    return this;
-});
-
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('toggle',
