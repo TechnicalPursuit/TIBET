@@ -755,6 +755,48 @@ function() {
     return TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'styleshud_properties\', payload: {source: \'urn:tibet:style_prop_data_blank\', copy: true}}"></button>');
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getContentForRespondersHUDTileBody',
+function(params) {
+
+    /**
+     * @method getContentForRespondersHUDTileBody
+     * @summary Returns the content that the Sherpa's 'respondershud' panel will
+     *     use as the 'tile body' when displaying it's 'tile' panel for this
+     *     node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     'body' of the respondershud tile panel.
+     */
+
+    var dataURI;
+
+    dataURI = params.at('dataURI');
+
+    return TP.elem('<xctrls:list id="ResponderMethodList"' +
+                        ' bind:in="{data: ' + dataURI.asString() + '}"' +
+                        ' on:UISelect="InspectResponderMethod"' +
+                        ' tibet:ctrl="RespondersHUD"' +
+                        '/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getContentForRespondersHUDTileFooter',
+function() {
+
+    /**
+     * @method getContentForRespondersHUDTileFooter
+     * @summary Returns the content that the Sherpa's 'respondershud' panel will
+     *     use as the 'tile footer' when displaying it's 'tile' panel for this
+     *     node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     'footer' of the respondershud tile panel.
+     */
+
+    return TP.xhtmlnode('<button class="inserter" on:click="{signal: AddSignalHandler, origin: \'RespondersHUD\'}"/>');
+});
+
 TP.core.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
 function(insertionPointElement, insertionPosition) {
 

@@ -496,25 +496,34 @@ function(aSignal) {
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
-    var data,
+    var targetElem,
 
-        targetElem,
+        data,
 
         indexInData,
         itemData,
 
         target,
 
-        win,
+        dataURI,
+        methods,
 
         centerTPElem,
         centerTPElemPageRect,
 
+        targetTPElem,
+
         targetElemPageRect,
 
-        dataURI,
+        tileTPElem,
 
-        methods;
+        newContentTPElem,
+
+        sheet,
+        mainRule,
+
+        tileWidth,
+        xCoord;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -551,78 +560,64 @@ function(aSignal) {
 
     // dataURI.setResource(target.getSupertypeNames());
 
-    win = this.getNativeWindow();
-
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
-    centerTPElem = TP.byId('center', win);
+    centerTPElem = TP.byId('center', this.getNativeWindow());
     centerTPElemPageRect = centerTPElem.getPageRect();
 
+    targetTPElem = TP.wrap(targetElem);
+
     //  Use the 'Y' coordinate where the target element is located in the page.
-    targetElemPageRect = TP.wrap(targetElem).getPageRect();
+    targetElemPageRect = targetTPElem.getPageRect();
 
-    //  Show the rule text in the tile. Note how we wrap the content with a span
-    //  with a CodeMirror CSS class to make the styling work.
-    TP.bySystemId('Sherpa').showTileAt(
-        'ResponderSummary_Tile',
-        'Responder Methods',
-        function(aTileTPElem) {
-            var tileWidth,
-                xCoord;
+    //  ---
 
-            //  Set the model's URI's resource and signal change. This will
-            //  cause the properties to update.
-            dataURI.setResource(methods, TP.hc('signalChange', true));
+    tileTPElem = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
 
-            //  The tile already existed
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('ResponderSummary_Tile');
+        tileTPElem.setHeaderText('Responder Methods');
 
-            tileWidth = aTileTPElem.getWidth();
+        newContentTPElem = tileTPElem.setContent(
+                                TP.getContentForTool(
+                                    targetTPElem,
+                                    'RespondersHUDTileBody',
+                                    TP.hc('dataURI', dataURI)));
+        newContentTPElem.awaken();
 
-            xCoord = centerTPElemPageRect.getX() +
-                        centerTPElemPageRect.getWidth() -
-                        tileWidth;
-            aTileTPElem.setPagePosition(
-                        TP.pc(xCoord, targetElemPageRect.getY()));
-        },
-        function(aTileTPElem) {
-            var sheet,
-                mainRule,
+        tileTPElem.get('footer').setContent(
+                                TP.getContentForTool(
+                                    targetTPElem,
+                                    'RespondersHUDTileFooter'));
 
-                tileWidth,
-                xCoord,
-                contentTPElem;
+        sheet = this.getStylesheetForStyleResource();
+        mainRule = TP.styleSheetGetStyleRulesMatching(
+                            sheet,
+                            '#ResponderSummary_Tile').first();
 
-            //  The tile is new
+        tileWidth = mainRule.style.minWidth.asNumber() + 2;
 
-            sheet = this.getStylesheetForStyleResource();
-            mainRule = TP.styleSheetGetStyleRulesMatching(
-                                sheet,
-                                '#ResponderSummary_Tile').first();
-            tileWidth = mainRule.style.minWidth.asNumber();
+        //  NB: We need to set this because if the tile exists, we set it before
+        //  obtaining the width.
+        tileTPElem.setAttribute('hidden', false);
 
-            xCoord = centerTPElemPageRect.getX() +
-                        centerTPElemPageRect.getWidth() -
-                        tileWidth - 2;
-            aTileTPElem.setPagePosition(
-                        TP.pc(xCoord, targetElemPageRect.getY()));
+    } else {
 
-            aTileTPElem.get('footer').setContent(
-                TP.xhtmlnode('<button class="inserter" on:click="{signal: AddSignalHandler, origin: \'RespondersHUD\'}"/>'));
+        //  NB: We need to set this before getting the tile's current width
+        tileTPElem.setAttribute('hidden', false);
 
-            contentTPElem = aTileTPElem.setContent(
-                TP.elem('<xctrls:list id="ResponderMethodList"' +
-                        ' bind:in="{data: ' + dataURI.asString() + '}"' +
-                        ' on:UISelect="InspectResponderMethod"' +
-                        ' tibet:ctrl="RespondersHUD"' +
-                        '/>'));
+        tileWidth = tileTPElem.getWidth();
+    }
 
-            contentTPElem.awaken();
+    xCoord = centerTPElemPageRect.getX() +
+                centerTPElemPageRect.getWidth() -
+                tileWidth;
+    tileTPElem.setPagePosition(
+                TP.pc(xCoord, targetElemPageRect.getY()));
 
-            //  Set the model's URI's resource and signal change. This will
-            //  cause the properties to update.
-            dataURI.setResource(methods, TP.hc('signalChange', true));
-
-        }.bind(this));
+    //  Set the model's URI's resource and signal change. This will
+    //  cause the properties to update.
+    dataURI.setResource(methods, TP.hc('signalChange', true));
 
     return this;
 });
