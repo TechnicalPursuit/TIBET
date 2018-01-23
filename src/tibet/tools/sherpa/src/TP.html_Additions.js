@@ -211,11 +211,11 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.span.Inst.defineMethod('sherpaDomHudGetLabel',
+TP.html.span.Inst.defineMethod('getContentForDomHUDLabel',
 function() {
 
     /**
-     * @method sherpaDomHudGetLabel
+     * @method getContentForDomHUDLabel
      * @summary Returns the label that the Sherpa's 'domhud' panel will use when
      *     displaying it's representation for this node.
      * @returns {String} The label to use in the 'domhud' panel.

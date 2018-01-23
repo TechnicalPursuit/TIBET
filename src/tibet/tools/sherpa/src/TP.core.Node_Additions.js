@@ -678,11 +678,11 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaDomHudGetLabel',
+TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDLabel',
 function() {
 
     /**
-     * @method sherpaDomHudGetLabel
+     * @method getContentForDomHUDLabel
      * @summary Returns the label that the Sherpa's 'domhud' panel will use when
      *     displaying it's representation for this node.
      * @returns {String} The label to use in the 'domhud' panel.
@@ -693,13 +693,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaDomHudGetTileContent',
+TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTile',
 function() {
 
     /**
-     * @method sherpaDomHudGetTileContent
-     * @summary Returns the label that the Sherpa's 'domhud' panel will use when
-     *     displaying it's 'tile' panel for this node.
+     * @method getContentForDomHUDTile
+     * @summary Returns the content that the Sherpa's 'domhud' panel will use
+     *     when displaying it's 'tile' panel for this node.
      * @returns {Element} The Element that will be used as the content for the
      *     domhud tile panel.
      */

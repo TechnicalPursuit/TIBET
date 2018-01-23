@@ -232,7 +232,9 @@ function(aTPElement) {
 
             arr = TP.ac(
                     TP.lid(node, true),
-                    aNode.sherpaDomHudGetLabel());
+                    TP.getContentForTool(
+                        aNode,
+                        'DomHUDLabel'));
 
             if (aNode === aTPElement) {
                 arr.push('target');
@@ -1209,7 +1211,9 @@ function(aSignal) {
                 var newContentTPElem;
 
                 newContentTPElem = aTileTPElem.setContent(
-                                    sourceTPElem.sherpaDomHudGetTileContent());
+                                        TP.getContentForTool(
+                                            sourceTPElem,
+                                            'DomHUDTile'));
 
                 aTileTPElem.get('footer').setContent(
                     TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'DOMAttributes_Repeat\', payload: {source: \'urn:tibet:dom_attr_data_blank\', copy: true}}"></button>'));
