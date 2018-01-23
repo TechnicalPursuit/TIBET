@@ -314,7 +314,9 @@ function() {
 
     arr = TP.ac(
             TP.lid(root, true),
-            TP.elementGetFullName(root),
+            TP.getContentForTool(
+                TP.wrap(root),
+                'DomHUDLabel'),
             'normal');
 
     //  List expects an array of arrays containing IDs and full names.
