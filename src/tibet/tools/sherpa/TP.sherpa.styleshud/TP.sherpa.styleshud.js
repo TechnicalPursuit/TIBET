@@ -83,6 +83,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.styleshud.Inst.defineAttribute('$currentDNDTarget');
+TP.sherpa.styleshud.Inst.defineAttribute('$currentRuleIndex');
 
 TP.sherpa.styleshud.Inst.defineAttribute('highlighted');
 
@@ -765,8 +766,10 @@ function(aSignal) {
         centerElemPageRect,
 
         targetTPElem,
-
         targetElemPageRect,
+
+        halo,
+        sourceTPElem,
 
         tileTPElem,
         newContentTPElem,
@@ -810,6 +813,9 @@ function(aSignal) {
     //  Use the 'Y' coordinate where the target element is located in the page.
     targetElemPageRect = targetTPElem.getPageRect();
 
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    sourceTPElem = halo.get('currentTargetTPElem');
+
     //  ---
 
     tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeWindow());
@@ -820,13 +826,13 @@ function(aSignal) {
 
         newContentTPElem = tileTPElem.setContent(
                                 TP.getContentForTool(
-                                    targetTPElem,
+                                    sourceTPElem,
                                     'StylesHUDTileBody'));
         newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(
                                 TP.getContentForTool(
-                                    targetTPElem,
+                                    sourceTPElem,
                                     'StylesHUDTileFooter'));
 
         setResourceParams =

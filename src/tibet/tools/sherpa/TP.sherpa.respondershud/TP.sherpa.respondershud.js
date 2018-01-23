@@ -512,8 +512,10 @@ function(aSignal) {
         centerTPElemPageRect,
 
         targetTPElem,
-
         targetElemPageRect,
+
+        halo,
+        sourceTPElem,
 
         tileTPElem,
 
@@ -570,6 +572,9 @@ function(aSignal) {
     //  Use the 'Y' coordinate where the target element is located in the page.
     targetElemPageRect = targetTPElem.getPageRect();
 
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    sourceTPElem = halo.get('currentTargetTPElem');
+
     //  ---
 
     tileTPElem = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
@@ -580,14 +585,14 @@ function(aSignal) {
 
         newContentTPElem = tileTPElem.setContent(
                                 TP.getContentForTool(
-                                    targetTPElem,
+                                    sourceTPElem,
                                     'RespondersHUDTileBody',
                                     TP.hc('dataURI', dataURI)));
         newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(
                                 TP.getContentForTool(
-                                    targetTPElem,
+                                    sourceTPElem,
                                     'RespondersHUDTileFooter'));
 
         sheet = this.getStylesheetForStyleResource();
