@@ -656,7 +656,14 @@ function(aSignal) {
         centerTPElemPageRect,
         targetElemPageRect,
 
-        tileTPElem;
+        tileTPElem,
+        newContentTPElem,
+
+        sheet,
+        mainRule,
+
+        tileWidth,
+        xCoord;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -689,113 +696,105 @@ function(aSignal) {
     bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
     expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
 
-    if (TP.isURIString(expandedBindingExpr)) {
-        sourceURI = TP.uc(expandedBindingExpr);
+    if (!TP.isURIString(expandedBindingExpr)) {
+        return this;
+    }
 
-        //  Prevent default *on the trigger signal* (which is the GUI signal -
-        //  the contextmenu signal) so that any sort of 'right click' menu
-        //  doesn't show.
-        aSignal.at('trigger').preventDefault();
+    sourceURI = TP.uc(expandedBindingExpr);
 
-        sourceResource = sourceURI.getResource(
-                                    TP.hc('resultType', TP.WRAP));
-        sourceResource.then(
-            function(sourceResult) {
+    //  Prevent default *on the trigger signal* (which is the GUI signal -
+    //  the contextmenu signal) so that any sort of 'right click' menu
+    //  doesn't show.
+    aSignal.at('trigger').preventDefault();
 
-                var mimeType,
-                    formattedResult;
+    sourceResource = sourceURI.getResource(
+                                TP.hc('resultType', TP.WRAP));
+    sourceResource.then(
+        function(sourceResult) {
 
-                if (TP.notEmpty(sourceResult)) {
-                    if (TP.isKindOf(sourceResult, TP.core.Content)) {
-                        mimeType = sourceResult.getContentMIMEType();
-                    } else if (TP.isKindOf(sourceResult, TP.core.Node)) {
-                        mimeType = TP.XML_ENCODED;
-                    } else {
-                        mimeType = TP.JSON_ENCODED;
-                    }
+            var mimeType,
+                formattedResult;
 
-                    if (mimeType === TP.XML_ENCODED) {
-                        formattedResult = TP.sherpa.pp.runXMLModeOn(
-                                            sourceResult.asString());
-                    } else if (mimeType === TP.JSON_ENCODED) {
-                        formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
-                                            sourceResult.asJSONSource());
-                    } else {
-                        formattedResult = TP.str(sourceResult);
-                    }
+            if (TP.notEmpty(sourceResult)) {
+                if (TP.isKindOf(sourceResult, TP.core.Content)) {
+                    mimeType = sourceResult.getContentMIMEType();
+                } else if (TP.isKindOf(sourceResult, TP.core.Node)) {
+                    mimeType = TP.XML_ENCODED;
                 } else {
-                    formattedResult = 'No result for:<br/>' +
-                                        sourceURI.getLocation();
+                    mimeType = TP.JSON_ENCODED;
                 }
 
-                tileTPElem.setContent(
-                    TP.xhtmlnode('<span class="cm-s-elegant">' +
-                                    formattedResult +
-                                    '</span>'));
-            });
+                if (mimeType === TP.XML_ENCODED) {
+                    formattedResult = TP.sherpa.pp.runXMLModeOn(
+                                        sourceResult.asString());
+                } else if (mimeType === TP.JSON_ENCODED) {
+                    formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
+                                        sourceResult.asJSONSource());
+                } else {
+                    formattedResult = TP.str(sourceResult);
+                }
+            } else {
+                formattedResult = 'No result for:<br/>' +
+                                    sourceURI.getLocation();
+            }
 
-        //  Use the same 'X' coordinate where the 'center' div is located in the
-        //  page.
-        centerTPElem = TP.byId('center', this.getNativeWindow());
-        centerTPElemPageRect = centerTPElem.getPageRect();
+            tileTPElem.setContent(
+                TP.xhtmlnode('<span class="cm-s-elegant">' +
+                                formattedResult +
+                                '</span>'));
+        });
 
-        //  Use the 'Y' coordinate where the target element is located in the
-        //  page.
-        targetElemPageRect = TP.wrap(targetElem).getPageRect();
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerTPElem = TP.byId('center', this.getNativeWindow());
+    centerTPElemPageRect = centerTPElem.getPageRect();
 
-        TP.bySystemId('Sherpa').showTileAt(
-            'BindSummary_Tile',
-            'Bind Source Text',
-            function(aTileTPElem) {
-                var tileWidth,
-                    xCoord;
+    //  Use the 'Y' coordinate where the target element is located in the
+    //  page.
+    targetElemPageRect = TP.wrap(targetElem).getPageRect();
 
-                //  The tile already existed
+    //  ---
 
-                tileWidth = aTileTPElem.getWidth();
+    tileTPElem = TP.byId('BindSummary_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
 
-                xCoord = centerTPElemPageRect.getX() +
-                            centerTPElemPageRect.getWidth() -
-                            tileWidth;
-                aTileTPElem.setPagePosition(
-                            TP.pc(xCoord, targetElemPageRect.getY()));
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('BindSummary_Tile');
+        tileTPElem.setHeaderText('Bind Source Text');
 
-                aTileTPElem.setContent(
-                    TP.xhtmlnode('<span class="cm-s-elegant">' +
-                                    'Fetching data...' +
-                                    '</span>'));
+        newContentTPElem = tileTPElem.setContent(
+                                TP.getContentForTool(
+                                    targetTPElem,
+                                    'BindsHUDTileBody'));
 
-                tileTPElem = aTileTPElem;
-            },
-            function(aTileTPElem) {
-                var sheet,
-                    mainRule,
+        newContentTPElem.awaken();
 
-                    tileWidth,
-                    xCoord;
+        sheet = this.getStylesheetForStyleResource();
+        mainRule = TP.styleSheetGetStyleRulesMatching(
+                            sheet,
+                            '#BindSummary_Tile').first();
+        tileWidth = mainRule.style.minWidth.asNumber() + 2;
 
-                //  The tile is new
+        //  NB: We need to set this because if the tile exists, we set it before
+        //  obtaining the width.
+        tileTPElem.setAttribute('hidden', false);
 
-                sheet = this.getStylesheetForStyleResource();
-                mainRule = TP.styleSheetGetStyleRulesMatching(
-                                    sheet,
-                                    '#BindSummary_Tile').first();
-                tileWidth = mainRule.style.minWidth.asNumber();
+    } else {
 
-                xCoord = centerTPElemPageRect.getX() +
-                            centerTPElemPageRect.getWidth() -
-                            tileWidth - 2;
-                aTileTPElem.setPagePosition(
-                    TP.pc(xCoord, targetElemPageRect.getY()));
+        //  NB: We need to set this before getting the tile's current width
+        tileTPElem.setAttribute('hidden', false);
 
-                aTileTPElem.setContent(
-                    TP.xhtmlnode('<span class="cm-s-elegant">' +
-                                    'Fetching data...' +
-                                    '</span>'));
+        tileWidth = tileTPElem.getWidth();
 
-                tileTPElem = aTileTPElem;
-            }.bind(this));
+        tileTPElem.setContent(TP.getContentForTool(
+                                targetTPElem,
+                                'BindsHUDTileBody'));
     }
+
+    xCoord = centerTPElemPageRect.getX() +
+                centerTPElemPageRect.getWidth() -
+                tileWidth;
+    tileTPElem.setPagePosition(
+                TP.pc(xCoord, targetElemPageRect.getY()));
 
     return this;
 });

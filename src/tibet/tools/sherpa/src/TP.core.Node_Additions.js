@@ -693,6 +693,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getContentForBindsHUDTileBody',
+function() {
+
+    /**
+     * @method getContentForBindsHUDTileBody
+     * @summary Returns the content that the Sherpa's 'bindshud' panel will use
+     *     as the 'tile body' when displaying it's 'tile' panel for this node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     'body' of the bindshud tile panel.
+     */
+
+    return TP.xhtmlnode('<span class="cm-s-elegant">' +
+                            'Fetching data...' +
+                            '</span>');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTileBody',
 function() {
 
