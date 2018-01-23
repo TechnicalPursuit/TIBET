@@ -644,7 +644,7 @@ function(aSignal) {
         itemData,
 
         peerID,
-        targetTPElem,
+        sourceTPElem,
 
         bindingExprs,
         expandedBindingExpr,
@@ -691,9 +691,9 @@ function(aSignal) {
     itemData = data.at(indexInData);
 
     peerID = itemData.at(0);
-    targetTPElem = TP.byId(peerID);
+    sourceTPElem = TP.byId(peerID);
 
-    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions();
     expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
 
     if (!TP.isURIString(expandedBindingExpr)) {
@@ -763,7 +763,7 @@ function(aSignal) {
 
         newContentTPElem = tileTPElem.setContent(
                                 TP.getContentForTool(
-                                    targetTPElem,
+                                    sourceTPElem,
                                     'BindsHUDTileBody'));
 
         newContentTPElem.awaken();
@@ -786,7 +786,7 @@ function(aSignal) {
         tileWidth = tileTPElem.getWidth();
 
         tileTPElem.setContent(TP.getContentForTool(
-                                targetTPElem,
+                                sourceTPElem,
                                 'BindsHUDTileBody'));
     }
 
