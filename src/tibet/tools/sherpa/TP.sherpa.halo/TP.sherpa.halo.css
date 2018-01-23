@@ -39,11 +39,24 @@ sherpa|halo:not([pclass|hidden]) {
     height: var(--sherpa-halo-height);
 }
 
-/* In effect when the halo is focused on a target that is below the minimum size
-   as defined in the main sherpa|halo rule above */
-sherpa|halo[size="belowMinimum"] {
+/* In effect when the halo is focused on a target that is not a 'displayed'
+ * element (note that this is *not* the same as 'non visible') */
+sherpa|halo[nonDisplayedTarget="true"] {
 
     background: repeating-linear-gradient(142deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 10px, rgba(216, 216, 216, 0.75) 10px, rgba(216, 216, 216, 0.75) 15px);
+}
+
+sherpa|halo[nonDisplayedTarget="true"][descendantOf="head"] {
+
+    left: calc(50% - (var(--sherpa-halo-width) / 2));
+}
+
+sherpa|halo[nonDisplayedTarget="true"][descendantOf="body"] {
+
+    top: auto !important;
+    bottom: var(--sherpa-halo-corner-size) !important;
+
+    left: calc(50% - (var(--sherpa-halo-width) / 2));
 }
 
 sherpa|halo > div {

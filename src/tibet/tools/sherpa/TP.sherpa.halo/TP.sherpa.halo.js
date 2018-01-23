@@ -1429,22 +1429,25 @@ function(newTargetTPElem, shouldUnhide) {
 
     this.set('haloRect', theRect);
 
-    if (TP.isValid(newTargetTPElem)) {
-        //  Test to see if its less than our minimum width/height as defined in
-        //  our style sheet. If so, set the 'size' attribute to 'belowMinimum'.
-        styleVals = TP.elementGetComputedStyleValuesInPixels(
-                        this.getNativeNode(),
-                        TP.ac('minWidth', 'minHeight'));
+    this.removeAttribute('nonDisplayedTarget');
+    this.removeAttribute('descendantOf');
 
-        if (newTargetTPElem.getWidth() < styleVals.at('minWidth') ||
-            newTargetTPElem.getHeight() < styleVals.at('minHeight')) {
-            this.setAttribute('size', 'belowMinimum');
-        } else {
-            this.removeAttribute('size');
+    if (TP.isValid(newTargetTPElem)) {
+
+        if (!newTargetTPElem.isDisplayed()) {
+            this.setAttribute('nonDisplayedTarget', 'true');
+
+            newTargetTPDoc = newTargetTPElem.getDocument();
+
+            if (newTargetTPElem === newTargetTPDoc.getHead() ||
+                newTargetTPDoc.getHead().contains(
+                            newTargetTPElem, TP.IDENTITY)) {
+                this.setAttribute('descendantOf', 'head');
+            } else if (newTargetTPDoc.getBody().contains(
+                            newTargetTPElem, TP.IDENTITY)) {
+                this.setAttribute('descendantOf', 'body');
+            }
         }
-    } else {
-        //  No valid new target - just remove the 'size' attribute
-        this.removeAttribute('size');
     }
 
     //  If we should unhide ourself, then do so.
