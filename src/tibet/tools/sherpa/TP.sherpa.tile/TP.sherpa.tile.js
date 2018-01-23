@@ -34,8 +34,6 @@ TP.sherpa.tile.Inst.defineAttribute('body',
 TP.sherpa.tile.Inst.defineAttribute('footer',
     TP.cpc('> .footer', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.tile.Inst.defineAttribute('shouldDock');
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------

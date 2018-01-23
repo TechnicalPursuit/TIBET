@@ -1218,7 +1218,7 @@ function(aTPElem) {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID, headerText, tileParent, shouldDock) {
+function(anID, headerText, tileParent) {
 
     /**
      * @method makeTile
@@ -1230,8 +1230,6 @@ function(anID, headerText, tileParent, shouldDock) {
      * @param {Element} [tileParent] The tile parent element. If this is not
      *     supplied, then the Sherpa's common tile layer is used as the tile
      *     parent.
-     * @param {Boolean} [shouldDock=true] Whether or not to configure the tile
-     *     to be 'dockable'.
      * @returns {TP.sherpa.tile} The newly created tile.
      */
 
@@ -1241,8 +1239,6 @@ function(anID, headerText, tileParent, shouldDock) {
         tileTPElem,
 
         tileID,
-
-        wantsToDock,
 
         centerTPElem,
         centerTPElemPageRect;
@@ -1269,10 +1265,6 @@ function(anID, headerText, tileParent, shouldDock) {
     //  Set the ID and header text
     tileTPElem.setID(tileID);
     tileTPElem.setHeaderText(headerText);
-
-    //  The default is to create a dockable tile.
-    wantsToDock = TP.notDefined(shouldDock, true);
-    tileTPElem.set('shouldDock', wantsToDock);
 
     //  Center this based on where the 'center' div is located.
     centerTPElem = TP.byId('center', this.get('vWin'));
