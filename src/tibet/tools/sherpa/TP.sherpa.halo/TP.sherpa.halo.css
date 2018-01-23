@@ -9,8 +9,11 @@ sherpa|halo {
     top: 200px;
     left: 200px;
 
-    min-height: 15px;
-    min-width: 50px;
+    --tibet-halo-corner-size: 7px;
+    --tibet-halo-corner-offset: -7px;
+
+    min-width: calc((var(--tibet-halo-corner-size) * 3) + 3px);
+    min-height: calc((var(--tibet-halo-corner-size) * 3) + 2px);
 
     z-index: var(--tibet-CONSOLE-HALO-TIER);
 
@@ -64,57 +67,57 @@ sherpa|halo > div {
 /* TP.NORTHWEST */
 #haloCorner-Northwest {
 
-    top: -7px;
-    left: -7px;
+    top: var(--sherpa-halo-corner-offset);
+    left: var(--sherpa-halo-corner-offset);
 }
 
 /* TP.NORTH */
 #haloCorner-North {
 
-    top: -7px;
-    left: calc(50% - 7px);
+    top: var(--sherpa-halo-corner-offset);
+    left: calc(50% - var(--sherpa-halo-corner-size));
 }
 
 /* TP.NORTHEAST */
 #haloCorner-Northeast {
 
-    top: -7px;
-    right: -7px;
+    top: var(--sherpa-halo-corner-offset);
+    right: var(--sherpa-halo-corner-offset);
 }
 
 /* TP.WEST */
 #haloCorner-West {
 
-    left: -7px;
-    top: calc(50% - 6px);
+    left: var(--sherpa-halo-corner-offset);
+    top: calc(50% - var(--sherpa-halo-corner-size) - 1px);
 }
 
 /* TP.EAST */
 #haloCorner-East {
 
-    right: -7px;
-    top: calc(50% - 6px);
+    right: var(--sherpa-halo-corner-offset);
+    top: calc(50% - var(--sherpa-halo-corner-size) - 1px);
 }
 
 /* TP.SOUTHWEST */
 #haloCorner-Southwest {
 
-    bottom: -7px;
-    left: -7px;
+    bottom: var(--sherpa-halo-corner-offset);
+    left: var(--sherpa-halo-corner-offset);
 }
 
 /* TP.SOUTH */
 #haloCorner-South {
 
-    left: calc(50% - 7px);
-    bottom: -7px;
+    left: calc(50% - var(--sherpa-halo-corner-size));
+    bottom: var(--sherpa-halo-corner-offset);
 }
 
 /* TP.SOUTHEAST */
 #haloCorner-Southeast {
 
-    bottom: -7px;
-    right: -7px;
+    bottom: var(--sherpa-halo-corner-offset);
+    right: var(--sherpa-halo-corner-offset);
 }
 
 /* Halo breadcrumb */
