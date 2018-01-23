@@ -3572,6 +3572,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('isDisplayed',
+function() {
+
+    /**
+     * @method isDisplayed
+     * @summary Returns whether or not the receiver is displayed to the user.
+     *     This is dependent not only on its own 'display' and 'visibility'
+     *     settings, but on those settings of its parents.
+     * @description Note that this only tests whether the receiver is currently
+     *     being displayed insofar as CSS is concerned. The receiver very well
+     *     may be scrolled off screen or under the influence of a CSS transform
+     *     that would cause it to not be visible to the user. Use the
+     *     isVisible() method to test whether the element is truly visible.
+     * @returns {Boolean} Whether or not anElement is displayed.
+     */
+
+    return TP.elementIsDisplayed(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
 function(direction) {
 
