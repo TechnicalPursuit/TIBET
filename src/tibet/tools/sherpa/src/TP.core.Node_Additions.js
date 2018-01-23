@@ -723,6 +723,38 @@ function() {
     return TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'DOMAttributes_Repeat\', payload: {source: \'urn:tibet:dom_attr_data_blank\', copy: true}}"></button>');
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getContentForStylesHUDTileBody',
+function() {
+
+    /**
+     * @method getContentForStylesHUDTileBody
+     * @summary Returns the content that the Sherpa's 'styleshud' panel will use
+     *     as the 'tile body' when displaying it's 'tile' panel for this node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     'body' of the styleshud tile panel.
+     */
+
+    return TP.elem('<sherpa:styleshud_ruleContent/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getContentForStylesHUDTileFooter',
+function() {
+
+    /**
+     * @method getContentForStylesHUDTileFooter
+     * @summary Returns the content that the Sherpa's 'styleshud' panel will use
+     *     as the 'tile footer' when displaying it's 'tile' panel for this node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     'footer' of the styleshud tile panel.
+     */
+
+    return TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'styleshud_properties\', payload: {source: \'urn:tibet:style_prop_data_blank\', copy: true}}"></button>');
+});
+
 TP.core.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
 function(insertionPointElement, insertionPosition) {
 

@@ -83,7 +83,6 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.styleshud.Inst.defineAttribute('$currentDNDTarget');
-TP.sherpa.styleshud.Inst.defineAttribute('$tileContentConstructed');
 
 TP.sherpa.styleshud.Inst.defineAttribute('highlighted');
 
@@ -765,10 +764,17 @@ function(aSignal) {
         centerElem,
         centerElemPageRect,
 
+        targetTPElem,
+
         targetElemPageRect,
 
-        existedHandler,
-        newHandler;
+        tileTPElem,
+        newContentTPElem,
+
+        setResourceParams,
+
+        modelURI,
+        modelObj;
 
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'selector')) {
@@ -799,117 +805,63 @@ function(aSignal) {
     centerElem = TP.byId('center', this.getNativeWindow());
     centerElemPageRect = centerElem.getPageRect();
 
+    targetTPElem = TP.wrap(targetElem);
+
     //  Use the 'Y' coordinate where the target element is located in the page.
-    targetElemPageRect = TP.wrap(targetElem).getPageRect();
+    targetElemPageRect = targetTPElem.getPageRect();
 
     //  ---
 
-    //  If we've already constructed the tile content, just set the resource on
-    //  the model URI. This will cause the bindings to update.
-    if (this.get('$tileContentConstructed')) {
-        existedHandler =
-            function(aTileTPElem) {
+    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
 
-                var modelURI,
-                    modelObj,
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('StyleSummary_Tile');
+        tileTPElem.setHeaderText('Rule Properties');
 
-                    tileTPElem;
+        newContentTPElem = tileTPElem.setContent(
+                                TP.getContentForTool(
+                                    targetTPElem,
+                                    'StylesHUDTileBody'));
+        newContentTPElem.awaken();
 
-                //  Grab the current target source.
-                modelURI = TP.uc('urn:tibet:styleshud_target_source');
-                modelObj = TP.byId('SherpaHalo', TP.win('UIROOT')).
-                                                    get('currentTargetTPElem');
+        tileTPElem.get('footer').setContent(
+                                TP.getContentForTool(
+                                    targetTPElem,
+                                    'StylesHUDTileFooter'));
 
-                //  Set the model's URI's resource and signal change. This will
-                //  cause the properties to update.
-                modelURI.setResource(modelObj, TP.hc('signalChange', true));
-
-                //  Grab the current rule source.
-                modelURI = TP.uc('urn:tibet:styleshud_rule_source');
-                modelObj = itemData;
-
-                //  Set the model's URI's resource and signal change. This will
-                //  cause the properties to update.
-                modelURI.setResource(modelObj, TP.hc('signalChange', true));
-
-                //  Position the tile
-                tileTPElem = TP.byId('StyleSummary_Tile',
-                                        this.getNativeDocument());
-                tileTPElem.setPagePosition(
-                    TP.pc(centerElemPageRect.getX(),
-                            targetElemPageRect.getY()));
-
-                (function() {
-                    tileTPElem.get('body').
-                        focusAutofocusedOrFirstFocusableDescendant();
-                }).queueForNextRepaint(aTileTPElem.getNativeWindow());
-            }.bind(this);
+        setResourceParams =
+            TP.hc('observeResource', true, 'signalChange', true);
     } else {
-
-        newHandler =
-            function(aTileTPElem) {
-
-                var contentElem,
-                    newContentTPElem,
-
-                    modelURI,
-                    modelObj;
-
-                contentElem = TP.elem('<sherpa:styleshud_ruleContent/>');
-
-                newContentTPElem = aTileTPElem.setContent(contentElem);
-
-                aTileTPElem.get('footer').setContent(TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'styleshud_properties\', payload: {source: \'urn:tibet:style_prop_data_blank\', copy: true}}"></button>'));
-
-                newContentTPElem.awaken();
-
-                //  Grab the current target source.
-                modelURI = TP.uc('urn:tibet:styleshud_target_source');
-                modelObj = TP.byId('SherpaHalo', TP.win('UIROOT')).
-                                                    get('currentTargetTPElem');
-
-                //  Set the resource of the model URI to the model object,
-                //  telling the URI that it should observe changes to the model
-                //  (which will allow us to get notifications from the URI which
-                //  we're observing above) and to go ahead and signal change to
-                //  kick things off.
-                modelURI.setResource(
-                    modelObj,
-                    TP.hc('observeResource', true, 'signalChange', true));
-
-                //  Grab the current rule source.
-                modelURI = TP.uc('urn:tibet:styleshud_rule_source');
-                modelObj = itemData;
-
-                //  Set the resource of the model URI to the model object,
-                //  telling the URI that it should observe changes to the model
-                //  (which will allow us to get notifications from the URI which
-                //  we're observing above) and to go ahead and signal change to
-                //  kick things off.
-                modelURI.setResource(
-                    modelObj,
-                    TP.hc('observeResource', true, 'signalChange', true));
-
-                //  Position the tile
-                aTileTPElem.setPagePosition(
-                    TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
-
-                this.set('$tileContentConstructed', true);
-
-                (function() {
-                    newContentTPElem.
-                        focusAutofocusedOrFirstFocusableDescendant();
-                }).queueForNextRepaint(aTileTPElem.getNativeWindow());
-            }.bind(this);
+        setResourceParams = TP.hc('signalChange', true);
     }
 
-    //  Show the rule text in the tile. Note how we wrap the content with a span
-    //  with a CodeMirror CSS class to make the styling work.
-    TP.bySystemId('Sherpa').showTileAt(
-        'StyleSummary_Tile',
-        'Rule Properties',
-        existedHandler,
-        newHandler);
+    //  Grab the current target source.
+    modelURI = TP.uc('urn:tibet:styleshud_target_source');
+    modelObj = TP.byId('SherpaHalo', TP.win('UIROOT')).
+                                        get('currentTargetTPElem');
+
+    //  Set the model's URI's resource and signal change. This will
+    //  cause the properties to update.
+    modelURI.setResource(modelObj, setResourceParams);
+
+    //  Grab the current rule source.
+    modelURI = TP.uc('urn:tibet:styleshud_rule_source');
+    modelObj = itemData;
+
+    //  Set the model's URI's resource and signal change. This will
+    //  cause the properties to update.
+    modelURI.setResource(modelObj, setResourceParams);
+
+    //  Position the tile
+    tileTPElem.setPagePosition(
+        TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+
+    (function() {
+        tileTPElem.get('body').
+            focusAutofocusedOrFirstFocusableDescendant();
+    }).queueForNextRepaint(tileTPElem.getNativeWindow());
+
+    tileTPElem.setAttribute('hidden', false);
 
     return this;
 });
