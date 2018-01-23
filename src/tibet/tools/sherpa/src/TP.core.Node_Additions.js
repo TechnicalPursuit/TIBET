@@ -693,21 +693,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTile',
+TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTileBody',
 function() {
 
     /**
-     * @method getContentForDomHUDTile
+     * @method getContentForDomHUDTileBody
      * @summary Returns the content that the Sherpa's 'domhud' panel will use
-     *     when displaying it's 'tile' panel for this node.
+     *     as the 'tile body' when displaying it's 'tile' panel for this node.
      * @returns {Element} The Element that will be used as the content for the
-     *     domhud tile panel.
+     *     'body' of the domhud tile panel.
      */
 
     return TP.elem('<sherpa:domhud_genericContent/>');
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTileFooter',
+function() {
+
+    /**
+     * @method getContentForDomHUDTileFooter
+     * @summary Returns the content that the Sherpa's 'domhud' panel will use
+     *     as the 'tile footer' when displaying it's 'tile' panel for this node.
+     * @returns {Element} The Element that will be used as the content for the
+     *     'footer' of the domhud tile panel.
+     */
+
+    return TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'DOMAttributes_Repeat\', payload: {source: \'urn:tibet:dom_attr_data_blank\', copy: true}}"></button>');
+});
 
 TP.core.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
 function(insertionPointElement, insertionPosition) {

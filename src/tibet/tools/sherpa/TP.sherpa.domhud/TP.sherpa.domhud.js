@@ -83,7 +83,6 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.domhud.Inst.defineAttribute('$currentDNDTarget');
-TP.sherpa.domhud.Inst.defineAttribute('$tileContentConstructed');
 
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
@@ -1142,8 +1141,8 @@ function(aSignal) {
 
         modelURI,
 
-        existedHandler,
-        newHandler;
+        tileTPElem,
+        newContentTPElem;
 
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'domnode')) {
@@ -1181,75 +1180,38 @@ function(aSignal) {
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:domhud_target_source');
 
-    //  If we've already constructed the tile content, just set the resource on
-    //  the model URI. This will cause the bindings to update.
-    if (this.get('$tileContentConstructed')) {
-        existedHandler =
-            function(aTileTPElem) {
+    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
 
-                var tileTPElem;
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('DOMInfo_Tile');
+        tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
 
-                modelURI.setResource(
-                    sourceTPElem,
-                    TP.hc('observeResource', false, 'signalChange', true));
+        newContentTPElem = tileTPElem.setContent(
+                                TP.getContentForTool(
+                                    sourceTPElem,
+                                    'DomHUDTileBody'));
+        newContentTPElem.awaken();
 
-                //  Position the tile
-                tileTPElem = TP.byId('DOMInfo_Tile',
-                                        this.getNativeDocument());
-                tileTPElem.setPagePosition(
-                    TP.pc(centerElemPageRect.getX(),
-                            targetElemPageRect.getY()));
-
-                (function() {
-                    tileTPElem.get('body').
-                        focusAutofocusedOrFirstFocusableDescendant();
-                }).queueForNextRepaint(aTileTPElem.getNativeWindow());
-            }.bind(this);
-    } else {
-
-        newHandler =
-            function(aTileTPElem) {
-
-                var newContentTPElem;
-
-                newContentTPElem = aTileTPElem.setContent(
-                                        TP.getContentForTool(
-                                            sourceTPElem,
-                                            'DomHUDTile'));
-
-                aTileTPElem.get('footer').setContent(
-                    TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'DOMAttributes_Repeat\', payload: {source: \'urn:tibet:dom_attr_data_blank\', copy: true}}"></button>'));
-                newContentTPElem.awaken();
-
-                //  Set the resource of the model URI to the model object,
-                //  telling the URI that it should observe changes to the model
-                //  (which will allow us to get notifications from the URI which
-                //  we're observing above) and to go ahead and signal change to
-                //  kick things off.
-                modelURI.setResource(
-                    sourceTPElem,
-                    TP.hc('observeResource', false, 'signalChange', true));
-
-                //  Position the tile
-                aTileTPElem.setPagePosition(
-                    TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
-
-                this.set('$tileContentConstructed', true);
-
-                (function() {
-                    newContentTPElem.
-                        focusAutofocusedOrFirstFocusableDescendant();
-                }).queueForNextRepaint(aTileTPElem.getNativeWindow());
-            }.bind(this);
+        tileTPElem.get('footer').setContent(
+                                TP.getContentForTool(
+                                    sourceTPElem,
+                                    'DomHUDTileFooter'));
     }
 
-    //  Show the rule text in the tile. Note how we wrap the content with a span
-    //  with a CodeMirror CSS class to make the styling work.
-    TP.bySystemId('Sherpa').showTileAt(
-        'DOMInfo_Tile',
-        'DOM Info - ' + sourceTPElem.getFullName(),
-        existedHandler,
-        newHandler);
+    modelURI.setResource(
+        sourceTPElem,
+        TP.hc('observeResource', false, 'signalChange', true));
+
+    //  Position the tile
+    tileTPElem.setPagePosition(TP.pc(centerElemPageRect.getX(),
+                                targetElemPageRect.getY()));
+
+    (function() {
+        tileTPElem.get('body').
+            focusAutofocusedOrFirstFocusableDescendant();
+    }).queueForNextRepaint(tileTPElem.getNativeWindow());
+
+    tileTPElem.setAttribute('hidden', false);
 
     return this;
 });
