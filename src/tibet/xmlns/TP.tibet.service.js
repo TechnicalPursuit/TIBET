@@ -732,6 +732,21 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.service.Inst.defineMethod('isReadyToRender',
+function() {
+
+    /**
+     * @method isReadyToRender
+     * @summary Whether or not the receiver is 'ready to render'. For this type,
+     *     this always returns true.
+     * @returns {Boolean} Whether or not the receiver is ready to render.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.service.Inst.defineMethod('setAttrWatched',
 function(watchedValue) {
 
