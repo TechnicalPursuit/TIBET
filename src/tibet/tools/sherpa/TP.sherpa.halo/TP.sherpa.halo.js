@@ -1335,7 +1335,9 @@ function(newTargetTPElem, shouldUnhide) {
 
         ourRect,
 
-        styleVals;
+        haloStyleElement,
+
+        newTargetTPDoc;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
@@ -1388,7 +1390,42 @@ function(newTargetTPElem, shouldUnhide) {
 
     theRect.subtractByPoint(ourRect.getXYPoint());
 
-    this.setOffsetPositionAndSize(theRect);
+    //  Grab the style sheet that the HUD injected into the UI canvas.
+    haloStyleElement = TP.byId('TP_sherpa_halo_generated',
+                                this.getNativeDocument(),
+                                false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        haloStyleElement,
+        'sherpa|halo',
+        '--sherpa-halo-top',
+        theRect.getY() + 'px',
+        null,
+        false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        haloStyleElement,
+        'sherpa|halo',
+        '--sherpa-halo-left',
+        theRect.getX() + 'px',
+        null,
+        false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        haloStyleElement,
+        'sherpa|halo',
+        '--sherpa-halo-width',
+        theRect.getWidth() + 'px',
+        null,
+        false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        haloStyleElement,
+        'sherpa|halo',
+        '--sherpa-halo-height',
+        theRect.getHeight() + 'px',
+        null,
+        false);
 
     this.set('haloRect', theRect);
 

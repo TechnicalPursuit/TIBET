@@ -6,14 +6,18 @@ sherpa|halo {
     display: block;
     position: absolute;
 
-    top: 200px;
-    left: 200px;
+    /* Set an initial top, left width and height - the halo code will overwrite
+     * this values dynamically as the halo is targeted. */
+    --sherpa-halo-top: 200px;
+    --sherpa-halo-left: 200px;
+    --sherpa-halo-width: 100px;
+    --sherpa-halo-height: 100px;
 
-    --tibet-halo-corner-size: 7px;
-    --tibet-halo-corner-offset: -7px;
+    --sherpa-halo-corner-size: 7px;
+    --sherpa-halo-corner-offset: -7px;
 
-    min-width: calc((var(--tibet-halo-corner-size) * 3) + 3px);
-    min-height: calc((var(--tibet-halo-corner-size) * 3) + 2px);
+    min-width: calc((var(--sherpa-halo-corner-size) * 3) + 3px);
+    min-height: calc((var(--sherpa-halo-corner-size) * 3) + 2px);
 
     z-index: var(--tibet-CONSOLE-HALO-TIER);
 
@@ -28,8 +32,11 @@ sherpa|halo {
 
 sherpa|halo:not([pclass|hidden]) {
 
-    width: 100px;
-    height: 100px;
+    top: var(--sherpa-halo-top);
+    left: var(--sherpa-halo-left);
+
+    width: var(--sherpa-halo-width);
+    height: var(--sherpa-halo-height);
 }
 
 /* In effect when the halo is focused on a target that is below the minimum size
