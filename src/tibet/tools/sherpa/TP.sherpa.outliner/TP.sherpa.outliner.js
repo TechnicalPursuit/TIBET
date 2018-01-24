@@ -1034,7 +1034,7 @@ function() {
     //  removing it as it won't be serialized when the canvas document is saved
     //  and its much faster to just toggle it's 'disabled' property during
     //  development.
-    outlinerStyleElement = TP.byId('outliner_injected', doc, false);
+    outlinerStyleElement = TP.byId('outliner_injected_generated', doc, false);
     if (TP.isElement(outlinerStyleElement)) {
         outlinerStyleElement.disabled = true;
     }
@@ -1244,7 +1244,7 @@ function() {
 
     doc = TP.sys.uidoc(true);
 
-    outlinerStyleElement = TP.byId('outliner_injected', doc, false);
+    outlinerStyleElement = TP.byId('outliner_injected_generated', doc, false);
 
     if (!TP.isElement(outlinerStyleElement)) {
 

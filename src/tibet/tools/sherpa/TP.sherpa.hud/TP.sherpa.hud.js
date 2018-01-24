@@ -195,7 +195,7 @@ function(beClosed) {
 
         //  Grab the styles that the HUD injects into the UI canvas and disable
         //  that style element.
-        hudStyleElement = TP.byId('hud_injected', doc, false);
+        hudStyleElement = TP.byId('hud_injected_generated', doc, false);
         if (TP.isElement(hudStyleElement)) {
             hudStyleElement.disabled = true;
         }
@@ -209,7 +209,7 @@ function(beClosed) {
 
         //  Grab the styles that the HUD injects into the UI canvas and enable
         //  that style element.
-        hudStyleElement = TP.byId('hud_injected', doc, false);
+        hudStyleElement = TP.byId('hud_injected_generated', doc, false);
         if (TP.isElement(hudStyleElement)) {
             hudStyleElement.disabled = false;
         }
@@ -343,7 +343,7 @@ function() {
 
     doc = TP.sys.uidoc(true);
 
-    hudStyleElement = TP.byId('hud_injected', doc, false);
+    hudStyleElement = TP.byId('hud_injected_generated', doc, false);
 
     if (!TP.isElement(hudStyleElement)) {
         hudStyleElement = TP.documentAddCSSElement(
