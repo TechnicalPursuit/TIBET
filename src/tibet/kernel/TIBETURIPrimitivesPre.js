@@ -161,6 +161,37 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('uriCleansePath',
+function(aPath) {
+
+    /**
+     * @method uriCleansePath
+     * @summary Returns a version of the url provided with any user/pass
+     *     information masked out. This is used for prompts and logging where
+     *     basic auth data could potentially be exposed to view.
+     * @param {String} aPath The URL to mask.
+     * @returns {String} The masked URL.
+     */
+
+    var regex,
+        match,
+        newurl;
+
+    //  scheme://(user):(pass)@hostetc...
+    regex = /(.*)\/\/(.*):(.*)@(.*)/;
+
+    if (!regex.test(aPath)) {
+        return aPath;
+    }
+
+    match = regex.exec(aPath);
+    newurl = match[1] + '//' + 'xxx:xxx@' + match[4];
+
+    return newurl;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('uriCollapsePath',
 function(aPath) {
 

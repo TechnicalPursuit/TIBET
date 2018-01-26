@@ -15,6 +15,62 @@
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('httpCleanse',
+function(anObj) {
+
+    /**
+     * @method httpCleanse
+     * @summary Cleanses a URI string or Request to mask off any authentication
+     *     data which may be in the content. Typically used by the logging
+     *     routine httpError to avoid logging failed login user/pass data.
+     * @param {String|Request} anObj The object to be cleansed.
+     * @returns {Object}
+     */
+
+    var obj;
+
+    if (TP.isString(anObj)) {
+        return TP.uriCleansePath(anObj);
+    }
+
+    //  TODO:   cleanse the request...
+    if (!TP.canInvokeInterface(anObj, ['at', 'atPut'])) {
+        return anObj;
+    }
+
+    //  Cleanse an uri value in the request.
+    anObj.atPut('uri', TP.uriCleansePath(anObj.at('uri')));
+
+    //  Can also end up with username/password data in the request body. Our
+    //  best chance in that case is if it's JSON...
+    try {
+        obj = JSON.parse(anObj.at('body'));
+        if (TP.isValid(obj.username)) {
+            obj.username = 'xxx';
+        }
+        if (TP.isValid(obj.password)) {
+            obj.password = 'xxx';
+        }
+        anObj.atPut('body', JSON.stringify(obj));
+
+        obj = JSON.parse(anObj.at('finalbody'));
+        if (TP.isValid(obj.username)) {
+            obj.username = 'xxx';
+        }
+        if (TP.isValid(obj.password)) {
+            obj.password = 'xxx';
+        }
+        anObj.atPut('finalbody', JSON.stringify(obj));
+    } catch (e) {
+        //  Not JSON? Can't really process intelligently then.
+        void 0;
+    }
+
+    return anObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('httpConstruct',
 function(targetUrl) {
 
@@ -774,6 +830,8 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
         error = new Error(args.at('message'));
     }
     args.atPut('error', error);
+
+    this.httpCleanse(args);
 
     //  get a response object for the request that we can use to convey the bad
     //  news in a consistent fashion with normal success processing.
