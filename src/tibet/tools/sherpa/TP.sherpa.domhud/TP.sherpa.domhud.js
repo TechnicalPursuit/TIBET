@@ -1202,6 +1202,7 @@ function(aSignal) {
 
         tileTPElem.get('footer').setContent(newFooterElem);
     } else {
+        tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
         currentBodyElem = TP.unwrap(
                             tileTPElem.get('body').getFirstChildElement());
         currentFooterElem = TP.unwrap(
