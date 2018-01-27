@@ -771,10 +771,16 @@ function(aSignal) {
         halo,
         sourceTPElem,
 
+        newBodyElem,
+        newFooterElem,
+
         tileTPElem,
         newContentTPElem,
 
         setResourceParams,
+
+        currentBodyElem,
+        currentFooterElem,
 
         modelURI;
 
@@ -815,6 +821,9 @@ function(aSignal) {
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
     sourceTPElem = halo.get('currentTargetTPElem');
 
+    newBodyElem = TP.getContentForTool(sourceTPElem, 'StylesHUDTileBody');
+    newFooterElem = TP.getContentForTool(sourceTPElem, 'StylesHUDTileFooter');
+
     //  ---
 
     tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeWindow());
@@ -823,20 +832,27 @@ function(aSignal) {
         tileTPElem = TP.bySystemId('Sherpa').makeTile('StyleSummary_Tile');
         tileTPElem.setHeaderText('Rule Properties');
 
-        newContentTPElem = tileTPElem.setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'StylesHUDTileBody'));
+        newContentTPElem = tileTPElem.setContent(newBodyElem);
         newContentTPElem.awaken();
 
-        tileTPElem.get('footer').setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'StylesHUDTileFooter'));
+        tileTPElem.get('footer').setContent(newFooterElem);
 
         setResourceParams =
             TP.hc('observeResource', true, 'signalChange', true);
     } else {
+        currentBodyElem = TP.unwrap(
+                            tileTPElem.get('body').getFirstChildElement());
+        currentFooterElem = TP.unwrap(
+                            tileTPElem.get('footer').getFirstChildElement());
+
+        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
+            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            newContentTPElem.awaken();
+        }
+        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
+            tileTPElem.get('footer').setContent(newFooterElem);
+        }
+
         setResourceParams = TP.hc('signalChange', true);
     }
 

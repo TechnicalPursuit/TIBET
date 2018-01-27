@@ -1141,8 +1141,14 @@ function(aSignal) {
 
         modelURI,
 
+        newBodyElem,
+        newFooterElem,
+
         tileTPElem,
-        newContentTPElem;
+        newContentTPElem,
+
+        currentBodyElem,
+        currentFooterElem;
 
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'domnode')) {
@@ -1180,22 +1186,34 @@ function(aSignal) {
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:domhud_target_source');
 
+    newBodyElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileBody');
+    newFooterElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileFooter');
+
+    //  ---
+
     tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeWindow());
     if (TP.notValid(tileTPElem)) {
 
         tileTPElem = TP.bySystemId('Sherpa').makeTile('DOMInfo_Tile');
         tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
 
-        newContentTPElem = tileTPElem.setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'DomHUDTileBody'));
+        newContentTPElem = tileTPElem.setContent(newBodyElem);
         newContentTPElem.awaken();
 
-        tileTPElem.get('footer').setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'DomHUDTileFooter'));
+        tileTPElem.get('footer').setContent(newFooterElem);
+    } else {
+        currentBodyElem = TP.unwrap(
+                            tileTPElem.get('body').getFirstChildElement());
+        currentFooterElem = TP.unwrap(
+                            tileTPElem.get('footer').getFirstChildElement());
+
+        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
+            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            newContentTPElem.awaken();
+        }
+        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
+            tileTPElem.get('footer').setContent(newFooterElem);
+        }
     }
 
     modelURI.setResource(
