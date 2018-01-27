@@ -776,8 +776,7 @@ function(aSignal) {
 
         setResourceParams,
 
-        modelURI,
-        modelObj;
+        modelURI;
 
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'selector')) {
@@ -843,20 +842,17 @@ function(aSignal) {
 
     //  Grab the current target source.
     modelURI = TP.uc('urn:tibet:styleshud_target_source');
-    modelObj = TP.byId('SherpaHalo', TP.win('UIROOT')).
-                                        get('currentTargetTPElem');
 
     //  Set the model's URI's resource and signal change. This will
     //  cause the properties to update.
-    modelURI.setResource(modelObj, setResourceParams);
+    modelURI.setResource(sourceTPElem, setResourceParams);
 
     //  Grab the current rule source.
     modelURI = TP.uc('urn:tibet:styleshud_rule_source');
-    modelObj = itemData;
 
     //  Set the model's URI's resource and signal change. This will
     //  cause the properties to update.
-    modelURI.setResource(modelObj, setResourceParams);
+    modelURI.setResource(itemData, setResourceParams);
 
     //  Position the tile
     tileTPElem.setPagePosition(
