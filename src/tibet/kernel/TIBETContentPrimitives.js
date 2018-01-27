@@ -1095,20 +1095,31 @@ function(anObject, rootName) {
 
         result;
 
-    jsonObjAsXMLStr = function(obj, slotName) {
+    jsonObjAsXMLStr = function(obj, aSlotName) {
 
         //  NB: We use native JS language constructs in this Function for
         //  performance reasons.
 
-        var theType,
+        var slotName,
+
+            theType,
             i,
             keys;
 
-        if (!TP.regex.XML_NAMEREF.match(slotName)) {
+        if (!TP.regex.XML_NAMEREF.match(aSlotName)) {
             TP.ifWarn() ?
                 TP.warn('Stripping invalid XML name in JSON conversion: ' +
-                slotName) : 0;
+                aSlotName) : 0;
             return;
+        }
+
+        slotName = aSlotName;
+
+        //  If the slot name contains colons (':'), replace them with '__'.
+        //  Otherwise, we'll have XML names that won't resolve because of
+        //  'namespaces'.
+        if (TP.regex.HAS_COLON.test(slotName)) {
+            slotName = slotName.replace(/:/g, '__');
         }
 
         theType = typeof obj;
@@ -1289,6 +1300,13 @@ function(aNode) {
             key;
 
         elemName = anElement.nodeName;
+
+        //  If any of the element names have '__', it's because they contained
+        //  colons (':') and we needed to convert them in the $jsonObj2xml
+        //  method. Convert them back here.
+        if (/__/.test(elemName)) {
+            elemName = elemName.replace(/__/g, ':');
+        }
 
         switch (anElement.getAttribute('type')) {
 
