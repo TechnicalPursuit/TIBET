@@ -1195,14 +1195,12 @@ function(aSignal) {
     if (TP.notValid(tileTPElem)) {
 
         tileTPElem = TP.bySystemId('Sherpa').makeTile('DOMInfo_Tile');
-        tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
 
         newContentTPElem = tileTPElem.setContent(newBodyElem);
         newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(newFooterElem);
     } else {
-        tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
         currentBodyElem = TP.unwrap(
                             tileTPElem.get('body').getFirstChildElement());
         currentFooterElem = TP.unwrap(
@@ -1216,6 +1214,8 @@ function(aSignal) {
             tileTPElem.get('footer').setContent(newFooterElem);
         }
     }
+
+    tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
 
     modelURI.setResource(
         sourceTPElem,
