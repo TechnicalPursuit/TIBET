@@ -3,7 +3,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
-sherpa|domhud_genericContent .dom_attributes {
+sherpa|domhud_genericElementContent .dom_attributes {
 
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 100%;

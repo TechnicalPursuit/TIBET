@@ -98,7 +98,8 @@
 
     <script src="./TP.sherpa.tofuInsertionAssistant/TP.sherpa.tofuInsertionAssistant.js"/>
 
-    <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_genericContent/TP.sherpa.domhud_genericContent.js"/>
+    <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_elementContent.js"/>
+    <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_genericElementContent/TP.sherpa.domhud_genericElementContent.js"/>
     <script src="./TP.sherpa.styleshud/plugins/TP.sherpa.styleshud_ruleContent/TP.sherpa.styleshud_ruleContent.js"/>
 
     <script src="./TP.sherpa.couchDocumentURIInsertionAssistant/TP.sherpa.couchDocumentURIInsertionAssistant.js"/>

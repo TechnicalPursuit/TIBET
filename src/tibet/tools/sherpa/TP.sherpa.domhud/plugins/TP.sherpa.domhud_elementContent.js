@@ -9,18 +9,22 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.domhud_genericContent}
+ * @type {TP.sherpa.domhud_elementContent}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('domhud_genericContent');
+TP.sherpa.TemplatedTag.defineSubtype('domhud_elementContent');
+
+//  This type is intended to be used as either a trait type or supertype of
+//  concrete types, so we don't allow instance creation
+TP.sherpa.domhud_elementContent.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Type.defineMethod('tagAttachDOM',
+TP.sherpa.domhud_elementContent.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -52,7 +56,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Type.defineMethod('tagDetachDOM',
+TP.sherpa.domhud_elementContent.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -87,13 +91,13 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineAttribute('$attributeNames');
+TP.sherpa.domhud_elementContent.Inst.defineAttribute('$attributeNames');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineMethod('buildAttributesModel',
+TP.sherpa.domhud_elementContent.Inst.defineMethod('buildAttributesModel',
 function(targetTPElem) {
 
     /**
@@ -108,8 +112,7 @@ function(targetTPElem) {
 
     var modelObj,
         newInsertionInfo,
-        names,
-        tagAttrs;
+        names;
 
     //  Build the model object.
     modelObj = TP.hc();
@@ -122,19 +125,19 @@ function(targetTPElem) {
 
     //  Iterate over the target's attributes and populate the data model with
     //  the name and value.
-    tagAttrs = TP.ac();
     targetTPElem.getAttributes().perform(
         function(kvPair) {
-            tagAttrs.push(
-                TP.hc('tagAttrName', kvPair.first(),
-                        'tagAttrValue', kvPair.last())
-            );
+            var name,
+                value;
 
-            names.push(kvPair.first());
+            name = kvPair.first();
+            value = kvPair.last();
+
+            names.push(name);
+
+            newInsertionInfo.atPut(name, value);
         });
     this.set('$attributeNames', names);
-
-    newInsertionInfo.atPut('tagAttrs', tagAttrs);
 
     //  Construct a JSONContent object around the model object so that we can
     //  bind to it using the more powerful JSONPath constructs
@@ -145,14 +148,14 @@ function(targetTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineHandler('ValueChange',
+TP.sherpa.domhud_elementContent.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
      * @method handleValueChange
      * @summary Handles when the user changes the value of the underlying model.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
-     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     switch (aSignal.getOrigin()) {
@@ -172,7 +175,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineMethod('setValue',
+TP.sherpa.domhud_elementContent.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -182,7 +185,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     * @returns {TP.sherpa.domhud_elementContent} The receiver.
      */
 
     var attributesModel,
@@ -216,7 +219,7 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineMethod('updateAttributes',
+TP.sherpa.domhud_elementContent.Inst.defineMethod('updateAttributes',
 function(aSignal) {
 
     /**
@@ -225,31 +228,19 @@ function(aSignal) {
      *     source.
      * @param {ValueChange} aSignal The signal that caused this update method to
      *     be invoked.
-     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var aspectPath,
 
         targetTPElem,
 
-        modelObj,
-
-        nameAspectPath,
-        valueAspectPath,
-
         name,
         value,
 
-        allAttrNames,
-
         action,
 
-        attrIndex,
-        oldAttrName,
-
-        hadAttribute,
-
-        removedData;
+        modelObj;
 
     aspectPath = aSignal.at('aspect');
 
@@ -269,114 +260,27 @@ function(aSignal) {
     //  mutations to the source DOM.
     TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
-    //  Grab an ordered list of all of the attribute names.
-    allAttrNames = this.get('$attributeNames');
-
     action = aSignal.at('action');
 
     //  If the action is TP.UPDATE, then the user added an attribute or changed
-    //  one of the existing attributes. Note that we don't concern ourselves
-    //  with an action of TP.INSERT/TP.CREATE, because that means that the user
-    //  has clicked the '+' button to insert a new attribute row, but hasn't
-    //  filled out the name and value and we don't want to process blank
-    //  attributes..
-    if (action === TP.UPDATE) {
+    //  one of the existing attributes.
+    if (action === TP.UPDATE || action === TP.CREATE) {
 
         //  Grab the model object where our data is located.
         modelObj =
             TP.uc('urn:tibet:domhud_attr_source').getResource().get('result');
 
-        //  Compute a name aspect path by replacing 'tagAttrValue' with
-        //  'tagAttrName' in the value aspect path.
-        nameAspectPath = aspectPath.slice(0, aspectPath.lastIndexOf('.') + 1) +
-                            'tagAttrName';
-        valueAspectPath = aspectPath.slice(0, aspectPath.lastIndexOf('.') + 1) +
-                            'tagAttrValue';
+        name = aspectPath.slice(aspectPath.lastIndexOf('.') + 1);
+        value = modelObj.get(aspectPath);
 
-        //  Grab the name and value from the model.
-        name = modelObj.get(nameAspectPath);
-        value = modelObj.get(valueAspectPath);
+        //  Set the value using the computed name and value.
+        targetTPElem.setAttribute(name, value);
 
-        //  If we're changing the attribute name, but we have an empty value,
-        //  then just exit here - no sense in doing a 'set'
-        if (aspectPath.endsWith('tagAttrName') && TP.isEmpty(value)) {
-            return this;
-        }
-
-        //  If we're changing the attribute name at this point (with an
-        //  attribute that has a real value)
-        if (aspectPath.endsWith('tagAttrName')) {
-
-            //  We always set hadAttribute to true for this case, because we're
-            //  actually 'removing' an attribute that did exist.
-            hadAttribute = true;
-
-            //  Slice out the index, convert it to a number and get the
-            //  attribute name at that index in our list of all attribute names.
-            //  This will tell us the old attribute name.
-            attrIndex = aspectPath.slice(
-                        aspectPath.indexOf('[') + 1,
-                        aspectPath.indexOf(']'));
-            attrIndex = attrIndex.asNumber();
-            oldAttrName = allAttrNames.at(attrIndex);
-
-            //  If we got one, remove the attribute at that position.
-            if (TP.notEmpty(oldAttrName)) {
-                targetTPElem.removeAttribute(oldAttrName);
-            }
-
-            //  Replace the old name with the new name in our list of
-            //  attributes.
-            allAttrNames.replace(oldAttrName, name);
-
-            //  Set the value using the new name.
-            targetTPElem.setAttribute(name, value);
-
-        } else {
-
-            hadAttribute = targetTPElem.hasAttribute(name);
-
-            //  Set the attribute named by the name to the value
-            if (!hadAttribute) {
-                allAttrNames.push(name);
-            }
-
-            //  Set the value using the computed name and value.
-            targetTPElem.setAttribute(name, value);
-        }
-
-        if (hadAttribute) {
-            targetTPElem.deaden();
-        }
-
+        targetTPElem.deaden();
         targetTPElem.awaken();
     } else if (action === TP.DELETE) {
 
-        //  If we're deleting an attribute (because the user clicked an 'X'),
-        //  then grab the removed data's 'name' value and remove the
-        //  corresponding attribute.
-        removedData = aSignal.at('removedData');
-        if (TP.isValid(removedData)) {
-            name = removedData.at('tagAttrs').at('tagAttrName');
-
-            if (TP.notEmpty(name)) {
-                //  Remove the name from our list of attribute names.
-                allAttrNames.remove(name);
-
-                //  Remove the attribute itself.
-                targetTPElem.removeAttribute(name);
-            }
-        }
-
-        if (TP.notEmpty(name)) {
-            targetTPElem.deaden();
-        }
-    }
-
-    //  If the attribute was a binding attribute, then refresh the target
-    //  element (which will refresh it and all of its descendant bindings).
-    if (TP.notEmpty(name) && name.startsWith('bind:')) {
-        targetTPElem.refresh();
+        //  TODO: Supporting removing attributes
     }
 
     return this;
@@ -384,7 +288,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_genericContent.Inst.defineMethod('updateTextSource',
+TP.sherpa.domhud_elementContent.Inst.defineMethod('updateTextSource',
 function(aSignal) {
 
     /**
@@ -393,7 +297,7 @@ function(aSignal) {
      *     source.
      * @param {ValueChange} aSignal The signal that caused this update method to
      *     be invoked.
-     * @returns {TP.sherpa.domhud_genericContent} The receiver.
+     * @returns {TP.sherpa.domhud} The receiver.
      */
 
     var aspectPath,

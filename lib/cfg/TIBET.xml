@@ -229,8 +229,8 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tile-TP.sherpa.tile.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-TP.sherpa.domhud.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-TP.sherpa.domhud.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericContent-TP.sherpa.domhud_genericContent.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericElementContent-TP.sherpa.domhud_genericElementContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.domhud-plugins-TP.sherpa.domhud_genericElementContent-TP.sherpa.domhud_genericElementContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.breadcrumb-TP.sherpa.breadcrumb.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.breadcrumb-TP.sherpa.breadcrumb.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.urieditor-TP.sherpa.urieditor.xhtml.js"/>
