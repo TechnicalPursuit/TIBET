@@ -164,6 +164,7 @@
 
     <!-- Extended commands -->
     <script src="tsh/TP.tsh.apropos.js"/>
+    <script src="tsh/TP.tsh.as.js"/>
     <script src="tsh/TP.tsh.audit.js"/>
     <script src="tsh/TP.tsh.bookmark.js"/>
     <script src="tsh/TP.tsh.build.js"/>
@@ -171,6 +172,7 @@
     <script src="tsh/TP.tsh.deploy.js"/>
     <script src="tsh/TP.tsh.doclint.js"/>
     <script src="tsh/TP.tsh.dump.js"/>
+    <script src="tsh/TP.tsh.echo.js"/>
     <script src="tsh/TP.tsh.edit.js"/>
     <script src="tsh/TP.tsh.entity.js"/>
     <script src="tsh/TP.tsh.export.js"/>
