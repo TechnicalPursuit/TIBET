@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<sherpa:domhud_TP_tibet_serviceContent bind:in="urn:tibet:domhud_target_source">
+
+    <tibet:group wrapWhen="true" autofocus="autofocus" bind:scope="urn:tibet:domhud_attr_source">
+        <span class="dom_attributes" bind:scope="#jpath($.info)">
+            Remote Location: <input type="text" class="propName" bind:io="{value: href}" tabindex="0"/><br/>
+            HTTP method: <input type="text" class="propName" bind:io="{value: method}" tabindex="0"/><br/>
+            HTTP body: <input type="text" class="propName" bind:io="{value: body}" tabindex="0"/><br/>
+            HTTP MIME type: <input type="text" class="propName" bind:io="{value: mimetype}" tabindex="0"/><br/>
+        </span>
+    </tibet:group>
+
+    <button on:click="RefreshFromRemote">Refresh from Remote</button>
+
+</sherpa:domhud_TP_tibet_serviceContent>
+

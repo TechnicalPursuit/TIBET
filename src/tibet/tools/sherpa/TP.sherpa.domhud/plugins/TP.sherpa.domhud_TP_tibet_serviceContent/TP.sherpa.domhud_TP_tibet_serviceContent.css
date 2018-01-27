@@ -1,0 +1,11 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+sherpa|domhud_TP_tibet_serviceContent .dom_attributes {
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-size: 100%;
+    padding: 4px;
+}
+
