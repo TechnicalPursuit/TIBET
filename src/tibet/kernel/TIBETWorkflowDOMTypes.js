@@ -431,7 +431,6 @@ function() {
     keys = roles.injectInto(
             keys,
             function(role, accum) {
-
                 accum.push.apply(accum, role.getAccessKeys());
 
                 return accum;
@@ -441,7 +440,6 @@ function() {
     keys = units.injectInto(
             keys,
             function(unit, accum) {
-
                 accum.push.apply(accum, unit.getAccessKeys());
 
                 return accum;
@@ -479,8 +477,7 @@ function() {
     names = role.split(';');
     return names.collect(
             function(name) {
-
-                return TP.join(org, ':', name);
+                return TP.join(org, '-', name);
             });
 });
 
@@ -503,8 +500,7 @@ function() {
 
     return names.collect(
                 function(name) {
-
-                    return TP.sys.getTypeByName(name);
+                    return TP.sys.getTypeByName('TP.role.' + name);
                 }).compact();
 });
 
@@ -535,8 +531,7 @@ function() {
     names = unit.split(';');
     return names.collect(
             function(name) {
-
-                return TP.join(org, ':', name);
+                return TP.join(org, '-', name);
             });
 });
 
@@ -557,8 +552,7 @@ function() {
 
     return names.collect(
                 function(name) {
-
-                    return TP.sys.getTypeByName(name);
+                    return TP.sys.getTypeByName('TP.role.' + name);
                 }).compact();
 });
 

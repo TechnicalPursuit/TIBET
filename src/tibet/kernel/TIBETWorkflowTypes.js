@@ -4126,17 +4126,17 @@ function() {
      * @summary Initializes the type, defining the baseline keyrings.
      */
 
-    this.addKeyRing('Public');
+    this.addKeyRing('public');
 
     return;
 });
 
 //  ========================================================================
-//  Public:guest
+//  public-guest
 //  ========================================================================
 
-//  Build a default role for "Public" organization and "guest" role.
-TP.core.Role.defineSubtype('Public.guest');
+//  Build a default role for "public" organization and "guest" role.
+TP.core.Role.defineSubtype('role.public-guest');
 
 //  ========================================================================
 //  TP.core.Unit
@@ -4167,17 +4167,17 @@ function() {
      * @summary Initializes the type, defining the baseline keyrings.
      */
 
-    this.addKeyRing('Public');
+    this.addKeyRing('public');
 
     return;
 });
 
 //  ========================================================================
-//  Public:Public
+//  public-public
 //  ========================================================================
 
-//  Build a default unit for "Public" organization and "Public" unit.
-TP.core.Unit.defineSubtype('Public.Public');
+//  Build a default unit for "public" organization and "public" unit.
+TP.core.Unit.defineSubtype('role.public-public');
 
 //  ========================================================================
 //  TP.sig.UserRequest
