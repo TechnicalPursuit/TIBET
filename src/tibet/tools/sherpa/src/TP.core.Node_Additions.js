@@ -722,7 +722,7 @@ function() {
      *     'body' of the domhud tile panel.
      */
 
-    return TP.elem('<sherpa:domhud_genericContent/>');
+    return TP.elem('<sherpa:domhud_genericElementContent/>');
 });
 
 //  ------------------------------------------------------------------------
