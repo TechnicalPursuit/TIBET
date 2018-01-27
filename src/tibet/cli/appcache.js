@@ -186,9 +186,9 @@ Cmd.prototype.execute = function() {
         return this.executeTouch(cachefile);
     }
 
-    // If we're enabling or disabling we need to find and check the index.html
-    // file. We want to confirm that the cache being referenced matches and that
-    // the attribute isn't already configured as desired.
+    // If we're enabling or disabling we need to find and check the
+    // path.start_page. We want to confirm that the cache being referenced
+    // matches and that the attribute isn't already configured as desired.
     if (this.options.enable || this.options.disable || this.options.status) {
         return this.executeIndexUpdate(cachefile);
     } else {
@@ -567,14 +567,15 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
 
 /**
- * Perform the work specific to enabling/disabling the cache via the index.html
- * and/or index.handlebars file's html element manifest attribute setting.
+ * Perform the work specific to enabling/disabling the cache via the
+ * path.start_page and/or handlebars html element manifest attribute setting.
  * @param {String} cachefile The name of the cache file being configured.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
-    var file,
+    var startpage,
+        file,
         text,
         doc,
         html,
@@ -585,13 +586,15 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     this.log('checking application cache status...');
 
+    startpage = CLI.getcfg('path.start_page');
+
     file = CLI.expandPath('~/views/index.handlebars');
     if (!sh.test('-e', file)) {
 
         //  Static projects such as ghpages may not be vending via TDS.
-        file = CLI.expandPath('~app/index.html');
+        file = CLI.expandPath(startpage);
         if (!sh.test('-e', file)) {
-            this.error('Cannot find index.html');
+            this.error('Cannot find ' + startpage);
             return -1;
         }
     }
