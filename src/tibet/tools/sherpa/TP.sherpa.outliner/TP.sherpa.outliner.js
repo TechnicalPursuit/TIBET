@@ -809,6 +809,8 @@ function(aSignal) {
             this.set('$oldDisplayVal', null);
             this.set('$alteredTargetStyle', false);
         }
+
+        this.updateTargetElementStyle();
     }
 
     return this;
@@ -1052,6 +1054,7 @@ function() {
 
         haloTPElem,
         haloTargetTPElem,
+        toolsLayerTPElem,
 
         oldDisplayVal;
 
@@ -1104,9 +1107,8 @@ function() {
 
     //  Grab the halo, reset its transform and transform origin to '' and move
     //  and size it to its own target to display it properly.
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTPElem.setTransform('');
-    haloTPElem.setTransformOrigin('');
+    toolsLayerTPElem = TP.bySystemId('Sherpa').getToolsLayer();
+    toolsLayerTPElem.setTransform('');
 
     haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
 
@@ -1625,19 +1627,66 @@ function() {
 
         scale,
 
-        targetTPElement;
+        doc,
+        outlinerStyleElement,
+
+        toolsLayerTPElem,
+
+        currentDepth,
+
+        zDistance,
+        zVal;
 
     xRotation = this.get('xRotation');
     yRotation = this.get('yRotation');
 
     scale = this.get('scale');
 
-    targetTPElement = this.get('targetTPElement');
+    doc = TP.sys.uidoc(true);
 
-    targetTPElement.setTransform(
+    outlinerStyleElement = TP.byId('outliner_injected_generated', doc, false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        outlinerStyleElement,
+        '.sherpa-outliner',
+        '--sherpa-outliner-rotate-X',
+        xRotation + 'deg',
+        null,
+        false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        outlinerStyleElement,
+        '.sherpa-outliner',
+        '--sherpa-outliner-rotate-Y',
+        yRotation + 'deg',
+        null,
+        false);
+
+    TP.cssElementSetCustomCSSPropertyValue(
+        outlinerStyleElement,
+        '.sherpa-outliner',
+        '--sherpa-outliner-scale',
+        scale,
+        null,
+        false);
+
+    currentDepth = this.get('$haloTargetDepth');
+
+    zDistance = TP.cssElementGetCustomCSSPropertyValue(
+                    outlinerStyleElement,
+                    '.sherpa-outliner',
+                    '--sherpa-outliner-distance-Z');
+
+    //  Note how we subtract 2 from the depth to account for 'html' & 'body'
+    //  layers.
+    zVal = (currentDepth - 2) * zDistance;
+
+    toolsLayerTPElem = TP.bySystemId('Sherpa').getToolsLayer();
+    toolsLayerTPElem.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale + ')');
+        ' scale(' + scale + ')' +
+        ' translate3d(0px, 0px, ' + zVal + 'px)');
 
     return this;
 });

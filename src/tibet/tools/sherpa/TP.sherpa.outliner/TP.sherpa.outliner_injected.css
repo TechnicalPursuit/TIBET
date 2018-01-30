@@ -4,11 +4,19 @@
 
 .sherpa-outliner {
 
+    --sherpa-outliner-rotate-X: 0deg;
+    --sherpa-outliner-rotate-Y: 0deg;
+    --sherpa-outliner-scale: 0;
+
+    --sherpa-outliner-distance-Z: 50;
+
     transform-style: preserve-3d;
 
     outline: dashed 1px gray;
 
-    overflow: visible;
+    overflow: visible !important;
+
+    transform: rotateX(var(--sherpa-outliner-rotate-X)) rotateY(var(--sherpa-outliner-rotate-Y)) scale(var(--sherpa-outliner-scale));
 }
 
 .sherpa-outliner > * {
@@ -21,14 +29,24 @@
 
 .sherpa-outliner * {
 
-    transform: translate3d(0, 0, 50px);
     transform-style: preserve-3d;
 
-    outline: dashed 1px gray;
+    transform: translateZ(var(--sherpa-outliner-distance-Z) px);
+}
 
-    background-color: white;
+.sherpa-outliner *.sherpa-outliner-overflowed,
+.sherpa-outliner *[class~="sherpa-outliner-overflowed"] {
+
+    display: inline-block !important;
+    width: 100% !important;
 
     overflow: visible !important;
+}
+
+.sherpa-outliner *.sherpa-outliner-blocked,
+.sherpa-outliner *[class~="sherpa-outliner-blocked"] {
+
+    display: inline-block !important;
 }
 
 .sherpa-outliner b,
@@ -71,18 +89,20 @@
     outline-style: solid;
 }
 
-.sherpa-outliner:not(.sherpa-outliner-haloed)::before,
-.sherpa-outliner:not([class~="sherpa-outliner-haloed"])::before,
-.sherpa-outliner *:not(.sherpa-outliner-haloed)::before,
-.sherpa-outliner *:not([class~="sherpa-outliner-haloed"])::before {
+.sherpa-outliner::before,
+.sherpa-outliner::before,
+.sherpa-outliner *::before,
+.sherpa-outliner *::before {
 
     position: absolute;
 
-    font-size: 0.75rem;
+    font-family: "Lucida Sans", "Lucida Grande", "Verdana", "Arial", sans-serif;
+    font-size: 10px;
 
     content: attr(sherpa-outliner-tagname);
 
     min-width: 2em;
+    min-height: 1em;
 
     text-align: center;
 
@@ -90,63 +110,20 @@
     background-color: lightgray;
 }
 
-.sherpa-outliner:not(.sherpa-outliner-haloed)::before,
-.sherpa-outliner:not([class~="sherpa-outliner-haloed"])::before {
+.sherpa-outliner:not(.sherpa-outliner-haloed),
+.sherpa-outliner:not([class~="sherpa-outliner-haloed"]),
+.sherpa-outliner *:not(.sherpa-outliner-haloed),
+.sherpa-outliner *:not([class~="sherpa-outliner-haloed"]) {
 
-    background-color: lightgray;
+    outline: dashed 1px lightgray;
 }
-
-/* The following rules selectors both for highlighting the current outliner target itself as the haloed element and highlighting a descendant of the current outliner target as the haloed element. These rules apply both to XHTML (where the . class shorthand can be used) and non-XHTML custom elements */
 
 .sherpa-outliner.sherpa-outliner-haloed,
 .sherpa-outliner[class~="sherpa-outliner-haloed"],
-.sherpa-outliner .sherpa-outliner-haloed,
-.sherpa-outliner *|*[class~="sherpa-outliner-haloed"] {
-    outline-width: 2px;
-    outline-style: dashed;
-    outline-color: gold;
-}
+.sherpa-outliner *.sherpa-outliner-haloed,
+.sherpa-outliner *[class~="sherpa-outliner-haloed"] {
 
-.sherpa-outliner.sherpa-outliner-haloed::before,
-.sherpa-outliner[class~="sherpa-outliner-haloed"]::before,
-.sherpa-outliner.sherpa-outliner-haloed::after,
-.sherpa-outliner[class~="sherpa-outliner-haloed"]::after,
-.sherpa-outliner .sherpa-outliner-haloed::before,
-.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::before,
-.sherpa-outliner .sherpa-outliner-haloed::after,
-.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::after {
-
-    position: absolute;
-
-    top: 0;
-
-    width: 20px;
-    height: calc(100% + 30px);
-
-    content: "";
-
-    background-image: radial-gradient(circle at center, gold 5px, transparent 6px), radial-gradient(circle at center, gold 5px, transparent 6px);
-    background-size: 20px 20px;
-    background-position: top center, bottom center;
-    background-repeat: no-repeat;
-
-    margin: -15px;
-}
-
-.sherpa-outliner.sherpa-outliner-haloed::before,
-.sherpa-outliner[class~="sherpa-outliner-haloed"]::before,
-.sherpa-outliner .sherpa-outliner-haloed::before,
-.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::before {
-
-    left: 0;
-}
-
-.sherpa-outliner.sherpa-outliner-haloed::after,
-.sherpa-outliner[class~="sherpa-outliner-haloed"]::after,
-.sherpa-outliner .sherpa-outliner-haloed::after,
-.sherpa-outliner *|*[class~="sherpa-outliner-haloed"]::after {
-
-    right: 0;
+    outline: dashed 1px black;
 }
 
 .sherpa-outliner.sherpa-outliner-droptarget,
