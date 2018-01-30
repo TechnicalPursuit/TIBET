@@ -1023,11 +1023,6 @@ function() {
     //  it.
     haloTPElem.resumeSettingOf('hidden');
 
-    //  If the halo was showing when we were activated, go ahead and show it.
-    if (this.get('$haloWasShowing')) {
-        haloTPElem.setAttribute('hidden', false);
-    }
-
     doc = TP.sys.uidoc(true);
 
     //  Grab the injected stylesheet and disable it. We don't bother actually
