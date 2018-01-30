@@ -1578,6 +1578,76 @@ function(anElement, pixelValue, aPropertyName) {
 //  STYLE PRIMITIVES
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('cssElementGetCustomCSSPropertyValue',
+function(anElement, selectorText, aPropertyName, aRuleIndex) {
+
+    /**
+     * @method cssElementGetCustomCSSProperty
+     * @summary Gets the value of the named custom CSS property found in the
+     *     supplied CSS element.
+     * @param {Element} anElement The 'link' or 'style' element to get the
+     *     custom property value in.
+     * @param {String} selectorText The text of the selector to match.
+     * @param {String} aPropertyName The CSS custom property name to get the
+     *     value of.
+     * @param {Number} [aRuleIndex=0] The index of the rule to obtain the value
+     *     from if there is more than 1 rule that has the same selector.
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyleSheet
+     * @exception TP.sig.InvalidStyleRule
+     */
+
+    var styleSheet,
+
+        styleRules,
+
+        index,
+        targetRule,
+
+        val;
+
+    //  Make sure we were handed a 'link' or 'style' element.
+    if (!TP.isElement(anElement) ||
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'link' &&
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'style') {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(selectorText)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Grab the stylesheet associated with the supplied CSS element.
+    styleSheet = TP.cssElementGetStyleSheet(anElement);
+    if (!TP.isStyleSheet(styleSheet)) {
+        return TP.raise(this, 'TP.sig.InvalidStyleSheet');
+    }
+
+    //  Grab all of the style rules from the stylesheet that match the supplied
+    //  selector.
+    styleRules = TP.styleSheetGetStyleRulesMatching(styleSheet, selectorText);
+    if (TP.isEmpty(styleRules)) {
+        return;
+    }
+
+    //  If a rule index isn't supplied, then we default it to 0. There may be
+    //  more than one rule with the same selector in the stylesheet.
+    index = TP.ifInvalid(aRuleIndex, 0);
+
+    //  Grab the desired style rule.
+    targetRule = styleRules.at(index);
+    if (!TP.isStyleRule(targetRule)) {
+        return TP.raise(this, 'TP.sig.InvalidStyleRule');
+    }
+
+    val = targetRule.style.getPropertyValue(aPropertyName);
+
+    return val;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('cssElementResolveVirtualURIs',
 function(anElement) {
 
