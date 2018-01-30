@@ -2494,7 +2494,8 @@ function() {
      * @returns {TP.core.sherpa} The receiver.
      */
 
-    var haloTPElem;
+    var haloTPElem,
+        toolsLayerTPElem;
 
     haloTPElem = TP.sherpa.halo.getResourceElement('template',
                             TP.ietf.Mime.XHTML);
@@ -2502,7 +2503,8 @@ function() {
     haloTPElem = haloTPElem.clone();
     haloTPElem.compile();
 
-    TP.byId('center', this.get('vWin')).addContent(haloTPElem);
+    toolsLayerTPElem = this.getToolsLayer();
+    toolsLayerTPElem.addContent(haloTPElem);
 
     return this;
 });
