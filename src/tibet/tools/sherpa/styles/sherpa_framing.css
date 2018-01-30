@@ -182,6 +182,16 @@ li.CodeMirror-hint-active {
 
 /* Misc content styles, etc */
 
+/* Used when the 'content' div is converted to the tools layer */
+#center #content[isToolsLayer] {
+
+    background: transparent !important;
+
+    border: none;
+
+    pointer-events: none;
+}
+
 .tagline {
 
     position: relative;

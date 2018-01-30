@@ -349,6 +349,36 @@ function(finalizationFunc) {
     return this;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('getToolsLayer',
+function() {
+
+    /**
+     * @method getToolsLayer
+     * @summary Returns the layer used to put certain tools, like the halo, on.
+     * @returns {TP.html.div} The 'tools layer' element.
+     */
+
+    var viewDoc,
+        centerTPElem;
+
+    //  The document that we were installed into.
+    viewDoc = this.get('vWin').document;
+
+    //  The 'tools layer' is the 'content' div, until we boot.
+    centerTPElem = TP.byId('content', viewDoc);
+
+    //  If the center element hasn't been 'converted to being the tools layer',
+    //  do so now and show it.
+    if (!centerTPElem.hasAttribute('isToolsLayer')) {
+        centerTPElem.setAttribute('isToolsLayer', 'true');
+        centerTPElem.show();
+    }
+
+    return centerTPElem;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineHandler('ConsoleCommand',
