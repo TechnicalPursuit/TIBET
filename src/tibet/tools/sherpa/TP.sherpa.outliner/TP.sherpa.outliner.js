@@ -561,7 +561,8 @@ function(aSignal) {
     //  we're hovering over.
     containingBlockElem = this.get('$containingBlockElem');
     if (TP.isValid(containingBlockElem)) {
-        TP.elementRemoveClass(containingBlockElem, 'sherpa-outliner-containingblock');
+        TP.elementRemoveClass(
+            containingBlockElem, 'sherpa-outliner-containingblock');
         this.set('$containingBlockElem', null);
     }
 
