@@ -543,22 +543,57 @@ TP.boot.installPatches = function(aWindow) {
 
                     var myTop,
 
-                        offsetParentTop;
+                        styleVals,
+                        elem,
 
-                    //  TODO: These calculations use getBoundingClientRect(),
-                    //  which takes into account any kind of CSS transformation
-                    //  done to the receiver, whereas 'offsetTop' guarantees its
-                    //  value without taking CSS transformations into account.
-                    //  This needs to be fixed, probably by manually doing the
-                    //  matrix computation if the receiver is transformed.
+                        offsetParentTop,
+
+                        retVal;
+
+                    //  Fetch the top as the BCR sees it.
                     myTop = this.getBoundingClientRect().top;
 
+                    //  If it's the same as the cached value for 'top', then
+                    //  return the cached value of *offset top*.
+                    if (this.$$_oldTop === myTop) {
+                        return this.$$_oldOffsetTop;
+                    } else {
+                        this.$$_oldTop = myTop;
+                    }
+
+                    //  Iterate up the parent chain and turn off CSS tranforms
+                    //  for all elements.
+                    styleVals = TP.ac();
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        styleVals.push(TP.elementGetStyleObj(elem).transform);
+                        TP.elementGetStyleObj(elem).transform = 'none';
+                        elem = elem.parentNode;
+                    }
+
+                    //  We need to *refetch* the BCR top for the receiver, since
+                    //  we've now removed the transformations.
+                    myTop = this.getBoundingClientRect().top;
+
+                    //  Fetch the BCR top for the offset parent.
                     offsetParentTop =
                         this.offsetParent.getBoundingClientRect().top;
 
+                    //  Turn all of the CSS transforms back on.
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        TP.elementGetStyleObj(elem).transform = styleVals.pop();
+                        elem = elem.parentNode;
+                    }
+
                     //  We round() since offset* properties always return whole
                     //  numbers.
-                    return Math.round(myTop - offsetParentTop);
+                    retVal = Math.round(myTop - offsetParentTop);
+
+                    //  Cache the value for use when the BCR top hasn't changed.
+                    this.$$_oldOffsetTop = retVal;
+
+                    return retVal;
                 }
             });
 
@@ -571,23 +606,58 @@ TP.boot.installPatches = function(aWindow) {
 
                     var myLeft,
 
-                        offsetParentLeft;
+                        styleVals,
+                        elem,
 
-                    //  TODO: These calculations use getBoundingClientRect(),
-                    //  which takes into account any kind of CSS transformation
-                    //  done to the receiver, whereas 'offsetLeft' guarantees
-                    //  its value without taking CSS transformations into
-                    //  account. This needs to be fixed, probably by manually
-                    //  doing the matrix computation if the receiver is
-                    //  transformed.
+                        offsetParentLeft,
+
+                        retVal;
+
+                    //  Fetch the left as the BCR sees it.
                     myLeft = this.getBoundingClientRect().left;
 
+                    //  If it's the same as the cached value for 'left', then
+                    //  return the cached value of *offset left*.
+                    if (this.$$_oldLeft === myLeft) {
+                        return this.$$_oldOffsetLeft;
+                    } else {
+                        this.$$_oldLeft = myLeft;
+                    }
+
+                    //  Iterate up the parent chain and turn off CSS tranforms
+                    //  for all elements.
+                    styleVals = TP.ac();
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        styleVals.push(TP.elementGetStyleObj(elem).transform);
+                        TP.elementGetStyleObj(elem).transform = 'none';
+                        elem = elem.parentNode;
+                    }
+
+                    //  We need to *refetch* the BCR left for the receiver,
+                    //  since we've now removed the transformations.
+                    myLeft = this.getBoundingClientRect().left;
+
+                    //  Fetch the BCR left for the offset parent.
                     offsetParentLeft =
                         this.offsetParent.getBoundingClientRect().left;
 
+                    //  Turn all of the CSS transforms back on.
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        TP.elementGetStyleObj(elem).transform = styleVals.pop();
+                        elem = elem.parentNode;
+                    }
+
                     //  We round() since offset* properties always return whole
                     //  numbers.
-                    return Math.round(myLeft - offsetParentLeft);
+                    retVal = Math.round(myLeft - offsetParentLeft);
+
+                    //  Cache the value for use when the BCR left hasn't
+                    //  changed.
+                    this.$$_oldOffsetLeft = retVal;
+
+                    return retVal;
                 }
             });
 
@@ -598,9 +668,54 @@ TP.boot.installPatches = function(aWindow) {
                 configurable: true,
                 get: function() {
 
+                    var myWidth,
+
+                        styleVals,
+                        elem,
+
+                        retVal;
+
+                    //  Fetch the width as the BCR sees it.
+                    myWidth = this.getBoundingClientRect().width;
+
+                    //  If it's the same as the cached value for 'width', then
+                    //  return the cached value of *offset width*.
+                    if (this.$$_oldWidth === myWidth) {
+                        return this.$$_oldOffsetWidth;
+                    } else {
+                        this.$$_oldWidth = myWidth;
+                    }
+
+                    //  Iterate up the parent chain and turn off CSS tranforms
+                    //  for all elements.
+                    styleVals = TP.ac();
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        styleVals.push(TP.elementGetStyleObj(elem).transform);
+                        TP.elementGetStyleObj(elem).transform = 'none';
+                        elem = elem.parentNode;
+                    }
+
+                    //  We need to *refetch* the BCR width for the receiver,
+                    //  since we've now removed the transformations.
+                    myWidth = this.getBoundingClientRect().width;
+
+                    //  Turn all of the CSS transforms back on.
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        TP.elementGetStyleObj(elem).transform = styleVals.pop();
+                        elem = elem.parentNode;
+                    }
+
                     //  We round() since offset* properties always return whole
                     //  numbers.
-                    return Math.round(this.getBoundingClientRect().width);
+                    retVal = Math.round(myWidth);
+
+                    //  Cache the value for use when the BCR width hasn't
+                    //  changed.
+                    this.$$_oldOffsetWidth = retVal;
+
+                    return retVal;
                 }
             });
 
@@ -611,9 +726,54 @@ TP.boot.installPatches = function(aWindow) {
                 configurable: true,
                 get: function() {
 
+                    var myHeight,
+
+                        styleVals,
+                        elem,
+
+                        retVal;
+
+                    //  Fetch the height as the BCR sees it.
+                    myHeight = this.getBoundingClientRect().height;
+
+                    //  If it's the same as the cached value for 'height', then
+                    //  return the cached value of *offset height*.
+                    if (this.$$_oldHeight === myHeight) {
+                        return this.$$_oldOffsetHeight;
+                    } else {
+                        this.$$_oldHeight = myHeight;
+                    }
+
+                    //  Iterate up the parent chain and turn off CSS tranforms
+                    //  for all elements.
+                    styleVals = TP.ac();
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        styleVals.push(TP.elementGetStyleObj(elem).transform);
+                        TP.elementGetStyleObj(elem).transform = 'none';
+                        elem = elem.parentNode;
+                    }
+
+                    //  We need to *refetch* the BCR height for the receiver,
+                    //  since we've now removed the transformations.
+                    myHeight = this.getBoundingClientRect().height;
+
+                    //  Turn all of the CSS transforms back on.
+                    elem = this;
+                    while (TP.isElement(elem)) {
+                        TP.elementGetStyleObj(elem).transform = styleVals.pop();
+                        elem = elem.parentNode;
+                    }
+
                     //  We round() since offset* properties always return whole
                     //  numbers.
-                    return Math.round(this.getBoundingClientRect().height);
+                    retVal = Math.round(myHeight);
+
+                    //  Cache the value for use when the BCR height hasn't
+                    //  changed.
+                    this.$$_oldOffsetHeight = retVal;
+
+                    return retVal;
                 }
             });
     }
