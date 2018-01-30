@@ -21,7 +21,6 @@ TP.lang.Object.defineSubtype('sherpa.outliner');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.outliner.Inst.defineAttribute('$wasActive');
-TP.sherpa.outliner.Inst.defineAttribute('$haloWasShowing');
 
 TP.sherpa.outliner.Inst.defineAttribute('$mouseHandler');
 
@@ -1405,14 +1404,6 @@ function() {
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-
-    //  Capture whether the halo is hidden or not. If it is, hide it.
-    if (TP.isFalse(TP.bc(haloTPElem.getAttribute('hidden')))) {
-        this.set('$haloWasShowing', true);
-        haloTPElem.setAttribute('hidden', true);
-    } else {
-        this.set('$haloWasShowing', false);
-    }
 
     //  Ask the halo to suspend any other object's attempt to show it.
     haloTPElem.suspendSettingOf('hidden');
