@@ -564,7 +564,9 @@ TP.boot.installPatches = function(aWindow) {
                     //  Iterate up the parent chain and turn off CSS tranforms
                     //  for all elements.
                     styleVals = TP.ac();
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         styleVals.push(TP.elementGetStyleObj(elem).transform);
                         TP.elementGetStyleObj(elem).transform = 'none';
@@ -580,7 +582,9 @@ TP.boot.installPatches = function(aWindow) {
                         this.offsetParent.getBoundingClientRect().top;
 
                     //  Turn all of the CSS transforms back on.
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         TP.elementGetStyleObj(elem).transform = styleVals.pop();
                         elem = elem.parentNode;
@@ -627,7 +631,9 @@ TP.boot.installPatches = function(aWindow) {
                     //  Iterate up the parent chain and turn off CSS tranforms
                     //  for all elements.
                     styleVals = TP.ac();
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         styleVals.push(TP.elementGetStyleObj(elem).transform);
                         TP.elementGetStyleObj(elem).transform = 'none';
@@ -643,7 +649,9 @@ TP.boot.installPatches = function(aWindow) {
                         this.offsetParent.getBoundingClientRect().left;
 
                     //  Turn all of the CSS transforms back on.
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         TP.elementGetStyleObj(elem).transform = styleVals.pop();
                         elem = elem.parentNode;
@@ -689,7 +697,9 @@ TP.boot.installPatches = function(aWindow) {
                     //  Iterate up the parent chain and turn off CSS tranforms
                     //  for all elements.
                     styleVals = TP.ac();
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         styleVals.push(TP.elementGetStyleObj(elem).transform);
                         TP.elementGetStyleObj(elem).transform = 'none';
@@ -701,7 +711,9 @@ TP.boot.installPatches = function(aWindow) {
                     myWidth = this.getBoundingClientRect().width;
 
                     //  Turn all of the CSS transforms back on.
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         TP.elementGetStyleObj(elem).transform = styleVals.pop();
                         elem = elem.parentNode;
@@ -747,7 +759,9 @@ TP.boot.installPatches = function(aWindow) {
                     //  Iterate up the parent chain and turn off CSS tranforms
                     //  for all elements.
                     styleVals = TP.ac();
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         styleVals.push(TP.elementGetStyleObj(elem).transform);
                         TP.elementGetStyleObj(elem).transform = 'none';
@@ -759,7 +773,9 @@ TP.boot.installPatches = function(aWindow) {
                     myHeight = this.getBoundingClientRect().height;
 
                     //  Turn all of the CSS transforms back on.
+                    /* eslint-disable consistent-this */
                     elem = this;
+                    /* eslint-enable consistent-this */
                     while (TP.isElement(elem)) {
                         TP.elementGetStyleObj(elem).transform = styleVals.pop();
                         elem = elem.parentNode;
