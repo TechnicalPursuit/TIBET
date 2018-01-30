@@ -32,6 +32,7 @@ TP.sherpa.outliner.Inst.defineAttribute('$containingBlockElem');
 
 TP.sherpa.outliner.Inst.defineAttribute('$alteredTargetStyle');
 TP.sherpa.outliner.Inst.defineAttribute('$oldDisplayVal');
+TP.sherpa.outliner.Inst.defineAttribute('$haloTargetDepth');
 
 TP.sherpa.outliner.Inst.defineAttribute('isActive');
 
@@ -756,6 +757,8 @@ function(aSignal) {
     //  'halo style' to it, even though the halo is hidden.
     haloTargetTPElem.removeClass('sherpa-outliner-haloed');
 
+    this.set('$haloTargetDepth', 0);
+
     if (this.get('$alteredTargetStyle')) {
         oldDisplayVal = this.get('$oldDisplayVal');
         haloTargetTPElem.setStyleProperty('display', oldDisplayVal);
@@ -788,6 +791,9 @@ function(aSignal) {
         //  Set a class on the current halo target that allows us to apply 'halo
         //  style' to it, even though the halo is hidden.
         haloTargetTPElem.addClass('sherpa-outliner-haloed');
+
+        this.set('$haloTargetDepth',
+            haloTargetTPElem.getAttribute('sherpa-outliner-depth').asNumber());
 
         displayVal = haloTargetTPElem.getComputedStyleProperty('display');
         if (displayVal === 'inline') {
@@ -853,16 +859,47 @@ function(aSignal) {
                             labelStr(targetElement),
                             true);
 
-    TP.nodeDescendantElementsPerform(
-                    targetElement,
-                    function(anElement) {
+    //  Iterate over all of the descendant *elements* of the target and make
+    //  them ready to participate in the outliner visualization.
 
-                        TP.elementSetAttribute(
-                                        anElement,
-                                        'sherpa-outliner-tagname',
-                                        labelStr(anElement),
-                                        true);
-                    });
+    TP.nodeDescendantElementsPerform(
+        targetElement,
+        function(anElement) {
+
+            var depth,
+                compStyle;
+
+            TP.elementSetAttribute(
+                            anElement,
+                            'sherpa-outliner-tagname',
+                            labelStr(anElement),
+                            true);
+
+            //  Compute the depth of the descendant by getting it's document
+            //  position, splitting along the periods ('.') and getting the size
+            //  of that Array.
+            depth = TP.nodeGetDocumentPosition(anElement).split('.').getSize();
+            TP.elementSetAttribute(
+                            anElement,
+                            'sherpa-outliner-depth',
+                            depth,
+                            true);
+
+            //  Grab the computed style of the descendant. If its overflow isn't
+            //  visible, then add a class that forces it to be so. This is due
+            //  to how CSS3 transforms work with the Z-axis. Also, if the
+            //  display is inline, then add a class that forces it to be
+            //  'blocked' (normally inline-block).
+            compStyle = TP.elementGetComputedStyleObj(anElement);
+
+            if (compStyle.overflow !== 'visible') {
+                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
+            }
+
+            if (compStyle.display === 'inline') {
+                TP.elementAddClass(anElement, 'sherpa-outliner-blocked');
+            }
+        });
 
     return this;
 });
@@ -912,16 +949,47 @@ function(aSignal) {
                             labelStr(targetElement),
                             true);
 
-    TP.nodeDescendantElementsPerform(
-                    targetElement,
-                    function(anElement) {
+    //  Iterate over all of the descendant *elements* of the target and make
+    //  them ready to participate in the outliner visualization.
 
-                        TP.elementSetAttribute(
-                                        anElement,
-                                        'sherpa-outliner-tagname',
-                                        labelStr(anElement),
-                                        true);
-                    });
+    TP.nodeDescendantElementsPerform(
+        targetElement,
+        function(anElement) {
+
+            var depth,
+                compStyle;
+
+            TP.elementSetAttribute(
+                            anElement,
+                            'sherpa-outliner-tagname',
+                            labelStr(anElement),
+                            true);
+
+            //  Compute the depth of the descendant by getting it's document
+            //  position, splitting along the periods ('.') and getting the size
+            //  of that Array.
+            depth = TP.nodeGetDocumentPosition(anElement).split('.').getSize();
+            TP.elementSetAttribute(
+                            anElement,
+                            'sherpa-outliner-depth',
+                            depth,
+                            true);
+
+            //  Grab the computed style of the descendant. If its overflow isn't
+            //  visible, then add a class that forces it to be so. This is due
+            //  to how CSS3 transforms work with the Z-axis. Also, if the
+            //  display is inline, then add a class that forces it to be
+            //  'blocked' (normally inline-block).
+            compStyle = TP.elementGetComputedStyleObj(anElement);
+
+            if (compStyle.overflow !== 'visible') {
+                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
+            }
+
+            if (compStyle.display === 'inline') {
+                TP.elementAddClass(anElement, 'sherpa-outliner-blocked');
+            }
+        });
 
     return this;
 });
@@ -1335,15 +1403,47 @@ function() {
                             labelStr(targetElement),
                             true);
 
+    //  Iterate over all of the descendant *elements* of the target and make
+    //  them ready to participate in the outliner visualization.
+
     TP.nodeDescendantElementsPerform(
-                    targetElement,
-                    function(anElement) {
-                        TP.elementSetAttribute(
-                                        anElement,
-                                        'sherpa-outliner-tagname',
-                                        labelStr(anElement),
-                                        true);
-                    });
+        targetElement,
+        function(anElement) {
+
+            var depth,
+                compStyle;
+
+            TP.elementSetAttribute(
+                            anElement,
+                            'sherpa-outliner-tagname',
+                            labelStr(anElement),
+                            true);
+
+            //  Compute the depth of the descendant by getting it's document
+            //  position, splitting along the periods ('.') and getting the size
+            //  of that Array.
+            depth = TP.nodeGetDocumentPosition(anElement).split('.').getSize();
+            TP.elementSetAttribute(
+                            anElement,
+                            'sherpa-outliner-depth',
+                            depth,
+                            true);
+
+            //  Grab the computed style of the descendant. If its overflow isn't
+            //  visible, then add a class that forces it to be so. This is due
+            //  to how CSS3 transforms work with the Z-axis. Also, if the
+            //  display is inline, then add a class that forces it to be
+            //  'blocked' (normally inline-block).
+            compStyle = TP.elementGetComputedStyleObj(anElement);
+
+            if (compStyle.overflow !== 'visible') {
+                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
+            }
+
+            if (compStyle.display === 'inline') {
+                TP.elementAddClass(anElement, 'sherpa-outliner-blocked');
+            }
+        });
 
     return this;
 });
@@ -1410,6 +1510,9 @@ function() {
         //  style' to it, even though the halo is hidden.
         haloTargetTPElem.addClass('sherpa-outliner-haloed');
 
+        this.set('$haloTargetDepth',
+            haloTargetTPElem.getAttribute('sherpa-outliner-depth').asNumber());
+
         displayVal = haloTargetTPElem.getComputedStyleProperty('display');
         if (displayVal === 'inline') {
 
@@ -1475,6 +1578,12 @@ function() {
                     function(anElement) {
                         TP.elementRemoveAttribute(
                             anElement, 'sherpa-outliner-tagname', true);
+                        TP.elementRemoveAttribute(
+                            anElement, 'sherpa-outliner-depth', true);
+                        TP.elementRemoveClass(
+                            anElement, 'sherpa-outliner-overflowed');
+                        TP.elementRemoveClass(
+                            anElement, 'sherpa-outliner-blocked');
                     });
 
     return this;
