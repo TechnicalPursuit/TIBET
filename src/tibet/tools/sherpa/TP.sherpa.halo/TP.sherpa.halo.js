@@ -1386,7 +1386,7 @@ function(newTargetTPElem, shouldUnhide) {
     //  Note that we do this because the halo is currently hidden and won't
     //  give proper coordinates when computing relative to its offset
     //  parent.
-    ourRect = this.getOffsetParent().getGlobalRect(true);
+    ourRect = this.getOffsetParent().getGlobalRect(false);
 
     theRect.subtractByPoint(ourRect.getXYPoint());
 

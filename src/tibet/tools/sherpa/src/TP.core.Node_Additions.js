@@ -1293,53 +1293,7 @@ function(aHalo) {
      *     itself.
      */
 
-    var haloWin,
-        ourWin,
-
-        ourRect,
-
-        elem,
-
-        transform;
-
-    haloWin = aHalo.getNativeWindow();
-    ourWin = this.getNativeWindow();
-
-    ourRect = this.getGlobalRect();
-
-    //  If the halo is operating in the same window as us, so just return our
-    //  untransformed 'global rect'
-    if (haloWin === ourWin) {
-        return ourRect;
-    }
-
-    //  If we're not in an iframe window, we must be in a top-level window, so
-    //  just return our untransformed global rect.
-    if (!TP.isIFrameWindow(ourWin)) {
-        return ourRect;
-    }
-
-    //  We're not in the same window as the halo and we're in an iframe, so
-    //  we need our global rect.
-
-    elem = this.getNativeNode();
-
-    //  If the element is transformed, then we temporarily remove the transform
-    //  so that we can measure it 'properly'.
-    if (TP.elementIsTransformed(elem)) {
-
-        transform = TP.elementGetStyleObj(elem).transform;
-        TP.elementGetStyleObj(elem).transform = 'none';
-
-        //  Take the measurement with no transformations.
-        ourRect = this.getGlobalRect(false);
-
-        TP.elementGetStyleObj(elem).transform = transform;
-    } else {
-        ourRect = this.getGlobalRect(true);
-    }
-
-    return ourRect;
+    return this.getGlobalRect();
 });
 
 //  ------------------------------------------------------------------------
