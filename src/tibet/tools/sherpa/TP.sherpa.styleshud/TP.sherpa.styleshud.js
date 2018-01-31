@@ -617,9 +617,9 @@ function(aSignal) {
 
         tileTPElem;
 
-    //  Grab the target and make sure it's an 'item' tile.
+    //  Grab the target and make sure it's an 'selector' tile.
     targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'item')) {
+    if (!TP.elementHasClass(targetElem, 'selector')) {
         return this;
     }
 
@@ -716,9 +716,9 @@ function(aSignal) {
 
         indexInData;
 
-    //  Grab the target and make sure it's an 'item' tile.
+    //  Grab the target and make sure it's an 'selector' tile.
     targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'item')) {
+    if (!TP.elementHasClass(targetElem, 'selector')) {
         return this;
     }
 
