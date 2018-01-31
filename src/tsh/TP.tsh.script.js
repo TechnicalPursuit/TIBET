@@ -2522,6 +2522,12 @@ function(aRequest) {
     //  perform any work to connect the previous section(s) of pipe
     this.$connectPipeSections(cmds, request);
 
+    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  mutations to the source DOM.
+    if (TP.sys.hasFeature('sherpa')) {
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+    }
+
     service = TP.tsh.RunService.getDefaultInstance();
 
     //  if the first command has input requests those are first in the
