@@ -1390,10 +1390,9 @@ function(newTargetTPElem, shouldUnhide) {
 
     theRect.subtractByPoint(ourRect.getXYPoint());
 
-    //  Grab the style sheet that the HUD injected into the UI canvas.
-    haloStyleElement = TP.byId('TP_sherpa_halo_generated',
-                                this.getNativeDocument(),
-                                false);
+    //  Grab the style sheet that is associated with the halo.
+    haloStyleElement =
+        TP.styleSheetGetOwnerNode(this.getStylesheetForStyleResource());
 
     TP.cssElementSetCustomCSSPropertyValue(
         haloStyleElement,
