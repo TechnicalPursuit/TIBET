@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    basedir="~lib_src/xctrls/TP.xctrls.dialog/"
+    name="xctrls.dialog" default="base">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties">
+    <!-- put tag-specific property tags here -->
+    <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/TP.xctrls.dialog.less"/>
+    <property name="path.TP.xctrls.dialog.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.dialog_tpi.less"/>
+</config>
+
+<config id="scripts">
+    <!-- tag-related source file references here -->
+    <script src="TP.xctrls.dialog.js"/>
+    <script src="TP.xctrls.dialog.keybindings.js"/>
+</config>
+
+<config id="resources">
+    <!-- tag-related resource entries here -->
+    <resource href="TP.xctrls.dialog.xhtml"/>
+
+    <resource href="system_alert.xhtml"/>
+    <resource href="system_confirm.xhtml"/>
+    <resource href="system_prompt.xhtml"/>
+</config>
+
+<config id="tests">
+    <!-- tag-related test scripts here -->
+</config>
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <config ref="scripts"/>
+    <config ref="resources"/>
+</config>
+
+<config id="developer">
+    <config ref="base"/>
+    <config ref="tests"/>
+</config>
+
+</package>
+

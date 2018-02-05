@@ -132,77 +132,96 @@
 </config>
 
 <config id="xctrls-inlined" if="boot.phase_one boot.inlined">
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls_variables.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls_variables_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls_mixins.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls_grid.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_common.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls_common_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls_common_tpi.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.button-TP.xctrls.button.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.button-TP.xctrls.button.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.button_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.button_tpi.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.buttonitem-TP.xctrls.buttonitem.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.buttonitem-TP.xctrls.buttonitem.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.buttonitem_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.buttonitem_tpi.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.checkitem-TP.xctrls.checkitem.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.radioitem-TP.xctrls.radioitem.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.textitem-TP.xctrls.textitem.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.list-TP.xctrls.list.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.table-TP.xctrls.table.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.curtain-TP.xctrls.curtain.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.popup-TP.xctrls.popup.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.tabbar-TP.xctrls.tabbar.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.checkitem-TP.xctrls.checkitem.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.checkitem_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.checkitem_tpi.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.codeeditor-TP.xctrls.codeeditor.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.codeeditor-TP.xctrls.codeeditor.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.curtain-TP.xctrls.curtain.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.curtain-TP.xctrls.curtain.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.dialog_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.dialog_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-system_alert.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-system_confirm.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-system_prompt.xhtml.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls_variables.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.button_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.buttonitem_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.checkitem_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.dialog_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.list_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.notifier_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.propertysheet_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.radioitem_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.sticky_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tabbar_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.table_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.textitem_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tooltip_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls_common_all.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls_variables_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.curtain-TP.xctrls.curtain.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.popup-TP.xctrls.popup.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls_mixins.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls_grid.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.button_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.buttonitem_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.checkitem_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.dialog_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.list_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.notifier_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.propertysheet_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.sticky_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.radioitem_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tabbar_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.table_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.textitem_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tooltip_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls_common_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.button-TP.xctrls.button.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.buttonitem-TP.xctrls.buttonitem.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.checkitem-TP.xctrls.checkitem.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.radioitem-TP.xctrls.radioitem.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.textitem-TP.xctrls.textitem.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.list-TP.xctrls.list.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.list-TP.xctrls.list.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls.table-TP.xctrls.table.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.list_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.list_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.notifier_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.notifier_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.popup-TP.xctrls.popup.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.popup-TP.xctrls.popup.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.propertysheet-TP.xctrls.propertysheet.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.propertysheet_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.propertysheet_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.radioitem-TP.xctrls.radioitem.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.radioitem-TP.xctrls.radioitem.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.radioitem_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.radioitem_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.sticky_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.sticky_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.tabbar-TP.xctrls.tabbar.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tabbar-TP.xctrls.tabbar.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tabbar_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tabbar_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.table-TP.xctrls.table.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.table-TP.xctrls.table.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.table_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.table_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.textitem-TP.xctrls.textitem.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.textitem-TP.xctrls.textitem.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.textitem_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.textitem_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tooltip_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tooltip_tpi.css.js"/>
 </config>
 
 <config id="sherpa-inlined" if="boot.phase_one boot.inlined">

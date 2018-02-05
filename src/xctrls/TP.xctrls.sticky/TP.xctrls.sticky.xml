@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    basedir="~lib_src/xctrls/TP.xctrls.sticky/"
+    name="xctrls.sticky" default="base">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties">
+    <!-- put tag-specific property tags here -->
+    <property name="path.TP.xctrls.sticky.style" value="~TP.xctrls.sticky/TP.xctrls.sticky.less"/>
+    <property name="path.TP.xctrls.sticky.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.sticky_tpi.less"/>
+</config>
+
+<config id="scripts">
+    <!-- tag-related source file references here -->
+    <script src="TP.xctrls.sticky.js"/>
+</config>
+
+<config id="resources">
+    <!-- tag-related resource entries here -->
+    <resource href="TP.xctrls.sticky.xhtml"/>
+</config>
+
+<config id="tests">
+    <!-- tag-related test scripts here -->
+</config>
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <config ref="scripts"/>
+    <config ref="resources"/>
+</config>
+
+<config id="developer">
+    <config ref="base"/>
+    <config ref="tests"/>
+</config>
+
+</package>
+

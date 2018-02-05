@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    basedir="~lib_src/xctrls/TP.xctrls.tooltip/"
+    name="xctrls.tooltip" default="base">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties">
+    <!-- put tag-specific property tags here -->
+    <property name="path.TP.xctrls.tooltip.style" value="~TP.xctrls.tooltip/TP.xctrls.tooltip.less"/>
+    <property name="path.TP.xctrls.tooltip.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tooltip_tpi.less"/>
+</config>
+
+<config id="scripts">
+    <!-- tag-related source file references here -->
+    <script src="TP.xctrls.tooltip.js"/>
+</config>
+
+<config id="resources">
+    <!-- tag-related resource entries here -->
+    <resource href="TP.xctrls.tooltip.xhtml"/>
+</config>
+
+<config id="tests">
+    <!-- tag-related test scripts here -->
+</config>
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <config ref="scripts"/>
+    <config ref="resources"/>
+</config>
+
+<config id="developer">
+    <config ref="base"/>
+    <config ref="tests"/>
+</config>
+
+</package>
+

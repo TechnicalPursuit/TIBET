@@ -209,6 +209,11 @@
 </config>
 
 <config id="xctrls">
+    <!-- common xctrls LESS files -->
+    <resource href="xctrls/TP.xctrls_variables.less"/>
+    <resource href="xctrls/TP.xctrls_mixins.less"/>
+    <resource href="xctrls/TP.xctrls_grid.less"/>
+
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
 
     <script src="xctrls/TP.xctrls.Element.js"/>
@@ -234,84 +239,23 @@
     <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
     <script src="xctrls/TP.xctrls.panel/TP.xctrls.panel.js"/>
 
-    <script src="xctrls/TP.xctrls.button/TP.xctrls.button.js"/>
-    <property name="path.TP.xctrls.button.style" value="~TP.xctrls.button/TP.xctrls.button.less"/>
-    <property name="path.TP.xctrls.button.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.button_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.buttonitem/TP.xctrls.buttonitem.js"/>
-    <property name="path.TP.xctrls.buttonitem.style" value="~TP.xctrls.buttonitem/TP.xctrls.buttonitem.less"/>
-    <property name="path.TP.xctrls.buttonitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.buttonitem_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.checkitem/TP.xctrls.checkitem.js"/>
-    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/TP.xctrls.checkitem.less"/>
-    <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.checkitem_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.js"/>
-    <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/TP.xctrls.dialog.less"/>
-    <property name="path.TP.xctrls.dialog.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.dialog_tpi.less"/>
-    <script src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.keybindings.js"/>
-
-    <!-- 'Standard' panels for xctrls:dialog when emulating browser built-ins -->
-    <resource href="xctrls/TP.xctrls.dialog/system_alert.xhtml"/>
-    <resource href="xctrls/TP.xctrls.dialog/system_confirm.xhtml"/>
-    <resource href="xctrls/TP.xctrls.dialog/system_prompt.xhtml"/>
-
-    <script src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.js"/>
-    <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/TP.xctrls.radioitem.less"/>
-    <property name="path.TP.xctrls.radioitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.radioitem_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.js"/>
-    <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/TP.xctrls.textitem.less"/>
-    <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.textitem_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.hint/TP.xctrls.hint.js"/>
-    <property name="path.TP.xctrls.hint.style" value="~TP.xctrls.hint/TP.xctrls.hint.less"/>
-
-    <script src="xctrls/TP.xctrls.list/TP.xctrls.list.js"/>
-    <property name="path.TP.xctrls.list.style" value="~TP.xctrls.list/TP.xctrls.list.less"/>
-    <property name="path.TP.xctrls.list.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.list_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.table/TP.xctrls.table.js"/>
-    <property name="path.TP.xctrls.table.style" value="~TP.xctrls.table/TP.xctrls.table.less"/>
-    <property name="path.TP.xctrls.table.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.table_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
-    <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>
-
-    <script src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.js"/>
-    <property name="path.TP.xctrls.notifier.style" value="~TP.xctrls.notifier/TP.xctrls.notifier.less"/>
-    <property name="path.TP.xctrls.notifier.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.notifier_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.popup/TP.xctrls.popup.js"/>
-    <property name="path.TP.xctrls.popup.style" value="~TP.xctrls.popup/TP.xctrls.popup.less"/>
-    <script src="xctrls/TP.xctrls.popup/TP.xctrls.popup.keybindings.js"/>
-
-    <script src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.js"/>
-    <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.less"/>
-
-    <script src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.js"/>
-    <property name="path.TP.xctrls.propertysheet.style" value="~TP.xctrls.propertysheet/TP.xctrls.propertysheet.less"/>
-    <property name="path.TP.xctrls.propertysheet.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.propertysheet_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.sticky/TP.xctrls.sticky.js"/>
-    <property name="path.TP.xctrls.sticky.style" value="~TP.xctrls.sticky/TP.xctrls.sticky.less"/>
-    <property name="path.TP.xctrls.sticky.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.sticky_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.js"/>
-    <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/TP.xctrls.tabbar.less"/>
-    <property name="path.TP.xctrls.tabbar.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tabbar_tpi.less"/>
-
-    <script src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.js"/>
-    <property name="path.TP.xctrls.tooltip.style" value="~TP.xctrls.tooltip/TP.xctrls.tooltip.less"/>
-    <property name="path.TP.xctrls.tooltip.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tooltip_tpi.less"/>
-
-    <!-- common xctrls LESS files -->
-    <resource href="xctrls/TP.xctrls_variables.less"/>
-    <resource href="xctrls/TP.xctrls_mixins.less"/>
-    <resource href="xctrls/TP.xctrls_grid.less"/>
-
-    <!-- xctrls theme LESS files -->
-    <resource href="xctrls/themes"/>
+    <package src="xctrls/TP.xctrls.button/TP.xctrls.button.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.buttonitem/TP.xctrls.buttonitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.checkitem/TP.xctrls.checkitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.hint/TP.xctrls.hint.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.list/TP.xctrls.list.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.popup/TP.xctrls.popup.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.sticky/TP.xctrls.sticky.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->
 
@@ -327,7 +271,7 @@
         ]]>
     </script>
 
-    <script src="xctrls/TP.xctrls.codeeditor/TP.xctrls.codeeditor.js"/>
+    <package src="xctrls/TP.xctrls.codeeditor/TP.xctrls.codeeditor.xml" config="base"/>
 
     <!-- END xctrls:codeeditor -->
 
