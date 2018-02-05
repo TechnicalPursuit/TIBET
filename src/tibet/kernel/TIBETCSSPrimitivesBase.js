@@ -2676,7 +2676,7 @@ function(aStylesheet) {
     }
 
     parentSS = aStylesheet.parentStyleSheet;
-    while (!TP.isNode(parentSS.ownerNode)) {
+    while (TP.isValid(parentSS) && !TP.isNode(parentSS.ownerNode)) {
         parentSS = parentSS.parentStyleSheet;
     }
 
