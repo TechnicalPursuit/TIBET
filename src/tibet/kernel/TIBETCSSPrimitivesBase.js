@@ -1988,7 +1988,9 @@ function(anElement, styleText, shouldSignal) {
 
     //  If there's no valid text node under the style element, create one
     //  with the content.
-    if (!TP.isTextNode(styleTextNode = anElement.firstChild)) {
+    styleTextNode = anElement.firstChild;
+    if (!TP.isTextNode(styleTextNode) &&
+        !TP.isCDATASectionNode(styleTextNode)) {
         TP.nodeAppendChild(
             anElement,
             TP.nodeGetDocument(anElement).createTextNode(styleText),
