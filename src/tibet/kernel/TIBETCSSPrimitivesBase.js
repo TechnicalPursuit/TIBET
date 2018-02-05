@@ -795,6 +795,8 @@ function(aDocument, flushCaches) {
 
         parentSS,
 
+        styleElem,
+
         elementsMatchingRule,
 
         lenj,
@@ -834,9 +836,11 @@ function(aDocument, flushCaches) {
             parentSS = parentSS.parentStyleSheet;
         }
 
+        styleElem = TP.styleSheetGetOwnerNode(parentSS);
+
         //  If the stylesheet came from a private TIBET stylesheet (normally
         //  used for IDE or other purposes), then don't consider it.
-        if (parentSS.ownerNode[TP.TIBET_PRIVATE]) {
+        if (styleElem[TP.TIBET_PRIVATE]) {
             continue;
         }
 
@@ -2202,7 +2206,8 @@ function(aStyleRule, sourceASTs) {
         //  If there is no sheet location, then it must be a sheet that was
         //  generated for an inline 'style' element.
         if (!TP.isString(sheetLoc)) {
-            if (!TP.isElement(styleElem = ownerSheet.ownerNode)) {
+            styleElem = TP.styleSheetGetOwnerNode(ownerSheet);
+            if (!TP.isElement(styleElem)) {
                 return TP.hc();
             }
 
@@ -2894,6 +2899,8 @@ function(aStylesheet) {
 
         parentSS,
 
+        styleElem,
+
         doc,
 
         leni,
@@ -2920,16 +2927,18 @@ function(aStylesheet) {
         parentSS = parentSS.parentStyleSheet;
     }
 
+    styleElem = TP.styleSheetGetOwnerNode(parentSS);
+
     //  If the stylesheet came from a private TIBET stylesheet (normally
     //  used for IDE or other purposes), then don't consider it.
-    if (parentSS.ownerNode[TP.TIBET_PRIVATE]) {
+    if (styleElem[TP.TIBET_PRIVATE]) {
         return;
     }
 
     //  Grab all the stylesheets's CSS rules.
     sheetRules = TP.styleSheetGetStyleRules(aStylesheet);
 
-    doc = TP.nodeGetDocument(parentSS.ownerNode);
+    doc = TP.nodeGetDocument(styleElem);
 
     //  Iterate over them, querying the document for any elements that match
     //  the selector text of the rule. Then, iterate over those elements and add
