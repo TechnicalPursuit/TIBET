@@ -138,7 +138,6 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_grid.css.js"/>
 
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_common.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls_common_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls_common_tpi.css.js"/>
 
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.button-TP.xctrls.button.xhtml.js"/>
