@@ -211,6 +211,8 @@
 <config id="xctrls">
     <!-- common xctrls LESS files -->
     <resource href="xctrls/TP.xctrls_variables.less"/>
+    <resource href="xctrls/themes/tpi/TP.xctrls_variables_tpi.less"/>
+
     <resource href="xctrls/TP.xctrls_mixins.less"/>
     <resource href="xctrls/TP.xctrls_grid.less"/>
 
