@@ -310,15 +310,18 @@ function(openSignal, popupContent) {
                 popupPoint = triggerRect.getEdgePoint(popupCorner);
             }
 
+            //  Show the popup and set up signal handlers.
+            //  NOTE: We make sure to do this *before* we position - otherwise,
+            //  our width and height will not be set properly and 'edge
+            //  avoidance' code will not work.
+            this.setAttribute('hidden', false);
+
             //  If the signal doesn't have a flag to not position the popup,
             //  then position the popup relative to the popup point and the
             //  corner.
             if (TP.notTrue(openSignal.at('noPosition'))) {
                 this.positionUsing(popupPoint);
             }
-
-            //  Show the popup and set up signal handlers.
-            this.setAttribute('hidden', false);
 
             return this;
         }
