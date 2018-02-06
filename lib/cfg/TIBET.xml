@@ -109,13 +109,6 @@
     <config ref="xctrls-inlined"/>
     <config ref="sherpa-inlined"/>
     <config ref="test-inlined"/>
-
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-TP.sherpa.adjuster_editor.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-TP.sherpa.adjuster_editor.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-plugins-TP.sherpa.adjuster_genericPropertyEditor-TP.sherpa.adjuster_genericPropertyEditor.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-plugins-TP.sherpa.adjuster_genericPropertyEditor-TP.sherpa.adjuster_genericPropertyEditor.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">
