@@ -61,23 +61,30 @@ sherpa|styleshud > ul.content > li.selector {
 }
 
 sherpa|styleshud > ul.content > li.selector:hover {
+
     background-color: #cdd7e2;
+
     color: black;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected] {
+
     background-color: #91a9c0;
+
     color: black;
+
     border: 1px solid black;
 }
 
 sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
+
     background-color: #91a9c0;
 }
 
 /* spacer items */
 
 sherpa|styleshud > ul.content > li.spacer {
+
     background-color: transparent;
 
     height: 4px;
@@ -91,12 +98,16 @@ sherpa|styleshud > ul.content > li.spacer {
 }
 
 sherpa|styleshud > ul.content > li.spacer.sherpa-styleshud-droptarget {
+
     background-color: #91a9c0;
 }
 
 sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget {
+
     font-weight: bold;
+
     border: 1px dashed black;
+
     box-shadow: 2px 2px 2px #e0e0e0;
 }
 
@@ -139,6 +150,7 @@ sherpa|styleshud > ul.content > li.selector.sherpa-styleshud-droptarget[pclass|s
 }
 
 #StyleSummary_Tile > .footer {
+
     background: #f9f9f9;
 }
 
