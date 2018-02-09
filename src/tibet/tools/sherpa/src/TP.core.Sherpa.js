@@ -780,12 +780,21 @@ function(aSignal) {
      */
 
     var mutatedRule,
+
+        results,
+        ownerSheet,
+        ruleIndex,
+
         loc,
         sheetURI,
 
         shouldRefresh,
         currentResource,
         currentContent,
+
+        sheetRules,
+        matchCount,
+        i,
 
         str,
 
@@ -813,8 +822,13 @@ function(aSignal) {
         return this;
     }
 
+    results = TP.styleRuleGetStyleSheetAndIndex(mutatedRule);
+
+    ownerSheet = results.first();
+    ruleIndex = results.last();
+
     //  Grab its location and make a URI.
-    loc = TP.styleSheetGetLocation(TP.styleRuleGetStyleSheet(mutatedRule));
+    loc = TP.styleSheetGetLocation(ownerSheet);
     sheetURI = TP.uc(loc);
 
     if (!TP.isURI(sheetURI)) {
@@ -831,18 +845,47 @@ function(aSignal) {
     currentContent = currentResource.get('result').asString();
 
     //  Look for the rule by using the selector text
-    //  NOTE: This will *not* handle multiple rules with the same selector in
-    //  the same URI properly. FIX THIS!
+
+    //  We need to see if there are rules 'higher up' in the sheet that have the
+    //  same selector as the mutated rule and, therefore, adjust the string that
+    //  we look for to compute the match.
+
+    //  First, iterate on the sheet's rules from 0 to the ruleIndex, checking
+    //  each selector against our mutated rule's selector. If one matches, kick
+    //  the match counter.
+
+    //  NB: Note how we do *not* expand imports here
+    sheetRules = TP.styleSheetGetStyleRules(ownerSheet, false);
+
+    matchCount = 0;
+
+    //  Iterate up *through the rule just before our mutated rule*
+    for (i = 0; i < ruleIndex; i++) {
+        if (sheetRules.at(i).selectorText === mutatedRule.selectorText) {
+            matchCount++;
+        }
+    }
+
     str = mutatedRule.selectorText + ' {';
 
     //  Generate a matcher RegExp
     matcher = TP.rc(RegExp.escapeMetachars(
                     str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
-                        replace(/SECRET_SAUCE/g, '\\s*'));
+                        replace(/SECRET_SAUCE/g, '\\s*'), 'g');
 
-    //  Find the rule text start in the content by matching using the generated
-    //  RegExp.
-    match = currentContent.match(matcher);
+    //  Kick the match count once so that, if we didn't find any matching
+    //  selectors 'ahead' of us in the file, we'll match our lone selector
+    //  occurrence.
+    matchCount++;
+    for (i = 0; i < matchCount; i++) {
+        //  Find the rule text start in the content by matching using the
+        //  generated RegExp.
+        match = matcher.exec(currentContent);
+
+        //  Adjust the lastIndex to start the next exec() after the matched
+        //  rule.
+        matcher.lastIndex = currentContent.indexOf('}', match.index) + 1;
+    }
 
     //  If no match could be found, exit here.
     if (TP.notValid(match)) {
