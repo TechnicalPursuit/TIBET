@@ -28,7 +28,7 @@ sherpa|respondershud > ul {
     color: #666;
 
     font-size: 60%;
-    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-weight: normal;
 
     overflow: auto;
