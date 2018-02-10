@@ -47,7 +47,7 @@ sherpa|about > .footer > .appinfo {
 
     margin: 8px;
 
-    font-family: "Inconsolata";
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 100%;
 
     line-height: 100%;
