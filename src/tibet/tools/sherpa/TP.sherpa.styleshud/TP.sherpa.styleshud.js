@@ -139,6 +139,13 @@ function(aTPElement) {
         //  Finally, we populate the info that will go into the sidebar
         ruleInfo.perform(
             function(aRuleInfo) {
+
+                //  Push the following data into the rule information:
+
+                //  TIBET URI to stylesheet
+                //  selectorText
+                //  the rule's CSS text
+                //  the original CSSRule object
                 info.push(
                     TP.ac(
                         TP.uriInTIBETFormat(aRuleInfo.at('sheetLocation')),
