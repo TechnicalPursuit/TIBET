@@ -69,8 +69,10 @@ sherpa|domhud_genericElementContent .dom_attributes {
 }
 
 xctrls|tabbar#DOMInfo_Tabbar {
+
     position: absolute;
-    top: 5px;
+
+    top: 3px;
     right: 4px;
     left: 4px;
     height: 22px;
@@ -80,9 +82,11 @@ xctrls|tabbar#DOMInfo_Tabbar {
 }
 
 xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem {
+
     font-size: 85%;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
+    padding-top: 1px;
+    padding-bottom: 1px;
     padding-right: 10px;
 }
 
@@ -92,7 +96,9 @@ xctrls|tabbar#DOMInfo_Tabbar xctrls|tabitem > .close_mark {
 }
 
 xctrls|panelbox#DOMInfo_Tabpanelbox {
+
     position: absolute;
+
     top: 24px;
     right: 0;
     bottom: 0;
