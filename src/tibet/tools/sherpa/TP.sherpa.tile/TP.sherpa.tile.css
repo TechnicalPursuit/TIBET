@@ -57,7 +57,7 @@ sherpa|tile > .header {
     border-top-right-radius: 3px;
 
     background-color: #ddd;
-    cursor: default;
+    cursor: move;
 
     border: 1px solid #666;
     overflow: hidden;
