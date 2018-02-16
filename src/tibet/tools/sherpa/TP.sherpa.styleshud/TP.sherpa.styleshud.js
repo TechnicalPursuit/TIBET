@@ -601,6 +601,31 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var haloTarget;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    //  Update the target source element before we refresh.
+    TP.uc('urn:tibet:styleshud_target_source').setResource(
+            haloTarget,
+            TP.hc('observeResource', false, 'signalChange', true));
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineHandler('InspectStyleSource',
 function(aSignal) {
 
@@ -862,13 +887,6 @@ function(aSignal) {
 
         setResourceParams = TP.hc('signalChange', true);
     }
-
-    //  Grab the current target source.
-    modelURI = TP.uc('urn:tibet:styleshud_target_source');
-
-    //  Set the model's URI's resource and signal change. This will
-    //  cause the properties to update.
-    modelURI.setResource(sourceTPElem, setResourceParams);
 
     //  Grab the current rule source.
     modelURI = TP.uc('urn:tibet:styleshud_rule_source');
