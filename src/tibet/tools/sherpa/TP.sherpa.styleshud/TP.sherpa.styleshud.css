@@ -81,6 +81,26 @@ sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
     background-color: #91a9c0;
 }
 
+/* Cascaded item */
+
+sherpa|styleshud > ul.content > li.cascaded {
+
+    height: 1.75em;
+    line-height: 1.75em;
+
+    padding-left: 0.25em;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
 /* spacer items */
 
 sherpa|styleshud > ul.content > li.spacer {

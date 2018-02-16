@@ -157,6 +157,9 @@ function(aTPElement) {
 
     info.reverse();
 
+    //  Unshift an entry for cascaded style.
+    info.unshift(TP.ac('[cascaded]', '[cascaded]', '[cascaded]', '[cascaded]'));
+
     currentRuleIndex = this.get('$currentRuleIndex');
     if (TP.notValid(currentRuleIndex)) {
         currentRuleIndex = 0;
@@ -224,7 +227,7 @@ function(enterSelection) {
     domContent.attr(
             'pclass:selected',
             function(d, i) {
-                if (d[1] === 'spacer') {
+                if (d[1] === 'spacer' || d[1] === '[cascaded]') {
                     return;
                 }
 
@@ -251,6 +254,8 @@ function(enterSelection) {
 
                 if (d[1] === 'spacer') {
                     val += ' spacer';
+                } else if (d[1] === '[cascaded]') {
+                    val += ' cascaded';
                 } else {
                     val += ' selector';
                 }
@@ -351,7 +356,7 @@ function(updateSelection) {
     updateSelection.attr(
             'pclass:selected',
             function(d, i) {
-                if (d[1] === 'spacer') {
+                if (d[1] === 'spacer' || d[1] === '[cascaded]') {
                     return;
                 }
 
@@ -378,6 +383,8 @@ function(updateSelection) {
 
                 if (d[1] === 'spacer') {
                     val += ' spacer';
+                } else if (d[1] === '[cascaded]') {
+                    val += ' cascaded';
                 } else {
                     val += ' selector';
                 }
@@ -816,8 +823,11 @@ function(aSignal) {
 
         modelURI;
 
+    //  Grab the target and make sure it's either a 'selector' or 'cascaded'
+    //  tile.
     targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'selector')) {
+    if (!TP.elementHasClass(targetElem, 'selector') &&
+        !TP.elementHasClass(targetElem, 'cascaded')) {
         return this;
     }
 
@@ -839,6 +849,10 @@ function(aSignal) {
     //  Convert to a Number and retrieve the entry Array from our data
     indexInData = indexInData.asNumber();
     itemData = data.at(indexInData);
+
+    if (itemData.at(0) === '[cascaded]') {
+        return this;
+    }
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
