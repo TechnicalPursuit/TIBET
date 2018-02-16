@@ -851,6 +851,7 @@ function(aSignal) {
     itemData = data.at(indexInData);
 
     if (itemData.at(0) === '[cascaded]') {
+        TP.byId('SherpaAdjuster', TP.win('UIROOT')).showAdjusterTile();
         return this;
     }
 

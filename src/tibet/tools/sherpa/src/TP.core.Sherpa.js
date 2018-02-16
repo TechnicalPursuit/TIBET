@@ -297,6 +297,9 @@ function(finalizationFunc) {
     //  Set up the thumbnail viewer
     this.setupThumbnail();
 
+    //  Set up the property adjuster
+    this.setupAdjuster();
+
     //  Set up the mutation observer that manages keeping all of the DOM and
     //  markup that we're managing in sync.
     this.setupBuilderObserver();
@@ -2010,6 +2013,29 @@ function(shouldProcess) {
     }
 
     this.$set('shouldProcessDOMMutations', shouldProcess);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupAdjuster',
+function() {
+
+    /**
+     * @method setupAdjuster
+     * @summary Sets up the Sherpa's 'style adjuster' component. The Sherpa's
+     *     style adjuster provides a GUI to adjust the current halo target's
+     *     cascaded style.
+     * @returns {TP.core.sherpa} The receiver.
+     */
+
+    var adjusterTPElem;
+
+    adjusterTPElem = TP.tpelem(
+        '<sherpa:adjuster id="SherpaAdjuster" pclass:hidden="true"/>');
+
+    TP.byId('center', this.get('vWin')).addContent(adjusterTPElem);
 
     return this;
 });

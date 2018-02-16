@@ -466,6 +466,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getContentForAdjusterTileBody',
+function() {
+
+    /**
+     * @method getContentForAdjusterTileBody
+     * @summary
+     * @returns {}
+     */
+
+    //return TP.elem('<sherpa:adjuster_editor/>');
+    return TP.xhtmlnode('<div class="editor_wrapper"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getContentForAdjusterTileFooter',
+function() {
+
+    /**
+     * @method getContentForAdjusterTileBody
+     * @summary
+     * @returns {}
+     */
+
+    return TP.xhtmlnode('<button class="inserter" on:click="{signal: AddProperty, origin: \'SherpaAdjuster\'}"/>');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('haloCanBlur',
 function(aHalo) {
 

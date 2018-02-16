@@ -26,6 +26,7 @@
     <script src="./src/TP.sherpa.ToolAPI.js"/>
 
     <script src="./TP.sherpa.about/TP.sherpa.about.js"/>
+    <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster.js"/>
     <script src="./TP.sherpa.console/TP.sherpa.console.js"/>
     <script src="./TP.sherpa.halo/TP.sherpa.halo.js"/>
     <script src="./TP.sherpa.compiledTagContextMenuContent/TP.sherpa.compiledTagContextMenuContent.js"/>
@@ -104,6 +105,10 @@
 
     <script src="./TP.sherpa.styleshud/plugins/TP.sherpa.styleshud_ruleContent/TP.sherpa.styleshud_ruleContent.js"/>
 
+    <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/TP.sherpa.adjuster_Editor.js"/>
+    <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/plugins/TP.sherpa.adjuster_genericPropertyEditor/TP.sherpa.adjuster_genericPropertyEditor.js"/>
+    <script src="./TP.sherpa.adjusterMenuContent/TP.sherpa.adjusterMenuContent.js"/>
+
     <script src="./TP.sherpa.couchDocumentURIInsertionAssistant/TP.sherpa.couchDocumentURIInsertionAssistant.js"/>
     <script src="./TP.sherpa.couchViewURIInsertionAssistant/TP.sherpa.couchViewURIInsertionAssistant.js"/>
 
@@ -117,6 +122,13 @@
     <script src="./src/TP.lang.Namespace_Additions.js"/>
     <script src="./src/TP.xctrls_Additions.js"/>
     <script src="./src/TP.tibet_Additions.js"/>
+
+    <script src="./src/csstree.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('csstree', window.csstree);
+        ]]>
+    </script>
 
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>

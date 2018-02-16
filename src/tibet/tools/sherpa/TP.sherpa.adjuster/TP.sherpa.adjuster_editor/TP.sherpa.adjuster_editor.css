@@ -1,0 +1,19 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+sherpa|adjuster_editor {
+
+    display: table;
+
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 12px;
+
+    background: #fff;
+
+    width: 100%;
+    height: 100%;
+
+    border-collapse: collapse;
+}
+

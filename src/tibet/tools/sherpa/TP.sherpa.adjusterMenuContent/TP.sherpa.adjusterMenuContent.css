@@ -1,0 +1,76 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+sherpa|adjusterMenuContent {
+
+    display: block;
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+    min-width: 10em;
+    min-height: 1em;
+
+    background-color: white;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    box-shadow: 3px 3px 3px #aaa;
+}
+
+sherpa|adjusterMenuContent > .content {
+
+    overflow: hidden;
+}
+
+sherpa|adjusterMenuContent > .content > ul {
+
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: auto;
+}
+
+sherpa|adjusterMenuContent > .content > ul > li {
+
+    display: inline-block;
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    margin-top: 3px;
+
+    border-right: solid 1px black;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+sherpa|adjusterMenuContent > .content > ul > li:hover {
+
+    text-decoration: underline;
+}
+
+/*
+sherpa|adjusterMenuContent > .content > ul > li:hover {
+
+    background-color: #ddd;
+
+    border-top: 1px solid #666;
+    border-bottom: 1px solid #666;
+}
+
+sherpa|adjusterMenuContent > .content > ul > li:last-child:hover {
+
+    border-bottom: 1px solid #666;
+}
+*/

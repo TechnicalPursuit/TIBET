@@ -1,0 +1,132 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+sherpa|adjuster_genericPropertyEditor {
+
+    width: 100%;
+
+    background: white;
+}
+
+sherpa|adjuster_genericPropertyEditor[inactive] {
+
+    visibility: hidden;
+}
+
+sherpa|adjuster_genericPropertyEditor[current] {
+
+    margin-left: -1px;
+    margin-right: -1px;
+
+    border: solid 1px black;
+    border-radius: 5px;
+
+    box-shadow: 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+sherpa|adjuster_genericPropertyEditor > .grid {
+
+    display: grid;
+
+    grid-template-columns: 30% 30% 30%;
+    grid-gap: 5%;
+}
+
+sherpa|adjuster_genericPropertyEditor div.field {
+
+    color: black;
+
+    text-align: center;
+}
+
+sherpa|adjuster_genericPropertyEditor div[name="propertyName"]:hover {
+
+    cursor: pointer;
+}
+
+sherpa|adjuster_genericPropertyEditor div[name="propertyName"] span.launchMark {
+
+    visibility: hidden;
+
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==");
+
+    margin: 0 3px;
+}
+
+sherpa|adjuster_genericPropertyEditor div[name="propertyName"]:hover span.launchMark {
+    visibility: visible;
+}
+
+/* Property Value */
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"]:hover {
+
+    cursor: pointer;
+}
+
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span.arrowMark {
+
+    width: 10px;
+    height: 10px;
+
+    visibility: hidden;
+
+    content: url("data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDI1NSAyNTUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI1NSAyNTU7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8ZyBpZD0iYXJyb3ctZHJvcC1kb3duIj4KCQk8cG9seWdvbiBwb2ludHM9IjAsNjMuNzUgMTI3LjUsMTkxLjI1IDI1NSw2My43NSAgICIgZmlsbD0iIzAwMDAwMCIvPgoJPC9nPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=");
+
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"]:hover span.arrowMark {
+    visibility: visible;
+}
+
+/*
+sherpa|adjuster_genericPropertyEditor div.adjuster {
+
+    border: solid 1px transparent;
+    border-radius: 6px;
+}
+
+sherpa|adjuster_genericPropertyEditor div.adjuster:hover {
+
+    border: solid 1px #bcbbbb;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .2);
+
+    cursor: col-resize;
+}
+*/
+
+sherpa|adjuster_genericPropertyEditor div.adjuster .dimension_val {
+
+    margin-right: 2px;
+
+    cursor: ew-resize;
+}
+
+sherpa|adjuster_genericPropertyEditor div.adjuster .dimension_unit {
+
+    cursor: context-menu;
+}
+
+sherpa|adjuster_genericPropertyEditor div.adjuster .dimension_val:hover {
+
+}
+
+sherpa|adjuster_genericPropertyEditor div.adjuster .dimension_unit:hover {
+
+}
+
+sherpa|adjuster_genericPropertyEditor div.info {
+
+    visibility: hidden;
+
+    color: gray;
+
+    font-size: 77%;
+    line-height: 1;
+
+    margin-left: 4px;
+    margin-right: 4px;
+}
+

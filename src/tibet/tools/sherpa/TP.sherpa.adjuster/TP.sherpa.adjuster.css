@@ -1,0 +1,65 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+sherpa|adjuster {
+
+    display: none;
+}
+
+/* We omitted 'sherpa|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
+
+#Adjuster_Tile {
+
+    min-width: 300px;
+    min-height: 270px;
+}
+
+#Adjuster_Tile[hiding] {
+
+    visibility: hidden;
+}
+
+#Adjuster_Tile > .body {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+    font-size: 100%;
+
+    padding: 0;
+}
+
+#Adjuster_Tile[hiding] > .body {
+
+    visibility: visible;
+
+    background-color: transparent;
+    border: none;
+}
+
+#Adjuster_Tile > .body .editors {
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 5px;
+}
+
+#Adjuster_Tile > .header {
+
+    background: #c2d7cd;
+}
+
+#Adjuster_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+#Adjuster_Tile > .footer {
+
+    background: #f9f9f9;
+}
+
