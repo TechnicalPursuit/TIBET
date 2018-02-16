@@ -36,6 +36,7 @@ sherpa|domhud > ul {
 /* All items */
 
 sherpa|domhud > ul.content > li.item {
+
     margin: 1px 8px;
 }
 
@@ -71,22 +72,30 @@ sherpa|domhud > ul.content > li.domnode[child] {
 }
 
 sherpa|domhud > ul.content > li.domnode[offsetParent] {
+
     background-color: cornsilk;
 }
 
 sherpa|domhud > ul.content > li.domnode:hover {
+
     background-color: #feeca1;
+
     color: black;
 }
 
 sherpa|domhud > ul.content > li.domnode[pclass|selected] {
+
     background-color: gold;
+
     border: 1px solid black;
+
     color: black;
 }
 
 sherpa|domhud > ul.content > li.domnode[pclass|selected]:hover {
+
     background-color: gold;
+
     color: black;
 }
 
@@ -107,12 +116,16 @@ sherpa|domhud > ul.content > li.spacer {
 }
 
 sherpa|domhud > ul.content > li.spacer.sherpa-domhud-droptarget {
+
     background-color: gold;
 }
 
 sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget {
+
     font-weight: bold;
+
     border: 1px dashed black;
+
     box-shadow: 2px 2px 2px #e0e0e0;
 }
 
@@ -131,11 +144,13 @@ sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected
  */
 
 #DOMInfo_Tile {
+
     min-width: 300px;
     min-height: 270px;
 }
 
 #DOMInfo_Tile > .header {
+
     background: #feeca1;
 }
 
@@ -143,10 +158,12 @@ sherpa|domhud > ul.content > li.domnode.sherpa-domhud-droptarget[pclass|selected
 }
 
 #DOMInfo_Tile > .header > .minimize_mark {
+
     visibility: hidden;
 }
 
 #DOMInfo_Tile > .footer {
+
     background: #f9f9f9;
 }
 
