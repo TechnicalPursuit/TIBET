@@ -105,7 +105,7 @@
 
     <script src="./TP.sherpa.styleshud/plugins/TP.sherpa.styleshud_ruleContent/TP.sherpa.styleshud_ruleContent.js"/>
 
-    <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/TP.sherpa.adjuster_Editor.js"/>
+    <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/TP.sherpa.adjuster_editor.js"/>
     <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/plugins/TP.sherpa.adjuster_genericPropertyEditor/TP.sherpa.adjuster_genericPropertyEditor.js"/>
     <script src="./TP.sherpa.adjusterMenuContent/TP.sherpa.adjusterMenuContent.js"/>
 
