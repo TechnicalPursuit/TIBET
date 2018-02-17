@@ -123,7 +123,7 @@
     <script src="./src/TP.xctrls_Additions.js"/>
     <script src="./src/TP.tibet_Additions.js"/>
 
-    <script src="./src/csstree.js" no-lint="no-lint"/>
+    <script src="~lib_deps/csstree-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.registerExternalObject('csstree', window.csstree);
