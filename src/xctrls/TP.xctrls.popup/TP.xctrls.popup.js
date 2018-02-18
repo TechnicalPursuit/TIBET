@@ -265,8 +265,6 @@ function(openSignal, popupContent) {
     lastTriggerID = this.getType().get('$lastTriggerID');
     currentTriggerID = this.get('$currentTriggerID');
 
-    triggerTPElem = this.get('$triggerTPElement');
-
     //  If there is a real last content local ID and it equals the local ID of
     //  the content we're trying to set, then we don't need to set the content
     //  at all - just refresh it, position ourself (again, in case the trigger
@@ -289,6 +287,8 @@ function(openSignal, popupContent) {
             //  If no popup point was given, compute one from the triggering
             //  element.
             if (TP.notValid(popupPoint)) {
+
+                triggerTPElem = this.get('$triggerTPElement');
 
                 if (TP.notValid(triggerTPElem)) {
                     //  TODO: Raise an exception
