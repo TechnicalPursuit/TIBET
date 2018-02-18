@@ -9,25 +9,25 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.adjusterMenuContent}
+ * @type {TP.sherpa.adjusterValueMenuContent}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.menucontent.defineSubtype('adjusterMenuContent');
+TP.sherpa.menucontent.defineSubtype('adjusterValueMenuContent');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjusterMenuContent.Inst.defineAttribute('menuContent',
+TP.sherpa.adjusterValueMenuContent.Inst.defineAttribute('menuContent',
     TP.cpc('> .content > ul', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjusterMenuContent.Inst.defineHandler('SelectMenuItem',
+TP.sherpa.adjusterValueMenuContent.Inst.defineHandler('SelectMenuItem',
 function(aSignal) {
 
     /**
@@ -35,7 +35,7 @@ function(aSignal) {
      * @summary Handles notifications of a menu selection happening.
      * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.adjusterMenuContent} The receiver.
+     * @returns {TP.sherpa.adjusterValueMenuContent} The receiver.
      */
 
     var val;
@@ -47,23 +47,21 @@ function(aSignal) {
         return this;
     }
 
-    TP.info('val is; ' + val);
-
     //  Send a signal that an item has been selected.
-    this.signal('TP.sig.UISelect');
+    this.signal('TP.sig.UISelect', TP.hc('value', val));
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjusterMenuContent.Inst.defineMethod('render',
+TP.sherpa.adjusterValueMenuContent.Inst.defineMethod('render',
 function() {
 
     /**
      * @method render
      * @summary Renders the receiver.
-     * @returns {TP.sherpa.adjusterMenuContent} The receiver.
+     * @returns {TP.sherpa.adjusterValueMenuContent} The receiver.
      */
 
     var data,

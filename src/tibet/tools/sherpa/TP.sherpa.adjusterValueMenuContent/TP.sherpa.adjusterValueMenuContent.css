@@ -2,9 +2,11 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-sherpa|adjusterMenuContent {
+sherpa|adjusterValueMenuContent {
 
     display: block;
+
+    position: absolute;
 
     font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 
@@ -19,12 +21,12 @@ sherpa|adjusterMenuContent {
     box-shadow: 3px 3px 3px #aaa;
 }
 
-sherpa|adjusterMenuContent > .content {
+sherpa|adjusterValueMenuContent > .content {
 
     overflow: hidden;
 }
 
-sherpa|adjusterMenuContent > .content > ul {
+sherpa|adjusterValueMenuContent > .content > ul {
 
     height: 100%;
     width: 100%;
@@ -35,7 +37,7 @@ sherpa|adjusterMenuContent > .content > ul {
     overflow: auto;
 }
 
-sherpa|adjusterMenuContent > .content > ul > li {
+sherpa|adjusterValueMenuContent > .content > ul > li {
 
     display: inline-block;
 
@@ -55,13 +57,13 @@ sherpa|adjusterMenuContent > .content > ul > li {
     cursor: pointer;
 }
 
-sherpa|adjusterMenuContent > .content > ul > li:hover {
+sherpa|adjusterValueMenuContent > .content > ul > li:hover {
 
     text-decoration: underline;
 }
 
 /*
-sherpa|adjusterMenuContent > .content > ul > li:hover {
+sherpa|adjusterValueMenuContent > .content > ul > li:hover {
 
     background-color: #ddd;
 
@@ -69,7 +71,7 @@ sherpa|adjusterMenuContent > .content > ul > li:hover {
     border-bottom: 1px solid #666;
 }
 
-sherpa|adjusterMenuContent > .content > ul > li:last-child:hover {
+sherpa|adjusterValueMenuContent > .content > ul > li:last-child:hover {
 
     border-bottom: 1px solid #666;
 }
