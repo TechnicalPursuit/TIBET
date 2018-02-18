@@ -56,11 +56,12 @@ function() {
 
     if (TP.notValid(tileTPElem)) {
 
-        //  Preload the bookmarks menu
+        //  Preload the shared menu. Even though we don't actually preload any
+        //  content here, this call will create the popup so that we can
+        //  reference it for sizing before we actually load it.
         TP.xctrls.popup.preload(
                 TP.hc('triggerTPDocument', this.getDocument(),
-                        'overlayID', 'AdjusterPopup',
-                        'contentURI', 'urn:tibet:TP.sherpa.adjusterMenuContent'));
+                        'overlayID', 'AdjusterPopup'));
 
         tileTPElem = TP.bySystemId('Sherpa').makeTile('Adjuster_Tile');
         tileTPElem.setHeaderText('Style Adjuster');
