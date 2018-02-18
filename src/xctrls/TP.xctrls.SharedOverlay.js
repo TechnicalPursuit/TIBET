@@ -211,7 +211,13 @@ function(aSignal) {
     }
 
     triggerTPElem = this.getTriggerElement(aSignal, triggerDoc);
-    triggerID = triggerTPElem.getLocalID(true);
+
+    //  If the signal has a triggerID, then use that. Otherwise, use the local
+    //  ID of the trigger element.
+    triggerID = aSignal.at('triggerID');
+    if (TP.notValid(triggerID)) {
+        triggerID = triggerTPElem.getLocalID(true);
+    }
 
     overlayTPElem.set('$currentTriggerID', triggerID);
 
