@@ -2337,7 +2337,7 @@ function(aFlag) {
      *     If a flag is provided this flag is used to set the propagation state.
      * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
-     * @param {Boolean} aFlag Stop propagating immedidately: yes or no?
+     * @param {Boolean} aFlag Stop propagating immediately: yes or no?
      * @returns {Boolean} True if the signal should stop propagation
      *     immediately.
      */

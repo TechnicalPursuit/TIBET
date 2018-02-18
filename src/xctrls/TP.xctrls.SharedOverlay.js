@@ -35,7 +35,7 @@ TP.xctrls.SharedOverlay.Type.defineAttribute('opaqueCapturingSignalNames', null)
 //  SharedOverlay controls are initially hidden, so we ensure that here.
 TP.xctrls.SharedOverlay.set('requiredAttrs', TP.hc('pclass:hidden', true));
 
-//  The ID of the last trigger that triggered the overlay
+//  The ID of the last trigger that triggered the overlay.
 TP.xctrls.SharedOverlay.Type.defineAttribute('$lastTriggerID');
 
 //  ------------------------------------------------------------------------
@@ -764,15 +764,15 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         return this;
     }
 
-    //  Capture the trigger ID in case that same trigger uses this
-    //  overlay before another trigger uses it - we can use this for
-    //  comparison purposes for content refresh, etc.
+    //  Capture the trigger ID in case that same trigger uses this overlay
+    //  before another trigger uses it - we can use this for comparison purposes
+    //  for content refresh, etc.
 
     triggerID = this.get('$currentTriggerID');
     this.getType().set('$lastTriggerID', triggerID);
 
-    //  That will be the real element generated from the content that
-    //  got placed into our 'content' div.
+    //  That will be the real element generated from the content that got placed
+    //  into our 'content' div.
     tpContent = this.setContent(content);
     tpContent.removeAttribute('id');
 
