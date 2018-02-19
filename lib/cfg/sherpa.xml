@@ -107,6 +107,7 @@
 
     <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/TP.sherpa.adjuster_editor.js"/>
     <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster_editor/plugins/TP.sherpa.adjuster_genericPropertyEditor/TP.sherpa.adjuster_genericPropertyEditor.js"/>
+    <script src="./TP.sherpa.adjusterNameMenuContent/TP.sherpa.adjusterNameMenuContent.js"/>
     <script src="./TP.sherpa.adjusterValueMenuContent/TP.sherpa.adjusterValueMenuContent.js"/>
 
     <script src="./TP.sherpa.couchDocumentURIInsertionAssistant/TP.sherpa.couchDocumentURIInsertionAssistant.js"/>

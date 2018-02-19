@@ -22,7 +22,7 @@ TP.sherpa.adjuster_editor.defineSubtype('adjuster_genericPropertyEditor');
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyName',
-    TP.cpc('> .grid > *[name="propertyName"] > .output', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .grid > *[name="propertyName"] span[part="name"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValue',
@@ -304,7 +304,7 @@ function(fieldData) {
         case 'Identifier':
             innerContent =
                 '<span part="value">' + valueInfo.at('name') + '</span>' +
-                '<span class="arrowMark" on:mousedown="ShowMenu"/>';
+                '<span class="arrowMark" on:mousedown="ShowValueMenu"/>';
             break;
 
         case 'Percentage':
@@ -361,11 +361,65 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowMenu',
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowNameMenu',
 function(aSignal) {
 
     /**
-     * @method ShowMenu
+     * @method ShowNameMenu
+     * @summary
+     * @param {TP.sig.Signal} aSignal
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    var propName,
+
+        data,
+
+        originRect,
+        triggerPoint,
+
+        popup;
+
+    aSignal.at('trigger').stopPropagation();
+
+    propName = this.get('value').at('name');
+
+    data = TP.ac(
+            TP.ac('http://devdocs.io/css/' + propName, 'devdocs.io'),
+            TP.ac('https://caniuse.com/#search=' + propName, 'caniuse.com')
+            );
+
+    TP.uc('urn:tibet:sherpa_adjuster_name_menu_data').setResource(data);
+
+    originRect = TP.wrap(aSignal.getOrigin()).getGlobalRect();
+
+    triggerPoint = TP.pc(
+                    originRect.getX(),
+                    originRect.getY() + originRect.getHeight() - 10);
+
+    popup = TP.byId('AdjusterPopup', this.getNativeDocument());
+    popup.setWidth(originRect.getWidth());
+
+    this.signal(
+        'TogglePopup',
+        TP.hc(
+            'contentURI', 'urn:tibet:TP.sherpa.adjusterNameMenuContent',
+            'triggerTPDocument', this.getDocument(),
+            'triggerPoint', triggerPoint,
+            'hideOn', 'UISelect',
+            'triggerID', 'namemenu',
+            'overlayID', 'AdjusterPopup'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowValueMenu',
+function(aSignal) {
+
+    /**
+     * @method ShowValueMenu
      * @summary
      * @param {TP.sig.Signal} aSignal
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
@@ -387,6 +441,8 @@ function(aSignal) {
         triggerPoint,
 
         popup;
+
+    aSignal.at('trigger').stopPropagation();
 
     wrapperSpan = aSignal.getDOMTarget().parentNode;
     fieldTypes = TP.elementGetAttribute(wrapperSpan, 'field_types', true);
@@ -412,7 +468,7 @@ function(aSignal) {
         );
     }
 
-    TP.uc('urn:tibet:sherpa_adjuster_prop_vals').setResource(data);
+    TP.uc('urn:tibet:sherpa_adjuster_value_menu_data').setResource(data);
 
     originRect = TP.wrap(aSignal.getOrigin()).getGlobalRect();
 
@@ -423,15 +479,15 @@ function(aSignal) {
     popup = TP.byId('AdjusterPopup', this.getNativeDocument());
     popup.setWidth(originRect.getWidth());
 
-    this.signal('TogglePopup',
-                TP.hc(
-                    'contentURI', 'urn:tibet:TP.sherpa.adjusterMenuContent',
-                    'triggerTPDocument', this.getDocument(),
-                    'triggerPoint', triggerPoint,
-                    'hideOn', 'UISelect',
-                    'overlayID', 'AdjusterPopup'));
-
-    aSignal.at('trigger').stopPropagation();
+    this.signal(
+        'TogglePopup',
+        TP.hc(
+            'contentURI', 'urn:tibet:TP.sherpa.adjusterValueMenuContent',
+            'triggerTPDocument', this.getDocument(),
+            'triggerPoint', triggerPoint,
+            'hideOn', 'UISelect',
+            'triggerID', 'valuemenu',
+            'overlayID', 'AdjusterPopup'));
 
     return this;
 });

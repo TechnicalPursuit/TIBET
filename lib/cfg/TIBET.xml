@@ -319,6 +319,8 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-TP.sherpa.adjuster_editor.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-plugins-TP.sherpa.adjuster_genericPropertyEditor-TP.sherpa.adjuster_genericPropertyEditor.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-TP.sherpa.adjuster_editor-plugins-TP.sherpa.adjuster_genericPropertyEditor-TP.sherpa.adjuster_genericPropertyEditor.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjusterNameMenuContent-TP.sherpa.adjusterNameMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjusterNameMenuContent-TP.sherpa.adjusterNameMenuContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjusterValueMenuContent-TP.sherpa.adjusterValueMenuContent.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjusterValueMenuContent-TP.sherpa.adjusterValueMenuContent.css.js"/>
 

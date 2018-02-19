@@ -2,7 +2,7 @@
 
 <sherpa:adjuster_genericPropertyEditor on:mouseup="StopAdjusting" on:dragup="StopAdjusting">
     <div class="grid">
-        <div name="propertyName" class="field"><div class="output"/><span class="launchMark"/></div>
+        <div name="propertyName" class="field"><div class="output"><span part="name"/><span class="launchMark" on:mousedown="ShowNameMenu"/></div></div>
         <div name="propertyValue" class="field adjuster" on:mousedown="StartAdjusting" on:mouseup="StopAdjusting"/>
         <div name="propertyRuleSelector" class="field adjuster"><span class="input"/></div>
     </div>
