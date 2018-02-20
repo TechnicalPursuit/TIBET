@@ -752,6 +752,31 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('eventGetScreenXY',
+function(anEvent) {
+
+    /**
+     * @method eventGetScreenXY
+     * @summary Returns the screen X,Y coordinate pair for the event. This
+     *     allows all events to be tracked relative to a common origin.
+     * @param {Event} anEvent The native event.
+     * @returns {Array} An array of (screen X, screen Y).
+     */
+
+    var evt,
+        coord;
+
+    evt = TP.eventNormalize(anEvent);
+
+    //  Note here how we give the '$$' property precedence.
+    coord = TP.ac(TP.ifInvalid(evt.$$screenX, evt.screenX),
+                    TP.ifInvalid(evt.$$screenY, evt.screenY));
+
+    return coord;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('eventGetWheelDelta',
 function(anEvent) {
 
