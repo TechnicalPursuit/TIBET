@@ -1330,6 +1330,91 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('shouldStop',
+function(aFlag) {
+
+    /**
+     * @method shouldStop
+     * @summary Returns true if the signal should stop propagating. If a flag
+     *     is provided this flag is used to set the propagation status.
+     * @description This method is overridden from its supertype to return true
+     *     if *either the signal itself OR its trigger has been configured to
+     *     stop propagating. Note that this method does not signal 'Change',
+     *     even if it's 'shouldSignalChange' attribute is true.
+     * @param {Boolean} aFlag Stop propagating: yes or no?
+     * @returns {Boolean} True if the signal should stop propagation.
+     */
+
+    var trigger;
+
+    //  if we're not cancelable this is a no-op
+    if (!this.isCancelable()) {
+        return false;
+    }
+
+    if (TP.isDefined(aFlag)) {
+        this.$shouldStop = aFlag;
+    }
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, the trigger will be the DOM signal.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        //  NB: Note here how we're only interested in the return value of the
+        //  shouldStop of the trigger (which is why we don't pass the
+        //  parameter).
+        return this.$shouldStop || trigger.shouldStop();
+    }
+
+    return this.$shouldStop;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('shouldStopImmediately',
+function(aFlag) {
+
+    /**
+     * @method shouldStopImmediately
+     * @summary Returns true if the signal should stop propagating immediately.
+     *     If a flag is provided this flag is used to set the propagation state.
+     * @description This method is overridden from its supertype to return true
+     *     if *either the signal itself OR its trigger has been configured to
+     *     stop propagating immediately. Note that this method does not signal
+     *     'Change', even if it's 'shouldSignalChange' attribute is true.
+     * @param {Boolean} aFlag Stop propagating immediately: yes or no?
+     * @returns {Boolean} True if the signal should stop propagation
+     *     immediately.
+     */
+
+    var trigger;
+
+    //  if we're not cancelable this is a no-op
+    if (!this.isCancelable()) {
+        return false;
+    }
+
+    if (TP.isDefined(aFlag)) {
+        this.$shouldStopImmediately = aFlag;
+    }
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, the trigger will be the DOM signal.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        //  NB: Note here how we're only interested in the return value of the
+        //  shouldStopImmediately of the trigger (which is why we don't pass the
+        //  parameter).
+        return this.$shouldStopImmediately || trigger.shouldStopImmediately();
+    }
+
+    return this.$shouldStopImmediately;
+});
+
+//  ------------------------------------------------------------------------
 //  Responder Notification Signals
 //  ------------------------------------------------------------------------
 
