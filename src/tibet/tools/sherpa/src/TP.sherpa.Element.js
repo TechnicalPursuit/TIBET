@@ -41,6 +41,16 @@ TP.sherpa.Element.Type.defineAttribute('themeURI', TP.NO_RESULT);
 TP.sherpa.Element.Inst.defineMethod('haloCanBlur',
 function(aHalo) {
 
+    /**
+     * @method haloCanBlur
+     * @summary Returns whether or not the halo can blur (i.e. no longer focus
+     *     on) the receiver.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can blur the receiver.
+     * @returns {Boolean} Whether or not the halo can blur the receiver.
+     */
+
+    //  By default, Sherpa elements themselves cannot be haloed on.
     return false;
 });
 
@@ -49,8 +59,33 @@ function(aHalo) {
 TP.sherpa.Element.Inst.defineMethod('haloCanFocus',
 function(aHalo) {
 
+    /**
+     * @method haloCanFocus
+     * @summary Returns whether or not the halo can focus on the receiver.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting whether or not
+     *     it can focus the receiver.
+     * @returns {Boolean} Whether or not the halo can focus the receiver.
+     */
+
+    //  By default, Sherpa elements themselves cannot be haloed on.
     return false;
 });
+
+//  ========================================================================
+//  TP.sherpa.CompiledTag
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CompiledTag}
+ * @summary A tag type that is compiled and also has the common aspect of all
+ *     Sherpa tags.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompiledTag.defineSubtype('sherpa.CompiledTag');
+
+TP.sherpa.CompiledTag.addTraits(TP.sherpa.Element);
 
 //  ========================================================================
 //  TP.sherpa.TemplatedTag
@@ -59,7 +94,7 @@ function(aHalo) {
 /**
  * @type {TP.sherpa.TemplatedTag}
  * @summary A tag type that is templated and also has the common aspect of all
- *     XControls tags.
+ *     Sherpa tags.
  */
 
 //  ------------------------------------------------------------------------
