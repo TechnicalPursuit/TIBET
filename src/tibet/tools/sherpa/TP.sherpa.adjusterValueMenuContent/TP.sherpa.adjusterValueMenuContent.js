@@ -55,6 +55,42 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjusterValueMenuContent.Inst.defineHandler('ToggleHighlight',
+function(aSignal) {
+
+    /**
+     * @method ToggleHighlight
+     * @summary Responds to mouse over/out notifications by toggling a
+     *     class on individual peer elements. The result is that as the user
+     *     hovers over elements in the sidebar, signals are sent that notify the
+     *     AdjusterMenuTarget of items being highlighted or unhighlighted.
+     * @param {TP.sig.ToggleHighlight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.adjusterValueMenuContent} The receiver.
+     */
+
+    var targetElem,
+        val;
+
+    //  Grab the new 'DOM target' element, which will be the lozenge that the
+    //  user is highlighting.
+    targetElem = aSignal.getDOMTarget();
+
+    //  The peerID on the lozenge will indicate which element in the UI canvas
+    //  it is representing. If we don't have one, we exit.
+    val = TP.elementGetAttribute(targetElem, 'data-value', true);
+    if (TP.isEmpty(val)) {
+        return this;
+    }
+
+    //  Send a signal that an item has been selected.
+    this.signal('TP.sig.UIValueChange', TP.hc('value', val));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.adjusterValueMenuContent.Inst.defineMethod('render',
 function() {
 
@@ -83,7 +119,12 @@ function() {
 
     data.forEach(
                 function(pairArr, index) {
-                    str += '<li data-value="' + pairArr.first() + '">' +
+                    str += '<li data-value="' + pairArr.first() + '"' +
+                            ' on:mouseover="ToggleHighlight"' +
+                            ' on:mouseout="ToggleHighlight"' +
+                            ' on:dragover="ToggleHighlight"' +
+                            ' on:dragout="ToggleHighlight"' +
+                            '>' +
                             pairArr.last() +
                             '</li>';
                 });

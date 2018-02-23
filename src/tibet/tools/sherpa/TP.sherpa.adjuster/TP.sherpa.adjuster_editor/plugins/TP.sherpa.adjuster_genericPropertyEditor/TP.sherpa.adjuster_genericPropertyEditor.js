@@ -52,7 +52,7 @@ function() {
         syntaxResults,
         result,
 
-        propFields,
+        propValueSlots,
 
         i,
         theMatch,
@@ -70,14 +70,14 @@ function() {
      *
      *  {
      *      "propName": "border",
-     *      "propFields": [
+     *      "propValueSlots": [
      *          {
      *              "value_info": {
      *                  "type": "Identifier",
      *                  "loc": null,
      *                  "name": "solid"
      *              },
-     *              "field_info": [
+     *              "slot_info": [
      *                  {
      *                      "type": "Type",
      *                      "name": "br-style"
@@ -95,7 +95,7 @@ function() {
      *                  "value": "1",
      *                  "unit": "px"
      *              },
-     *              "field_info": [
+     *              "slot_info": [
      *                  {
      *                      "type": "Type",
      *                      "name": "br-width"
@@ -112,7 +112,7 @@ function() {
      *                  "loc": null,
      *                  "name": "red"
      *              },
-     *              "field_info": [
+     *              "slot_info": [
      *                  {
      *                      "type": "Type",
      *                      "name": "color"
@@ -134,14 +134,14 @@ function() {
      *
      *  {
      *      "propName": "font-family",
-     *      "propFields": [
+     *      "propValueSlots": [
      *          {
      *              "value_info": {
      *                  "type": "Identifier",
      *                  "loc": null,
      *                  "name": "Helvetica"
      *              },
-     *              "field_info": [
+     *              "slot_info": [
      *                  {
      *                      "type": "Type",
      *                      "name": "family-name"
@@ -181,8 +181,8 @@ function() {
     result = TP.hc();
     result.atPut('propName', syntaxResults.syntax.name);
 
-    propFields = TP.ac();
-    result.atPut('propFields', propFields);
+    propValueSlots = TP.ac();
+    result.atPut('propValueSlots', propValueSlots);
 
     for (i = 0; i < syntaxResults.match.length; i++) {
 
@@ -206,9 +206,9 @@ function() {
         }
 
         propVal = TP.hc('value_info', valueInfo,
-                        'field_info', syntaxes);
+                        'slot_info', syntaxes);
 
-        propFields.push(propVal);
+        propValueSlots.push(propVal);
     }
 
     return result;
@@ -216,37 +216,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('generateValueMarkup',
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
+'generateValueFieldMarkup',
 function(cssData) {
 
     var propName,
-        propFields,
+        propValueSlots,
 
         len,
 
         str,
 
         i,
-        fieldData;
+        slotData;
 
     propName = cssData.at('propName');
-    propFields = cssData.at('propFields');
+    propValueSlots = cssData.at('propValueSlots');
 
-    len = propFields.getSize();
+    len = propValueSlots.getSize();
 
     if (len > 1) {
-        str = '<div class="output" name="' +
+        str = '<div class="slots" name="' +
                 propName +
                 '" output_type="multiple">';
     } else {
-        str = '<div class="output" name="' +
+        str = '<div class="slots" name="' +
                 propName +
                 '" output_type="single">';
     }
 
     for (i = 0; i < len; i++) {
-        fieldData = propFields.at(i);
-        str += this.generateFieldMarkup(fieldData);
+        slotData = propValueSlots.at(i);
+        str += this.generateValueSlotsMarkup(slotData);
     }
 
     str += '</div>';
@@ -256,67 +257,105 @@ function(cssData) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('generateFieldMarkup',
-function(fieldData) {
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
+'generateValueSlotsMarkup',
+function(slotData) {
 
     var valueInfo,
-        fieldInfo,
+        slotInfo,
 
-        fieldTypes,
+        slotTypes,
         len,
         i,
         info,
-        fieldName,
+        slotName,
 
         str,
 
         innerContent;
 
-    valueInfo = fieldData.at('value_info');
-    fieldInfo = fieldData.at('field_info');
+    valueInfo = slotData.at('value_info');
+    slotInfo = slotData.at('slot_info');
 
-    fieldTypes = TP.ac();
+    slotTypes = TP.ac();
 
-    len = fieldInfo.getSize();
+    len = slotInfo.getSize();
     for (i = 0; i < len; i++) {
-        info = fieldInfo.at(i);
+        info = slotInfo.at(i);
         if (info.at('type') === 'Type') {
-            fieldTypes.push(info.at('name'));
+            slotTypes.push(info.at('name'));
         } else if (info.at('type') === 'Property') {
-            fieldName = info.at('name');
+            slotName = info.at('name');
         }
     }
 
     str = '<span value_type="' + valueInfo.at('type') + '"';
 
-    if (TP.notEmpty(fieldName)) {
-        str += ' field_name="' + fieldName + '"';
+    if (valueInfo.at('type') === 'Percentage') {
+        str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
+    } else if (valueInfo.at('type') === 'Identifier') {
+        str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
+    } else {
+        str += ' tibet:tag="sherpa:CSSSlotEditor"';
     }
 
-    if (TP.notEmpty(fieldTypes)) {
-        str += ' field_types="' + fieldTypes.join(' ') + '"';
+    if (TP.notEmpty(slotName)) {
+        str += ' slot_name="' + slotName + '"';
+    }
+
+    if (TP.notEmpty(slotTypes)) {
+        str += ' slot_types="' + slotTypes.join(' ') + '"';
     }
 
     str += '>';
 
     switch (valueInfo.at('type')) {
 
+        case 'Dimension':
+            innerContent =
+                '<span part="value">' + valueInfo.at('value') + '</span>' +
+                '<span part="unit">' + valueInfo.at('unit') + '</span>';
+            break;
+
+        case 'Function':
+            break;
+
+        case 'HexColor':
+            break;
+
         case 'Identifier':
+            innerContent = '';
+
+            /*
             innerContent =
                 '<span part="value">' + valueInfo.at('name') + '</span>' +
                 '<span class="arrowMark" on:mousedown="ShowValueMenu"/>';
+            */
             break;
 
-        case 'Percentage':
         case 'Number':
             innerContent =
                 '<span part="value">' + valueInfo.at('value') + '</span>';
             break;
 
-        case 'Dimension':
+        case 'Percentage':
+            innerContent = '';
+
+            /*
             innerContent =
-                '<span part="value">' + valueInfo.at('value') + '</span>' +
-                '<span part="unit">' + valueInfo.at('unit') + '</span>';
+                '<span part="value" on:dragdown="StartAdjusting">' + valueInfo.at('value') + '</span>' +
+                '<span part="unit">%</span>';
+            */
+            break;
+
+        case 'String':
+            innerContent =
+                '<span part="value">' + valueInfo.at('value') + '</span>';
+            break;
+
+        case 'Url':
+            innerContent =
+                '<span part="value">' + valueInfo.at('value') + '</span>';
             break;
 
         default:
@@ -343,17 +382,45 @@ function() {
      */
 
     var cssData,
-        valueMarkup,
 
-        val;
+        valueFieldMarkup,
+        valueFieldDOM,
 
-    cssData = this.generateCSSData();
-    valueMarkup = this.generateValueMarkup(cssData);
+        val,
+
+        slotElems,
+        propValueSlots,
+        len,
+        i,
+        slotData;
 
     val = this.get('value');
+    if (TP.isEmpty(val.at('value'))) {
+        return this;
+    }
 
     this.get('propertyName').set('value', val.at('name'));
-    this.get('propertyValue').set('value', TP.xhtmlnode(valueMarkup));
+
+    cssData = this.generateCSSData();
+    valueFieldMarkup = this.generateValueFieldMarkup(cssData);
+
+    valueFieldDOM = TP.xhtmlnode(valueFieldMarkup);
+
+    //  NB: This will process (i.e. 'compile') any custom slot editor markup
+    //  underneath
+    this.get('propertyValue').set('value', valueFieldDOM);
+
+    valueFieldDOM = this.get('propertyValue');
+
+    slotElems = valueFieldDOM.get(TP.cpc('*[value_type]'));
+
+    propValueSlots = cssData.at('propValueSlots');
+    len = propValueSlots.getSize();
+    for (i = 0; i < len; i++) {
+        slotData = propValueSlots.at(i);
+        slotElems.at(i).set('info', slotData.at('value_info'));
+    }
+
     this.get('propertyRuleSelector').set('value', val.at('selector'));
 
     return this;
@@ -413,21 +480,444 @@ function(aSignal) {
     return this;
 });
 
+//  ========================================================================
+//  TP.sherpa.CSSSlotEditor
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CSSSlotEditor}
+ */
+
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowValueMenu',
+TP.sherpa.CompiledTag.defineSubtype('CSSSlotEditor');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  This tag has no associated CSS. Note how these properties are *not*
+//  TYPE_LOCAL, by design.
+TP.sherpa.CSSSlotEditor.Type.defineAttribute('styleURI', TP.NO_RESULT);
+TP.sherpa.CSSSlotEditor.Type.defineAttribute('themeURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Inst.defineAttribute(
+    'valuePart',
+    TP.cpc('> *[part="value"]', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    return aRequest.at('node');
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Inst.defineAttribute('info');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('getAdjusterEditorElement',
+function() {
+
+    return this.ancestorMatchingCSS('sherpa|adjuster_genericPropertyEditor');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('getValueForCSSRule',
+function() {
+
+    return this.getTextContent();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('setInfo',
+function(anInfo) {
+
+    this.$set('info', anInfo);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('updateRuleWithValue',
+function(aValue) {
+
+    var ourAdjusterEditorTPElem,
+
+        ourInfo,
+        propName,
+        propRule,
+
+        haloTPElem,
+        haloTargetTPElem;
+
+    if (TP.notEmpty(aValue)) {
+
+        ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
+
+        ourInfo = ourAdjusterEditorTPElem.get('value');
+
+        propName = ourInfo.at('name');
+        propRule = ourInfo.at('rule');
+
+        TP.styleRuleSetProperty(propRule, propName, aValue, false);
+
+        haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+        haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+        haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
+    }
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.CSSDraggableSlotEditor
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CSSDraggableSlotEditor}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.defineSubtype('CSSDraggableSlotEditor');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineAttribute('$lastX');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineMethod('adjustValue',
+function(oldX, newX, aDirection) {
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('StartAdjusting',
+function(aSignal) {
+
+    /**
+     * @method StartAdjusting
+     * @summary
+     * @param {TP.sig.Signal} aSignal
+     * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
+     */
+
+    var nativeEvt,
+
+        adjuster,
+        ourAdjusterEditorTPElem;
+
+    nativeEvt = aSignal.at('trigger').getPayload();
+    this.$set('$lastX', TP.eventGetScreenXY(nativeEvt).first());
+
+    this.observe(
+        TP.core.Mouse, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
+
+    adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
+    ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
+
+    adjuster.hideAllExceptEditor(ourAdjusterEditorTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('TP.sig.DOMDragMove',
+function(aSignal) {
+
+    /**
+     * @method TP.sig.DOMDragMove
+     * @summary
+     * @param {TP.sig.Signal} aSignal
+     * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
+     */
+
+    var nativeEvt,
+
+        lastX,
+        currentX,
+
+        direction,
+
+        val;
+
+    nativeEvt = aSignal.getPayload();
+    lastX = this.$get('$lastX');
+
+    currentX = TP.eventGetScreenXY(nativeEvt).first();
+
+    if (currentX < lastX) {
+        direction = TP.LEFT;
+    } else if (currentX > lastX) {
+        direction = TP.RIGHT;
+    } else {
+        direction = TP.NONE;
+    }
+
+    /*
+    console.log('lastX: ' + lastX +
+                ' currentX: ' + currentX +
+                ' direction: ' + direction);
+    */
+
+    this.adjustValue(lastX, currentX, direction);
+
+    val = this.getValueForCSSRule();
+    this.updateRuleWithValue(val);
+
+    this.$set('$lastX', currentX);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('TP.sig.DOMDragUp',
+function(aSignal) {
+
+    /**
+     * @method StopAdjusting
+     * @summary
+     * @param {TP.sig.Signal} aSignal
+     * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
+     */
+
+    var adjuster;
+
+    this.ignore(
+        TP.core.Mouse, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
+
+    this.$set('$lastX', null);
+
+    adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
+    adjuster.showAll();
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.CSSPercentageSlotEditor
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CSSPercentageSlotEditor}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.defineSubtype('CSSPercentageSlotEditor');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSPercentageSlotEditor.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    var elem,
+
+        str,
+        newFrag;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    str = '<span part="value" on:dragdown="StartAdjusting"/>' +
+            '<span part="unit">%</span>';
+
+    newFrag = TP.xhtmlnode(str);
+
+    TP.nodeAppendChild(elem, newFrag, false);
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSPercentageSlotEditor.Inst.defineMethod('adjustValue',
+function(oldX, newX, aDirection) {
+
+    var val;
+
+    if (aDirection === TP.NONE) {
+        return this;
+    }
+
+    val = parseInt(this.getTextContent(), 10);
+
+    if (aDirection === TP.LEFT) {
+        val = (val - 1).max(0);
+    } else {
+        val = (val + 1).min(100);
+    }
+
+    this.get('valuePart').setTextContent(val);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSPercentageSlotEditor.Inst.defineMethod('setInfo',
+function(anInfo) {
+
+    var val;
+
+    this.$set('info', anInfo);
+
+    val = anInfo.at('value');
+
+    this.get('valuePart').setTextContent(val);
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.CSSIdentifierSlotEditor
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CSSIdentifierSlotEditor}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.defineSubtype('CSSIdentifierSlotEditor');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSIdentifierSlotEditor.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    var elem,
+
+        str,
+        newFrag;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    str = '<span part="value"/>' +
+            '<span class="arrowMark" on:mousedown="ShowValueMenu"/>';
+
+    newFrag = TP.xhtmlnode(str);
+
+    TP.nodeAppendChild(elem, newFrag, false);
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineAttribute(
+    'valuePart',
+    TP.cpc('> *[part="value"]', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineMethod('setInfo',
+function(anInfo) {
+
+    var val;
+
+    this.$set('info', anInfo);
+
+    val = anInfo.at('name');
+
+    this.get('valuePart').setTextContent(val);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('ShowValueMenu',
 function(aSignal) {
 
     /**
      * @method ShowValueMenu
      * @summary
      * @param {TP.sig.Signal} aSignal
-     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     * @returns {TP.sherpa.CSSIdentifierEditor} The receiver.
      */
 
     var wrapperSpan,
 
-        fieldTypes,
+        slotTypes,
         mainFieldType,
 
         syntaxInfo,
@@ -440,20 +930,23 @@ function(aSignal) {
         originRect,
         triggerPoint,
 
-        popup;
+        popup,
+
+        adjuster,
+        ourAdjusterEditorTPElem;
 
     aSignal.at('trigger').stopPropagation();
 
     wrapperSpan = aSignal.getDOMTarget().parentNode;
-    fieldTypes = TP.elementGetAttribute(wrapperSpan, 'field_types', true);
+    slotTypes = TP.elementGetAttribute(wrapperSpan, 'slot_types', true);
 
-    if (TP.isEmpty(fieldTypes)) {
+    if (TP.isEmpty(slotTypes)) {
         return this;
     }
 
-    fieldTypes = fieldTypes.split(' ');
+    slotTypes = slotTypes.split(' ');
 
-    mainFieldType = fieldTypes.last();
+    mainFieldType = slotTypes.last();
 
     syntaxInfo = TP.extern.csstree.lexer.getType(mainFieldType).syntax;
 
@@ -479,6 +972,8 @@ function(aSignal) {
     popup = TP.byId('AdjusterPopup', this.getNativeDocument());
     popup.setWidth(originRect.getWidth());
 
+    TP.sys.registerObject(this, 'AdjusterMenuTarget');
+
     this.signal(
         'TogglePopup',
         TP.hc(
@@ -489,48 +984,57 @@ function(aSignal) {
             'triggerID', 'valuemenu',
             'overlayID', 'AdjusterPopup'));
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('StartAdjusting',
-function(aSignal) {
-
-    /**
-     * @method StartAdjusting
-     * @summary
-     * @param {TP.sig.Signal} aSignal
-     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
-     */
-
-    var adjuster,
-        ourIndex;
-
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
-    ourIndex = this.getParentNode().getChildIndex(this.getNativeNode());
+    ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
 
-    adjuster.hideExceptEditorAt(ourIndex);
+    adjuster.hideAllExceptEditor(ourAdjusterEditorTPElem);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('StopAdjusting',
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UIDidDeactivate',
 function(aSignal) {
-
-    /**
-     * @method StopAdjusting
-     * @summary
-     * @param {TP.sig.Signal} aSignal
-     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
-     */
 
     var adjuster;
 
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.showAll();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UISelect',
+function(aSignal) {
+
+    var val;
+
+    val = aSignal.at('value');
+
+    if (TP.notEmpty(val)) {
+        this.get('valuePart').setTextContent(val);
+        this.updateRuleWithValue(val);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UIValueChange',
+function(aSignal) {
+
+    var val;
+
+    val = aSignal.at('value');
+
+    if (TP.notEmpty(val)) {
+        this.get('valuePart').setTextContent(val);
+        this.updateRuleWithValue(val);
+    }
 
     return this;
 });

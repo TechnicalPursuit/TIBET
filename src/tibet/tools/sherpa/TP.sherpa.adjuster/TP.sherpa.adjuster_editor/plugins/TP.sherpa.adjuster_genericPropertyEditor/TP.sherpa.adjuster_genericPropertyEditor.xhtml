@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<sherpa:adjuster_genericPropertyEditor on:mouseup="StopAdjusting" on:dragup="StopAdjusting">
+<sherpa:adjuster_genericPropertyEditor>
     <div class="grid">
         <div name="propertyName" class="field"><div class="output"><span part="name"/><span class="launchMark" on:mousedown="ShowNameMenu"/></div></div>
-        <div name="propertyValue" class="field adjuster" on:mousedown="StartAdjusting" on:mouseup="StopAdjusting"/>
-        <div name="propertyRuleSelector" class="field adjuster"><span class="input"/></div>
+        <div name="propertyValue" class="field"/>
+        <div name="propertyRuleSelector" class="field"><span class="input"/></div>
     </div>
     <div name="editorInfo" class="info">This is info</div>
 </sherpa:adjuster_genericPropertyEditor>
