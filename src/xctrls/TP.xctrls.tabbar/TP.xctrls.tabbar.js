@@ -149,7 +149,8 @@ TP.xctrls.tabbar.Inst.defineAttribute(
 
 TP.xctrls.tabbar.Inst.defineAttribute(
     'tabitems',
-    TP.cpc('> span tibet|group xctrls|content > xctrls|*', TP.hc('shouldCollapse', false)));
+    TP.cpc('> span tibet|group xctrls|content > xctrls|*',
+            TP.hc('shouldCollapse', false)));
 
 TP.xctrls.tabbar.Inst.defineAttribute(
     'focusedItem',
