@@ -7873,7 +7873,7 @@ function(aSignal) {
     this.dispatchResponderSignalFromAttr('UIValueChange',
                                             aSignal.at('trigger'));
 
-    return TP.todo();
+    return this;
 });
 
 //  ------------------------------------------------------------------------
