@@ -39,6 +39,14 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('generateCSSData',
 function() {
 
+    /**
+     * @method generateCSSData
+     * @summary Generates CSS data from the receiver's property name and value.
+     *     See the comments in this method as to the format of the data.
+     * @returns {TP.core.Hash} The CSS data generated from the receiver's
+     *     property name and value.
+     */
+
     var name,
         val,
 
@@ -220,6 +228,16 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
 'generateValueFieldMarkup',
 function(cssData) {
 
+    /**
+     * @method generateValueFieldMarkup
+     * @summary Generates markup to be used in the receiver's 'value' field
+     *     element.
+     * @param {TP.core.Hash} cssData The CSS data to use to generate the value
+     *     field markup
+     * @returns {String} A string of markup to use for the 'value field' in the
+     *     receiver.
+     */
+
     var propName,
         propValueSlots,
 
@@ -377,7 +395,7 @@ function() {
 
     /**
      * @method render
-     * @summary
+     * @summary Renders the receiver.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
@@ -399,21 +417,33 @@ function() {
         return this;
     }
 
+    //  Set our 'name field' markup to the name of the property that we're
+    //  managing.
     this.get('propertyName').set('value', val.at('name'));
 
+    //  Generate the data that will be used to generate the 'value field' markup
+    //  and then generate the markup from that.
     cssData = this.generateCSSData();
     valueFieldMarkup = this.generateValueFieldMarkup(cssData);
 
+    //  Create a DOM structure for it, assuming that non-prefixed elements are
+    //  XHTML.
     valueFieldDOM = TP.xhtmlnode(valueFieldMarkup);
 
+    //  Set our 'name field' markup to the DOM structure that we generated from
+    //  the markup.
     //  NB: This will process (i.e. 'compile') any custom slot editor markup
     //  underneath
     this.get('propertyValue').set('value', valueFieldDOM);
 
+    //  Grab the actual live DOM element back that was inserted.
     valueFieldDOM = this.get('propertyValue');
 
+    //  Grab all of the slot elements.
     slotElems = valueFieldDOM.get(TP.cpc('*[value_type]'));
 
+    //  Iterate over all of the slot elements and set their 'info' to what the
+    //  'property value slots' from the CSS data contained.
     propValueSlots = cssData.at('propValueSlots');
     len = propValueSlots.getSize();
     for (i = 0; i < len; i++) {
@@ -421,6 +451,7 @@ function() {
         slotElems.at(i).set('info', slotData.at('value_info'));
     }
 
+    //  Set the 'selector field' markup to the selector of the rule.
     this.get('propertyRuleSelector').set('value', val.at('selector'));
 
     return this;
@@ -432,9 +463,11 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowNameMenu',
 function(aSignal) {
 
     /**
-     * @method ShowNameMenu
-     * @summary
-     * @param {TP.sig.Signal} aSignal
+     * @method handleShowNameMenu
+     * @summary Handles notification of when the receiver wants to show the menu
+     *     of choices around property names.
+     * @param {TP.sig.ShowNameMenu} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
@@ -447,26 +480,36 @@ function(aSignal) {
 
         popup;
 
+    //  Make sure to tell the trigger (the UI signal) to stop propagation here,
+    //  so that controls 'further up' the responder chain don't react to the
+    //  mouse down.
     aSignal.at('trigger').stopPropagation();
 
     propName = this.get('value').at('name');
 
+    //  Create data for the menu that includes entries for devdocs.io and
+    //  caniuse.com and the property name.
     data = TP.ac(
             TP.ac('http://devdocs.io/css/' + propName, 'devdocs.io'),
             TP.ac('https://caniuse.com/#search=' + propName, 'caniuse.com')
             );
 
+    //  Set the overall data Array as the resource for the property name menu.
     TP.uc('urn:tibet:sherpa_adjuster_name_menu_data').setResource(data);
 
+    //  Compute the adjuster menu's trigger point from the origin's global
+    //  rectangle.
     originRect = TP.wrap(aSignal.getOrigin()).getGlobalRect();
-
     triggerPoint = TP.pc(
                     originRect.getX(),
                     originRect.getY() + originRect.getHeight() - 10);
 
+    //  Grab the adjuster popup and set it's width.
     popup = TP.byId('AdjusterPopup', this.getNativeDocument());
     popup.setWidth(originRect.getWidth());
 
+    //  Throw a signal to toggle the popup on, with the adjuster name menu
+    //  content as the content.
     this.signal(
         'TogglePopup',
         TP.hc(
@@ -476,6 +519,23 @@ function(aSignal) {
             'hideOn', 'UISelect',
             'triggerID', 'namemenu',
             'overlayID', 'AdjusterPopup'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('updateWithValue',
+function(aValue) {
+
+    /**
+     * @method updateWithValue
+     * @summary Allows the receiver to update using the supplied value. This
+     *     value should be specific to the property that the receiver is
+     *     managing.
+     * @param {String|Number} aValue The value to update the receiver with.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
 
     return this;
 });
@@ -545,6 +605,13 @@ TP.sherpa.CSSSlotEditor.Inst.defineAttribute('info');
 TP.sherpa.CSSSlotEditor.Inst.defineMethod('getAdjusterEditorElement',
 function() {
 
+    /**
+     * @method getAdjusterEditorElement
+     * @summary Returns the adjuster editor that contains this slot editor.
+     * @returns {TP.sherpa.adjuster_editor} The adjuster editor that contains
+     *     the receiver.
+     */
+
     return this.ancestorMatchingCSS('sherpa|adjuster_genericPropertyEditor');
 });
 
@@ -553,6 +620,14 @@ function() {
 TP.sherpa.CSSSlotEditor.Inst.defineMethod('getValueForCSSRule',
 function() {
 
+    /**
+     * @method getValueForCSSRule
+     * @summary Returns the value that can be used to update the property that
+     *     the receiver is managing in its host CSSRule.
+     * @returns {String} The value that can be used to update the associated
+     *     CSSRule.
+     */
+
     return this.getTextContent();
 });
 
@@ -560,6 +635,15 @@ function() {
 
 TP.sherpa.CSSSlotEditor.Inst.defineMethod('setInfo',
 function(anInfo) {
+
+    /**
+     * @method setInfo
+     * @summary Sets the receiver's information to display, such as it's value
+     *     or units, etc.
+     * @param {TP.core.Hash} anInfo A hash containing information for the
+     *     receiver to display and manipulate, such as it's value or units.
+     * @returns {TP.sherpa.CSSSlotEditor} The receiver.
+     */
 
     this.$set('info', anInfo);
 
@@ -571,6 +655,14 @@ function(anInfo) {
 TP.sherpa.CSSSlotEditor.Inst.defineMethod('updateRuleWithValue',
 function(aValue) {
 
+    /**
+     * @method updateRuleWithValue
+     * @summary Updates the rule that is associated with the property that the
+     *     editor is (possibly partly) managing with the supplied value.
+     * @param {String|Number} aValue The value to update the rule with.
+     * @returns {TP.sherpa.CSSSlotEditor} The receiver.
+     */
+
     var ourAdjusterEditorTPElem,
 
         ourInfo,
@@ -580,20 +672,34 @@ function(aValue) {
         haloTPElem,
         haloTargetTPElem;
 
+    //  If the supplied value is real, then update the rule.
     if (TP.notEmpty(aValue)) {
 
+        //  Grab our adjuster editor element.
         ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
 
+        //  The 'value' of our adjuster editor contains the information that we
+        //  will manipulate.
         ourInfo = ourAdjusterEditorTPElem.get('value');
 
+        //  The property name and corresponding CSS rule that contains the
+        //  property are in the info.
         propName = ourInfo.at('name');
         propRule = ourInfo.at('rule');
 
+        //  Set the property to the supplied value. Note here how we pass false
+        //  to *not* broadcast a CSSStyleRule change (for now).
         TP.styleRuleSetProperty(propRule, propName, aValue, false);
 
+        //  Grab the halo and adjust it's size & position in case the property
+        //  we were manipulating affected that.
         haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
         haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
         haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
+
+        //  Allow the adjuster editor to update any constructs that it is
+        //  managing with the new value.
+        ourAdjusterEditorTPElem.updateWithValue(aValue);
     }
 
     return this;
@@ -624,6 +730,19 @@ TP.sherpa.CSSDraggableSlotEditor.Inst.defineAttribute('$lastX');
 TP.sherpa.CSSDraggableSlotEditor.Inst.defineMethod('adjustValue',
 function(oldX, newX, aDirection) {
 
+    /**
+     * @method adjustValue
+     * @summary Adjusts the value of the receiver based on the 'X' values
+     *     and the computed direction supplied. This method is used by subtypes
+     *     of TP.sherpa.CSSDraggableSlotEditor to adjust the value it is
+     *     representing.
+     * @param {Number} oldX The old value of the 'X' coordinate of the drag.
+     * @param {Number} newX The new value of the 'X' coordinate of the drag.
+     * @param {String} aDirection The direction that the drag is occurring in.
+     *     TP.LEFT, TP.RIGHT or TP.NONE.
+     * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
+     */
+
     return this;
 });
 
@@ -633,9 +752,12 @@ TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('StartAdjusting',
 function(aSignal) {
 
     /**
-     * @method StartAdjusting
-     * @summary
-     * @param {TP.sig.Signal} aSignal
+     * @method handleStartAdjusting
+     * @summary Handles notification of when the receiver wants to start
+     *     adjusting it's value. For this type, this means that the 'drag to
+     *     adjust' session should start.
+     * @param {TP.sig.StartAdjusting} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
      */
 
@@ -644,15 +766,22 @@ function(aSignal) {
         adjuster,
         ourAdjusterEditorTPElem;
 
+    //  Grab the current X from the native Event's screenX and set that to be
+    //  the 'last X'.
     nativeEvt = aSignal.at('trigger').getPayload();
     this.$set('$lastX', TP.eventGetScreenXY(nativeEvt).first());
 
+    //  Observe the DOMDragMove and DOMDragUp signals coming directly from the
+    //  mouse to make adjustments as our drag session progresses and then to end
+    //  it.
     this.observe(
         TP.core.Mouse, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
 
-    adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
+    //  Tell the adjuster to hide all of the property editors except the one
+    //  representing us.
     ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
 
+    adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.hideAllExceptEditor(ourAdjusterEditorTPElem);
 
     return this;
@@ -660,13 +789,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('TP.sig.DOMDragMove',
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
-     * @method TP.sig.DOMDragMove
-     * @summary
-     * @param {TP.sig.Signal} aSignal
+     * @method handleDOMDragMove
+     * @summary Handles notification of when the 'drag to adjust' session is
+     *     in process and the value should be adjusted.
+     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
      */
 
@@ -679,11 +810,14 @@ function(aSignal) {
 
         val;
 
-    nativeEvt = aSignal.getPayload();
+    //  Grab where the X coordinate was last.
     lastX = this.$get('$lastX');
 
+    //  Grab the current X from the native Event's screenX.
+    nativeEvt = aSignal.getPayload();
     currentX = TP.eventGetScreenXY(nativeEvt).first();
 
+    //  Compute the direction based on the lastX & currentX values.
     if (currentX < lastX) {
         direction = TP.LEFT;
     } else if (currentX > lastX) {
@@ -692,17 +826,14 @@ function(aSignal) {
         direction = TP.NONE;
     }
 
-    /*
-    console.log('lastX: ' + lastX +
-                ' currentX: ' + currentX +
-                ' direction: ' + direction);
-    */
-
     this.adjustValue(lastX, currentX, direction);
 
+    //  Grab whatever value the receiver computes that is compatible for a CSS
+    //  rule and update the rule that we're manipulating with that value.
     val = this.getValueForCSSRule();
     this.updateRuleWithValue(val);
 
+    //  Reset the last X to whatever we've computed the current X to be.
     this.$set('$lastX', currentX);
 
     return this;
@@ -710,23 +841,29 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('TP.sig.DOMDragUp',
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineHandler('DOMDragUp',
 function(aSignal) {
 
     /**
-     * @method StopAdjusting
-     * @summary
-     * @param {TP.sig.Signal} aSignal
+     * @method handleDOMDragUp
+     * @summary Handles notification of when the 'drag to adjust' session is
+     *     ending.
+     * @param {TP.sig.DOMDragUp} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
      */
 
     var adjuster;
 
+    //  Ignore the DOMDragMove and DOMDragUp signals coming directly from the
+    //  mouse now that our drag session is done.
     this.ignore(
         TP.core.Mouse, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
 
+    //  Null out the 'last X' so that it's ready for the next dragging session.
     this.$set('$lastX', null);
 
+    //  Tell the adjuster to show all of the property editors.
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.showAll();
 
@@ -791,20 +928,39 @@ function(aRequest) {
 TP.sherpa.CSSPercentageSlotEditor.Inst.defineMethod('adjustValue',
 function(oldX, newX, aDirection) {
 
+    /**
+     * @method adjustValue
+     * @summary Adjusts the value of the receiver based on the 'X' values
+     *     and the computed direction supplied. This method is used by subtypes
+     *     of TP.sherpa.CSSDraggableSlotEditor to adjust the value it is
+     *     representing.
+     * @param {Number} oldX The old value of the 'X' coordinate of the drag.
+     * @param {Number} newX The new value of the 'X' coordinate of the drag.
+     * @param {String} aDirection The direction that the drag is occurring in.
+     *     TP.LEFT, TP.RIGHT or TP.NONE.
+     * @returns {TP.sherpa.CSSPercentageSlotEditor} The receiver.
+     */
+
     var val;
 
+    //  If there wasn't a direction, then exit here.
     if (aDirection === TP.NONE) {
         return this;
     }
 
+    //  Grab the current value.
     val = parseInt(this.getTextContent(), 10);
 
+    //  If the direction is TP.LEFT, then subtract 1 (but stop at 0).
     if (aDirection === TP.LEFT) {
         val = (val - 1).max(0);
     } else {
+        //  Otherwise, if the direction is TP.RIGHT, then subtract 1 (but stop
+        //  at 100).
         val = (val + 1).min(100);
     }
 
+    //  Set that to be the new value.
     this.get('valuePart').setTextContent(val);
 
     return this;
@@ -815,12 +971,22 @@ function(oldX, newX, aDirection) {
 TP.sherpa.CSSPercentageSlotEditor.Inst.defineMethod('setInfo',
 function(anInfo) {
 
+    /**
+     * @method setInfo
+     * @summary Sets the receiver's information to display, such as it's value
+     *     or units, etc.
+     * @param {TP.core.Hash} anInfo A hash containing information for the
+     *     receiver to display and manipulate, such as it's value or units.
+     * @returns {TP.sherpa.CSSPercentageSlotEditor} The receiver.
+     */
+
     var val;
 
     this.$set('info', anInfo);
 
+    //  The value that we want to display here comes from our information's
+    //  'value' slot.
     val = anInfo.at('value');
-
     this.get('valuePart').setTextContent(val);
 
     return this;
@@ -892,12 +1058,22 @@ TP.sherpa.CSSIdentifierSlotEditor.Inst.defineAttribute(
 TP.sherpa.CSSIdentifierSlotEditor.Inst.defineMethod('setInfo',
 function(anInfo) {
 
+    /**
+     * @method setInfo
+     * @summary Sets the receiver's information to display, such as it's value
+     *     or units, etc.
+     * @param {TP.core.Hash} anInfo A hash containing information for the
+     *     receiver to display and manipulate, such as it's value or units.
+     * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
+     */
+
     var val;
 
     this.$set('info', anInfo);
 
+    //  The value that we want to display here comes from our information's
+    //  'name' slot.
     val = anInfo.at('name');
-
     this.get('valuePart').setTextContent(val);
 
     return this;
@@ -909,10 +1085,13 @@ TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('ShowValueMenu',
 function(aSignal) {
 
     /**
-     * @method ShowValueMenu
-     * @summary
-     * @param {TP.sig.Signal} aSignal
-     * @returns {TP.sherpa.CSSIdentifierEditor} The receiver.
+     * @method handleShowValueMenu
+     * @summary Handles notifications of when the user has issues a mouse down
+     *     to show the popup menu that was activated to list all of the values
+     *     of the receiver.
+     * @param {TP.sig.UIShowValueMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
      */
 
     var wrapperSpan,
@@ -935,25 +1114,35 @@ function(aSignal) {
         adjuster,
         ourAdjusterEditorTPElem;
 
+    //  Make sure to tell the trigger (the UI signal) to stop propagation here,
+    //  so that controls 'further up' the responder chain don't react to the
+    //  mouse down.
     aSignal.at('trigger').stopPropagation();
 
+    //  Grab the span that is wrapping the value.
     wrapperSpan = aSignal.getDOMTarget().parentNode;
-    slotTypes = TP.elementGetAttribute(wrapperSpan, 'slot_types', true);
 
+    //  Grab the slot types from that element and exit if there are none - we
+    //  can't list anything useful here.
+    slotTypes = TP.elementGetAttribute(wrapperSpan, 'slot_types', true);
     if (TP.isEmpty(slotTypes)) {
         return this;
     }
 
+    //  There might be more than one slot type, but the last one will be the
+    //  'most significant'.
     slotTypes = slotTypes.split(' ');
-
     mainFieldType = slotTypes.last();
 
+    //  Grab the main field type's syntax information from the TP.extern.csstree
+    //  object.
     syntaxInfo = TP.extern.csstree.lexer.getType(mainFieldType).syntax;
-
     terms = syntaxInfo.terms;
 
     data = TP.ac();
 
+    //  Iterate over all of the terms and create an Array for each term, with
+    //  the term as both the value and label.
     len = terms.length;
     for (i = 0; i < len; i++) {
         data.push(
@@ -961,19 +1150,26 @@ function(aSignal) {
         );
     }
 
+    //  Set the overall data Array as the resource for the property value menu.
     TP.uc('urn:tibet:sherpa_adjuster_value_menu_data').setResource(data);
 
+    //  Compute the adjuster menu's trigger point from the origin's global
+    //  rectangle.
     originRect = TP.wrap(aSignal.getOrigin()).getGlobalRect();
-
     triggerPoint = TP.pc(
                     originRect.getX(),
                     originRect.getY() + originRect.getHeight() - 10);
 
+    //  Grab the adjuster popup and set it's width.
     popup = TP.byId('AdjusterPopup', this.getNativeDocument());
     popup.setWidth(originRect.getWidth());
 
+    //  Register ourself as the target for any responder signals (UISelect,
+    //  UIValueChange, UIDidDeactivate).
     TP.sys.registerObject(this, 'AdjusterMenuTarget');
 
+    //  Throw a signal to toggle the popup on, with the adjuster value menu
+    //  content as the content.
     this.signal(
         'TogglePopup',
         TP.hc(
@@ -987,6 +1183,7 @@ function(aSignal) {
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
 
+    //  Hide all of the property editors except for our property editor.
     adjuster.hideAllExceptEditor(ourAdjusterEditorTPElem);
 
     return this;
@@ -996,6 +1193,16 @@ function(aSignal) {
 
 TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UIDidDeactivate',
 function(aSignal) {
+
+    /**
+     * @method handleUIDidDeactivate
+     * @summary Handles notifications of when the user has deactivated the value
+     *     popup menu that was activated to list all of the values of the
+     *     receiver.
+     * @param {TP.sig.UIDidDeactivate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
+     */
 
     var adjuster;
 
@@ -1009,6 +1216,16 @@ function(aSignal) {
 
 TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UISelect',
 function(aSignal) {
+
+    /**
+     * @method handleUISelect
+     * @summary Handles notifications of when the user has selected an item
+     *     from the value popup menu that was activated to list all of the
+     *     values of the receiver.
+     * @param {TP.sig.UISelect} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
+     */
 
     var val;
 
@@ -1026,6 +1243,16 @@ function(aSignal) {
 
 TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UIValueChange',
 function(aSignal) {
+
+    /**
+     * @method handleUIValue
+     * @summary Handles notifications of when the user has hovered over an item
+     *     in the value popup menu that was activated to list all of the
+     *     values of the receiver.
+     * @param {TP.sig.UIValueChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
+     */
 
     var val;
 
