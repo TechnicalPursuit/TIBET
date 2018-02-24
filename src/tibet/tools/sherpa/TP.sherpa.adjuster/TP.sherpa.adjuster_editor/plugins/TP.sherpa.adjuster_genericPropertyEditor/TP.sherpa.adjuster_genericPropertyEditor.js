@@ -390,6 +390,72 @@ function(slotData) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowNameMenu',
+function(aSignal) {
+
+    /**
+     * @method handleShowNameMenu
+     * @summary Handles notification of when the receiver wants to show the menu
+     *     of choices around property names.
+     * @param {TP.sig.ShowNameMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    var propName,
+
+        data,
+
+        originRect,
+        triggerPoint,
+
+        popup;
+
+    //  Make sure to tell the trigger (the UI signal) to stop propagation here,
+    //  so that controls 'further up' the responder chain don't react to the
+    //  mouse down.
+    aSignal.at('trigger').stopPropagation();
+
+    propName = this.get('value').at('name');
+
+    //  Create data for the menu that includes entries for devdocs.io and
+    //  caniuse.com and the property name.
+    data = TP.ac(
+            TP.ac('http://devdocs.io/css/' + propName, 'devdocs.io'),
+            TP.ac('https://caniuse.com/#search=' + propName, 'caniuse.com')
+            );
+
+    //  Set the overall data Array as the resource for the property name menu.
+    TP.uc('urn:tibet:sherpa_adjuster_name_menu_data').setResource(data);
+
+    //  Compute the adjuster menu's trigger point from the origin's global
+    //  rectangle.
+    originRect = TP.wrap(aSignal.getOrigin()).getGlobalRect();
+    triggerPoint = TP.pc(
+                    originRect.getX(),
+                    originRect.getY() + originRect.getHeight() - 10);
+
+    //  Grab the adjuster popup and set it's width.
+    popup = TP.byId('AdjusterPopup', this.getNativeDocument());
+    popup.setWidth(originRect.getWidth());
+
+    //  Throw a signal to toggle the popup on, with the adjuster name menu
+    //  content as the content.
+    this.signal(
+        'TogglePopup',
+        TP.hc(
+            'contentURI', 'urn:tibet:TP.sherpa.adjusterNameMenuContent',
+            'triggerTPDocument', this.getDocument(),
+            'triggerPoint', triggerPoint,
+            'hideOn', 'UISelect',
+            'triggerID', 'namemenu',
+            'overlayID', 'AdjusterPopup'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('render',
 function() {
 
@@ -453,72 +519,6 @@ function() {
 
     //  Set the 'selector field' markup to the selector of the rule.
     this.get('propertyRuleSelector').set('value', val.at('selector'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowNameMenu',
-function(aSignal) {
-
-    /**
-     * @method handleShowNameMenu
-     * @summary Handles notification of when the receiver wants to show the menu
-     *     of choices around property names.
-     * @param {TP.sig.ShowNameMenu} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
-     */
-
-    var propName,
-
-        data,
-
-        originRect,
-        triggerPoint,
-
-        popup;
-
-    //  Make sure to tell the trigger (the UI signal) to stop propagation here,
-    //  so that controls 'further up' the responder chain don't react to the
-    //  mouse down.
-    aSignal.at('trigger').stopPropagation();
-
-    propName = this.get('value').at('name');
-
-    //  Create data for the menu that includes entries for devdocs.io and
-    //  caniuse.com and the property name.
-    data = TP.ac(
-            TP.ac('http://devdocs.io/css/' + propName, 'devdocs.io'),
-            TP.ac('https://caniuse.com/#search=' + propName, 'caniuse.com')
-            );
-
-    //  Set the overall data Array as the resource for the property name menu.
-    TP.uc('urn:tibet:sherpa_adjuster_name_menu_data').setResource(data);
-
-    //  Compute the adjuster menu's trigger point from the origin's global
-    //  rectangle.
-    originRect = TP.wrap(aSignal.getOrigin()).getGlobalRect();
-    triggerPoint = TP.pc(
-                    originRect.getX(),
-                    originRect.getY() + originRect.getHeight() - 10);
-
-    //  Grab the adjuster popup and set it's width.
-    popup = TP.byId('AdjusterPopup', this.getNativeDocument());
-    popup.setWidth(originRect.getWidth());
-
-    //  Throw a signal to toggle the popup on, with the adjuster name menu
-    //  content as the content.
-    this.signal(
-        'TogglePopup',
-        TP.hc(
-            'contentURI', 'urn:tibet:TP.sherpa.adjusterNameMenuContent',
-            'triggerTPDocument', this.getDocument(),
-            'triggerPoint', triggerPoint,
-            'hideOn', 'UISelect',
-            'triggerID', 'namemenu',
-            'overlayID', 'AdjusterPopup'));
 
     return this;
 });
