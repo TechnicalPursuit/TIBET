@@ -1002,7 +1002,7 @@ function(anInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CSSDraggableSlotEditor.defineSubtype('CSSIdentifierSlotEditor');
+TP.sherpa.CSSSlotEditor.defineSubtype('CSSIdentifierSlotEditor');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1042,14 +1042,6 @@ function(aRequest) {
 
     return elem;
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CSSIdentifierSlotEditor.Inst.defineAttribute(
-    'valuePart',
-    TP.cpc('> *[part="value"]', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
