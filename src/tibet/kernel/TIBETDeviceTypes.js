@@ -2564,6 +2564,9 @@ TP.core.Mouse.Type.defineAttribute('lastUp');
 TP.core.Mouse.Type.defineAttribute('lastOver');
 TP.core.Mouse.Type.defineAttribute('lastOut');
 
+TP.core.Mouse.Type.defineAttribute('lastEnter');
+TP.core.Mouse.Type.defineAttribute('lastLeave');
+
 TP.core.Mouse.Type.defineAttribute('lastClick');
 TP.core.Mouse.Type.defineAttribute('lastDblClick');
 TP.core.Mouse.Type.defineAttribute('lastContextMenu');
@@ -2577,6 +2580,9 @@ TP.core.Mouse.Type.defineAttribute('mouseup');
 
 TP.core.Mouse.Type.defineAttribute('mouseover');
 TP.core.Mouse.Type.defineAttribute('mouseout');
+
+TP.core.Mouse.Type.defineAttribute('mouseenter');
+TP.core.Mouse.Type.defineAttribute('mouseleave');
 
 TP.core.Mouse.Type.defineAttribute('click');
 TP.core.Mouse.Type.defineAttribute('dblclick');
@@ -2620,6 +2626,11 @@ function() {
             TP.sys.getTypeByName('TP.sig.DOMMouseOver').construct(null, true));
     this.$set('mouseout',
             TP.sys.getTypeByName('TP.sig.DOMMouseOut').construct(null, true));
+
+    this.$set('mouseenter',
+            TP.sys.getTypeByName('TP.sig.DOMMouseEnter').construct(null, true));
+    this.$set('mouseleave',
+            TP.sys.getTypeByName('TP.sig.DOMMouseLeave').construct(null, true));
 
     this.$set('click',
             TP.sys.getTypeByName('TP.sig.DOMClick').construct(null, true));
@@ -2753,6 +2764,14 @@ function(filterWindow) {
 
     if (sigTestFunc('mouseout')) {
         this.get('mouseout').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseenter')) {
+        this.get('mouseenter').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseleave')) {
+        this.get('mouseleave').setEvent(null);
     }
 
     if (sigTestFunc('click')) {
@@ -3260,6 +3279,22 @@ function(nativeEvent) {
             TP.core.Mouse.$$handleMouseOut(ev);
             break;
 
+        case 'mouseenter':
+
+            lastEventName = 'lastEnter';
+            TP.core.Mouse.$set(lastEventName, ev);
+
+            TP.core.Mouse.$$handleMouseEnter(ev);
+            break;
+
+        case 'mouseleave':
+
+            lastEventName = 'lastLeave';
+            TP.core.Mouse.$set(lastEventName, ev);
+
+            TP.core.Mouse.$$handleMouseLeave(ev);
+            break;
+
         case 'click':
 
             lastEventName = 'lastClick';
@@ -3650,6 +3685,40 @@ function(normalizedEvent) {
         TP.ifError() ?
                 TP.error('Unable to clear hover timeout') : 0;
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Mouse.Type.defineMethod('$$handleMouseEnter',
+function(normalizedEvent) {
+
+    /**
+     * @method $$handleMouseEnter
+     * @summary Responds to notifications from the native event system that a
+     *     mouse enter event has occurred.
+     * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     */
+
+    this.invokeObservers('mouseenter', normalizedEvent);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Mouse.Type.defineMethod('$$handleMouseLeave',
+function(normalizedEvent) {
+
+    /**
+     * @method $$handleMouseLeave
+     * @summary Responds to notifications from the native event system that a
+     *     mouse leave event has occurred.
+     * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     */
+
+    this.invokeObservers('mouseleave', normalizedEvent);
 
     return;
 });
