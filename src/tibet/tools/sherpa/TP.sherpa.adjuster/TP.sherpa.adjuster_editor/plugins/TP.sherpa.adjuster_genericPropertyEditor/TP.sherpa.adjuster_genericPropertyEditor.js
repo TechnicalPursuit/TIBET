@@ -390,6 +390,61 @@ function(slotData) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('HideHighlight',
+function(aSignal) {
+
+    /**
+     * @method handleHideHighlight
+     * @summary Handles notification of when the receiver wants to hide a
+     *     previously shown highlight of the affected elements for the editor
+     * @param {TP.sig.HideHighlight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    //  Because this signal is being thrown from a 'mouseleave' event (because
+    //  we want it to take affect across the entire receiver, as distinct from
+    //  'mouseout', which will not have this behavior), it will be thrown to
+    //  every descendant and then bubble up to us. We have to make sure to only
+    //  execute it once when the receiver is the target.
+
+    //  Therefore, use this code in any subtypes of the receiver.
+    if (aSignal.getDOMTarget() !== this.getNativeNode()) {
+        return this;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowHighlight',
+function(aSignal) {
+
+    /**
+     * @method handleShowHighlight
+     * @summary Handles notification of when the receiver wants to show a
+     *     highlight of the affected elements for the editor
+     * @param {TP.sig.ShowHighlight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    //  Because this signal is being thrown from a 'mouseenter' event (because
+    //  we want it to take affect across the entire receiver, as distinct from
+    //  'mouseover', which will not have this behavior), it will be thrown to
+    //  every descendant and then bubble up to us. We have to make sure to only
+    //  execute it once when the receiver is the target.
+
+    //  Therefore, use this code in any subtypes of the receiver.
+    if (aSignal.getDOMTarget() !== this.getNativeNode()) {
+        return this;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowNameMenu',
 function(aSignal) {
 
