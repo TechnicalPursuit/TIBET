@@ -382,6 +382,84 @@ function() {
     return contentTPElem;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('getToolsLayerOffsetFromScreen',
+function(aScreenTPElement) {
+
+    /**
+     * @method getToolsLayerOffsetFromScreen
+     * @summary Returns the 'offset' from the tools layer to the supplied
+     *     screen. This can used in computations that require drawing on the
+     *     tools layer from coordinates computed inside of a particular screen.
+     * @param {TP.sherpa.screen} aScreenTPElement The screen element to compute
+     *     the offset to the tool layer for.
+     * @returns {Number[]} The X and Y offset to be used in computations
+     */
+
+    var viewDoc,
+
+        screenTPElem,
+        screenGlobalRect,
+
+        centerTPElem,
+        centerGlobalRect,
+
+        screenToContentDiffX,
+        screenToContentDiffY,
+
+        contentTPElem,
+        contentGlobalRect,
+
+        contentToCenterDiffX,
+        contentToCenterDiffY,
+
+        offset;
+
+    //  The document that we were installed into.
+    viewDoc = this.get('vWin').document;
+
+    //  If no valid screen element was supplied, just return 0,0 as the offsets
+    screenTPElem = aScreenTPElement;
+    if (TP.notValid(screenTPElem)) {
+        return TP.ac(0, 0);
+    }
+
+    //  Grab the screen element's global rectangle.
+    screenGlobalRect = screenTPElem.getGlobalRect();
+
+    //  The 'center' element is the common parent for the world and the tools
+    //  layer.
+    centerTPElem = TP.byId('center', TP.win('UIROOT'));
+
+    //  Grab the center element's global rectangle.
+    centerGlobalRect = centerTPElem.getGlobalRect();
+
+    //  The 'tools layer' is the 'content' div, until we boot.
+    contentTPElem = TP.byId('content', viewDoc);
+
+    //  Grab the tool layer element's global rectangle.
+    contentGlobalRect = contentTPElem.getGlobalRect();
+
+    //  Compute the difference between the screen and content X and Y
+    screenToContentDiffX = screenGlobalRect.getX() -
+                            contentGlobalRect.getX();
+    screenToContentDiffY = screenGlobalRect.getY() -
+                            contentGlobalRect.getY();
+
+    //  And the difference between the content and center X and Y
+    contentToCenterDiffX = contentGlobalRect.getX() - centerGlobalRect.getX();
+    contentToCenterDiffY = contentGlobalRect.getY() - centerGlobalRect.getY();
+
+    //  Add the differences together and use those as the X and Y offsets.
+    offset = TP.ac(
+        screenToContentDiffX + contentToCenterDiffX,
+        screenToContentDiffY + contentToCenterDiffY
+    );
+
+    return offset;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineHandler('ConsoleCommand',
