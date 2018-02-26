@@ -495,7 +495,6 @@ function() {
      * @returns {}
      */
 
-    //return TP.elem('<sherpa:adjuster_editor/>');
     return TP.xhtmlnode('<div class="editor_wrapper"/>');
 });
 
