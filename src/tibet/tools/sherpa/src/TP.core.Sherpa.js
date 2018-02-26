@@ -364,22 +364,22 @@ function() {
      */
 
     var viewDoc,
-        centerTPElem;
+        contentTPElem;
 
     //  The document that we were installed into.
     viewDoc = this.get('vWin').document;
 
     //  The 'tools layer' is the 'content' div, until we boot.
-    centerTPElem = TP.byId('content', viewDoc);
+    contentTPElem = TP.byId('content', viewDoc);
 
-    //  If the center element hasn't been 'converted to being the tools layer',
+    //  If the content element hasn't been 'converted to being the tools layer',
     //  do so now and show it.
-    if (!centerTPElem.hasAttribute('isToolsLayer')) {
-        centerTPElem.setAttribute('isToolsLayer', 'true');
-        centerTPElem.show();
+    if (!contentTPElem.hasAttribute('isToolsLayer')) {
+        contentTPElem.setAttribute('isToolsLayer', 'true');
+        contentTPElem.show();
     }
 
-    return centerTPElem;
+    return contentTPElem;
 });
 
 //  ------------------------------------------------------------------------
