@@ -26,73 +26,13 @@ TP.sherpa.adjuster_editor.Inst.defineAttribute('value');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_editor.Inst.defineHandler('UpdatePropertyValue',
-function(aSignal) {
-
-    /**
-     * @method updatePropertyValue
-     * @summary
-     * @param {TP.sig.Signal} aSignal
-     * @returns {TP.sherpa.adjuster_editor} The receiver.
-     */
-
-    var ourInfo,
-        fieldVal,
-
-        propName,
-        propRule,
-
-        halo,
-        currentTargetTPElem;
-
-    ourInfo = this.get('value');
-
-    if (TP.notValid(ourInfo)) {
-        return this;
-    }
-
-    fieldVal = TP.wrap(aSignal.getTarget()).get('value');
-
-    propName = ourInfo.at('name');
-    propRule = ourInfo.at('rule');
-
-    TP.styleRuleSetProperty(propRule, propName, fieldVal, false);
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-    currentTargetTPElem = halo.get('currentTargetTPElem');
-
-    if (TP.isValid(currentTargetTPElem)) {
-        this.focusOnTarget(currentTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.adjuster_editor.Inst.defineHandler('UpdatePropertyRule',
-function(aSignal) {
-
-    /**
-     * @method updatePropertyRule
-     * @summary
-     * @param {TP.sig.Signal} aSignal
-     * @returns {TP.sherpa.adjuster_editor} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.adjuster_editor.Inst.defineMethod('getValue',
 function() {
 
     /**
      * @method getValue
-     * @summary
-     * @returns {TP.sherpa.adjuster_editor} The receiver.
+     * @summary Returns the value of the receiver.
+     * @returns {TP.core.hash} The value of the receiver.
      */
 
     return this.$get('value');
@@ -105,7 +45,7 @@ function() {
 
     /**
      * @method render
-     * @summary
+     * @summary Renders the receiver.
      * @returns {TP.sherpa.adjuster_editor} The receiver.
      */
 
@@ -119,7 +59,11 @@ function(aValue) {
 
     /**
      * @method setValue
-     * @summary
+     * @summary Sets the value of the receiver's node. For this type, this
+     *     capture the data (property name, property value, rule hosting the
+     *     property) that the receiver will be managing.
+     * @param {TP.core.Hash} aValue The hash containing the data that the
+     *     receiver will manage.
      * @returns {TP.sherpa.adjuster_editor} The receiver.
      */
 
