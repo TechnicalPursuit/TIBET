@@ -110,6 +110,26 @@ function(aHUD, droppingTPElem) {
     return false;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('sherpaGetWorldScreen',
+function() {
+
+    /**
+     * @method sherpaGetWorldScreen
+     * @summary Returns the 'world screen' element that the receiver is
+     *     currently hosted in.
+     * @returns {TP.core.ElementNode} The 'world screen' element containing the
+     *     receiver.
+     */
+
+    var elemScreenTPElem;
+
+    elemScreenTPElem = TP.wrap(this.getNativeWindow().frameElement.parentNode);
+
+    return elemScreenTPElem;
+});
+
 //  ========================================================================
 //  TP.core.ElementNode Additions
 //  ========================================================================
