@@ -461,8 +461,8 @@ TP.sherpa.workbench.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
-     * @method handleDOMMouseMove
-     * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which
+     * @method handleDOMDragMove
+     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which
      *     triggered this handler.
      */
 
