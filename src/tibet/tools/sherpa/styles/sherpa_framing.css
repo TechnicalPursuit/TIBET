@@ -188,6 +188,7 @@ li.CodeMirror-hint-active {
     background: transparent !important;
 
     border: none;
+    margin: 0;
 
     pointer-events: none;
 }
