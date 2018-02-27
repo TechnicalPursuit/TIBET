@@ -711,7 +711,7 @@ function() {
     /**
      * @method getAdjusterEditorElement
      * @summary Returns the adjuster editor that contains this slot editor.
-     * @returns {TP.sherpa.adjuster_editor} The adjuster editor that contains
+     * @returns {TP.sherpa.CSSSlotEditor} The adjuster editor that contains
      *     the receiver.
      */
 
@@ -761,7 +761,8 @@ function(aValue) {
     /**
      * @method updateRuleWithValue
      * @summary Updates the rule that is associated with the property that the
-     *     editor is (possibly partly) managing with the supplied value.
+     *     editor is (possibly partly) managing with the supplied value. Note
+     *     that this method will *not* signal a change when the rule is updated.
      * @param {String|Number} aValue The value to update the rule with.
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
