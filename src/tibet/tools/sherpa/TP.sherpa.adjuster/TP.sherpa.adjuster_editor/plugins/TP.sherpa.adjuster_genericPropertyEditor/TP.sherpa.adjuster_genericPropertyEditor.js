@@ -705,6 +705,66 @@ TP.sherpa.CSSSlotEditor.Inst.defineAttribute('info');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('completeUpdatingRuleWithValue',
+function(aValue) {
+
+    /**
+     * @method completeUpdatingRuleWithValue
+     * @summary Updates the rule that is associated with the property that the
+     *     editor is (possibly partly) managing with a final version of the
+     *     supplied value. Note that this method *will* signal a change when the
+     *     rule is updated.
+     * @param {String|Number} aValue The value to update the rule with.
+     * @returns {TP.sherpa.CSSSlotEditor} The receiver.
+     */
+
+    var ourAdjusterEditorTPElem,
+
+        ourInfo,
+        propName,
+        propRule,
+
+        haloTPElem,
+        haloTargetTPElem;
+
+    //  If the supplied value is real, then update the rule.
+    if (TP.notEmpty(aValue)) {
+
+        //  Grab our adjuster editor element.
+        ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
+
+        //  The 'value' of our adjuster editor contains the information that we
+        //  will manipulate.
+        ourInfo = ourAdjusterEditorTPElem.get('value');
+
+        //  The property name and corresponding CSS rule that contains the
+        //  property are in the info.
+        propName = ourInfo.at('name');
+        propRule = ourInfo.at('rule');
+
+        TP.byId('SherpaAdjuster', TP.win('UIROOT')).set(
+                                            '$updateRulesOnly', true);
+
+        //  Set the property to the supplied value. Note here how we pass true
+        //  to broadcast a CSSStyleRule change.
+        TP.styleRuleSetProperty(propRule, propName, aValue, true);
+
+        //  Grab the halo and adjust it's size & position in case the property
+        //  we were manipulating affected that.
+        haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+        haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+        haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
+
+        //  Allow the adjuster editor to update any constructs that it is
+        //  managing with the new value.
+        ourAdjusterEditorTPElem.updateWithValue(aValue);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.CSSSlotEditor.Inst.defineMethod('getAdjusterEditorElement',
 function() {
 
@@ -957,7 +1017,9 @@ function(aSignal) {
      * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
      */
 
-    var adjuster;
+    var adjuster,
+
+        ourAdjusterEditorTPElem;
 
     //  Ignore the DOMDragMove and DOMDragUp signals coming directly from the
     //  mouse now that our drag session is done.
@@ -970,6 +1032,26 @@ function(aSignal) {
     //  Tell the adjuster to show all of the property editors.
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.showAll();
+
+    //  Grab the adjuster editor and tell it to hide its visual guides. This is
+    //  necessary because sometimes the event sequence to show/hide those guides
+    //  gets out of order and the guides won't hide.
+    ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
+    ourAdjusterEditorTPElem.hideVisualGuides();
+
+    setTimeout(
+        function() {
+            var val;
+
+            //  Grab whatever value the receiver computes that is compatible for
+            //  a CSS rule and complete updating the rule that we're
+            //  manipulating with that value.
+            val = this.getValueForCSSRule();
+            this.completeUpdatingRuleWithValue(val);
+        }.bind(this), 100);
+
+    return this;
+});
 
     return this;
 });
