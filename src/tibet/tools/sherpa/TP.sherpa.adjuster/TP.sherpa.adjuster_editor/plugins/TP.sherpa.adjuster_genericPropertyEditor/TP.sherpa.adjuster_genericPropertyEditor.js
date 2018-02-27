@@ -1053,6 +1053,141 @@ function(aSignal) {
     return this;
 });
 
+//  ========================================================================
+//  TP.sherpa.CSSDimensionSlotEditor
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CSSDimensionSlotEditor}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDraggableSlotEditor.defineSubtype('CSSDimensionSlotEditor');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDimensionSlotEditor.Inst.defineAttribute(
+    'unitPart',
+    TP.cpc('> *[part="unit"]', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDimensionSlotEditor.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    var elem,
+
+        str,
+        newFrag;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    str = '<span part="value" on:dragdown="StartAdjusting"/>' +
+            '<span part="unit"></span>';
+
+    newFrag = TP.xhtmlnode(str);
+
+    TP.nodeAppendChild(elem, newFrag, false);
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDimensionSlotEditor.Inst.defineMethod('adjustValue',
+function(oldX, newX, aDirection) {
+
+    /**
+     * @method adjustValue
+     * @summary Adjusts the value of the receiver based on the 'X' values
+     *     and the computed direction supplied. This method is used by subtypes
+     *     of TP.sherpa.CSSDraggableSlotEditor to adjust the value it is
+     *     representing.
+     * @param {Number} oldX The old value of the 'X' coordinate of the drag.
+     * @param {Number} newX The new value of the 'X' coordinate of the drag.
+     * @param {String} aDirection The direction that the drag is occurring in.
+     *     TP.LEFT, TP.RIGHT or TP.NONE.
+     * @returns {TP.sherpa.CSSDimensionSlotEditor} The receiver.
+     */
+
+    var val;
+
+    //  If there wasn't a direction, then exit here.
+    if (aDirection === TP.NONE) {
+        return this;
+    }
+
+    //  Grab the current value.
+    val = parseInt(this.getTextContent(), 10);
+
+    //  If the direction is TP.LEFT, then subtract 1 (but stop at 0).
+    if (aDirection === TP.LEFT) {
+        val = (val - 1).max(0);
+    } else {
+        val = val + 1;
+    }
+
+    //  Set that to be the new value.
+    this.get('valuePart').setTextContent(val);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSDimensionSlotEditor.Inst.defineMethod('setInfo',
+function(anInfo) {
+
+    /**
+     * @method setInfo
+     * @summary Sets the receiver's information to display, such as it's value
+     *     or units, etc.
+     * @param {TP.core.Hash} anInfo A hash containing information for the
+     *     receiver to display and manipulate, such as it's value or units.
+     * @returns {TP.sherpa.CSSDimensionSlotEditor} The receiver.
+     */
+
+    var val,
+        unit;
+
+    this.$set('info', anInfo);
+
+    //  The value that we want to display here comes from our information's
+    //  'value' slot.
+    val = anInfo.at('value');
+    this.get('valuePart').setTextContent(val);
+
+    //  The unit that we want to display here comes from our information's
+    //  'unit' slot.
+    unit = anInfo.at('unit');
+    if (TP.isEmpty(unit)) {
+        unit = 'px';
+    }
+
+    this.get('unitPart').setTextContent(unit);
+
     return this;
 });
 
