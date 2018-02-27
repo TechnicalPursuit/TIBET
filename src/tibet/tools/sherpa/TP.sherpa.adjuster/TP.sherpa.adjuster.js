@@ -76,6 +76,12 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster.Inst.defineAttribute('$updateRulesOnly');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -114,6 +120,99 @@ function(aSignal) {
     if (TP.isValid(tile)) {
         tile.setAttribute('hidden', true);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster.Inst.defineHandler('MutationStyleChange',
+function(aSignal) {
+
+    /**
+     * @method handleMutationStyleChange
+     * @summary Handles notifications of node style changes from the overall
+     *     canvas that the styleshud is working with.
+     * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var modelURI,
+        value,
+
+        ruleInfo,
+
+        tileTPElem,
+        editorsWrapperTPElem,
+        childTPElems,
+
+        leni,
+        i,
+
+        editorInfo,
+
+        lenj,
+        j;
+
+    //  If there is a mutated rule, (which will happen if the signal is a
+    //  TP.sig.MutationStylePropertyChange or TP.sig.MutationStyleRuleChange)
+    //  then exit here. We only want to process 'whole stylesheet' changes.
+    if (TP.isValid(aSignal.at('mutatedRule'))) {
+        return this;
+    }
+
+    //  Grab the styleshud target - this will be the TP.core.ElementNode that is
+    //  currently focused.
+    modelURI = TP.uc('urn:tibet:styleshud_target_source');
+    value = modelURI.getResource().get('result');
+
+    //  If the change came from a side-effect of changing just one rule, then
+    //  this flag will be true. Otherwise, we changed the whole sheet and we
+    //  just need to set the value, which will redraw the editors etc.
+    if (TP.isFalse(this.get('$updateRulesOnly'))) {
+        this.setValue(value);
+        return this;
+    }
+
+    //  Grab the rule info for the currently focused element.
+    ruleInfo = TP.elementGetAppliedStyleInfo(TP.unwrap(value), true);
+
+    tileTPElem = TP.byId('Adjuster_Tile', this.getNativeWindow());
+
+    //  Set the body of the tile to be the div containing all of the editors.
+    editorsWrapperTPElem = tileTPElem.get('body').get('.editors');
+
+    //  Grab all of the child elements - these will have now been processed and
+    //  expanded.
+    childTPElems = editorsWrapperTPElem.getChildElements();
+
+    //  Now we're in a situation where just a declaration of a rule changed, but
+    //  the entire sheet got regenerated because of it. Therefore, we just need
+    //  to 'wire up' the new rules from the regenerated sheet, replacing the old
+    //  rules which are now no longer associated with a real CSS style or link
+    //  element. Now, because the old rule will have still had it's declaration
+    //  updated *before* it was detached because of sheet regeneration, it's
+    //  '.cssText' property will match that of it's new version. Therefore, we
+    //  just need to compare that.
+
+    //  Iterate over all of the child elements, which will be adjuster editors,
+    //  and then all of the rules found in the applied style information. If the
+    //  '.cssText' property of the rules match, then replace the reference to
+    //  the old version of the rule with the new version of the rule.
+    leni = childTPElems.getSize();
+    for (i = 0; i < leni; i++) {
+        editorInfo = childTPElems.at(i).get('value');
+        lenj = ruleInfo.getSize();
+        for (j = 0; j < lenj; j++) {
+            if (editorInfo.at('rule').cssText ===
+                            ruleInfo.at(j).at('rule').cssText) {
+                editorInfo.atPut('rule', ruleInfo.at(j).at('rule'));
+            }
+        }
+    }
+
+    this.set('$updateRulesOnly', false);
 
     return this;
 });
@@ -191,6 +290,10 @@ function() {
      */
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
+
+    this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+    this.set('$updateRulesOnly', false);
 
     return this;
 });
@@ -458,6 +561,8 @@ function() {
      */
 
     this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
+
+    this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
 
     return this;
 });
