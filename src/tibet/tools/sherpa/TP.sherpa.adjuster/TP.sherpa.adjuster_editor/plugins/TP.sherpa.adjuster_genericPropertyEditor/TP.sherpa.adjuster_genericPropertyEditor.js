@@ -511,6 +511,21 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('hideVisualGuides',
+function() {
+
+    /**
+     * @method hideVisualGuides
+     * @summary Hides any visual guides that the receiver draws to help the user
+     *     when adjusting the receiver's value.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('render',
 function() {
 
@@ -574,6 +589,36 @@ function() {
 
     //  Set the 'selector field' markup to the selector of the rule.
     this.get('propertyRuleSelector').set('value', val.at('selector'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('showVisualGuides',
+function() {
+
+    /**
+     * @method showVisualGuides
+     * @summary Shows any visual guides that the receiver draws to help the user
+     *     when adjusting the receiver's value.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('updateVisualGuides',
+function() {
+
+    /**
+     * @method updateVisualGuides
+     * @summary Updates any visual guides that the receiver draws to help the
+     *     user when adjusting the receiver's value.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
 
     return this;
 });
