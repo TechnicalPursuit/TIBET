@@ -1355,9 +1355,10 @@ function(aSignal) {
     popup = TP.byId('AdjusterPopup', this.getNativeDocument());
     popup.setWidth(originRect.getWidth());
 
-    //  Register ourself as the target for any responder signals (UISelect,
-    //  UIValueChange, UIDidDeactivate).
-    TP.sys.registerObject(this, 'AdjusterMenuTarget');
+    //  Push ourself as a Controller for any responder signals (UISelect,
+    //  UIValueChange, UIDidHide), which will come from the popup during this
+    //  session.
+    TP.sys.getApplication().pushController(this);
 
     //  Throw a signal to toggle the popup on, with the adjuster value menu
     //  content as the content.
@@ -1382,16 +1383,16 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UIDidDeactivate',
+TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('UIDidHide',
 function(aSignal) {
 
     /**
-     * @method handleUIDidDeactivate
-     * @summary Handles notifications of when the user has deactivated the value
+     * @method handleUIDidHide
+     * @summary Handles notifications of when the user has hidden the value
      *     popup menu that was activated to list all of the values of the
      *     receiver.
-     * @param {TP.sig.UIDidDeactivate} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.UIDidHide} aSignal The TIBET signal which triggered this
+     *     method.
      * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
      */
 
@@ -1399,6 +1400,8 @@ function(aSignal) {
 
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.showAll();
+
+    TP.sys.getApplication().popController(this);
 
     return this;
 });
