@@ -292,9 +292,7 @@ function(slotData) {
         info,
         slotName,
 
-        str,
-
-        innerContent;
+        str;
 
     valueInfo = slotData.at('value_info');
     slotInfo = slotData.at('slot_info');
@@ -313,12 +311,38 @@ function(slotData) {
 
     str = '<span value_type="' + valueInfo.at('type') + '"';
 
-    if (valueInfo.at('type') === 'Percentage') {
-        str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
-    } else if (valueInfo.at('type') === 'Identifier') {
-        str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
-    } else {
-        str += ' tibet:tag="sherpa:CSSSlotEditor"';
+    switch (valueInfo.at('type')) {
+
+        case 'Dimension':
+            str += ' tibet:tag="sherpa:CSSDimensionSlotEditor"';
+            break;
+
+        case 'Function':
+            break;
+
+        case 'HexColor':
+            break;
+
+        case 'Identifier':
+            str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
+            break;
+
+        case 'Number':
+            break;
+
+        case 'Percentage':
+            str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
+            break;
+
+        case 'String':
+            break;
+
+        case 'Url':
+            break;
+
+        default:
+            str += ' tibet:tag="sherpa:CSSSlotEditor"';
+            break;
     }
 
     if (TP.notEmpty(slotName)) {
@@ -330,62 +354,6 @@ function(slotData) {
     }
 
     str += '>';
-
-    switch (valueInfo.at('type')) {
-
-        case 'Dimension':
-            innerContent =
-                '<span part="value">' + valueInfo.at('value') + '</span>' +
-                '<span part="unit">' + valueInfo.at('unit') + '</span>';
-            break;
-
-        case 'Function':
-            break;
-
-        case 'HexColor':
-            break;
-
-        case 'Identifier':
-            innerContent = '';
-
-            /*
-            innerContent =
-                '<span part="value">' + valueInfo.at('name') + '</span>' +
-                '<span class="arrowMark" on:mousedown="ShowValueMenu"/>';
-            */
-            break;
-
-        case 'Number':
-            innerContent =
-                '<span part="value">' + valueInfo.at('value') + '</span>';
-            break;
-
-        case 'Percentage':
-            innerContent = '';
-
-            /*
-            innerContent =
-                '<span part="value" on:dragdown="StartAdjusting">' + valueInfo.at('value') + '</span>' +
-                '<span part="unit">%</span>';
-            */
-            break;
-
-        case 'String':
-            innerContent =
-                '<span part="value">' + valueInfo.at('value') + '</span>';
-            break;
-
-        case 'Url':
-            innerContent =
-                '<span part="value">' + valueInfo.at('value') + '</span>';
-            break;
-
-        default:
-            innerContent = '';
-            break;
-    }
-
-    str += innerContent;
 
     str += '</span>';
 

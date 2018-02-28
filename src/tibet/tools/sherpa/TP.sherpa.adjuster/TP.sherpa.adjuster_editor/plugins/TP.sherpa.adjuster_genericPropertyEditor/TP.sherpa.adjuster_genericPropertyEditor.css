@@ -82,7 +82,8 @@ sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type=
     visibility: visible;
 }
 
-sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type="Percentage"] span[part="value"]:hover {
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type="Percentage"] span[part="value"]:hover,
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type="Dimension"] span[part="value"]:hover {
 
     text-decoration: underline;
 
@@ -100,5 +101,15 @@ sherpa|adjuster_genericPropertyEditor div.info {
 
     margin-left: 4px;
     margin-right: 4px;
+}
+
+span[value_type] {
+
+    white-space: no-wrap;
+}
+
+span[value_type]:not([value_type="Identifier"]) {
+
+    margin-right: 10px;
 }
 
