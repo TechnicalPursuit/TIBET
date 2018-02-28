@@ -29,6 +29,10 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     TP.cpc('> .grid > *[name="propertyValue"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
+    'propertyValueSlotEditors',
+    TP.cpc('> .grid > *[name="propertyValue"] > .slots', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyRuleSelector',
     TP.cpc('> .grid > *[name="propertyRuleSelector"] > .input', TP.hc('shouldCollapse', true)));
 
@@ -626,19 +630,65 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('updateWithValue',
-function(aValue) {
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('updateRuleValue',
+function(updateRuleSource) {
 
     /**
-     * @method updateWithValue
+     * @method updateRuleValue
      * @summary Allows the receiver to update using the supplied value. This
      *     value should be specific to the property that the receiver is
      *     managing.
-     * @param {String|Number} aValue The value to update the receiver with.
+     * @param {Boolean} updateRuleSource
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
+    var val,
+
+        ourInfo,
+        propName,
+        propRule,
+
+        haloTPElem,
+        haloTargetTPElem;
+
+    //  Update any visual guides that we're using to display the adjustments
+    //  that we're making to the user.
     this.updateVisualGuides();
+
+    val = '';
+
+    //  Iterate over all of the slot editors and build up a space-separated
+    //  value.
+    slotEditors = this.get('propertyValueSlotEditors').getChildElements();
+    slotEditors.forEach(
+        function(anEditor) {
+            val += anEditor.getValueForCSSRule() + ' ';
+        });
+
+    //  Trim the last space off
+    val = val.slice(0, -1);
+
+    //  Our 'value' contains the information that we will manipulate.
+    ourInfo = this.get('value');
+
+    //  The property name and corresponding CSS rule that contains the
+    //  property are in the info.
+    propName = ourInfo.at('name');
+    propRule = ourInfo.at('rule');
+
+    //  Tell the adjuster that we're only interested in updating rules, not in
+    //  redrawing all of the editors as if the sheet got completely changed.
+    TP.byId('SherpaAdjuster', TP.win('UIROOT')).set('$updateRulesOnly', true);
+
+    //  Set the property to the supplied value. Note here how we pass true
+    //  to broadcast a CSSStyleRule change.
+    TP.styleRuleSetProperty(propRule, propName, val, updateRuleSource);
+
+    //  Grab the halo and adjust it's size & position in case the property
+    //  we were manipulating affected that.
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+    haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
 
     return this;
 });
@@ -705,60 +755,26 @@ TP.sherpa.CSSSlotEditor.Inst.defineAttribute('info');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CSSSlotEditor.Inst.defineMethod('completeUpdatingRuleWithValue',
-function(aValue) {
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('completeUpdatingRule',
+function() {
 
     /**
-     * @method completeUpdatingRuleWithValue
+     * @method completeUpdatingRule
      * @summary Updates the rule that is associated with the property that the
      *     editor is (possibly partly) managing with a final version of the
-     *     supplied value. Note that this method *will* signal a change when the
-     *     rule is updated.
-     * @param {String|Number} aValue The value to update the rule with.
+     *     receiver's value. Note that this method *will* signal a change when
+     *     the rule is updated.
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
 
-    var ourAdjusterEditorTPElem,
+    var ourAdjusterEditorTPElem;
 
-        ourInfo,
-        propName,
-        propRule,
+    //  Grab our adjuster editor element.
+    ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
 
-        haloTPElem,
-        haloTargetTPElem;
-
-    //  If the supplied value is real, then update the rule.
-    if (TP.notEmpty(aValue)) {
-
-        //  Grab our adjuster editor element.
-        ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
-
-        //  The 'value' of our adjuster editor contains the information that we
-        //  will manipulate.
-        ourInfo = ourAdjusterEditorTPElem.get('value');
-
-        //  The property name and corresponding CSS rule that contains the
-        //  property are in the info.
-        propName = ourInfo.at('name');
-        propRule = ourInfo.at('rule');
-
-        TP.byId('SherpaAdjuster', TP.win('UIROOT')).set(
-                                            '$updateRulesOnly', true);
-
-        //  Set the property to the supplied value. Note here how we pass true
-        //  to broadcast a CSSStyleRule change.
-        TP.styleRuleSetProperty(propRule, propName, aValue, true);
-
-        //  Grab the halo and adjust it's size & position in case the property
-        //  we were manipulating affected that.
-        haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-        haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
-        haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
-
-        //  Allow the adjuster editor to update any constructs that it is
-        //  managing with the new value.
-        ourAdjusterEditorTPElem.updateWithValue(aValue);
-    }
+    //  Allow the adjuster editor to update any constructs that it is managing
+    //  with the new value.
+    ourAdjusterEditorTPElem.updateRuleValue(true);
 
     return this;
 });
@@ -815,56 +831,25 @@ function(anInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CSSSlotEditor.Inst.defineMethod('updateRuleWithValue',
-function(aValue) {
+TP.sherpa.CSSSlotEditor.Inst.defineMethod('updateRule',
+function() {
 
     /**
-     * @method updateRuleWithValue
+     * @method updateRule
      * @summary Updates the rule that is associated with the property that the
-     *     editor is (possibly partly) managing with the supplied value. Note
+     *     editor is (possibly partly) managing with the receiver's value. Note
      *     that this method will *not* signal a change when the rule is updated.
-     * @param {String|Number} aValue The value to update the rule with.
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
 
-    var ourAdjusterEditorTPElem,
+    var ourAdjusterEditorTPElem;
 
-        ourInfo,
-        propName,
-        propRule,
+    //  Grab our adjuster editor element.
+    ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
 
-        haloTPElem,
-        haloTargetTPElem;
-
-    //  If the supplied value is real, then update the rule.
-    if (TP.notEmpty(aValue)) {
-
-        //  Grab our adjuster editor element.
-        ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
-
-        //  The 'value' of our adjuster editor contains the information that we
-        //  will manipulate.
-        ourInfo = ourAdjusterEditorTPElem.get('value');
-
-        //  The property name and corresponding CSS rule that contains the
-        //  property are in the info.
-        propName = ourInfo.at('name');
-        propRule = ourInfo.at('rule');
-
-        //  Set the property to the supplied value. Note here how we pass false
-        //  to *not* broadcast a CSSStyleRule change (for now).
-        TP.styleRuleSetProperty(propRule, propName, aValue, false);
-
-        //  Grab the halo and adjust it's size & position in case the property
-        //  we were manipulating affected that.
-        haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-        haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
-        haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
-
-        //  Allow the adjuster editor to update any constructs that it is
-        //  managing with the new value.
-        ourAdjusterEditorTPElem.updateWithValue(aValue);
-    }
+    //  Allow the adjuster editor to update any constructs that it is managing
+    //  with the new value.
+    ourAdjusterEditorTPElem.updateRuleValue(false);
 
     return this;
 });
@@ -992,10 +977,7 @@ function(aSignal) {
 
     this.adjustValue(lastX, currentX, direction);
 
-    //  Grab whatever value the receiver computes that is compatible for a CSS
-    //  rule and update the rule that we're manipulating with that value.
-    val = this.getValueForCSSRule();
-    this.updateRuleWithValue(val);
+    this.updateRule();
 
     //  Reset the last X to whatever we've computed the current X to be.
     this.$set('$lastX', currentX);
@@ -1041,13 +1023,7 @@ function(aSignal) {
 
     setTimeout(
         function() {
-            var val;
-
-            //  Grab whatever value the receiver computes that is compatible for
-            //  a CSS rule and complete updating the rule that we're
-            //  manipulating with that value.
-            val = this.getValueForCSSRule();
-            this.completeUpdatingRuleWithValue(val);
+            this.completeUpdatingRule();
         }.bind(this), 100);
 
     return this;
@@ -1427,7 +1403,10 @@ function(aSignal) {
 
     if (TP.notEmpty(val)) {
         this.get('valuePart').setTextContent(val);
-        this.updateRuleWithValue(val);
+        setTimeout(
+            function() {
+                this.completeUpdatingRule();
+            }.bind(this), 100);
     }
 
     return this;
@@ -1454,7 +1433,7 @@ function(aSignal) {
 
     if (TP.notEmpty(val)) {
         this.get('valuePart').setTextContent(val);
-        this.updateRuleWithValue(val);
+        this.updateRule();
     }
 
     return this;
