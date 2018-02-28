@@ -612,6 +612,8 @@ function(updateRuleSource) {
 
     var val,
 
+        slotEditors,
+
         ourInfo,
         propName,
         propRule,
@@ -923,9 +925,7 @@ function(aSignal) {
         lastX,
         currentX,
 
-        direction,
-
-        val;
+        direction;
 
     //  Grab where the X coordinate was last.
     lastX = this.$get('$lastX');
