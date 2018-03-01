@@ -1790,7 +1790,7 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      * @summary Sets the value of the named configuration parameter. Note that
      *     properties set in this fashion are NOT persistent. To make a property
      *     persistent you must add it to the proper 'rc' file in your app's
-     *     configuration path) or to the tibet.xml file for your application.
+     *     configuration path or to the tibet.xml file for your application.
      * @param {Object} aHash The object dictionary to update.
      * @param {String} aKey The property name to set.
      * @param {Object} aValue The value to assign.
