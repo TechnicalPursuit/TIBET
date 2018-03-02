@@ -14631,6 +14631,7 @@ function(aNode, anObject) {
         case Node.ELEMENT_NODE:
         case Node.DOCUMENT_FRAGMENT_NODE:
 
+            TP.nodeRefreshDescendantDocumentPositions(aNode);
             aNode.textContent = content;
 
             break;
@@ -14640,7 +14641,9 @@ function(aNode, anObject) {
         case Node.PROCESSING_INSTRUCTION_NODE:
         case Node.COMMENT_NODE:
 
+            TP.nodeRefreshDescendantDocumentPositions(aNode);
             aNode.data = content;
+
             break;
 
         case Node.DOCUMENT_NODE:
