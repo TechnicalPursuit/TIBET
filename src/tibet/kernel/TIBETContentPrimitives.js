@@ -110,7 +110,10 @@ function(aString) {
         useGlobalContext,
 
         len,
-        i;
+        i,
+
+        lastNSToken,
+        nextNSToken;
 
     //  TODO: This is a bit cheesy - make TP.$tokenize() smarter or, better yet,
     //  write a new routine to JSONize strings.
@@ -325,6 +328,30 @@ function(aString) {
                 } else {
                     str += val;
                 }
+                break;
+
+            case 'space':
+
+                lastNSToken = lastNonSpaceToken(i);
+                nextNSToken = nextNonSpaceToken(i);
+
+                if (lastNSToken.value === '{' ||
+                    lastNSToken.value === ':' ||
+                    lastNSToken.value === ',' ||
+                    lastNSToken.value === '"') {
+                    break;
+                }
+
+                if (nextNSToken.value === '}' ||
+                    nextNSToken.value === ':' ||
+                    nextNSToken.value === ',' ||
+                    nextNSToken.value === '"') {
+                    break;
+                }
+
+                //  it's a space - leave it alone
+                str += val;
+
                 break;
 
             default:
