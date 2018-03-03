@@ -247,7 +247,7 @@ TP.hc(
                 ownerElem.setAttributeNS(
                         TP.w3.Xmlns.BIND,
                         'bind:' + bindAttrLocalName,
-                        '{' + srcAttr.name + ': ' + val + '}');
+                        '{' + srcAttr.name + ':' + val + '}');
 
                 if (isSingleValued) {
                     ownerElem.setAttributeNS(
@@ -265,9 +265,9 @@ TP.hc(
                 bindAttr.nodeValue =
                     bindAttr.nodeValue.slice(
                         0, bindAttr.nodeValue.lastIndexOf('}')) +
-                    ', ' +
+                    ',' +
                     srcAttr.name +
-                    ': ' +
+                    ':' +
                     val +
                     '}';
                 desugaredAttrsAttr =
@@ -406,7 +406,7 @@ TP.hc(
 
                 ownerElem.setAttributeNode(bindAttr);
 
-                bindAttr.nodeValue = '{' + srcAttr.name + ': ' + val + '}';
+                bindAttr.nodeValue = '{' + srcAttr.name + ':' + val + '}';
 
                 if (isSingleValued) {
                     bindAttr = activeXDoc.createNode(
@@ -432,9 +432,9 @@ TP.hc(
                 bindAttr.nodeValue =
                     bindAttr.nodeValue.slice(
                         0, bindAttr.nodeValue.lastIndexOf('}')) +
-                    ', ' +
+                    ',' +
                     srcAttr.name +
-                    ': ' +
+                    ':' +
                     val +
                     '}';
                 desugaredAttrsAttr =
