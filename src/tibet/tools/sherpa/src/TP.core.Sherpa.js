@@ -3408,11 +3408,22 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  operation (the other nodes - Elements and Text nodes - will
             //  'delete' and 'insert' themselves in two separate operations).
             if (isAttrChange) {
-                TP.elementSetAttribute(currentNode,
-                                        attributeName,
-                                        attributeValue,
-                                        true);
-                shouldMarkDirty = true;
+
+                //  If the attribute was one of the special 'href'/'onclick'
+                //  combinations that we generate on links to 'trap' routing
+                //  accesses, then don't save these attributes.
+                if (attributeName === 'href' && attributeValue === '#') {
+                    //  empty
+                } else if (attributeName === 'onclick' &&
+                            attributeValue.contains('TP.go2(\'#')) {
+                    //  empty
+                } else {
+                    TP.elementSetAttribute(currentNode,
+                                            attributeName,
+                                            attributeValue,
+                                            true);
+                    shouldMarkDirty = true;
+                }
             }
         }
     }
