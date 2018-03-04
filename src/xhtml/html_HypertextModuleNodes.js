@@ -112,7 +112,7 @@ function(aRequest) {
     //  "TP.go2('#')" here - it's a possibility that we might rewrite those
     //  exact expressions.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#\'')) {
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
         return;
     }
 
@@ -206,7 +206,7 @@ function(value) {
     //  "TP.go2('#')" here - it's a possibility that we might rewrite those
     //  exact expressions.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#\'')) {
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
         return;
     }
 
