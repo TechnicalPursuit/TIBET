@@ -3651,7 +3651,7 @@ function() {
         gids;
 
     styleURI = this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
-    if (TP.notValid(styleURI)) {
+    if (TP.notValid(styleURI) || styleURI === TP.NO_RESULT) {
         return true;
     }
 
