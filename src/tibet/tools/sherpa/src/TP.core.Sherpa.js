@@ -3156,6 +3156,14 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                                         tagSrcElem);
                 addresses = originatingAddress.split('.');
 
+                //  Now, because the last address will be the generated span
+                //  that TIBET generated for this desugared text binding, and
+                //  we're going to be removing the originally-authored text node
+                //  from the source document, we need to pop one address off,
+                //  basically ignoring the span.
+                //  The set of addresses will now address the element that was
+                //  the element that the expression was originally placed into.
+                addresses.pop();
             } else {
 
                 //  Now, we need to make sure that our detached node has a
@@ -3233,7 +3241,17 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             if (TP.notEmpty(originatingAddress)) {
                 addresses = originatingAddress.split('.');
 
+                //  Now, if we're processing a desugared text binding, the last
+                //  address will be the text node that we're updating in the DOM
+                //  with the new value and the next to last address will be the
+                //  generated span that TIBET generated for this desugared text
+                //  binding. Therefore, we need to pop two addresses off,
+                //  basically ignoring both the text node and it's wrapping the
+                //  span.
+                //  The set of addresses will now address the element that was
+                //  the element that the expression was originally placed into.
                 if (wasADesugaredTextBinding) {
+                    addresses.pop();
                     addresses.pop();
                 }
             } else {
