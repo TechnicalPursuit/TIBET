@@ -3343,8 +3343,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     bindInfo = updatingAnsTPElem.getBindingInfoFrom(
                                     updatingAnsTPElem.getAttribute('bind:in'));
 
-                    bindExprStr = bindInfo.at('value').at('dataExprs').at(0);
-                    bindExprStr = '[[' + bindExprStr + ']]';
+                    bindExprStr = bindInfo.at('value').at('fullExpr');
 
                     //  Create a new text node and append it to the current node
                     //  in the source DOM (the ancestor of the Text node there)
