@@ -13388,7 +13388,11 @@ function(storageInfo) {
 
         mimeType,
 
-        storageLoc;
+        storageLoc,
+
+        desugaredAttrExprs,
+        entryStr,
+        bindEntries;
 
     result = TP.ac();
 
@@ -13569,6 +13573,49 @@ function(storageInfo) {
                 //  attribute is to grab its 'cssText' property (we also
                 //  lowercase it here to conform to TIBET coding standards).
                 attrValue = TP.elementGetStyleObj(elem).cssText.toLowerCase();
+                break;
+
+            case 'in':
+
+                if (attrPrefix === 'bind') {
+
+                    //  If the element has desugared ACP attribute expressions,
+                    //  then process them back into their original form.
+                    desugaredAttrExprs = TP.elementGetAttribute(
+                            elem, 'tibet:desugaredAttrExprs', true);
+
+                    if (TP.notEmpty(desugaredAttrExprs)) {
+
+                        //  Get all of the attribute names that were desugared.
+                        desugaredAttrExprs = desugaredAttrExprs.split(' ');
+
+                        //  Reconstitute the attribute value (which contains all
+                        //  of the binding entries) into JSON.
+                        entryStr = TP.reformatJSToJSON(attrValue);
+                        bindEntries = TP.json2js(entryStr);
+
+                        //  Iterate over each attribute name/value pair.
+                        /* eslint-disable no-loop-func */
+                        bindEntries.perform(
+                            function(aKVPair) {
+                                var bindAttrName;
+
+                                bindAttrName = aKVPair.first();
+
+                                //  If this binding expression references a
+                                //  desugared attribute, then emit the attribute
+                                //  in its original form.
+                                if (desugaredAttrExprs.contains(bindAttrName)) {
+                                    result.push(' ', bindAttrName, '="',
+                                                aKVPair.last().unquoted(), '"');
+                                }
+                            });
+                        /* eslint-enable no-loop-func */
+
+                        continue;
+                    }
+                }
+
                 break;
 
             default:
