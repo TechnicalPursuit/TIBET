@@ -1192,8 +1192,10 @@ function(targetElement, attributeValue) {
 
             fullExpr = entry;
 
+            //  The prior expression will have trimmed off the first space, but
+            //  we want to preserve it for the full expression.
             if (TP.notEmpty(formatExpr)) {
-                fullExpr += formatExpr;
+                fullExpr += ' ' + formatExpr;
             }
 
             fullExpr = preEntry + '[[' + fullExpr + ']]' + postEntry;
@@ -1254,6 +1256,7 @@ function(targetElement, attributeValue) {
 
         bindEntries.atPut(key, TP.hc('targetAttrName', key,
                                         'transformFunc', transformFunc,
+                                        'fullExpr', fullExpr,
                                         'dataExprs', dataLocs));
     }
 
