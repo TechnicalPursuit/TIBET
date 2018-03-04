@@ -206,6 +206,8 @@ function(aSignal) {
         }
 
         targetTPElem.awaken();
+
+        targetTPElem.refresh();
     } else if (action === TP.DELETE) {
 
         //  If we're deleting an attribute (because the user clicked an 'X'),

@@ -278,6 +278,11 @@ function(aSignal) {
 
         targetTPElem.deaden();
         targetTPElem.awaken();
+
+        if (action === TP.UPDATE) {
+            targetTPElem.refresh();
+        }
+
     } else if (action === TP.DELETE) {
 
         //  TODO: Supporting removing attributes
