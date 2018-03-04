@@ -292,8 +292,13 @@ function(aContent) {
         val = TP.regex.BINDING_STATEMENT_EXTRACT.exec(aContent).at(1);
 
         //  The attribute value will be a binding expression with a single
-        //  aspect, 'value'.
-        attrVal = '{value: ' + val + '}';
+        //  aspect, 'value'. Make sure to quote the expression if there is
+        //  whitespace in the value.
+        if (TP.regex.WHITESPACE.test(val)) {
+            attrVal = '{value: \'[[' + val + ']]\'}';
+        } else {
+            attrVal = '{value: [[' + val + ']]}';
+        }
 
         //  Set the value of the bind:in attribute. Note that we do this to the
         //  native node directly, to avoid any existing binding change machinery
