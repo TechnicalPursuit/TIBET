@@ -3406,7 +3406,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
             //  No other node types except Attribute nodes will have a TP.UPDATE
             //  operation (the other nodes - Elements and Text nodes - will
-            //  'delete' and 'insert' themselves in two separate operations.
+            //  'delete' and 'insert' themselves in two separate operations).
             if (isAttrChange) {
                 TP.elementSetAttribute(currentNode,
                                         attributeName,
