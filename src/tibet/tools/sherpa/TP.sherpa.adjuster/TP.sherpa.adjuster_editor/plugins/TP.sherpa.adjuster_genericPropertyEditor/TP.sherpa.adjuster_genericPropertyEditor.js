@@ -543,7 +543,8 @@ function(aSignal) {
     var namePart,
         name,
 
-        infoTPElem;
+        infoTPElem,
+        info;
 
     if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
         return this;

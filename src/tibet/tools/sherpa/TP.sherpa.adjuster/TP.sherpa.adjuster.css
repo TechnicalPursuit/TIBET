@@ -43,7 +43,7 @@ sherpa|adjuster {
 
     flex-direction: column;
 
-    padding: 5px 1px 5px 1px;
+    padding: 5px 1px;
 }
 
 #Adjuster_Tile > .header {
