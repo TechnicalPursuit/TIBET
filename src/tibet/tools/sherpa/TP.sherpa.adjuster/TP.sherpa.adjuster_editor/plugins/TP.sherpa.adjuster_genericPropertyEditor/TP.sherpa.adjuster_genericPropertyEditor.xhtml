@@ -2,7 +2,7 @@
 
 <sherpa:adjuster_genericPropertyEditor on:mouseenter="ShowHighlight" on:mouseleave="HideHighlight">
     <div class="grid">
-        <div name="propertyName" class="field"><div class="output"><span part="name"/><span class="launchMark" on:mousedown="ShowNameMenu"/></div></div>
+        <div name="propertyName" class="field" on:mouseenter="ShowPropertyInfo" on:mouseleave="HidePropertyInfo"><div class="output"><span part="name"/><span class="launchMark" on:mousedown="ShowNameMenu"/></div></div>
         <div name="propertyValue" class="field"/>
         <div name="propertyRuleSelector" class="field"><span class="input"/></div>
     </div>

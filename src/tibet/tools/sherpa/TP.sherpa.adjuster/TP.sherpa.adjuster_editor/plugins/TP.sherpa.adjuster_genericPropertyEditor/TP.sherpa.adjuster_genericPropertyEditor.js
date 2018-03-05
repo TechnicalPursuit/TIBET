@@ -484,6 +484,97 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('getPropertyInfo',
+function(propertyName) {
+
+    var info;
+
+    info = TP.hc(
+            'position',
+                TP.hc('description', 'Specifies how an element is positioned in a document.')
+    );
+
+    return info.at(propertyName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('HidePropertyInfo',
+function(aSignal) {
+
+    /**
+     * @method handleHidePropertyInfo
+     * @summary Handles notification of when the receiver wants to show the
+     *     property information.
+     * @param {TP.sig.HidePropertyInfo} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    var infoTPElem;
+
+    if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
+        return this;
+    }
+
+    infoTPElem = TP.wrap(aSignal.getOrigin()).get('.info');
+
+    if (TP.isValid(infoTPElem)) {
+        infoTPElem.hide(true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowPropertyInfo',
+function(aSignal) {
+
+    /**
+     * @method handleShowPropertyInfo
+     * @summary Handles notification of when the receiver wants to show the
+     *     property information.
+     * @param {TP.sig.ShowPropertyInfo} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    var namePart,
+        name,
+
+        infoTPElem;
+
+    if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
+        return this;
+    }
+
+    namePart = TP.wrap(aSignal.getDOMTarget()).get('span[part="name"]');
+    if (!TP.isKindOf(namePart, TP.core.UIElementNode)) {
+        return this;
+    }
+
+    name = namePart.getTextContent();
+
+    if (TP.notEmpty(name)) {
+        infoTPElem = TP.wrap(aSignal.getOrigin()).get('.info');
+
+        if (TP.isValid(infoTPElem)) {
+
+            info = this.getPropertyInfo(name);
+
+            if (TP.isValid(info)) {
+                infoTPElem.setTextContent(info.at('description'));
+                infoTPElem.show();
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('hideVisualGuides',
 function() {
 
@@ -1176,8 +1267,12 @@ function(aRequest) {
         return;
     }
 
+    /*
     str = '<span part="value"/>' +
             '<span class="arrowMark" on:mousedown="ShowValueMenu"/>';
+    */
+
+    str = '<span part="value" on:click="ShowValueMenu"/>';
 
     newFrag = TP.xhtmlnode(str);
 

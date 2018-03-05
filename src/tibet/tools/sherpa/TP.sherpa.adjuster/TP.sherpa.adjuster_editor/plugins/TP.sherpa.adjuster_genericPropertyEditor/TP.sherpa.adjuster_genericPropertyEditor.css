@@ -29,8 +29,7 @@ sherpa|adjuster_genericPropertyEditor > .grid {
 
     display: grid;
 
-    grid-template-columns: 30% 30% 30%;
-    grid-gap: 5%;
+    grid-template-columns: 33% 33% 33%;
 }
 
 sherpa|adjuster_genericPropertyEditor div.field {
@@ -82,12 +81,21 @@ sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type=
     visibility: visible;
 }
 
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[part="value"] {
+
+    margin-right: 1px;
+}
+
 sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type="Percentage"] span[part="value"]:hover,
 sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[value_type="Dimension"] span[part="value"]:hover {
 
-    text-decoration: underline;
-
     cursor: ew-resize;
+}
+
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"]:hover span[part],
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"]:hover span.arrowMark {
+
+    outline: dotted 1px black;
 }
 
 sherpa|adjuster_genericPropertyEditor div.info {
@@ -105,11 +113,13 @@ sherpa|adjuster_genericPropertyEditor div.info {
 
 span[value_type] {
 
-    white-space: no-wrap;
+    white-space: nowrap;
+    margin-right: 2px;
 }
 
+/*
 span[value_type]:not([value_type="Identifier"]) {
 
     margin-right: 10px;
 }
-
+*/
