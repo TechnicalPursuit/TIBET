@@ -138,7 +138,10 @@ function(aSignal) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    var modelURI,
+    var tile,
+        tileIsHidden,
+
+        modelURI,
         value,
 
         ruleInfo,
@@ -159,6 +162,17 @@ function(aSignal) {
     //  TP.sig.MutationStylePropertyChange or TP.sig.MutationStyleRuleChange)
     //  then exit here. We only want to process 'whole stylesheet' changes.
     if (TP.isValid(aSignal.at('mutatedRule'))) {
+        return this;
+    }
+
+    //  If the adjuster tile is closed, then exit here.
+    tile = TP.byId('Adjuster_Tile', this.getNativeWindow());
+    if (TP.notValid(tile)) {
+        return this;
+    }
+
+    tileIsHidden = TP.bc(tile.getAttribute('hidden'));
+    if (tileIsHidden) {
         return this;
     }
 
