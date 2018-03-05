@@ -11295,7 +11295,9 @@ function(aFunction, copySourceInfo) {
      * @returns {Function} The new method.
      */
 
-    var track,
+    var obj,
+
+        track,
         owner,
 
         isHandler,
@@ -11316,12 +11318,9 @@ function(aFunction, copySourceInfo) {
                             'Cannot replace non-methods');
     }
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.replaceWith(aFunction, copySourceInfo);
-    }
+    obj = TP.getRealFunc(this);
 
-    track = this[TP.TRACK];
+    track = obj[TP.TRACK];
 
     //  If the track is not either 'Type' or 'Inst', then we just use the owner.
     if (track === TP.GLOBAL_TRACK ||
@@ -11331,11 +11330,11 @@ function(aFunction, copySourceInfo) {
         track === TP.TYPE_LOCAL_TRACK ||
         track === TP.LOCAL_TRACK) {
 
-        owner = this[TP.OWNER];
+        owner = obj[TP.OWNER];
     } else {
         //  Otherwise, we qualify the owner with the 'Type' or 'Inst' prototype
         //  object.
-        owner = this[TP.OWNER][this[TP.TRACK]];
+        owner = obj[TP.OWNER][obj[TP.TRACK]];
     }
 
     //  If the caller hasn't supplied false to the copySourceInfo parameter
@@ -11343,21 +11342,21 @@ function(aFunction, copySourceInfo) {
     //  this because when we redefine the method below, this information will be
     //  lost.
     if (TP.notFalse(copySourceInfo)) {
-        loadPath = this[TP.LOAD_PATH];
-        sourcePath = this[TP.SOURCE_PATH];
-        loadPackage = this[TP.LOAD_PACKAGE];
-        loadConfig = this[TP.LOAD_CONFIG];
+        loadPath = obj[TP.LOAD_PATH];
+        sourcePath = obj[TP.SOURCE_PATH];
+        loadPackage = obj[TP.LOAD_PACKAGE];
+        loadConfig = obj[TP.LOAD_CONFIG];
     }
 
-    isHandler = /^handle/.test(this.getName());
+    isHandler = /^handle/.test(obj.getName());
 
     //  Redefine the method.
     try {
         newMethod = owner.defineMethod(
-                                this.getName(),
+                                obj.getName(),
                                 aFunction,
-                                this[TP.DESCRIPTOR],
-                                this[TP.DISPLAY],
+                                obj[TP.DESCRIPTOR],
+                                obj[TP.DISPLAY],
                                 isHandler);
     } catch (e) {
         return this.raise(
@@ -11394,7 +11393,9 @@ function(newSourceText, copySourceInfo) {
      * @returns {Function} The new method.
      */
 
-    var functionStartMatcher,
+    var obj,
+
+        functionStartMatcher,
         startResults,
 
         srcTextStart,
@@ -11408,11 +11409,7 @@ function(newSourceText, copySourceInfo) {
         return null;
     }
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.replaceWithSourceText(newSourceText,
-                                                    copySourceInfo);
-    }
+    obj = TP.getRealFunction(this);
 
     //  Note that the source text might have been supplied with a 'method head'
     //  (i.e. 'Foo.Inst.defineMethod') and 'method tail' (');'). We want to
@@ -11430,7 +11427,7 @@ function(newSourceText, copySourceInfo) {
 
     //  Call the machinery defined above to replace the method and return the
     //  newly defined replacement.
-    return this.replaceWith($$newinst, copySourceInfo);
+    return obj.replaceWith($$newinst, copySourceInfo);
 });
 
 //  ------------------------------------------------------------------------

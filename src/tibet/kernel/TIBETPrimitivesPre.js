@@ -2291,18 +2291,17 @@ TP.functionNeedsCallee = function(aFunction, aName) {
      * @returns {Boolean} True if the function should be patched.
      */
 
-    var str,
+    var obj,
+
+        str,
         callee,
         func,
         chunk,
         result;
 
-    //  In case this Function is bound...
-    if (TP.isFunction(aFunction.$realFunc)) {
-        return TP.functionNeedsCallee(aFunction.$realFunc, aName);
-    }
+    obj = TP.getRealFunction(aFunction);
 
-    str = '' + aFunction;
+    str = '' + obj;
 
     //  No mention of a callee-qualifying snippet? We're in the clear.
     callee = TP.regex.NEEDS_CALLEE.exec(str);
@@ -7359,11 +7358,19 @@ function(anObject) {
      * @returns {String} The load path where the receiver can be found.
      */
 
+    var obj;
+
     if (TP.notValid(anObject)) {
         return;
     }
 
-    return anObject[TP.SOURCE_PATH];
+    obj = anObject;
+
+    if (TP.isFunction(obj)) {
+        obj = TP.getRealFunction(obj);
+    }
+
+    return obj[TP.SOURCE_PATH];
 });
 
 //  ------------------------------------------------------------------------

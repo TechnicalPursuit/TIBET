@@ -774,12 +774,11 @@ function() {
      *     function.
      */
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.length;
-    }
+    var obj;
 
-    return this.length;
+    obj = TP.getRealFunction(this);
+
+    return obj.length;
 });
 
 //  ------------------------------------------------------------------------
@@ -935,16 +934,15 @@ function() {
      * @returns {String} The comment text.
      */
 
-    var text,
+    var obj,
+
+        text,
         tokens,
         comment;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getCommentText();
-    }
+    obj = TP.getRealFunction(this);
 
-    text = this.toString();
+    text = obj.toString();
     tokens = TP.$tokenize(text);
 
     comment = tokens.detect(
@@ -980,7 +978,9 @@ function(newMethodText, loadedFromSourceFile) {
      *     source file (effectively updating it).
      */
 
-    var path,
+    var obj,
+
+        path,
         url,
         str,
         matcher,
@@ -992,10 +992,7 @@ function(newMethodText, loadedFromSourceFile) {
         newContent,
         patch;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getMethodPatch(newMethodText);
-    }
+    obj = TP.getRealFunction(this);
 
     if (TP.notValid(TP.extern.JsDiff)) {
         TP.ifWarn() ?
@@ -1004,7 +1001,7 @@ function(newMethodText, loadedFromSourceFile) {
     }
 
     //  Get the original source url...
-    path = TP.objectGetSourcePath(this);
+    path = TP.objectGetSourcePath(obj);
     if (TP.isEmpty(path)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source path not found.') :
@@ -1038,21 +1035,21 @@ function(newMethodText, loadedFromSourceFile) {
         newContent = currentContent + newText;
     } else {
         //  Get the current method's body text...
-        str = TP.src(this);
+        str = TP.src(obj);
 
         //  If there's a trailing ';', then we want to slice it off. We may be
         //  trying to match in a place where there's a '})', but the Function is
         //  standing alone and is generating these ';'s.
         if (/\};$/.test(str)) {
             str = str.slice(0, -1);
-            if (TP.isValid(this[TP.OWNER])) {
+            if (TP.isValid(obj[TP.OWNER])) {
                 str += ');';
             }
         }
 
         if (/\};$/.test(newText)) {
             newText = newText.slice(0, -1);
-            if (TP.isValid(this[TP.OWNER])) {
+            if (TP.isValid(obj[TP.OWNER])) {
                 newText += ');';
             }
         }
@@ -1101,21 +1098,20 @@ function() {
      *     receiver in TIBET.
      */
 
-    var owner,
+    var obj,
+
+        owner,
         track,
         descriptor,
 
         str,
         ownerName;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getMethodSourceHead();
-    }
+    obj = TP.getRealFunction(this);
 
-    owner = this[TP.OWNER];
-    track = this[TP.TRACK];
-    descriptor = this[TP.DESCRIPTOR];
+    owner = obj[TP.OWNER];
+    track = obj[TP.TRACK];
+    descriptor = obj[TP.DESCRIPTOR];
 
     str = TP.ac();
 
@@ -1153,7 +1149,7 @@ function() {
                 str.push(ownerName, '.', track, '.defineMethod(');
             }
 
-            str.push('\'', this.getName() + '\',\n');
+            str.push('\'', obj.getName() + '\',\n');
         }
     }
 
@@ -1173,16 +1169,15 @@ function() {
      *     receiver in TIBET.
      */
 
-    var descriptor,
+    var obj,
+
+        descriptor,
 
         str;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getMethodSourceTail();
-    }
+    obj = TP.getRealFunction(this);
 
-    descriptor = this[TP.DESCRIPTOR];
+    descriptor = obj[TP.DESCRIPTOR];
 
     str = TP.ac();
 
@@ -1236,7 +1231,9 @@ function() {
      *     index of each occurrence of the literal.
      */
 
-    var text,
+    var obj,
+
+        text,
         tokens,
 
         funcIndexes,
@@ -1247,12 +1244,9 @@ function() {
         startPos,
         endPos;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.$getFunctionLiteralIndexes();
-    }
+    obj = TP.getRealFunction(this);
 
-    text = this.toString();
+    text = obj.toString();
 
     //  Tokenize our source String - it's the only way ;-).
     tokens = TP.$tokenize(text);
@@ -1318,19 +1312,23 @@ function() {
      * @returns {String} The method name string.
      */
 
-    var id,
+    var obj,
+
+        id,
         owner,
         track,
         name;
 
+    obj = TP.getRealFunction(this);
+
     id = '';
 
-    if (TP.isValid(this[TP.OWNER])) {
-        owner = TP.name(this[TP.OWNER]);
+    if (TP.isValid(obj[TP.OWNER])) {
+        owner = TP.name(obj[TP.OWNER]);
     }
 
-    if (TP.isValid(this[TP.TRACK])) {
-        track = this[TP.TRACK];
+    if (TP.isValid(obj[TP.TRACK])) {
+        track = obj[TP.TRACK];
         switch (track) {
             case TP.TYPE_TRACK:
                 /* fall through */
@@ -1342,7 +1340,7 @@ function() {
         }
     }
 
-    name = TP.name(this);
+    name = TP.name(obj);
 
     id += owner ? owner + '.' : '';
     id += track ? track + '.' : '';
@@ -1363,17 +1361,16 @@ function() {
      * @returns {Array} The formal parameter names to this function.
      */
 
-    var text,
+    var obj,
+
+        text,
         params,
         tokens,
         comments;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getParameterNames();
-    }
+    obj = TP.getRealFunction(this);
 
-    text = this.toString();
+    text = obj.toString();
     params = text.slice(text.indexOf('(') + 1, text.indexOf(')'));
 
     //  Some people put comments in their parameter lists so we might as well
@@ -1389,7 +1386,7 @@ function() {
                     });
 
     if (TP.notEmpty(comments)) {
-        TP.warn('Comment(s) in parameter list for ' + this.getName());
+        TP.warn('Comment(s) in parameter list for ' + obj.getName());
     }
 
     tokens = tokens.filter(
@@ -1415,15 +1412,14 @@ function() {
      * @returns {String} The signature string.
      */
 
-    var str;
+    var obj,
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getSignature();
-    }
+        str;
 
-    str = 'function ' + this.getName() +
-            '(' + this.getParameterNames().join(', ') + ')';
+    obj = TP.getRealFunction(this);
+
+    str = 'function ' + obj.getName() +
+            '(' + obj.getParameterNames().join(', ') + ')';
 
     return str;
 });
@@ -1440,15 +1436,14 @@ function() {
      * @returns {String} The source text.
      */
 
-    var text,
+    var obj,
+
+        text,
         tokens;
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getSourceText();
-    }
+    obj = TP.getRealFunction(this);
 
-    text = this.toString();
+    text = obj.toString();
     tokens = TP.$tokenize(text);
     tokens = tokens.filter(
                     function(token) {
@@ -5286,7 +5281,9 @@ function(aFilterName, aLevel) {
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
-    var lvl,
+    var obj,
+
+        lvl,
 
         src,
 
@@ -5300,17 +5297,14 @@ function(aFilterName, aLevel) {
         return TP.NO_SOURCE_REP;
     }
 
-    //  In case this Function is bound
-    if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.asSource();
-    }
-
     //  A custom TIBET type
     if (TP.isType(this)) {
         return TP.join(this.getSupertype().getName(),
                         '.defineSubtype(\'', this.getNamespacePrefix(), ':',
                         this.getLocalName(), '\');');
     }
+
+    obj = TP.getRealFunction(this);
 
     lvl = TP.notDefined(aLevel) ?
             TP.sys.cfg('stack.max_descent') :
@@ -5321,26 +5315,26 @@ function(aFilterName, aLevel) {
     }
 
     if (TP.sys.cfg('tibet.space_after_function_name') === true) {
-        src = this.asString();
+        src = obj.asString();
     } else {
         //  NB: We're only interested in the first occurrence of the 'function'
         //  keyword here - it's the only one that's reconstructed from the
         //  system - the rest of the Function source is brought in as-is on all
         //  platforms we care about.
-        src = this.asString().replace('function (', 'function(');
+        src = obj.asString().replace('function (', 'function(');
     }
 
     str = TP.ac();
 
-    if (TP.isMethod(this)) {
+    if (TP.isMethod(obj)) {
 
         //  Generate the 'method header' and 'method tail' - this gives us a
         //  String that is a representation of the canonical TIBET way to add
         //  methods to the system. Note that this produces a representation of
         //  the head which *must* be followed with a Function statement (i.e.
         //  'function() {...}') and the method tail.
-        head = this.getMethodSourceHead();
-        tail = this.getMethodSourceTail();
+        head = obj.getMethodSourceHead();
+        tail = obj.getMethodSourceTail();
 
         //  Add that head, our source and that tail to the representation.
         str.push(head, src, tail);
