@@ -549,6 +549,10 @@ function() {
 
         virtualScroller;
 
+    if (TP.isValid(this.get('$virtualScroller'))) {
+        return this;
+    }
+
     //  The content that will actually be scrolled.
     scrollingContent = this.getSelectionContainer();
 
