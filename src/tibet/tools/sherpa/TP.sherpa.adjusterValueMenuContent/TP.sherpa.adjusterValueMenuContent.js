@@ -72,6 +72,12 @@ function(aSignal) {
     var targetElem,
         val;
 
+    //  If not even part of ourself is visible (the 'true' here allows for
+    //  partial visiblity), then just return.
+    if (!this.isVisible(true)) {
+        return this;
+    }
+
     //  Grab the new 'DOM target' element, which will be the lozenge that the
     //  user is highlighting.
     targetElem = aSignal.getDOMTarget();
