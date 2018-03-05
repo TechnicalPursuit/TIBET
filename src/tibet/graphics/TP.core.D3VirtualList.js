@@ -763,7 +763,7 @@ TP.extern.d3.VirtualScroller = function() {
                         rowSelection = container.selectAll(rowSelector).
                                         data(newData, dataid);
 
-                        rowSelection.exit().call(exit).remove();
+                        rowSelection.exit().call(exit);
 
                         rowSelection.enter().call(enter);
                         rowSelection.order();
