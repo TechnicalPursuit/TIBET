@@ -2295,7 +2295,7 @@ TP.functionNeedsCallee = function(aFunction, aName) {
 
         str,
         callee,
-        func,
+        funcStmt,
         chunk,
         result;
 
@@ -2329,8 +2329,8 @@ TP.functionNeedsCallee = function(aFunction, aName) {
 
     //  find first mention of 'function' after the opening one. if that's after
     //  the index to callee this one is before any possible embedded functions.
-    func = str.indexOf('function');
-    if (func === TP.NOT_FOUND || callee.index < func) {
+    funcStmt = str.indexOf('function');
+    if (funcStmt === TP.NOT_FOUND || callee.index < funcStmt) {
         return true;
     }
 
