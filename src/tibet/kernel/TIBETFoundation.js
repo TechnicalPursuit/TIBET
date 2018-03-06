@@ -7705,6 +7705,8 @@ function() {
         $$funcCopy,
         realFunc;
 
+    //  NB: We don't use TP.getRealFunction() here, since we're not interested
+    //  in any trait '$resolutionMethod' slots.
     realFunc = this.$realFunc || this;
 
     //  track number of copies
