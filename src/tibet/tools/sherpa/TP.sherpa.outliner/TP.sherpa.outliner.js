@@ -492,6 +492,7 @@ function(aSignal) {
             break;
 
         case 'dom_node':
+        case 'dom_node_copy':
 
             sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
                                                 get('currentTargetTPElem');
@@ -674,6 +675,18 @@ function(aSignal) {
                     //  node into it at the insertion position determined by the
                     //  user and that node should be reparented.
                     TP.wrap(dndTargetElem).sherpaDidReparentNode(
+                                            dndTargetElem,
+                                            this.get('insertionPosition'));
+
+                    break;
+
+                case 'dom_node_copy':
+
+                    //  Message the drop target that we dropped a copy of an
+                    //  existing DOM node into it at the insertion position
+                    //  determined by the user and that node should be copied
+                    //  into that spot.
+                    TP.wrap(dndTargetElem).sherpaDidCopyNodeInto(
                                             dndTargetElem,
                                             this.get('insertionPosition'));
 
