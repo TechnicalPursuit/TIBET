@@ -913,7 +913,7 @@ function(insertionPointElement, insertionPosition) {
         TP.nodeInsertContent(insertionPointElement,
                                 TP.unwrap(newTPElem),
                                 insertionPosition);
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -962,7 +962,7 @@ function(insertionPointElement, insertionPosition) {
                                 TP.unwrap(haloTargetTPElem),
                                 insertionPosition);
 
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });
