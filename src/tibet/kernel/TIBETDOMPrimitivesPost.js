@@ -662,10 +662,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
 
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
         //  Make sure to clone this content since we're going to be manipulating
         //  it below and don't want to modify the original.
         nodeContent = TP.nodeCloneNode(nodeContent, true);
@@ -683,6 +679,14 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Set the TIBET flag that says we're "document.write()ing" (we are
@@ -4826,11 +4830,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
     } else if (TP.isString(theContent)) {
         //  Convert any entities to literals, since the caller assumed that they
         //  could pass entities, but this may create a Text node which will want
@@ -4849,6 +4848,14 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Based on the value of the position, we insert the node at the
@@ -5002,11 +5009,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
     } else if (TP.isString(theContent)) {
 
         //  Convert any entities to literals, since the caller assumed that they
@@ -5026,6 +5028,14 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Before we remove anElement from its parent, we capture its 'gid' for
@@ -5124,11 +5134,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
     } else if (TP.isString(theContent)) {
 
         //  Convert any entities to literals, since the caller assumed that they
@@ -5148,6 +5153,14 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Clear out the element's existing content.
@@ -5669,10 +5682,6 @@ function(aNode, newNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -5725,6 +5734,14 @@ function(aNode, newNode, shouldAwake) {
 
     //  Grab the current number of children
     childNodeCount = targetNode.childNodes.length;
+
+    //  Before we move the importedContent, if it's not detached, we stamp it
+    //  with its previous position. That way, when it detaches from its current
+    //  DOM, other machinery will know where it came from.
+    if (!TP.nodeIsDetached(importedContent)) {
+        importedContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                            importedContent);
+    }
 
     try {
         //  Append the new content. This will (or should) change the number
@@ -6347,10 +6364,6 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -6387,6 +6400,14 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
                                 TP.str(childContent)) : 0;
             }
 
+            //  Before we move the firstElement, if it's not detached, we stamp
+            //  it with its previous position. That way, when it detaches from
+            //  its current DOM, other machinery will know where it came from.
+            if (!TP.nodeIsDetached(firstElement)) {
+                firstElement[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                firstElement);
+            }
+
             return TP.nodeAppendChild(aNode, firstElement, shouldAwake);
         }
     }
@@ -6398,6 +6419,15 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
     //  case the new node is just appended.
 
     if (!targetNode.hasChildNodes() || TP.notValid(insertionPointNode)) {
+
+        //  Before we move the childContent, if it's not detached, we stamp it
+        //  with its previous position. That way, when it detaches from its
+        //  current DOM, other machinery will know where it came from.
+        if (!TP.nodeIsDetached(childContent)) {
+            childContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                childContent);
+        }
+
         return TP.nodeAppendChild(targetNode, childContent, shouldAwake);
     }
 
@@ -6420,6 +6450,14 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
 
     if (awakenContent || TP.isFragment(importedContent)) {
         start = TP.nodeGetChildIndex(targetNode, insertionPointNode);
+    }
+
+    //  Before we move the importedContent, if it's not detached, we stamp it
+    //  with its previous position. That way, when it detaches from its current
+    //  DOM, other machinery will know where it came from.
+    if (!TP.nodeIsDetached(importedContent)) {
+        importedContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                            importedContent);
     }
 
     try {
@@ -6521,10 +6559,6 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                     TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
-
-    //  Clear out any previous position information that might have come from
-    //  this content being in another DOM tree.
-    content[TP.PREVIOUS_POSITION] = null;
 
     switch (aNode.nodeType) {
         case Node.ELEMENT_NODE:
@@ -6900,10 +6934,6 @@ function(aNode, newNode, oldNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -6968,9 +6998,12 @@ function(aNode, newNode, oldNode, shouldAwake) {
         start = TP.nodeGetChildIndex(targetNode, oldNode);
     }
 
-    //  Capture the position old node in the document and store it as the
-    //  'previous position'
-    oldNode[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(oldNode);
+    //  Before we move the oldNode, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(oldNode)) {
+        oldNode[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(oldNode);
+    }
 
     try {
         //  Replace the new content in. This will (or should) change the
