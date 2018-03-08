@@ -5907,11 +5907,6 @@ function(aNode, otherNode) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    //  Normalize the nodes before comparing them - this will collapse Text
-    //  nodes so that we get an accurate count of child nodes.
-    TP.nodeNormalize(aNode);
-    TP.nodeNormalize(otherNode);
-
     //  In browsers that implement the W3C's DOM Level 3 'isEqualNode' call,
     //  we can just leverage that.
 
