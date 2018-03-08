@@ -3141,7 +3141,9 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             TP.elementHasAttribute(
                 mutatedElem, 'tibet:desugaredTextBinding');
 
-        if (TP.nodeIsDetached(mutatedNode)) {
+        if (TP.nodeIsDetached(mutatedNode) ||
+            (operation === TP.DELETE &&
+                TP.notEmpty(mutatedNode[TP.PREVIOUS_POSITION]))) {
 
             //  If mutatedNode was a Text node that was a desugared text
             //  binding, then we normalize the mutatedElem (which will be the
