@@ -23,9 +23,6 @@
 <config id="full">
     <config ref="base"/>
 
-    <config ref="google"/>
-    <config ref="amazon"/>
-
     <config ref="xctrls"/>
 
     <config ref="svg" unless="ie"/>
@@ -47,37 +44,6 @@
     <script src="ev/TP.ev.info.js"/>
     <script src="ev/TP.ev.listener.js"/>
     <script src="ev/TP.ev.script.js"/>
-</config>
-
-<config id="amazon">
-    <script src="amazon/services/s3/TP.sig.AmazonS3Request.js"/>
-    <script src="amazon/services/s3/TP.sig.AmazonS3Response.js"/>
-    <script src="amazon/services/s3/TP.amazon.AmazonS3Service.js"/>
-    <script src="amazon/services/s3/TP.amazon.AmazonS3Handler.js"/>
-
-    <script src="amazon/services/simpledb/TP.sig.AmazonSimpleDBRequest.js"/>
-    <script src="amazon/services/simpledb/TP.sig.AmazonSimpleDBResponse.js"/>
-    <script src="amazon/services/simpledb/TP.amazon.AmazonSimpleDBService.js"/>
-    <script src="amazon/services/simpledb/TP.amazon.AmazonSimpleDBHandler.js"/>
-</config>
-
-<config id="google">
-    <script src="google/TP.google.Element.js"/>
-
-    <script src="google/services/TP.sig.GoogleResponse.js"/>
-    <script src="google/services/TP.sig.GoogleRequest.js"/>
-    <script src="google/services/TP.google.GoogleService.js"/>
-
-    <script src="google/services/docs/TP.sig.GoogleDocsRequest.js"/>
-    <script src="google/services/docs/TP.sig.GoogleDocsResponse.js"/>
-    <script src="google/services/docs/TP.google.GoogleDocsService.js"/>
-    <script src="google/services/docs/TP.google.GoogleDocsHandler.js"/>
-
-    <script src="google/services/contacts/TP.sig.GoogleContactsResponse.js"/>
-    <script src="google/services/contacts/TP.sig.GoogleContactsRequest.js"/>
-    <script src="google/services/contacts/TP.google.GoogleContactsService.js"/>
-
-    <script src="google/services/search/TP.google.GoogleSearchData.js"/>
 </config>
 
 <config id="html">
