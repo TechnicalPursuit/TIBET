@@ -584,10 +584,10 @@ TP.hc(
                                     TP.warn('Declaring missing prefix: ' +
                                             aPrefix +
                                             ' as: ' +
-                                            'urn:temp:' +
+                                            'urn:tmp:' +
                                             aPrefix) : 0;
                                 TP.w3.Xmlns.registerNSInfo(
-                                    'urn:temp:' + aPrefix,
+                                    'urn:tmp:' + aPrefix,
                                     TP.hc('prefix', aPrefix));
                             });
 
@@ -766,10 +766,10 @@ TP.hc(
                                     TP.warn('Declaring missing prefix: ' +
                                             aPrefix +
                                             ' as: ' +
-                                            'urn:temp:' +
+                                            'urn:tmp:' +
                                             aPrefix) : 0;
                                 TP.w3.Xmlns.registerNSInfo(
-                                    'urn:temp:' + aPrefix,
+                                    'urn:tmp:' + aPrefix,
                                     TP.hc('prefix', aPrefix));
                             });
 
@@ -934,10 +934,10 @@ TP.hc(
                                     TP.warn('Declaring missing prefix: ' +
                                             aPrefix +
                                             ' as: ' +
-                                            'urn:temp:' +
+                                            'urn:tmp:' +
                                             aPrefix) : 0;
                                 TP.w3.Xmlns.registerNSInfo(
-                                    'urn:temp:' + aPrefix,
+                                    'urn:tmp:' + aPrefix,
                                     TP.hc('prefix', aPrefix));
                             });
 
