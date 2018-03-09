@@ -1,40 +1,26 @@
 //  ========================================================================
-//  TP.tooltiptest
+//  TP.tmp.TooltipTestContent
 //  ========================================================================
 
 /**
- * @type {Namespace}
- * @summary Defines namespace-level objects and functionality for the project.
- */
-
-TP.defineNamespace('TP.tooltiptest');
-
-TP.w3.Xmlns.registerNSInfo('urn:app:tooltiptest',
-    TP.hc('prefix', 'tooltiptest'));
-
-//  ========================================================================
-//  TP.tooltiptest.TooltipTestContent
-//  ========================================================================
-
-/**
- * @type {TP.tooltiptest.TooltipTestContent}
- * @summary TP.tooltiptest.TooltipTestContent
+ * @type {TP.tmp.TooltipTestContent}
+ * @summary TP.tmp.TooltipTestContent
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('tooltiptest.TooltipTestContent');
+TP.core.CompiledTag.defineSubtype('tmp.TooltipTestContent');
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
-TP.tooltiptest.TooltipTestContent.defineAttribute('styleURI', TP.NO_RESULT);
-TP.tooltiptest.TooltipTestContent.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tmp.TooltipTestContent.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tmp.TooltipTestContent.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tooltiptest.TooltipTestContent.Type.defineMethod('tagCompile',
+TP.tmp.TooltipTestContent.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -55,10 +41,10 @@ function(aRequest) {
     }
 
     newElem = TP.xhtmlnode(
-    '<div tibet:tag="tooltiptest:TooltipTestContent"' +
+    '<div tibet:tag="tmp:TooltipTestContent"' +
             ' class="type_test_content">' +
         '<h3>' +
-            'A tooltip from tooltiptest:TooltipTestContent' +
+            'A tooltip from tmp:TooltipTestContent' +
         '</h3>' +
     '</div>');
 
