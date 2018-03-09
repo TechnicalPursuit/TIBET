@@ -328,15 +328,15 @@
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello1.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello2.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello3.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello4.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello5.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello6.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello7.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hellonested.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hellonestedvars.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello1_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello2_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello3_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello4_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello5_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello6_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello7_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hellonested_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hellonestedvars_templatetest.xhtml.js"/>
 </config>
 
 </package>

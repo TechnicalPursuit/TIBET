@@ -464,7 +464,7 @@ function() {
 
                 //  Check the attributes
                 test.assert.hasAttribute(contentElem, 'noNSAttr');
-                test.assert.hasAttribute(contentElem, 'templatetest:attr1');
+                test.assert.hasAttribute(contentElem, 'tmp:attr1');
                 test.assert.hasAttribute(contentElem, 'html:attr2');
 
                 test.assert.isEmpty(
@@ -473,8 +473,8 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(
-                            contentElem, 'templatetest:attr1')),
-                    'urn:test:templatetest');
+                            contentElem, 'tmp:attr1')),
+                    'urn:tibet:tmp');
                 test.assert.isEqualTo(
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(contentElem, 'html:attr2')),
@@ -533,7 +533,7 @@ function() {
 
                 //  Check the attributes
                 test.assert.hasAttribute(contentElem, 'noNSAttr');
-                test.assert.hasAttribute(contentElem, 'templatetest:attr1');
+                test.assert.hasAttribute(contentElem, 'tmp:attr1');
                 test.assert.hasAttribute(contentElem, 'html:attr2');
 
                 test.assert.isEmpty(
@@ -542,8 +542,8 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(
-                            contentElem, 'templatetest:attr1')),
-                    'urn:test:templatetest');
+                            contentElem, 'tmp:attr1')),
+                    'urn:tibet:tmp');
                 test.assert.isEqualTo(
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(contentElem, 'html:attr2')),
@@ -677,7 +677,7 @@ function() {
                 //  The content of the element should be outer content of the
                 //  element itself, but uppercased after it ran through the
                 //  custom element template.
-                correctVal = /<TEMPLATETEST:HELLO6.*XMLNS:TEMPLATETEST="URN:TEST:TEMPLATETEST".*ID="TEXTRESULTS">\{\{\$TAG.OUTERCONTENT\}\}<\/TEMPLATETEST:HELLO6>/;
+                correctVal = /<TMP:HELLO6_TEMPLATETEST.*XMLNS:TMP="URN:TIBET:TMP".*ID="TEXTRESULTS">\{\{\$TAG.OUTERCONTENT\}\}<\/TMP:HELLO6_TEMPLATETEST>/;
                 testVal = TP.nodeGetTextContent(contentElem).trim();
 
                 test.assert.matches(
@@ -687,7 +687,7 @@ function() {
                 contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults', windowContext, false));
                 test.assert.isElement(contentElem);
 
-                correctVal = 'TEMPLATETEST:HELLO6';
+                correctVal = 'TMP:HELLO6_TEMPLATETEST';
                 testVal = TP.elementGetAttribute(contentElem, 'templateattr', true);
 
                 test.assert.isEqualTo(
@@ -755,7 +755,7 @@ function() {
                     testVal,
                     correctVal);
 
-                correctVal = /.*TIBET:TAG="TEMPLATETEST:HELLO6".*/;
+                correctVal = /.*TIBET:TAG="TMP:HELLO6_TEMPLATETEST".*/;
 
                 test.assert.matches(
                     testVal,
@@ -784,7 +784,7 @@ function() {
                 contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults', windowContext, false));
                 test.assert.isElement(contentElem);
 
-                correctVal = 'TEMPLATETEST:HELLO6';
+                correctVal = 'TMP:HELLO6_TEMPLATETEST';
                 testVal = TP.elementGetAttribute(contentElem, 'templateattr', true);
 
                 test.assert.isEqualTo(
@@ -828,7 +828,7 @@ function() {
                 //  The content of the element should be outer content of the
                 //  element itself, but uppercased after it ran through the
                 //  custom element template.
-                correctVal = /<TEMPLATETEST:HELLO7.*XMLNS:TEMPLATETEST="URN:TEST:TEMPLATETEST".*ID="TEXTRESULTS">\{\{\$TAG.OUTERCONTENT\}\}<\/TEMPLATETEST:HELLO7>/;
+                correctVal = /<TMP:HELLO7_TEMPLATETEST.*XMLNS:TMP="URN:TIBET:TMP".*ID="TEXTRESULTS">\{\{\$TAG.OUTERCONTENT\}\}<\/TMP:HELLO7_TEMPLATETEST>/;
                 testVal = TP.nodeGetTextContent(contentElem).trim();
 
                 test.assert.matches(
@@ -840,7 +840,7 @@ function() {
                         TP.byId('attrResults', windowContext, false), true, false);
                 test.assert.isElement(contentElem);
 
-                correctVal = 'templatetest:hello7';
+                correctVal = 'tmp:hello7_templatetest';
                 testVal = TP.elementGetAttribute(contentElem, 'nestedtemplateattr', true);
 
                 test.assert.isEqualTo(
@@ -908,7 +908,7 @@ function() {
                     testVal,
                     correctVal);
 
-                correctVal = /.*TIBET:TAG="TEMPLATETEST:HELLO7".*/;
+                correctVal = /.*TIBET:TAG="TMP:HELLO7_TEMPLATETEST".*/;
 
                 test.assert.matches(
                     testVal,
@@ -939,7 +939,7 @@ function() {
                         TP.byId('attrResults', windowContext, false), true, false);
                 test.assert.isElement(contentElem);
 
-                correctVal = 'templatetest:hello7';
+                correctVal = 'tmp:hello7_templatetest';
                 testVal = TP.elementGetAttribute(contentElem, 'nestedtemplateattr', true);
 
                 test.assert.isEqualTo(

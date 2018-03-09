@@ -114,18 +114,16 @@
 <config id="templating">
     <script src="~lib_test/src/tibet/templating/TP.core.CollectionNode_Tests.js" />
 
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello1_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello2_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello3_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello4_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello5_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello6_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello7_templatetest.js" />
 
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello1.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello2.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello3.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello4.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello5.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello6.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello7.js" />
-
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hellonested.js" />
-    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hellonestedvars.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hellonested_templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.tmp.hellonestedvars_templatetest.js" />
 </config>
 
 <config id="data">

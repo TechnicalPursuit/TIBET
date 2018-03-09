@@ -772,6 +772,10 @@ TP.sys.hasKernel(true);
 TP.defineNamespace('TP.tmp');
 /* eslint-enable no-unused-vars */
 
+TP.w3.Xmlns.registerNSInfo(
+    'urn:tibet:tmp',
+    TP.hc('prefix', 'tmp'));
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
