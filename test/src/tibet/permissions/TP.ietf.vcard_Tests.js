@@ -9,15 +9,15 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.vcard.vcard
+//  TP.ietf.vcard
 //  ========================================================================
 
-TP.vcard.vcard.Inst.describe('TP.vcard.vcard: defaults',
+TP.ietf.vcard.Inst.describe('TP.ietf.vcard: defaults',
 function() {
 
     var defaultCard;
 
-    defaultCard = TP.vcard.vcard.getInstanceById(
+    defaultCard = TP.ietf.vcard.getInstanceById(
                             TP.sys.cfg('user.default_name'));
 
     //  ---
@@ -42,7 +42,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.describe('TP.vcard.vcard: registration',
+TP.ietf.vcard.Inst.describe('TP.ietf.vcard: registration',
 function() {
 
     var loadURI,
@@ -60,15 +60,15 @@ function() {
                 function() {
                     var loadPromise;
 
-                    loadPromise = TP.vcard.vcard.loadVCards(loadURI);
+                    loadPromise = TP.ietf.vcard.loadVCards(loadURI);
 
                     return loadPromise.then(
                                 function(aResult) {
                                     loadedCards =
-                                        TP.vcard.vcard.initVCards(aResult);
+                                        TP.ietf.vcard.initVCards(aResult);
 
                                     //  Register the vcard for use below.
-                                    TP.vcard.vcard.registerVCard(
+                                    TP.ietf.vcard.registerVCard(
                                                         loadedCards.first());
                                 });
                 });
@@ -106,7 +106,7 @@ function() {
         var testCard;
 
         //  Use the card registered under 'Bill Test'.
-        testCard = TP.vcard.vcard.get('instances').at('Bill Test');
+        testCard = TP.ietf.vcard.get('instances').at('Bill Test');
 
         test.assert.isEqualTo(testCard.get('fullname'),
                                 'Bill Test');

@@ -9,11 +9,11 @@
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.vcard.vcard
+//  TP.ietf.vcard
 //  ========================================================================
 
 /**
- * @type {TP.vcard.vcard}
+ * @type {TP.ietf.vcard}
  * @summary A VCard originally based on the Jabber/XEP-0054 vcard-temp spec.
  * @description The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
@@ -34,7 +34,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('vcard:vcard');
+TP.core.ElementNode.defineSubtype('ietf.vcard');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -44,13 +44,13 @@ TP.core.ElementNode.defineSubtype('vcard:vcard');
  * The dictionary of registered vcards.
  * @type {TP.core.Hash}
  */
-TP.vcard.vcard.Type.defineAttribute('instances', TP.hc());
+TP.ietf.vcard.Type.defineAttribute('instances', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Types Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('initialize',
+TP.ietf.vcard.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -62,8 +62,8 @@ function() {
 
     url = TP.sys.cfg('path.lib_vcards');
     if (TP.notEmpty(url)) {
-        TP.vcard.vcard.loadVCards(url).then(function(result) {
-            TP.vcard.vcard.initVCards(result);
+        TP.ietf.vcard.loadVCards(url).then(function(result) {
+            TP.ietf.vcard.initVCards(result);
         }).catch(function(err) {
             TP.ifError() ?
                 TP.error('Error loading library vcards: ' +
@@ -73,8 +73,8 @@ function() {
 
     url = TP.sys.cfg('path.app_vcards');
     if (TP.notEmpty(url)) {
-        TP.vcard.vcard.loadVCards(url).then(function(result) {
-            TP.vcard.vcard.initVCards(result);
+        TP.ietf.vcard.loadVCards(url).then(function(result) {
+            TP.ietf.vcard.initVCards(result);
         }).catch(function(err) {
             TP.ifError() ?
                 TP.error('Error loading application vcards: ' +
@@ -85,7 +85,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('generate',
+TP.ietf.vcard.Type.defineMethod('generate',
 function(userInfo) {
 
     /**
@@ -94,7 +94,7 @@ function(userInfo) {
      *     Keys can include 'fn', 'n', 'role', 'org', and 'orgunit'. Defaults
      *     are taken from the user.default_* keys in TIBET's configuration data.
      * @param {TP.core.Hash} userInfo The user information to build a card for.
-     * @returns {TP.vcard.vcard} The new instance.
+     * @returns {TP.ietf.vcard} The new instance.
      */
 
     var params,
@@ -121,13 +121,13 @@ function(userInfo) {
             '</vcard-ext:x-orgunit>',
         '</vcard>'));
 
-    return TP.vcard.vcard.construct(node);
+    return TP.ietf.vcard.construct(node);
 });
 
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('getInstanceById',
+TP.ietf.vcard.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
@@ -135,14 +135,14 @@ function(anID) {
      * @summary Returns the vcard instance whose <fn> value matches the ID
      *     provided. If the ID matches that of the user.default_name value and
      *     the vcard isn't found a default version will be created.
-     * @returns {vcard.vcard} A vcard element wrapper.
+     * @returns {TP.ietf.vcard} A vcard element wrapper.
      */
 
     var vcards,
         inst;
 
     //  NOTE the access to the top-level type here, not 'this'.
-    vcards = TP.vcard.vcard.get('instances');
+    vcards = TP.ietf.vcard.get('instances');
 
     inst = vcards.at(anID);
     if (TP.isValid(inst)) {
@@ -158,7 +158,7 @@ function(anID) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('initVCards',
+TP.ietf.vcard.Type.defineMethod('initVCards',
 function(aDocument) {
 
     /**
@@ -168,7 +168,7 @@ function(aDocument) {
      *     to loadVCards to acquire a vcard-containing document.
      * @param {Document} aDocument A TIBET vcards document. See the
      *     documentation on TIBET vcard files for more information.
-     * @returns {Array.<TP.vcard.vcard>} An array of vcard instances.
+     * @returns {TP.ietf.vcard[]} An array of vcard instances.
      */
 
     var vcards,
@@ -179,7 +179,7 @@ function(aDocument) {
         return this.raise('InvalidDocument', aDocument);
     }
 
-    type = TP.vcard.vcard;
+    type = TP.ietf.vcard;
 
     vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vcard', TP.NODESET);
     list = vcards.collect(function(elem) {
@@ -191,7 +191,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('loadVCards',
+TP.ietf.vcard.Type.defineMethod('loadVCards',
 function(aURI) {
 
     /**
@@ -238,7 +238,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('registerVCard',
+TP.ietf.vcard.Type.defineMethod('registerVCard',
 function(aVCard) {
 
     /**
@@ -247,8 +247,8 @@ function(aVCard) {
      *     'fullname' (i.e. the <text> value of <fn>) as the key to register it
      *     under. This method is invoked automatically during vcard instance
      *     creation so you don't normally need to call it yourself.
-     * @param {TP.vcard.vcard} aVCard The vcard instance to register.
-     * @returns {TP.vcard.vcard} The registered vcard instance.
+     * @param {TP.ietf.vcard} aVCard The vcard instance to register.
+     * @returns {TP.ietf.vcard} The registered vcard instance.
      */
 
     var id,
@@ -264,7 +264,7 @@ function(aVCard) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.vcard.vcard.get('instances');
+    keys = TP.ietf.vcard.get('instances');
     keys.atPut(id, aVCard);
 
     return aVCard;
@@ -277,87 +277,87 @@ function(aVCard) {
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.vcard.vcard.Inst.defineAttribute('fullname',
+TP.ietf.vcard.Inst.defineAttribute('fullname',
     TP.xpc('./$def:fn/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('shortname',
+TP.ietf.vcard.Inst.defineAttribute('shortname',
     TP.xpc('./$def:n/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('surname',
+TP.ietf.vcard.Inst.defineAttribute('surname',
     TP.xpc('./$def:n/$def:surname',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('givenname',
+TP.ietf.vcard.Inst.defineAttribute('givenname',
     TP.xpc('./$def:n/$def:given',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('prefix',
+TP.ietf.vcard.Inst.defineAttribute('prefix',
     TP.xpc('./$def:n/$def:prefix',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('nickname',
+TP.ietf.vcard.Inst.defineAttribute('nickname',
     TP.xpc('./$def:nickname/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('jid',
+TP.ietf.vcard.Inst.defineAttribute('jid',
     TP.xpc('./$def:impp/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('url',
+TP.ietf.vcard.Inst.defineAttribute('url',
     TP.xpc('./$def:url/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('email',
+TP.ietf.vcard.Inst.defineAttribute('email',
     TP.xpc('./$def:email/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('tel',
+TP.ietf.vcard.Inst.defineAttribute('tel',
     TP.xpc('./$def:tel/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('url',
+TP.ietf.vcard.Inst.defineAttribute('url',
     TP.xpc('./$def:url/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('timezone',
+TP.ietf.vcard.Inst.defineAttribute('timezone',
     TP.xpc('./$def:tz/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('role',
+TP.ietf.vcard.Inst.defineAttribute('role',
     TP.xpc('./$def:role/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('orgname',
+TP.ietf.vcard.Inst.defineAttribute('orgname',
     TP.xpc('./$def:org/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('orgunit',
+TP.ietf.vcard.Inst.defineAttribute('orgunit',
     TP.xpc('./vcard-ext:x-orgunit/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('key',
+TP.ietf.vcard.Inst.defineAttribute('key',
     TP.xpc('./$def:key/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('secretkey',
+TP.ietf.vcard.Inst.defineAttribute('secretkey',
     TP.xpc('./vcard-ext:x-secret-key',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('username',
+TP.ietf.vcard.Inst.defineAttribute('username',
     TP.xpc('./vcard-ext:x-username',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('password',
+TP.ietf.vcard.Inst.defineAttribute('password',
     TP.xpc('./vcard-ext:x-password',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('auth',
+TP.ietf.vcard.Inst.defineAttribute('auth',
     TP.xpc('./vcard-ext:x-auth',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('iswebdav',
+TP.ietf.vcard.Inst.defineAttribute('iswebdav',
     TP.xpc('./vcard-ext:x-is-webdav',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
@@ -365,7 +365,7 @@ TP.vcard.vcard.Inst.defineAttribute('iswebdav',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('init',
+TP.ietf.vcard.Inst.defineMethod('init',
 function(aVCard) {
 
     /**
@@ -376,7 +376,7 @@ function(aVCard) {
      *     that this method will update the associated resource instance if one
      *     is found for the 'id' (fullname) portion of the vcard.
      * @param {Element} aVCard The vcard element to wrap in an instance.
-     * @returns {TP.vcard.vcard} The newly created vcard instance.
+     * @returns {TP.ietf.vcard} The newly created vcard instance.
      */
 
     var id,
@@ -389,7 +389,7 @@ function(aVCard) {
         return this.raise('InvalidVCard', aVCard);
     }
 
-    TP.vcard.vcard.registerVCard(this);
+    TP.ietf.vcard.registerVCard(this);
 
     //  Update the associated resource to have the updated vCard instance.
     id = this.get('fullname');
@@ -405,7 +405,7 @@ function(aVCard) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getAccessKeys',
+TP.ietf.vcard.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
@@ -452,7 +452,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getRoleNames',
+TP.ietf.vcard.Inst.defineMethod('getRoleNames',
 function() {
 
     /**
@@ -483,7 +483,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getRoles',
+TP.ietf.vcard.Inst.defineMethod('getRoles',
 function() {
 
     /**
@@ -506,7 +506,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getUnitNames',
+TP.ietf.vcard.Inst.defineMethod('getUnitNames',
 function() {
 
     /**
@@ -537,7 +537,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getUnits',
+TP.ietf.vcard.Inst.defineMethod('getUnits',
 function() {
 
     /**

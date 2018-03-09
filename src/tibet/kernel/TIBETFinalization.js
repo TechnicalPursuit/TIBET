@@ -167,7 +167,7 @@ function() {
 
                             result = aSignal.getResult();
                             if (TP.isDocument(result)) {
-                                TP.vcard.vcard.initVCards(result);
+                                TP.ietf.vcard.initVCards(result);
                                 TP.core.User.construct(
                                     TP.nodeEvaluateXPath(result,
                                         'string(//$def:fn/$def:text/text())'));

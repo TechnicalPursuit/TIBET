@@ -669,7 +669,7 @@ function() {
     /**
      * @method getVcard
      * @summary Returns the receiver's vcard, if one has been set.
-     * @returns {TP.vcard.vcard} A TIBET vcard wrapper element.
+     * @returns {TP.ietf.vcard} A TIBET vcard wrapper element.
      */
 
     return this.$get('vcard');
@@ -1056,7 +1056,7 @@ function(aVCard) {
     /**
      * @method setVCard
      * @summary Sets the VCard description for the resource.
-     * @param {TP.vcard.vcard} aVCard The vcard description for the
+     * @param {TP.ietf.vcard} aVCard The vcard description for the
      *     resource.
      * @returns {TP.core.Resource} The receiver.
      */
@@ -4551,7 +4551,7 @@ function(resourceID) {
     //  We do this last so any changes that we may want to add which trigger
     //  based on the current vcard will occur and override anything we defaulted
     //  to in the prior portion of this method.
-    vcard = TP.vcard.vcard.getInstanceById(resourceID);
+    vcard = TP.ietf.vcard.getInstanceById(resourceID);
     if (TP.isValid(vcard)) {
         this.setVCard(vcard);
     }
@@ -5005,7 +5005,7 @@ function(resourceID, aRequest) {
     //  associate that with the service instance now. Note that we check
     //  even for default instances, since some external services like XMPP,
     //  etc. have vcards defined for their 'default' instance.
-    vcard = TP.vcard.vcard.getInstanceById(resourceID);
+    vcard = TP.ietf.vcard.getInstanceById(resourceID);
     if (TP.isValid(vcard)) {
         this.setVCard(vcard);
     }
