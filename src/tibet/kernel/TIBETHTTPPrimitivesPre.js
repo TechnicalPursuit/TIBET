@@ -972,7 +972,7 @@ function(targetUrl, aRequest, httpObj) {
     //  Default the mimetype based on body type as best we can.
     if (TP.notDefined(request.at('mimetype'))) {
         request.atPut('mimetype',
-            TP.ietf.Mime.guessMIMEType(body, TP.uc(url), TP.URL_ENCODED));
+            TP.ietf.mime.guessMIMEType(body, TP.uc(url), TP.URL_ENCODED));
     }
 
     //  typically we turn off cache behavior for these requests so we're

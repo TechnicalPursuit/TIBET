@@ -50,7 +50,7 @@ function(resource, mimeType, fallback) {
      *     except the word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      *     This is used to locate viable extensions based on the data in TIBET's
-     *     TP.ietf.Mime.INFO dictionary.
+     *     TP.ietf.mime.INFO dictionary.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
      *     value of 'uri.fallbacks'.
      * @returns {TP.core.URI} The computed resource URI.

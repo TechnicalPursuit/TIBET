@@ -1400,7 +1400,7 @@ function(anID, headerText, tileParent) {
     //  Grab the TP.sherpa.tile's template.
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     //  If the caller didn't supply a parent, then use the Sherpa's common tile
     //  layer as the new tile's parent.
@@ -2374,7 +2374,7 @@ function() {
                             return false;
                         }
                         attrValue = TP.elementGetAttribute(elem, 'type', true);
-                        if (attrValue === TP.ietf.Mime.TIBET_CSS) {
+                        if (attrValue === TP.ietf.mime.TIBET_CSS) {
                             return false;
                         }
                     } else if (TP.isTextNode(node) ||
@@ -2530,7 +2530,7 @@ function() {
 
     //  Create the <sherpa:consoleoutput> tag
     consoleOutputTPElem = TP.sherpa.consoleoutput.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     consoleOutputTPElem = consoleOutputTPElem.clone();
     consoleOutputTPElem.compile();
@@ -2545,7 +2545,7 @@ function() {
     //  drawer.
 
     consoleInputTPElem = TP.sherpa.console.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     consoleInputTPElem = consoleInputTPElem.clone();
     consoleInputTPElem.compile();
@@ -2619,7 +2619,7 @@ function() {
     TP.sherpa.halocontextmenu.addStylesheetTo(viewDoc);
 
     menuTPElem = TP.sherpa.halocontextmenu.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     menuTPElem = menuTPElem.clone();
 
@@ -2645,7 +2645,7 @@ function() {
         toolsLayerTPElem;
 
     haloTPElem = TP.sherpa.halo.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     haloTPElem = haloTPElem.clone();
     haloTPElem.compile();

@@ -1214,13 +1214,13 @@ function(aSourceName) {
 
         case 'Structure':
             //  NB: We're returning the TP.core.URI instance itself here.
-            source = this.getResourceURI('template', TP.ietf.Mime.XHTML);
+            source = this.getResourceURI('template', TP.ietf.mime.XHTML);
 
             break;
 
         case 'Style':
             //  NB: We're returning the TP.core.URI instance itself here.
-            source = this.getResourceURI('style', TP.ietf.Mime.XHTML);
+            source = this.getResourceURI('style', TP.ietf.mime.XHTML);
 
             break;
 
@@ -1262,11 +1262,11 @@ function(anAspect, options) {
 
         case 'Structure':
             //  NB: We're returning the TP.core.URI instance itself here.
-            return thisType.getResourceURI('template', TP.ietf.Mime.XHTML);
+            return thisType.getResourceURI('template', TP.ietf.mime.XHTML);
 
         case 'Style':
             //  NB: We're returning the TP.core.URI instance itself here.
-            return thisType.getResourceURI('style', TP.ietf.Mime.CSS);
+            return thisType.getResourceURI('style', TP.ietf.mime.CSS);
 
         default:
             return this.callNextMethod();
@@ -1354,7 +1354,7 @@ function(anAspect, options) {
 
         case 'Style':
 
-            return thisType.getResourceURI('template', TP.ietf.Mime.CSS);
+            return thisType.getResourceURI('template', TP.ietf.mime.CSS);
 
         default:
             return this.callNextMethod();
@@ -1467,7 +1467,7 @@ function(insertionPointElement, insertionPosition) {
             assistantContentTPElem =
                 TP.sherpa.couchDocumentURIInsertionAssistant.getResourceElement(
                                 'template',
-                                TP.ietf.Mime.XHTML);
+                                TP.ietf.mime.XHTML);
 
             //  Open a dialog with the insertion assistant's content.
             dialogPromise = TP.dialog(
@@ -1512,7 +1512,7 @@ function(insertionPointElement, insertionPosition) {
             assistantContentTPElem =
                 TP.sherpa.couchViewURIInsertionAssistant.getResourceElement(
                                 'template',
-                                TP.ietf.Mime.XHTML);
+                                TP.ietf.mime.XHTML);
 
             //  Open a dialog with the insertion assistant's content.
             dialogPromise = TP.dialog(
@@ -1585,7 +1585,7 @@ function(insertionPointElement, insertionPosition) {
     assistantContentTPElem =
         TP.sherpa.tofuInsertionAssistant.getResourceElement(
                         'template',
-                        TP.ietf.Mime.XHTML);
+                        TP.ietf.mime.XHTML);
 
     //  Open a dialog with the insertion assistant's content.
     dialogPromise = TP.dialog(

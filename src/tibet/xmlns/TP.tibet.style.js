@@ -393,7 +393,7 @@ function(anHref) {
                 //  Compute an ID for our generated (real) CSS style sheet.
                 generatedStyleID = ourID + '_generated';
 
-                if (this.getAttribute('type') === TP.ietf.Mime.TIBET_CSS) {
+                if (this.getAttribute('type') === TP.ietf.mime.TIBET_CSS) {
 
                     styleURI = TP.uc(hrefLocation);
 
@@ -599,7 +599,7 @@ function(storageInfo) {
     if (TP.isAttributeNode(attrNode)) {
         //  If the 'type' attribute is 'TIBET_CSS', that means it was
         //  auto-populated and shouldn't be written.
-        if (attrNode.value === TP.ietf.Mime.TIBET_CSS) {
+        if (attrNode.value === TP.ietf.mime.TIBET_CSS) {
             return TP.CONTINUE;
         }
     }
@@ -645,7 +645,7 @@ function(storageInfo) {
     if (TP.isAttributeNode(attrNode)) {
         //  If the 'type' attribute is 'TIBET_CSS', that means it was
         //  auto-populated and shouldn't be written.
-        if (attrNode.value === TP.ietf.Mime.TIBET_CSS) {
+        if (attrNode.value === TP.ietf.mime.TIBET_CSS) {
             return TP.CONTINUE;
         }
     }

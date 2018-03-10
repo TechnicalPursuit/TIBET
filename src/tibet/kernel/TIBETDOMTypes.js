@@ -720,7 +720,7 @@ function(aNode) {
     }
 
     //  TODO:   do we want pure XML here?
-    return TP.ifEmpty(mime, TP.ietf.Mime.XHTML);
+    return TP.ifEmpty(mime, TP.ietf.mime.XHTML);
 });
 
 //  ------------------------------------------------------------------------
@@ -758,21 +758,21 @@ function(aNode) {
                             'Unable to determine node\'s document.');
     }
 
-    //  empty document? either TP.ietf.Mime.PLAIN or TP.ietf.Mime.XML
+    //  empty document? either TP.ietf.mime.PLAIN or TP.ietf.mime.XML
     if (!TP.isElement(docElement = doc.documentElement)) {
         if (TP.isXMLDocument(doc)) {
-            return TP.ietf.Mime.XML;
+            return TP.ietf.mime.XML;
         } else {
-            return TP.ietf.Mime.PLAIN;
+            return TP.ietf.mime.PLAIN;
         }
     }
 
     if (!TP.isXMLDocument(doc)) {
         //  TODO:   handle META instructions and/or DOCTYPES here
         if (docElement.nodeName.toLowerCase() === 'html') {
-            return TP.ietf.Mime.HTML;
+            return TP.ietf.mime.HTML;
         } else {
-            return TP.ietf.Mime.PLAIN;
+            return TP.ietf.mime.PLAIN;
         }
     }
 
@@ -795,7 +795,7 @@ function(aNode) {
         }
     }
 
-    return TP.ifInvalid(mimeType, TP.ietf.Mime.XML);
+    return TP.ifInvalid(mimeType, TP.ietf.mime.XML);
 });
 
 //  ------------------------------------------------------------------------
@@ -9410,7 +9410,7 @@ function(resource, mimeType) {
     /**
      * @method computeResourceExtension
      * @summary Returns the default extension to use for the resource and mime
-     *     type provided. Information in TP.ietf.Mime is used when a list of
+     *     type provided. Information in TP.ietf.mime is used when a list of
      *     extensions is needed.
      * @param {String} resource The resource name. Typically template, style,
      *     style_{theme}, etc. but it could be essentially anything except the
@@ -9438,19 +9438,19 @@ function(resource, mimeType) {
         if (TP.isEmpty(mime)) {
 
             if (/^style_/.test(res)) {
-                mime = TP.ietf.Mime.CSS;
+                mime = TP.ietf.mime.CSS;
             } else if (/^template_/.test(res)) {
-                mime = TP.ietf.Mime.XHTML;
+                mime = TP.ietf.mime.XHTML;
             } else {
                 switch (res) {
                     case 'template':
-                        mime = TP.ietf.Mime.XHTML;
+                        mime = TP.ietf.mime.XHTML;
                         break;
                     case 'style':
-                        mime = TP.ietf.Mime.CSS;
+                        mime = TP.ietf.mime.CSS;
                         break;
                     default:
-                        mime = TP.ietf.Mime.XML;
+                        mime = TP.ietf.mime.XML;
                         break;
                 }
             }
@@ -9458,7 +9458,7 @@ function(resource, mimeType) {
 
         //  Once we have a mime type we can fetch the extensions and default to
         //  the first one (the canonical one based on convention).
-        extensions = TP.ietf.Mime.getExtensions(mime);
+        extensions = TP.ietf.mime.getExtensions(mime);
         if (TP.notEmpty(extensions)) {
             ext = extensions.at(0);
         }
@@ -10681,7 +10681,7 @@ function(resource, mimeType, setupFunc) {
     str = resp.get('result');
 
     if (TP.isEmpty(mime = mimeType)) {
-        mime = TP.ietf.Mime.guessMIMEType(str, uri);
+        mime = TP.ietf.mime.guessMIMEType(str, uri);
     }
 
     //  Try to guess the default XML namespace from the MIME type computed from
@@ -10745,7 +10745,7 @@ function(resource, mimeType, fallback) {
      *     except the word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      *     This is used to locate viable extensions based on the data in TIBET's
-     *     TP.ietf.Mime.INFO dictionary.
+     *     TP.ietf.mime.INFO dictionary.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
      *     value of 'uri.fallbacks'.
      * @returns {TP.core.URI|String|TP.NO_RESULT} The computed resource URI.
@@ -10899,9 +10899,9 @@ function(anElement) {
             //  types and see if there are any matches. Note that this Array is
             //  constructed in order with the most common types first and least
             //  common last.
-            mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
-                                TP.ietf.Mime.XML,
-                                TP.ietf.Mime.XSLT);
+            mimeTypes = TP.ac(TP.ietf.mime.XHTML,
+                                TP.ietf.mime.XML,
+                                TP.ietf.mime.XSLT);
 
             len = mimeTypes.getSize();
             for (i = 0; i < len; i++) {
@@ -15384,7 +15384,7 @@ function(aNode) {
     if (TP.isString(mime)) {
         //  two choices here, there may be a 'tpDocNodeType' registered, or
         //  we may just work from naming convention
-        if (TP.notEmpty(info = TP.ietf.Mime.get('info').at(mime))) {
+        if (TP.notEmpty(info = TP.ietf.mime.get('info').at(mime))) {
             if (TP.notEmpty(name = info.at('tpDocNodeType'))) {
                 if (TP.isType(type = TP.sys.getTypeByName(name)) &&
                     !type.isAbstract()) {

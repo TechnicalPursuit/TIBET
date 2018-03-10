@@ -177,7 +177,7 @@ function(options) {
 
     uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
                             'template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     uriEditorTPElem = uriEditorTPElem.clone();
 

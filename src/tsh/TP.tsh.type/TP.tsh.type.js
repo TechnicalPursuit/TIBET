@@ -113,7 +113,7 @@ function() {
 
     assistantTPElem = TP.tsh.type_assistant.getResourceElement(
                         'template',
-                        TP.ietf.Mime.XHTML);
+                        TP.ietf.mime.XHTML);
 
     return TP.unwrap(assistantTPElem);
 });

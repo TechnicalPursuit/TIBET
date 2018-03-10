@@ -3009,7 +3009,7 @@ function() {
         if (TP.notEmpty(uri)) {
 
             //  Guess the MIME type based on the data and the URI
-            mimeType = TP.ietf.Mime.guessMIMEType(xmlData, uri);
+            mimeType = TP.ietf.mime.guessMIMEType(xmlData, uri);
 
             //  Try to get a 'namespace entry' from that. The namespace URI can
             //  be found under 'uri'.

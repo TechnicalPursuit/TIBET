@@ -683,7 +683,7 @@ function() {
             url = TP.uc(this.getRequest().at('finaluri'));
             if (TP.isValid(xmlnsInfo =
                             TP.w3.Xmlns.fromMIMEType(
-                                TP.ietf.Mime.guessMIMEType(text, url)))) {
+                                TP.ietf.mime.guessMIMEType(text, url)))) {
                 defaultNS = xmlnsInfo.at('uri');
             } else {
                 defaultNS = null;
@@ -1049,7 +1049,7 @@ function(aRequest) {
             aRequest.at('mimetype'),
             TP.ifEmpty(
                 this.$get('mimetype'),
-                TP.ietf.Mime.guessMIMEType(
+                TP.ietf.mime.guessMIMEType(
                     aRequest.at('body'),
                     TP.uc(aRequest.at('uri')),
                     this.getType().get('mimetype'))

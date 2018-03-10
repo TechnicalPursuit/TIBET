@@ -33,8 +33,8 @@ TP.lang.Object.defineSubtype('core.Browser');
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-//  note dependency on TP.ietf.Mime object here
-TP.core.Browser.Type.defineConstant('DEFAULT_MIME_TYPE', TP.ietf.Mime.HTML);
+//  note dependency on TP.ietf.mime object here
+TP.core.Browser.Type.defineConstant('DEFAULT_MIME_TYPE', TP.ietf.mime.HTML);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

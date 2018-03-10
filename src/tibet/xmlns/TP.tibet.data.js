@@ -355,7 +355,7 @@ function(aContentObject, aRequest) {
     }
 
     if (TP.isEmpty(mimeType = this.getAttribute('type'))) {
-        mimeType = TP.ietf.Mime.guessMIMEType(aContentObject);
+        mimeType = TP.ietf.mime.guessMIMEType(aContentObject);
     }
 
     //  If the MIME type that was computed is text/plain, then something

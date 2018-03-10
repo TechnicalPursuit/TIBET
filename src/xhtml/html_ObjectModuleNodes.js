@@ -336,7 +336,7 @@ function(aNodeOrId) {
         return TP.byId(aNodeOrId);
     }
 
-    typeName = TP.ietf.Mime.get('info').at(
+    typeName = TP.ietf.mime.get('info').at(
                 TP.elementGetAttribute(aNodeOrId, 'type')).at('objectNodeType');
 
     type = TP.sys.getTypeByName(typeName);

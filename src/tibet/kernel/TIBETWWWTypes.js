@@ -527,13 +527,13 @@ function(aStatusCode) {
 });
 
 //  ========================================================================
-//  TP.ietf.Mime
+//  TP.ietf.mime
 //  ========================================================================
 
 /**
- * @type {TP.ietf.Mime}
+ * @type {TP.ietf.mime}
  * @summary Provides registration and lookup services for MIME data.
- * @description The TP.ietf.Mime type is largely a container for constants to
+ * @description The TP.ietf.mime type is largely a container for constants to
  *     make working with MIME strings easier. One feature of this type that is
  *     more interesting is the ability to register "content handlers" for
  *     different MIME types. The canonical example for this is the CSS MIME type
@@ -544,52 +544,52 @@ function(aStatusCode) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('ietf.Mime');
+TP.lang.Object.defineSubtype('ietf.mime');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineConstant('PLAIN', TP.PLAIN_TEXT_ENCODED);
-TP.ietf.Mime.Type.defineConstant('CSV', 'text/csv');
+TP.ietf.mime.Type.defineConstant('PLAIN', TP.PLAIN_TEXT_ENCODED);
+TP.ietf.mime.Type.defineConstant('CSV', 'text/csv');
 
-TP.ietf.Mime.Type.defineConstant('ICAL', 'text/calendar');
+TP.ietf.mime.Type.defineConstant('ICAL', 'text/calendar');
 
-TP.ietf.Mime.Type.defineConstant('CSS', TP.CSS_TEXT_ENCODED);
-TP.ietf.Mime.Type.defineConstant('HTML', TP.HTML_TEXT_ENCODED);
-TP.ietf.Mime.Type.defineConstant('ECMASCRIPT', 'text/ecmascript');
-TP.ietf.Mime.Type.defineConstant('JS', TP.JS_TEXT_ENCODED);
-TP.ietf.Mime.Type.defineConstant('JSON', TP.JSON_ENCODED);
-TP.ietf.Mime.Type.defineConstant('XHTML', TP.XHTML_ENCODED);
+TP.ietf.mime.Type.defineConstant('CSS', TP.CSS_TEXT_ENCODED);
+TP.ietf.mime.Type.defineConstant('HTML', TP.HTML_TEXT_ENCODED);
+TP.ietf.mime.Type.defineConstant('ECMASCRIPT', 'text/ecmascript');
+TP.ietf.mime.Type.defineConstant('JS', TP.JS_TEXT_ENCODED);
+TP.ietf.mime.Type.defineConstant('JSON', TP.JSON_ENCODED);
+TP.ietf.mime.Type.defineConstant('XHTML', TP.XHTML_ENCODED);
 
-TP.ietf.Mime.Type.defineConstant('TSH', 'text/vnd.TPI.TSH');
+TP.ietf.mime.Type.defineConstant('TSH', 'text/vnd.TPI.TSH');
 
-TP.ietf.Mime.Type.defineConstant('GIF', 'image/gif');
-TP.ietf.Mime.Type.defineConstant('JPEG', 'image/jpeg');
-TP.ietf.Mime.Type.defineConstant('PNG', 'image/png');
+TP.ietf.mime.Type.defineConstant('GIF', 'image/gif');
+TP.ietf.mime.Type.defineConstant('JPEG', 'image/jpeg');
+TP.ietf.mime.Type.defineConstant('PNG', 'image/png');
 
-TP.ietf.Mime.Type.defineConstant('FLASH', 'application/x-shockwave-flash');
-TP.ietf.Mime.Type.defineConstant('SILVERLIGHT', 'application/x-silverlight');
-TP.ietf.Mime.Type.defineConstant('SMIL', 'application/smil+xml');
-TP.ietf.Mime.Type.defineConstant('SVG', 'application/svg+xml');
+TP.ietf.mime.Type.defineConstant('FLASH', 'application/x-shockwave-flash');
+TP.ietf.mime.Type.defineConstant('SILVERLIGHT', 'application/x-silverlight');
+TP.ietf.mime.Type.defineConstant('SMIL', 'application/smil+xml');
+TP.ietf.mime.Type.defineConstant('SVG', 'application/svg+xml');
 
-TP.ietf.Mime.Type.defineConstant('XSLT', 'application/xslt+xml');
+TP.ietf.mime.Type.defineConstant('XSLT', 'application/xslt+xml');
 
-TP.ietf.Mime.Type.defineConstant('ATOM', 'application/atom+xml');
-TP.ietf.Mime.Type.defineConstant('RDF', 'application/rdf+xml');
-TP.ietf.Mime.Type.defineConstant('RSS', 'application/rss+xml');
+TP.ietf.mime.Type.defineConstant('ATOM', 'application/atom+xml');
+TP.ietf.mime.Type.defineConstant('RDF', 'application/rdf+xml');
+TP.ietf.mime.Type.defineConstant('RSS', 'application/rss+xml');
 
-TP.ietf.Mime.Type.defineConstant('SOAP', TP.SOAP_ENCODED);
-TP.ietf.Mime.Type.defineConstant('XMLRPC', TP.XMLRPC_ENCODED);
-TP.ietf.Mime.Type.defineConstant('XML', TP.XML_ENCODED);
+TP.ietf.mime.Type.defineConstant('SOAP', TP.SOAP_ENCODED);
+TP.ietf.mime.Type.defineConstant('XMLRPC', TP.XMLRPC_ENCODED);
+TP.ietf.mime.Type.defineConstant('XML', TP.XML_ENCODED);
 
-TP.ietf.Mime.Type.defineConstant('VCARD', 'text/vcard');
+TP.ietf.mime.Type.defineConstant('VCARD', 'text/vcard');
 
-TP.ietf.Mime.Type.defineConstant('XMPP', 'application/xmpp+xml');
+TP.ietf.mime.Type.defineConstant('XMPP', 'application/xmpp+xml');
 
-TP.ietf.Mime.Type.defineConstant('TIBET_CSS', 'text/x-tibet-css');
+TP.ietf.mime.Type.defineConstant('TIBET_CSS', 'text/x-tibet-css');
 
-TP.ietf.Mime.Type.defineConstant('$KEYS', TP.ac('mimetype',
+TP.ietf.mime.Type.defineConstant('$KEYS', TP.ac('mimetype',
                                             'alias',
                                             'handler',
                                             'tpDocNodeType',
@@ -612,10 +612,10 @@ TP.ietf.Mime.Type.defineConstant('$KEYS', TP.ac('mimetype',
 //                          particular the various XML dialects often do not
 //                          have unique extensions.
 
-TP.ietf.Mime.Type.defineAttribute('info', TP.hc());
+TP.ietf.mime.Type.defineAttribute('info', TP.hc());
 
-//  a placeholder for a reverse-lookup hash from extension to TP.ietf.Mime
-TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
+//  a placeholder for a reverse-lookup hash from extension to TP.ietf.mime
+TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
 
 //  ------------------------------------------------------------------------
 
@@ -623,88 +623,88 @@ TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
 
     var info;
 
-    info = TP.ietf.Mime.get('info');
+    info = TP.ietf.mime.get('info');
 
     info.addAll(
         TP.hc(
-            TP.ietf.Mime.PLAIN,
-                TP.hc('mimetype', TP.ietf.Mime.PLAIN,
+            TP.ietf.mime.PLAIN,
+                TP.hc('mimetype', TP.ietf.mime.PLAIN,
                         'alias', 'PLAIN',
                         'extensions', 'txt',
                         'tshtag', 'html:span'),
-            TP.ietf.Mime.CSV,
-                TP.hc('mimetype', TP.ietf.Mime.CSV,
+            TP.ietf.mime.CSV,
+                TP.hc('mimetype', TP.ietf.mime.CSV,
                         'alias', 'CSV',
                         'extensions', 'csv',
                         'tshtag', 'html:span'),
-            TP.ietf.Mime.ICAL,
-                TP.hc('mimetype', TP.ietf.Mime.ICAL,
+            TP.ietf.mime.ICAL,
+                TP.hc('mimetype', TP.ietf.mime.ICAL,
                         'alias', 'ICAL',
                         'extensions', 'ics',
                         'tshtag', 'html:span'),
 
-            TP.ietf.Mime.CSS,
-                TP.hc('mimetype', TP.ietf.Mime.CSS,
+            TP.ietf.mime.CSS,
+                TP.hc('mimetype', TP.ietf.mime.CSS,
                         'alias', 'CSS',
                         'extensions', 'css',
                         'handler', 'TP.core.CSSStyleSheet',
                         'tshtag', 'html:style'),
-            TP.ietf.Mime.HTML,
-                TP.hc('mimetype', TP.ietf.Mime.HTML,
+            TP.ietf.mime.HTML,
+                TP.hc('mimetype', TP.ietf.mime.HTML,
                         'alias', 'HTML',
                         'extensions', 'html htm',
                         'tshtag', 'html:html'),
-            TP.ietf.Mime.ECMASCRIPT,
-                TP.hc('mimetype', TP.ietf.Mime.ECMASCRIPT,
+            TP.ietf.mime.ECMASCRIPT,
+                TP.hc('mimetype', TP.ietf.mime.ECMASCRIPT,
                         'alias', 'ECMASCRIPT',
                         'handler', 'TP.core.JSURI',
                         'extensions', 'js jscript',
                         'tshtag', 'tsh:script'),
-            TP.ietf.Mime.JS,
-                TP.hc('mimetype', TP.ietf.Mime.JS,
+            TP.ietf.mime.JS,
+                TP.hc('mimetype', TP.ietf.mime.JS,
                         'alias', 'JS',
                         'extensions', 'js jscript',
                         'handler', 'TP.core.JSURI',
                         'tshtag', 'tsh:script'),
-            TP.ietf.Mime.JSON,
-                TP.hc('mimetype', TP.ietf.Mime.JSON,
+            TP.ietf.mime.JSON,
+                TP.hc('mimetype', TP.ietf.mime.JSON,
                         'alias', 'JSON',
                         'extensions', 'json',
                         'handler', 'TP.core.JSONContent',
                         'tshtag', 'tsh:script'),
-            TP.ietf.Mime.XHTML,
-                TP.hc('mimetype', TP.ietf.Mime.XHTML,
+            TP.ietf.mime.XHTML,
+                TP.hc('mimetype', TP.ietf.mime.XHTML,
                         'alias', 'XHTML',
                         'extensions', 'xhtml xht',
                         'tshtag', 'html:html',
                         'tpDocNodeType', 'TP.core.XHTMLDocumentNode'),
-            TP.ietf.Mime.TSH,
-                TP.hc('mimetype', TP.ietf.Mime.TSH,
+            TP.ietf.mime.TSH,
+                TP.hc('mimetype', TP.ietf.mime.TSH,
                         'alias', 'TSH',
                         'extensions', 'tsh',
                         'handler', 'tsh:script',
                         'tshtag', 'tsh:script'),
 
-            TP.ietf.Mime.GIF,
-                TP.hc('mimetype', TP.ietf.Mime.GIF,
+            TP.ietf.mime.GIF,
+                TP.hc('mimetype', TP.ietf.mime.GIF,
                         'alias', 'GIF',
                         'extensions', 'gif',
                         'handler', 'html:img',
                         'tshtag', 'html:img'),
-            TP.ietf.Mime.JPEG,
-                TP.hc('mimetype', TP.ietf.Mime.JPEG,
+            TP.ietf.mime.JPEG,
+                TP.hc('mimetype', TP.ietf.mime.JPEG,
                         'alias', 'JPEG',
                         'extensions', 'jpg jpeg',
                         'handler', 'html:img',
                         'tshtag', 'html:img'),
-            TP.ietf.Mime.PNG,
-                TP.hc('mimetype', TP.ietf.Mime.PNG,
+            TP.ietf.mime.PNG,
+                TP.hc('mimetype', TP.ietf.mime.PNG,
                         'alias', 'PNG',
                         'extensions', 'png',
                         'handler', 'html:img',
                         'tshtag', 'html:img'),
-            TP.ietf.Mime.FLASH,
-                TP.hc('mimetype', TP.ietf.Mime.FLASH,
+            TP.ietf.mime.FLASH,
+                TP.hc('mimetype', TP.ietf.mime.FLASH,
                         'alias', 'FLASH',
                         'extensions', 'swf fla',
                         'objectNodeType',
@@ -712,8 +712,8 @@ TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'embedNodeType',
                                 'TP.core.FlashEmbedElementNode',
                         'tshtag', 'html:object'),
-            TP.ietf.Mime.SILVERLIGHT,
-                TP.hc('mimetype', TP.ietf.Mime.SILVERLIGHT,
+            TP.ietf.mime.SILVERLIGHT,
+                TP.hc('mimetype', TP.ietf.mime.SILVERLIGHT,
                         'alias', 'SILVERLIGHT',
                         'extensions', 'xaml',
                         'objectNodeType',
@@ -721,55 +721,55 @@ TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'embedNodeType',
                                 'TP.core.SilverlightEmbedElementNode',
                         'tshtag', 'html:object'),
-            TP.ietf.Mime.SMIL,
-                TP.hc('mimetype', TP.ietf.Mime.SMIL,
+            TP.ietf.mime.SMIL,
+                TP.hc('mimetype', TP.ietf.mime.SMIL,
                         'alias', 'SMIL',
                         'extensions', 'smil'),
-            TP.ietf.Mime.SVG,
-                TP.hc('mimetype', TP.ietf.Mime.SVG,
+            TP.ietf.mime.SVG,
+                TP.hc('mimetype', TP.ietf.mime.SVG,
                         'alias', 'SVG',
                         'extensions', 'svg'),
 
-            TP.ietf.Mime.XSLT,
-                TP.hc('mimetype', TP.ietf.Mime.XSLT,
+            TP.ietf.mime.XSLT,
+                TP.hc('mimetype', TP.ietf.mime.XSLT,
                         'alias', 'XSLT',
                         'extensions', 'xsl xslt',
                         'tpDocNodeType', 'TP.core.XSLDocumentNode'),
 
-            TP.ietf.Mime.ATOM,
-                TP.hc('mimetype', TP.ietf.Mime.ATOM,
+            TP.ietf.mime.ATOM,
+                TP.hc('mimetype', TP.ietf.mime.ATOM,
                         'alias', 'ATOM',
                         'extensions', 'atom xml'),
-            TP.ietf.Mime.RDF,
-                TP.hc('mimetype', TP.ietf.Mime.RDF,
+            TP.ietf.mime.RDF,
+                TP.hc('mimetype', TP.ietf.mime.RDF,
                         'alias', 'RDF',
                         'extensions', 'rdf'),
-            TP.ietf.Mime.RSS,
-                TP.hc('mimetype', TP.ietf.Mime.RSS,
+            TP.ietf.mime.RSS,
+                TP.hc('mimetype', TP.ietf.mime.RSS,
                         'alias', 'RSS',
                         'extensions', 'rss xml',
                         'handler', 'TPRSSContent',
                         'tpDocNodeType', 'TP.core.RSSFeed'),
 
-            TP.ietf.Mime.SOAP,
-                TP.hc('mimetype', TP.ietf.Mime.SOAP,
+            TP.ietf.mime.SOAP,
+                TP.hc('mimetype', TP.ietf.mime.SOAP,
                         'alias', 'SOAP'),
-            TP.ietf.Mime.XMLRPC,
-                TP.hc('mimetype', TP.ietf.Mime.XMLRPC,
+            TP.ietf.mime.XMLRPC,
+                TP.hc('mimetype', TP.ietf.mime.XMLRPC,
                         'alias', 'XMLRPC'),
-            TP.ietf.Mime.XML,
-                TP.hc('mimetype', TP.ietf.Mime.XML,
+            TP.ietf.mime.XML,
+                TP.hc('mimetype', TP.ietf.mime.XML,
                         'alias', 'XML',
                         'extensions', 'xml',
                         'tpDocNodeType', 'TP.core.XMLDocumentNode'),
 
-            TP.ietf.Mime.XMPP,
-                TP.hc('mimetype', TP.ietf.Mime.XMPP,
+            TP.ietf.mime.XMPP,
+                TP.hc('mimetype', TP.ietf.mime.XMPP,
                         'alias', 'XMPP')
         ));
 
     //  populate the initial extensions values from the 'info' hash
-    TP.ietf.Mime.get('info').getValues().perform(
+    TP.ietf.mime.get('info').getValues().perform(
         function(item) {
 
             var mime,
@@ -782,7 +782,7 @@ TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
             if (TP.notEmpty(exts)) {
                 exts = exts.split(' ');
                 for (i = 0; i < exts.getSize(); i++) {
-                    TP.ietf.Mime.get('extensionInfo').atPut(exts.at(i), mime);
+                    TP.ietf.mime.get('extensionInfo').atPut(exts.at(i), mime);
                 }
             }
         });
@@ -794,7 +794,7 @@ TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('getAlias',
+TP.ietf.mime.Type.defineMethod('getAlias',
 function(aMIMEType) {
 
     /**
@@ -810,7 +810,7 @@ function(aMIMEType) {
     var info;
 
     //  grab the hash and if we find one return the type/typename
-    if (TP.isValid(info = TP.ietf.Mime.get('info').at(aMIMEType))) {
+    if (TP.isValid(info = TP.ietf.mime.get('info').at(aMIMEType))) {
         return TP.ifInvalid(info.at('alias'), aMIMEType);
     }
 
@@ -819,7 +819,7 @@ function(aMIMEType) {
 
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('getConcreteType',
+TP.ietf.mime.Type.defineMethod('getConcreteType',
 function(aMIMEType) {
 
     /**
@@ -828,7 +828,7 @@ function(aMIMEType) {
      *     used to handle content in an intelligent fashion.
      * @description This method will return any MIME-specific content handler
      *     type which may be registered. The common example in TIBET is the
-     *     handler for TP.ietf.Mime.CSS which can parse a CSS style sheet,
+     *     handler for TP.ietf.mime.CSS which can parse a CSS style sheet,
      *     making CSS content "smarter" than pure text.
      *
      *     By registering MIME types and handlers for specific text formats you
@@ -836,7 +836,7 @@ function(aMIMEType) {
      *     formats. For this to work properly TIBET has to properly discern the
      *     MIME type for the content. See getMIMEType() for more information.
      * @param {String} aMIMEType The MIME type to return a wrapper type for.
-     * @returns {TP.lang.RootObject.<TP.ietf.Mime>} A TP.ietf.Mime subtype type
+     * @returns {TP.lang.RootObject.<TP.ietf.mime>} A TP.ietf.mime subtype type
      *     object.
      */
 
@@ -845,7 +845,7 @@ function(aMIMEType) {
         type;
 
     //  grab the hash and if we find one return the type/typename
-    if (TP.isValid(info = TP.ietf.Mime.get('info').at(aMIMEType))) {
+    if (TP.isValid(info = TP.ietf.mime.get('info').at(aMIMEType))) {
         typeName = info.at('handler');
 
         //  dynaload handler types as needed
@@ -862,7 +862,7 @@ function(aMIMEType) {
 
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('getExtensions',
+TP.ietf.mime.Type.defineMethod('getExtensions',
 function(aMIMEType) {
 
     /**
@@ -878,7 +878,7 @@ function(aMIMEType) {
         exts;
 
     //  grab the hash and if we find one return the type/typename
-    if (TP.isValid(info = TP.ietf.Mime.get('info').at(aMIMEType))) {
+    if (TP.isValid(info = TP.ietf.mime.get('info').at(aMIMEType))) {
         if (TP.notEmpty(exts = info.at('extensions'))) {
             return exts.split(' ');
         }
@@ -889,7 +889,7 @@ function(aMIMEType) {
 
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('getExtensionType',
+TP.ietf.mime.Type.defineMethod('getExtensionType',
 function(anExtension) {
 
     /**
@@ -898,18 +898,18 @@ function(anExtension) {
      *     guaranteed to be wrong at least some of the time. When in doubt this
      *     routine defaults to returning text/plain.
      * @param {String} anExtension The extension to try to match a MIME type to.
-     * @returns {String} The TP.ietf.Mime type constant for the extension, if
+     * @returns {String} The TP.ietf.mime type constant for the extension, if
      *     found.
      */
 
     return TP.ifInvalid(
-            TP.ietf.Mime.get('extensionInfo').at(anExtension.toLowerCase()),
-            TP.ietf.Mime.PLAIN);
+            TP.ietf.mime.get('extensionInfo').at(anExtension.toLowerCase()),
+            TP.ietf.mime.PLAIN);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('guessMIMEType',
+TP.ietf.mime.Type.defineMethod('guessMIMEType',
 function(aContent, aURI, defaultMIME) {
 
     /**
@@ -919,7 +919,7 @@ function(aContent, aURI, defaultMIME) {
      *     based on content testing followed by extension tests.
      * @description This method tries to guess the MIME type of the receiver.
      *     The testing starts with testing for XML and moves on to testing text
-     *     content and URI extension information using the TP.ietf.Mime 'info'
+     *     content and URI extension information using the TP.ietf.mime 'info'
      *     hash to help with resolution. The specific steps used are: 1. If XML,
      *     try to obtain the namespace of the content node's document's
      *     documentElement, then try to match that to a mime value contained in
@@ -929,12 +929,12 @@ function(aContent, aURI, defaultMIME) {
      *     contained in the XMLNS 'info' hash. 3. If step #2 fails, and a URI
      *     was provided with the call, try to obtain a MIME type using the
      *     extension from the URI. 4. If step #3 fails and it was XML we default
-     *     to TP.ietf.Mime.XML, otherwise we default to TP.ietf.Mime.PLAIN
+     *     to TP.ietf.mime.XML, otherwise we default to TP.ietf.mime.PLAIN
      * @param {Node|String} aContent The content, either as a Node or String. If
      *     a Node, then an attempt will be made to use this object to determine
      *     a MIME type. If a String, then this parameter is tested to see if a
      *     Node can be created from it. If so, then Node testing will proceed as
-     *     described. If not, then TP.ietf.Mime.PLAIN will be returned. This
+     *     described. If not, then TP.ietf.mime.PLAIN will be returned. This
      *     parameter is optional.
      * @param {TP.core.URI} aURI The URI that will be used to try to determine
      *     the MIME type, based on its extension. This parameter is optional.
@@ -1046,14 +1046,14 @@ function(aContent, aURI, defaultMIME) {
         //  the URI's extension.
         if (TP.isURI(aURI) &&
             TP.isString(ext = TP.uriExtension(aURI.asString()))) {
-            mime = TP.ietf.Mime.getExtensionType(ext);
+            mime = TP.ietf.mime.getExtensionType(ext);
         }
 
-        if (TP.isEmpty(mime) || mime === TP.ietf.Mime.PLAIN) {
+        if (TP.isEmpty(mime) || mime === TP.ietf.mime.PLAIN) {
             if (/xml/.test(defaultMIME)) {
                 mime = defaultMIME;
             } else {
-                mime = TP.ietf.Mime.XML;
+                mime = TP.ietf.mime.XML;
             }
         }
     } else {
@@ -1061,23 +1061,23 @@ function(aContent, aURI, defaultMIME) {
 
         //  If we didn't find a valid MIME type via the URI's extension but
         //  we determine from the content that it's a JSON string, then set
-        //  it to TP.ietf.Mime.JSON
+        //  it to TP.ietf.mime.JSON
         if (TP.isJSONString(content)) {
-            mime = TP.ietf.Mime.JSON;
+            mime = TP.ietf.mime.JSON;
         }
 
         //  if a URI was supplied, see if we can extract the MIME type from
         //  the URI's extension.
         if (TP.isEmpty(mime) && TP.isURI(aURI) &&
             TP.isString(ext = TP.uriExtension(aURI.asString()))) {
-            mime = TP.ietf.Mime.getExtensionType(ext);
+            mime = TP.ietf.mime.getExtensionType(ext);
         }
 
         //  If we still haven't found a valid MIME type, then just set it to
-        //  either the supplied 'defaultMIME' or TP.ietf.Mime.PLAIN if that's
+        //  either the supplied 'defaultMIME' or TP.ietf.mime.PLAIN if that's
         //  not been supplied.
-        if (TP.isEmpty(mime) || mime === TP.ietf.Mime.PLAIN) {
-            mime = defaultMIME || TP.ietf.Mime.PLAIN;
+        if (TP.isEmpty(mime) || mime === TP.ietf.mime.PLAIN) {
+            mime = defaultMIME || TP.ietf.mime.PLAIN;
         }
     }
 
@@ -1091,7 +1091,7 @@ function(aContent, aURI, defaultMIME) {
 
 //  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('registerMIMEInfo',
+TP.ietf.mime.Type.defineMethod('registerMIMEInfo',
 function(aMIMEType, aHash) {
 
     /**
@@ -1100,8 +1100,8 @@ function(aMIMEType, aHash) {
      *     hash already exists the new hash's keys are merged with the existing
      *     registration, replacing any existing values for the new keys, but
      *     preserving other values not defined in the incoming hash.
-     * @param {String} aMIMEType A TP.ietf.Mime type constant such as
-     *     TP.ietf.Mime.CSS or the equivalent MIME type string (text/css).
+     * @param {String} aMIMEType A TP.ietf.mime type constant such as
+     *     TP.ietf.mime.CSS or the equivalent MIME type string (text/css).
      * @param {TP.core.Hash} aHash A hash whose keys match those defined for
      *     this type.
      * @exception TP.sig.InvalidParameter
@@ -1116,13 +1116,13 @@ function(aMIMEType, aHash) {
                                     'Must provide registration data.');
     }
 
-    info = TP.ietf.Mime.get('info').at(aMIMEType);
+    info = TP.ietf.mime.get('info').at(aMIMEType);
     if (TP.notValid(info)) {
         info = aHash;
-        TP.ietf.Mime.get('info').atPut(aMIMEType, info);
+        TP.ietf.mime.get('info').atPut(aMIMEType, info);
     } else {
         //  merge in the keys we need
-        TP.ietf.Mime.$KEYS.perform(
+        TP.ietf.mime.$KEYS.perform(
                 function(key) {
 
                     var val;
@@ -1140,7 +1140,7 @@ function(aMIMEType, aHash) {
     if (TP.notEmpty(exts = info.at('extensions'))) {
         exts = exts.split(' ');
         for (i = 0; i < exts.getSize(); i++) {
-            TP.ietf.Mime.get('extensionInfo').atPut(exts.at(i), aMIMEType);
+            TP.ietf.mime.get('extensionInfo').atPut(exts.at(i), aMIMEType);
         }
     }
 
@@ -1440,17 +1440,17 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
         TP.hc(
             TP.w3.Xmlns.ACL,
                     TP.hc('uri', TP.w3.Xmlns.ACL,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'acl',
                             'rootElement', ''),
             TP.w3.Xmlns.ACP,
                     TP.hc('uri', TP.w3.Xmlns.ACP,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'acp',
                             'rootElement', ''),
             TP.w3.Xmlns.BIND,
                     TP.hc('uri', TP.w3.Xmlns.BIND,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'bind',
                             'rootElement', '',
                             'defaultNodeType', 'bind:info',
@@ -1458,40 +1458,40 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
 /*
             TP.w3.Xmlns.BPEL,
                     TP.hc('uri', TP.w3.Xmlns.BPEL,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'bpel',
                             'rootElement', 'process'),
 */
             TP.w3.Xmlns.CSSML,
                     TP.hc('uri', TP.w3.Xmlns.CSSML,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'css',
                             'rootElement', 'sheet'),
             TP.w3.Xmlns.DRAG,
                     TP.hc('uri', TP.w3.Xmlns.DRAG,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'drag',
                             'rootElement', '',
                             'defaultNodeType', 'drag:info'),
             TP.w3.Xmlns.DND,
                     TP.hc('uri', TP.w3.Xmlns.DND,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'dnd',
                             'rootElement', '',
                             'defaultNodeType', 'dnd:info'),
             TP.w3.Xmlns.KML,
                     TP.hc('uri', TP.w3.Xmlns.KML,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'kml',
                             'rootElement', 'kml'),
             TP.w3.Xmlns.MATHML,
                     TP.hc('uri', TP.w3.Xmlns.MATHML,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'mml',
                             'rootElement', 'math'),
             TP.w3.Xmlns.ON,
                     TP.hc('uri', TP.w3.Xmlns.ON,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'on'),
             TP.w3.Xmlns.PCLASS,
                     TP.hc('uri', TP.w3.Xmlns.PCLASS,
@@ -1499,133 +1499,133 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
                             'rootElement', ''),
             TP.w3.Xmlns.RDF,
                     TP.hc('uri', TP.w3.Xmlns.RDF,
-                            'mimetype', TP.ietf.Mime.RDF,
+                            'mimetype', TP.ietf.mime.RDF,
                             'prefix', 'rdf',
                             'rootElement', 'rdf'),
             TP.w3.Xmlns.RSS20,
                     TP.hc('uri', TP.w3.Xmlns.RSS20,
-                            'mimetype', TP.ietf.Mime.RSS,
+                            'mimetype', TP.ietf.mime.RSS,
                             'prefix', 'rss',
                             'rootElement', 'rss',
                             'defaultNodeType', 'TP.core.RSSElement'),
             TP.w3.Xmlns.SHERPA,
                     TP.hc('uri', TP.w3.Xmlns.SHERPA,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'sherpa',
                             'rootElement', ''),
             TP.w3.Xmlns.SIGNALS,
                     TP.hc('uri', TP.w3.Xmlns.SIGNALS,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'sig'),
 /*
             TP.w3.Xmlns.SMIL,
                     TP.hc('uri', TP.w3.Xmlns.SMIL,
-                            'mimetype', TP.ietf.Mime.SMIL,
+                            'mimetype', TP.ietf.mime.SMIL,
                             'prefix', 'smil',
                             'rootElement', 'smil'),
 */
             TP.w3.Xmlns.SVG,
                     TP.hc('uri', TP.w3.Xmlns.SVG,
-                            'mimetype', TP.ietf.Mime.SVG,
+                            'mimetype', TP.ietf.mime.SVG,
                             'prefix', 'svg',
                             'rootElement', 'svg'),
             TP.w3.Xmlns.TIBET,
                     TP.hc('uri', TP.w3.Xmlns.TIBET,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'tibet',
                             'rootElement', ''),
             TP.w3.Xmlns.TMX,
                     TP.hc('uri', TP.w3.Xmlns.TMX,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'tmx',
                             'rootElement', 'tmx'),
             TP.w3.Xmlns.TSH,
                     TP.hc('uri', TP.w3.Xmlns.TSH,
-                            'mimetype', TP.ietf.Mime.TSH,
+                            'mimetype', TP.ietf.mime.TSH,
                             'prefix', 'tsh',
                             'rootElement', 'script'),
             TP.w3.Xmlns.UI,
                     TP.hc('uri', TP.w3.Xmlns.UI,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'ui',
                             'rootElement', ''),
             TP.w3.Xmlns.VCARD,
                     TP.hc('uri', TP.w3.Xmlns.VCARD,
-                            'mimetype', TP.ietf.Mime.VCARD,
+                            'mimetype', TP.ietf.mime.VCARD,
                             'prefix', 'vcard',
                             'rootElement', 'vcard'),
             TP.w3.Xmlns.VCARD_EXT,
                     TP.hc('uri', TP.w3.Xmlns.VCARD_EXT,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'vcard-ext'),
             TP.w3.Xmlns.XCONTROLS,
                     TP.hc('uri', TP.w3.Xmlns.XCONTROLS,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xctrls',
                             'rootElement', '',
                             'procPriority', 3,
                             'defaultNodeType', 'TP.xctrls.GenericElement'),
             TP.w3.Xmlns.XFORMS,
                     TP.hc('uri', TP.w3.Xmlns.XFORMS,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xforms',
                             'rootElement', '',
                             'procPriority', 4),
             TP.w3.Xmlns.XHTML,
                     TP.hc('uri', TP.w3.Xmlns.XHTML,
-                            'mimetype', TP.ietf.Mime.XHTML,
+                            'mimetype', TP.ietf.mime.XHTML,
                             'prefix', 'html',
                             'rootElement', 'html',
                             'procPriority', 0),
             TP.w3.Xmlns.XINCLUDE,
                     TP.hc('uri', TP.w3.Xmlns.XINCLUDE,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xi',
                             'rootElement', ''),
             TP.w3.Xmlns.XLINK,
                     TP.hc('uri', TP.w3.Xmlns.XLINK,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xlink',
                             'rootElement', ''),
             TP.w3.Xmlns.XML,
                     TP.hc('uri', TP.w3.Xmlns.XML,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xml',
                             'rootElement', ''),
             TP.w3.Xmlns.XML_CATALOG,
                     TP.hc('uri', TP.w3.Xmlns.XML_CATALOG,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'cat',
                             'rootElement', 'cat:catalog'),
             TP.w3.Xmlns.XML_EVENTS,
                     TP.hc('uri', TP.w3.Xmlns.XML_EVENTS,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'ev',
                             'rootElement', '',
                             'procPriority', 1),
             TP.w3.Xmlns.XMLNS,
                     TP.hc('uri', TP.w3.Xmlns.XMLNS,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xmlns',
                             'rootElement', ''),
             TP.w3.Xmlns.XML_SCHEMA,
                     TP.hc('uri', TP.w3.Xmlns.XML_SCHEMA,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xs',
                             'rootElement', 'schema'),
             TP.w3.Xmlns.XML_SCHEMA_INSTANCE,
                     TP.hc('uri', TP.w3.Xmlns.XML_SCHEMA_INSTANCE,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'xsi',
                             'rootElement', ''),
             TP.w3.Xmlns.XSLT,
                     TP.hc('uri', TP.w3.Xmlns.XSLT,
-                            'mimetype', TP.ietf.Mime.XSLT,
+                            'mimetype', TP.ietf.mime.XSLT,
                             'prefix', 'xsl',
                             'rootElement', 'stylesheet'),
             TP.w3.Xmlns.XUL,
                     TP.hc('uri', TP.w3.Xmlns.XUL,
-                            'mimetype', TP.ietf.Mime.XUL,
+                            'mimetype', TP.ietf.mime.XUL,
                             'prefix', 'xul',
                             'rootElement', ''),
             TP.w3.Xmlns.VML,
@@ -1635,7 +1635,7 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
                             'rootElement', ''),
             TP.w3.Xmlns.WSDL,
                     TP.hc('uri', TP.w3.Xmlns.WSDL,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.mime.XML,
                             'prefix', 'wsdl',
                             'rootElement', '')
         ));

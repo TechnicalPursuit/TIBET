@@ -258,7 +258,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
                         TP.w3.Xmlns.TIBET);
 
         TP.elementSetAttribute(styleElem, 'href', styleLoc, true);
-        TP.elementSetAttribute(styleElem, 'type', TP.ietf.Mime.TIBET_CSS, true);
+        TP.elementSetAttribute(styleElem, 'type', TP.ietf.mime.TIBET_CSS, true);
 
         //  Make sure also to set the style element's 'id' attribute, so that
         //  the above 'uniquing' logic will work for future occurrences of this
@@ -394,7 +394,7 @@ function(aDocument) {
     //  Add the core stylesheet for the receiver. Note that we supply ourID for
     //  both the unique identifier for the receiver and as the element ID to use
     //  for this stylesheet.
-    styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
+    styleURI = this.getResourceURI('style', TP.ietf.mime.CSS);
     if (TP.isValid(styleURI) && styleURI !== TP.NO_RESULT) {
         newStyleElem = this.$addStylesheetResource(
                                 aDocument, ourID, ourID, styleURI);
@@ -409,7 +409,7 @@ function(aDocument) {
         //  Grab the resource URI for the theme. Note here how we specify no
         //  fallback for the resource URI, because .
         styleURI = this.getResourceURI(
-                            'style_' + themeName, TP.ietf.Mime.CSS, false);
+                            'style_' + themeName, TP.ietf.mime.CSS, false);
 
         //  The themeing resource specifically indicated that it has no result,
         //  so we skip any themeing fallback here
@@ -457,7 +457,7 @@ function(aDocument) {
                 for (i = 0; i < len; i++) {
                     styleURI = this.getResourceURI(
                                     'style_' + allThemes.at(i),
-                                    TP.ietf.Mime.CSS,
+                                    TP.ietf.mime.CSS,
                                     false);
                     if (TP.isValid(styleURI)) {
                         break;
@@ -3650,7 +3650,7 @@ function() {
     var styleURI,
         gids;
 
-    styleURI = this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
+    styleURI = this.getType().getResourceURI('style', TP.ietf.mime.CSS);
     if (TP.notValid(styleURI) || styleURI === TP.NO_RESULT) {
         return true;
     }

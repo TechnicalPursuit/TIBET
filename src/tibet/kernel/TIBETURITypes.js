@@ -88,9 +88,9 @@ virtual URIs:
  *     When asked for content, the TP.core.URI types typically return content
  *     objects based on the MIME type of the content. If a type representing the
  *     content MIME type is registered as a content handler in TIBET's
- *     TP.ietf.Mime map that type's constructContentObject() method is used to
+ *     TP.ietf.mime map that type's constructContentObject() method is used to
  *     construct an instance for the new data. For example, JSON data, which has
- *     a TP.ietf.Mime type definition, will return a JavaScript instance which
+ *     a TP.ietf.mime type definition, will return a JavaScript instance which
  *     may further resolve its type based on JSON rules. In a similar fashion,
  *     CSS files return specific CSS content wrappers. You can extend this
  *     approach to support your own custom data formats as you require by
@@ -5581,7 +5581,7 @@ function(newResource) {
     /**
      * @method getMIMEType
      * @summary Returns the MIME type of the receiver, if available. See the
-     *     TP.ietf.Mime.getMIMEType() method for more information about how
+     *     TP.ietf.mime.getMIMEType() method for more information about how
      *     TIBET tries to guess the MIME type based on file name and data
      *     content.
      * @param {Object} [newResource] An optional resource object that will be
@@ -5643,7 +5643,7 @@ function(newResource) {
 
     //  if we couldn't ask the content then we can try to guess via the
     //  MIME type itself
-    mimeType = TP.ietf.Mime.guessMIMEType(
+    mimeType = TP.ietf.mime.guessMIMEType(
                                 content, this, this.get('defaultMIMEType'));
 
     if (TP.isString(mimeType)) {
@@ -6197,7 +6197,7 @@ function(aRequest) {
             this.$set('computedMIMEType', null);
 
             mime = this.getMIMEType(dom || dat);
-            handler = TP.ietf.Mime.getConcreteType(mime);
+            handler = TP.ietf.mime.getConcreteType(mime);
         } else {
             //  Make sure that handler is a type.
             handler = TP.sys.getTypeByName(handler);
@@ -6238,7 +6238,7 @@ function(aRequest) {
         this.$set('computedMIMEType', null);
 
         mime = this.getMIMEType(dat);
-        type = TP.ietf.Mime.getConcreteType(mime);
+        type = TP.ietf.mime.getConcreteType(mime);
 
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose

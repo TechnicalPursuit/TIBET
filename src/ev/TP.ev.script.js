@@ -106,9 +106,9 @@ function(aRequest) {
     //  syntax with this tag but we default to TSH...otherwise you'd have likely
     //  been using an html:script tag right? ;)
     type = TP.ifEmpty(TP.elementGetAttribute(node, 'ev:type', true),
-                        TP.ietf.Mime.TSH);
+                        TP.ietf.mime.TSH);
 
-    if (type === TP.ietf.Mime.TSH) {
+    if (type === TP.ietf.mime.TSH) {
         //  TSH source, if already processed, can be managed by the current
         //  request if we can get it into child content where TP.DESCEND could
         //  work effectively, otherwise we need to process it in a full
@@ -190,7 +190,7 @@ function(aRequest) {
         }
 
         shell[TP.composeHandlerName('ShellRequest')](req);
-    } else if (type === TP.ietf.Mime.JS) {
+    } else if (type === TP.ietf.mime.JS) {
         //  Build a function and cache it on the receiver's window, updating the
         //  node to hold it's ID for next time
         funcID = TP.genID('ev_script');

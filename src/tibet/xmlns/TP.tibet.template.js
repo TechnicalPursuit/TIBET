@@ -653,22 +653,22 @@ function(aRequest) {
     //  Templates can be of three basic types: JS (aka "string"), XSLT, or XML
     //  (aka "content").
     if (TP.isEmpty(type = TP.elementGetAttribute(elem, 'tibet:mime', true))) {
-        type = TP.ietf.Mime.XML;
+        type = TP.ietf.mime.XML;
     }
 
     switch (type) {
-        case TP.ietf.Mime.JS:
+        case TP.ietf.mime.JS:
 
             this.processJSTemplate(elem, name, uri);
             break;
 
-        case TP.ietf.Mime.XSLT:
+        case TP.ietf.mime.XSLT:
 
             this.processXSLTTemplate(elem, name, uri);
             break;
 
-        case TP.ietf.Mime.XML:
-        case TP.ietf.Mime.XHTML:
+        case TP.ietf.mime.XML:
+        case TP.ietf.mime.XHTML:
 
             this.processXMLTemplate(elem, name, uri);
             break;

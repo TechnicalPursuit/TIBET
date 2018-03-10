@@ -326,7 +326,7 @@ function(options) {
 
     methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
                             'template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     methodEditorTPElem = methodEditorTPElem.clone();
 

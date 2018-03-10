@@ -44,7 +44,7 @@ TP.hc(
          * @param {String} forcedMIMEType The MIME type that should be used to
          *     determine the kind of document that should be used inside of the
          *     iframe. The two supported kinds of MIME type are currently:
-         *     TP.ietf.Mime.HTML TP.ietf.Mime.XHTML.
+         *     TP.ietf.mime.HTML TP.ietf.mime.XHTML.
          * @param {String} iframeID Optional. If supplied, and the type of
          *     document to create in the iframe is XHTML, this routine will
          *     properly register this ID with the 'frames' array of aDocument's
@@ -69,13 +69,13 @@ TP.hc(
             docMIMEType = forcedMIMEType;
         } else {
             if (TP.isHTMLDocument(aDocument)) {
-                docMIMEType = TP.ietf.Mime.HTML;
+                docMIMEType = TP.ietf.mime.HTML;
             } else {
-                docMIMEType = TP.ietf.Mime.XHTML;
+                docMIMEType = TP.ietf.mime.XHTML;
             }
         }
 
-        if (docMIMEType === TP.ietf.Mime.HTML) {
+        if (docMIMEType === TP.ietf.mime.HTML) {
             newIFrameElement = TP.documentConstructElement(aDocument,
                                                         'iframe',
                                                         TP.w3.Xmlns.XHTML);
@@ -175,7 +175,7 @@ TP.hc(
          * @param {String} forcedMIMEType The MIME type that should be used to
          *     determine the kind of document that should be used inside of the
          *     iframe. The two supported kinds of MIME type are currently:
-         *     TP.ietf.Mime.HTML TP.ietf.Mime.XHTML.
+         *     TP.ietf.mime.HTML TP.ietf.mime.XHTML.
          * @param {String} iframeID Optional. If supplied, and the type of
          *     document to create in the iframe is XHTML, this routine will
          *     properly register this ID with the 'frames' array of aDocument's
@@ -198,13 +198,13 @@ TP.hc(
             docMIMEType = forcedMIMEType;
         } else {
             if (TP.isHTMLDocument(aDocument)) {
-                docMIMEType = TP.ietf.Mime.HTML;
+                docMIMEType = TP.ietf.mime.HTML;
             } else {
-                docMIMEType = TP.ietf.Mime.XHTML;
+                docMIMEType = TP.ietf.mime.XHTML;
             }
         }
 
-        if (docMIMEType === TP.ietf.Mime.HTML) {
+        if (docMIMEType === TP.ietf.mime.HTML) {
             newIFrameElement = TP.documentConstructElement(aDocument,
                                                         'iframe',
                                                         TP.w3.Xmlns.XHTML);
