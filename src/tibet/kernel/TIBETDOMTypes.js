@@ -3954,6 +3954,47 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('getContentNode',
+function(aRequest) {
+
+    /**
+     * @method getContentNode
+     * @summary Returns the receiver's content node(s). This method is provided
+     *     for API compatibility with other types.
+     * @description At this level, this method returns its 'inner content' node,
+     *     which is either a TP.core.Node, if there's only one child or a
+     *     TP.core.DocumentFragment, if there is more than one. NOTE: If a
+     *     TP.core.DocumentFragment is returned, it contains a *clone* of the
+     *     child nodes, not the originals.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
+     *     parameters.
+     * @returns {TP.core.Node|TP.core.DocumentFragment} The only child node or a
+     *     TP.core.DocumentFragment containing a *clone* of all child nodes.
+     */
+
+    var nativeNode,
+        frag;
+
+    nativeNode = this.getNativeNode();
+
+    if (nativeNode.childNodes.length === 1) {
+        return TP.wrap(nativeNode.firstChild);
+    }
+
+    //  Note here that we're only interested in the shallow '.childNodes'
+    //  collection. Note also that we allow this routine to default the
+    //  document, but force it to make a copy of the fragment - otherwise, we'll
+    //  lose the content.
+    if (!TP.isFragment(frag = TP.nodeListAsFragment(
+                                        nativeNode.childNodes, null, true))) {
+        return null;
+    }
+
+    return TP.wrap(frag);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('getIndexInParent',
 function() {
 
