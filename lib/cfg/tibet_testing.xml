@@ -173,7 +173,7 @@
 </config>
 
 <config id="permissions">
-    <script src="~lib_test/src/tibet/permissions/TP.vcard.vcard_Tests.js" />
+    <script src="~lib_test/src/tibet/permissions/TP.ietf.vcard_Tests.js" />
     <script src="~lib_test/src/tibet/permissions/TP.tibet.keyring_Tests.js" />
 </config>
 
