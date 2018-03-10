@@ -708,20 +708,14 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         //  Normalize whitespace
         TP.nodeNormalize(contentElem);
 
+        //  If we're supposed to use the top-level content element, then do so.
+        //  Otherwise, get the child content node/fragment from content element
+        //  and use that.
         if (TP.isTrue(contentInfo.at('useTopLevelContentElem'))) {
             content = contentElem;
-        } else if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
-            //  Grab all of the content element's child nodes as a
-            //  DocumentFragment.
-            content = TP.nodeListAsFragment(contentElem.childNodes);
-        } else if (TP.isValid(contentElem.content)) {
-            //  If the content element has a '.content' slot on it, then it
-            //  might be an HTML5 <template> element. In this case, obtain its
-            //  content (a DocumentFragment) by using the '.content' slot, but
-            //  make sure to clone the content so that we don't remove it.
-            content = TP.nodeCloneNode(contentElem.content);
         } else {
-            content = TP.nodeGetFirstChildElement(contentElem);
+            content = TP.wrap(contentElem).getContentNode();
+            content = TP.unwrap(content);
         }
 
         //  If the content isn't some kind of Node (DocumentFragment or
