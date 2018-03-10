@@ -80,11 +80,11 @@ function() {
      * @method getContentNode
      * @summary Returns the native node of the TP.core.DocumentNode wrapping
      *     the receiver's document object.
-     * @returns {Node}
+     * @returns {TP.core.Document}
      */
 
     //  rely on the content window so we can leverage caching behavior
-    return this.getContentWindow().getContentDocument().getNativeNode();
+    return this.getContentWindow().getContentDocument();
 });
 
 //  ------------------------------------------------------------------------

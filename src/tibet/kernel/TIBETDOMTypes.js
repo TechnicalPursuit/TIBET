@@ -1786,14 +1786,14 @@ function(aRequest) {
 
     /**
      * @method getContentNode
-     * @summary Returns the receiver's native node. This method is provided for
-     *     API compatibility with other types.
+     * @summary Returns the receiver. This method is provided for API
+     *     compatibility with other types.
      * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
-     * @returns {Node} A native node.
+     * @returns {TP.core.Node} The receiver.
      */
 
-    return this.getNativeNode();
+    return this;
 });
 
 //  ------------------------------------------------------------------------
