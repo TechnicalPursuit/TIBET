@@ -367,6 +367,20 @@ TP.html.param.Inst.resolveTraits(
         TP.core.EmptyElementNode);
 
 //  ========================================================================
+//  TP.html.picture (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {TP.html.picture}
+ * @summary 'picture' tag. Group of img and 1...n source elements for displaying
+ *     alternate versions of images.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('picture');
+
+//  ========================================================================
 //  TP.html.source (HTML 5)
 //  ========================================================================
 
