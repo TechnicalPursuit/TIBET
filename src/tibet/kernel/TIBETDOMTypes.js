@@ -1283,7 +1283,7 @@ function(aContentObject, aRequest) {
 
     var content;
 
-    content = TP.str(this.getContent());
+    content = this.getContent();
 
     content += TP.str(this.produceContent(aContentObject, aRequest));
 
