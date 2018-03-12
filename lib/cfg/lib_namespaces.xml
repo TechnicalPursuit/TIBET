@@ -112,7 +112,6 @@
     <script src="tibet/xmlns/TP.tibet.service.js"/>
     <script src="tibet/xmlns/TP.tibet.style.js"/>
     <script src="tibet/xmlns/TP.tibet.template.js"/>
-    <script src="tibet/xmlns/TP.tibet.transform.js"/>
 
     <script src="tibet/xmlns/TP.tibet.tofu.js"/>
 </config>
