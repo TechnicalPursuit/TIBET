@@ -431,7 +431,7 @@ function(storageInfo) {
 TP.core.CompiledTag.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
@@ -542,7 +542,7 @@ function(aRequest) {
 TP.core.CompiledTag.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
@@ -747,6 +747,10 @@ TP.core.CustomTag.defineSubtype('InfoTag');
 //  Can't construct concrete instances of this type.
 TP.core.InfoTag.isAbstract(true);
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  This tag has no associated CSS. Note how these properties are *not*
 //  TYPE_LOCAL, by design.
 TP.core.InfoTag.Type.defineAttribute('styleURI', TP.NO_RESULT);
@@ -927,6 +931,10 @@ TP.core.CustomTag.defineSubtype('ActionTag');
 
 //  can't construct concrete instances of this
 TP.core.ActionTag.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are *not*
 //  TYPE_LOCAL, by design.

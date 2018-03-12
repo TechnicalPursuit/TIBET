@@ -1165,6 +1165,10 @@ function(uniqueID, dataRecord) {
 
 TP.sherpa.Element.defineSubtype('consoleoutputitem');
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  This tag has no associated CSS. It inherits the fact that it has no 'theme'
 //  CSS from TP.sherpa.Element. Note how this property is TYPE_LOCAL, by design.
 TP.sherpa.consoleoutputitem.defineAttribute('styleURI', TP.NO_RESULT);

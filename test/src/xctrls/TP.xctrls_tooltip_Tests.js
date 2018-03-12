@@ -11,6 +11,10 @@
 
 TP.core.CompiledTag.defineSubtype('tmp.TooltipTestContent');
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.tmp.TooltipTestContent.defineAttribute('styleURI', TP.NO_RESULT);

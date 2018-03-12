@@ -22,6 +22,10 @@ TP.sherpa.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
 //  design.
 TP.sherpa.Element.defineAttribute('styleURI', TP.NO_RESULT);

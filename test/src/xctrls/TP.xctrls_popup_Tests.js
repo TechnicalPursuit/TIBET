@@ -11,6 +11,10 @@
 
 TP.core.CompiledTag.defineSubtype('tmp.PopupTestContent');
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.tmp.PopupTestContent.defineAttribute('styleURI', TP.NO_RESULT);
