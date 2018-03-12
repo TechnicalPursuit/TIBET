@@ -16,12 +16,6 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:tabbar');
 
-/**
- * The tag name of the tag to use for each item if there is no template.
- * @type {String}
- */
-TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName', 'xctrls:tabitem');
-
 TP.xctrls.tabbar.addTraits(TP.core.SelectingUIElementNode);
 TP.xctrls.tabbar.addTraits(TP.core.D3Tag);
 
@@ -32,6 +26,12 @@ TP.xctrls.tabbar.Inst.resolveTrait('render', TP.core.D3Tag);
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
+
+/**
+ * The tag name of the tag to use for each item if there is no template.
+ * @type {String}
+ */
+TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName', 'xctrls:tabitem');
 
 TP.xctrls.tabbar.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
