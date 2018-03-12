@@ -1122,16 +1122,17 @@ function() {
         templateContentTPElem,
         compiledTemplateContent;
 
-    //  First, we check to see if the author actually defined a template
-    templateTPElem = this.get('#' + this.getLocalID() + '_template');
-
-    if (TP.isEmpty(templateTPElem)) {
-        return null;
-    }
+    templateTPElem = this.get(
+                        TP.cpc('tibet|template', TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.
-    if (!TP.isValid(templateTPElem.getFirstChildElement())) {
+    if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
+
+        //  Make sure to null out the return value in case we got an empty
+        //  Array.
+        templateTPElem = null;
+
         itemTagName = this.getAttribute('itemTag');
         if (TP.notEmpty(itemTagName)) {
 

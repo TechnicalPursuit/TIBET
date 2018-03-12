@@ -1147,10 +1147,16 @@ function() {
 
     var templateTPElem;
 
-    templateTPElem = this.get('#' + this.getLocalID() + '_template');
+    templateTPElem = this.get(
+                        TP.cpc('tibet|template', TP.hc('shouldCollapse', true)));
 
-    if (TP.isEmpty(templateTPElem)) {
-        return null;
+    //  If the user didn't specify template content, then see if they provided a
+    //  custom itemTag attribute.
+    if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
+
+        //  Make sure to null out the return value in case we got an empty
+        //  Array.
+        templateTPElem = null;
     }
 
     return templateTPElem;
