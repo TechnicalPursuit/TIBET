@@ -87,7 +87,7 @@
 <config id="selftests">
     <script src="~lib_test/src/tibet/testharness/TestSamples.js" />
     <script src="~lib_test/src/tibet/testharness/TP.test.Suite_Tests.js" />
-    <script src="~lib_test/src/tibet/driver/TP.gui.Driver_Tests.js" />
+    <script src="~lib_test/src/tibet/driver/TP.test.GUIDriver_Tests.js" />
 </config>
 
 <config id="collections">

@@ -12,7 +12,7 @@
 //  Driver Fixture
 //  ------------------------------------------------------------------------
 
-TP.gui.Driver.Type.defineMethod('getTestFixture',
+TP.test.GUIDriver.Type.defineMethod('getTestFixture',
 function(options) {
 
     var testCase;
@@ -28,7 +28,7 @@ function(options) {
 //  Test Suite
 //  ========================================================================
 
-TP.gui.Driver.Inst.describe('Syn test suite',
+TP.test.GUIDriver.Inst.describe('Syn test suite',
 function() {
 
     this.it('focus and sendKeys sequence', function(test, options) {
@@ -42,7 +42,7 @@ function() {
 
         test.chain(
             function() {
-                driver = TP.gui.Driver.getTestFixture(
+                driver = TP.test.GUIDriver.getTestFixture(
                                         TP.hc('testCase', test));
 
                 seq = driver.constructSequence();

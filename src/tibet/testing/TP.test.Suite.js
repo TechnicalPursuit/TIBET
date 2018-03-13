@@ -214,7 +214,7 @@ TP.test.Suite.Inst.defineAttribute('currentTestCase');
 /**
  * A hash of 1..n 'drivers' used for things like fetching resources,
  * manipulating the GUI and running shell commands.
- * @type {TP.gui.Driver}
+ * @type {TP.test.GUIDriver}
  */
 TP.test.Suite.Inst.defineAttribute('drivers');
 
@@ -935,8 +935,8 @@ function(target, suiteName, suiteFunc) {
 
     //  Install any GUI drivers we might need.
     this.$set('drivers', TP.hc());
-    if (TP.sys.getTypeByName('TP.gui.Driver')) {
-        this.$get('drivers').atPut('gui', TP.gui.Driver.construct());
+    if (TP.sys.getTypeByName('TP.test.GUIDriver')) {
+        this.$get('drivers').atPut('gui', TP.test.GUIDriver.construct());
     }
 
     //  Track load information to support context/file test filtering.

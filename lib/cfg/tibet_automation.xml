@@ -27,7 +27,7 @@
     }());
     }
     </script>
-    <script src="automation/TP.gui.Driver.js" />
+    <script src="automation/TP.test.GUIDriver.js" />
 </config>
 
 <config id="syn" depends="" unless="boot.context=phantomjs">
