@@ -1260,7 +1260,7 @@ function(anObject, aValue, aComment) {
 
     var val;
 
-    val = TP.uri(anObject);
+    val = TP.uc(TP.str(anObject));
 
     if (!this.assertMinArguments(arguments, 2)) {
         return false;

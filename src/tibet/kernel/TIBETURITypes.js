@@ -371,59 +371,6 @@ function(aURI, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('uri',
-function(anObject) {
-
-    /**
-     * @method uri
-     * @summary Returns the URI which identifies the object provided. When a
-     *     String matching URI form is provided the result is the same as having
-     *     called TP.uc() (which is preferable). In all other cases the
-     *     resulting URI represents the objects "TIBET URL" or ID. This is often
-     *     in the form of a TP.core.URN.
-     * @param {Object} anObject The object whose URI is being requested.
-     * @returns {TP.core.URI} A URI suitable to locate the object provided, or
-     *     defined by that object/string.
-     */
-
-    var uri,
-        id,
-        urn;
-
-    //  legacy calls tend to provide strings... should be a TP.uc() call now.
-    if (TP.isString(anObject) &&
-        TP.regex.URI_LIKELY.test(anObject) &&
-        !TP.regex.REGEX_LITERAL_STRING.test(anObject)) {
-        uri = TP.core.URI.construct(anObject);
-        if (TP.isURI(uri)) {
-            return uri;
-        }
-    } else if (TP.isKindOf(anObject, TP.core.URI)) {
-        return anObject;
-    }
-
-    //  non-mutable objects can't have an ID assigned, their ID is
-    //  effectively their value.
-    if (TP.isMutable(anObject)) {
-        id = TP.gid(anObject, true);
-    } else {
-        id = TP.val(anObject);
-    }
-
-    //  global IDs should be valid TIBET URLs so do our best to construct
-    //  one.
-    //  NOTE that since our IDs don't follow the pure 0-9 and '.' form for
-    //  OID we don't use the urn:oid: NID here.
-    urn = TP.core.URI.construct(TP.TIBET_URN_PREFIX + id);
-
-    //  NEVER signal change during construction...no request made.
-    urn.setResource(anObject, TP.hc('signalChange', false));
-
-    return urn;
-});
-
-//  ------------------------------------------------------------------------
-
 String.Inst.defineMethod('asURI',
 function() {
 
