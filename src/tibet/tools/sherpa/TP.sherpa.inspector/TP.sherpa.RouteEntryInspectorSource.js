@@ -149,7 +149,7 @@ function(options) {
 
     initialPath = 'route.map.' + targetAspect;
 
-    data = TP.core.ConfigPropertyAdaptor.construct(initialPath);
+    data = TP.sherpa.ConfigPropertyAdaptor.construct(initialPath);
 
     dataURI = TP.uc(options.at('bindLoc'));
     dataURISecondaries = dataURI.getSecondaryURIs();
@@ -166,13 +166,13 @@ function(options) {
 //  ------------------------------------------------------------------------
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.ConfigPropertyAdaptor');
+TP.lang.Object.defineSubtype('sherpa.ConfigPropertyAdaptor');
 
-TP.core.ConfigPropertyAdaptor.Inst.defineAttribute('pathPrefix');
+TP.sherpa.ConfigPropertyAdaptor.Inst.defineAttribute('pathPrefix');
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConfigPropertyAdaptor.Inst.defineMethod('init',
+TP.sherpa.ConfigPropertyAdaptor.Inst.defineMethod('init',
 function(pathPrefix) {
 
     /**
@@ -190,7 +190,7 @@ function(pathPrefix) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConfigPropertyAdaptor.Inst.defineMethod('get',
+TP.sherpa.ConfigPropertyAdaptor.Inst.defineMethod('get',
 function(attributeName) {
 
     var path,
@@ -217,7 +217,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConfigPropertyAdaptor.Inst.defineMethod('set',
+TP.sherpa.ConfigPropertyAdaptor.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     var path,
