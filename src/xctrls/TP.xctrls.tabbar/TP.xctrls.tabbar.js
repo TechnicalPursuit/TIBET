@@ -1129,26 +1129,20 @@ function() {
             //  Build a template element, using the supplied item tag name and
             //  building a label/value pair containing expressions that will be
             //  populated to the bound data.
-            templateContentTPElem = TP.tpelem(
-                '<' + itemTagName + '>' +
-                    '<xctrls:label>[[value.1]]</xctrls:label>' +
-                    '<xctrls:value>[[value.0]]</xctrls:value>' +
-                '</' + itemTagName + '>');
+            templateContentTPElem = TP.wrap(
+                TP.xhtmlnode(
+                    '<span>' +
+                        '<' + itemTagName + '>' +
+                            '<xctrls:label>[[value.1]]</xctrls:label>' +
+                            '<xctrls:value>[[value.0]]</xctrls:value>' +
+                        '</' + itemTagName + '>' +
+                    '</span>')
+                );
 
             //  Compile it.
             templateContentTPElem.compile();
 
-            //  Note here how we remove the 'id' attribute, since we're going to
-            //  be using it as a template.
-            templateContentTPElem.removeAttribute('id');
-
-            //  Note here how we grab the return value and use that. It will be
-            //  fully awakened.
-            compiledTemplateContent =
-                TP.nodeAppendChild(
-                    TP.unwrap(templateTPElem),
-                    TP.unwrap(templateContentTPElem),
-                    true);
+            compiledTemplateContent = templateContentTPElem.getNativeNode();
 
             //  Cache that.
             this.set('$compiledTemplateContent', compiledTemplateContent);
