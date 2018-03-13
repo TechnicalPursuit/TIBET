@@ -397,25 +397,15 @@ function(anID) {
      * @param {String} anID The ID to use for the receiver and its subelements.
      */
 
-    var oldID,
+    var elem,
 
-        elem,
-
-        groupElem,
-        templateElem;
-
-    oldID = this.getAttribute('id');
+        groupElem;
 
     elem = this.getNativeNode();
 
     //  Update the group element's 'id'.
     groupElem = TP.unwrap(this.get('group'));
     TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
-
-    //  Update the template element's 'id'. Note that 'getTemplate' has all
-    //  kinds of other side effects, so we do this manually here.
-    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
-    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
 
     //  Note - we do not call 'setAttribute()' against the receiver here - don't
     //  want to endlessly recurse ;-).
