@@ -70,7 +70,7 @@
                 } else {
                     obj.uri = obj.uri || {};
                     obj.uri.handler = obj.uri.handler || {};
-                    obj.uri.handler.http = 'TP.tds.TDSURLHandler';
+                    obj.uri.handler.http = 'TP.uri.TDSURLHandler';
                 }
 
                 str = JSON.stringify(obj);

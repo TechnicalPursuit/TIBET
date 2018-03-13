@@ -46,8 +46,8 @@ function() {
         uri = TP.uriExpandPath('http://localhost/foo.xhtml');
         handler = TP.core.URIMapper.Type.remap(uri);
 
-        result = TP.sys.cfg('uri.handler.http') === 'TP.tds.TDSURLHandler' ?
-            TP.tds.TDSURLHandler : TP.core.HTTPURLHandler;
+        result = TP.sys.cfg('uri.handler.http') === 'TP.uri.TDSURLHandler' ?
+            TP.uri.TDSURLHandler : TP.core.HTTPURLHandler;
         test.assert.isIdenticalTo(handler, result);
     });
 
@@ -57,8 +57,8 @@ function() {
         uri = TP.uriExpandPath('http://127.0.0.1:1407');
         handler = TP.core.URIMapper.Type.remap(uri);
 
-        result = TP.sys.cfg('uri.handler.http') === 'TP.tds.TDSURLHandler' ?
-            TP.tds.TDSURLHandler : TP.core.HTTPURLHandler;
+        result = TP.sys.cfg('uri.handler.http') === 'TP.uri.TDSURLHandler' ?
+            TP.uri.TDSURLHandler : TP.core.HTTPURLHandler;
         test.assert.isIdenticalTo(handler, result);
     });
 

@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tds.TDSURLHandler}
+ * @type {TP.uri.TDSURLHandler}
  * @summary A subtype of HTTPURLHandler that manages URLs coming from the TDS.
  *     The TDS can provide change notifications about the URLs it manages and
  *     this type can then dispatch those changes into the TIBET change
@@ -18,15 +18,15 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.defineSubtype('tds.TDSURLHandler');
+TP.core.HTTPURLHandler.defineSubtype('uri.TDSURLHandler');
 
-TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
+TP.uri.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.set('uriConfigName', 'tds.watch.uri');
+TP.uri.TDSURLHandler.set('uriConfigName', 'tds.watch.uri');
 
 //  Configuration names for the include/exclude configuration settings.
 TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
@@ -40,7 +40,7 @@ TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalType',
+TP.uri.TDSURLHandler.Type.defineMethod('getWatcherSignalType',
 function() {
 
     /**
@@ -58,7 +58,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('patch',
+TP.uri.TDSURLHandler.Type.defineMethod('patch',
 function(targetURI, aRequest) {
 
     /**
@@ -138,7 +138,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('sendPatch',
+TP.uri.TDSURLHandler.Type.defineMethod('sendPatch',
 function(targetURI, patch) {
 
     /**
@@ -209,7 +209,7 @@ function(targetURI, patch) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('save',
+TP.uri.TDSURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -258,7 +258,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineHandler('TDSFileChange',
+TP.uri.TDSURLHandler.Type.defineHandler('TDSFileChange',
 function(aSignal) {
 
     /**
@@ -266,7 +266,7 @@ function(aSignal) {
      * @summary Handles when a TDS-managed resource has changed.
      * @param {TP.sig.TDSFileChange} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
-     * @returns {TP.tds.TDSURLHandler} The receiver.
+     * @returns {TP.uri.TDSURLHandler} The receiver.
      */
 
     var payload,
@@ -312,7 +312,7 @@ function(aSignal) {
 
 //  Make sure the remote url watcher knows about this handler type, but wait to
 //  do this after the type has been fully configured to avoid api check error.
-TP.core.RemoteURLWatchHandler.registerWatcher(TP.tds.TDSURLHandler);
+TP.core.RemoteURLWatchHandler.registerWatcher(TP.uri.TDSURLHandler);
 
 //  =======================================================================
 //  TP.sig.TDSFileChange

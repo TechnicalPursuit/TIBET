@@ -62,7 +62,7 @@
 </config>
 
 <config id="tds">
-    <script src="tds/TP.tds.TDSURLHandler.js"/>
+    <script src="tds/TP.uri.TDSURLHandler.js"/>
 </config>
 
 </package>
