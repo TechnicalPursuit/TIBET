@@ -9,22 +9,22 @@
 //  ========================================================================
 
 /**
- * @type {TP.tsh.testCmd}
+ * @type {TP.test.TSHTestCmd}
  * @summary A command which exercises common shell functionality. This command
  *     is used in shell testing.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:testCmd');
+TP.core.ActionTag.defineSubtype('test.TSHTestCmd');
 
-TP.tsh.testCmd.addTraits(TP.tsh.Element);
+TP.test.TSHTestCmd.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('cmdAddContent',
+TP.test.TSHTestCmd.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -42,7 +42,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('cmdFilterInput',
+TP.test.TSHTestCmd.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -60,7 +60,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('cmdGetContent',
+TP.test.TSHTestCmd.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -77,13 +77,13 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('cmdRunContent',
+TP.test.TSHTestCmd.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
      * @method cmdRunContent
      * @summary Runs the receiver, effectively invoking its action. For
-     *     TP.tsh.testCmd this method is responsible for dispatching all the
+     *     TP.test.TSHTestCmd this method is responsible for dispatching all the
      *     variations of pipe methods which are suitable for use with a URI.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
@@ -225,7 +225,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('cmdSetContent',
+TP.test.TSHTestCmd.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -243,7 +243,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('cmdTransformInput',
+TP.test.TSHTestCmd.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -261,7 +261,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('tshCompile',
+TP.test.TSHTestCmd.Type.defineMethod('tshCompile',
 function(aRequest) {
 
     /**
@@ -291,7 +291,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.testCmd.Type.defineMethod('tshExecute',
+TP.test.TSHTestCmd.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**

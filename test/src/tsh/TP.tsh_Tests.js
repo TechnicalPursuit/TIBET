@@ -40,7 +40,7 @@ function() {
 
     this.it('Expands unquoted argv and param values to resolved values',
     function(test, options) {
-        inputVal = ':testCmd $Y -first=$Y --second=$Y';
+        inputVal = 'test:TSHTestCmd $Y -first=$Y --second=$Y';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -71,7 +71,7 @@ function() {
 
     this.it('Expands double-quoted argv and param values to resolved strings',
     function(test, options) {
-        inputVal = ':testCmd "$Y" -first="$Y" --second="$Y"';
+        inputVal = 'test:TSHTestCmd "$Y" -first="$Y" --second="$Y"';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -102,7 +102,7 @@ function() {
 
     this.it('Expands single-quoted argv and param values to literal strings',
     function(test, options) {
-        inputVal = ':testCmd \'$Y\' -first=\'$Y\' --second=\'$Y\'';
+        inputVal = 'test:TSHTestCmd \'$Y\' -first=\'$Y\' --second=\'$Y\'';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -133,7 +133,7 @@ function() {
 
     this.it('Expands unquoted argv values to proper input objects',
     function(test, options) {
-        inputVal = ':testCmd [] [1, 2, 3] {} {a: 1, b: 2, c: 3} true false 12 12.34 /foo/g TP';
+        inputVal = 'test:TSHTestCmd [] [1, 2, 3] {} {a: 1, b: 2, c: 3} true false 12 12.34 /foo/g TP';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -213,7 +213,7 @@ function() {
 
     this.it('Expands unquoted argv values with nested objects',
     function(test, options) {
-        inputVal = ':testCmd [1, 2, {a: 1, b:2}] {a: 1, b: 2, c: [1,2,3]}';
+        inputVal = 'test:TSHTestCmd [1, 2, {a: 1, b:2}] {a: 1, b: 2, c: [1,2,3]}';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -237,7 +237,7 @@ function() {
 
     this.it('Expands unquoted argv and param backticks to resolved values',
     function(test, options) {
-        inputVal = ':testCmd `$Y` -first=`$Y` --second=`$Y`';
+        inputVal = 'test:TSHTestCmd `$Y` -first=`$Y` --second=`$Y`';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -268,7 +268,7 @@ function() {
 
     this.it('Expands double-quoted argv and param backticks to resolved strings',
     function(test, options) {
-        inputVal = ':testCmd "`$Y`" -first="`$Y`" --second="`$Y`"';
+        inputVal = 'test:TSHTestCmd "`$Y`" -first="`$Y`" --second="`$Y`"';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -299,7 +299,7 @@ function() {
 
     this.it('Expands single-quoted argv and param backticks to literal strings',
     function(test, options) {
-        inputVal = ':testCmd \'`$Y`\' -first=\'`$Y`\' --second=\'`$Y`\'';
+        inputVal = 'test:TSHTestCmd \'`$Y`\' -first=\'`$Y`\' --second=\'`$Y`\'';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -330,7 +330,7 @@ function() {
 
     this.it('Expands unquoted @ references to resolved values',
     function(test, options) {
-        inputVal = ':testCmd @Y -first=@Y --second=@Y';
+        inputVal = 'test:TSHTestCmd @Y -first=@Y --second=@Y';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -361,7 +361,7 @@ function() {
 
     this.it('Expands double-quoted @ references to resolved value strings',
     function(test, options) {
-        inputVal = ':testCmd "@Y" -first="@Y" --second="@Y"';
+        inputVal = 'test:TSHTestCmd "@Y" -first="@Y" --second="@Y"';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -392,7 +392,7 @@ function() {
 
     this.it('Expands single-quoted @ references to literal values',
     function(test, options) {
-        inputVal = ':testCmd \'@Y\' -first=\'@Y\' --second=\'@Y\'';
+        inputVal = 'test:TSHTestCmd \'@Y\' -first=\'@Y\' --second=\'@Y\'';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -463,7 +463,7 @@ function() {
 
     this.it('simple expansion', function(test, options) {
 
-        inputVal = ':testCmd -first --second --third=\'foo\' -fourth="bar" --fifth=$Y --sixth="$Y" --seventh=\'$Y\'';
+        inputVal = 'test:TSHTestCmd -first --second --third=\'foo\' -fourth="bar" --fifth=$Y --sixth="$Y" --seventh=\'$Y\'';
         correctResult =
             TP.hc(
                 'tsh:first',
@@ -831,9 +831,9 @@ function() {
             });
     });
 
-    this.it(':testCmd "true" foo="true"', function(test, options) {
+    this.it('test:TSHTestCmd "true" foo="true"', function(test, options) {
 
-        inputVal = ':testCmd "true" foo="true"';
+        inputVal = 'test:TSHTestCmd "true" foo="true"';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -855,9 +855,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"', function(test, options) {
 
-        inputVal = ':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"';
+        inputVal = 'test:TSHTestCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"';
         correctResult =
             TP.hc(
                 'foo',
@@ -914,9 +914,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "2" "2{{x}}" bar="2" baz="2{{x}}"', function(test, options) {
 
-        inputVal = ':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"';
+        inputVal = 'test:TSHTestCmd "2" "2{{x}}" bar="2" baz="2{{x}}"';
         correctResult =
             TP.hc(
                 'bar',
@@ -952,9 +952,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"', function(test, options) {
+    this.it('test:TSHTestCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"', function(test, options) {
 
-        inputVal = ':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"';
+        inputVal = 'test:TSHTestCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"';
         correctResult =
             TP.hc(
                 'foo',
@@ -1004,9 +1004,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"', function(test, options) {
 
-        inputVal = ':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"';
+        inputVal = 'test:TSHTestCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"';
         correctResult =
             TP.hc(
                 'foo',
@@ -1056,9 +1056,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"', function(test, options) {
+    this.it('test:TSHTestCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"', function(test, options) {
 
-        inputVal = ':testCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"';
+        inputVal = 'test:TSHTestCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"';
         correctResult =
             TP.hc(
                 'foo',
@@ -1108,9 +1108,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"', function(test, options) {
+    this.it('test:TSHTestCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"', function(test, options) {
 
-        inputVal = ':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"';
+        inputVal = 'test:TSHTestCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"';
         correctResult =
             TP.hc(
                 'bar',
@@ -1146,9 +1146,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"', function(test, options) {
+    this.it('test:TSHTestCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"', function(test, options) {
 
-        inputVal = ':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"';
+        inputVal = 'test:TSHTestCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -1212,9 +1212,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"', function(test, options) {
+    this.it('test:TSHTestCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"', function(test, options) {
 
-        inputVal = ':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"';
+        inputVal = 'test:TSHTestCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"';
         correctResult =
             TP.hc(
                 'first',
@@ -1557,9 +1557,9 @@ function() {
             });
     });
 
-    this.it(':testCmd foo bar baz', function(test, options) {
+    this.it('test:TSHTestCmd foo bar baz', function(test, options) {
 
-        inputVal = ':testCmd foo bar baz';
+        inputVal = 'test:TSHTestCmd foo bar baz';
         correctResult =
             TP.hc(
                 'ARG0',
@@ -1588,9 +1588,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd first=foo second=bar third=baz', function(test, options) {
+    this.it('test:TSHTestCmd first=foo second=bar third=baz', function(test, options) {
 
-        inputVal = ':testCmd first=foo second=bar third=baz';
+        inputVal = 'test:TSHTestCmd first=foo second=bar third=baz';
         correctResult =
             TP.hc(
                 'first',
@@ -1619,9 +1619,9 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd x', function(test, options) {
+    this.it('test:TSHTestCmd x', function(test, options) {
 
-        inputVal = ':testCmd x';
+        inputVal = 'test:TSHTestCmd x';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1635,9 +1635,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd @x', function(test, options) {
+    this.it('test:TSHTestCmd @x', function(test, options) {
 
-        inputVal = ':testCmd @x';
+        inputVal = 'test:TSHTestCmd @x';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1651,9 +1651,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd {{x}}', function(test, options) {
+    this.it('test:TSHTestCmd {{x}}', function(test, options) {
 
-        inputVal = ':testCmd {{x}}';
+        inputVal = 'test:TSHTestCmd {{x}}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1667,9 +1667,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd \'x\'', function(test, options) {
+    this.it('test:TSHTestCmd \'x\'', function(test, options) {
 
-        inputVal = ':testCmd \'x\'';
+        inputVal = 'test:TSHTestCmd \'x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1683,9 +1683,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd "x"', function(test, options) {
+    this.it('test:TSHTestCmd "x"', function(test, options) {
 
-        inputVal = ':testCmd "x"';
+        inputVal = 'test:TSHTestCmd "x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1699,9 +1699,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd `x`', function(test, options) {
+    this.it('test:TSHTestCmd `x`', function(test, options) {
 
-        inputVal = ':testCmd `x`';
+        inputVal = 'test:TSHTestCmd `x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1715,9 +1715,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd \'@x\'', function(test, options) {
+    this.it('test:TSHTestCmd \'@x\'', function(test, options) {
 
-        inputVal = ':testCmd \'@x\'';
+        inputVal = 'test:TSHTestCmd \'@x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1731,9 +1731,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd "@x"', function(test, options) {
+    this.it('test:TSHTestCmd "@x"', function(test, options) {
 
-        inputVal = ':testCmd "@x"';
+        inputVal = 'test:TSHTestCmd "@x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1747,9 +1747,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd `@x`', function(test, options) {
+    this.it('test:TSHTestCmd `@x`', function(test, options) {
 
-        inputVal = ':testCmd `@x`';
+        inputVal = 'test:TSHTestCmd `@x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1763,9 +1763,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd \'{{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{x}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'{{x}}\'';
+        inputVal = 'test:TSHTestCmd \'{{x}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1779,9 +1779,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "{{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{x}}"', function(test, options) {
 
-        inputVal = ':testCmd "{{x}}"';
+        inputVal = 'test:TSHTestCmd "{{x}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1795,9 +1795,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd `{{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{x}}`', function(test, options) {
 
-        inputVal = ':testCmd `{{x}}`';
+        inputVal = 'test:TSHTestCmd `{{x}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1811,9 +1811,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd \'This is x\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is x\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is x\'';
+        inputVal = 'test:TSHTestCmd \'This is x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1827,9 +1827,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is x"', function(test, options) {
+    this.it('test:TSHTestCmd "This is x"', function(test, options) {
 
-        inputVal = ':testCmd "This is x"';
+        inputVal = 'test:TSHTestCmd "This is x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1843,9 +1843,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is x`', function(test, options) {
+    this.it('test:TSHTestCmd `This is x`', function(test, options) {
 
-        inputVal = ':testCmd `This is x`';
+        inputVal = 'test:TSHTestCmd `This is x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1859,9 +1859,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is @x\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is @x\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is @x\'';
+        inputVal = 'test:TSHTestCmd \'This is @x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1875,9 +1875,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is @x"', function(test, options) {
+    this.it('test:TSHTestCmd "This is @x"', function(test, options) {
 
-        inputVal = ':testCmd "This is @x"';
+        inputVal = 'test:TSHTestCmd "This is @x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1891,9 +1891,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is @x`', function(test, options) {
+    this.it('test:TSHTestCmd `This is @x`', function(test, options) {
 
-        inputVal = ':testCmd `This is @x`';
+        inputVal = 'test:TSHTestCmd `This is @x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1907,9 +1907,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is {{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is {{x}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is {{x}}\'';
+        inputVal = 'test:TSHTestCmd \'This is {{x}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1923,9 +1923,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is {{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is {{x}}"', function(test, options) {
 
-        inputVal = ':testCmd "This is {{x}}"';
+        inputVal = 'test:TSHTestCmd "This is {{x}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1939,9 +1939,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is {{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is {{x}}`', function(test, options) {
 
-        inputVal = ':testCmd `This is {{x}}`';
+        inputVal = 'test:TSHTestCmd `This is {{x}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1955,9 +1955,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=x', function(test, options) {
+    this.it('test:TSHTestCmd stuff=x', function(test, options) {
 
-        inputVal = ':testCmd stuff=x';
+        inputVal = 'test:TSHTestCmd stuff=x';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1971,9 +1971,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=@x', function(test, options) {
+    this.it('test:TSHTestCmd stuff=@x', function(test, options) {
 
-        inputVal = ':testCmd stuff=@x';
+        inputVal = 'test:TSHTestCmd stuff=@x';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1987,9 +1987,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff={{x}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{x}}', function(test, options) {
 
-        inputVal = ':testCmd stuff={{x}}';
+        inputVal = 'test:TSHTestCmd stuff={{x}}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2003,9 +2003,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'x\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'x\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'x\'';
+        inputVal = 'test:TSHTestCmd stuff=\'x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2019,9 +2019,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff="x"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="x"', function(test, options) {
 
-        inputVal = ':testCmd stuff="x"';
+        inputVal = 'test:TSHTestCmd stuff="x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2035,9 +2035,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=`x`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`x`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`x`';
+        inputVal = 'test:TSHTestCmd stuff=`x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2051,9 +2051,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'@x\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'@x\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'@x\'';
+        inputVal = 'test:TSHTestCmd stuff=\'@x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2067,9 +2067,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff="@x"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="@x"', function(test, options) {
 
-        inputVal = ':testCmd stuff="@x"';
+        inputVal = 'test:TSHTestCmd stuff="@x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2083,9 +2083,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=`@x`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`@x`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`@x`';
+        inputVal = 'test:TSHTestCmd stuff=`@x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2099,9 +2099,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'{{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{x}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'{{x}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'{{x}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2115,9 +2115,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="{{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{x}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="{{x}}"';
+        inputVal = 'test:TSHTestCmd stuff="{{x}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2131,9 +2131,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=`{{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{x}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`{{x}}`';
+        inputVal = 'test:TSHTestCmd stuff=`{{x}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2147,9 +2147,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'This is x\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is x\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is x\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2163,9 +2163,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is x"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is x"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is x"';
+        inputVal = 'test:TSHTestCmd stuff="This is x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2179,9 +2179,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is x`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is x`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is x`';
+        inputVal = 'test:TSHTestCmd stuff=`This is x`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2195,9 +2195,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is @x\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is @x\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is @x\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is @x\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2211,9 +2211,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is @x"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is @x"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is @x"';
+        inputVal = 'test:TSHTestCmd stuff="This is @x"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2227,9 +2227,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is @x`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is @x`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is @x`';
+        inputVal = 'test:TSHTestCmd stuff=`This is @x`';
 
         shellDriver.execOutputTest(
             test,
@@ -2244,9 +2244,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is {{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is {{x}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is {{x}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is {{x}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2260,9 +2260,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is {{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is {{x}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is {{x}}"';
+        inputVal = 'test:TSHTestCmd stuff="This is {{x}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2276,9 +2276,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is {{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is {{x}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is {{x}}`';
+        inputVal = 'test:TSHTestCmd stuff=`This is {{x}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2292,9 +2292,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd {{x .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{x .% #{##.00}}}', function(test, options) {
 
-        inputVal = ':testCmd {{x .% #{##.00}}}';
+        inputVal = 'test:TSHTestCmd {{x .% #{##.00}}}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2308,9 +2308,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd \'{{x .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{x .% #{##.00}}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'{{x .% #{##.00}}}\'';
+        inputVal = 'test:TSHTestCmd \'{{x .% #{##.00}}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2324,9 +2324,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "{{x .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{x .% #{##.00}}}"', function(test, options) {
 
-        inputVal = ':testCmd "{{x .% #{##.00}}}"';
+        inputVal = 'test:TSHTestCmd "{{x .% #{##.00}}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2340,8 +2340,8 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd `{{x .% #{##.00}}}`', function(test, options) {
-        inputVal = ':testCmd `{{x .% #{##.00}}}`';
+    this.it('test:TSHTestCmd `{{x .% #{##.00}}}`', function(test, options) {
+        inputVal = 'test:TSHTestCmd `{{x .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2355,9 +2355,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff={{x .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{x .% #{##.00}}}', function(test, options) {
 
-        inputVal = ':testCmd stuff={{x .% #{##.00}}}';
+        inputVal = 'test:TSHTestCmd stuff={{x .% #{##.00}}}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2371,9 +2371,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'{{x .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{x .% #{##.00}}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'{{x .% #{##.00}}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'{{x .% #{##.00}}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2387,9 +2387,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="{{x .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{x .% #{##.00}}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="{{x .% #{##.00}}}"';
+        inputVal = 'test:TSHTestCmd stuff="{{x .% #{##.00}}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2404,9 +2404,9 @@ function() {
 
     });
 
-    this.it(':testCmd stuff=`{{x .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{x .% #{##.00}}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`{{x .% #{##.00}}}`';
+        inputVal = 'test:TSHTestCmd stuff=`{{x .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2938,9 +2938,9 @@ function() {
             });
     });
 
-    this.it(':testCmd $Y', function(test, options) {
+    this.it('test:TSHTestCmd $Y', function(test, options) {
 
-        inputVal = ':testCmd $Y';
+        inputVal = 'test:TSHTestCmd $Y';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2954,9 +2954,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd ${Y}', function(test, options) {
+    this.it('test:TSHTestCmd ${Y}', function(test, options) {
 
-        inputVal = ':testCmd ${Y}';
+        inputVal = 'test:TSHTestCmd ${Y}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2970,9 +2970,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd @$Y', function(test, options) {
+    this.it('test:TSHTestCmd @$Y', function(test, options) {
 
-        inputVal = ':testCmd @$Y';
+        inputVal = 'test:TSHTestCmd @$Y';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2986,9 +2986,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd @${Y}', function(test, options) {
+    this.it('test:TSHTestCmd @${Y}', function(test, options) {
 
-        inputVal = ':testCmd @${Y}';
+        inputVal = 'test:TSHTestCmd @${Y}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3002,9 +3002,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd {{$Y}}', function(test, options) {
+    this.it('test:TSHTestCmd {{$Y}}', function(test, options) {
 
-        inputVal = ':testCmd {{$Y}}';
+        inputVal = 'test:TSHTestCmd {{$Y}}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3018,9 +3018,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd {{${Y}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{${Y}}}', function(test, options) {
 
-        inputVal = ':testCmd {{${Y}}}';
+        inputVal = 'test:TSHTestCmd {{${Y}}}';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3034,9 +3034,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'$Y\'', function(test, options) {
 
-        inputVal = ':testCmd \'$Y\'';
+        inputVal = 'test:TSHTestCmd \'$Y\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3050,9 +3050,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd \'${Y}\'';
+        inputVal = 'test:TSHTestCmd \'${Y}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3066,9 +3066,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd "$Y"', function(test, options) {
+    this.it('test:TSHTestCmd "$Y"', function(test, options) {
 
-        inputVal = ':testCmd "$Y"';
+        inputVal = 'test:TSHTestCmd "$Y"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3082,9 +3082,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd "${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "${Y}"', function(test, options) {
 
-        inputVal = ':testCmd "${Y}"';
+        inputVal = 'test:TSHTestCmd "${Y}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3098,9 +3098,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `$Y`', function(test, options) {
+    this.it('test:TSHTestCmd `$Y`', function(test, options) {
 
-        inputVal = ':testCmd `$Y`';
+        inputVal = 'test:TSHTestCmd `$Y`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3114,9 +3114,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `${Y}`', function(test, options) {
 
-        inputVal = ':testCmd `${Y}`';
+        inputVal = 'test:TSHTestCmd `${Y}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3130,9 +3130,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'@$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'@$Y\'', function(test, options) {
 
-        inputVal = ':testCmd \'@$Y\'';
+        inputVal = 'test:TSHTestCmd \'@$Y\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3146,9 +3146,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'@${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'@${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd \'@${Y}\'';
+        inputVal = 'test:TSHTestCmd \'@${Y}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3162,9 +3162,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd "@$Y"', function(test, options) {
+    this.it('test:TSHTestCmd "@$Y"', function(test, options) {
 
-        inputVal = ':testCmd "@$Y"';
+        inputVal = 'test:TSHTestCmd "@$Y"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3178,9 +3178,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd "@${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "@${Y}"', function(test, options) {
 
-        inputVal = ':testCmd "@${Y}"';
+        inputVal = 'test:TSHTestCmd "@${Y}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3194,9 +3194,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `@$Y`', function(test, options) {
+    this.it('test:TSHTestCmd `@$Y`', function(test, options) {
 
-        inputVal = ':testCmd `@$Y`';
+        inputVal = 'test:TSHTestCmd `@$Y`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3210,9 +3210,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `@${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `@${Y}`', function(test, options) {
 
-        inputVal = ':testCmd `@${Y}`';
+        inputVal = 'test:TSHTestCmd `@${Y}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3226,9 +3226,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'{{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{$Y}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'{{$Y}}\'';
+        inputVal = 'test:TSHTestCmd \'{{$Y}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3242,9 +3242,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'{{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{${Y}}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'{{${Y}}}\'';
+        inputVal = 'test:TSHTestCmd \'{{${Y}}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3258,9 +3258,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "{{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{$Y}}"', function(test, options) {
 
-        inputVal = ':testCmd "{{$Y}}"';
+        inputVal = 'test:TSHTestCmd "{{$Y}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3274,9 +3274,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd "{{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{${Y}}}"', function(test, options) {
 
-        inputVal = ':testCmd "{{${Y}}}"';
+        inputVal = 'test:TSHTestCmd "{{${Y}}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3290,9 +3290,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `{{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{$Y}}`', function(test, options) {
 
-        inputVal = ':testCmd `{{$Y}}`';
+        inputVal = 'test:TSHTestCmd `{{$Y}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3306,9 +3306,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `{{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{${Y}}}`', function(test, options) {
 
-        inputVal = ':testCmd `{{${Y}}}`';
+        inputVal = 'test:TSHTestCmd `{{${Y}}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3322,9 +3322,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'This is $Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is $Y\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is $Y\'';
+        inputVal = 'test:TSHTestCmd \'This is $Y\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3338,9 +3338,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is ${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is ${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is ${Y}\'';
+        inputVal = 'test:TSHTestCmd \'This is ${Y}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3354,9 +3354,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is $Y"', function(test, options) {
+    this.it('test:TSHTestCmd "This is $Y"', function(test, options) {
 
-        inputVal = ':testCmd "This is $Y"';
+        inputVal = 'test:TSHTestCmd "This is $Y"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3370,9 +3370,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is ${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is ${Y}"', function(test, options) {
 
-        inputVal = ':testCmd "This is ${Y}"';
+        inputVal = 'test:TSHTestCmd "This is ${Y}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3386,9 +3386,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is $Y`', function(test, options) {
+    this.it('test:TSHTestCmd `This is $Y`', function(test, options) {
 
-        inputVal = ':testCmd `This is $Y`';
+        inputVal = 'test:TSHTestCmd `This is $Y`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3402,9 +3402,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is ${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is ${Y}`', function(test, options) {
 
-        inputVal = ':testCmd `This is ${Y}`';
+        inputVal = 'test:TSHTestCmd `This is ${Y}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3418,9 +3418,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is @$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is @$Y\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is @$Y\'';
+        inputVal = 'test:TSHTestCmd \'This is @$Y\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3434,9 +3434,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is @$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is @$Y\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is @${Y}\'';
+        inputVal = 'test:TSHTestCmd \'This is @${Y}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3450,9 +3450,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is @$Y"', function(test, options) {
+    this.it('test:TSHTestCmd "This is @$Y"', function(test, options) {
 
-        inputVal = ':testCmd "This is @$Y"';
+        inputVal = 'test:TSHTestCmd "This is @$Y"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3466,9 +3466,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is @${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is @${Y}"', function(test, options) {
 
-        inputVal = ':testCmd "This is @${Y}"';
+        inputVal = 'test:TSHTestCmd "This is @${Y}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3482,9 +3482,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is @$Y`', function(test, options) {
+    this.it('test:TSHTestCmd `This is @$Y`', function(test, options) {
 
-        inputVal = ':testCmd `This is @$Y`';
+        inputVal = 'test:TSHTestCmd `This is @$Y`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3498,9 +3498,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is @${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is @${Y}`', function(test, options) {
 
-        inputVal = ':testCmd `This is @${Y}`';
+        inputVal = 'test:TSHTestCmd `This is @${Y}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3514,9 +3514,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is {{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is {{$Y}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is {{$Y}}\'';
+        inputVal = 'test:TSHTestCmd \'This is {{$Y}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3530,9 +3530,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'This is {{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is {{${Y}}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'This is {{${Y}}}\'';
+        inputVal = 'test:TSHTestCmd \'This is {{${Y}}}\'';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3546,9 +3546,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is {{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is {{$Y}}"', function(test, options) {
 
-        inputVal = ':testCmd "This is {{$Y}}"';
+        inputVal = 'test:TSHTestCmd "This is {{$Y}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3562,9 +3562,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "This is {{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is {{${Y}}}"', function(test, options) {
 
-        inputVal = ':testCmd "This is {{${Y}}}"';
+        inputVal = 'test:TSHTestCmd "This is {{${Y}}}"';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3578,9 +3578,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is {{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is {{$Y}}`', function(test, options) {
 
-        inputVal = ':testCmd `This is {{$Y}}`';
+        inputVal = 'test:TSHTestCmd `This is {{$Y}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3594,9 +3594,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd `This is {{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is {{${Y}}}`', function(test, options) {
 
-        inputVal = ':testCmd `This is {{${Y}}}`';
+        inputVal = 'test:TSHTestCmd `This is {{${Y}}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3610,9 +3610,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd {{$Y .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{$Y .% #{##.00}}}', function(test, options) {
 
-        inputVal = ':testCmd {{$Y .% #{##.00}}}';
+        inputVal = 'test:TSHTestCmd {{$Y .% #{##.00}}}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3625,9 +3625,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd {{${Y} .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{${Y} .% #{##.00}}}', function(test, options) {
 
-        inputVal = ':testCmd {{${Y} .% #{##.00}}}';
+        inputVal = 'test:TSHTestCmd {{${Y} .% #{##.00}}}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3640,9 +3640,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd \'{{$Y .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{$Y .% #{##.00}}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'{{$Y .% #{##.00}}}\'';
+        inputVal = 'test:TSHTestCmd \'{{$Y .% #{##.00}}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3655,9 +3655,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd \'{{${Y} .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{${Y} .% #{##.00}}}\'', function(test, options) {
 
-        inputVal = ':testCmd \'{{${Y} .% #{##.00}}}\'';
+        inputVal = 'test:TSHTestCmd \'{{${Y} .% #{##.00}}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3670,9 +3670,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd "{{$Y .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{$Y .% #{##.00}}}"', function(test, options) {
 
-        inputVal = ':testCmd "{{$Y .% #{##.00}}}"';
+        inputVal = 'test:TSHTestCmd "{{$Y .% #{##.00}}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3685,9 +3685,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd "{{${Y} .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{${Y} .% #{##.00}}}"', function(test, options) {
 
-        inputVal = ':testCmd "{{${Y} .% #{##.00}}}"';
+        inputVal = 'test:TSHTestCmd "{{${Y} .% #{##.00}}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3700,9 +3700,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `{{$Y .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{$Y .% #{##.00}}}`', function(test, options) {
 
-        inputVal = ':testCmd `{{$Y .% #{##.00}}}`';
+        inputVal = 'test:TSHTestCmd `{{$Y .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3715,9 +3715,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd `{{${Y} .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{${Y} .% #{##.00}}}`', function(test, options) {
 
-        inputVal = ':testCmd `{{${Y} .% #{##.00}}}`';
+        inputVal = 'test:TSHTestCmd `{{${Y} .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3730,9 +3730,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=$Y', function(test, options) {
+    this.it('test:TSHTestCmd stuff=$Y', function(test, options) {
 
-        inputVal = ':testCmd stuff=$Y';
+        inputVal = 'test:TSHTestCmd stuff=$Y';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3745,9 +3745,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=${Y}', function(test, options) {
+    this.it('test:TSHTestCmd stuff=${Y}', function(test, options) {
 
-        inputVal = ':testCmd stuff=${Y}';
+        inputVal = 'test:TSHTestCmd stuff=${Y}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3760,9 +3760,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=@$Y', function(test, options) {
+    this.it('test:TSHTestCmd stuff=@$Y', function(test, options) {
 
-        inputVal = ':testCmd stuff=@$Y';
+        inputVal = 'test:TSHTestCmd stuff=@$Y';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3775,9 +3775,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=@${Y}', function(test, options) {
+    this.it('test:TSHTestCmd stuff=@${Y}', function(test, options) {
 
-        inputVal = ':testCmd stuff=@${Y}';
+        inputVal = 'test:TSHTestCmd stuff=@${Y}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3790,9 +3790,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff={{$Y}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{$Y}}', function(test, options) {
 
-        inputVal = ':testCmd stuff={{$Y}}';
+        inputVal = 'test:TSHTestCmd stuff={{$Y}}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3805,9 +3805,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff={{${Y}}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{${Y}}}', function(test, options) {
 
-        inputVal = ':testCmd stuff={{${Y}}}';
+        inputVal = 'test:TSHTestCmd stuff={{${Y}}}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3820,9 +3820,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'$Y\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'$Y\'';
+        inputVal = 'test:TSHTestCmd stuff=\'$Y\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3835,9 +3835,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'${Y}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'${Y}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3850,9 +3850,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff="$Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="$Y"', function(test, options) {
 
-        inputVal = ':testCmd stuff="$Y"';
+        inputVal = 'test:TSHTestCmd stuff="$Y"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3865,9 +3865,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff="${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="${Y}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="${Y}"';
+        inputVal = 'test:TSHTestCmd stuff="${Y}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3880,9 +3880,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`$Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`$Y`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`$Y`';
+        inputVal = 'test:TSHTestCmd stuff=`$Y`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3895,9 +3895,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`${Y}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`${Y}`';
+        inputVal = 'test:TSHTestCmd stuff=`${Y}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3910,9 +3910,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'@$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'@$Y\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'@$Y\'';
+        inputVal = 'test:TSHTestCmd stuff=\'@$Y\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3925,9 +3925,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'@${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'@${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'@${Y}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'@${Y}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3940,9 +3940,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff="@$Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="@$Y"', function(test, options) {
 
-        inputVal = ':testCmd stuff="@$Y"';
+        inputVal = 'test:TSHTestCmd stuff="@$Y"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3955,9 +3955,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff="@${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="@${Y}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="@${Y}"';
+        inputVal = 'test:TSHTestCmd stuff="@${Y}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3970,9 +3970,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`@$Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`@$Y`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`@$Y`';
+        inputVal = 'test:TSHTestCmd stuff=`@$Y`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3985,9 +3985,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`@${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`@${Y}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`@${Y}`';
+        inputVal = 'test:TSHTestCmd stuff=`@${Y}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4000,9 +4000,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'{{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{$Y}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'{{$Y}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'{{$Y}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4015,9 +4015,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'{{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{${Y}}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'{{${Y}}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'{{${Y}}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4030,9 +4030,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="{{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{$Y}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="{{$Y}}"';
+        inputVal = 'test:TSHTestCmd stuff="{{$Y}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4045,9 +4045,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff="{{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{${Y}}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="{{${Y}}}"';
+        inputVal = 'test:TSHTestCmd stuff="{{${Y}}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4060,9 +4060,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`{{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{$Y}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`{{$Y}}`';
+        inputVal = 'test:TSHTestCmd stuff=`{{$Y}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4075,9 +4075,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`{{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{${Y}}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`{{${Y}}}`';
+        inputVal = 'test:TSHTestCmd stuff=`{{${Y}}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4090,9 +4090,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'This is $Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is $Y\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is $Y\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is $Y\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4105,9 +4105,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is ${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is ${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is ${Y}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is ${Y}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4120,9 +4120,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is $Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is $Y"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is $Y"';
+        inputVal = 'test:TSHTestCmd stuff="This is $Y"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4135,9 +4135,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is ${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is ${Y}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is ${Y}"';
+        inputVal = 'test:TSHTestCmd stuff="This is ${Y}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4150,9 +4150,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is $Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is $Y`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is $Y`';
+        inputVal = 'test:TSHTestCmd stuff=`This is $Y`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4165,9 +4165,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is ${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is ${Y}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is ${Y}`';
+        inputVal = 'test:TSHTestCmd stuff=`This is ${Y}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4180,9 +4180,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is @$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is @$Y\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is @$Y\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is @$Y\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4195,9 +4195,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is @${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is @${Y}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is @${Y}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is @${Y}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4210,9 +4210,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is @$Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is @$Y"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is @$Y"';
+        inputVal = 'test:TSHTestCmd stuff="This is @$Y"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4225,9 +4225,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is @${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is @${Y}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is @${Y}"';
+        inputVal = 'test:TSHTestCmd stuff="This is @${Y}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4240,9 +4240,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is @$Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is @$Y`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is @$Y`';
+        inputVal = 'test:TSHTestCmd stuff=`This is @$Y`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4255,9 +4255,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is @${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is @${Y}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is @${Y}`';
+        inputVal = 'test:TSHTestCmd stuff=`This is @${Y}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4270,9 +4270,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is {{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is {{$Y}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is {{$Y}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is {{$Y}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4285,9 +4285,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=\'This is {{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is {{${Y}}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'This is {{${Y}}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'This is {{${Y}}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4300,9 +4300,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is {{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is {{$Y}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is {{$Y}}"';
+        inputVal = 'test:TSHTestCmd stuff="This is {{$Y}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4315,9 +4315,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="This is {{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is {{${Y}}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="This is {{${Y}}}"';
+        inputVal = 'test:TSHTestCmd stuff="This is {{${Y}}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4330,9 +4330,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is {{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is {{$Y}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is {{$Y}}`';
+        inputVal = 'test:TSHTestCmd stuff=`This is {{$Y}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4345,9 +4345,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff=`This is {{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is {{${Y}}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`This is {{${Y}}}`';
+        inputVal = 'test:TSHTestCmd stuff=`This is {{${Y}}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4360,9 +4360,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff={{$Y .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{$Y .% #{##.00}}}', function(test, options) {
 
-        inputVal = ':testCmd stuff={{$Y .% #{##.00}}}';
+        inputVal = 'test:TSHTestCmd stuff={{$Y .% #{##.00}}}';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4375,9 +4375,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=\'{{$Y .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{$Y .% #{##.00}}}\'', function(test, options) {
 
-        inputVal = ':testCmd stuff=\'{{$Y .% #{##.00}}}\'';
+        inputVal = 'test:TSHTestCmd stuff=\'{{$Y .% #{##.00}}}\'';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4390,9 +4390,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it(':testCmd stuff="{{$Y .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{$Y .% #{##.00}}}"', function(test, options) {
 
-        inputVal = ':testCmd stuff="{{$Y .% #{##.00}}}"';
+        inputVal = 'test:TSHTestCmd stuff="{{$Y .% #{##.00}}}"';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -4405,9 +4405,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it(':testCmd stuff=`{{$Y .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{$Y .% #{##.00}}}`', function(test, options) {
 
-        inputVal = ':testCmd stuff=`{{$Y .% #{##.00}}}`';
+        inputVal = 'test:TSHTestCmd stuff=`{{$Y .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
