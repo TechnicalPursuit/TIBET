@@ -27,7 +27,7 @@ function() {
         uri = TP.uriExpandPath('http://127.0.0.1:5984/_design/app/tibet.json');
         handler = TP.core.URIMapper.Type.remap(uri);
 
-        test.assert.isIdenticalTo(handler, TP.couchdb.CouchDBURLHandler);
+        test.assert.isIdenticalTo(handler, TP.uri.CouchDBURLHandler);
     });
 
     this.it('remaps exact matches to their defined handler', function(test, options) {

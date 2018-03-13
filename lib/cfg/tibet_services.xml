@@ -58,7 +58,7 @@
 </config>
 
 <config id="couchdb">
-    <script src="couchdb/TP.couchdb.CouchDBURLHandler.js"/>
+    <script src="couchdb/TP.uri.CouchDBURLHandler.js"/>
 </config>
 
 <config id="tds">

@@ -9,8 +9,8 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.couchdb.CouchDBURLHandler}
- * @summary A URL handler that manages URLs coming from CouchDB. Changes from
+ * @type {TP.uri.CouchDBURLHandler}
+ * @summary A URL handler that manages URLs coming from uri. Changes from
  *     CouchDB come in the form of the CouchDB changes feed, which this handler
  *     can be configured to observe. NOTE that CouchDB observations are done
  *     independently of the 'tds.watch' configuration. This independence lets
@@ -19,19 +19,19 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.defineSubtype('couchdb.CouchDBURLHandler');
+TP.core.HTTPURLHandler.defineSubtype('uri.CouchDBURLHandler');
 
-TP.couchdb.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
+TP.uri.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineConstant(
+TP.uri.CouchDBURLHandler.Type.defineConstant(
     'DATABASE_PATH_MATCHER',
     /^[a-z]{1}[a-z0-9_$()+-]*\/$/);
 
-TP.couchdb.CouchDBURLHandler.Type.defineConstant(
+TP.uri.CouchDBURLHandler.Type.defineConstant(
     'DATABASE_AND_DOCUMENT_PATH_MATCHER',
     /^[a-z]{1}[a-z0-9_$()+-]*\/[a-z0-9]+$/);
 
@@ -41,19 +41,19 @@ TP.couchdb.CouchDBURLHandler.Type.defineConstant(
 
 //  Configuration names for the include/exclude configuration setting for the
 //  remote url watcher types which mix this in.
-TP.couchdb.CouchDBURLHandler.set('includeConfigName',
+TP.uri.CouchDBURLHandler.set('includeConfigName',
     'tds.couch.watch.include');
-TP.couchdb.CouchDBURLHandler.set('excludeConfigName',
+TP.uri.CouchDBURLHandler.set('excludeConfigName',
     'tds.couch.watch.exclude');
 
 //  Server roots that have been authenticated.
-TP.couchdb.CouchDBURLHandler.Type.defineAttribute('authenticatedRoots');
+TP.uri.CouchDBURLHandler.Type.defineAttribute('authenticatedRoots');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('initialize',
+TP.uri.CouchDBURLHandler.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -68,7 +68,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('activateRemoteWatch',
+TP.uri.CouchDBURLHandler.Type.defineMethod('activateRemoteWatch',
 function() {
 
     /**
@@ -91,7 +91,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('addAuthenticatedRoot',
+TP.uri.CouchDBURLHandler.Type.defineMethod('addAuthenticatedRoot',
 function(aRootLocation, authenticationData) {
 
     /**
@@ -104,7 +104,7 @@ function(aRootLocation, authenticationData) {
      *     authenticated and needs to be tracked.
      * @param {TP.core.Hash} [authenticationData] Data about the authenticated
      *     user returned by the authentication call, such as their role.
-     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     * @returns {TP.uri.CouchDBURLHandler} The receiver.
      */
 
     var authenticatedRoots;
@@ -128,7 +128,7 @@ function(aRootLocation, authenticationData) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('authenticate',
+TP.uri.CouchDBURLHandler.Type.defineMethod('authenticate',
 function(aURI, username, password) {
 
     /**
@@ -266,7 +266,7 @@ function(aURI, username, password) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('deactivateRemoteWatch',
+TP.uri.CouchDBURLHandler.Type.defineMethod('deactivateRemoteWatch',
 function() {
 
     /**
@@ -280,7 +280,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalType',
+TP.uri.CouchDBURLHandler.Type.defineMethod('getWatcherSignalType',
 function() {
 
     /**
@@ -299,7 +299,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSourceURIs',
+TP.uri.CouchDBURLHandler.Type.defineMethod('getWatcherSourceURIs',
 function() {
 
     /**
@@ -353,7 +353,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineHandler('AppDidStart',
+TP.uri.CouchDBURLHandler.Type.defineHandler('AppDidStart',
 function(aSignal) {
 
     /**
@@ -361,7 +361,7 @@ function(aSignal) {
      * @summary Handles when a TDS-managed resource has changed.
      * @param {TP.sig.AppDidStart} aSignal The signal indicating that the
      *     application has completed all of its startup tasks.
-     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     * @returns {TP.uri.CouchDBURLHandler} The receiver.
      */
 
     var watcherURIs,
@@ -516,7 +516,7 @@ function(aSignal) {
 
                                         //  Add that to our list of
                                         //  authenticated roots.
-                                        TP.couchdb.CouchDBURLHandler.
+                                        TP.uri.CouchDBURLHandler.
                                             addAuthenticatedRoot(
                                                 authenticatedRoot,
                                                 result);
@@ -548,7 +548,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineHandler('CouchDBChange',
+TP.uri.CouchDBURLHandler.Type.defineHandler('CouchDBChange',
 function(aSignal) {
 
     /**
@@ -556,7 +556,7 @@ function(aSignal) {
      * @summary Handles when a TDS-managed resource has changed.
      * @param {TP.sig.CouchDBChange} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
-     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
+     * @returns {TP.uri.CouchDBURLHandler} The receiver.
      */
 
     var payload,
@@ -740,7 +740,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('isAuthenticated',
+TP.uri.CouchDBURLHandler.Type.defineMethod('isAuthenticated',
 function(targetURI, roleName) {
 
     /**
@@ -775,7 +775,7 @@ function(targetURI, roleName) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('isWatchableURI',
+TP.uri.CouchDBURLHandler.Type.defineMethod('isWatchableURI',
 function(targetURI) {
 
     /**
@@ -794,7 +794,7 @@ function(targetURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('load',
+TP.uri.CouchDBURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
@@ -872,7 +872,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('delete',
+TP.uri.CouchDBURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
@@ -950,7 +950,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('save',
+TP.uri.CouchDBURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -1074,8 +1074,8 @@ function(targetURI, aRequest) {
 //  Make sure the remote url watcher knows about this handler type, but wait to
 //  do this after the type has been fully configured to avoid api check error.
 //  This will cause the activateRemoteWatch method to be invoked on the
-//  TP.couchdb.CouchDBURLHandler to be invoked.
-TP.core.RemoteURLWatchHandler.registerWatcher(TP.couchdb.CouchDBURLHandler);
+//  TP.uri.CouchDBURLHandler to be invoked.
+TP.core.RemoteURLWatchHandler.registerWatcher(TP.uri.CouchDBURLHandler);
 
 //  =======================================================================
 //  TP.sig.CouchDBChange
