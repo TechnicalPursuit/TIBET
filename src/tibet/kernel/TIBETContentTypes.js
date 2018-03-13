@@ -208,8 +208,8 @@ function(content, aURI) {
         return TP.core.XMLContent;
     }
 
-    if (TP.core.CSSStyleSheet.canConstruct(content, aURI)) {
-        return TP.core.CSSStyleSheet;
+    if (TP.core.CSSStyleSheetContent.canConstruct(content, aURI)) {
+        return TP.core.CSSStyleSheetContent;
     }
 
     if (TP.core.JSONContent.canConstruct(content, aURI)) {
@@ -1776,7 +1776,7 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.CSSStyleSheet
+//  TP.core.CSSStyleSheetContent
 //  ========================================================================
 
 /**
@@ -1784,13 +1784,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.defineSubtype('core.CSSStyleSheet');
+TP.core.Content.defineSubtype('core.CSSStyleSheetContent');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSStyleSheet.Type.defineMethod('canConstruct',
+TP.core.CSSStyleSheetContent.Type.defineMethod('canConstruct',
 function(data, uri) {
 
     /**
@@ -1817,7 +1817,7 @@ function(data, uri) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSStyleSheet.Inst.defineMethod('getContentMIMEType',
+TP.core.CSSStyleSheetContent.Inst.defineMethod('getContentMIMEType',
 function() {
 
     /**

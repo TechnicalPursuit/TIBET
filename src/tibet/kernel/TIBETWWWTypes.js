@@ -647,7 +647,7 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                 TP.hc('mimetype', TP.ietf.mime.CSS,
                         'alias', 'CSS',
                         'extensions', 'css',
-                        'handler', 'TP.core.CSSStyleSheet',
+                        'handler', 'TP.core.CSSStyleSheetContent',
                         'tshtag', 'html:style'),
             TP.ietf.mime.HTML,
                 TP.hc('mimetype', TP.ietf.mime.HTML,
