@@ -2532,7 +2532,7 @@ function() {
 
     searcher.set('dynamicMatchers', true);
     searcher.set('defaultMatcher',
-                    TP.core.KeyedSourceMatcher.construct(
+                    TP.xctrls.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', TP.global));
     this.set('$searcher', searcher);
 

@@ -1081,7 +1081,7 @@ function() {
 
         newSearcher = TP.xctrls.Searcher.construct();
         newSearcher.addMatcher(
-                            TP.core.ListMatcher.construct(
+                            TP.xctrls.ListMatcher.construct(
                                 'XCTRLS_LIST_' + this.getLocalID()));
 
         this.set('$autocompleterSearcher', newSearcher);

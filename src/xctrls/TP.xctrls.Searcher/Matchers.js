@@ -9,20 +9,20 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.Matcher}
+ * @type {TP.xctrls.Matcher}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Matcher');
+TP.lang.Object.defineSubtype('xctrls.Matcher');
 
-TP.core.Matcher.isAbstract(true);
+TP.xctrls.Matcher.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Type.defineConstant('MATCH_RESULT_SORT',
+TP.xctrls.Matcher.Type.defineConstant('MATCH_RESULT_SORT',
 function(itemA, itemB) {
 
     var itemAEntry,
@@ -63,23 +63,23 @@ function(itemA, itemB) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineAttribute('input');
-TP.core.Matcher.Inst.defineAttribute('$matcherName');
+TP.xctrls.Matcher.Inst.defineAttribute('input');
+TP.xctrls.Matcher.Inst.defineAttribute('$matcherName');
 
-TP.core.Matcher.Inst.defineAttribute('caseSensitive');
-TP.core.Matcher.Inst.defineAttribute('threshold');
-TP.core.Matcher.Inst.defineAttribute('location');
-TP.core.Matcher.Inst.defineAttribute('distance');
-TP.core.Matcher.Inst.defineAttribute('maxPatternLength');
+TP.xctrls.Matcher.Inst.defineAttribute('caseSensitive');
+TP.xctrls.Matcher.Inst.defineAttribute('threshold');
+TP.xctrls.Matcher.Inst.defineAttribute('location');
+TP.xctrls.Matcher.Inst.defineAttribute('distance');
+TP.xctrls.Matcher.Inst.defineAttribute('maxPatternLength');
 
-TP.core.Matcher.Inst.defineAttribute('useSearchTermLengthForMatches');
-TP.core.Matcher.Inst.defineAttribute('minMatchCharLength');
+TP.xctrls.Matcher.Inst.defineAttribute('useSearchTermLengthForMatches');
+TP.xctrls.Matcher.Inst.defineAttribute('minMatchCharLength');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Type.defineMethod('initialize',
+TP.xctrls.Matcher.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -96,7 +96,7 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('init',
+TP.xctrls.Matcher.Inst.defineMethod('init',
 function(matcherName) {
 
     /**
@@ -104,7 +104,7 @@ function(matcherName) {
      * @summary Initialize the instance.
      * @param {String} matcherName The name of this matcher that will be
      *     associated with the search results produced by it
-     * @returns {TP.core.Matcher} The receiver.
+     * @returns {TP.xctrls.Matcher} The receiver.
      */
 
     this.callNextMethod();
@@ -127,7 +127,7 @@ function(matcherName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('getDataSet',
+TP.xctrls.Matcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -141,7 +141,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('match',
+TP.xctrls.Matcher.Inst.defineMethod('match',
 function() {
 
     /**
@@ -156,7 +156,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('generateMatchSet',
+TP.xctrls.Matcher.Inst.defineMethod('generateMatchSet',
 function(rawData, searchTerm, keys) {
 
     /**
@@ -206,13 +206,13 @@ function(rawData, searchTerm, keys) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('prepareForMatching',
+TP.xctrls.Matcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
      * @method prepareForMatching
      * @summary Prepares the receiver to begin the matching process.
-     * @returns {TP.core.Matcher} The receiver.
+     * @returns {TP.xctrls.Matcher} The receiver.
      */
 
     return this;
@@ -220,14 +220,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('prepareForResultProcessing',
+TP.xctrls.Matcher.Inst.defineMethod('prepareForResultProcessing',
 function(matchResults) {
 
     /**
      * @method prepareForResultProcessing
      * @summary Prepares the receiver to begin processing results.
      * @param {Object[]} matchResults The results of performing the match.
-     * @returns {TP.core.Matcher} The receiver.
+     * @returns {TP.xctrls.Matcher} The receiver.
      */
 
     return this;
@@ -235,7 +235,7 @@ function(matchResults) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('postProcessResult',
+TP.xctrls.Matcher.Inst.defineMethod('postProcessResult',
 function() {
 
     /**
@@ -248,22 +248,22 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.ListMatcher
+//  TP.xctrls.ListMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('ListMatcher');
+TP.xctrls.Matcher.defineSubtype('ListMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.ListMatcher.Inst.defineAttribute('$dataSet');
+TP.xctrls.ListMatcher.Inst.defineAttribute('$dataSet');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ListMatcher.Inst.defineMethod('init',
+TP.xctrls.ListMatcher.Inst.defineMethod('init',
 function(matcherName, dataSet) {
 
     /**
@@ -272,7 +272,7 @@ function(matcherName, dataSet) {
      * @param {String} matcherName The name of this matcher that will be
      *     associated with the search results produced by it
      * @param {Object} dataSet The data set for this matcher to operate on.
-     * @returns {TP.core.ListMatcher} The receiver.
+     * @returns {TP.xctrls.ListMatcher} The receiver.
      */
 
     this.callNextMethod();
@@ -284,7 +284,7 @@ function(matcherName, dataSet) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ListMatcher.Inst.defineMethod('getDataSet',
+TP.xctrls.ListMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -298,7 +298,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ListMatcher.Inst.defineMethod('match',
+TP.xctrls.ListMatcher.Inst.defineMethod('match',
 function() {
 
     /**
@@ -360,7 +360,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ListMatcher.Inst.defineMethod('setDataSet',
+TP.xctrls.ListMatcher.Inst.defineMethod('setDataSet',
 function(dataSet) {
 
     /**
@@ -368,7 +368,7 @@ function(dataSet) {
      * @summary Set the data set that this matcher is operating on to the
      *     supplied parameter.
      * @param {Object} dataSet The data set for this matcher to operate on.
-     * @returns {TP.core.ListMatcher} The receiver.
+     * @returns {TP.xctrls.ListMatcher} The receiver.
      */
 
     this.set('$dataSet', dataSet);
@@ -377,25 +377,25 @@ function(dataSet) {
 });
 
 //  ========================================================================
-//  TP.core.KeyedSourceMatcher
+//  TP.xctrls.KeyedSourceMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('KeyedSourceMatcher');
+TP.xctrls.Matcher.defineSubtype('KeyedSourceMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineAttribute('$dataSet');
+TP.xctrls.KeyedSourceMatcher.Inst.defineAttribute('$dataSet');
 
-TP.core.KeyedSourceMatcher.Inst.defineAttribute('keySource');
-TP.core.KeyedSourceMatcher.Inst.defineAttribute('keySourceName');
+TP.xctrls.KeyedSourceMatcher.Inst.defineAttribute('keySource');
+TP.xctrls.KeyedSourceMatcher.Inst.defineAttribute('keySourceName');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineMethod('init',
+TP.xctrls.KeyedSourceMatcher.Inst.defineMethod('init',
 function(matcherName, keySource) {
 
     /**
@@ -404,7 +404,7 @@ function(matcherName, keySource) {
      * @param {String} matcherName The name of this matcher that will be
      *     associated with the search results produced by it
      * @param {Object} keySource The source to derive keys from.
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.xctrls.KeyedSourceMatcher} The receiver.
      */
 
     this.callNextMethod();
@@ -417,7 +417,7 @@ function(matcherName, keySource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineMethod('getDataSet',
+TP.xctrls.KeyedSourceMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -431,7 +431,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineMethod('match',
+TP.xctrls.KeyedSourceMatcher.Inst.defineMethod('match',
 function() {
 
     /**
@@ -499,13 +499,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineMethod('prepareForMatching',
+TP.xctrls.KeyedSourceMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
      * @method prepareForMatching
      * @summary Prepares the receiver to begin the matching process.
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.xctrls.KeyedSourceMatcher} The receiver.
      */
 
     var keySource,
@@ -543,7 +543,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.KeyedSourceMatcher.Inst.defineMethod('setDataSet',
+TP.xctrls.KeyedSourceMatcher.Inst.defineMethod('setDataSet',
 function(dataSet) {
 
     /**
@@ -551,7 +551,7 @@ function(dataSet) {
      * @summary Set the data set that this matcher is operating on to the
      *     supplied parameter.
      * @param {Object} dataSet The data set for this matcher to operate on.
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.xctrls.KeyedSourceMatcher} The receiver.
      */
 
     this.set('$dataSet', dataSet);
@@ -560,16 +560,16 @@ function(dataSet) {
 });
 
 //  ========================================================================
-//  TP.core.CSSPropertyMatcher
+//  TP.xctrls.CSSPropertyMatcher
 //  ========================================================================
 
-TP.core.ListMatcher.defineSubtype('CSSPropertyMatcher');
+TP.xctrls.ListMatcher.defineSubtype('CSSPropertyMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyMatcher.Inst.defineMethod('getDataSet',
+TP.xctrls.CSSPropertyMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -582,16 +582,16 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.CustomTypeMatcher
+//  TP.xctrls.CustomTypeMatcher
 //  ========================================================================
 
-TP.core.ListMatcher.defineSubtype('CustomTypeMatcher');
+TP.xctrls.ListMatcher.defineSubtype('CustomTypeMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTypeMatcher.Inst.defineMethod('getDataSet',
+TP.xctrls.CustomTypeMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -604,22 +604,22 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.URIMatcher
+//  TP.xctrls.URIMatcher
 //  ========================================================================
 
-TP.core.ListMatcher.defineSubtype('URIMatcher');
+TP.xctrls.ListMatcher.defineSubtype('URIMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.URIMatcher.Inst.defineAttribute('keySource');
+TP.xctrls.URIMatcher.Inst.defineAttribute('keySource');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIMatcher.Inst.defineMethod('getDataSet',
+TP.xctrls.URIMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -628,26 +628,26 @@ function() {
      * @returns {Object} The data set.
      */
 
-    return TP.core.URI.Type.get('instances').getKeys();
+    return TP.xctrls.URI.Type.get('instances').getKeys();
 });
 
 //  ========================================================================
-//  TP.core.MethodMatcher
+//  TP.xctrls.MethodMatcher
 //  ========================================================================
 
-TP.core.ListMatcher.defineSubtype('MethodMatcher');
+TP.xctrls.ListMatcher.defineSubtype('MethodMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.MethodMatcher.Inst.defineAttribute('$dataSet');
+TP.xctrls.MethodMatcher.Inst.defineAttribute('$dataSet');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MethodMatcher.Inst.defineMethod('match',
+TP.xctrls.MethodMatcher.Inst.defineMethod('match',
 function() {
 
     /**
@@ -677,13 +677,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MethodMatcher.Inst.defineMethod('prepareForMatching',
+TP.xctrls.MethodMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
      * @method prepareForMatching
      * @summary Prepares the receiver to begin the matching process.
-     * @returns {TP.core.MethodMatcher} The receiver.
+     * @returns {TP.xctrls.MethodMatcher} The receiver.
      */
 
     var keys,
@@ -705,16 +705,16 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.NamespaceMatcher
+//  TP.xctrls.NamespaceMatcher
 //  ========================================================================
 
-TP.core.ListMatcher.defineSubtype('NamespaceMatcher');
+TP.xctrls.ListMatcher.defineSubtype('NamespaceMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.NamespaceMatcher.Inst.defineMethod('getDataSet',
+TP.xctrls.NamespaceMatcher.Inst.defineMethod('getDataSet',
 function() {
 
     /**
@@ -727,28 +727,28 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.TSHHistoryMatcher
+//  TP.xctrls.TSHHistoryMatcher
 //  ========================================================================
 
-TP.core.ListMatcher.defineSubtype('TSHHistoryMatcher');
+TP.xctrls.ListMatcher.defineSubtype('TSHHistoryMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.TSHHistoryMatcher.Inst.defineAttribute('$dataSet');
+TP.xctrls.TSHHistoryMatcher.Inst.defineAttribute('$dataSet');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TSHHistoryMatcher.Inst.defineMethod('prepareForMatching',
+TP.xctrls.TSHHistoryMatcher.Inst.defineMethod('prepareForMatching',
 function() {
 
     /**
      * @method prepareForMatching
      * @summary Prepares the receiver to begin the matching process.
-     * @returns {TP.core.TSHHistoryMatcher} The receiver.
+     * @returns {TP.xctrls.TSHHistoryMatcher} The receiver.
      */
 
     var dataSet;
