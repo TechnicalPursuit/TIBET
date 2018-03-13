@@ -23,7 +23,7 @@ function() {
         inputVal = null;
         correctResult = null;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
 
         this.get('drivers').atPut('shell', shellDriver);
     });
@@ -445,7 +445,7 @@ function() {
         inputVal = null;
         correctResult = null;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
 
         this.get('drivers').atPut('shell', shellDriver);
     });
@@ -544,7 +544,7 @@ function() {
         inputVal = null;
         correctResult = null;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
 
         this.get('drivers').atPut('shell', shellDriver);
     });
@@ -1302,7 +1302,7 @@ function() {
         inputVal = null;
         correctResult = null;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
 
         this.get('drivers').atPut('shell', shellDriver);
     });
@@ -2444,7 +2444,7 @@ function() {
         inputVal = null;
         correctResult = null;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
 
         this.get('drivers').atPut('shell', shellDriver);
     });
@@ -4447,7 +4447,7 @@ function() {
             backgroundElem,
             childElem;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
         //  ---
@@ -5216,7 +5216,7 @@ function() {
         server;
 
     this.before(function(suite, options) {
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
         //  NB: We have to redefine TP.uriNeedsPrivileges() here to just return
@@ -5625,7 +5625,7 @@ function() {
 
     this.before(function(suite, options) {
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
         stub = TP.jsonpCall.asStub();
@@ -5682,7 +5682,7 @@ function() {
     this.before(function(suite, options) {
         var storageStr;
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
         storageStr = TP.js2json(
@@ -6024,7 +6024,7 @@ function() {
 
     this.before(function(suite, options) {
 
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
         //  'this' refers to the suite here.
@@ -6425,7 +6425,7 @@ function() {
     this.before(function(suite, options) {
         inputVal = null;
         correctResult = null;
-        shellDriver = TP.tsh.Driver.construct();
+        shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
     });
 

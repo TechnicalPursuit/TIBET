@@ -13,7 +13,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('tsh.Driver');
+TP.lang.Object.defineSubtype('test.TSHDriver');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -25,13 +25,13 @@ TP.lang.Object.defineSubtype('tsh.Driver');
  * test case.
  * @type {Object}
  */
-TP.tsh.Driver.Inst.defineAttribute('promiseProvider');
+TP.test.TSHDriver.Inst.defineAttribute('promiseProvider');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.Driver.Type.defineMethod('initialize',
+TP.test.TSHDriver.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -48,7 +48,7 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.Driver.Inst.defineMethod('execShellTest',
+TP.test.TSHDriver.Inst.defineMethod('execShellTest',
 function(test, shellInput, valueTestFunction) {
     /**
     */
@@ -138,7 +138,7 @@ function(test, shellInput, valueTestFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.Driver.Inst.defineMethod('execOutputTest',
+TP.test.TSHDriver.Inst.defineMethod('execOutputTest',
 function(test, inputVal, correctResults) {
     /**
     */
