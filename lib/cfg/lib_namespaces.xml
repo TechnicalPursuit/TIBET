@@ -113,7 +113,6 @@
     <script src="tibet/xmlns/TP.tibet.style.js"/>
     <script src="tibet/xmlns/TP.tibet.template.js"/>
 
-    <script src="tibet/xmlns/TP.tibet.tofu.js"/>
 </config>
 
 <config id="tsh">

@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tibet.tofu}
+ * @type {TP.sherpa.tofu}
  * @summary Bland and easily flavored :-)
  * @description Instances of this tag type 'stand in' for as-yet-defined tag
  *     types. It is used during development by the Sherpa to give a 'handle' in
@@ -19,27 +19,27 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('tibet:tofu');
+TP.core.CustomTag.defineSubtype('sherpa:tofu');
 
 //  This tag has no theme CSS. Note how this properties is TYPE_LOCAL, by
 //  design.
-TP.tibet.tofu.defineAttribute('themeURI', TP.NO_RESULT);
+TP.sherpa.tofu.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tibet.tofu.Type.defineMethod('replaceOccurrencesOf',
+TP.sherpa.tofu.Type.defineMethod('replaceOccurrencesOf',
 function(aTagTypeName) {
 
     /**
      * @method replaceOccurrencesOf
-     * @summary Replaces any occurrences of the 'tibet:tofu' tag that is a proxy
-     *     for the supplied tag name with an instance of that tag in all
+     * @summary Replaces any occurrences of the 'sherpa:tofu' tag that is a
+     *     proxy for the supplied tag name with an instance of that tag in all
      *     currently loaded screen document in the Sherpa.
      * @param {String} aTagTypeName The name of the tags to find the proxy
-     *     tibet:tofu tags with and replace.
-     * @returns {TP.tibet.tofu} The receiver.
+     *     sherpa:tofu tags with and replace.
+     * @returns {TP.sherpa.tofu} The receiver.
      */
 
     var tagType,
@@ -59,7 +59,7 @@ function(aTagTypeName) {
     tagName = tagType.getNamespacePrefix() + ':' + tagType.getLocalName();
 
     //  Search the UI canvases currently loaded into the Sherpa world for any
-    //  'tibet:tofu' tags that are proxies for the supplied tag.
+    //  'sherpa:tofu' tags that are proxies for the supplied tag.
 
     allTofus = TP.ac();
 
@@ -117,7 +117,7 @@ function(aTagTypeName) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tibet.tofu.Inst.defineMethod('getChildElements',
+TP.sherpa.tofu.Inst.defineMethod('getChildElements',
 function() {
 
     /**
@@ -133,7 +133,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.tofu.Inst.defineHandler('TagAssist',
+TP.sherpa.tofu.Inst.defineHandler('TagAssist',
 function(aSignal) {
 
     /**
@@ -143,7 +143,7 @@ function(aSignal) {
      *     from an event handler on the visual representation of it.
      * @param {TP.sig.TagAssist} aSignal The signal that caused this handler to
      *     trip.
-     * @returns {TP.tibet.tofu} The receiver.
+     * @returns {TP.sherpa.tofu} The receiver.
      */
 
     var newTagName;

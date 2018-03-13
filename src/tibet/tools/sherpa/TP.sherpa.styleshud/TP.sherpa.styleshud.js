@@ -119,7 +119,7 @@ function(aTPElement) {
         targetElemPageRect;
 
     //  If the element is tofu, then we don't show any style for it.
-    if (aTPElement.getCanonicalName() === 'tibet:tofu') {
+    if (aTPElement.getCanonicalName() === 'sherpa:tofu') {
         this.setValue(TP.ac());
         return this;
     }

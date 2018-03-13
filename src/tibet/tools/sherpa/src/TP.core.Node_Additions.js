@@ -610,12 +610,12 @@ function(aHalo) {
         return false;
     }
 
-    //  We cannot focus on elements that are under a 'tibet:tofu' element
+    //  We cannot focus on elements that are under a 'sherpa:tofu' element
     ancestors = this.getAncestors();
 
     len = ancestors.getSize();
     for (i = 0; i < len; i++) {
-        if (ancestors.at(i).getCanonicalName() === 'tibet:tofu') {
+        if (ancestors.at(i).getCanonicalName() === 'sherpa:tofu') {
             return false;
         }
     }

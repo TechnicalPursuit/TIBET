@@ -114,7 +114,7 @@ function(aTPElement) {
     info = TP.ac();
 
     //  If the element is tofu, then we don't show any responders for it.
-    if (aTPElement.getCanonicalName() === 'tibet:tofu') {
+    if (aTPElement.getCanonicalName() === 'sherpa:tofu') {
         this.setValue(info);
         return this;
     }

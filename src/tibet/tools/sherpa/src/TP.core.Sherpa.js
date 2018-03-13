@@ -122,10 +122,10 @@ function(anElement) {
 
     newTagContent = TP.str(anElement);
 
-    //  Build a chunk of markup that is a 'tibet:tofu' element with identifying
+    //  Build a chunk of markup that is a 'sherpa:tofu' element with identifying
     //  information about the element that it is standing in for.
     newElement = TP.xhtmlnode(
-        '<tibet:tofu on:click="TagAssist"' +
+        '<sherpa:tofu on:click="TagAssist"' +
                 ' proxyfor="' + TP.name(anElement) + '">' +
             '<span class="name">' +
                 '&lt;' + TP.name(anElement) + '... /&gt;' +
@@ -135,7 +135,7 @@ function(anElement) {
                 newTagContent +
                 ']]>' +
             '</span>' +
-        '</tibet:tofu>');
+        '</sherpa:tofu>');
 
     TP.elementReplaceWith(anElement, newElement);
 
@@ -1056,11 +1056,11 @@ function(aSignal) {
     }
 
     //  If the new type is a subtype of TP.core.CustomTag, then we need to have
-    //  the 'tibet:tofu' tag replace any occurrences of itself that are proxies
+    //  the 'sherpa:tofu' tag replace any occurrences of itself that are proxies
     //  for that new tag type.
     if (TP.isSubtypeOf(newType, TP.core.CustomTag)) {
         typeName = newType.getName();
-        TP.tibet.tofu.replaceOccurrencesOf(typeName);
+        TP.sherpa.tofu.replaceOccurrencesOf(typeName);
     }
 
     return this;

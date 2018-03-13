@@ -1,7 +1,6 @@
-@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
-@namespace pclass url("urn:tibet:pseudoclass");
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 
-tibet|tofu {
+sherpa|tofu {
 
     display: block;
     position: relative;
@@ -29,7 +28,7 @@ tibet|tofu {
     cursor: pointer;
 }
 
-tibet|tofu > .content {
+sherpa|tofu > .content {
 
     display: none;
 }
