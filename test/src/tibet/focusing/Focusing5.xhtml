@@ -12,10 +12,10 @@
 
     <style type="text/css">
     <![CDATA[
-    @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+    @namespace tmp url(urn:tibet:tmp);
     @namespace pclass url(urn:tibet:pseudoclass);
 
-    tibet|testElem {
+    tmp|testElem {
 
         display: block;
         position: relative;
@@ -26,23 +26,23 @@
         height: 10px;
     }
 
-    tibet|testElem[pclass|active] {
+    tmp|testElem[pclass|active] {
 
         border-color: red;
     }
 
-    tibet|testElem[pclass|focus] {
+    tmp|testElem[pclass|focus] {
 
         background-color: yellow;
     }
 
-    tibet|group#fooGroup {
+    tmp|group#fooGroup {
 
         display: block;
         border: solid 1px black;
     }
 
-    tibet|group#gooGroup {
+    tmp|group#gooGroup {
 
         display: block;
         border: solid 1px blue;
@@ -83,18 +83,18 @@
     These fields are in the 'foo' group:
     <br/>
     <tibet:group id="fooGroup" autofocus="autofocus">
-        Focus test field #1: <tibet:testElem id="focusTestElem1" tabindex="2"/>
+        Focus test field #1: <tmp:testElem id="focusTestElem1" tabindex="2"/>
         <br/>
-        Focus test field #2: <tibet:testElem id="focusTestElem2" tabindex="1"/>
+        Focus test field #2: <tmp:testElem id="focusTestElem2" tabindex="1"/>
         <br/>
     </tibet:group>
     <br/>
     These fields are in the 'goo' group:
     <br/>
     <tibet:group id="gooGroup" wrapWhen="true">
-        Focus test field #3: <tibet:testElem id="focusTestElem3" tabindex="2"/>
+        Focus test field #3: <tmp:testElem id="focusTestElem3" tabindex="2"/>
         <br/>
-        Focus test field #4: <tibet:testElem id="focusTestElem4" tabindex="0"/>
+        Focus test field #4: <tmp:testElem id="focusTestElem4" tabindex="0"/>
     </tibet:group>
 
 </body>

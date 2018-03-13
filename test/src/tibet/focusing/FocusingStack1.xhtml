@@ -12,10 +12,10 @@
 
     <style type="text/css">
     <![CDATA[
-    @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+    @namespace tmp url(urn:tibet:tmp);
     @namespace pclass url(urn:tibet:pseudoclass);
 
-    tibet|testElem {
+    tmp|testElem {
 
         display: block;
         position: relative;
@@ -26,12 +26,12 @@
         height: 10px;
     }
 
-    tibet|testElem[pclass|active] {
+    tmp|testElem[pclass|active] {
 
         border-color: red;
     }
 
-    tibet|testElem[pclass|focus] {
+    tmp|testElem[pclass|focus] {
 
         background-color: yellow;
     }
@@ -64,14 +64,14 @@
     <br/>
     <br/>
 
-    Focus test field #1: <tibet:testElem id="focusTestElem1" tabindex="0"/>
+    Focus test field #1: <tmp:testElem id="focusTestElem1" tabindex="0"/>
     <br/>
-    Focus test field #2: <tibet:testElem id="focusTestElem2" tabindex="0"/>
+    Focus test field #2: <tmp:testElem id="focusTestElem2" tabindex="0"/>
     <span tibet:focuscontext="true">
-        Focus test field #3: <tibet:testElem id="focusTestElem3" tabindex="0"/>
+        Focus test field #3: <tmp:testElem id="focusTestElem3" tabindex="0"/>
     </span>
     <br/>
-    Focus test field #4: <tibet:testElem id="focusTestElem4" tabindex="0"/>
+    Focus test field #4: <tmp:testElem id="focusTestElem4" tabindex="0"/>
 
 </body>
 </html>

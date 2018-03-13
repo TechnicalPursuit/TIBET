@@ -9,12 +9,12 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.tibet.testElem
+//  TP.tmp.testElem
 //  ========================================================================
 
 //  Don't redefine this if another test has defined it.
-if (!TP.isType(TP.tibet.testElem)) {
-    TP.core.UIElementNode.defineSubtype('tibet.testElem');
+if (!TP.isType(TP.tmp.testElem)) {
+    TP.core.UIElementNode.defineSubtype('tmp.testElem');
 }
 
 //  ========================================================================

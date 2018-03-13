@@ -12,23 +12,23 @@
 
 </head>
 
-<body xmlns:ev="http://www.w3.org/2001/xml-events">
+<body>
 
     <h2>On Test #1</h2><br/>
     <br/>
     <br/>
     A mapping of the native 'click' event to a custom signal type that will invoke the handler on this instance of this custom element type.
-    <tibet:testElem id="testElem1" on:click="ClickTestSignal">Click me to send the event and dispatch the signal</tibet:testElem>
+    <tmp:testElem id="testElem1" on:click="ClickTestSignal">Click me to send the event and dispatch the signal</tmp:testElem>
 
     <br/>
     <br/>
     A mapping of the TIBET-level 'TP.sig.DOMClick' event to a custom signal type that will invoke the handler on this instance of this custom element type.
-    <tibet:testElem id="testElem2" on:TP.sig.DOMClick="ClickTestSignal">Click me to send the event and dispatch the signal</tibet:testElem>
+    <tmp:testElem id="testElem2" on:TP.sig.DOMClick="ClickTestSignal">Click me to send the event and dispatch the signal</tmp:testElem>
 
     <br/>
     <br/>
     A mapping of the TIBET-level 'DOMClick' event to a custom signal type that will invoke the handler on this instance of this custom element type.
-    <tibet:testElem id="testElem3" on:DOMClick="ClickTestSignal">Click me to send the event and dispatch the signal</tibet:testElem>
+    <tmp:testElem id="testElem3" on:DOMClick="ClickTestSignal">Click me to send the event and dispatch the signal</tmp:testElem>
 
 </body>
 </html>

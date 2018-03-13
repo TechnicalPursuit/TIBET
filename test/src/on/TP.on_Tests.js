@@ -9,15 +9,15 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.tibet.testElem
+//  TP.tmp.testElem
 //  ========================================================================
 
 //  Don't redefine this if another test has defined it.
-if (!TP.isType(TP.tibet.testElem)) {
-    TP.core.UIElementNode.defineSubtype('tibet.testElem');
+if (!TP.isType(TP.tmp.testElem)) {
+    TP.core.UIElementNode.defineSubtype('tmp.testElem');
 }
 
-TP.tibet.testElem.Inst.defineHandler('ClickTestSignal',
+TP.tmp.testElem.Inst.defineHandler('ClickTestSignal',
 function(aSignal) {
 
     //  This currently has an empty body. We only use it to test whether the
