@@ -8,7 +8,7 @@
  */
 //  ========================================================================
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst path change signaling',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst path change signaling',
 function() {
 
     var modelObj,
@@ -327,7 +327,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst path change signaling',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst path change signaling',
 function() {
 
     var modelObj,
@@ -645,7 +645,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst path change signaling',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst path change signaling',
 function() {
 
     var modelObj,
@@ -1063,7 +1063,7 @@ function() {
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 
-    this.it('TP.core.JSONPath path-enhanced aspect change notification', function(test, options) {
+    this.it('TP.path.JSONPath path-enhanced aspect change notification', function(test, options) {
 
         var aspectChangedResults,
             valueChangedResults,
@@ -1109,7 +1109,7 @@ function() {
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 
-    this.it('TP.core.XPathPath path-enhanced aspect change notification', function(test, options) {
+    this.it('TP.path.XPathPath path-enhanced aspect change notification', function(test, options) {
 
         var aspectChangedResults,
             valueChangedResults,

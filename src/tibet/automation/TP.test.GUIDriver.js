@@ -624,7 +624,7 @@ function(aPath) {
     /**
      * @method altKeyDown
      * @summary Simulate the act of pressing the 'Alt' key down.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Alt' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -644,7 +644,7 @@ function(aPath) {
     /**
      * @method altKeyUp
      * @summary Simulate the act of releasing the 'Alt' key up.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Alt' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -668,7 +668,7 @@ function(mouseLocation, mouseButton) {
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until run() is called).
-     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
+     * @param {Element|TP.path.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -700,7 +700,7 @@ function(mouseLocation, mouseButton) {
         //  that.
         target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
-        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  Otherwise, if a TP.path.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
     } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
@@ -761,7 +761,7 @@ function(aPath) {
     /**
      * @method ctrlKeyDown
      * @summary Simulate the act of pressing the 'Control' key down.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Control' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -781,7 +781,7 @@ function(aPath) {
     /**
      * @method ctrlKeyUp
      * @summary Simulate the act of releasing the 'Control' key up.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Control' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -806,7 +806,7 @@ function(mouseLocation, mouseButton) {
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'run()' method is
      *     called).
-     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
+     * @param {Element|TP.path.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -838,7 +838,7 @@ function(mouseLocation, mouseButton) {
         //  that.
         target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
-        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  Otherwise, if a TP.path.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
     } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
@@ -986,7 +986,7 @@ function(keyLocation, aKey) {
     /**
      * @method keyDown
      * @summary Simulate the act of pressing the supplied key down.
-     * @param {Element|TP.core.AccessPath|String} keyLocation
+     * @param {Element|TP.path.AccessPath|String} keyLocation
      *     The key target location, given as either a target Element or as an
      *     AccessPath that can be used to find the element. If this parameter is
      *     not supplied or null, the currently focused element will be used.
@@ -1010,7 +1010,7 @@ function(keyLocation, aKey) {
         //  that.
         target = TP.unwrap(keyLocation);
     } else if (keyLocation.isAccessPath()) {
-        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  Otherwise, if a TP.path.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = keyLocation;
     } else if (TP.isKindOf(keyLocation, String)) {
@@ -1042,7 +1042,7 @@ function(keyLocation, aKey) {
     /**
      * @method keyUp
      * @summary Simulate the act of releasing the supplied key up.
-     * @param {Element|TP.core.AccessPath|String} keyLocation
+     * @param {Element|TP.path.AccessPath|String} keyLocation
      *     The key target location, given as either a target Element or as an
      *     AccessPath that can be used to find the element. If this parameter is
      *     not supplied or null, the currently focused element will be used.
@@ -1066,7 +1066,7 @@ function(keyLocation, aKey) {
         //  that.
         target = TP.unwrap(keyLocation);
     } else if (keyLocation.isAccessPath()) {
-        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  Otherwise, if a TP.path.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = keyLocation;
     } else if (TP.isKindOf(keyLocation, String)) {
@@ -1098,7 +1098,7 @@ function(aPath) {
     /**
      * @method metaKeyDown
      * @summary Simulate the act of pressing the 'Meta' key down.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Meta' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -1118,7 +1118,7 @@ function(aPath) {
     /**
      * @method metaKeyUp
      * @summary Simulate the act of releasing the 'Meta' key up.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Meta' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -1143,7 +1143,7 @@ function(mouseLocation, mouseButton) {
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'run()' method is
      *     called).
-     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
+     * @param {Element|TP.path.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -1175,7 +1175,7 @@ function(mouseLocation, mouseButton) {
         //  that.
         target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
-        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  Otherwise, if a TP.path.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
     } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
@@ -1246,7 +1246,7 @@ function(mouseLocation, mouseButton) {
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'run()' method is
      *     called).
-     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
+     * @param {Element|TP.path.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -1278,7 +1278,7 @@ function(mouseLocation, mouseButton) {
         //  that.
         target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
-        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  Otherwise, if a TP.path.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
     } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
@@ -1713,7 +1713,7 @@ function(eventInfo, aPath) {
      *     recognized ere.
      * @param {TP.core.Hash|Object} eventInfo The event information used to
      *     create the event to send.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should be the target of the event. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
@@ -1754,7 +1754,7 @@ function(aString, aPath) {
      *     in a TIBET keyboard map as 'key="..."' entries.
      * @param {String} String The String used to determine which keys will be
      *     pressed and released.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the keys pressed down and released up over. If this
      *     isn't supplied, the currently focused element in the receiver's
      *     owning driver's window context will be used as the target for this
@@ -1779,7 +1779,7 @@ function(aPath) {
     /**
      * @method shiftKeyDown
      * @summary Simulate the act of pressing the 'Shift' key down.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Shift' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
@@ -1799,7 +1799,7 @@ function(aPath) {
     /**
      * @method shiftKeyUp
      * @summary Simulate the act of releasing the 'Shift' key up.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
+     * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should have the 'Shift' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.

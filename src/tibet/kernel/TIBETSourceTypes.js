@@ -2534,7 +2534,7 @@ function(observer, queryPath, queryContext) {
      *     observer.
      * @param {Node} observer The object that is interested in subtree
      *     mutations in its document.
-     * @param {TP.core.AccessPath} [queryPath] The optional access path that
+     * @param {TP.path.AccessPath} [queryPath] The optional access path that
      *     will be used to filter mutations in the observer's document.
      * @param {Node} [queryContext=observer.ownerDocument] The optional context
      *     to execute the query in. Defaults to the observer's Document. NOTE:

@@ -9,7 +9,7 @@
 //  ========================================================================
 
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType TIBET Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType TIBET Paths',
 function() {
 
     var path;
@@ -17,121 +17,121 @@ function() {
     this.it('Simple TIBET path', function(test, options) {
         path = TP.apc('foo');
         test.assert.isKindOf(
-                path, TP.core.SimpleTIBETPath,
+                path, TP.path.SimpleTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('1');
         test.assert.isKindOf(
-                path, TP.core.SimpleTIBETPath,
+                path, TP.path.SimpleTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('.');
         test.assert.isKindOf(
-                path, TP.core.SimpleTIBETPath,
+                path, TP.path.SimpleTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
     this.it('Complex TIBET path', function(test, options) {
         path = TP.apc('foo.hi');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.hi.boo');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('2.1');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('2.1.2');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.hi[boo,moo]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.hi[boo,moo].gar');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('2[1,2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[0:2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[:2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[2:]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[:-2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[2:-1]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[1:6:2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[6:1:-2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.1');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('[0,2].fname');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('0.aliases[1:2]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('0.aliases[:-1]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('3.1[1:4]');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType Simple XML Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType Simple XML Paths',
 function() {
 
     var path;
@@ -139,14 +139,14 @@ function() {
     this.it('Simple XML path', function(test, options) {
         path = TP.apc('@foo');
         test.assert.isKindOf(
-                path, TP.core.SimpleXMLPath,
+                path, TP.path.SimpleXMLPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType XPath Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType XPath Paths',
 function() {
 
     var path;
@@ -154,149 +154,149 @@ function() {
     this.it('XPath path', function(test, options) {
         path = TP.apc('/author');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('./author');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/author/lname');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/author/lname|/author/fname');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/author/lname/@foo');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/author/lname/@foo|/author/fname/@baz');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('//*');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('//author');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('.//author');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('book[/bookstore/@specialty=@style]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('author/*');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('author/first-name');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('bookstore//title');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('bookstore/*/title');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('*/*');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/bookstore//book/excerpt//author');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('./*[@foo]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('./@foo');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('bookstore/@foo');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('bookstore/@foo/bar');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('./bookstore[name][2]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('@*');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('@foo:*');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('*/bar[@foo]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/goo/bar[@foo]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('/goo/bar[@foo="baz"]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('//foo[text()=../../following-sibling::*//foo/text()]');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('./foo:*');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType CSS Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType CSS Paths',
 function() {
 
     var path;
@@ -304,7 +304,7 @@ function() {
     this.it('CSSPath path', function(test, options) {
         path = TP.apc('*');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         /*
@@ -313,7 +313,7 @@ function() {
 
         path = TP.apc('#id');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
         */
 
@@ -322,13 +322,13 @@ function() {
 
         path = TP.apc('mytag');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
         */
 
         path = TP.apc('.myclass');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         /*
@@ -337,7 +337,7 @@ function() {
 
         path = TP.apc('#id.myclass');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
         */
 
@@ -346,110 +346,110 @@ function() {
 
         path = TP.apc('mytag.myclass');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
         */
 
         path = TP.apc('mytag mytag');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('myns|*');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('myns|mytag');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('.myclass .myclass');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('.myclass.myclass');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag:visited');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag + mysibling');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('myparent > mytag');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag ~ mysibling');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr*="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr^="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr$="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr~="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr|="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag:not([myattr])');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('mytag[myattr="myval"][myattr^="myval"]');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('myparent > *, #myid');
         test.assert.isKindOf(
-                path, TP.core.CSSPath,
+                path, TP.path.CSSPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType JSON Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType JSON Paths',
 function() {
 
     var path;
@@ -458,114 +458,114 @@ function() {
 
         path = TP.apc('$.store.book[*].author');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..author');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.store.*');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.store..price');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.store..price.^');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[2]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[(@.length-1)]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[:-1]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[:2]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[1:2]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[-2:]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[2:]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[?(@.isbn)]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[?(@.price < 10)]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[?(@.isbn && @.price < 10)]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..book[?(@.isbn || @.price < 10)]');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$..*');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.store');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.children[0].^');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('$.store.book[*].reviews[?(@.nyt == @.cst)].^.title');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType composite Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType composite Paths',
 function() {
 
     var path;
@@ -573,432 +573,432 @@ function() {
     this.it('Composite path with TIBET Simple Paths', function(test, options) {
         path = TP.apc('foo.(bar).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('(bar).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(bar)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
     this.it('Composite path with TIBET Simple paths and embedded TIBET Complex Paths', function(test, options) {
         path = TP.apc('foo.(foo.hi).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(2.1).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(foo.hi[boo,moo]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(foo.hi[boo,moo].gar).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(2[1,2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.([0:2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.([0:]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.([:2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.([-1:]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.([:-1]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.([0:2].fname).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(0.aliases[:-1]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
     this.it('Composite path with TIBET Simple paths and embedded XPath Paths', function(test, options) {
         path = TP.apc('foo.(/author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(./author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/author/lname).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/author/lname|author/fname).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/author/lname@foo).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/author/lname@foo|/author/fname@foo).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(//*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(//author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(.//author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(book[/bookstore/@specialty=@style]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(author/*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(author/first-name).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(bookstore//title).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(bookstore/*/title).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(*/*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/bookstore//book/excerpt//author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(./*[@foo]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(./@foo).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(bookstore/@foo).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(bookstore/@foo/bar).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(./bookstore[name][2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(@*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(@foo:*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(*/bar[@foo]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/goo/bar[@foo]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(/goo/bar[@foo="baz"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(//foo[text()=../../following-sibling::*//foo/text()]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(./foo:*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
     this.it('Composite path with TIBET Simple paths and embedded CSS Paths', function(test, options) {
         path = TP.apc('foo.(.myclass).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag mytag).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(myns|mytag).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(.myclass .myclass).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(.myclass.myclass).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag:visited).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag + mysibling).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(myparent > mytag).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag ~ mysibling).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr*="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr^="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr$="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr~="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr|="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag:not([myattr])).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(mytag[myattr="myval"][myattr^="myval"]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.(myparent > *, #myid).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
     this.it('Composite path with TIBET Simple paths and embedded JSON Paths', function(test, options) {
         path = TP.apc('foo.($.store.book[*].author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..author).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($.store.*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($.store..price).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($.store..price.^).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[(@.length-1)]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[:-1]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[:2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[1:2]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[-2:]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[2:]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[?(@.isbn)]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[?(@.price < 10)]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[?(@.isbn && @.price < 10)]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..book[?(@.isbn || @.price < 10)]).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($..*).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($.store).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($.children[0].^).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('foo.($.store.book[*].reviews[?(@.nyt == @.cst)].^.title).baz');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType TIBET Paths emdedded in XPointers',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType TIBET Paths emdedded in XPointers',
 function() {
 
     var path;
@@ -1007,12 +1007,12 @@ function() {
 
         path = TP.apc('#tibet(foo)');
         test.assert.isKindOf(
-                path, TP.core.SimpleTIBETPath,
+                path, TP.path.SimpleTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(1)');
         test.assert.isKindOf(
-                path, TP.core.SimpleTIBETPath,
+                path, TP.path.SimpleTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
@@ -1020,29 +1020,29 @@ function() {
 
         path = TP.apc('#tibet(foo.hi)');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.hi.boo)');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(2.1)');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(2.1.2)');
         test.assert.isKindOf(
-                path, TP.core.ComplexTIBETPath,
+                path, TP.path.ComplexTIBETPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType XPath Paths emdedded in XPointers',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType XPath Paths emdedded in XPointers',
 function() {
 
     var path;
@@ -1051,49 +1051,49 @@ function() {
 
         path = TP.apc('#xpath1(/emp)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(./emp)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(/emp/lname)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(/emp/lname|/emp/fname)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(/emp/lname/@foo)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(/emp/lname/@foo|/emp/fname/@baz)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(//*)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#xpath1(@foo)');
         test.assert.isKindOf(
-                path, TP.core.XPathPath,
+                path, TP.path.XPathPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType CSS Paths emdedded in XPointers',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType CSS Paths emdedded in XPointers',
 function() {
 
     var path;
@@ -1102,109 +1102,109 @@ function() {
 
         path = TP.apc('#css(*)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(.myclass)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag mytag)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(myns|*)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(myns|mytag)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(.myclass .myclass)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag:visited)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag + mysibling)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(myparent > mytag)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag ~ mysibling)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr*="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr^="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr$="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr~="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr|="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag:not([myattr]))');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(mytag[myattr="myval"][myattr^="myval"])');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#css(myparent > *, #myid)');
         test.assert.isKindOf(
-                path, TP.core.XTensionPath,
+                path, TP.path.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType JSON Paths emdedded in XPointers',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType JSON Paths emdedded in XPointers',
 function() {
 
     var path;
@@ -1213,114 +1213,114 @@ function() {
 
         path = TP.apc('#jpath($.store.book[*].author)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..author)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($.store.*)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($.store..price)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($.store..price.^)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[2])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[(@.length-1)])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[:-1])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[:2])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[1:2])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[-2:])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[2:])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[?(@.isbn)])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[?(@.price < 10)])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[?(@.isbn && @.price < 10)])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..book[?(@.isbn || @.price < 10)])');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($..*)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($.store)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($.children[0].^)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#jpath($.store.book[*].reviews[?(@.nyt == @.cst)].^.title)');
         test.assert.isKindOf(
-                path, TP.core.JSONPath,
+                path, TP.path.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType composite Paths emdedded in XPointers',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getConcreteType composite Paths emdedded in XPointers',
 function() {
 
     var path;
@@ -1329,17 +1329,17 @@ function() {
 
         path = TP.apc('#tibet(foo.(bar).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet((bar).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(bar))');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
@@ -1347,62 +1347,62 @@ function() {
 
         path = TP.apc('#tibet(foo.(foo.hi).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(2.1).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo].gar).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(2[1,2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([0:2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([0:]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([:2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([-1:]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([:-1]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([0:2].fname).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(0.aliases[:-1]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
@@ -1410,62 +1410,62 @@ function() {
 
         path = TP.apc('#tibet(foo.(foo.hi).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(2.1).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo].gar).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(2[1,2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([0:2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([0:]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([:2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([-1:]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([:-1]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.([0:2].fname).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(0.aliases[:-1]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
@@ -1473,142 +1473,142 @@ function() {
 
         path = TP.apc('#tibet(foo.(/author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(./author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/author/lname).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/author/lname|author/fname).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/author/lname@foo).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/author/lname@foo|/author/fname@foo).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(//*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(//author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(.//author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(book[/bookstore/@specialty=@style]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(author/*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(author/first-name).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(bookstore//title).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(bookstore/*/title).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(*/*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/bookstore//book/excerpt//author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(./*[@foo]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(./@foo).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(bookstore/@foo).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(bookstore/@foo/bar).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(./bookstore[name][2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(@*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(@foo:*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(*/bar[@foo]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/goo/bar[@foo]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(/goo/bar[@foo="baz"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(//foo[text()=../../following-sibling::*//foo/text()]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(./foo:*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
@@ -1616,97 +1616,97 @@ function() {
 
         path = TP.apc('#tibet(foo.(.myclass).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag mytag).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(myns|mytag).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(.myclass .myclass).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(.myclass.myclass).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag:visited).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag + mysibling).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(myparent > mytag).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag ~ mysibling).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr*="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr^="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr$="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr~="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr|="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag:not([myattr])).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(mytag[myattr="myval"][myattr^="myval"]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.(myparent > *, #myid).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 
@@ -1714,114 +1714,114 @@ function() {
 
         path = TP.apc('#tibet(foo.($.store.book[*].author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..author).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($.store.*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($.store..price).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($.store..price.^).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[(@.length-1)]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[:-1]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[:2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[1:2]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[-2:]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[2:]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[?(@.isbn)]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[?(@.price < 10)]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[?(@.isbn && @.price < 10)]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..book[?(@.isbn || @.price < 10)]).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($..*).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($.store).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($.children[0].^).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
 
         path = TP.apc('#tibet(foo.($.store.book[*].reviews[?(@.nyt == @.cst)].^.title).baz)');
         test.assert.isKindOf(
-                path, TP.core.CompositePath,
+                path, TP.path.CompositePath,
                 'Wrong path type for: ' + TP.str(path));
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath JSON Path transformations',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath JSON Path transformations',
 function() {
 
     var path;
@@ -1829,163 +1829,163 @@ function() {
     this.it('JSON path', function(test, options) {
 
         path = TP.jpc('$.store.book[*].author').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/store//book/author');
 
         path = TP.jpc('$..author').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//author');
 
         path = TP.jpc('$.store.*').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/store/*');
 
         path = TP.jpc('$.store..price').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/store//price');
 
         path = TP.jpc('$.store..price.^').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/store//price/..');
 
         //  ---
 
         path = TP.jpc('$.book[2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() = 3]');
 
         path = TP.jpc('$.book[-2,2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() = -1 or position() = 3]');
 
         path = TP.jpc('$.book[-1:]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() >= last() + 0]');
 
         path = TP.jpc('$.book[:2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() < 3]');
 
         path = TP.jpc('$.book[1:2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
 
         //  NB: Note the slightly more efficient expression here since it's just
         //  a matter of a '1'-sized length
         test.assert.isEqualTo(path, '/rootObj/book/*[position() = 2]');
 
         path = TP.jpc('$.book[-2:]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() >= last() + -1]');
 
         path = TP.jpc('$.book[2:]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() >= 3]');
 
         //  ---
 
         path = TP.jpc('$.book[(@.length-1)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[position() = last() + 1-1]');
 
         path = TP.jpc('$.book[?(@.isbn)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[./isbn]');
 
         path = TP.jpc('$.book[?(@.price < 10)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[./price < 10]');
 
         path = TP.jpc('$.book[?(@.isbn && @.price < 10)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[./isbn and ./price < 10]');
 
         path = TP.jpc('$.book[?(@.isbn || @.price < 10)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/book/*[./isbn or ./price < 10]');
 
         //  ---
 
         path = TP.jpc('$..book[2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = 3]');
 
         path = TP.jpc('$..book[-2,2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = -1 or position() = 3]');
 
         path = TP.jpc('$..book[-1:]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= last() + 0]');
 
         path = TP.jpc('$..book[:2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() < 3]');
 
         path = TP.jpc('$..book[1:2]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         //  NB: Note the slightly more efficient expression here since it's just
         //  a matter of a '1'-sized length
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = 2]');
 
         path = TP.jpc('$..book[-2:]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= last() + -1]');
 
         path = TP.jpc('$..book[2:]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= 3]');
 
         //  ---
 
         path = TP.jpc('$..book[(@.length-1)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = last() + 1-1]');
 
         path = TP.jpc('$..book[?(@.isbn)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./isbn]');
 
         path = TP.jpc('$..book[?(@.price < 10)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./price < 10]');
 
         path = TP.jpc('$..book[?(@.isbn && @.price < 10)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./isbn and ./price < 10]');
 
         path = TP.jpc('$..book[?(@.isbn || @.price < 10)]').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./isbn or ./price < 10]');
 
         //  ---
 
         path = TP.jpc('$..*').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//*');
 
         path = TP.jpc('$').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//*');
 
         path = TP.jpc('$.store').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/store');
 
         //  ---
 
         path = TP.jpc('$.children[0].^').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/children/*[position() = 1]/..');
 
         path = TP.jpc('$.store.book[*].reviews[?(@.nyt == @.cst)].^.title').asString();
-        path = TP.core.JSONPath.asXPath(path);
+        path = TP.path.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/rootObj/store//book/reviews/*[./nyt = ./cst]/../title');
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts TIBET Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getPathParts TIBET Paths',
 function() {
 
     var path,
@@ -2086,7 +2086,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts Simple XML Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getPathParts Simple XML Paths',
 function() {
 
     var path,
@@ -2101,7 +2101,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts XPath Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getPathParts XPath Paths',
 function() {
 
     var path,
@@ -2224,7 +2224,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts CSS Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getPathParts CSS Paths',
 function() {
 
     var path,
@@ -2240,14 +2240,14 @@ function() {
         same result)
 
         path = TP.apc('#id');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.path.CSSPath);
         */
 
         /*
         Won't work because of 'TIBET path' check
 
         path = TP.apc('mytag');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.path.CSSPath);
         */
 
         path = TP.apc('.myclass');
@@ -2259,14 +2259,14 @@ function() {
         same result)
 
         path = TP.apc('#id.myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.path.CSSPath);
         */
 
         /*
         Won't work because of 'TIBET path' check
 
         path = TP.apc('mytag.myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.path.CSSPath);
         */
 
         path = TP.apc('mytag mytag');
@@ -2349,7 +2349,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts JSON Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getPathParts JSON Paths',
 function() {
 
     var path,
@@ -2445,7 +2445,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts composite Paths',
+TP.path.AccessPath.Type.describe('TP.path.AccessPath getPathParts composite Paths',
 function() {
 
     var path,
@@ -2796,7 +2796,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst simple value Hash traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst simple value Hash traversal',
 function() {
 
     var singleLevelModel,
@@ -2857,7 +2857,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst simple value Array traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst simple value Array traversal',
 function() {
 
     var singleLevelModel,
@@ -2918,7 +2918,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst complex value Hash traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst complex value Hash traversal',
 function() {
 
     var tailResultsModel,
@@ -2988,7 +2988,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst complex value Array traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst complex value Array traversal',
 function() {
 
     var tailResultsModel,
@@ -3058,7 +3058,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst slicing Array traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst slicing Array traversal',
 function() {
 
     var slicingResultsModel;
@@ -3151,7 +3151,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst simple value Array and Hash traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst simple value Array and Hash traversal',
 function() {
 
     var singleLevelModel,
@@ -3211,7 +3211,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst complex value Array and Hash traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst complex value Array and Hash traversal',
 function() {
 
     var model1,
@@ -3355,7 +3355,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst complex value Hash traversal with creation',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst complex value Hash traversal with creation',
 function() {
 
     var model1,
@@ -3441,7 +3441,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst complex value Array traversal with creation',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst complex value Array traversal with creation',
 function() {
 
     var model1,
@@ -3567,7 +3567,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst complex value Array and Hash traversal with creation',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst complex value Array and Hash traversal with creation',
 function() {
 
     var model1,
@@ -3661,7 +3661,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst parameterized path traversal',
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst parameterized path traversal',
 function() {
 
     var model1,
@@ -3781,7 +3781,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst simple value XML traversal',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst simple value XML traversal',
 function() {
 
     var model1,
@@ -3871,7 +3871,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst complex value XML traversal',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst complex value XML traversal',
 function() {
 
     var model1,
@@ -3945,7 +3945,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst simple value XML traversal with creation',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst simple value XML traversal with creation',
 function() {
 
     var model1,
@@ -4077,7 +4077,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst complex value XML traversal with creation',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst complex value XML traversal with creation',
 function() {
 
     var model1,
@@ -4213,7 +4213,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst attribute value XML traversal',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst attribute value XML traversal',
 function() {
 
     var model1,
@@ -4303,7 +4303,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst attribute value XML traversal with creation',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst attribute value XML traversal with creation',
 function() {
 
     var model1,
@@ -4442,7 +4442,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst parameterized path traversal',
+TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst parameterized path traversal',
 function() {
 
     var model1,
@@ -4522,7 +4522,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst simple value Hash traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst simple value Hash traversal',
 function() {
 
     var singleLevelModel,
@@ -4583,7 +4583,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst simple value Array traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst simple value Array traversal',
 function() {
 
     var singleLevelModel,
@@ -4644,7 +4644,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst complex value Hash traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst complex value Hash traversal',
 function() {
 
     var tailResultsModel,
@@ -4727,7 +4727,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst complex value Array traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst complex value Array traversal',
 function() {
 
     var tailResultsModel,
@@ -4797,7 +4797,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst slicing Array traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst slicing Array traversal',
 function() {
 
     var slicingResultsModel;
@@ -4870,7 +4870,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst simple value Array and Hash traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst simple value Array and Hash traversal',
 function() {
 
     var singleLevelModel,
@@ -4930,7 +4930,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst complex value Array and Hash traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst complex value Array and Hash traversal',
 function() {
 
     var model1,
@@ -5075,7 +5075,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst complex value Hash traversal with creation',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst complex value Hash traversal with creation',
 function() {
 
     var model1,
@@ -5179,7 +5179,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst complex value Array traversal with creation',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst complex value Array traversal with creation',
 function() {
 
     var model1,
@@ -5332,7 +5332,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst complex value Array and Hash traversal with creation',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst complex value Array and Hash traversal with creation',
 function() {
 
     var model1,
@@ -5444,7 +5444,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst parameterized path traversal',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst parameterized path traversal',
 function() {
 
     var model1,
@@ -5589,7 +5589,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.describe('TP.core.JSONPath results',
+TP.path.JSONPath.Inst.describe('TP.path.JSONPath results',
 function() {
 
     var jsonContent;

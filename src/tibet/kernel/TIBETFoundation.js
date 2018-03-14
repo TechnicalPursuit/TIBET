@@ -6743,7 +6743,7 @@ function(attributeName) {
      *     used. Getters should follow the normal coding convention of
      *     this.attributeName for access while all others should use
      *     get('attributeName').
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
      */
@@ -6837,7 +6837,7 @@ function(aPath) {
      * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     receiver.
-     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     * @param {TP.path.AccessPath} aPath The path that the path source will be
      *     used with.
      * @returns {Object} The object used as the current path source object.
      */
@@ -6924,7 +6924,7 @@ function(attributeName) {
      *     used. Getters should follow the normal coding convention of
      *     this.attributeName for access while all others should use
      *     get('attributeName').
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
      */
@@ -7030,7 +7030,7 @@ function(attributeName) {
     /**
      * @method get
      * @summary Returns the value, if any, for the attribute provided.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
      */
@@ -7248,7 +7248,7 @@ function(attributeName, attributeValue, shouldSignal) {
      *     value is set directly at the attribute level this method will signal
      *     Change as appropriate. This allows the developer of a setter function
      *     complete control over behavior without fear of side-effects.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
@@ -7358,7 +7358,7 @@ function(attributeName, attributeValue, shouldSignal) {
      *     value is set directly at the attribute level this method will signal
      *     Change as appropriate. This allows the developer of a setter function
      *     complete control over behavior without fear of side-effects.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to

@@ -3692,7 +3692,7 @@ function(aFlag, shouldSignal) {
         /**
          * @method get
          * @summary Returns the value, if any, for the attribute provided.
-         * @param {String|TP.core.AccessPath} attributeName The name of the
+         * @param {String|TP.path.AccessPath} attributeName The name of the
          *     attribute to get.
          * @returns {Object} The value of the attribute on the receiver.
          */
@@ -3770,7 +3770,7 @@ function(aFlag, shouldSignal) {
          * @method set
          * @summary Sets the value of the named attribute to the value provided.
          *     If no value is provided the value null is used.
-         * @param {String|TP.core.AccessPath} attributeName The name of the
+         * @param {String|TP.path.AccessPath} attributeName The name of the
          *     attribute to set.
          * @param {Object} attributeValue The value to set.
          * @param {Boolean} shouldSignal If false no signaling occurs. Defaults
@@ -3985,7 +3985,7 @@ function(aFlag, shouldSignal) {
         /**
          * @method get
          * @summary Returns the value, if any, for the attribute provided.
-         * @param {String|TP.core.AccessPath} attributeName The name of the
+         * @param {String|TP.path.AccessPath} attributeName The name of the
          *     attribute to get.
          * @returns {Object} The value of the attribute on the receiver.
          */
@@ -4063,7 +4063,7 @@ function(aFlag, shouldSignal) {
          * @method set
          * @summary Sets the value of the named attribute to the value provided.
          *     If no value is provided the value null is used.
-         * @param {String|TP.core.AccessPath} attributeName The name of the
+         * @param {String|TP.path.AccessPath} attributeName The name of the
          *     attribute to set.
          * @param {Object} attributeValue The value to set.
          * @param {Boolean} shouldSignal If false no signaling occurs. Defaults

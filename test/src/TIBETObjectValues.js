@@ -340,16 +340,16 @@ function(aRequest) {
     //  Instance of TP.core.CommentNode
     tibetCommentNodeVal = TP.core.CommentNode.construct(commentNodeVal);
 
-    //  Instance of TP.core.SimpleTIBETPath
-    tibetSimpleTIBETPathVal = TP.core.SimpleTIBETPath.construct('foo');
-    //  Instance of TP.core.ComplexTIBETPath
-    tibetComplexTIBETPathVal = TP.core.ComplexTIBETPath.construct('foo.bar.baz');
-    //  Instance of TP.core.ElementPath
-    tibetElementPathVal = TP.core.ElementPath.construct('/1/2');
-    //  Instance of TP.core.XTensionPath
-    tibetXTensionPathVal = TP.core.XTensionPath.construct('*[foo]');
-    //  Instance of TP.core.XPathPath
-    tibetXPathVal = TP.core.XPathPath.construct('//*');
+    //  Instance of TP.path.SimpleTIBETPath
+    tibetSimpleTIBETPathVal = TP.path.SimpleTIBETPath.construct('foo');
+    //  Instance of TP.path.ComplexTIBETPath
+    tibetComplexTIBETPathVal = TP.path.ComplexTIBETPath.construct('foo.bar.baz');
+    //  Instance of TP.path.ElementPath
+    tibetElementPathVal = TP.path.ElementPath.construct('/1/2');
+    //  Instance of TP.path.XTensionPath
+    tibetXTensionPathVal = TP.path.XTensionPath.construct('*[foo]');
+    //  Instance of TP.path.XPathPath
+    tibetXPathVal = TP.path.XPathPath.construct('//*');
 
     //  Instance of TP.sig.Request
     tibetRequestVal = TP.sig.Request.construct(TP.hc('foo', 'bar'));
@@ -495,11 +495,11 @@ function(aRequest) {
     'TP.core.ProcessingInstructionNode',    tibetPINodeVal, //  TP.core.ProcessingInstructionNode
     'TP.core.CommentNode',      tibetCommentNodeVal,        //  TP.core.CommentNode
 
-    'TP.core.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.core.SimpleTIBETPath
-    'TP.core.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.core.SimpleTIBETPath
-    'TP.core.ElementPath',      tibetElementPathVal,        //  TP.core.ElementPath
-    'TP.core.XTensionPath',     tibetXTensionPathVal,       //  TP.core.XTensionPath
-    'TP.core.XPathPath',        tibetXPathVal,              //  TP.core.XPathPath
+    'TP.path.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.path.SimpleTIBETPath
+    'TP.path.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.path.SimpleTIBETPath
+    'TP.path.ElementPath',      tibetElementPathVal,        //  TP.path.ElementPath
+    'TP.path.XTensionPath',     tibetXTensionPathVal,       //  TP.path.XTensionPath
+    'TP.path.XPathPath',        tibetXPathVal,              //  TP.path.XPathPath
 
     'TP.sig.Request',           tibetRequestVal,        //  TP.sig.Request
     'TP.sig.Response',          tibetResponseVal,       //  TP.sig.Response
@@ -736,11 +736,11 @@ function(aRequest) {
     tibetPINodeVal = TP.ac(TP.core.XMLProcessingInstruction, TP.core.ProcessingInstructionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
     tibetCommentNodeVal = TP.ac(TP.core.CommentNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetSimpleTIBETPathVal = TP.ac(TP.core.SimpleTIBETPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetComplexTIBETPathVal = TP.ac(TP.core.ComplexTIBETPath, TP.core.SimpleTIBETPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetElementPathVal = TP.ac(TP.core.ElementPath, TP.core.XMLPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetXTensionPathVal = TP.ac(TP.core.XTensionPath, TP.core.XMLPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetXPathVal = TP.ac(TP.core.XPathPath, TP.core.XMLPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetSimpleTIBETPathVal = TP.ac(TP.path.SimpleTIBETPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetComplexTIBETPathVal = TP.ac(TP.path.ComplexTIBETPath, TP.path.SimpleTIBETPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetElementPathVal = TP.ac(TP.path.ElementPath, TP.path.XMLPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXTensionPathVal = TP.ac(TP.path.XTensionPath, TP.path.XMLPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXPathVal = TP.ac(TP.path.XPathPath, TP.path.XMLPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetRequestVal = TP.ac(TP.sig.Request, TP.sig.WorkflowSignal, TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -841,11 +841,11 @@ function(aRequest) {
     'TP.core.ProcessingInstructionNode',    tibetPINodeVal, //  TP.core.ProcessingInstructionNode
     'TP.core.CommentNode',      tibetCommentNodeVal,        //  TP.core.CommentNode
 
-    'TP.core.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.core.SimpleTIBETPath
-    'TP.core.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.core.SimpleTIBETPath
-    'TP.core.ElementPath',      tibetElementPathVal,        //  TP.core.ElementPath
-    'TP.core.XTensionPath',     tibetXTensionPathVal,       //  TP.core.XTensionPath
-    'TP.core.XPathPath',        tibetXPathVal,              //  TP.core.XPathPath
+    'TP.path.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.path.SimpleTIBETPath
+    'TP.path.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.path.SimpleTIBETPath
+    'TP.path.ElementPath',      tibetElementPathVal,        //  TP.path.ElementPath
+    'TP.path.XTensionPath',     tibetXTensionPathVal,       //  TP.path.XTensionPath
+    'TP.path.XPathPath',        tibetXPathVal,              //  TP.path.XPathPath
 
     'TP.sig.Request',           tibetRequestVal,        //  TP.sig.Request
     'TP.sig.Response',          tibetResponseVal,       //  TP.sig.Response
@@ -1050,11 +1050,11 @@ function(aRequest) {
         'TP.core.ProcessingInstructionNode',    TP.IDENTITY,
         'TP.core.CommentNode',                  TP.IDENTITY,
 
-        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
-        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
-        'TP.core.ElementPath',                  TP.IDENTITY,
-        'TP.core.XTensionPath',                 TP.IDENTITY,
-        'TP.core.XPathPath',                    TP.IDENTITY,
+        'TP.path.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.path.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.path.ElementPath',                  TP.IDENTITY,
+        'TP.path.XTensionPath',                 TP.IDENTITY,
+        'TP.path.XPathPath',                    TP.IDENTITY,
 
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      TP.IDENTITY,
@@ -1171,11 +1171,11 @@ function(aRequest) {
         'TP.core.ProcessingInstructionNode',    'ProcessingInstruction',
         'TP.core.CommentNode',                  'Comment',
 
-        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
-        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
-        'TP.core.ElementPath',                  TP.IDENTITY,
-        'TP.core.XTensionPath',                 TP.IDENTITY,
-        'TP.core.XPathPath',                    TP.IDENTITY,
+        'TP.path.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.path.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.path.ElementPath',                  TP.IDENTITY,
+        'TP.path.XTensionPath',                 TP.IDENTITY,
+        'TP.path.XPathPath',                    TP.IDENTITY,
 
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      TP.IDENTITY,
@@ -1292,11 +1292,11 @@ function(aRequest) {
         'TP.core.ProcessingInstructionNode',    'bar',
         'TP.core.CommentNode',                  'foo',
 
-        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
-        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
-        'TP.core.ElementPath',                  TP.IDENTITY,
-        'TP.core.XTensionPath',                 TP.IDENTITY,
-        'TP.core.XPathPath',                    TP.IDENTITY,
+        'TP.path.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.path.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.path.ElementPath',                  TP.IDENTITY,
+        'TP.path.XTensionPath',                 TP.IDENTITY,
+        'TP.path.XPathPath',                    TP.IDENTITY,
 
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      'baz',
